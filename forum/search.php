@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.61 2004-03-15 19:25:16 decoyduck Exp $ */
+/* $Id: search.php,v 1.62 2004-03-15 21:33:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -49,10 +53,6 @@ include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 include_once("./include/threads.inc.php");
 include_once("./include/user.inc.php");
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (!$user_sess = bh_session_check()) {
 
@@ -92,7 +92,7 @@ if (isset($HTTP_POST_VARS['search_string'])) {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td>&nbsp;</td>\n";
-    echo "    <td class=\"postbody\">{$lang['wordsshorterthan_1']} ", (isset($search_min_word_length) ? $search_min_word_length : "3"), " {$lang['wordsshorterthan_2']}", ".</td>\n";
+    echo "    <td class=\"postbody\">{$lang['wordsshorterthan_1']} {$forum_settings['search_min_word_length']} {$lang['wordsshorterthan_2']}", ".</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
@@ -270,7 +270,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 	    echo "<h2>{$lang['usernamenotfound']}</h2>\n";
 	    break;
 	case SEARCH_NO_KEYWORDS:
-	    echo "<h2>{$lang['notexttosearchfor_1']} ", isset($search_min_word_length) ? $search_min_word_length : "3", " {$lang['notexttosearchfor_2']}.</h2>\n";
+	    echo "<h2>{$lang['notexttosearchfor_1']} {$forum_settings['search_min_word_length']} {$lang['notexttosearchfor_2']}.</h2>\n";
 	    break;
 	case SEARCH_NO_MATCHES:
 	    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.136 2004-03-14 19:38:32 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.137 2004-03-15 21:33:32 decoyduck Exp $ */
 
 function user_count()
 {
@@ -371,12 +371,10 @@ function user_get_prefs($uid)
 
 function user_update_prefs($uid, $prefs_array)
 {
-    global $default_style;
+    global $forum_settings;
 
     if (!is_numeric($uid)) return false;
     if (!is_array($prefs_array)) return false;
-    
-    if (!isset($default_style)) $default_style = "default";
 
     $db_user_update_prefs = db_connect();
     
@@ -395,7 +393,7 @@ function user_update_prefs($uid, $prefs_array)
     if (empty($prefs_array['POSTS_PER_PAGE'])) $prefs_array['POSTS_PER_PAGE'] = 5;
     if (empty($prefs_array['FONT_SIZE']))      $prefs_array['FONT_SIZE']      = 10;
     
-    if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = $default_style;
+    if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = $forum_settings['default_style'];
 
     $sql = "INSERT INTO {$webtag['PREFIX']}USER_PREFS (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
@@ -523,6 +521,12 @@ function user_get_last_logon_time($uid, $verbose = true)
 
 function user_guest_enabled()
 {
+    global $forum_settings;
+    
+    if (strtoupper($forum_settings['guest_account_enabled']) == "N") {
+        return false;
+    }
+
     $db_user_guest_account = db_connect();
     
     $webtag = get_webtag();

@@ -21,13 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.57 2004-03-15 19:25:15 decoyduck Exp $ */
-
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
+/* $Id: getattachment.php,v 1.58 2004-03-15 21:33:30 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -37,10 +41,6 @@ include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (!$user_sess = bh_session_check()) {
 
@@ -52,11 +52,11 @@ if (!$user_sess = bh_session_check()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (!isset($attachment_dir)) $attachment_dir = "attachments";
+if (!isset($forum_settings['attachment_dir'])) $forum_settings['attachment_dir'] = "attachments";
 
-if (isset($attachments_enabled) && !$attachments_enabled) {
+if (strtoupper($forum_settings['attachments_enabled']) == "N") {
     html_draw_top();
-    echo "<h1>Attachments have been disabled by the forum owner.</h1>\n";
+    echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
     html_draw_bottom();
     exit;
 }
@@ -86,7 +86,7 @@ if (isset($hash) && is_md5($hash)) {
 
         // Use these quite a few times, so assign them to variables to save some time.
 
-        $filepath = $attachment_dir. '/'. $attachmentdetails['HASH'];
+        $filepath = $forum_settings['attachment_dir']. '/'. $attachmentdetails['HASH'];
         $filename = rawurldecode(basename($attachmentdetails['FILENAME']));
 
         if (file_exists($filepath)) {

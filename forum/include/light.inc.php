@@ -21,13 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.29 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.30 2004-03-15 21:33:32 decoyduck Exp $ */
 
 function light_html_draw_top ($title = false)
 {
-    global $forum_name, $lang;
-    
-    if (!isset($forum_name)) $forum_name = "A Beehive Forum";
+    global $lang, $forum_settings;
 
     if (!isset($title) || !$title) {
         $title = $forum_name;
@@ -351,10 +349,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true)
 {
-    global $maximum_post_length, $attachment_dir, $lang, $webtag;
-    
-    if (!isset($maximum_post_length)) $maximum_post_length = 6226;    
-    if (!isset($attachment_dir)) $attachment_dir = "attachments";
+    global $lang, $webtag;
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         light_message_display_deleted($tid, $message['PID']);
@@ -375,8 +370,8 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         $message['TO_RELATIONSHIP'] = 0;
     }
 
-    if((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text && !$is_poll) {
-        $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length));
+    if((strlen($message['CONTENT']) > intval($forum_settings['maximum_post_length'])) && $limit_text && !$is_poll) {
+        $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval($forum_settings['maximum_post_length'])));
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag={$webtag['WEBTAG']}&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 

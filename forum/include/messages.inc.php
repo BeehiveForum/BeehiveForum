@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.245 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.246 2004-03-15 21:33:32 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
+include_once("./include/fixhtml.inc.php");
 include_once("./include/folder.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
@@ -173,15 +174,8 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang, $attachment_use_old_method, $attachments_show_deleted, $webtag;
+    global $HTTP_SERVER_VARS, $lang, $webtag, $forum_settings;
     
-    if (!isset($attachments_show_deleted)) $attachments_show_deleted = false;
-    if (!isset($attachment_use_old_method)) $attachment_use_old_method = false;    
-    if (!isset($maximum_post_length)) $maximum_post_length = 6226;
-    if (!isset($allow_post_editing)) $allow_post_editing = true;
-    if (!isset($post_edit_time)) $post_edit_time = 0;
-    if (!isset($attachment_dir)) $attachment_dir = "attachments";
-
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
         return;
@@ -210,8 +204,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
-    if ((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text) {
-        $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length));
+    if ((strlen($message['CONTENT']) > intval($forum_settings['maximum_post_length'])) && $limit_text) {
+        $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval($forum_settings['maximum_post_length'])));
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag={$webtag['WEBTAG']}&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
@@ -381,14 +375,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             if (is_array($attachments)) {
 
                 // If attachment file has been deleted don't show it, unless
-                // $attachments_show_deleted has been set to TRUE in config.inc.php
+                // $attachments_show_deleted has been set to TRUE
                 
                 $visible_attachments = array();
                 
                 for ($i = 0; $i < sizeof($attachments); $i++) {
                     if (isset($attachments[$i]['deleted']) && !$attachments[$i]['deleted']) {
                         $visible_attachments[] = $attachments[$i];
-                    }elseif (isset($attachments_show_deleted) && $attachments_show_deleted) {
+                    }elseif (strtoupper($forum_settings['attachments_show_deleted']) == "Y") {
                         $visible_attachments[] = $attachments[$i];
                     }
                 }
@@ -430,7 +424,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                             echo " title=\"";
 
-                            if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
+                            if ($imageinfo = @getimagesize($forum_settings['attachment_dir']. '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
                                 echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                             }
  
@@ -472,7 +466,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?webtag={$webtag['WEBTAG']}&msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['delete']}</a>";
 
-                if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) || $post_edit_time == 0) && $allow_post_editing)) {
+                if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($forum_settings['post_edit_time'] * HOUR_IN_SECONDS)) || $forum_settings['post_edit_time'] == 0) && $allow_post_editing)) {
                     if ($is_poll && $message['PID'] == 1) {
                         if (!poll_is_closed($tid) || perm_is_moderator()) {
 
@@ -892,14 +886,12 @@ function validate_msg($msg)
 
 function messages_forum_stats($tid, $pid)
 {
-    global $lang, $show_stats, $bh_query_count, $gzip_compress_state, $gzip_compress_level, $webtag;
-    
-    if (!isset($show_stats)) $show_stats = true;    
+    global $lang, $webtag, $forum_settings;
 
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");
     
-    if ($show_stats) {
+    if (strtoupper($forum_settings['show_stats']) == "N") {
 
         echo "<div align=\"center\">\n";
         echo "  <br />\n";

@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.45 2004-03-15 19:25:16 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.46 2004-03-15 21:33:32 decoyduck Exp $ */
 
 function search_execute($argarray, &$urlquery, &$error)
 {
-    global $search_min_word_length;
+    global $forum_settings;
     
     // Ensure the bare minimum of variables are set
     
@@ -55,12 +55,6 @@ function search_execute($argarray, &$urlquery, &$error)
         $folders = "THREAD.FID = ". $argarray['fid'];
     }else{
         $folders = "THREAD.FID in (". threads_get_available_folders(). ")";
-    }
-
-    // Default to 3 for minimum word length
-
-    if (!isset($search_min_word_length)) {
-        $search_min_word_length = 3;
     }
 
     $daterange = search_date_range($argarray['date_from'], $argarray['date_to']);
@@ -102,14 +96,14 @@ function search_execute($argarray, &$urlquery, &$error)
 
             $threadtitle = "";
             foreach($keywords as $word) {
-                if (strlen($word) >= $search_min_word_length) {
+                if (strlen($word) >= intval($forum_settings['search_min_word_length'])) {
                     $threadtitle.= "THREAD.TITLE LIKE '%". addslashes($word). "%' AND ";
                 }
             }
 
             $postcontent = "";
             foreach($keywords as $word) {
-                if (strlen($word) >= $search_min_word_length) {
+                if (strlen($word) >= intval($forum_settings['search_min_word_length'])) {
                     $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%' AND ";
                 }
             }
@@ -154,14 +148,14 @@ function search_execute($argarray, &$urlquery, &$error)
 
             $threadtitle = "";
             foreach($keywords as $word) {
-                if (strlen($word) >= $search_min_word_length) {
+                if (strlen($word) >= intval($forum_settings['search_min_word_length'])) {
                     $threadtitle.= "THREAD.TITLE LIKE '%". addslashes($word). "%' OR ";
                 }
             }
 
             $postcontent = "";
             foreach($keywords as $word) {
-                if (strlen($word) >= $search_min_word_length) {
+                if (strlen($word) >= intval($forum_settings['search_min_word_length'])) {
                     $postcontent.= "POST_CONTENT.CONTENT LIKE '%". addslashes($word). "%' OR ";
                 }
             }

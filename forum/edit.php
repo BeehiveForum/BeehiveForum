@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.91 2004-03-15 19:25:14 decoyduck Exp $ */
+/* $Id: edit.php,v 1.92 2004-03-15 21:33:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/admin.inc.php");
 include_once("./include/attachments.inc.php");
@@ -50,10 +54,6 @@ include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 include_once("./include/user.inc.php");
 
-// Fetch the forum webtag
-
-$webtag = get_webtag();
-
 if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". rawurlencode(get_request_uri());
@@ -68,9 +68,6 @@ if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
-
-if (!isset($allow_post_editing)) $allow_post_editing = true;
-if (!isset($post_edit_time)) $post_edit_time = 0;
 
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
@@ -337,7 +334,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $t_sig = "";
     }
 
-    if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
+    if (((strtoupper($forum_settings['allow_post_editing']) == "N") || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval($forum_settings['post_edit_time']) * HOUR_IN_SECONDS)) && intval($forum_settings['post_edit_time']) != 0)) && !perm_is_moderator()) {
 		echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
 		echo "<br />\n";
 
@@ -388,7 +385,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         
             post_add_edit_text($tid, $pid);
             
-            if (isset($HTTP_POST_VARS['aid']) && isset($attachments_enabled) && $attachments_enabled) {
+            if (isset($HTTP_POST_VARS['aid']) && (strtoupper($forum_settings['attachments_enabled']) == "Y")) {
                 if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
             }
 
@@ -427,7 +424,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
-        if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
+        if (((strtoupper($forum_settings['allow_post_editing']) == "N") || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval($forum_settings['post_edit_time']) * HOUR_IN_SECONDS)) && intval($forum_settings['post_edit_time']) != 0)) && !perm_is_moderator()) {
 			echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
 			echo "<br />\n";
 

@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.51 2004-03-15 19:25:16 decoyduck Exp $ */
+/* $Id: nav.php,v 1.52 2004-03-15 21:33:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -39,10 +43,6 @@ include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (!$user_sess = bh_session_check()) {
 
@@ -58,19 +58,16 @@ header_no_cache();
 
 html_draw_top("class=navpage");
 
-if (!isset($show_links)) $show_links = true;
-if (!isset($show_pms)) $show_pms = true;
-
 echo "<a href=\"start.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
 echo "<a href=\"discussion.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
 
-if ($show_links) {
+if (strtoupper($forum_settings['show_links']) == "Y") {
     echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
 }
 
 bh_session_check();
 
-if ($show_pms) {
+if (strtoupper($forum_settings['show_pms']) == "Y") {
     echo "<a href=\"pm.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
 }
 

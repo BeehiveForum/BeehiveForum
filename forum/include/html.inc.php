@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.84 2004-03-14 18:33:42 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.85 2004-03-15 21:33:32 decoyduck Exp $ */
 
 include_once("./include/session.inc.php");
 
@@ -118,11 +118,8 @@ function html_message_type_error()
 
 function html_draw_top()
 {
-    global $HTTP_GET_VARS, $HTTP_SERVER_VARS, $forum_name, $default_style, $lang, $webtag;
+    global $HTTP_GET_VARS, $HTTP_SERVER_VARS, $forum_settings, $lang, $webtag;
     
-    if (!isset($forum_name)) $forum_name = "A Beehive Forum";
-    if (!isset($default_style)) $default_style = "default";
-
     $onload_array = array();
     $onunload_array = array();
     $arg_array = func_get_args();
@@ -161,7 +158,7 @@ function html_draw_top()
         }
     }
 
-    if (!isset($title)) $title = $forum_name;
+    if (!isset($title)) $title = $forum_settings['forum_name'];
     if (!isset($body_class)) $body_class = false;
     if (!isset($base_target)) $base_target = false;
 
@@ -177,10 +174,10 @@ function html_draw_top()
         echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag={$webtag['WEBTAG']}\">\n";
     }
 
-    if (isset($default_style)) {
+    if (isset($forum_settings['default_style'])) {
 
         $user_style = bh_session_get_value('STYLE');
-        $user_style = $user_style ? $user_style : $default_style;
+        $user_style = $user_style ? $user_style : $forum_settings['default_style'];
 
         if (is_dir("./styles/$user_style") && file_exists("./styles/$user_style/style.css")) {
             $stylesheet = "styles/$user_style/style.css";
@@ -252,10 +249,10 @@ function html_draw_bottom ()
 
 function style_image($img)
 {
-    global $default_style;
+    global $forum_settings;
 
     $style = bh_session_get_value('STYLE');
-    $file  = "./styles/". ($style ? $style : $default_style) . "/images/$img";
+    $file  = "./styles/". ($style ? $style : $forum_settings['default_style']) . "/images/$img";
 
     if (@file_exists($file)) {
         return $file;
@@ -266,21 +263,26 @@ function style_image($img)
 
 function bh_setcookie($name, $value = "", $expires = 0)
 {
-    global $HTTP_SERVER_VARS, $cookie_domain;
+    global $HTTP_SERVER_VARS;
 
     $hostname = "";
 
-    if (isset($cookie_domain) && !empty($cookie_domain) && isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
+    if (isset($forum_settings['cookie_domain']) && strlen(trim($forum_settings['cookie_domain'])) > 0 && isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
+
         if (!strstr($HTTP_SERVER_VARS['HTTP_HOST'], 'localhost')) {
-            if (strstr($HTTP_SERVER_VARS['HTTP_HOST'], $cookie_domain)) {
-	        if (substr($cookie_domain, 0, 1) != ".") {
-                    $hostname = ".$cookie_domain";
-                }else {
-                    $hostname = $cookie_domain;
-                }
+
+            if (strstr($HTTP_SERVER_VARS['HTTP_HOST'], $forum_settings['cookie_domain'])) {
+                $hostname = $forum_settings['cookie_domain'];
             }else {
-                $hostname = str_replace("www", "", $HTTP_SERVER_VARS['HTTP_HOST']);
+                $hostname = $HTTP_SERVER_VARS['HTTP_HOST'];
             }
+            
+            $hostname = str_replace("www", "", $hostname);
+            $hostname = str_replace("http://", "", $hostname);
+            
+            if (substr($hostname, 0, 1) != ".") {
+                $hostname = ".{$hostname}";
+            }            
 	}
     }
 

@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.13 2004-03-15 19:25:15 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.14 2004-03-15 21:33:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/fixhtml.inc.php");
 include_once("./include/form.inc.php");
@@ -40,10 +44,6 @@ include_once("./include/lang.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (!$user_sess = bh_session_check()) {
 
@@ -59,8 +59,6 @@ if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
-
-if (!isset($default_style)) $default_style = "default";
 
 // Timezones
 
@@ -177,7 +175,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     if (isset($HTTP_POST_VARS['style'])) {
         $user_prefs['STYLE'] = _stripslashes(trim($HTTP_POST_VARS['style']));
     }else {
-        $user_prefs['STYLE'] = $default_style;
+        $user_prefs['STYLE'] = $forum_settings['default_style'];
     }
 
     if (isset($HTTP_POST_VARS['start_page'])) {
@@ -244,7 +242,7 @@ if (!empty($error_html)) {
 
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 
-    $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style) . "/top.html";
+    $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $forum_settings['default_style']) . "/top.html";
 
     if (!file_exists($top_html)) {
         $top_html = "./top.html";
@@ -406,7 +404,7 @@ echo "                  <td width=\"250\">{$lang['forumstyle']}:</td>\n";
 if (_in_array($user_prefs['STYLE'], $available_styles)) {
     $selected_style = $user_prefs['STYLE'];
 }else {
-    $selected_style = $default_style;
+    $selected_style = $forum_settings['default_style'];
 }
       
 foreach ($available_styles as $key => $style) {

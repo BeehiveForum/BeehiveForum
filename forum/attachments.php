@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.64 2004-03-15 19:25:14 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.65 2004-03-15 21:33:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -42,10 +46,6 @@ include_once("./include/lang.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-// Fetch the forum webtag
-
-$webtag = get_webtag();
-
 if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". rawurlencode(get_request_uri());
@@ -56,11 +56,11 @@ if (!$user_sess = bh_session_check()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (!isset($attachment_dir)) $attachment_dir = "attachments";
+if (!isset($forum_settings['attachment_dir'])) $forum_settings['attachment_dir'] = "attachments";
 
 // If attachments are disabled then no need to go any further.
 
-if (isset($attachments_enabled) && !$attachments_enabled) {
+if (strtoupper($forum_settings['attachments_enabled']) == "N") {
     html_draw_top();
     echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -90,15 +90,15 @@ html_draw_top();
 $users_free_space = get_free_attachment_space(bh_session_get_value('UID'));
 $total_attachment_size = 0;
 
-// Check that $attachment_dir does not have a slash on the end of it.
+// Check that $forum_settings['attachment_dir'] does not have a slash on the end of it.
 
-if (substr($attachment_dir, -1) == '/') $attachment_dir = substr($attachment_dir, 0, -1);
+if (substr($forum_settings['attachment_dir'], -1) == '/') $forum_settings['attachment_dir'] = substr($forum_settings['attachment_dir'], 0, -1);
 
 // Make sure the attachments directory exists
 
-if (!is_dir($attachment_dir)) {
-    mkdir($attachment_dir, 0755);
-    chmod($attachment_dir, 0777);
+if (!is_dir($forum_settings['attachment_dir'])) {
+    mkdir($forum_settings['attachment_dir'], 0755);
+    chmod($forum_settings['attachment_dir'], 0777);
 }
 
 // Default File Input Box count
@@ -145,7 +145,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
                     $uniqfileid = md5(uniqid(rand()));
                     
                     $filehash = md5("{$aid}{$uniqfileid}{$filename}");
-                    $filepath = "$attachment_dir/$filehash";
+                    $filepath = "{$forum_settings['attachment_dir']}/$filehash";
 
                     if (@move_uploaded_file($tempfile, $filepath)) {
 
@@ -243,7 +243,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
-        if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
+        if (@file_exists("{$forum_settings['attachment_dir']}/{$attachments[$i]['hash']}")) {
 
             echo "  <tr>\n";
             echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
@@ -258,7 +258,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
                 echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
             }
 
-            if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+            if (@$imageinfo = getimagesize($forum_settings['attachment_dir']. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
                 echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
             }
 
@@ -335,7 +335,7 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VA
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
     
-        if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {    
+        if (@file_exists("{$forum_settings['attachment_dir']}/{$attachments[$i]['hash']}")) {    
 
             echo "  <tr>\n";
             echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
@@ -350,7 +350,7 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VA
                 echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
             }
 
-            if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+            if (@$imageinfo = getimagesize($forum_settings['attachment_dir']. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
                 echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
             }
 

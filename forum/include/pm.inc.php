@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.43 2004-03-15 19:25:16 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.44 2004-03-15 21:33:32 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -285,11 +285,7 @@ function pm_single_get($mid, $folder, $uid = false)
 
 function draw_pm_message($pm_elements_array)
 {
-    global $HTTP_SERVER_VARS, $lang, $attachment_dir, $attachment_use_old_method, $attachments_show_deleted, $webtag;
-    
-    if (!isset($attachment_dir)) $attachment_dir = "attachments";
-    if (!isset($attachment_use_old_method)) $attachment_use_old_method = false;
-    if (!isset($attachments_show_deleted)) $attachments_show_deleted = false;
+    global $HTTP_SERVER_VARS, $lang, $webtag, $forum_settings;
 
     $uid = bh_session_get_value('UID');
 
@@ -350,14 +346,14 @@ function draw_pm_message($pm_elements_array)
         if (is_array($attachments)) {
 
             // If attachment file has been deleted don't show it, unless
-            // $attachments_show_deleted has been set to TRUE in config.inc.php
+            // $attachments_show_deleted has been set to TRUE
                 
             $visible_attachments = array();
                 
             for ($i = 0; $i < sizeof($attachments); $i++) {
                 if (isset($attachments[$i]['deleted']) && !$attachments[$i]['deleted']) {
                     $visible_attachments[] = $attachments[$i];
-                }elseif (isset($attachments_show_deleted) && $attachments_show_deleted) {
+                }elseif (strtoupper($forum_settings['attachments_show_deleted']) == "Y") {
                     $visible_attachments[] = $attachments[$i];
                 }
             }
@@ -399,7 +395,7 @@ function draw_pm_message($pm_elements_array)
 
                         echo " title=\"";
 
-                        if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
+                        if ($imageinfo = @getimagesize($forum_settings['attachment_dir']. '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
                             echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                         }
  

@@ -21,7 +21,6 @@ P	{
 		margin-bottom: 00px;
 		margin-left: 05px;
 		margin-right: 05px;
-		text-align:left;
 		}
 
 H1		{
@@ -56,6 +55,19 @@ A		{
 		text-decoration: underline;
 		}
 		
+.smalltext{
+        font-size: 9pt;
+        }
+
+.box{
+		border-style:solid;
+		border-top-width:01px;
+		border-bottom-width:01px;
+		border-left-width:01px;
+		border-right-width:01px;
+		border-color:#000000;
+        }
+
 .thread_list_folder{
 		background-color:#CCCCCC;
 		border-style:solid;
@@ -121,17 +133,17 @@ A		{
 
 .threadname {
           font-size: 10pt;
-          padding-left: 4px;
+          padding-left: 0px;
 }
 
 .threadtime {
           font-size: 8pt;
-          padding-left: 4px;
+          padding-left: 0px;
 }
 
 .threadxnewofy {
           font-size: 8pt;
-          padding-left: 4px;
+          padding-left: 0px;
 }
 
 .foldername {

@@ -31,7 +31,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
@@ -49,8 +49,8 @@ require_once("./include/poll.inc.php");
 if (isset($HTTP_POST_VARS['cancel'])) {
 
   $uri = "./discussion.php";
-  header_redirect($uri);      
-    
+  header_redirect($uri);
+
 }elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
 
   $valid = true;
@@ -59,12 +59,12 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $error_html = "<h2>You must enter a poll question</h2>";
     $valid = false;
   }
-  
+
   if ($valid && !isset($HTTP_POST_VARS['t_fid'])) {
     $error_html = "<h2>Please select a folder</h2>";
     $valid = false;
   }
-  
+
   if ($valid && empty($HTTP_POST_VARS['answers'][0])) {
     $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
     $valid = false;
@@ -74,73 +74,73 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $error_html = "<h2>You must specify values for answers 1 and 2</h2>";
     $valid = false;
   }
-  
+
 }
 
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
   $db = db_connect();
-    
+
   $sql = "select DDKEY from ".forum_table("DEDUPE")." where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
   $result = db_query($sql,$db);
-    
+
   if(db_num_rows($result) > 0) {
-    
+
       db_query($sql, $db);
       list($ddkey) = db_fetch_array($result);
       $sql = "update ".forum_table("DEDUPE")." set DDKEY = \"".$HTTP_POST_VARS['t_dedupe']."\" where UID = ".$HTTP_COOKIE_VARS['bh_sess_uid'];
-        
+
   }else{
-    
+
       $sql = "insert into ".forum_table("DEDUPE")." (UID,DDKEY) values (".$HTTP_COOKIE_VARS['bh_sess_uid'].",\"".$HTTP_POST_VARS['t_dedupe']."\")";
       $ddkey = "";
-        
+
   }
-    
+
   db_query($sql,$db);
   db_disconnect($db);
-  
+
   if($ddkey != $HTTP_POST_VARS['t_dedupe']) {
-  
+
     // Work out when the poll will close.
-    
+
     if ($HTTP_POST_VARS['closepoll'] == 0) {
       $poll_closes = gmmktime() + DAY_IN_SECONDS;
     }elseif ($HTTP_POST_VARS['closepoll'] == 1) {
       $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
-    }elseif ($HTTP_POST_VARS['closepoll'] == 2) {        
+    }elseif ($HTTP_POST_VARS['closepoll'] == 2) {
       $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
-    }elseif ($HTTP_POST_VARS['closepoll'] == 3) {        
+    }elseif ($HTTP_POST_VARS['closepoll'] == 3) {
       $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
-    }elseif ($HTTP_POST_VARS['closepoll'] == 4) {        
+    }elseif ($HTTP_POST_VARS['closepoll'] == 4) {
       $poll_closes = 0;
     }
-    
+
     // Check HTML tick box, innit.
-    
+
     for ($i = 0; $i < 5; $i++) {
       if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
-        $HTTP_POST_VARS['answers'][$i] = fix_html(_stripslashes($HTTP_POST_VARS['answers'][$i]));
+        $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
       }else {
-        $HTTP_POST_VARS['answers'][$i] = make_html(_stripslashes($HTTP_POST_VARS['answers'][$i]));
+        $HTTP_POST_VARS['answers'][$i] = make_html($HTTP_POST_VARS['answers'][$i]);
       }
     }
-    
+
     $HTTP_POST_VARS['question'] = trim($HTTP_POST_VARS['question']);
-    
+
     // Create the poll thread with the poll_flag set to Y
 
     $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y');
-    $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');    
+    $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
-    
+
     if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($tid, 1, true);
-    
+
   }
-    
-  $uri = "./discussion.php?msg=$tid.1";   
+
+  $uri = "./discussion.php?msg=$tid.1";
   header_redirect($uri);
-    
+
 }
 
 html_draw_top();
@@ -151,53 +151,53 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   $polldata['TLOGON'] = "ALL";
   $polldata['TNICK'] = "ALL";
-  
+
   $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
-  
+
   $polldata['FLOGON'] = $preview_tuser['LOGON'];
   $polldata['FNICK'] = $preview_tuser['NICKNAME'];
-  $polldata['FROM_UID'] = $preview_tuser['UID'];  
+  $polldata['FROM_UID'] = $preview_tuser['UID'];
 
   $polldata['CONTENT'] = "<br>\n";
   $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
   $polldata['CONTENT'].= "  <tr>\n";
   $polldata['CONTENT'].= "    <td>\n";
-  $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";  
+  $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td><h2>". _stripslashes($HTTP_POST_VARS['question']). "</h2></td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
   $polldata['CONTENT'].= "            <ul>\n";
-  
+
   for ($i = 0; $i < 5; $i++) {
     if (!empty($HTTP_POST_VARS['answers'][$i])) {
       if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
-        $polldata['CONTENT'].= "          <li>". fix_html(_stripslashes($HTTP_POST_VARS['answers'][$i])). "</li>\n";
+        $polldata['CONTENT'].= "          <li>". fix_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
       }else {
-        $polldata['CONTENT'].= "          <li>". make_html(_stripslashes($HTTP_POST_VARS['answers'][$i])). "</li>\n";
+        $polldata['CONTENT'].= "          <li>". make_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
       }
     }
   }
-  
-  $polldata['CONTENT'].= "            </ul>\n";  
+
+  $polldata['CONTENT'].= "            </ul>\n";
   $polldata['CONTENT'].= "          </td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
-  $polldata['CONTENT'].= "      </table>\n";    
-  $polldata['CONTENT'].= "    </td>\n"; 
-  $polldata['CONTENT'].= "  </tr>\n"; 
+  $polldata['CONTENT'].= "      </table>\n";
+  $polldata['CONTENT'].= "    </td>\n";
+  $polldata['CONTENT'].= "  </tr>\n";
   $polldata['CONTENT'].= "  <tr>\n";
   $polldata['CONTENT'].= "    <td>";
   $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">";
-  
+
   if ($HTTP_POST_VARS['changevote'] == 1) {
     $polldata['CONTENT'].= "You will be able to change your vote.";
   }else {
     $polldata['CONTENT'].= "You will not be able to change your vote.";
   }
-  
+
   $polldata['CONTENT'].= "          </td>";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "      </table>\n";
@@ -205,9 +205,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "  </tr>\n";
   $polldata['CONTENT'].= "</table>\n";
   $polldata['CONTENT'].= "<br><br>\n";
-  
+
   message_display(0, $polldata, 0, 0, false, false, false);
-    
+
 }
 
 if(isset($error_html)) echo $error_html. "\n";
@@ -252,7 +252,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
           </tr>
           <tr>
             <td>&nbsp;</td>
-          </tr>          
+          </tr>
           <tr>
             <td>1. <?php echo form_input_text("answers[]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][0])), 40, 64); ?></td>
           </tr>
@@ -270,7 +270,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
           </tr>
           <tr>
             <td><?php echo form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", ($HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
-          </tr>           
+          </tr>
           <tr>
             <td>&nbsp;</td>
           </tr>
@@ -292,7 +292,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
           </tr>
           <tr>
             <td>&nbsp;</td>
-          </tr>          
+          </tr>
           <tr>
             <td><h2>Poll Results</h2></td>
           </tr>
@@ -311,7 +311,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
           </tr>
           <tr>
             <td>&nbsp;</td>
-          </tr>          
+          </tr>
           <tr>
             <td><h2>Expiration</h2></td>
           </tr>
@@ -330,7 +330,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
           </tr>
           <tr>
             <td>&nbsp;</td>
-          </tr>          
+          </tr>
           <tr>
             <td>When would you like your poll to automatically close?</td>
           </tr>
@@ -339,24 +339,24 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
           </tr>
           <tr>
             <td>&nbsp;</td>
-          </tr>         
+          </tr>
         </table>
       </td>
-    </tr>   
+    </tr>
   </table>
-<?php 
+<?php
 
     echo form_submit("submit", "Post"). "&nbsp;". form_submit("preview", "Preview"). "&nbsp;". form_submit("cancel", "Cancel");
 
     if ($attachments_enabled) {
-  
+
       echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
       echo form_input_hidden("aid", $aid);
-     
+
     }
-    
+
     echo "</form>\n";
-    
+
     html_draw_bottom();
-  
+
 ?>

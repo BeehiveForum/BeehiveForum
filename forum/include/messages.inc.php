@@ -151,7 +151,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
 function message_display_deleted($tid,$pid)
 {
-    echo "<div align=\"center\">";
+    echo "<br /><div align=\"center\">";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
     echo "<table class=\"posthead\" width=\"100%\" border=\"0\"><tr><td>\n";
     echo "Message ${tid}.${pid} was deleted\n";

@@ -39,6 +39,7 @@ require_once("./include/folder.inc.php");
 require_once("./include/threads.inc.php");
 require_once("./include/messages.inc.php");
 require_once("./include/fixhtml.inc.php");
+require_once("./include/email.inc.php");
 
 $valid = true;
 
@@ -138,6 +139,9 @@ if($valid){
                 echo "<p><a href=\"discussion.php?msg=$t_tid.$t_rpid\">Return to messages</a></p>";
                 echo "</div>";
                 html_draw_bottom();
+                if(!$newthread){
+                    email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);
+                }
                 exit;
             } else {
                 $error_html = "<h2>Error creating post</h2>";

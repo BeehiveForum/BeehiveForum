@@ -58,6 +58,8 @@ function post_delete($tid,$pid)
 
     $sql = "update " . forum_table("POST") . " set CONTENT = NULL ";
     $sql .= "where TID = $tid and PID = $pid";
+    
+    echo $sql;
 
     $result = db_query($sql,$db);
 

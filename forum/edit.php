@@ -84,6 +84,7 @@ if(isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])){
             if(!isset($HTTP_POST_VARS['b_edit_html'])){
                 $t_content = strip_tags($edit_message['CONTENT']);
                 $t_content = ereg_replace("\n+","\n",$t_content);
+                //$t_content = preg_replace("/\n[\n\s]*/","\n",$t_content);
             } else {
                 $t_content = htmlentities($edit_message['CONTENT']);
             }

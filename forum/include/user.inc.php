@@ -66,6 +66,8 @@ function user_update($uid,$password,$nickname,$email)
 
     $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"$nickname\", EMAIL = \"$email\"";
     $sql .= " WHERE UID = $uid";
+    
+    //echo $sql;
 
     $db = db_connect();
     $result = db_query($sql,$db);

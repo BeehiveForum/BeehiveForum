@@ -33,8 +33,9 @@ if(!bh_session_check()){
 
 if(isset($HTTP_POST_VARS['cancel'])){
     $go = "Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-    $go .= "/".dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $go .= dirname($HTTP_SERVER_VARS['PHP_SELF']);
     $go .= "/discussion.php?msg=" . $HTTP_POST_VARS['t_back'];
+    //echo $go;
     header($go);
 }
 
@@ -48,6 +49,8 @@ require_once("./include/messages.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/edit.inc.php");
 
+$valid = true;
+
 if(isset($HTTP_POST_VARS['submit'])){
     $delete_msg = $HTTP_POST_VARS['t_msg'];
     $msg_bits = explode(".",$delete_msg);
@@ -55,6 +58,7 @@ if(isset($HTTP_POST_VARS['submit'])){
     if(isset($HTTP_GET_VARS['msg'])){
         $delete_msg = $HTTP_GET_VARS['msg'];
         $msg_bits = explode(".",$delete_msg);
+        $back = $HTTP_GET_VARS['back'];
     } else {
         $valid = false;
         $error_html = "<h2>No message specified for deleting</h2>";
@@ -83,6 +87,7 @@ echo "</table>"; */
 
 if($valid){
     if(isset($HTTP_POST_VARS['submit'])){
+        echo $msg_bits[0].".".$msg_bits[1]."<br>";
         $deleted = post_delete($msg_bits[0],$msg_bits[1]);
         if($deleted){
             echo "<p>&nbsp;</p>";
@@ -124,13 +129,10 @@ if(isset($error_html)){
     echo $error_html;
 }
 echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
-echo "<input type=\"hidden\" name=\"t_msg\" value=\"$edit_msg\">";
+echo "<input type=\"hidden\" name=\"t_msg\" value=\"$delete_msg\">";
 echo "<input type=\"hidden\" name=\"t_back\" value=\"$back\">";
 echo "<input name=\"submit\" type=\"submit\" value=\"Delete\">";
-echo "&nbsp;&nbsp;<input name=\"submit\" type=\"cancel\" value=\"Cancel\"></form>";
-
-//TODO: Cancel buttons
-echo "&nbsp;&nbsp;<input name=\"preview\" type=\"submit\" value=\"Preview\">";
+echo "&nbsp;&nbsp;<input name=\"cancel\" type=\"submit\" value=\"Cancel\"></form>";
 echo "<p>&nbsp;&nbsp;</p>";
 html_draw_bottom();
 ?>

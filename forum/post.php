@@ -106,7 +106,7 @@ if($valid){
             } else {
                 $t_sig = stripslashes($t_sig);
             }
-            $preview_message['CONTENT'] = $preview_message['CONTENT'] . $t_sig;
+            $preview_message['CONTENT'] = $preview_message['CONTENT'] . "<span class=\"sig\">$t_sig</span>";
         }
         message_display(0,$preview_message,0,0,false);
     } else if(isset($HTTP_POST_VARS['submit'])){
@@ -125,7 +125,7 @@ if($valid){
                 if($t_sig_html != "Y"){
                     $t_sig = make_html($t_sig);
                 }
-                $t_content .= $t_sig;
+                $t_content .= "<span class=\"sig\">$t_sig</span>";
             }
             $new_pid = post_create($t_tid,$t_rpid,$HTTP_COOKIE_VARS['bh_sess_uid'],$HTTP_POST_VARS['t_to_uid'],$t_content);
             if($new_pid > -1){

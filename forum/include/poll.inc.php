@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.145 2005-03-27 13:02:57 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.146 2005-03-31 00:46:49 rowan_hill Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -248,7 +248,8 @@ function poll_get_total_votes($tid)
     if (!is_numeric($tid)) return 0;
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT COUNT(OPTION_ID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    //Used to be 'OPTION_ID' not 'DISTINCT UID', but that breaks polls - counts votes*option_groups. What did I break?
+    $sql = "SELECT COUNT(DISTINCT UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE TID = '$tid'";
 
     $result = db_query($sql, $db_poll_get_total_votes);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.67 2004-04-27 23:07:12 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.68 2004-04-27 23:31:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -319,12 +319,33 @@ if (!isset($_POST['aid'])) {
   $aid = $_POST['aid'];
 }
 
+// PM link from profile
+
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+
+    $to_user = user_get($_GET['uid']);
+    $t_recipient_list = $to_user['LOGON'];
+}
+
+echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['writepm']}</b></td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+echo "<br />\n";
+
+echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
+echo form_input_hidden('webtag', $webtag), "\n";
+
 // preview message
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h1>{$lang['privatemessages']}: {$lang['messagepreview']}</h1>\n";
-    echo "<br />\n";
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">{$lang['messagepreview']}</td>\n";
+    echo "  </tr>\n";
 
     if (isset($to_radio) && $to_radio == 0) {
 
@@ -355,25 +376,14 @@ if ($valid && isset($_POST['preview'])) {
 
     $pm_preview_array['CONTENT'] = $t_content;
 
-    draw_pm_message($pm_preview_array);
-    echo "<br />\n";
+    echo "  <tr>\n";
+    echo "    <td><br />", draw_pm_message($pm_preview_array, true), "</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
-
-// PM link from profile
-
-if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
-
-    $to_user = user_get($_GET['uid']);
-    $t_recipient_list = $to_user['LOGON'];
-}
-
-echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['writepm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write_new.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-echo "<br />\n";
 
 if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
     echo "<table class=\"posthead\" width=\"720\">\n";
@@ -384,8 +394,6 @@ if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
     echo "</table>\n";
 }
 
-echo "<form name=\"f_post\" action=\"pm_write_new.php\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('webtag', $webtag), "\n";
 echo "<table width=\"720\" class=\"posthead\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"subhead\" colspan=\"2\">{$lang['writepm']}</td>\n";

@@ -243,7 +243,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 }
 
 echo "<h1>{$lang['privatemessages']}: {$lang['writepm']}</h1>\n";
-echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></div><br />\n";
+echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a></div><br />\n";
 
 if ($valid == false) {
     echo $error_html;

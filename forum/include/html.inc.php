@@ -21,8 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.116 2004-06-08 21:16:29 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.117 2004-06-18 16:55:30 decoyduck Exp $ */
 
+include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/pm.inc.php");
@@ -129,6 +130,48 @@ function html_get_style_sheet()
     }
 
     return "styles/style.css";
+}
+
+function html_get_forum_keywords()
+{
+    $webtag = get_webtag($webtag_search);
+
+    $forum_settings = get_forum_settings();
+
+    if ($forum_keywords = forum_get_setting('forum_keywords')) {
+
+        return $forum_keywords;
+    }
+
+    return "";
+}
+
+function html_get_forum_description()
+{
+    $webtag = get_webtag($webtag_search);
+
+    $forum_settings = get_forum_settings();
+
+    if ($forum_desc = forum_get_setting('forum_desc')) {
+
+        return $forum_desc;
+    }
+
+    return "";
+}
+
+function html_get_forum_email()
+{
+    $webtag = get_webtag($webtag_search);
+
+    $forum_settings = get_forum_settings();
+
+    if ($forum_email = forum_get_setting('forum_email')) {
+
+        return $forum_email;
+    }
+
+    return "";
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags
@@ -245,12 +288,20 @@ function html_draw_top()
     if (!isset($body_class)) $body_class = false;
     if (!isset($base_target)) $base_target = false;
 
+    $forum_keywords = html_get_forum_keywords();
+    $forum_description = html_get_forum_description();
+    $forum_email = html_get_forum_email();
+
     echo "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
+    echo "<meta name=\"generator\" content=\"BeehiveForums ", BEEHIVE_VERSION, "\" />\n";
+    echo "<meta name=\"reply-to\" content=\"$forum_email\" />\n";
+    echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
+    echo "<meta name=\"description\" content=\"$forum_description\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 
     if ($meta_refresh) {

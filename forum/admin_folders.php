@@ -76,7 +76,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 echo "<h1>Manage Folders</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
-echo "<table width=\"96%\"><tr><td class=\"box\">";
+echo "<table width=\"96%\" class=\"box\"><tr><td class=\"posthead\">";
 
 echo "<form name=\"f_folders\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
 echo "<table class=\"posthead\" width=\"100%\"><tr>\n";

@@ -58,26 +58,26 @@ $db = db_connect();
 
 // Do updates
 
+if(isset($HTTP_GET_VARS['psid'])){
+  
+  $psid = $HTTP_GET_VARS['psid'];
+      
+}else if(isset($HTTP_POST_VARS['t_psid'])){
+
+  $psid = $HTTP_POST_VARS['t_psid'];
+      
+}else {
+    
+  echo "<h1>Invalid Operation</h1>\n";
+  echo "<p>No Profile Section specified.</p>\n";
+  html_draw_bottom();
+  exit;
+      
+}
+
 if(isset($HTTP_POST_VARS['submit'])) {
 
   if ($HTTP_POST_VARS['submit'] == "Submit") {
-  
-    if(isset($HTTP_GET_VARS['psid'])){
-  
-      $psid = $HTTP_GET_VARS['psid'];
-      
-    }else if(isset($HTTP_POST_VARS['t_psid'])){
-
-      $psid = $HTTP_POST_VARS['t_psid'];
-      
-    } else {
-    
-      echo "<h1>Invalid Operation</h1>\n";
-      echo "<p>No Profile Section specified.</p>\n";
-      html_draw_bottom();
-      exit;
-      
-    }
   
     for($i=0;$i<$HTTP_POST_VARS['t_count'];$i++) {
     
@@ -94,7 +94,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
     
   }elseif ($HTTP_POST_VARS['submit'] == "Delete") {
   
-    $sql = "delete from ". forum_table("PROFILE_ITEM"). " where PIID = ". $HTTP_POST_VARS['piid'];
+    $sql = "delete from ". forum_table("PROFILE_ITEM"). " where PIID = $psid";
     $result = db_query($sql, $db);
     
   }
@@ -130,9 +130,9 @@ for($i=0;$i<$result_count;$i++){
 
     echo "<tr><td valign=\"top\">".$row['PIID'].form_input_hidden("t_piid_$i",$row['PIID'])."</td>\n";
     echo "<td valign=\"top\">".form_field("t_name_$i",$row['NAME'],64,64);
-    echo form_input_hidden("t_old_name_$i",$row['NAME'])."</td>";
+    echo form_input_hidden("t_old_name_$i", $row['NAME'])."</td>";
     echo "<td valign=\"top\">".profile_section_dropdown($psid,"t_move","_$i")."</td>";
-    echo "<td valign=\"top\"><form method=\"POST\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "?psid=". $HTTP_GET_VARS['psid']. "\">". form_input_hidden("piid", $row['PIID']). form_submit("submit", "Delete"). "</form></td></tr>";
+    echo "<td valign=\"top\">". form_input_hidden("t_psid", $HTTP_GET_VARS['psid']). form_input_hidden("piid", $row['PIID']). form_submit("submit", "Delete"). "</td></tr>";
 
 }
 

@@ -38,13 +38,16 @@ function format_user_name($u_logon,$u_nickname)
 
 function format_url2link($html)
 {
+	$html = " ".$html;
 	// URL:
-    $html = preg_replace("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(\/([-\w%~]+\.?)*)*((\?|#)([^\s;,.?\"'[\](){}<>]|.[^\s;,.?\"'[\](){}<>])*)?)/i",
-        "<a href=\"$1\" target=\"_blank\">$1</a>", $html);
+    $html = preg_replace("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\](){}<>]|\S[^\s;,.?\"'[\](){}<>])*)?)/i",
+        "<a href=\"$1\">$1</a>", $html);
+	$html = preg_replace("/([^\/])(www\.([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\](){}<>]|\S[^\s;,.?\"'[\](){}<>])*)?)/i",
+        "$1<a href=\"http://$2\">$2</a>", $html);
 	// MAIL:
 	$html = preg_replace("/\b(mailto:)?([-\w]+(\.[-\w]+)*@([-\w]+\.)+([a-z]{2,}|:\d+))/i",
 		"<a href=\"mailto:$2\">$1$2</a>", $html);
-    return $html;
+    return substr($html, 1);
 }
 
 function format_time($time, $verbose = 0)

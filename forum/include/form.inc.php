@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.66 2005-01-30 17:21:57 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.67 2005-02-04 19:35:37 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -32,7 +32,11 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 {
     $lang = load_language_file();
 
-    $html = "<input type=\"$type\" name=\"$name\" id=\"$name\" class=\"bhinputtext\" value=\"$value\" ";
+    if (!strstr($custom_html, "class")) {
+        $html = "<input type=\"$type\" name=\"$name\" id=\"$name\" class=\"bhinputtext\" value=\"$value\" ";
+    }else {
+        $html = "<input type=\"$type\" name=\"$name\" id=\"$name\" value=\"$value\" ";
+    }
 
     if ($custom_html) {
         $custom_html = trim($custom_html);

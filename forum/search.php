@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.97 2005-01-21 01:19:38 decoyduck Exp $ */
+/* $Id: search.php,v 1.98 2005-02-04 19:35:37 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -219,15 +219,15 @@ if (isset($_POST['search_string'])) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['postedfrom']}:</td>\n";
-    echo "                  <td>", form_dropdown_array("date_from", range(1, 12), array($lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], "1 {$lang['weekago']}", "2 {$lang['weeksago']}", "3 {$lang['weeksago']}", "1 {$lang['monthago']}", "2 {$lang['monthsago']}", "3 {$lang['monthsago']}", "6 {$lang['monthsago']}", "1 {$lang['yearago']}", $lang['beginningoftime']), 7, "style=\"width: 175px\""), "&nbsp;</td>\n";
+    echo "                  <td>", form_dropdown_array("date_from", range(1, 12), array($lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], "1 {$lang['weekago']}", "2 {$lang['weeksago']}", "3 {$lang['weeksago']}", "1 {$lang['monthago']}", "2 {$lang['monthsago']}", "3 {$lang['monthsago']}", "6 {$lang['monthsago']}", "1 {$lang['yearago']}", $lang['beginningoftime']), 7, "class=\"search_dropdown\""), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['postedto']}:</td>\n";
-    echo "                  <td>", form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], "1 {$lang['weekago']}", "2 {$lang['weeksago']}", "3 {$lang['weeksago']}", "1 {$lang['monthago']}", "2 {$lang['monthsago']}", "3 {$lang['monthsago']}", "6 {$lang['monthsago']}", "1 {$lang['yearago']}"), 2, "style=\"width: 175px\""), "&nbsp;</td>\n";
+    echo "                  <td>", form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], "1 {$lang['weekago']}", "2 {$lang['weeksago']}", "3 {$lang['weeksago']}", "1 {$lang['monthago']}", "2 {$lang['monthsago']}", "3 {$lang['monthsago']}", "6 {$lang['monthsago']}", "1 {$lang['yearago']}"), 2, "class=\"search_dropdown\""), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['orderby']}:</td>\n";
-    echo "                  <td>", form_dropdown_array("order_by", range(1, 3), array($lang['relevance'], $lang['newestfirst'], $lang['oldestfirst']), 1, "style=\"width: 175px\""), "&nbsp;</td>\n";
+    echo "                  <td>", form_dropdown_array("order_by", range(1, 3), array($lang['relevance'], $lang['newestfirst'], $lang['oldestfirst']), 1, "class=\"search_dropdown\""), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['search']}:</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.321 2005-02-04 00:21:55 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.322 2005-02-04 19:35:37 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -42,8 +42,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
-    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
-    $sql .= "UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, APPROVED_USER.LOGON AS APPROVED_LOGON, ";
+    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
+    $sql .= "UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, POST.APPROVED_BY, APPROVED_USER.LOGON AS APPROVED_LOGON, ";
     $sql .= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql .= "THREAD.FID FROM {$table_data['PREFIX']}POST POST ";
@@ -54,7 +54,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
     $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql .= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";
-    $sql .= "LEFT JOIN USER APPROVED_USER ON (POST.EDITED_BY = APPROVED_USER.UID) ";
+    $sql .= "LEFT JOIN USER APPROVED_USER ON (POST.APPROVED_BY = APPROVED_USER.UID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
     $sql .= "WHERE POST.TID = '$tid' ";
     $sql .= "AND POST.PID >= '$pid' ";
@@ -79,6 +79,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
             $messages[$i]['CREATED'] = $message['CREATED'];
             $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
             $messages[$i]['APPROVED'] = isset($message['APPROVED']) ? $message['APPROVED'] : 0;
+            $messages[$i]['APPROVED_BY'] = isset($message['APPROVED_BY']) ? $message['APPROVED_BY'] : 0;
             $messages[$i]['APPROVED_LOGON'] = isset($message['APPROVED_LOGON']) ? $message['APPROVED_LOGON'] : 0;
             $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
             $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
@@ -117,6 +118,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
         if (!isset($messages['APPROVED'])) $messages['APPROVED'] = 0;
+        if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
         if (!isset($messages['APPROVED_LOGON'])) $messages['APPROVED_LOGON'] = 0;
         if (!isset($messages['EDITED'])) $messages['EDITED'] = 0;
         if (!isset($messages['EDIT_LOGON'])) $messages['EDIT_LOGON'] = 0;
@@ -529,8 +531,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
             echo "              <tr>\n";
-            echo "                <td class=\"postbody\" align=\"left\"><p style=\"font-size: 10px\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1, "d/m/y H:i"), " {$lang['by']} {$message['EDIT_LOGON']}</p></td>\n";
+            echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1, "d/m/y H:i"), " {$lang['by']} {$message['EDIT_LOGON']}</p></td>\n";
             echo "              </tr>\n";
+        }
+
+        if (isset($message['APPROVED']) && $message['APPROVED'] > 0 && perm_is_moderator($message['FID'])) {
+
+            if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
+
+                echo "              <tr>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">{$lang['approvedcaps']}: ", format_time($message['APPROVED'], 1, "d/m/y H:i"), " {$lang['by']} {$message['APPROVED_LOGON']}</p></td>\n";
+                echo "              </tr>\n";
+            }
         }
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {

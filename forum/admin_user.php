@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.125 2005-02-04 00:21:50 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.126 2005-02-04 19:35:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -430,7 +430,7 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                            </tr>\n";
         echo "                            <tr>\n";
         echo "                              <td colspan=\"2\">\n";
-        echo "                                <div style=\"width: 500px; height: 120px\" class=\"admin_folder_perms\">\n";
+        echo "                                <div class=\"admin_folder_perms\">\n";
 
         foreach($folder_array as $fid => $folder) {
 

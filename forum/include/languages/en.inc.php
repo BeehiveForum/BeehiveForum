@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.217 2005-02-04 00:21:57 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.218 2005-02-04 19:35:38 decoyduck Exp $ */
 
 // International English language file
 
@@ -892,6 +892,7 @@ $lang['approvalrequired'] = "Approval Required";
 $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['approvepost'] = "Approve post for display";
+$lang['approvedcaps'] = "APPROVED";
 
 // Navigation strip (nav.php) ------------------------------------------
 

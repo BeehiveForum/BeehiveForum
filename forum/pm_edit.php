@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.60 2005-02-04 00:21:53 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.61 2005-02-04 19:35:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -405,7 +405,7 @@ echo "        <tr>\n";
 echo "          <td><h2>{$lang['subject']}:</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, "style=\"width: 190px\""), "</td>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, "class=\"thread_title\""), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td><h2>{$lang['to']}:</h2></td>\n";
@@ -428,31 +428,30 @@ $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
-                echo "        <tr>\n";
-                echo "          <td>&nbsp;</td>\n";
-                echo "        </tr>\n";
-                echo "        <tr>\n";
-        echo "          <td><table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-        echo "            <tr>\n";
-        echo "              <td class=\"subhead\">\n";
-        echo "                <div style=\"float:left\">&nbsp;{$lang['emoticons']}:</div>\n";
 
-        if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-                echo "                <div style=\"float:right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "</div>\n";
-                echo "              </td>\n";
-                echo "            </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td>&nbsp;</td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td><table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "            <tr>\n";
+    echo "              <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
 
-                echo "            <tr>\n";
-                echo "              <td colspan=\"2\">\n";
-                echo $emot_prev;
-        } else {
-                echo "                <div style=\"float:right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "</div>\n";
-        }
+    if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
-        echo "              </td>\n";
+        echo "              <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "&nbsp;</td>\n";
         echo "            </tr>\n";
-        echo "          </table></td>\n";
-                echo "        </tr>\n";
+        echo "            <tr>\n";
+        echo "              <td colspan=\"2\">{$emot_prev}</td>\n";
+
+    }else {
+
+        echo "              <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "&nbsp;</td>\n";
+    }
+
+    echo "            </tr>\n";
+    echo "          </table></td>\n";
+    echo "        </tr>\n";
 }
 
 echo "      </table>\n";
@@ -468,10 +467,11 @@ $tools = new TextAreaHTML("f_post");
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-        echo $tools->toolbar(false, form_submit('submit', $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
+
+    echo $tools->toolbar(false, form_submit('submit', $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "class=\"signature_content\" tabindex=\"1\"")."\n";
 
 echo "          </td>\n";
 echo "        </tr>\n";
@@ -490,23 +490,24 @@ echo "          <td>\n";
 
 if ($allow_html == true) {
 
-        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+    echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-        $tph_radio = $post->getHTML();
+    $tph_radio = $post->getHTML();
 
-        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+    echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+    echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+    echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-                echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-        }
+    if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
 
-        echo "<br /><br />\n";
+        echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+    }
 
-} else {
+    echo "<br /><br />\n";
 
-        echo form_input_hidden("t_post_html", "disabled");
+}else {
+
+    echo form_input_hidden("t_post_html", "disabled");
 }
 
 echo form_submit('submit', $lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
@@ -529,9 +530,7 @@ echo "    <td colspan=\"2\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-
 echo $tools->js();
-
 
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);

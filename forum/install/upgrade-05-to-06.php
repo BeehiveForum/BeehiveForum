@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.11 2005-01-30 18:56:27 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.12 2005-02-04 19:35:38 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -150,6 +150,36 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "INSERT INTO {$forum_webtag}_BANNED (IPADDRESS) ";
     $sql.= "SELECT IP FROM {$forum_webtag}_BANNED_IP";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Post approval by moderator. We're just going to auto approve
+    // the existing posts
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD APPROVED DATETIME AFTER STATUS";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL AFTER APPROVED";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE {$forum_webtag}_POST SET APPROVED = NOW(), APPROVED_BY = 0 WHERE 1";
 
     if (!$result = db_query($sql, $db_install)) {
 

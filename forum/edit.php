@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.158 2005-02-04 00:21:51 decoyduck Exp $ */
+/* $Id: edit.php,v 1.159 2005-02-04 19:35:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -126,7 +126,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     html_draw_top();
 
-    echo "<h1 style=\"width: 99%\">{$lang['editmessage']}</h1>\n";
+    echo "<h1>{$lang['editmessage']}</h1>\n";
     echo "<br />\n";
 
     echo "<table class=\"posthead\" width=\"720\">\n";
@@ -149,7 +149,7 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
 
     html_draw_top();
 
-    echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+    echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
     echo "<br />\n";
 
     echo "<table class=\"posthead\" width=\"720\">\n";
@@ -457,7 +457,7 @@ if (isset($_POST['preview'])) {
 
     if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator($t_fid)) {
 
-        echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+        echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
         echo "<br />\n";
 
         echo "<table class=\"posthead\" width=\"720\">\n";
@@ -513,7 +513,7 @@ if (isset($_POST['preview'])) {
             echo "  //-->\n";
             echo "</script>\n";
 
-            echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+            echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
             echo "<br />\n";
 
             echo "<table class=\"posthead\" width=\"720\">\n";
@@ -589,7 +589,7 @@ if (isset($_POST['preview'])) {
 
             if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator($t_fid)) {
 
-                echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+                echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
                 echo "<br />\n";
 
                 echo "<table class=\"posthead\" width=\"720\">\n";
@@ -707,7 +707,7 @@ if (isset($_POST['preview'])) {
     }
 }
 
-echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
 echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo form_input_hidden('webtag', $webtag), "\n";
 
@@ -786,25 +786,20 @@ if ($emot_prev != "") {
 
     echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">\n";
-    echo "      <div style=\"float:left\">&nbsp;{$lang['emoticons']}:</div>\n";
+    echo "    <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
-        echo "      <div style=\"float:right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "</div>\n";
-        echo "    </td>\n";
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "</td>\n";
         echo "  </tr>\n";
-
         echo "  <tr>\n";
-        echo "    <td colspan=\"2\">\n";
-        echo $emot_prev;
+        echo "    <td colspan=\"2\">{$emot_prev}</td>\n";
 
     }else {
 
-        echo "      <div style=\"float:right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "</div>\n";
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "</td>\n";
     }
 
-    echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 }
@@ -825,7 +820,7 @@ if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
     echo $tools->toolbar(false, form_submit("submit", $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "class=\"post_content\" tabindex=\"1\"")."\n";
 
 if ($post->isDiff() && $fix_html) {
 
@@ -868,21 +863,17 @@ if ($allow_sig == true) {
 
     echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">\n";
-    echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
+    echo "    <td class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
+    echo "    <td class=\"subhead\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), "</td>\n";
 
     $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 
-        echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
-        echo "    </td>\n";
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "</td>\n";
         echo "  </tr>\n";
-
         echo "  <tr>\n";
-        echo "    <td colspan=\"2\">\n";
-
-        echo $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+        echo "    <td colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" class=\"signature_content\""), "</td>\n";
 
         echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
@@ -893,11 +884,10 @@ if ($allow_sig == true) {
 
     }else {
 
-        echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
-        echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "</td>\n";
+        echo "    ", form_input_hidden("t_sig", $t_sig), "\n";
     }
 
-    echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 }

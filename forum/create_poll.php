@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.140 2005-01-27 22:58:14 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.141 2005-02-04 19:35:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -935,38 +935,37 @@ if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
 if ($allow_sig == true) {
 
-        echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+        echo "<br /><br />\n";
+        echo "<table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "  <tr>\n";
-        echo "    <td class=\"subhead\">\n";
-        echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
+        echo "    <td class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
 
         $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
         if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-                echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
-                echo "    </td>\n";
-                echo "  </tr>\n";
 
-                echo "  <tr>\n";
-                echo "    <td colspan=\"2\">\n";
+            echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td colspan=\"2\">\n";
 
-                echo $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+            echo $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" class=\"signature_content\"")."\n";
 
-                echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+            if ($sig->isDiff() && $fix_html && !$fetched_sig) {
 
-                if ($sig->isDiff() && $fix_html && !$fetched_sig) {
-                        echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-                }
+                echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+            }
 
-        } else {
-                echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
-                echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
-                echo "      ".form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+        }else {
+
+            echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
+            echo "    ", form_input_hidden("t_sig", $t_sig), "\n";
+
         }
 
-        echo "    </td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
+        echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 
 }
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.235 2005-01-27 22:58:14 decoyduck Exp $ */
+/* $Id: post.php,v 1.236 2005-02-04 19:35:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -638,7 +638,7 @@ if (!isset($t_fid)) {
     $t_fid = 1;
 }
 
-if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "style=\"width: 190px\"")) {
+if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, "class=\"post_folder_dropdown\"")) {
 
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
@@ -649,7 +649,7 @@ if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", 
 
 html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
 
-echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
+echo "<h1>".$lang['postmessage']."</h1>\n";
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 
@@ -766,7 +766,7 @@ if ($newthread) {
     echo "<h2>{$lang['folder']}:</h2>\n";
     echo "$folder_dropdown\n";
     echo "<h2>{$lang['threadtitle']}:</h2>\n";
-    echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, "style=\"width: 190px\"")."\n";
+    echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, "class=\"post_thread_title\"")."\n";
 
     echo form_input_hidden("t_newthread", "Y")."\n";
     echo "<br />\n";
@@ -794,7 +794,7 @@ echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true
 echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0))."<br />\n";
 
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
-echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onclick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br /><br />\n";
+echo form_input_text("t_to_uid_others", "", 0, 0, "class=\"post_to_others\" onclick=\"checkToRadio(".($newthread ? 1 : 2).")\"")."<br /><br />\n";
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 
@@ -821,22 +821,20 @@ if ($emot_prev != "") {
         echo "<br />\n";
         echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "  <tr>\n";
-        echo "    <td class=\"subhead\">\n";
-        echo "      <div style=\"float:left\">&nbsp;{$lang['emoticons']}:</div>\n";
+        echo "    <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
 
         if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-                echo "      <div style=\"float:right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "</div>\n";
-                echo "    </td>\n";
-                echo "  </tr>\n";
 
-                echo "  <tr>\n";
-                echo "    <td colspan=\"2\">\n";
-                echo $emot_prev;
-        } else {
-                echo "      <div style=\"float:right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "</div>\n";
+            echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td colspan=\"2\">{$emot_prev}</td>\n";
+
+        }else {
+
+            echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
         }
 
-        echo "    </td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
 }
@@ -858,7 +856,7 @@ if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
         echo $tools->toolbar(false, form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "class=\"post_content\" tabindex=\"1\"")."\n";
 
 if ($post->isDiff() && $fix_html) {
 
@@ -901,38 +899,32 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && (perm_check_folder_p
 
 if ($allow_sig == true) {
 
-        echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
+
+    $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+
+    if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
+
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "&nbsp;</td>\n";
+        echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td class=\"subhead\">\n";
-        echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
+        echo "    <td colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" class=\"signature_content\""), "</td>\n";
+        echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 
-        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
-
-        if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-                echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
-                echo "    </td>\n";
-                echo "  </tr>\n";
-
-                echo "  <tr>\n";
-                echo "    <td colspan=\"2\">\n";
-
-                echo $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
-
-                echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
-
-                if ($sig->isDiff() && $fix_html && !$fetched_sig) {
-                        echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-                }
-
-        } else {
-                echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
-                echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
+        if ($sig->isDiff() && $fix_html && !$fetched_sig) {
+            echo $tools->compare_original("t_sig", $sig->getOriginalContent());
         }
 
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
+    }else {
 
+        echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
+        echo "    ", form_input_hidden("t_sig", $t_sig), "\n";
+    }
+
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
 
 echo "</td></tr>\n";

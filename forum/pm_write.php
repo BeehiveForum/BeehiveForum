@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.100 2005-01-26 21:33:16 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.101 2005-02-04 19:35:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -569,7 +569,7 @@ echo "        <tr>\n";
 echo "          <td><h2>{$lang['subject']}:</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, "style=\"width: 190px\""), "</td>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, "class=\"thread_title\""), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td><h2>{$lang['to']}:</h2></td>\n";
@@ -580,9 +580,9 @@ if ($friends_array = pm_user_get_friends()) {
     echo "        <tr>\n";
     echo "          <td>\n";
     echo "            ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
-    echo "            ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "style=\"width: 190px\" onclick=\"checkToRadio(0)\""), "<br />\n";
+    echo "            ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "class=\"to_uid_dropdown\" onclick=\"checkToRadio(0)\""), "<br />\n";
     echo "            ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
-    echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" style=\"width: 190px\" onclick=\"checkToRadio(1)\""), "\n";
+    echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" class=\"recipient_dropdown\" onclick=\"checkToRadio(1)\""), "\n";
     echo "          </td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
@@ -592,7 +592,7 @@ if ($friends_array = pm_user_get_friends()) {
 }else {
 
     echo "        <tr>\n";
-    echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" style=\"width: 190px\""), "</td>\n";
+    echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" class=\"recipient_dropdown\""), "</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
     echo "          <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"addRecipient()\""), "&nbsp;&nbsp;</td>\n";
@@ -629,31 +629,33 @@ $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
-                echo "        <tr>\n";
-                echo "          <td>&nbsp;</td>\n";
-                echo "        </tr>\n";
-                echo "        <tr>\n";
-        echo "          <td><table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-        echo "            <tr>\n";
-        echo "              <td class=\"subhead\">\n";
-        echo "                <div style=\"float:left\">&nbsp;{$lang['emoticons']}:</div>\n";
 
-        if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-                echo "                <div style=\"float:right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "</div>\n";
-                echo "              </td>\n";
-                echo "            </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td>&nbsp;</td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td>\n";
+    echo "            <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "              <tr>\n";
+    echo "                <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
 
-                echo "            <tr>\n";
-                echo "              <td colspan=\"2\">\n";
-                echo $emot_prev;
-        } else {
-                echo "                <div style=\"float:right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "</div>\n";
-        }
+    if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
+        echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "&nbsp;</td>\n";
         echo "              </td>\n";
         echo "            </tr>\n";
-        echo "          </table></td>\n";
-                echo "        </tr>\n";
+        echo "            <tr>\n";
+        echo "              <td colspan=\"2\">{$emot_prev}</td>\n";
+
+    }else {
+
+        echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "&nbsp;</td>\n";
+    }
+
+    echo "              </tr>\n";
+    echo "            </table>\n";
+    echo "          </td>\n";
+    echo "        </tr>\n";
 }
 
 echo "      </table>\n";
@@ -672,7 +674,7 @@ if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
         echo $tools->toolbar(false, form_submit('submit', $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "class=\"post_content\" tabindex=\"1\"")."\n";
 
 echo "          </td>\n";
 echo "        </tr>\n";

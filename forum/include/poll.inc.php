@@ -170,7 +170,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         
     if ($in_list) {
           
-      if ((!isset($userpolldata['VOTE']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
+      if ((!isset($userpolldata['VOTE']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) && ($poll['CLOSES'] == 0 || $poll['CLOSES'] > gmmktime())) {
       
         for ($i = 0; $i < 5; $i++) {
         
@@ -248,7 +248,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       $polldata['CONTENT'].= "        <tr>\n";
       $polldata['CONTENT'].= "          <td class=\"postbody\">";
       
-      if ($totalvotes == 0 && ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0)) {
+      if ($totalvotes == 0 && ($poll['CLOSES'] <= gmmktime() && $poll['CLOSES'] != 0)) {
       
         $polldata['CONTENT'].= "Nobody voted.";
         
@@ -256,7 +256,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       
         $polldata['CONTENT'].= "Nobody has voted.";
       
-      }elseif ($totalvotes == 1 && ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0)) {
+      }elseif ($totalvotes == 1 && ($poll['CLOSES'] <= gmmktime() && $poll['CLOSES'] != 0)) {
       
         $polldata['CONTENT'].= "1 person voted.";
         
@@ -266,7 +266,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         
       }else {
       
-        if ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0) {
+        if ($poll['CLOSES'] <= gmmktime() && $poll['CLOSES'] != 0) {
       
           $polldata['CONTENT'].= $totalvotes. " people voted.";
           
@@ -284,7 +284,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
       $polldata['CONTENT'].= "        </tr>\n";
       
-      if ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0) {
+      if (($poll['CLOSES'] <= gmmktime()) && $poll['CLOSES'] != 0) {
       
         $polldata['CONTENT'].= "        <tr>\n";
         $polldata['CONTENT'].= "          <td class=\"postbody\">Poll has ended.</td>\n";
@@ -454,15 +454,19 @@ function poll_close($tid)
 
     $db_poll_close = db_connect();
 
-    $sql = "select FROM_UID from ". forum_table("POST"). " where TID = $tid ";
-    $sql.= "and PID = 1 and FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
-    
+    $sql = "select FROM_UID from ". forum_table("POST"). " where TID = $tid and PID = 1";
     $result = db_query($sql, $db_poll_close);
     
     if (db_num_rows($result) > 0) {
     
-      $sql = "update low_priority ". forum_table("POLL"). " set CLOSES = NOW() where TID = $tid";
-      $result = db_query($sql, $db_poll_close);
+      $polldata = db_fetch_array($result);
+    
+      if($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()) {
+    
+        $sql = "update ". forum_table("POLL"). " set CLOSES = FROM_UNIXTIME(". gmmktime(). ") where TID = $tid";
+        $result = db_query($sql, $db_poll_close);
+        
+      }
       
     }
     

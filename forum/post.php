@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.144 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: post.php,v 1.145 2004-01-16 20:11:11 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -411,6 +411,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     }else {
 
+        $new_pid = 0;
+        
         if ($newthread) {
 
             $t_tid  = 0;

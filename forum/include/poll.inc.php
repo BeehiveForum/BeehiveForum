@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.82 2004-01-27 21:34:04 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.83 2004-01-27 21:42:13 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -1209,18 +1209,21 @@ function poll_confirm_close($tid)
     $preview_fuser = user_get($preview_message['FROM_UID']);
     $preview_message['FLOGON'] = $preview_fuser['LOGON'];
     $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
+    
+    $threaddata = thread_get($tid);    
+
+    // Check if the user is viewing signatures.
+    $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
     echo "<h2>{$lang['pollconfirmclose']}</h2>\n";
 
-    poll_display($tid, $preview_message, 0, 0, false);
+    poll_display($tid, $threaddata['LENGTH'], 1, false, false, false, true, $show_sigs, true);
 
-    echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
+    echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_self\">";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
-    echo form_submit("pollclose", $lang['endpoll']);
-    echo "&nbsp;".form_submit("cancel", $lang['cancel']);
+    echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
     echo "</form>\n";
-
 }
 
 function poll_close($tid)

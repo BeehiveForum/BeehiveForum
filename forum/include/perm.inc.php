@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.29 2004-05-23 15:20:27 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.30 2004-05-24 18:01:37 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -475,7 +475,7 @@ function perm_get_user_folder_perms($uid, $fid)
     return array('STATUS' => 0);
 }
 
-function perm_add_user_folder_perms($uid, $fid, $perm)
+function perm_add_user_folder_perms($uid, $gid, $fid, $perm)
 {
     $db_perm_add_user_folder_perms = db_connect();
 
@@ -485,19 +485,10 @@ function perm_add_user_folder_perms($uid, $fid, $perm)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}GROUPS (AUTO_GROUP) VALUES (1)";
-
-    if ($result = db_query($sql, $db_perm_add_user_folder_perms)) {
-
-        $new_gid = db_insert_id($db_perm_add_user_folder_perms);
+    if (!perm_is_group($gid) && perm_user_in_group($uid, $gid)) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_PERMS (GID, FID, PERM) ";
-        $sql.= "VALUES ('$new_gid', '$fid', '$perm')";
-
-        $result = db_query($sql, $db_perm_add_user_folder_perms);
-
-        $sql = "INSERT INTO {$table_data['PREFIX']}GROUP_USERS (GID, UID) ";
-        $sql.= "VALUES ('$new_gid', '$uid')";
+        $sql.= "VALUES ('$gid', '$fid', '$perm')";
 
         return db_query($sql, $db_perm_add_user_folder_perms);
     }

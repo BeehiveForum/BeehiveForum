@@ -364,7 +364,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         echo "</td></tr>\n";
 
-        if (($in_list && $limit_text) || $is_poll) {
+        if (($in_list && $limit_text != false) || $is_poll) {
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
             if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
 

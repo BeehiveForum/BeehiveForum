@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.87 2003-08-07 16:06:14 hodcroftcj Exp $ */
+/* $Id: threads.inc.php,v 1.88 2003-08-07 16:52:21 hodcroftcj Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -500,7 +500,8 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
-    $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, THREAD.length - USER_THREAD.last_read AS T_LENGTH, ";
+    $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
+    $sql .= "THREAD.length - IF (USER_THREAD.last_read, USER_THREAD.last_read, 0) AS T_LENGTH, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
@@ -520,7 +521,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
     $sql .= "AND NOT ((USER_THREAD.INTEREST <=> -1) OR (USER_FOLDER.INTEREST <=> -1)) ";
     $sql .= "GROUP BY THREAD.tid ";
-    $sql .= "ORDER BY THREAD.sticky DESC, T_LENGTH DESC, THREAD.modified DESC ";
+    $sql .= "ORDER BY T_LENGTH DESC, THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);

@@ -335,7 +335,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if (is_array($attachments)) {
 
-                echo "<p><b>Attachments:</b><br>\n";
+                echo "<b>Attachments:</b><br>\n";
 
                 for ($i = 0; $i < sizeof($attachments); $i++) {
 
@@ -366,9 +366,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "\">". $attachments[$i]['filename']. "</a><br />";
 
                 }
-
-                echo "</p>\n";
-
             }
 
             echo "</td></tr>\n";

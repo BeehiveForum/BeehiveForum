@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.29 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.30 2004-03-13 00:00:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -43,14 +43,17 @@ include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 include_once("./include/user_rel.inc.php");
 
-if(!bh_session_check()){
+if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
-if(bh_session_get_value('UID') == 0) {
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
+
+if (bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.31 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.32 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -43,11 +43,15 @@ include_once("./include/session.inc.php");
 
 if (!isset($show_links)) $show_links = true;
 
-if(!bh_session_check()){
-    $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+if (!$user_sess = bh_session_check()) {
+
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    exit;
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 if (!$show_links) {
     html_draw_top();
@@ -58,7 +62,7 @@ if (!$show_links) {
 
 $folders = links_folders_get(perm_is_moderator());
 
-if(bh_session_get_value('UID') == 0) {
+if (bh_session_get_value('UID') == 0) {
     html_guest_error();
         exit;
 }
@@ -95,7 +99,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     $uri = $HTTP_POST_VARS['uri'];
     $name = $HTTP_POST_VARS['name'];
     $description = $HTTP_POST_VARS['description'];
-    if (!preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\](){}<>]|\S[^\s;,.?\"'[\](){}<>])*)?)/i", $HTTP_POST_VARS['uri'])) {
+    if (!preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $HTTP_POST_VARS['uri'])) {
         $error = $lang['notvalidURI'];
     }
     if ($name == "") $error = $lang['mustspecifyname'];

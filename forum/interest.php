@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.23 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: interest.php,v 1.24 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
@@ -36,17 +36,15 @@ include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 
-if (!bh_session_check()) {
+if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-        $uri = "./index.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
-    }else {
-        $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
-    }
-
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 if (bh_session_get_value('UID') == 0) {
     html_guest_error();

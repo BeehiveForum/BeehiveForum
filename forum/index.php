@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.59 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: index.php,v 1.60 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -133,7 +133,7 @@ if (bh_session_check()) {
 
             echo "<frame src=\"", urldecode($HTTP_GET_VARS['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-        }elseif(isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+        }elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
             echo "<frame src=\"discussion.php?webtag=$webtag&msg=", $HTTP_GET_VARS['msg'], "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
@@ -160,7 +160,7 @@ if (bh_session_check()) {
 
             echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-        }elseif(isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+        }elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
             echo "<frame src=\"./logon.php?webtag=$webtag&final_uri=". urlencode("./discussion.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 

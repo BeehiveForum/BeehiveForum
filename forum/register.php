@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.65 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: register.php,v 1.66 2004-03-13 00:00:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -44,7 +44,7 @@ include_once("./include/user.inc.php");
 
 // Where are we going after we've logged on?
 
-if(isset($HTTP_GET_VARS['final_uri'])) {
+if (isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }
 
@@ -65,7 +65,7 @@ if (!isset($default_language)) $default_language = "en";
 $valid = true;
 $error_html = "";
 
-if(isset($HTTP_POST_VARS['submit'])) {
+if (isset($HTTP_POST_VARS['submit'])) {
 
   if (strlen(trim($HTTP_POST_VARS['logon'])) > 0) {
 
@@ -262,7 +262,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
             array_unshift($username_array, $logon);
 
-            if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+            if (isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
               array_unshift($password_array, $passw);
               array_unshift($passhash_array, $passh);
             }else {

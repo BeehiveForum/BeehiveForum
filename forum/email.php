@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.30 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: email.php,v 1.31 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -40,24 +40,29 @@ include_once("./include/lang.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if(!bh_session_check()){
+if (!$user_sess = bh_session_check()) {
+
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
-if(bh_session_get_value('UID') == 0) {
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
+
+if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
 
-if(isset($HTTP_POST_VARS['cancel'])){
+if (isset($HTTP_POST_VARS['cancel'])) {
     $uri = "./user_profile.php?webtag=$webtag&uid=". $HTTP_POST_VARS['t_to_uid'];
     header_redirect($uri);
 }
 
 if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
     $to_uid = $HTTP_GET_VARS['uid'];
-}else if(isset($HTTP_POST_VARS['t_to_uid'])){
+}else if (isset($HTTP_POST_VARS['t_to_uid'])) {
     $to_uid = $HTTP_POST_VARS['t_to_uid'];
 }else {
   html_draw_top();

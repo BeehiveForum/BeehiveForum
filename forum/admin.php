@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.31 2004-03-12 18:46:49 decoyduck Exp $ */
+/* $Id: admin.php,v 1.32 2004-03-13 00:00:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -37,14 +37,17 @@ include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/session.inc.php");
 
-if (!bh_session_check()) {
+if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
-if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
+
+if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";

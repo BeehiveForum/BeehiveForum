@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.75 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.76 2004-03-13 00:00:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -43,12 +43,17 @@ include_once("./include/poll.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 
-if(!bh_session_check()){
+if (!$user_sess = bh_session_check()) {
+
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
-if(bh_session_get_value('UID') == 0) {
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
+
+if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
@@ -172,7 +177,7 @@ if ($valid) {
     }
 
     if (isset($t_sig)) {
-        if($t_sig_html == "Y") {
+        if ($t_sig_html == "Y") {
             $t_sig = fix_html($t_sig);
         }
     }
@@ -184,7 +189,7 @@ if ($valid) {
     }
 
     if (isset($t_sig)) {
-        if($t_sig_html == "Y") {
+        if ($t_sig_html == "Y") {
           $t_sig = _stripslashes($t_sig);
         }
     }
@@ -255,11 +260,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     if (strlen($t_message_text) > 0) {
 
-      if($t_message_html != "Y") $t_message_text = make_html($t_message_text);
+      if ($t_message_html != "Y") $t_message_text = make_html($t_message_text);
 
       if ($t_sig) {
 
-        if($t_sig_html != "Y") $t_sig = make_html($t_sig);
+        if ($t_sig_html != "Y") $t_sig = make_html($t_sig);
         $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
 
       }
@@ -401,7 +406,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   if (strlen($t_message_text) > 0) {
 
-    if($t_message_html != "Y") {
+    if ($t_message_html != "Y") {
       $polldata['CONTENT'] = make_html($t_message_text);
     }else{
       $polldata['CONTENT'] = _stripslashes($t_message_text);
@@ -423,19 +428,19 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   }
 }
 
-if(isset($error_html)) echo $error_html. "\n";
+if (isset($error_html)) echo $error_html. "\n";
 
 ?>
 <form name="f_poll" action="create_poll.php?webtag=$webtag" method="post" target="_self">
 <?php
 
-if(isset($HTTP_POST_VARS['t_dedupe'])) {
+if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);
 }else{
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
-if(!isset($t_sig) || !$t_sig) {
+if (!isset($t_sig) || !$t_sig) {
     $has_sig = user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
 }else{
     $has_sig = true;
@@ -447,7 +452,7 @@ if (isset($t_message_html) && $t_message_html != "Y") {
 
 if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
     $t_fid = $HTTP_GET_VARS['fid'];
-}elseif(isset($HTTP_POST_VARS['t_fid']) && is_numeric($HTTP_POST_VARS['t_fid'])) {
+}elseif (isset($HTTP_POST_VARS['t_fid']) && is_numeric($HTTP_POST_VARS['t_fid'])) {
     $t_fid = $HTTP_POST_VARS['t_fid'];
 }else {
     $t_fid = 1;

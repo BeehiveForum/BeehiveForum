@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.33 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: logout.php,v 1.34 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,9 +41,15 @@ include_once("./include/lang.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if (!bh_session_check()) {
-    header_redirect("./logon.php?webtag=$webtag");
+if (!$user_sess = bh_session_check()) {
+
+    $uri = "./logon.php?webtag=$webtag");
+    header_redirect($uri);
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 // Disable caching when showing logon page
 include_once("./include/header.inc.php");
@@ -85,7 +91,7 @@ echo "<table class=\"subhead\" width=\"100%\"><tr><td align=\"left\">\n";
 echo "{$lang['logout']}:\n";
 echo "</td></tr></table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
-if($logged_off){
+if ($logged_off) {
     echo "<tr><td>{$lang['youhaveloggedout']}</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>";
 } else {

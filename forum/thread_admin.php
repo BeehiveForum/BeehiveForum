@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.35 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.36 2004-03-13 00:00:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,16 +47,15 @@ include_once("./include/thread.inc.php");
 if (!isset($allow_post_editing)) $allow_post_editing = true;
 if (!isset($post_edit_time)) $post_edit_time = 0;
 
-if (!bh_session_check()) {
+if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-      $uri = "./index.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
-    }else {
-      $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
-    }
-
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 // Check to see if we are requesting a thread rename or move first.
 
@@ -151,7 +150,7 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
         thread_set_sticky($HTTP_POST_VARS['t_tid'], true, $sticky_until);
         admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 25);
 
-    }else if(isset($HTTP_POST_VARS['nonsticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    }else if (isset($HTTP_POST_VARS['nonsticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
 
         thread_set_sticky($HTTP_POST_VARS['t_tid'], false);
         admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 26);

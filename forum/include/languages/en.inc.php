@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.79 2004-03-06 13:45:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.80 2004-03-13 00:00:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -143,6 +143,7 @@ $lang['polls'] = "Polls";
 $lang['user'] = "User";
 $lang['enabled'] = "Enabled";
 $lang['disabled'] = "Disabled";
+$lang['options'] = "Options";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 
@@ -699,6 +700,7 @@ $lang['showonlyage'] = "Show only age to others";
 $lang['showageanddob'] = "Show to others";
 $lang['browseanonymously'] = "Browse forum anonymously";
 $lang['showforumstats'] = "Show forum stats at bottom of message pane";
+$lang['usewordfilter'] = "Enable word filter.";
 $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";

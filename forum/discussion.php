@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.36 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.37 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -37,10 +37,15 @@ include_once("./include/header.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 
-if (!bh_session_check()) {
+if (!$user_sess = bh_session_check()) {
+
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 if (!isset($forum_name)) $forum_name = "A Beehive Forum";
 

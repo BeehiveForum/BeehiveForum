@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.114 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: messages.php,v 1.115 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,17 +50,15 @@ include_once("./include/user.inc.php");
 if (!isset($allow_post_editing)) $allow_post_editing = true;
 if (!isset($post_edit_time)) $post_edit_time = 0;
 
-if (!bh_session_check()) {
+if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-      $uri = "./index.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
-    }else {
-      $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
-    }
-
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -75,7 +73,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 if (!isset($tid) || !is_numeric($tid)) $tid = 1;
 if (!isset($pid) || !is_numeric($pid)) $pid = 1;
 
-if(!thread_can_view($tid, bh_session_get_value('UID'))) {
+if (!thread_can_view($tid, bh_session_get_value('UID'))) {
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
@@ -212,14 +210,14 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
 
-if($msg_count > 0) {
+if ($msg_count > 0) {
 
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
 
         if (isset($message['RELATIONSHIP'])) {
 
-          if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
+          if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
             $message['CONTENT'] = message_get_content($tid, $message['PID']);
           }else {
             $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
@@ -231,7 +229,7 @@ if($msg_count > 0) {
 
         }
 
-        if($threaddata['POLL_FLAG'] == 'Y') {
+        if ($threaddata['POLL_FLAG'] == 'Y') {
 
           if ($message['PID'] == 1) {
 
@@ -256,7 +254,7 @@ if($msg_count > 0) {
 
 unset($messages, $message);
 
-if($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0){
+if ($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0) {
     messages_update_read($tid, $last_pid, bh_session_get_value('UID'));
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.176 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.177 2004-03-13 00:00:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -46,14 +46,15 @@ include_once("./include/thread.inc.php");
 include_once("./include/threads.inc.php");
 include_once("./include/word_filter.inc.php");
 
-if(!bh_session_check()){
+if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
-header_no_cache();
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 // Check that required variables are set
 if (bh_session_get_value('UID') == 0) {
@@ -124,7 +125,7 @@ html_draw_top();
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "function change_current_thread (thread_id) {\n";
-echo "    if (current_thread > 0){\n";
+echo "    if (current_thread > 0) {\n";
 echo "        document[\"t\" + current_thread].src = \"", style_image('bullet.png'), "\";\n";
 echo "    }\n";
 echo "    document[\"t\" + thread_id].src = \"", style_image('current_thread.png'), "\";\n";

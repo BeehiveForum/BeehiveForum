@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.2 2004-04-21 21:02:54 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.3 2004-04-24 18:42:29 decoyduck Exp $ */
 
 header('Content-type: text/xml');
 
@@ -37,9 +37,9 @@ include_once("./include/forum.inc.php");
 // Fetch the forum settings
 $forum_settings = get_forum_settings();
 
-require_once("./include/db.inc.php");
-require_once("./include/messages.inc.php");
-require_once("./include/threads.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/threads.inc.php");
 
 // Get the forum location accounting for forward slashes, multiple slashes, etc.
 

@@ -21,12 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.27 2004-04-17 17:39:30 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.28 2004-04-24 18:42:46 decoyduck Exp $ */
+
+include_once("./include/forum.inc.php");
 
 function update_stats()
 {
     $db_update_stats = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $num_sessions = get_num_sessions();
@@ -69,17 +71,17 @@ function update_stats()
 function get_num_sessions()
 {
     $get_num_sessions = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return 0;
 
     $sessions_array = array();
-    
+
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
     $sql = "SELECT UID FROM SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
     $sql.= "AND FID = '{$table_data['FID']}'";
-    
+
     $result = db_query($sql, $get_num_sessions);
 
     while ($row = db_fetch_array($result)) {
@@ -95,9 +97,9 @@ function get_active_users()
 
     $stats = array('GUESTS' => 0, 'NUSERS' => 0,
                    'AUSERS' => 0, 'USERS'  => array());
-    
+
     if (!$table_data = get_table_prefix()) return $stats;
-    
+
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
     $uid = bh_session_get_value('UID');
@@ -138,7 +140,7 @@ function get_active_users()
 function get_thread_count()
 {
     $db_get_thread_count = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$table_data['PREFIX']}THREAD THREAD";
@@ -155,7 +157,7 @@ function get_thread_count()
 function get_post_count()
 {
     $db_get_post_count = db_connect();
-    
+
     $table_data = get_table_prefix();
 
     $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_data['PREFIX']}POST POST";
@@ -172,7 +174,7 @@ function get_post_count()
 function get_recent_post_count()
 {
     $db_get_post_count = db_connect();
-    
+
     $table_data = get_table_prefix();
 
     $post_stamp = time() - HOUR_IN_SECONDS;
@@ -193,7 +195,7 @@ function get_recent_post_count()
 function get_longest_thread()
 {
     $db_get_longest_thread = db_connect();
-    
+
     $table_data = get_table_prefix();
 
     $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
@@ -212,7 +214,7 @@ function get_longest_thread()
 function get_most_users()
 {
     $db_get_most_users = db_connect();
-    
+
     $table_data = get_table_prefix();
 
     $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE ";
@@ -231,7 +233,7 @@ function get_most_users()
 function get_most_posts()
 {
     $db_get_most_posts = db_connect();
-    
+
     $table_data = get_table_prefix();
 
     $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
@@ -250,7 +252,7 @@ function get_most_posts()
 function get_newest_user()
 {
     $db_get_newest_user = db_connect();
-    
+
     $table_data = get_table_prefix();
 
     $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE ";

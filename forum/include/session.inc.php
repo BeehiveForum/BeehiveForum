@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.102 2004-04-17 20:06:59 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.103 2004-04-24 18:42:46 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
+include_once("./include/forum.inc.php");
 include_once("./include/ip.inc.php");
 include_once("./include/stats.inc.php");
 include_once("./include/user.inc.php");
@@ -37,7 +38,7 @@ function bh_session_check()
 
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
-    
+
     $forum_settings = get_forum_settings();
 
     // Current server time.
@@ -74,11 +75,11 @@ function bh_session_check()
 	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = 0) ";
 	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 	}
-	
+
 	$result = db_query($sql, $db_bh_session_check);
 
 	if (db_num_rows($result) > 0) {
-	    
+
 	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
 
 	    if (isset($user_sess['UID']) && $user_sess['UID'] == 0) {
@@ -109,28 +110,28 @@ function bh_session_check()
 
                 // If the user is not logged into the current forum, we should
                 // do that now for them.
-                    
+
                 if ($user_sess['FID'] <> $table_data['FID']) {
-                    
+
                     $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash' ";
                     $sql.= "AND FID = '{$table_data['FID']}'";
 
 		    $result = db_query($sql, $db_bh_session_check);
-                    
+
                     $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
                     $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
                     $sql.= "'$ipaddress', NOW())";
-                        
+
                     $result = db_query($sql, $db_bh_session_check);
-                            
+
                     $sql = "DELETE FROM VISITOR_LOG WHERE FID = '{$table_data['FID']}' ";
                     $sql.= "AND UID = '{$user_sess['UID']}'";
 
                     $result = db_query($sql, $db_bh_session_check);
-    
+
                     $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
                     $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
-    
+
                     $result = db_query($sql, $db_bh_session_check);
                 }
 
@@ -138,18 +139,18 @@ function bh_session_check()
                 // then 5 minutes we should update it.
 
                 if ($current_time - $user_sess['TIME'] > 60) {
-                        
+
                     // Update the session
-                        
+
                     $sql = "UPDATE SESSIONS ";
                     $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), FID = '{$table_data['FID']}' ";
                     $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
-  
+
                     db_query($sql, $db_bh_session_check);
 
-  		    // Delete expires sessions 			
+  		    // Delete expires sessions
 
-                    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));  			
+                    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
 
                     $sql = "DELETE FROM SESSIONS WHERE ";
                     $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
@@ -190,11 +191,11 @@ function bh_session_init($uid)
 {
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
-    
+
     if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
-    
+
     $forum_settings = get_forum_settings();
-    
+
     $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
 
     // Delete expires sessions
@@ -222,7 +223,7 @@ function bh_session_init($uid)
 
     $sql = "INSERT INTO VISITOR_LOG (FID, UID, LAST_LOGON) ";
     $sql.= "VALUES ('{$table_data['FID']}', '$uid', NOW())";
-    
+
     $result = db_query($sql, $db_bh_session_init);
 
     bh_setcookie('bh_sess_hash', $user_hash);
@@ -233,13 +234,13 @@ function bh_session_init($uid)
 function bh_session_end()
 {
     $db_bh_session_end = db_connect();
-    
+
     if (isset($_COOKIE['bh_sess_hash'])) {
 
         $user_hash = $_COOKIE['bh_sess_hash'];
 
         // Delete the session for the current MD5 hash
-        
+
         $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
         $result = db_query($sql, $db_bh_session_end);
     }
@@ -264,11 +265,11 @@ function get_request_uri()
             $request_uri.= "{$key}=". rawurlencode($value). "&";
         }
     }
-    
+
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.
     // Any suggestions are welcome on how to handle this better.
-    
+
     $request_uri = preg_replace("/\/\/+/", "/", $request_uri);
     return $request_uri;
 }

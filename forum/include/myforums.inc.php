@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.27 2004-04-23 22:12:17 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.28 2004-04-24 18:42:45 decoyduck Exp $ */
 
-require_once("./include/html.inc.php");
-require_once("./include/threads.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/threads.inc.php");
 
 function get_forum_list()
 {

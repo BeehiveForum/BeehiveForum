@@ -21,12 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.15 2004-04-23 22:12:11 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.16 2004-04-24 18:42:30 decoyduck Exp $ */
 
-// header.inc.php:
-// Functions for manipulating the HTTP header
-// These must be called BEFORE anything is output to the page - including blank lines outside PHP
-// tags in include files, etc.
+include_once("./include/lang.inc.php");
 
 function header_no_cache()
 {

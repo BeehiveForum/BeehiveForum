@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.14 2004-04-17 18:41:02 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.15 2004-04-24 18:42:47 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/session.inc.php");
@@ -33,52 +33,52 @@ include_once("./include/session.inc.php");
 function load_wordfilter()
 {
     if (bh_session_get_value('USE_WORD_FILTER') != "Y") return array();
-    
+
     $db_load_wordfilter = db_connect();
-    
+
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return array();
-    
+
     $filter_array = array();
-    
+
     // Should we include the admin filters?
-    
+
     if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('admin_force_word_filter', 'Y', false)) {
 
         $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
         $result = db_query($sql, $db_load_wordfilter);
-        
+
         while ($row = db_fetch_array($result)) {
             $filter_array[] = $row;
         }
     }
-    
+
     // Get the user's own filter.
-    
+
     $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
     $result = db_query($sql, $db_load_wordfilter);
-        
+
     while ($row = db_fetch_array($result)) {
         $filter_array[] = $row;
-    }    
+    }
 
     $pattern_array = array();
     $replace_array = array();
-    
+
     foreach ($filter_array as $filter) {
-   
+
         if ($filter['FILTER_OPTION'] == 1) {
-            $pattern_array[] = "/\b(". preg_quote(_stripslashes($filter['MATCH_TEXT']), "/"). ")\b/i";        
+            $pattern_array[] = "/\b(". preg_quote(_stripslashes($filter['MATCH_TEXT']), "/"). ")\b/i";
         }elseif ($filter['FILTER_OPTION'] == 2) {
             if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $filter['MATCH_TEXT'])) {
                 $filter['MATCH_TEXT'] = "/{$filter['MATCH_TEXT']}/i";
             }
-            $pattern_array[] = _stripslashes($filter['MATCH_TEXT']);        
+            $pattern_array[] = _stripslashes($filter['MATCH_TEXT']);
         }else {
             $pattern_array[] = "/". preg_quote(_stripslashes($filter['MATCH_TEXT']), "/"). "/i";
         }
-            
+
         if (strlen(trim($filter['REPLACE_TEXT'])) > 0) {
             $replace_array[] = _stripslashes($filter['REPLACE_TEXT']);
         }else {
@@ -89,7 +89,7 @@ function load_wordfilter()
             }
         }
     }
-    
+
     return array("pattern_array" => $pattern_array,
                  "replace_array" => $replace_array);
 }
@@ -103,15 +103,15 @@ function apply_wordfilter($content)
         if (!is_array($user_wordfilter)) return $content;
         if (!isset($user_wordfilter['pattern_array'])) return $content;
         if (!isset($user_wordfilter['replace_array'])) return $content;
-    
+
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
-    
+
         if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
             return $new_content;
         }
     }
-        
+
     return $content;
 }
 

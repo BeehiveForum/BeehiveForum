@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.114 2004-02-02 20:47:06 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.115 2004-02-03 13:59:43 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -448,7 +448,11 @@ function user_get_post_count($uid)
 
     $db_user_get_count = db_connect();
 
-    $sql = "select COUNT(FROM_UID) AS COUNT FROM " . forum_table("POST") . " where FROM_UID = $uid";
+    $sql = "SELECT COUNT(POST.FROM_UID) AS COUNT FROM " . forum_table("POST") . " ";
+    $sql.= "LEFT JOIN ". forum_table("POST_CONTENT"). " POST_CONTENT ";
+    $sql.= "ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
+    $sql.= "WHERE POST.FROM_UID = '$uid' AND POST_CONTENT.CONTENT IS NOT NULL";
+    
     $result = db_query($sql, $db_user_get_count);
 
     $post_count = db_fetch_array($result);

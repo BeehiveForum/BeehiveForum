@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.91 2003-08-30 00:16:21 decoyduck Exp $ */
+/* $Id: logon.php,v 1.92 2003-09-06 18:18:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -289,9 +289,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       }
 
-    }else if(isset($luid) && $luid == -2){ // User is banned - everybody hide
+    }else if(isset($luid) && $luid == -2) { // User is banned - everybody hide
 
-        header("HTTP/1.0 500 Internal Server Error");
+        if (!strstr(php_sapi_name(), 'cgi')) {
+            header("HTTP/1.0 500 Internal Server Error");
+        }else {
+            echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
+        }
         exit;
 
     }else {

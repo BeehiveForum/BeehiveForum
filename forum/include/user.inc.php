@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.93 2003-09-04 15:53:43 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.94 2003-09-06 18:18:48 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -208,7 +208,11 @@ function user_check_logon($uid, $logon, $md5pass)
         if (db_num_rows($result)) {
             $user_status = db_fetch_array($result);
 	    if (isset($user_status['STATUS']) && $user_status['STATUS'] & USER_PERM_SPLAT) {
-                header("HTTP/1.0 500 Internal Server Error");
+                if (!strstr(php_sapi_name(), 'cgi')) {
+                    header("HTTP/1.0 500 Internal Server Error");
+                }else {
+                    echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
+                }
                 exit;
 	    }
 	}else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.38 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: attachments.php,v 1.39 2003-09-06 18:18:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -33,7 +33,7 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
+if (!bh_session_check()) {
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
@@ -44,11 +44,13 @@ require_once("./include/config.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/lang.inc.php");
 
-// If attachments are disabled, generate a 404 error and stop.
+// If attachments are disabled then no need to go any further.
 
 if (!$attachments_enabled) {
-  header("HTTP/1.0 404 File Not Found");
-  exit;
+    html_draw_top();
+    echo "<h1>Attachments have been disabled by the forum owner.</h1>\n";
+    html_draw_bottom();
+    exit;
 }
 
 if (!isset($HTTP_GET_VARS['aid'])) {
@@ -59,9 +61,9 @@ if (!isset($HTTP_GET_VARS['aid'])) {
   exit;
 }
 
-if(bh_session_get_value('UID') == 0) {
-        html_guest_error();
-        exit;
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/form.inc.php");

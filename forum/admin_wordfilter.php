@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.24 2004-03-14 18:33:41 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.25 2004-03-14 19:38:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -89,6 +89,11 @@ if (isset($HTTP_POST_VARS['save'])) {
     }
 
     $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
+
+}elseif (isset($HTTP_POST_VARS['delete'])) {
+
+    list($id) = array_keys($HTTP_POST_VARS['delete']);
+    admin_delete_word_filter($id);
 }
 
 $word_filter_array = admin_get_word_filter();
@@ -101,7 +106,7 @@ echo "<p>{$lang['wordfilterexp_1']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 echo "<div class=\"postbody\">\n";
 echo "  <form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php?webtag={$webtag['WEBTAG']}\">\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";
 echo "          <table class=\"box\" width=\"100%\">\n";
@@ -110,17 +115,19 @@ echo "              <td class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"100%\">\n";
 echo "                  <tr>\n";
 echo "                    <td class=\"subhead\">&nbsp;</td>\n";
-echo "                    <td class=\"subhead\">Matched Text</td>\n";
-echo "                    <td class=\"subhead\">Replacement Text</td>\n";
-echo "                    <td class=\"subhead\">&nbsp;PREG Expr.</td>\n";
+echo "                    <td class=\"subhead\">&nbsp;Matched Text</td>\n";
+echo "                    <td class=\"subhead\">&nbsp;Replacement Text</td>\n";
+echo "                    <td class=\"subhead\">&nbsp;PREG</td>\n";
+echo "                    <td class=\"subhead\" width=\"75\">&nbsp;</td>\n";
 echo "                  </tr>\n";
 
-foreach ($word_filter_array as $word_filter) {
+foreach ($word_filter_array as $key => $word_filter) {
     echo "                  <tr>\n";
     echo "                    <td>&nbsp;</td>\n";
-    echo "                    <td>", form_input_text("match[]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
-    echo "                    <td>", form_input_text("replace[]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
-    echo "                    <td align=\"center\">", form_checkbox("preg_expr[]", "Y", "", $word_filter['PREG_EXPR']), "</td>\n";
+    echo "                    <td>", form_input_text("match[$key]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
+    echo "                    <td>", form_input_text("replace[$key]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
+    echo "                    <td align=\"center\">", form_checkbox("preg_expr[$key]", "Y", "", $word_filter['PREG_EXPR']), "</td>\n";
+    echo "                    <td align=\"center\">", form_submit("delete[$key]", $lang['delete']), "</td>\n";
     echo "                  </tr>\n";    
 }
 

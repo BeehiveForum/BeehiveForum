@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.66 2004-06-03 08:54:45 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.67 2004-06-03 10:24:46 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -453,7 +453,7 @@ function folder_search_dropdown()
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
     $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_STATUS, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
@@ -479,7 +479,7 @@ function folder_search_dropdown()
                 $fid_array[] = $row['FID'];
                 $title_array[] = $row['TITLE'];
 
-            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_STATUS'] & $access_allowed) == $access_allowed)) {
+            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) == $access_allowed)) {
 
                 $fid_array[] = $row['FID'];
                 $title_array[] = $row['TITLE'];

@@ -68,66 +68,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         bh_session_init($luid);
 
-        if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
-
-          if (is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
-
-            $usernames = $HTTP_COOKIE_VARS['bh_remember_user'];
-            $passwords = $HTTP_COOKIE_VARS['bh_remember_password'];
-
-          }else {
-
-            $usernames = array(0 => $HTTP_COOKIE_VARS['bh_remember_user']);
-            $passwords = array(0 => $HTTP_COOKIE_VARS['bh_remember_password']);
-
-          }
-
-        }else {
-
-          $usernames = array();
-          $passwords = array();
-
-        }
-
-        if (!is_array($usernames)) $usernames = array();
-        if (!is_array($passwords)) $passwords = array();
-
-        if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
-
-          array_unshift($usernames, $HTTP_POST_VARS['logon']);
-
-          if(isset($HTTP_POST_VARS['remember_user'])) {
-            array_unshift($passwords, $HTTP_POST_VARS['password']);
-          }else {
-            array_unshift($passwords, str_repeat(chr(255), 4));
-          }
-
-        }else {
-
-          if (($key = array_search($HTTP_POST_VARS['logon'], $usernames)) !== false) {
-
-            array_splice($usernames, $key, 1);
-            array_splice($passwords, $key, 1);
-
-            array_unshift($usernames, $HTTP_POST_VARS['logon']);
-
-            if(isset($HTTP_POST_VARS['remember_user'])) {
-              array_unshift($passwords, $HTTP_POST_VARS['password']);
-            }else {
-              array_unshift($passwords, str_repeat(chr(255), 4));
-            }
-
-          }
-
-        }
-
-        for ($i = 0; $i < sizeof($usernames); $i++) {
-
-          setcookie("bh_remember_user[$i]", _stripslashes($usernames[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-          setcookie("bh_remember_password[$i]", _stripslashes($passwords[$i]), time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-
-        }
-
       }
 
       if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.52 2005-01-23 23:50:54 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.53 2005-01-24 22:19:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -409,11 +409,6 @@ function admin_get_ban_data()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $ip_address_preg = "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
-    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
-    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
-    $ip_address_preg.= "([01]?\d\d?|2[0-4]\d|25[0-4])\.";
-
     $ipaddress_array = array();
     $logon_array     = array();
     $nickname_array  = array();
@@ -426,7 +421,7 @@ function admin_get_ban_data()
 
     while ($ban_data_array = db_fetch_array($result)) {
 
-        if (isset($ban_data_array['IPADDRESS']) && preg_match("/^$ip_address_preg$/", $ban_data_array['IPADDRESS'])) {
+        if (isset($ban_data_array['IPADDRESS']) && strlen(trim($ban_data_array['IPADDRESS'])) > 0) {
 
             $ipaddress_array[] = $ban_data_array['IPADDRESS'];
         }
@@ -438,12 +433,12 @@ function admin_get_ban_data()
 
         if (isset($ban_data_array['NICKNAME']) && strlen(trim($ban_data_array['NICKNAME'])) > 0) {
 
-            $nickname_array[] = $ban_data_array['LOGON'];
+            $nickname_array[] = $ban_data_array['NICKNAME'];
         }
 
         if (isset($ban_data_array['EMAIL']) && strlen(trim($ban_data_array['EMAIL'])) > 0) {
 
-            $email_array[] = $email_array['LOGON'];
+            $email_array[] = $ban_data_array['EMAIL'];
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.208 2005-01-23 23:50:55 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.209 2005-01-24 22:20:17 decoyduck Exp $ */
 
 // International English language file
 
@@ -451,6 +451,12 @@ $lang['bannedipaddresses'] = "Banned IP Addresses";
 $lang['bannedlogons'] = "Banned Logons";
 $lang['bannednicknames'] = "Banned Nicknames";
 $lang['bannedemailaddresses'] = "Banned Email Addresses";
+$lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>\n";
+$lang['ipaddressisalreadybanned'] = "That IP Address is already banned. Check your wildcards to see if they already match it.";
+$lang['logonisalreadybanned'] = "That Logon is already banned. Check your wildcards to see if they already match it.";
+$lang['nicknameisalreadybanned'] = "That Nickname is already banned. Check your wildcards to see if they already match it.";
+$lang['emailisalreadybanned'] = "That Email Address is already banned. Check your wildcards to see if they already match it.";
+$lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 
@@ -948,6 +954,9 @@ $lang['confirmpasswd'] = "Confirm Password";
 $lang['passwdsdonotmatch'] = "Passwords do not match!";
 $lang['nicknamerequired'] = "Nickname is required!";
 $lang['emailaddressrequired'] = "Email address is required!";
+$lang['logonnotpermitted'] = "Logon not permitted. Choose another!";
+$lang['nicknamenotpermitted'] = "Nickname not permitted. Choose another!";
+$lang['emailaddressnotpermitted'] = "Email Address not permitted. Choose another!";
 $lang['relationshipsupdated'] = "Relationships Updated";
 $lang['relationshipupdatefailed'] = "Relationship updated failed!";
 $lang['jan'] = "January";

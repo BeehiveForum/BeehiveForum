@@ -21,8 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.150 2005-01-21 21:25:51 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.151 2005-01-24 22:19:56 decoyduck Exp $ */
 
+include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
 include_once("./include/forum.inc.php");
@@ -36,8 +37,6 @@ include_once("./include/user.inc.php");
 
 function bh_session_check()
 {
-    ip_check();
-
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
 
@@ -64,7 +63,7 @@ function bh_session_check()
 
             $fid = $table_data['FID'];
 
-            $sql = "SELECT USER.LOGON, USER.PASSWD, ";
+            $sql = "SELECT USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, ";
             $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
             $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
             $sql.= "SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
@@ -81,7 +80,7 @@ function bh_session_check()
 
             $fid = 0;
 
-            $sql = "SELECT USER.LOGON, USER.PASSWD, SESSIONS.UID, ";
+            $sql = "SELECT USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, ";
             $sql.= "UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
             $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
             $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
@@ -93,6 +92,11 @@ function bh_session_check()
         if (db_num_rows($result) > 0) {
 
             $user_sess = db_fetch_array($result);
+
+            // check to see if the user's credentials match the
+            // ban data set up on this forum.
+
+            ban_check($user_sess);
 
             // Add preference settings
 
@@ -430,13 +434,14 @@ function get_request_uri($rawurlencode = false)
 
 function bh_session_get_post_page_prefs()
 {
-        $page_prefs = bh_session_get_value('POST_PAGE');
+    $page_prefs = bh_session_get_value('POST_PAGE');
 
-        if (!($page_prefs > 0)) {
-                $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
-        }
+    if (!($page_prefs > 0)) {
 
-        return $page_prefs;
+        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
+    }
+
+    return $page_prefs;
 }
 
 ?>

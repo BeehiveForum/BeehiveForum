@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.39 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.40 2005-01-24 22:19:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,6 +41,7 @@ include_once("./include/forum.inc.php");
 // Fetch the forum settings
 $forum_settings = get_forum_settings();
 
+include_once("./include/banned.inc.php");
 include_once("./include/fixhtml.inc.php");
 include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
@@ -94,6 +95,12 @@ if (isset($_POST['submit'])) {
 
         $user_info['NICKNAME'] = trim(_stripslashes($_POST['nickname']));
 
+        if (nickname_is_banned($user_info['NICKNAME'])) {
+
+            $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+            $valid = false;
+        }
+
     }else {
 
         $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
@@ -103,6 +110,12 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['email']) && strlen(trim(_stripslashes($_POST['email']))) > 0) {
 
         $user_info['EMAIL'] = trim(_stripslashes($_POST['email']));
+
+        if (email_is_banned($user_info['EMAIL'])) {
+
+            $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
+            $valid = false;
+        }
 
     }else {
 

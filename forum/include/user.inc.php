@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.221 2005-01-23 23:50:55 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.222 2005-01-24 22:19:59 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -220,20 +220,33 @@ function user_logon($logon, $password, $md5hash = false)
     return -1;
 }
 
-function user_get($uid, $hash = false)
+function user_get($uid)
 {
     $db_user_get = db_connect();
 
     if (!is_numeric($uid)) return false;
 
-    $table_data = get_table_prefix();
+    $sql = "SELECT * FROM USER WHERE UID = '$uid' ";
+    $result = db_query($sql, $db_user_get);
 
-    $sql = "SELECT * FROM USER USER WHERE USER.UID = $uid ";
+    if (db_num_rows($result) > 0) {
 
-    if ($hash) {
-        $hash = addslashes($hash);
-        $sql.= "AND PASSWD = '$hash'";
+        $user_get = db_fetch_array($result);
+        return $user_get;
     }
+
+    return false;
+}
+
+function user_get_password($uid, $passwd_hash)
+{
+    $db_user_get = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    if (!is_md5($passwd_hash)) return false;
+
+    $sql = "SELECT * FROM USER WHERE UID = '$uid' ";
+    $sql.= "AND PASSWD = '$passwd_hash'";
 
     $result = db_query($sql, $db_user_get);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.98 2005-01-07 00:49:01 decoyduck Exp $ */
+/* $Id: register.php,v 1.99 2005-01-24 22:19:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,6 +41,7 @@ include_once("./include/forum.inc.php");
 // Fetch the forum settings
 $forum_settings = get_forum_settings();
 
+include_once("./include/banned.inc.php");
 include_once("./include/constants.inc.php");
 include_once("./include/fixhtml.inc.php");
 include_once("./include/form.inc.php");
@@ -182,6 +183,12 @@ if (isset($_POST['submit'])) {
             $valid = false;
         }
 
+        if (logon_is_banned($new_user['LOGON'])) {
+
+            $error_html.= "<h2>{$lang['logonnotpermitted']}</h2>\n";
+            $valid = false;
+        }
+
     }else {
 
         $error_html.= "<h2>{$lang['usernamerequired']}</h2>\n";
@@ -227,6 +234,12 @@ if (isset($_POST['submit'])) {
 
         $new_user['NICKNAME'] = trim(_stripslashes($_POST['NICKNAME']));
 
+        if (nickname_is_banned($new_user['NICKNAME'])) {
+
+            $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+            $valid = false;
+        }
+
     }else {
 
         $error_html.= "<h2>{$lang['nicknamerequired']}</h2>\n";
@@ -240,6 +253,12 @@ if (isset($_POST['submit'])) {
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $new_user['EMAIL'])) {
 
             $error = "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
+            $valid = false;
+        }
+
+        if (email_is_banned($new_user['EMAIL'])) {
+
+            $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
             $valid = false;
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.68 2005-03-28 23:11:07 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.69 2005-03-29 18:25:56 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -474,13 +474,16 @@ function perm_get_global_permissions_count()
 
     if (!$table_data = get_table_prefix()) return 0;
 
+    $upft = USER_PERM_FORUM_TOOLS;
+    $upat = USER_PERM_ADMIN_TOOLS;
+
     $sql = "SELECT COUNT(GROUPS.GID) AS PERM_COUNT FROM GROUPS ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & 1024 > 0 ";
-    $sql.= "OR GROUP_PERMS.PERM & 512 > 0) ";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upft > 0 ";
+    $sql.= "OR GROUP_PERMS.PERM & $upat > 0) ";
 
     $result = db_query($sql, $db_perm_get_global_permissions);
     list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -494,12 +497,14 @@ function perm_get_admin_tools_perm_count()
 
     if (!$table_data = get_table_prefix()) return 0;
 
+    $upat = USER_PERM_ADMIN_TOOLS;
+
     $sql = "SELECT COUNT(GROUPS.GID) AS PERM_COUNT FROM GROUPS ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM = 0 AND GROUP_PERMS.PERM & 512 > 0";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upat > 0)";
 
     $result = db_query($sql, $db_perm_get_global_permissions);
     list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -513,12 +518,14 @@ function perm_get_forum_tools_perm_count()
 
     if (!$table_data = get_table_prefix()) return 0;
 
+    $upft = USER_PERM_FORUM_TOOLS;
+
     $sql = "SELECT COUNT(GROUPS.GID) AS PERM_COUNT FROM GROUPS ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM = 0 AND GROUP_PERMS.PERM & 1024 > 0";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & $upft > 0)";
 
     $result = db_query($sql, $db_perm_get_global_permissions);
     list($global_perm_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -1050,6 +1057,69 @@ function perm_group_get_users($gid, $offset = 0)
 
         return array('user_count' => $group_user_count,
                      'user_array' => $group_user_array);
+    }
+
+    return false;
+}
+
+function perm_user_apply_email_confirmation($uid)
+{
+    $db_perm_user_apply_email_confirmation = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $perm = USER_PERM_EMAIL_CONFIRM;
+
+    if ($gid = perm_get_global_user_gid($uid)) {
+
+        $sql = "UPDATE GROUP_PERMS SET PERM = PERM & $perm ";
+        $sql.= "WHERE GID = $gid";
+
+        return db_query($sql, $db_perm_user_cancel_email_confirmation);
+
+    }else {
+
+        $sql = "INSERT INTO GROUPS (FORUM, AUTO_GROUP) VALUES (0, 1)";
+
+        if ($result = db_query($sql, $db_perm_update_user_permissions)) {
+
+            $new_gid = db_insert_id($db_perm_update_user_permissions);
+
+            $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, PERM, FID) ";
+            $sql.= "VALUES ('$new_gid', 0, '$perm', '0')";
+
+            $result = db_query($sql, $db_perm_update_user_permissions);
+
+            $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
+            $sql.= "VALUES ('$new_gid', '$uid')";
+
+            $result = db_query($sql, $db_perm_update_user_permissions);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function perm_user_cancel_email_confirmation($uid)
+{
+    $db_perm_user_cancel_email_confirmation = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $perm = USER_PERM_EMAIL_CONFIRM;
+
+    if ($gid = perm_get_global_user_gid($uid)) {
+
+        $sql = "UPDATE GROUP_PERMS SET PERM = PERM ^ $perm ";
+        $sql.= "WHERE GID = $gid";
+
+        return db_query($sql, $db_perm_user_cancel_email_confirmation);
     }
 
     return false;

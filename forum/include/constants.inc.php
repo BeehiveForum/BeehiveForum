@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.57 2005-03-28 19:43:34 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.58 2005-03-29 18:25:55 decoyduck Exp $ */
 
 // Beehive Version
 
@@ -59,10 +59,17 @@ define("USER_PERM_POST_APPROVAL", 16384);
 define("USER_PERM_LINKS_MODERATE", 32768);
 define("USER_PERM_EMAIL_CONFIRM", 65536);
 
-// OLD VALUES - PRE-BH-0.5
+// OLD VALUES - PRE-BH-0.5 - DO NOT USE!
 
-//define("PERM_CHECK_WORKER",USER_PERM_WORKER|USER_PERM_SOLDIER|USER_PERM_QUEEN);
-//define("PERM_CHECK_SOLDIER",USER_PERM_SOLDIER|USER_PERM_QUEEN);
+define("USER_PERM_SPLAT",1);
+define("USER_PERM_WASP",2);
+define("USER_PERM_WORM",4);
+define("USER_PERM_WORKER",8);
+define("USER_PERM_SOLDIER",16);
+define("USER_PERM_QUEEN",32);
+
+define("PERM_CHECK_WORKER", USER_PERM_WORKER|USER_PERM_SOLDIER|USER_PERM_QUEEN);
+define("PERM_CHECK_SOLDIER", USER_PERM_SOLDIER|USER_PERM_QUEEN);
 
 // Constants for relationship system
 

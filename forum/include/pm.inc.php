@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.119 2005-03-28 19:43:35 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.120 2005-03-29 18:25:56 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -392,10 +392,12 @@ function pm_user_get_friends()
 
     $uid = bh_session_get_value('UID');
 
+    $user_rel = USER_FRIEND;
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "WHERE USER_PEER.UID = $uid AND USER_PEER.RELATIONSHIP & 1 = 1 ";
+    $sql.= "WHERE USER_PEER.UID = $uid AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_relationships);

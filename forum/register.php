@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.109 2005-03-28 19:43:33 decoyduck Exp $ */
+/* $Id: register.php,v 1.110 2005-03-29 18:25:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -383,7 +383,7 @@ if (isset($_POST['submit'])) {
             if (forum_get_setting('require_email_confirmation', 'Y')) {
 
                 $email_confirm_result = email_send_user_confirmation($new_uid);
-                perm_update_user_permissions($new_uid, USER_PERM_EMAIL_CONFIRM);
+                perm_user_apply_email_confirmation($new_uid);
             }
 
             bh_session_init($new_uid);

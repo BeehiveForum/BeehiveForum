@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.89 2005-03-28 19:43:34 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.90 2005-03-29 18:25:55 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -394,6 +394,7 @@ function email_send_user_confirmation($tuid)
         $message.= "{$lang['confirmemail_2']} $forum_name.\n";
         $message.= "{$lang['confirmemail_3']}\n";
         $message.= "{$lang['confirmemail_4']}\n";
+        $message.= "{$lang['confirmemail_5']}\n\n";
 
         $message.= "http://{$_SERVER['HTTP_HOST']}";
 
@@ -401,11 +402,11 @@ function email_send_user_confirmation($tuid)
             $message.= dirname($_SERVER['PHP_SELF']);
         }
 
-        $message.= "/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}";
-        $message.= "{$lang['confirmemail_5']}\n\n";
-        $message.= "{$lang['confirmemail_6']}\n";
-        $message.= "{$lang['confirmemail_7']} $forum_email\n";
-        $message.= "{$lang['confirmemail_8']}\n";
+        $message.= "/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}\n\n";
+        $message.= "{$lang['confirmemail_6']}\n\n";
+        $message.= "{$lang['confirmemail_7']} $forum_name\n";
+        $message.= "{$lang['confirmemail_8']} $forum_email\n";
+        $message.= "{$lang['confirmemail_9']}";
 
         $header = "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.251 2005-03-28 23:11:06 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.252 2005-03-29 18:25:56 decoyduck Exp $ */
 
 // International English language file
 
@@ -407,6 +407,12 @@ $lang['successfullyaddedgroup'] = "Successfully added group";
 $lang['successfullydeletedgroup'] = "Successfully deleted group";
 
 $lang['usercanaccessforumtools'] = "User can access forum tools and can create, delete and edit forums";
+
+$lang['emailconfirmationrequired'] = "Email confirmation required";
+$lang['cancelemailconfirmation'] = "Cancel email confirmation and allow user to start posting";
+$lang['resendconfirmationemail'] = "Resend confirmation email to user";
+$lang['changeemailaddress'] = "Change email address";
+$lang['donothing'] = "Do nothing";
 
 $lang['userhasglobalaccesstoadmintools'] = "User has global access to admin tools";
 $lang['usercanaccessadmintools'] = "User has access to forum admin tools";
@@ -809,13 +815,13 @@ $lang['emailconfirmationrequired'] = "Email confirmation required";
 
 $lang['confirmemail_1'] = "Hello";
 $lang['confirmemail_2'] = "You recently created a new user account on ";
-$lang['confirmemail_2'] = "Before you can start posting we need to confirm your email address.";
-$lang['confirmemail_3'] = "Don't worry this is quite easy. All you need to do is click the link";
-$lang['confirmemail_4'] = "below (or copy and paste it into your browser):";
-$lang['confirmemail_5'] = "Once confirmation is complete you may login and start posting immediatly.";
-$lang['confirmemail_6'] = "If you did not create a user account on ";
-$lang['confirmemail_7'] = "please accept our apologies and forward this email to";
-$lang['confirmemail_8'] = "so that the source of it may be investigated.";
+$lang['confirmemail_3'] = "Before you can start posting we need to confirm your email address.";
+$lang['confirmemail_4'] = "Don't worry this is quite easy. All you need to do is click the link";
+$lang['confirmemail_5'] = "below (or copy and paste it into your browser):";
+$lang['confirmemail_6'] = "Once confirmation is complete you may login and start posting immediatly.";
+$lang['confirmemail_7'] = "If you did not create a user account on ";
+$lang['confirmemail_8'] = "please accept our apologies and forward this email to";
+$lang['confirmemail_9'] = "so that the source of it may be investigated.";
 
 // Error handler (errorhandler.inc.php) --------------------------------
 
@@ -838,6 +844,11 @@ $lang['forgotpasswd'] = "Forgot password";
 $lang['forgotpasswdexp'] = "If you have forgotten your password, you can request to have it reset by entering your logon name below. Instructions on how to reset your password will be sent to your registered email address.";
 $lang['couldnotsendpasswordreminder'] = "Could not send password reminder. Please contact the forum owner.";
 $lang['request'] = "Request";
+
+// Email confirmation (confirm_email.php) ------------------------------
+
+$lang['emailconfirmation'] = "Email confirmation";
+$lang['emailconfirmationcomplete'] = "Thank you for confirming your email address. You may now login and start posting immediatly.";
 
 // Frameset things (index.php) -----------------------------------------
 

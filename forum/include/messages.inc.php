@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.215 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.216 2004-01-15 16:51:29 tribalonline Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -357,9 +357,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if($in_list && $msg_count > 0) {
 
             if ($is_preview) {
-                echo "<a href=\"./messages.php/?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
+                echo "<a href=\"./?msg=$tid.". $message['PID']. "\" target=\"_blank\">$tid.". $message['PID']. "</a>";
             }else {
-                echo "<a href=\"./messages.php/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
+                echo "<a href=\"./?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             }
 
             if($message['PID'] > 1) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.62 2003-09-03 17:20:26 decoyduck Exp $ */
+/* $Id: edit.php,v 1.63 2003-09-09 16:42:10 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -60,6 +60,7 @@ require_once("./include/attachments.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/htmltools.inc.php");
 
 if (isset($HTTP_GET_VARS['msg'])) {
 
@@ -73,27 +74,62 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
 }else {
 
-  html_draw_top();
-  echo "<h1>{$lang['invalidop']}</h1>\n";
-  echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
-  html_draw_bottom();
-  exit;
+	html_draw_top();
+
+	echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+	echo "<br />\n";
+
+	echo "<table class=\"posthead\" width=\"720\">\n";
+	echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+	echo "<tr><td>\n";
+
+	echo "<h2>".$lang['nomessagespecifiedforedit']."</h2>\n";
+	echo "</td></tr>\n";
+
+	echo "<tr><td align=\"center\">\n";
+	echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+	echo "</td></tr>\n";
+	echo "</table>\n";
+
+	html_draw_bottom();
+	exit;
 
 }
 
 if (!is_numeric($tid) || !is_numeric($pid)) {
 
-  html_draw_top();
-  echo "<h1>{$lang['invalidop']}</h1>\n";
-  echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
-  html_draw_bottom();
-  exit;
+	html_draw_top();
+
+	echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+	echo "<br />\n";
+
+	echo "<table class=\"posthead\" width=\"720\">\n";
+	echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+	echo "<tr><td>\n";
+
+	echo "<h2>".$lang['nomessagespecifiedforedit']."</h2>\n";
+	echo "</td></tr>\n";
+
+	echo "<tr><td align=\"center\">\n";
+	echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+	echo "</td></tr>\n";
+	echo "</table>\n";
+
+	html_draw_bottom();
+	exit;
 
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
-    html_poll_edit_error();
-    exit;
+    $uri = "./edit_poll.php";
+
+    if (isset($HTTP_GET_VARS['msg'])) {
+        $uri.= "?msg=". $HTTP_GET_VARS['msg'];
+    }elseif (isset($HTTP_POST_VARS['t_msg'])) {
+        $uri.= "?msg=". $HTTP_POST_VARS['t_msg'];
+    }
+
+    header_redirect($uri);
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
@@ -114,7 +150,34 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
-html_draw_top("openprofile.js", "basetarget=_blank");
+html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprofile.js", "htmltools.js");
+
+$t_content = "";
+$edit_type = "text";
+$t_post_html = false;
+if (isset($HTTP_POST_VARS['edit_type'])) {
+	$edit_type = $HTTP_POST_VARS['edit_type'];
+}
+if (isset($HTTP_POST_VARS['b_edit_html'])) {
+	$edit_type = "html";
+} else if (isset($HTTP_POST_VARS['b_edit_text'])) {
+	$edit_type = "text";
+}
+if ($edit_type == "html") {
+	$t_post_html = true;
+	if (isset($HTTP_POST_VARS['t_post_html'])) {
+		$t_post_html = $HTTP_POST_VARS['t_post_html'];
+		if ($t_post_html == "enabled_auto") {
+			$t_post_html = true;
+			$auto_linebreaks = true;
+		} else if ($t_post_html == "enabled") {
+			$t_post_html = true;
+			$auto_linebreaks = false;
+		} else {
+			$t_post_html = false;
+		}
+	}
+}
 
 if (isset($HTTP_POST_VARS['preview'])) {
 
@@ -134,17 +197,9 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
-        $t_post_html = "Y";
-        $edit_html = true;
-    }else {
-        $t_post_html = "N";
-        $edit_html = false;
-    }
-
     if (isset($HTTP_POST_VARS['t_content']) && strlen(trim($HTTP_POST_VARS['t_content'])) > 0) {
         $t_content = $HTTP_POST_VARS['t_content'];
-        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && $t_post_html == "Y") {
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && $t_post_html == true) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }
@@ -165,15 +220,27 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
     if ($valid) {
 
-        if ($t_post_html == "Y") {
-            $t_content = fix_html($t_content);
+        if ($t_post_html == true && $edit_type == "html") {
+			$old_t_content = $t_content;
+			$t_content = fix_html($t_content);
+
+			if ($auto_linebreaks == true) {
+				$t_content = add_paragraphs($t_content);
+			}
+			$preview_message['CONTENT'] = $t_content;
+			$t_content = str_replace("&", "&amp;", $t_content);
+
+			if ($old_t_content != $t_content) {
+				$content_html_changes = true;
+			}
+/*            $t_content = fix_html($t_content);
             $preview_message['CONTENT'] = $t_content;
-            $t_content = str_replace("&", "&amp;", $t_content);
+            $t_content = str_replace("&", "&amp;", $t_content);*/
         }else{
             $t_content = make_html($t_content);
             $preview_message['CONTENT'] = $t_content;
             $t_content = strip_tags($t_content);
-            $t_content = ereg_replace("\n+", "\n", $t_content);
+          //  $t_content = ereg_replace("\n+", "\n", $t_content);
         }
 
         $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
@@ -216,17 +283,9 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
-        $t_post_html = "Y";
-        $edit_html = true;
-    }else {
-        $t_post_html = "N";
-        $edit_html = false;
-    }
-
     if (isset($HTTP_POST_VARS['t_content']) && strlen(trim($HTTP_POST_VARS['t_content'])) > 0) {
         $t_content = $HTTP_POST_VARS['t_content'];
-        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && $t_post_html == "Y") {
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && $t_post_html == true) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
         }
@@ -246,14 +305,38 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
-        edit_refuse($tid, $pid);
+		echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+		echo "<br />\n";
+
+		echo "<table class=\"posthead\" width=\"720\">\n";
+		echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+		echo "<tr><td>\n";
+
+		echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
+		echo "</td></tr>\n";
+
+		echo "<tr><td align=\"center\">\n";
+		echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+		echo "</td></tr>\n";
+		echo "</table>\n";
+
+		html_draw_bottom();
         exit;
     }
 
     if ($valid) {
 
-        if ($t_post_html == "Y") {
-            $t_content = fix_html($t_content);
+        if ($t_post_html == true) {
+			$old_t_content = _stripslashes($t_content);
+			$t_content = fix_html($t_content);
+
+			if ($auto_linebreaks == true) {
+				$t_content = add_paragraphs($t_content);
+			}
+
+			if ($old_t_content != $t_content) {
+				$content_html_changes = true;
+			}
         }else{
             $t_content = make_html($t_content);
         }
@@ -271,13 +354,23 @@ if (isset($HTTP_POST_VARS['preview'])) {
                 admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
             }
 
-            echo "<div align=\"center\">";
-            echo "<p>{$lang['editappliedtomessage']} $tid.$pid</p>";
-            echo form_quick_button("discussion.php", $lang['continue'], "msg", "$tid.$pid");
-            echo "</div>";
+			echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+			echo "<br />\n";
 
-            html_draw_bottom();
-            exit;
+			echo "<table class=\"posthead\" width=\"720\">\n";
+			echo "<tr><td class=\"subhead\">".$lang['editmessage']."</td></tr>\n";
+			echo "<tr><td>\n";
+
+			echo "<h2>".$lang['editappliedtomessage']."</h2>\n";
+			echo "</td></tr>\n";
+
+			echo "<tr><td align=\"center\">\n";
+			echo form_quick_button("discussion.php", $lang['continue'], "msg", "$tid.$pid");
+			echo "</td></tr>\n";
+			echo "</table>\n";
+
+			html_draw_bottom();
+			exit;
 
         }else{
             $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
@@ -293,8 +386,23 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
         if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
-            edit_refuse($tid, $pid);
-            exit;
+			echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+			echo "<br />\n";
+
+			echo "<table class=\"posthead\" width=\"720\">\n";
+			echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+			echo "<tr><td>\n";
+
+			echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
+			echo "</td></tr>\n";
+
+			echo "<tr><td align=\"center\">\n";
+			echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+			echo "</td></tr>\n";
+			echo "</table>\n";
+
+			html_draw_bottom();
+			exit;
         }
 
         $preview_message = $editmessage;
@@ -335,12 +443,12 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $preview_message['CONTENT'] = $t_content."<div class=\"sig\">".$t_sig."</div>";
 
         if (!isset($HTTP_POST_VARS['b_edit_html'])) {
-            $t_content = str_replace("\n", "", $t_content);
-            $t_content = str_replace("\r", "", $t_content);
-            $t_content = str_replace("<p>", "\n\n<p>", $t_content);
-            $t_content = str_replace("</p>", "</p>\n", $t_content);
-            $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
-            $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
+
+//			$t_content = trim($t_content);
+//            $t_content = str_replace("<p>", "\n\n<p>", $t_content);
+//            $t_content = str_replace("</p>", "</p>\n", $t_content);
+//            $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
+//            $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
             $t_content = strip_tags($t_content);
         }else{
             $t_content = _htmlentities($t_content);
@@ -352,62 +460,170 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     unset($editmessage);
-    $edit_html = isset($HTTP_POST_VARS['b_edit_html']);
+ //   $t_post_html = isset($HTTP_POST_VARS['b_edit_html']);
 }
 
-echo "<h1>{$lang['editmessage']} $tid.$pid</h1>";
+echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+echo "<br /><form name=\"f_edit\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" method=\"post\" target=\"_self\">\n";
 
-if (isset($error_html)) echo $error_html;
-
-echo "<form name=\"f_edit\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" method=\"post\" target=\"_self\">\n";
-echo "<h2>{$lang['subject']}: ". thread_get_title($tid). "</h2>\n";
-echo form_input_hidden("t_msg", $edit_msg);
-echo form_input_hidden("t_to_uid", $to_uid);
-echo form_input_hidden("t_from_uid", $from_uid);
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table width=\"100%\" border=\"0\" class=\"posthead\">\n";
-echo "        <tr>\n";
-echo "          <td>{$lang['editmessage']}</td>\n";
-echo "        </tr>\n";
-echo "      </table>\n";
-echo "      <table border=\"0\" class=\"posthead\">\n";
-echo "        <tr>\n";
-echo "          <td>". form_textarea("t_content", $t_content, 15, 85). "</td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td>{$lang['signature']}:<br />". form_textarea("t_sig", _htmlentities($t_sig), 5, 85). "</td>\n";
-echo "        </tr>\n";
-echo "      </table>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-echo form_submit('submit', $lang['apply'], 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("preview", $lang['preview']);
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("cancel",  $lang['cancel']);
-
-if ($edit_html) {
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("b_edit_text", $lang['edittext']);
-    echo form_input_hidden("t_post_html", "Y");
-
-} else {
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("b_edit_html", $lang['editHTML']);
-    echo form_input_hidden("t_post_html", "N");
+if (isset($error_html)) {
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>";
+    echo "<tr><td>\n";
+    echo $error_html . "\n";
+    echo "</td></tr>\n";
+    echo "</table>\n";
 }
-
-if ($aid = get_attachment_id($tid, $pid)) {
-    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
-}
-
-echo "</form>";
 
 $threaddata = thread_get($tid);
 
-if ($valid) {
-    echo "<h2>{$lang['messagepreview']}:</h2>";
+if ($valid && isset($HTTP_POST_VARS['preview'])) {
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "<tr><td class=\"subhead\">{$lang['messagepreview']}</td></tr>";
+
+    echo "<tr><td>\n";
     message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
+    echo "</td></tr>\n";
+
+    echo "<tr><td>&nbsp;</td></tr>\n";
+    echo "</table>\n";
 }
+
+echo "<table class=\"posthead\" width=\"720\">\n";
+echo "<tr><td class=\"subhead\" colspan=\"2\">";
+echo $lang['editmessage'];
+echo "</td></tr>\n";
+echo "<tr>\n";
+
+
+// ======================================
+// =========== OPTIONS COLUMN ===========
+echo "<td valign=\"top\" width=\"210\">\n";
+echo "<table class=\"posthead\" width=\"210\">\n";
+echo "<tr><td>\n";
+
+echo "<h2>".$lang['folder'].":</h2>\n";
+echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
+echo "<h2>".$lang['threadtitle'].":</h2>\n";
+echo _stripslashes($threaddata['TITLE'])."\n";
+
+echo form_input_hidden("t_msg", $edit_msg);
+echo form_input_hidden("t_to_uid", $to_uid);
+echo form_input_hidden("t_from_uid", $from_uid);
+
+echo "<h2>".$lang['to'].":</h2>\n";
+echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $preview_message[$to_uid] . ")\" target=\"_self\">";
+echo _stripslashes(format_user_name($preview_message['FLOGON'], $preview_message['FNICK']));
+echo "</a>\n";
+
+echo "</td></tr>\n";
+echo "</table>\n";
+echo "</td>\n";
+// ======================================
+
+
+//echo "<td valign=\"top\" width=\"1\">&nbsp;</td>\n";
+
+
+// ======================================
+// =========== MESSAGE COLUMN ===========
+echo "<td valign=\"top\" width=\"500\">\n";
+echo "<table class=\"posthead\" width=\"500\">\n";
+echo "<tr><td>\n";
+
+echo "<h2>". $lang['message'] .":</h2>\n";
+
+if ($edit_type == "html") {
+	tools_html(form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+}
+
+echo tools_junk()."\n";
+echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
+echo tools_junk()."\n";
+
+echo "\n\n<script language=\"Javascript\">\n";
+echo "  <!--\n";
+echo "    activate_tools();\n";
+echo "  //-->\n";
+echo "</script>\n\n";
+
+/*if ($content_html_changes == true) {
+
+    echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
+    echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
+    echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
+
+    echo form_input_hidden("old_t_content", htmlentities($old_t_content));
+    echo form_input_hidden("current_t_content", "correct");
+
+	echo "<br /><br />\n";
+}*/
+
+if ($edit_type == "html") {
+	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+
+	$tph_radio = 1;
+	if ($t_post_html) {
+		$tph_radio = 3;
+		if (isset($auto_linebreaks) && $auto_linebreaks == true) {
+			$tph_radio = 2;
+		}
+	}
+
+	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"6\"")." \n";
+	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
+	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
+	echo "<br /><br />\n";
+}
+
+echo "<h2>". $lang['messageoptions'] .":</h2>\n";
+
+echo form_submit('submit',$lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
+echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
+echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+
+if ($edit_type == "html") {
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("b_edit_text", $lang['edittext']);
+    echo form_input_hidden("edit_type", "html");
+
+} else {
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("b_edit_html", $lang['editHTML']);
+    echo form_input_hidden("edit_type", "text");
+}
+
+if ($aid = get_attachment_id($tid, $pid)) {
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin($aid, $from_uid);");
+}
+
+
+// ---- SIGNATURE ----
+echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
+
+echo tools_junk()."\n";
+echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\" ".tools_textfield_js())."\n";
+echo tools_junk()."\n";
+
+/*if ($sig_html_changes == true) {
+
+    echo form_radio("sig_code", "correct", $lang['correctedcode'], true, "onClick=\"showSig('correct');\"")."\n";
+    echo form_radio("sig_code", "submit", $lang['submittedcode'], false, "onClick=\"showSig('submit');\"")."\n";
+    echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
+
+    echo form_input_hidden("old_t_sig", htmlentities($old_t_sig));
+    echo form_input_hidden("current_t_sig", "correct");
+}*/
+
+echo "</td></tr>\n";
+echo "</table>";
+echo "</td>\n";
+// ======================================
+
+
+
+echo "</tr>\n";
+echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
+echo "</table>\n";
+echo "</form>";
 
 html_draw_bottom();
 

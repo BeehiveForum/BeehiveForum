@@ -501,7 +501,7 @@ function clean_styles ($style) {
 	return $style;
 }
 
-function add_paragraphs ($html) {
+function add_paragraphs ($html, $base = true, $br_only = false) {
 	$html = str_replace("\r", "", $html);
 
 	$tags = array("table", "div", "pre", "ul", "ol", "object");
@@ -601,7 +601,7 @@ function add_paragraphs ($html) {
 						$tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
 						$tmp[2] = substr($html_a[$i], $close);
 
-						$tmp[1] = add_paragraphs($tmp[1]);
+						$tmp[1] = add_paragraphs($tmp[1], false, preg_match("/\bstyle=[^<>]*>$/i", $tmp[0]));
 
 						$offset = strlen($tmp[0].$tmp[1]);
 
@@ -617,7 +617,7 @@ function add_paragraphs ($html) {
 				$tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
 				$tmp[2] = substr($html_a[$i], $close);
 
-				$tmp[1] = add_paragraphs($tmp[1]);
+				$tmp[1] = add_paragraphs($tmp[1], false, preg_match("/\bstyle=[^<>]*>$/i", $tmp[0]));
 
 				$html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
 			}
@@ -628,29 +628,34 @@ function add_paragraphs ($html) {
 				$return .= $html_a[$i]."\n\n";
 			}
 
-		} else {
+		} else if ($br_only == false) {
 			$html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/i", "$1\n$3", $html_a[$i]);
 			$html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/i", "$1\n\n$2", $html_a[$i]);
 			$html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/i", "</p>\n\n$3", $html_a[$i]);
 
+			$p_open = false;
+
 			$tmp = split("\n", $html_a[$i]);
-			if (count($tmp) > 1) {
+			if ($base == true || count($tmp) > 2) {
+				$p_open = true;
 				if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[0])) {
 					$tmp[0] = "<p>".$tmp[0];
 				}
-				if (!preg_match("/<\/p>$/i", $tmp[count($tmp)-1])) {
-					$tmp[count($tmp)-1] .= "</p>";
-				}
+//				if (!preg_match("/<\/p>$/i", $tmp[count($tmp)-1])) {
+//					$tmp[count($tmp)-1] .= "</p>";
+//				}
 			}
 	//		print_r($tmp);
 	//		echo "<br />\n\n";
 
 			for ($j=0; $j<count($tmp)-1; $j++) {
 				if (preg_match("/<\/p>$/i", $tmp[$j])) {
+					$p_open = false;
 					$tmp[$j+1] = preg_replace("/^<p( [^>]*)?>/i", "", $tmp[$j+1]);
 					$tmp[$j+1] = preg_replace("/<br( [^>]*)?>$/i", "", $tmp[$j+1]);
 					$tmp[$j+1] = preg_replace("/<\/p>$/i", "", $tmp[$j+1]);
 					if (!isset($tmp[$j+2])) break;
+					$p_open = true;
 					if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[$j+2])) {
 						$tmp[$j+2] = "<p>".$tmp[$j+2];
 					}
@@ -659,9 +664,11 @@ function add_paragraphs ($html) {
 					$tmp[$j+1] = preg_replace("/^<p( [^>]*)?>/i", "", $tmp[$j+1]);
 					$tmp[$j+1] = preg_replace("/<br( [^>]*)?>$/i", "", $tmp[$j+1]);
 					$tmp[$j+1] = preg_replace("/<\/p>$/i", "", $tmp[$j+1]);
-					if (preg_match("/^\s*$/", $tmp[$j+1])) {
+					if (preg_match("/^\s*$/", $tmp[$j+1]) && $p_open == true) {
+						$p_open = false;
 						$tmp[$j] .= "</p>";
 						if (!isset($tmp[$j+2])) break;
+						$p_open = true;
 						if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[$j+2])) {
 							$tmp[$j+2] = "<p>".$tmp[$j+2];
 						}
@@ -675,12 +682,24 @@ function add_paragraphs ($html) {
 					$tmp[$j+1] = preg_replace("/<\/p>$/i", "", $tmp[$j+1]);
 				}
 			}
+			if ($p_open == true && !preg_match("/<\/p>$/i", $tmp[$j])) {
+				$tmp[$j] .= "</p>";
+			}
 			$html_a[$i] = implode("\n", $tmp);
 			$html_a[$i] = preg_replace("/(<p( [^>]*)?>)\s*<\/p>/i", "$1&nbsp;</p>", $html_a[$i]);
 
 			if (trim($html_a[$i]) != "") {
 				$return .= $html_a[$i]."\n\n";
 			}
+		} else {
+			$html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/i", "$1\n$3", $html_a[$i]);
+			$html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/i", "$1\n\n$2", $html_a[$i]);
+			$html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/i", "</p>\n\n$3", $html_a[$i]);
+			$html_a[$i] = preg_replace("/(<br( [^>]*)?>)|(<p( [^>]*)?>)|(<\/p( [^>]*)?>)/i", "", $html_a[$i]);
+
+			$html_a[$i] = nl2br($html_a[$i]);
+
+			$return .= $html_a[$i];
 		}
 	}
 

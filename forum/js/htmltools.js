@@ -88,8 +88,8 @@ function get_selection_end () {
 // ------------------------------------
 function add_tag (tag, a, v, enclose) {
 
-	if (document.f_post.t_post_html[0].checked == true) {
-		document.f_post.t_post_html[1].checked = true;
+	if (self.tools_feedback){
+		tools_feedback();
 	}
 
 	var single_tags = {br:true, img:true, hr:true, area:true, embed:true};

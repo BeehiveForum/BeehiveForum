@@ -44,7 +44,7 @@ A                   { background-color: transparent; color: #$text_colour[body];
 .threads            { font-style: normal; font-size: 10pt; background-color: #$elements[threads];
                       margin-top: 4px; margin-right: 4px; margin-bottom: 4px; margin-left: 4px;
                       padding-top: 2px; padding-right: 2px; color: #$text_colour[threads];
-                      padding-bottom: 2px; padding-left: 2px; border: #$text_colour[threads];
+                      padding-bottom: 2px; padding-left: 2px; border: #$text_colour[box];
                       border-style: solid; border-top-width: 1px; border-right-width: 1px;
                       border-bottom-width: 1px; border-left-width: 1px }
 
@@ -66,6 +66,8 @@ A                   { background-color: transparent; color: #$text_colour[body];
 
 .posthead           { background-color: #$elements[threads]; font-size: 10pt; border: none;
                       padding: 0px; color: #$text_colour[threads] }
+
+.posthead A         { background-color: transparent; color: #$text_colour[threads] }
 
 .postbody           { font-size: 10pt; padding-top: 2px; padding-right: 2px; padding-bottom: 2px;
                       padding-left: 2px; border: none }

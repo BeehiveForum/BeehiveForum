@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.22 2003-11-17 16:01:43 decoyduck Exp $ */
+/* $Id: pm.php,v 1.23 2003-11-27 13:29:06 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -67,7 +67,7 @@ if (isset($HTTP_POST_VARS['deletemessages'])) {
 // Archive Messages
 
 if (isset($HTTP_POST_VARS['savemessages'])) {
-    if (is_array($HTTP_POST_VARS['process'])) {
+    if (isset($HTTP_POST_VARS['process']) && is_array($HTTP_POST_VARS['process'])) {
         for ($i = 0; $i < sizeof($HTTP_POST_VARS['process']); $i++) {
             pm_archive_message($HTTP_POST_VARS['process'][$i]);
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.42 2003-11-27 12:00:32 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.43 2003-11-27 13:29:06 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -330,7 +330,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
     $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
 
-    if (!is_numeric($type)) $type = FOLDER_ALLOW_ALL_THREAD;
+    if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
 
     $sql = "SELECT DISTINCT F.FID FROM ".forum_table("FOLDER")." F LEFT JOIN ";
     $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.53 2003-08-24 16:39:45 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.54 2003-08-24 19:45:54 tribalonline Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -164,7 +164,7 @@ function html_draw_top()
 
     foreach($arg_array as $func_args) {
         if (is_dir("./js/") && file_exists("./js/$func_args")) {
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/$func_args\" />\n";
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/$func_args\"></script>\n";
         }
     }
 

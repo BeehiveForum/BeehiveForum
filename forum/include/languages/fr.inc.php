@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.44 2004-03-21 18:58:24 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.45 2004-03-23 02:42:00 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -144,6 +144,7 @@ $lang['user'] = "Utilisateur";
 $lang['enabled'] = "Rendu capable";
 $lang['disabled'] = "Rendu infirme";
 $lang['options'] = "Options";
+$lang['emoticons'] = "Emoticons";
 
 // Admin interface (admin*.php) ----------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.101 2004-03-22 12:58:48 decoyduck Exp $ */
+/* $Id: edit.php,v 1.102 2004-03-23 02:41:58 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -411,42 +411,41 @@ if (isset($HTTP_POST_VARS['preview'])) {
             exit;
 
         }else{
-        
             $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
 
-            $t_content_temp = $t_content;
-            $t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
+			$t_content_temp = $t_content;
+			$t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
 
-            if (count($t_content_temp) > 1) {
+			if (count($t_content_temp) > 1) {
 
-                $t_sig_temp = array_pop($t_content_temp);
-                $t_sig_temp = preg_split("/<\/div>/", $t_sig_temp);
+				$t_sig_temp = array_pop($t_content_temp);
+				$t_sig_temp = preg_split("/<\/div>/", $t_sig_temp);
 
-                $t_sig = "";
+				$t_sig = "";
 
-                for ($i = 0; $i < count($t_sig_temp) - 1; $i++) {
-                    $t_sig.= $t_sig_temp[$i];
-                    if ($i < count($t_sig_temp) - 2 ) {
-                        $t_sig.= "</div>";
-                    }
-                }
+				for ($i = 0; $i < count($t_sig_temp) - 1; $i++) {
+					$t_sig.= $t_sig_temp[$i];
+					if ($i < count($t_sig_temp) - 2 ) {
+						$t_sig.= "</div>";
+					}
+				}
 
-            }else {
-                $t_sig = "";
-            }
+			}else {
+				$t_sig = "";
+			}
 
-            $t_content = "";
+			$t_content = "";
 
-            for ($i = 0; $i < count($t_content_temp); $i++) {
-                $t_content.= $t_content_temp[$i];
-                if ($i < count($t_content_temp) - 1) {
-                    $t_content.= "<div class=\"sig\">";
-                }
-            }
+			for ($i = 0; $i < count($t_content_temp); $i++) {
+				$t_content.= $t_content_temp[$i];
+				if ($i < count($t_content_temp) - 1) {
+					$t_content.= "<div class=\"sig\">";
+				}
+			}
 
-            if (!isset($HTTP_POST_VARS['b_edit_html'])) {
-                $t_content = strip_tags($t_content);
-            }
+			if (!isset($HTTP_POST_VARS['b_edit_html'])) {
+				$t_content = strip_tags($t_content);
+			}
         }
     }
 
@@ -588,7 +587,9 @@ echo form_input_hidden("t_from_uid", $from_uid);
 echo "<h2>".$lang['to'].":</h2>\n";
 echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($from_uid, '{$webtag['WEBTAG']}')\" target=\"_self\">";
 echo _stripslashes(format_user_name($preview_message['FLOGON'], $preview_message['FNICK']));
-echo "</a>\n";
+echo "</a><br />\n";
+
+echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openWindow('display_emoticons?webtag={$webtag['WEBTAG']}&pack=user', 'emoticons', '500', '400')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
 
 echo "</td></tr>\n";
 echo "</table>\n";

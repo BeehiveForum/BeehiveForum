@@ -70,14 +70,20 @@ $emoticon['^.^'] = "happy";
 // End emoticons
 // --------------------------------------
 
+$emoticon_text = array();
+foreach ($emoticon as $k => $v) {
+	$emoticon_text[$v][] = $k;
+}
+
 function emoticons_convert ($content) {
 	global $emoticon;
 
 	if (!is_array($emoticon)) return $content;
 
 	foreach ($emoticon as $k => $v) {
-		$pattern_array[] = "/\B(". preg_quote(_htmlentities($k), "/"). ")\B/i";
-		$replace_array[] = "<span class=\"e_$v\" title=\"$v\"><span>$k</span></span>";
+		$k = _htmlentities($k);
+		$pattern_array[] = "/(\s|^)(". preg_quote($k, "/"). ")(\s|$)/i";
+		$replace_array[] = "\\1<span class=\"e_$v\" title=\"$v\"><span>$k</span></span>\\3";
 	}
 
 	if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {

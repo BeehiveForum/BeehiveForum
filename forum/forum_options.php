@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.19 2004-03-22 12:31:26 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.20 2004-03-23 02:41:59 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -454,7 +454,8 @@ if (isset($key)) {
 
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"250\">{$lang['forumemoticons']}:</td>\n";
+echo "                  <td width=\"250\">{$lang['forumemoticons']} ";
+echo "[<a href=\"javascript:void(0);\" onclick=\"openWindow('display_emoticons?webtag={$webtag['WEBTAG']}', 'emoticons', '500', '400')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
 
 if (_in_array($user_prefs['EMOTICONS'], $available_emots)) {
     $selected_emot = $user_prefs['EMOTICONS'];

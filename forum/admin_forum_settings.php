@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.9 2004-03-22 12:31:26 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.10 2004-03-23 02:41:57 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -426,7 +426,8 @@ foreach ($available_styles as $key => $style) {
 echo "                  <td>", form_dropdown_array("default_style", $available_styles, $style_names, $available_styles[$key]), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['defaultemoticons']}:</td>\n";
+echo "                  <td width=\"200\">{$lang['defaultemoticons']} ";
+echo "[<a href=\"javascript:void(0);\" onclick=\"openWindow('display_emoticons?webtag={$webtag['WEBTAG']}', 'emoticons', '500', '400')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
       
 foreach ($available_emots as $key => $emots) {
     if (strtolower($emots) == strtolower(forum_get_setting('default_emoticons'))) {

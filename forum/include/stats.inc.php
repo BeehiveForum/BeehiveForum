@@ -70,14 +70,14 @@ function get_num_sessions()
     
     // Check to make sure the active_sess_cutoff is defined.
    
-    if (!isset($active_sess_cutoff)) $active_sess_cutoff = 900;    
+    if (!isset($active_sess_cutoff)) $active_sess_cutoff = 900;
 
     $get_num_sessions = db_connect();
     $session_stamp = time() - $active_sess_cutoff;
 
     $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM ". forum_table("SESSIONS"). " ";
-    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) GROUP BY UID";
-
+    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp)";
+    
     $result = db_query($sql, $get_num_sessions);
 
     if (db_num_rows($result)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.36 2004-05-11 16:49:14 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.37 2004-05-30 15:33:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -124,20 +124,6 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
         $t_sig_html = "N";
     }
 
-    if (isset($_POST['sig_content_old']) && strlen(trim($_POST['sig_content_old'])) > 0) {
-        $t_sig_content_old = trim(_stripslashes($_POST['sig_content_old']));
-    }else {
-        $t_sig_content_old = "";
-    }
-
-    if (isset($_POST['sig_html_old']) && $_POST['sig_html_old'] == "Y") {
-        $t_sig_html_old = "Y";
-    }else {
-        $t_sig_html_old = "N";
-    }
-
-    // Check the signature code to see if it needs running through fix_html
-
     if ($t_sig_html == "Y") {
         $t_sig_content = fix_html($t_sig_content);
     }
@@ -149,12 +135,6 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 }
 
 if (isset($_POST['submit'])) {
-
-    // If nothing's changed, don't update
-
-    if ($t_sig_content == $t_sig_content_old && $t_sig_html == $t_sig_html_old) {
-        $valid = false;
-    }
 
     if ($valid) {
 
@@ -221,7 +201,12 @@ if (isset($_POST['preview'])) {
         $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
         $preview_message['CONTENT'] = $lang['signaturepreview'];
-        $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
+
+        if ($t_sig_html == "Y") {
+            $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
+        }else {
+            $preview_message['CONTENT'].= "<div class=\"sig\">". _htmlentities($t_sig_content). "</div>";
+        }
 
         $preview_message['CREATED'] = mktime();
 
@@ -274,8 +259,6 @@ $sig_code = (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)
 
 echo $tools->textarea("sig_content", $sig_code, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."</td>\n";
 
-echo form_input_hidden("sig_content_old", $sig_code)."\n";
-
 echo $tools->js();
 
 echo "                </tr>\n";
@@ -283,9 +266,8 @@ echo "                <tr>\n";
 echo "                  <td align=\"right\">\n";
 
 $sig_html = (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y");
-echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
 
-echo form_input_hidden("sig_html_old", ($sig_html == true) ? "Y" : "N")."\n";
+echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
 
 echo $tools->assign_checkbox("sig_html");
 

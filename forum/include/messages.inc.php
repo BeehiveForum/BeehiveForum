@@ -163,6 +163,35 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
+function message_sort_filter($a, $b)
+{
+    if (strlen($a) == strlen($b)) return 0;
+    return (strlen($a) > strlen($b)) ? -1 : 1;
+}
+
+function message_filter($content)
+{
+    $db_mf = db_connect();
+
+    $sql = "SELECT FILTER FROM ". forum_table("FILTER_LIST");
+    $result = db_query($sql, $db_mf);
+
+    $pattern_array = array();
+    $replace_array = array();
+
+    while($row = db_fetch_array($result)) {
+      $pattern_array[] = "/". trim($row['FILTER']). "/i";
+      $replace_array[] = str_repeat('*', strlen(trim($row['FILTER'])));
+    }
+
+    usort($pattern_array, 'message_sort_filter');
+    usort($replace_array, 'message_sort_filter');
+
+    $content = preg_replace($pattern_array, $replace_array, $content);
+    return $content;
+
+}
+
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
 
@@ -210,6 +239,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
         $message['CONTENT'] = implode('', $message_parts);
     }
+
+    // Check for words that should be filtered ---------------------------------
+
+    $message['CONTENT'] = message_filter($message['CONTENT']);
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 

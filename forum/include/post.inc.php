@@ -140,10 +140,11 @@ function is_valid_html($html)
             } else {
                 if(substr($html_parts[$i],-1) != "/"){ // check for XHTML single tag
                     $bits = explode(" ", $html_parts[$i]);
-                    if(!isset($opentags[$bits[0]])){
-                        $opentags[$bits[0]] = 1;
+                    $tag = strtolower($bits[0]);
+                    if(!isset($opentags[$tag])){
+                        $opentags[$tag] = 1;
                     } else {
-                        $opentags[$bits[0]]++;
+                        $opentags[$tag]++;
                     }
                 }
             }

@@ -27,7 +27,11 @@ include_once("./include/form.inc.php");
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
 
+// WARNING: Remember to declare onUnload="clearFocus()" in your <body> tag
+
 /* Example of usage:
+
+html_draw_top("onUnload=clearFocus()", "htmltools.js");
 
 $tools = new TextAreaHTML("myFormName");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.126 2004-09-08 00:49:45 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.127 2004-09-08 01:50:00 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -455,7 +455,7 @@ if ($valid && isset($_POST['submit'])) {
     header_redirect($uri);
 }
 
-html_draw_top("basetarget=_blank", "openprofile.js", "post.js", "htmltools.js");
+html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "openprofile.js", "post.js", "htmltools.js");
 
 echo "<h1>{$lang['createpoll']}</h1>\n";
 
@@ -811,16 +811,12 @@ if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
 }
 
 echo "          <tr>\n";
-if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo "            <td>", $tools->textarea('t_message_text', $t_message_text, 15, 75), "</td>\n";
-} else {
-	echo "            <td>", form_textarea('t_message_text', $t_message_text, 15, 75), "</td>\n";
-}
+echo "            <td>", $tools->textarea('t_message_text', $t_message_text, 15, 75), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td>\n";
 
-if ($fix_html && $post->isDiff()) {
+if ($post->isDiff() && $fix_html) {
     echo $tools->compare_original("t_message_text", $post->getOriginalContent());
 }
 
@@ -873,11 +869,7 @@ if ($allow_sig == true) {
 		echo "  <tr>\n";
 		echo "    <td colspan=\"2\">\n";
 
-		if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-			echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
-		} else {
-			echo form_textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
-		}
+		echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
 		echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
@@ -907,9 +899,8 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 
-if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo $tools->js(false);
-}
+
+echo $tools->js(false);
 
 
 echo "</form>\n";

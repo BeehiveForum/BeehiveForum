@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.240 2005-03-08 22:50:51 decoyduck Exp $ */
+/* $Id: post.php,v 1.241 2005-03-09 23:26:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -492,7 +492,7 @@ if (!$newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
+    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
         $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         $valid = false;
@@ -579,7 +579,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($high_interest) thread_set_high_interest($t_tid, 1, $newthread);
 
-            if (!(user_get_status($uid) & USER_PERM_WORMED)) {
+            if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
                 email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
                 if (!$newthread) email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
             }

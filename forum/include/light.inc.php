@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.74 2005-03-08 16:52:55 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.75 2005-03-09 23:26:52 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -409,7 +409,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     }
 
     if (bh_session_get_value('UID') != $message['FROM_UID']) {
-      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
+      if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
         light_message_display_deleted($tid, $message['PID']);
         return;
       }
@@ -474,7 +474,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
+            if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
 
             //This is commented out because as far as I know, all sigs are ignored in Light. Correct me if I'm wrong. - Rowan
             //if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";

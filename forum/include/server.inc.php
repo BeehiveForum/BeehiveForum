@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.2 2005-01-26 21:33:25 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.3 2005-03-09 23:26:53 decoyduck Exp $ */
 
 // Contains functions for server functions, like load average,
 // detection of server OS, etc.
@@ -74,6 +74,12 @@ function server_get_cpu_load()
     }
 
     return false;
+}
+
+function microtime_float()
+{
+   list($usec, $sec) = explode(" ", microtime());
+   return ((float)$usec + (float)$sec);
 }
 
 ?>

@@ -153,14 +153,32 @@ if (isset($HTTP_POST_VARS['submit'])) {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      //echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['aid']. $attachments[$i]['hash']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";      
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "&download=1\" title=\"";
+      
+      if (strlen($attachments[$i]['filename']) > 16) {
+        echo "Filename: ". $attachments[$i]['filename']. ", ";
+      }      
+      
+      if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+      }
+                        
+      echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
+      echo "Downloaded: ". $attachments[$i]['downloads'];
+                        
+      if ($attachments[$i]['downloads'] == 1) {
+        echo " time";
+      }else {
+        echo " times";
+      }
+      
+      echo "\">";
       
       if (strlen($attachments[$i]['filename']) > 16) {
         echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
       }else{
         echo $attachments[$i]['filename']. "</a></td>\n";
-      }
+      } 
       
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
@@ -183,6 +201,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
     echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
     echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "  </tr>\n"; 
     
   }
     
@@ -220,8 +243,26 @@ if (isset($HTTP_POST_VARS['submit'])) {
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      //echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['aid']. $attachments[$i]['hash']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "&download=1\" title=\"". $attachments[$i]['filename']. "\">";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "&download=1\" title=\"";
+      
+      if (strlen($attachments[$i]['filename']) > 16) {
+        echo "Filename: ". $attachments[$i]['filename']. ", ";
+      }      
+      
+      if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+      }
+                        
+      echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
+      echo "Downloaded: ". $attachments[$i]['downloads'];
+                        
+      if ($attachments[$i]['downloads'] == 1) {
+        echo " time";
+      }else {
+        echo " times";
+      }
+      
+      echo "\">";
       
       if (strlen($attachments[$i]['filename']) > 16) {
         echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";

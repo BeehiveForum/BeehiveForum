@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.30 2005-03-08 16:52:55 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.31 2005-03-09 18:26:20 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -257,7 +257,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         while ($user_data = db_fetch_array($result)) {
 
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERMS) ";
-            $sql.= "VALUES ('{$user_data['GID']', 0, 0, '{$user_data['PERM']}')";
+            $sql.= "VALUES ('{$user_data['GID']}', 0, 0, '{$user_data['PERM']}')";
 
             if (!@$result = db_query($sql, $db_install)) {
 

@@ -58,7 +58,7 @@ $foldertitle = folder_get_title($threaddata['FID']);
 
 $msg_count = count($messages);
 
-messages_top($foldertitle,$threaddata['TITLE']);
+messages_top($foldertitle,stripslashes($threaddata['TITLE']));
 
 if($msg_count>0){
     $first_msg = $messages[0]['PID'];

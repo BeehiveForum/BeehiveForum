@@ -35,7 +35,7 @@ function post_update($tid,$pid,$content)
 
     $content = mysql_escape_string($content);
 
-    $sql = "update " . forum_table("POST") . " set CONTENT = \"$content\" ";
+    $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = \"$content\" ";
     $sql .= "where TID = $tid and PID = $pid";
 
     $result = db_query($sql,$db);
@@ -56,7 +56,7 @@ function post_delete($tid,$pid)
 
     $content = mysql_escape_string($content);
 
-    $sql = "update " . forum_table("POST") . " set CONTENT = NULL ";
+    $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = NULL ";
     $sql .= "where TID = $tid and PID = $pid";
     
     echo $sql;

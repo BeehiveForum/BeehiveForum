@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.107 2003-11-27 19:36:06 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.108 2004-01-07 20:23:49 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -454,16 +454,29 @@ function user_get_post_count($uid)
 
 function user_get_last_logon_time($uid)
 {
+    global $lang;
+    
     if (!is_numeric($uid)) return false;
 
     $db_user_get_last_logon_time = db_connect();
 
-    $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM " . forum_table("USER") . " WHERE UID = $uid";
+    $sql = "SELECT USER_PREFS.ANON_LOGON, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM ". forum_table("USER"). " USER ";
+    $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "WHERE UID = $uid";    
+    
     $result = db_query($sql, $db_user_get_last_logon_time);
 
     $last_logon = db_fetch_array($result);
+    
+    if ($last_logon['ANON_LOGON'] <> 0) {
+    
+        return $lang['unknown'];
 
-    return $last_logon['LAST_LOGON'];
+    }else {
+
+        return $last_logon['LAST_LOGON'];
+    }
 }
 
 function user_guest_enabled()

@@ -112,7 +112,6 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
   }
 
-  setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
   bh_session_end();
 
   if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {

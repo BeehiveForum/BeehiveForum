@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.236 2004-03-04 12:27:10 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.237 2004-03-04 22:17:33 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -39,6 +39,7 @@ require_once("./include/config.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/stats.inc.php");
+require_once("./include/word_filter.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {
@@ -165,14 +166,16 @@ function message_get_content($tid, $pid)
 function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     global $lang;
-    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;", message_filter("$foldertitle: $threadtitle");
+    
+    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;", apply_wordfilter("$foldertitle: $threadtitle");
+    
     if ($closed) echo "&nbsp;<img src=\"". style_image('thread_closed.png'). "\" height=\"15\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" align=\"middle\" />\n";
     if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\"  title=\"{$lang['highinterest']}\" align=\"middle\" />";
     if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\"  title=\"{$lang['subscribed']}\" align=\"middle\" />";
     if ($sticky == "Y") echo "&nbsp;<img src=\"". style_image('sticky.png'). "\" height=\"15\" alt=\"{$lang['sticky']}\"  title=\"{$lang['sticky']}\" align=\"middle\" />";
     if ($locked) echo "&nbsp;<img src=\"". style_image('admin_locked.png'). "\" height=\"15\" alt=\"{$lang['locked']}\"  title=\"{$lang['locked']}\" align=\"middle\" />\n";
+    
     echo "</p>";
-    // To be expanded later
 }
 
 function messages_bottom()
@@ -180,47 +183,9 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_filter($content, $debug = false)
-{
-    $db_mf = db_connect();
-    
-    $uid = bh_session_get_value('UID');
-
-    $sql = "SELECT * FROM ". forum_table("FILTER_LIST"). " WHERE UID = '$uid'";
-    $result = db_query($sql, $db_mf);
-
-    $pattern_array = array();
-    $replace_array = array();
-
-    while($row = db_fetch_array($result)) {
-    
-        if ($row['PREG_EXPR'] == 1) {
-            $pattern_array[] = _stripslashes($row['MATCH_TEXT']);
-        }else {
-            $pattern_array[] = "/". preg_quote(_stripslashes($row['MATCH_TEXT']), "/"). "/i";
-        }
-            
-        if (strlen(trim($row['REPLACE_TEXT'])) > 0) {
-            $replace_array[] = _stripslashes($row['REPLACE_TEXT']);
-        }else {
-            if ($row['PREG_EXPR'] == 1) {
-	        $replace_array[] = "****";
-	    }else {
-	        $replace_array[] = str_repeat("*", strlen(_stripslashes($row['MATCH_TEXT'])));
-            }
-        }
-    }
-
-    if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
-        return $new_content;
-    }
-        
-    return $content;
-}
-
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang, $attachments_show_deleted;
+    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang, $attachments_show_deleted, $user_wordfilter;
     
     if (!isset($attachments_show_deleted)) $attachments_show_deleted = false;
     if (!isset($maximum_post_length)) $maximum_post_length = 6226;
@@ -250,7 +215,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     // Check for words that should be filtered ---------------------------------
 
-    $message['CONTENT'] = message_filter($message['CONTENT'], true);    
+    $message['CONTENT'] = apply_wordfilter($message['CONTENT']);    
     
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);

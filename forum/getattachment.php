@@ -74,6 +74,7 @@ if (isset($HTTP_GET_VARS['hash']) && isset($HTTP_GET_VARS['filename']) && isset(
         header("Content-Type: ". $attachmentdetails['MIMETYPE']);
         
         if($attachmentdetails['MIMETYPE'] == 'application/octet-stream') {
+          header("Content-Length: ". filesize($attachments_dir. '/'. $HTTP_GET_VARS['hash']. '/'. md5($HTTP_GET_VARS['hash'].$HTTP_GET_VARS['filename'])));
           header("Content-disposition: filename=". $HTTP_GET_VARS['filename']);
           header("Content-Transfer-Encoding: binary");
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.46 2004-03-16 23:03:22 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.47 2004-03-17 17:20:35 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -51,7 +51,7 @@ function pm_edit_refuse()
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannoteditpm']}</p>";
-    echo form_quick_button("pm.php?webtag={$webtag['WEBTAG']}", $lang['back'], "folder", "2");
+    form_quick_button("pm.php?webtag={$webtag['WEBTAG']}", $lang['back'], "folder", "2");
     echo "</div>";
 
 }
@@ -63,7 +63,7 @@ function pm_error_refuse()
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannotviewpm']}</p>";
-    echo form_quick_button("pm.php?webtag={$webtag['WEBTAG']}", $lang['back'], "folder", "1");
+    form_quick_button("pm.php?webtag={$webtag['WEBTAG']}", $lang['back'], "folder", "1");
     echo "</div>";
 }
 

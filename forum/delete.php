@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.51 2004-03-15 21:33:29 decoyduck Exp $ */
+/* $Id: delete.php,v 1.52 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -116,7 +116,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
     }else {
 
         $valid = false;
-        $error_html = "<h2>{$lang['message']} " . $HTTP_GET_VARS['msg'] . " {$lang['wasnotfound']}</h2>";
+        $error_html = "<h2>{$lang['message']} $tid.$pid {$lang['wasnotfound']}</h2>";
     }
 }
 
@@ -132,7 +132,7 @@ if ($valid) {
 
             echo "<div align=\"center\">";
             echo "<p>{$lang['postdelsuccessfully']}</p>";
-            echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", $HTTP_POST_VARS['msg']);
+            form_quick_button("./discussion.php", $lang['back'], array("msg", "webtag"), array($msg, $webtag['WEBTAG']), "_self");
             echo "</div>";
             html_draw_bottom();
             exit;

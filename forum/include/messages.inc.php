@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.247 2004-03-16 19:22:50 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.248 2004-03-17 17:20:35 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -891,7 +891,7 @@ function messages_forum_stats($tid, $pid)
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");
     
-    if (strtoupper($forum_settings['show_stats']) == "N") {
+    if (strtoupper($forum_settings['show_stats']) == "Y") {
 
         echo "<div align=\"center\">\n";
         echo "  <br />\n";

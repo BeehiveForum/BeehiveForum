@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.84 2004-01-27 21:50:29 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.85 2004-01-27 22:07:12 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -104,19 +104,19 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
 
     // Update the Poll settings
 
-    if ($closes) {
-      $closes = "FROM_UNIXTIME($closes)";
-    }else {
-      $closes = 'NULL';
-    }
-
     $sql = "UPDATE ". forum_table("POLL"). " SET CHANGEVOTE = '$change_vote', ";
-    $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', VOTETYPE = '$poll_vote_type' ";
-
-    if ($closes && $closes > 0) $sql.= ", CLOSES = $closes ";
-
+    $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
+    $sql.= "VOTETYPE = '$poll_vote_type', ";
+    
+    if ($closes) {
+        if ($closes > 0) {
+            $sql.= "CLOSES = FROM_UNIXTIME($closes) ";
+        }else {
+            $sql.= "CLOSES = NULL ";
+        }
+    }
+    
     $sql.= "WHERE TID = '$tid'";
-
     $result = db_query($sql, $db_poll_edit);
 
     // Delete the available options for the poll

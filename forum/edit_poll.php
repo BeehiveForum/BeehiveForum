@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.37 2004-01-27 21:34:04 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.38 2004-01-27 22:07:12 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -219,8 +219,6 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   }elseif ($HTTP_POST_VARS['closepoll'] == 3) {
     $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
   }elseif ($HTTP_POST_VARS['closepoll'] == 4) {
-    $poll_closes = 0;
-  }elseif ($HTTP_POST_VARS['closepoll'] == 5) {
     $poll_closes = -1;
   }else {
     $poll_closes = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.136 2004-11-01 23:58:43 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.137 2004-11-06 21:10:51 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -354,7 +354,9 @@ function html_draw_top()
     }
 
     if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php')) {
+
         if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
+
             echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
             echo "<!--\n\n";
             echo "function pm_notification() {\n";
@@ -374,7 +376,9 @@ function html_draw_top()
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js\"></script>\n";
 
     foreach($arg_array as $func_args) {
+
         if (is_dir("./js/") && file_exists("./js/$func_args")) {
+
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/$func_args\"></script>\n";
         }
     }
@@ -394,7 +398,7 @@ function html_draw_bottom ()
 
 function style_image($img)
 {
-        $webtag = get_webtag($webtag_search);
+    $webtag = get_webtag($webtag_search);
 
     $forum_settings = get_forum_settings();
 
@@ -409,7 +413,7 @@ function style_image($img)
         }
     }
 
-        return "./images/$img";
+    return "./images/$img";
 }
 
 function bh_setcookie($name, $value, $expires = 0)

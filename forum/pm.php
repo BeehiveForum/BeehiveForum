@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.70 2004-09-14 18:47:57 decoyduck Exp $ */
+/* $Id: pm.php,v 1.71 2004-09-23 21:14:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -367,7 +367,7 @@ echo "          <tr>\n";
 echo "            <td colspan=\"2\" width=\"25%\">\n";
 echo "              <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">Free PM Space:</td>\n";
+echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">{$lang['pmfreespace']}:&nbsp;</td>\n";
 echo "                  <td width=\"65%\">\n";
 echo "                    <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar_container\">\n";
 echo "                      <tr>\n";
@@ -381,6 +381,7 @@ echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
+echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">&nbsp;($pm_free_space / $pm_max_user_messages)</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>";

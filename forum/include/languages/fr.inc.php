@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.115 2004-09-16 12:00:01 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.116 2004-09-23 21:14:07 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -852,6 +852,7 @@ $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to sen
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 $lang['includepminreply'] = "Include message body when replying to PM";
+$lang['pmfreespace'] = "PM Free Space";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_folder.php,v 1.7 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: user_folder.php,v 1.8 2003-09-10 17:03:49 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -33,17 +33,15 @@ require_once("./include/session.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
-
+if (!bh_session_check()) {
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
 if (bh_session_get_value('UID') > 0) {
-  if (isset($HTTP_GET_VARS['fid']) && isset($HTTP_GET_VARS['interest'])) {
-    user_set_folder_interest($HTTP_GET_VARS['fid'], $HTTP_GET_VARS['interest']);
-  }
+    if (isset($HTTP_GET_VARS['fid']) && isset($HTTP_GET_VARS['interest'])) {
+        user_set_folder_interest($HTTP_GET_VARS['fid'], $HTTP_GET_VARS['interest']);
+    }
 }
 
 header_redirect("./thread_list.php");

@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.18 2003-07-30 21:48:31 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.19 2003-09-10 17:03:49 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -53,9 +53,9 @@ if (!bh_session_check()) {
 
 }
 
-if(bh_session_get_value('UID') == 0) {
-        html_guest_error();
-        exit;
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/db.inc.php");
@@ -64,11 +64,11 @@ require_once("./include/forum.inc.php");
 
 if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['rel'])) {
 
-    $uid   = bh_session_get_value('UID');
-    $peeruid = $HTTP_GET_VARS['uid'];
-    $rel   = $HTTP_GET_VARS['rel'];
+    $uid  = bh_session_get_value('UID');
+    $puid = $HTTP_GET_VARS['uid'];
+    $rel  = $HTTP_GET_VARS['rel'];
 
-    $relationship = user_rel_get($uid, $peeruid);
+    $relationship = user_rel_get($uid, $puid);
 
     if ($rel == -1) {
         $relationship = ($relationship & USER_IGNORED_SIG) ? USER_IGNORED_SIG + USER_IGNORED : USER_IGNORED;
@@ -76,7 +76,7 @@ if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($H
         $relationship = ($relationship & USER_IGNORED_SIG) ? USER_IGNORED_SIG : 0;
     }
 
-    user_rel_update($myuid, $peeruid, $relationship);
+    user_rel_update($uid, $puid, $relationship);
 
 }else {
 

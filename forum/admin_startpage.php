@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.33 2004-03-20 19:21:30 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.34 2004-03-20 21:41:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -67,20 +67,6 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 
 }
 
-// Check the contents of the start_main.php to see if it
-// is from BeehiveForum 0.4.1.
-
-$md5_check = md5(trim(implode('', file("./start_main.php"))));
-
-if ($md5_check != "283056ca390352695b29e66bcbba85c2") {
-
-    html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<p>{$lang['mustusebh401startmain']}</p>";
-    html_draw_bottom();
-    exit;
-}
-
 html_draw_top();
 
 if (isset($HTTP_POST_VARS['submit'])) {
@@ -100,10 +86,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }
 
 echo "<h1>{$lang['admin']} : {$lang['editstartpage']}</h1>\n";
+echo "<p>{$lang['editstartpageexp']}</p>\n";
+echo "<p>{$lang['mustusebh401startmain']}</p>";
 
 if (isset($status_text)) echo $status_text;
 
-echo "<p>{$lang['editstartpageexp']}</p>\n";
 echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php?webtag={$webtag['WEBTAG']}\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";

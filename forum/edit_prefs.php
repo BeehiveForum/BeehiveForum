@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.34 2004-08-14 15:11:44 hodcroftcj Exp $ */
+/* $Id: edit_prefs.php,v 1.35 2004-08-15 11:40:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -150,43 +150,43 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['firstname'])) {
         if (user_check_pref('FIRSTNAME', _stripslashes(trim($_POST['firstname'])))) {
-		   	$user_prefs['FIRSTNAME'] = _stripslashes(trim($_POST['firstname']));
-		} else {
-		    $error_html .= "<h2>{$lang['firstname']} {$lang['containsinvalidchars']}</h2>";
-			$valid = false;
-		}
+                        $user_prefs['FIRSTNAME'] = _stripslashes(trim($_POST['firstname']));
+                } else {
+                    $error_html .= "<h2>{$lang['firstname']} {$lang['containsinvalidchars']}</h2>";
+                        $valid = false;
+                }
     }
 
     if (isset($_POST['lastname'])) {
         if (user_check_pref('LASTNAME', _stripslashes(trim($_POST['lastname'])))) {
-		   	$user_prefs['LASTNAME'] = _stripslashes(trim($_POST['lastname']));
-		} else {
-		    $error_html .= "<h2>{$lang['lastname']} {$lang['containsinvalidchars']}</h2>";
-		    $valid = false;
-		}
+                        $user_prefs['LASTNAME'] = _stripslashes(trim($_POST['lastname']));
+                } else {
+                    $error_html .= "<h2>{$lang['lastname']} {$lang['containsinvalidchars']}</h2>";
+                    $valid = false;
+                }
     }
 
     if (isset($_POST['homepage_url'])) {
         if (user_check_pref('HOMEPAGE_URL', _stripslashes(trim($_POST['homepage_url'])))) {
-		   	$user_prefs['HOMEPAGE_URL'] = _stripslashes(trim($_POST['homepage_url']));
-        	$user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
+                        $user_prefs['HOMEPAGE_URL'] = _stripslashes(trim($_POST['homepage_url']));
+                $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
         } else {
-		    $error_html .= "<h2>{$lang['homepageURL']} {$lang['containsinvalidchars']}</h2>";
-		    $valid = false;
-		}
+                    $error_html .= "<h2>{$lang['homepageURL']} {$lang['containsinvalidchars']}</h2>";
+                    $valid = false;
+                }
     }
 
     if (isset($_POST['pic_url'])) {
-	    if (user_check_pref('PIC_URL', _stripslashes(trim($_POST['pic_url'])))) {
-			$user_prefs['PIC_URL'] = _stripslashes(trim($_POST['pic_url']));
-	        $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;
-		} else {
-		    $error_html .= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
-		    $valid = false;
-		}
-	}
+            if (user_check_pref('PIC_URL', _stripslashes(trim($_POST['pic_url'])))) {
+                        $user_prefs['PIC_URL'] = _stripslashes(trim($_POST['pic_url']));
+                $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;
+                } else {
+                    $error_html .= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
+                    $valid = false;
+                }
+        }
 
-	if ($valid) {
+        if ($valid) {
 
         // User's UID for updating with.
 
@@ -214,16 +214,16 @@ if (!isset($uid)) $uid = bh_session_get_value('UID');
 
 // Get User Prefs
 if (isset($user_prefs)) {
-   	$user_prefs = array_merge(user_get_prefs($uid), $user_prefs);
+        $user_prefs = array_merge(user_get_prefs($uid), $user_prefs);
 } else {
-	$user_prefs = user_get_prefs($uid);
+        $user_prefs = user_get_prefs($uid);
 }
 
 // Get user information
 if (isset($user_info)) {
-   	$user_info = array_merge(user_get($uid), $user_info);
+        $user_info = array_merge(user_get($uid), $user_info);
 } else {
-	$user_info = user_get($uid);
+        $user_info = user_get($uid);
 }
 
 // Split the DOB into usable variables.
@@ -266,42 +266,42 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['userinformation']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['nickname']}:</td>\n";
+echo "                  <td>{$lang['nickname']}:&nbsp;</td>\n";
 echo "                  <td>", form_field("nickname", (isset($user_info['NICKNAME']) ? $user_info['NICKNAME'] : ""), 45, 32), "&nbsp;</td>\n";
-echo "					<td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['emailaddress']}:</td>\n";
+echo "                  <td>{$lang['emailaddress']}:&nbsp;</td>\n";
 echo "                  <td>", form_field("email", (isset($user_info['EMAIL']) ? $user_info['EMAIL'] : ""), 45, 80), "&nbsp;</td>\n";
-echo "					<td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['firstname']}:</td>\n";
+echo "                  <td>{$lang['firstname']}:&nbsp;</td>\n";
 echo "                  <td>", form_field("firstname", (isset($user_prefs['FIRSTNAME']) ? $user_prefs['FIRSTNAME'] : ""), 45, 32), "&nbsp;</td>\n";
-echo "					<td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['lastname']}:</td>\n";
+echo "                  <td>{$lang['lastname']}:&nbsp;</td>\n";
 echo "                  <td>", form_field("lastname", (isset($user_prefs['LASTNAME']) ? $user_prefs['LASTNAME'] : ""), 45, 32), "&nbsp;</td>\n";
-echo "					<td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>{$lang['dateofbirth']}:</td>\n";
+echo "                  <td>{$lang['dateofbirth']}:&nbsp;</td>\n";
 echo "                  <td>", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "&nbsp;</td>\n";
-echo "					<td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['homepageURL']}:</td>\n";
+echo "                  <td>{$lang['homepageURL']}:&nbsp;</td>\n";
 echo "                  <td>", form_field("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? $user_prefs['HOMEPAGE_URL'] : ""), 45, 255), "&nbsp;</td>\n";
-echo "					<td>".form_checkbox("homepage_url_global","Y",$lang['setforallforums'],$user_prefs['HOMEPAGE_URL_GLOBAL'])."</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("homepage_url_global","Y",$lang['setforallforums'],$user_prefs['HOMEPAGE_URL_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\">{$lang['pictureURL']}:</td>\n";
+echo "                  <td>{$lang['pictureURL']}:&nbsp;</td>\n";
 echo "                  <td>", form_field("pic_url", (isset($user_prefs['PIC_URL']) ? $user_prefs['PIC_URL'] : ""), 45, 255), "&nbsp;</td>\n";
-echo "					<td>".form_checkbox("pic_url_global","Y",$lang['setforallforums'],$user_prefs['PIC_URL_GLOBAL'])."</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pic_url_global","Y",$lang['setforallforums'],$user_prefs['PIC_URL_GLOBAL']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\">&nbsp;</td>\n";

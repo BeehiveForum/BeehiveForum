@@ -70,14 +70,73 @@ html_draw_top();
 
 switch ($mode) {
 	case 0: // All discussions
-		list($threads, $folder_order) = threads_get_all($user); // Get list of discussions & folder order
+		list($thread_info, $folder_order) = threads_get_all($user); // Get list of discussions & folder order
 		break;
 	case 1; // Unread discussions
-		list($threads, $folder_order) = threads_get_unread($user); // Get list of discussions & folder order
+		list($thread_info, $folder_order) = threads_get_unread($user); // Get list of discussions & folder order
 		break;
 }
 
-// The actual bit that displaus the threads...
-threads_display_list($threads, $folder_order);
+// Now, the actual bit that displays the threads...
+
+// Get folder FIDs and titles
+$folder_info = threads_get_folders();
+if (!$folder_info) die ("Could not retrieve folder information");
+
+// Get total number of messages for each folder
+$folder_msgs = threads_get_folder_msgs();
+
+// Work out if any folders have no messages - if so, they still need to be displayed, so add them to $folder_order
+while (list($fid, $title) = each($folder_info)) {
+	if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+}
+
+// Iterate through the information we've just got and display it in the right order
+while (list($key1, $folder) = each($folder_order)) {
+	echo "<tr>\n";
+	echo "<td class=\"foldername\">\n";
+	echo "<img src=\"./images/folder.png\" alt=\"folder\" />\n";
+	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder."\">".$folder_info[$folder]."</a>";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td class=\"threads\" style=\"border-bottom: 0;\">\n";
+	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder."\" class=\"folderinfo\">".$folder_msgs[$folder]." msgs</a>\n";
+	echo "<a href=\"#\" class=\"folderpostnew\">Post New</a>\n";
+	echo "</td></tr>\n";
+	echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
+	while (list($key2, $thread) = each($thread_info)) {
+		if ($thread['fid'] == $folder) {
+			// work out the number of new posts and format something in square brackets accordingly
+			if ($thread['length'] == $thread['last_read']) {
+				$number = "[".$thread['length']."]";
+				$latest_post = 1;
+			} elseif ($thread['last_read'] == 0) {
+				$number = "[".$thread['length']." new]";
+				$latest_post = 1;
+			} else {
+				$new_posts = $thread['length'] - $thread['last_read'];
+				$number = "[".$new_posts." new of ".$thread['length']."]";
+				$latest_post = $thread['last_read'] + 1;
+			}
+			// work out how long ago the thread was posted and format the time to display - this is going to need modification to account for differing timezones
+			if (date("j", $thread['modified']) == date("j") && date("n", $thread['modified']) == date("n") && date("Y", $thread['modified']) == date("Y")) {
+				$thread_time = date("H:i", $thread['modified']);
+			} else {
+				$thread_time = date("j M", $thread['modified']);
+			}
+			echo "<p>\n";
+			echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\">".$thread['title']."</a><br />";
+			echo "<span class=\"threadtime\">".$thread_time."</span><span class=\"threadxnewofy\">$number</span>\n";
+			echo "</p>\n";
+		}
+	}
+	echo "</td></tr>\n";
+	reset($thread_info);
+}
+
+echo "</table>";
+
+html_draw_bottom();
 
 ?>

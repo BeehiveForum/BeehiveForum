@@ -306,6 +306,7 @@ CREATE TABLE PROFILE_ITEM (
   PIID mediumint(8) unsigned NOT NULL auto_increment,
   PSID mediumint(8) unsigned default NULL,
   NAME varchar(64) default NULL,
+  POSITION mediumint(8) unsigned default 0,
   PRIMARY KEY  (PIID)
 ) TYPE=MyISAM;
 
@@ -328,6 +329,7 @@ INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (6, 1, 'Birthday (DD/MM)');
 CREATE TABLE PROFILE_SECTION (
   PSID mediumint(8) unsigned NOT NULL auto_increment,
   NAME varchar(64) default NULL,
+  POSITION mediumint(8) unsigned default 0,
   PRIMARY KEY  (PSID)
 ) TYPE=MyISAM;
 

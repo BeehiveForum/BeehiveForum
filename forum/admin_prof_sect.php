@@ -62,38 +62,38 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 $db = db_connect();
 
 // Do updates
-if(isset($HTTP_POST_VARS['submit'])){
 
-  if ($HTTP_POST_VARS['submit'] == $lang['submit']) {
+if (isset($HTTP_POST_VARS['submit'])) {
 
-    for($i=0;$i<$HTTP_POST_VARS['t_count'];$i++){
+    if (isset($HTTP_POST_VARS['t_psid'])) {
 
-        if($HTTP_POST_VARS['t_name_'.$i] != $HTTP_POST_VARS['t_old_name_'.$i]){
+        foreach($HTTP_POST_VARS['t_psid'] as $psid => $value) {
 
-            $new_name = (trim($HTTP_POST_VARS['t_name_'.$i]) != "") ? $HTTP_POST_VARS['t_name_'.$i] : $HTTP_POST_VARS['t_old_name_'.$i];
-            profile_section_update($HTTP_POST_VARS['t_psid_'.$i], $new_name);
-            admin_addlog(0, 0, 0, 0, $HTTP_POST_VARS['t_psid_'.$i], 0, 10);
+            if (($HTTP_POST_VARS['t_name'][$psid] != $HTTP_POST_VARS['t_old_name'][$psid]) || ($HTTP_POST_VARS['t_position'][$psid] != $HTTP_POST_VARS['t_old_position'][$psid])) {
 
+                $new_name = (trim($HTTP_POST_VARS['t_name'][$psid]) != "") ? $HTTP_POST_VARS['t_name'][$psid] : $HTTP_POST_VARS['t_old_name'][$psid];
+                profile_section_update($HTTP_POST_VARS['t_psid'][$psid], $HTTP_POST_VARS['t_position'][$psid], $new_name);
+                admin_addlog(0, 0, 0, 0, $HTTP_POST_VARS['t_psid'][$psid], 0, 10);
+            }
         }
+
     }
 
-    if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != $lang['newsection']){
+    if (trim($HTTP_POST_VARS['t_name_new']) != "" && trim($HTTP_POST_VARS['t_name_new']) != $lang['newsection']) {
 
-        $new_psid = profile_section_create($HTTP_POST_VARS['t_name_new']);
+        $new_psid = profile_section_create(trim($HTTP_POST_VARS['t_name_new']), (isset($HTTP_POST_VARS['t_psid']) ? sizeof($HTTP_POST_VARS['t_psid']) : 1));
         admin_addlog(0, 0, 0, 0, $new_psid, 0, 11);
 
     }
 
-  }elseif ($HTTP_POST_VARS['submit'] == $lang['delete']) {
+}elseif (isset($HTTP_POST_VARS['t_delete'])) {
 
-    $sql = "delete from ". forum_table("PROFILE_SECTION"). " where PSID = ". $HTTP_POST_VARS['psid'];
+    list($psid) = array_keys($HTTP_POST_VARS['t_delete']);
+    $sql = "delete from ". forum_table("PROFILE_SECTION"). " where PSID = $psid";
     $result = db_query($sql, $db);
-    admin_addlog(0, 0, 0, 0, $HTTP_POST_VARS['psid'], 0, 12);
-
-  }
+    admin_addlog(0, 0, 0, 0, 0, $psid, 15);
 
 }
-
 
 // Draw the form
 echo "<h1>{$lang['manageprofilesections']}</h1>\n";
@@ -105,51 +105,35 @@ echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">{$lang['position']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "            <td class=\"subhead\" align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 
-$sql = "select PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
-$sql.= "from " . forum_table("PROFILE_SECTION") . " PROFILE_SECTION ";
-$sql.= "order by PROFILE_SECTION.PSID";
+if ($profile_sections = profile_sections_get()) {
 
-$result = db_query($sql,$db);
+    for ($i = 0; $i < sizeof($profile_sections); $i++) {
 
-$result_count = db_num_rows($result);
+        echo "          <tr>\n";
+        echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_sections[$i]['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_sections[$i]['PSID']}]", $i), form_input_hidden("t_psid[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['PSID']), "</td>\n";
+        echo "            <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME'] ,64, 64), form_input_hidden("t_old_name[{$profile_sections[$i]['PSID']}]", $profile_sections[$i]['NAME']), "</td>\n";
+        echo "            <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?psid={$profile_sections[$i]['PSID']}'\""), "</a></td>\n";
 
-for($i = 0; $i < $result_count; $i++){
+        if (!profile_items_get($profile_sections[$i]['PSID'])) {
+            echo "            <td>", form_submit("t_delete[{$profile_sections[$i]['PSID']}]", $lang['delete']), "</td>\n";
+        }else{
+            echo "            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        }
 
-    $row = db_fetch_array($result);
-
-    echo "          <tr>\n";
-    echo "            <td valign=\"top\" align=\"left\">", $row['PSID'], form_input_hidden("t_psid_$i",$row['PSID']), "</td>\n";
-    echo "            <td valign=\"top\" align=\"left\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i",$row['NAME']), "</td>\n";
-    echo "            <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?psid={$row['PSID']}'\""), "</a></td>\n";
-    echo "            <td>";
-
-    $psid_sql = "select * from ". forum_table("PROFILE_ITEM"). " where PSID = ". $row['PSID'];
-    $psid_result = db_query($psid_sql, $db);
-
-    if (db_num_rows($psid_result) == 0) {
-
-      echo form_input_hidden("psid", $row['PSID']). form_submit("submit", $lang['delete']);
-
-    }else{
-
-      echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
-
+        echo "          </tr>\n";
     }
-
-    echo "</td>\n";
-    echo "          </tr>\n";
 }
 
 // Draw a row for a new section to be created
 echo "          <tr>\n";
 echo "            <td align=\"left\">NEW</td>\n";
-echo "            <td align=\"left\">", form_field("t_name_new",$lang['newsection'],64,64), "</td>\n";
+echo "            <td align=\"left\">", form_field("t_name_new", $lang['newsection'], 64, 64), "</td>\n";
 echo "            <td align=\"center\" colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
@@ -159,7 +143,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "<p>", form_input_hidden("t_count", $result_count), form_submit('submit', 'Save'), "</p>\n";
+echo "<p>", form_submit('submit', 'Save'), "</p>\n";
 echo "</form>\n";
 echo "</div>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.121 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.122 2004-08-08 20:11:36 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -136,12 +136,12 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
 // Check if the user is viewing signatures.
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
-// Fetch the current user's sig
+// Get the user's post page preferences.
 
-user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+$page_prefs = bh_session_get_value('POST_PAGE');
 
-if ($t_sig_html != "N") {
-    $sig_html = 2;
+if ($page_prefs == 0) {
+	$page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
 }
 
 $valid = true;
@@ -159,11 +159,39 @@ if (isset($_POST['t_message_html'])) {
 
 if (isset($_POST['t_sig_html'])) {
 
-    $t_sig_html = $_POST['t_sig_html'];
+	$t_sig_html = $_POST['t_sig_html'];
 
-    if ($t_sig_html != "N") {
-        $sig_html = 2;
-    }
+	if ($t_sig_html != "N") {
+		$sig_html = 2;
+	}
+
+	$fetched_sig = false;
+
+	if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+		$t_sig = _stripslashes($_POST['t_sig']);
+	}else {
+		$t_sig = "";
+	}
+
+} else {
+	// Fetch the current user's sig
+	user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+
+	if ($t_sig_html != "N") {
+		$sig_html = 2;
+	}
+
+	$t_sig = tidy_html($t_sig, true);
+
+	$fetched_sig = true;
+}
+
+if (isset($_POST['t_post_emots'])) {
+	if ($_POST['t_post_emots'] == "enabled") {
+		$emots_enabled = true;
+	} else {
+		$emots_enabled = false;
+	}
 }
 
 if (!isset($_POST['aid'])) {
@@ -172,8 +200,20 @@ if (!isset($_POST['aid'])) {
     $aid = $_POST['aid'];
 }
 
-if (!isset($post_html)) $post_html = 0;
+if (!isset($post_html)) {
+	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+		$post_html = 1;
+	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+		$post_html = 2;
+	} else {
+		$post_html = 0;
+	}
+}
+
 if (!isset($sig_html)) $sig_html = 0;
+
+if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+
 
 if (isset($_POST['cancel'])) {
 
@@ -257,11 +297,9 @@ if (isset($_POST['cancel'])) {
         }
     }
 
-    if (isset($_POST['t_sig'])) {
+    if (isset($t_sig)) {
 
-        $t_sig = trim(_stripslashes($_POST['t_sig']));
-
-        if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
+		if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
             $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";
             $valid = false;
         }
@@ -281,11 +319,23 @@ if (isset($_POST['cancel'])) {
     }
 }
 
+
+$allow_html = true;
+$allow_sig = true;
+
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+	$allow_html = false;
+}
+if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
+	$allow_sig = false;
+}
+
+
 if (!isset($t_message_text)) $t_message_text = "";
 if (!isset($t_sig)) $t_sig = "";
 
-$post = new MessageText($post_html, $t_message_text);
-$sig = new MessageText($sig_html, $t_sig);
+$post = new MessageText($allow_html ? $post_html : false, $t_message_text, $emots_enabled);
+$sig = new MessageText($allow_html ? $sig_html : false, $t_sig);
 
 $t_message_text = $post->getContent();
 $t_sig = $sig->getContent();
@@ -322,7 +372,7 @@ if ($valid && isset($_POST['submit'])) {
         $answers = array();
         $ans_h = 0;
 
-        if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+        if ($allow_html == true && isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
             $ans_h = 2;
         }
 
@@ -350,7 +400,9 @@ if ($valid && isset($_POST['submit'])) {
 
         if (strlen($t_message_text) > 0) {
 
-            $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
+			if ($allow_sig == true && trim($t_sig) != "") {
+	            $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
+			}
             post_create($t_tid, 1, bh_session_get_value('UID'), 0, $t_message_text);
         }
 
@@ -403,7 +455,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $ans_h = 0;
 
-    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+    if ($allow_html == true && isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
         $ans_h = 2;
     }
 
@@ -481,7 +533,9 @@ if ($valid && isset($_POST['preview'])) {
     if (strlen($t_message_text) > 0) {
 
         $polldata['CONTENT'] = $t_message_text;
-        $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
+		if ($allow_sig == true && trim($t_sig) != "") {
+	        $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
+		}
 
         message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
     }
@@ -578,7 +632,13 @@ for ($i = 0; $i < $answercount; $i++) {
 
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y')), "</td>\n";
+
+if ($allow_html == true) {
+	echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y')), "</td>\n";
+} else {
+	echo "                  <td>", form_input_hidden('t_post_html', 'N'), "</td>\n";
+}
+
 echo "                  <td>&nbsp;</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -597,7 +657,7 @@ echo "            <td>{$lang['optionsdisplayexp']}</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td>\n";
-echo "              <table border=\"0\" width=\"500\">\n";
+echo "              <table border=\"0\" width=\"400\">\n";
 echo "                <tr>\n";
 echo "                  <td width=\"30%\">", form_radio('optiontype', '0', $lang['radios'], isset($_POST['optiontype']) ? $_POST['optiontype'] == 0 : true), "</td>\n";
 echo "                  <td width=\"30%\">", form_radio('optiontype', '1', $lang['dropdown'], isset($_POST['optiontype']) ? $_POST['optiontype'] == 1 : false), "</td>\n";
@@ -637,10 +697,10 @@ echo "            <td>{$lang['pollresultsexp']}</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td>\n";
-echo "              <table border=\"0\" width=\"400\">\n";
+echo "              <table border=\"0\" width=\"500\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"30%\">", form_radio('polltype', '0', $lang['horizgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 0 : true), "</td>\n";
-echo "                  <td width=\"30%\">", form_radio('polltype', '1', $lang['vertgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 1 : false), "</td>\n";
+echo "                  <td width=\"25%\">", form_radio('polltype', '0', $lang['horizgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 0 : true), "</td>\n";
+echo "                  <td width=\"25%\">", form_radio('polltype', '1', $lang['vertgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 1 : false), "</td>\n";
 echo "                  <td>", form_radio('polltype', '2', $lang['tablegraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 2 : false), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
@@ -707,9 +767,12 @@ $tools = new TextAreaHTML("f_poll");
 
 $t_message_text = $post->getTidyContent();
 
-echo "          <tr>\n";
-echo "            <td>", $tools->toolbar(), "</td>\n";
-echo "          </tr>\n";
+if ($allow_html == true) {
+	echo "          <tr>\n";
+	echo "            <td>", $tools->toolbar(), "</td>\n";
+	echo "          </tr>\n";
+}
+
 echo "          <tr>\n";
 echo "            <td>", $tools->textarea('t_message_text', $t_message_text, 15, 75), "</td>\n";
 echo "          </tr>\n";
@@ -720,15 +783,25 @@ if ($post->isDiff()) {
     echo $tools->compare_original("t_message_text", $post->getOriginalContent());
 }
 
-echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+if ($allow_html == true) {
+	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-$tph_radio = $post->getHTML();
+	$tph_radio = $post->getHTML();
 
-echo form_radio("t_message_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-echo form_radio("t_message_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-echo form_radio("t_message_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+	echo form_radio("t_message_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+	echo form_radio("t_message_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+	echo form_radio("t_message_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-echo $tools->assign_checkbox("t_message_html[1]", "t_message_html[0]");
+	echo $tools->assign_checkbox("t_message_html[1]", "t_message_html[0]");
+	echo "<br /><br />\n";
+} else {
+	echo form_input_hidden("t_message_html", "disabled");
+}
+
+echo "<h2>". $lang['emoticonsinmessage'] .":</h2>\n";
+
+echo form_radio("t_post_emots", "enabled", $lang['enabled'], $emots_enabled)." \n";
+echo form_radio("t_post_emots", "disabled", $lang['disabled'], !$emots_enabled)." \n";
 
 echo "<br /><br /><h2>". $lang['messageoptions'] .":</h2>\n";
 
@@ -740,18 +813,20 @@ if (forum_get_setting('attachments_enabled', 'Y', false)) {
     echo form_input_hidden("aid", $aid);
 }
 
-echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
+if ($allow_sig == true) {
+	echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-$t_sig = $sig->getTidyContent();
+	$t_sig = $sig->getTidyContent();
 
-echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+	echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
-echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+	echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-if ($sig->isDiff()) {
-    echo "          <tr><td>\n";
-    echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-    echo "          </td></tr>\n";
+	if ($sig->isDiff()) {
+		echo "          <tr><td>\n";
+		echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+		echo "          </td></tr>\n";
+	}
 }
 
 echo "            </td>\n";

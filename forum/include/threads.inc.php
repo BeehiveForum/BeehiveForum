@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.83 2003-08-01 23:52:54 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.84 2003-08-02 13:46:38 hodcroftcj Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -55,9 +55,9 @@ function threads_get_folders()
     }else {
         while($row = db_fetch_array($result)) {
             if (isset($row['INTEREST'])) {
-                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => $row['DESCRIPTION'], 'ALLOWED_TYPES' => $row['ALLOWED_TYPES'], 'INTEREST' => $row['INTEREST']);
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => $row['DESCRIPTION'], 'ALLOWED_TYPES' => !is_null($row['ALLOWED_TYPES']) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => $row['INTEREST']);
             }else {
-                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => $row['DESCRIPTION'], 'ALLOWED_TYPES' => $row['ALLOWED_TYPES'], 'INTEREST' => 0);
+                $folder_info[$row['FID']] = array('TITLE' => $row['TITLE'], 'DESCRIPTION' => $row['DESCRIPTION'], 'ALLOWED_TYPES' => !is_null($row['ALLOWED_TYPES']) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD, 'INTEREST' => 0);
             }
         }
     }
@@ -413,6 +413,46 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
+    list($threads, $folder_order) = threads_process_list($resource_id);
+    return array($threads, $folder_order);
+
+}
+
+function threads_get_polls($uid, $start = 0)
+{
+
+    $folders = threads_get_available_folders();
+    $db_threads_get_polls = db_connect();
+
+    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
+    // for threads with unread messages, so the UID needs to be passed to the function
+
+    $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
+    $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
+    $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
+    $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
+    $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
+    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ON ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+    $sql .= "JOIN " . forum_table("USER") . " USER ";
+    $sql .= "JOIN " . forum_table("POST") . " POST ";
+    $sql .= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
+    $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
+    $sql .= "LEFT JOIN " . forum_table("POST_ATTACHMENT_IDS") . " AT ON ";
+    $sql .= "(AT.TID = THREAD.TID) ";
+    $sql .= "WHERE THREAD.fid in ($folders) ";
+    $sql .= "AND THREAD.poll_flag = 'Y' ";
+    $sql .= "AND USER.uid = POST.from_uid ";
+    $sql .= "AND POST.tid = THREAD.tid ";
+    $sql .= "AND POST.pid = 1 ";
+    $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
+    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "GROUP BY THREAD.tid ";
+    $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
+    $sql .= "LIMIT $start, 50";
+
+    $resource_id = db_query($sql, $db_threads_get_polls);
     list($threads, $folder_order) = threads_process_list($resource_id);
     return array($threads, $folder_order);
 

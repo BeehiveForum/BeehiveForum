@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.40 2003-07-31 22:08:38 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.41 2003-08-02 13:46:35 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -197,7 +197,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 }
 
 html_draw_top_script();
-echo "<h1>{$lang[createpoll]}</h1>\n";
+echo "<h1>{$lang['createpoll']}</h1>\n";
 
 if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = md5(uniqid(rand()));

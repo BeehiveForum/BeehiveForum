@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.117 2005-01-07 00:49:00 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.118 2005-01-16 00:11:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -290,7 +290,9 @@ if (isset($_POST['del'])) {
             // Unban the unselected IP adddresses first.
 
             foreach($t_ip_banned as $banned_ip_address) {
+
                 if (!in_array($banned_ip_address, $t_ban_ipaddress)) {
+
                     unban_ip($banned_ip_address);
                     admin_addlog($uid, 0, 0, 0, 0, 0, 5);
                 }
@@ -299,11 +301,11 @@ if (isset($_POST['del'])) {
             // Ban the selected IP Addresses
 
             foreach($t_ban_ipaddress as $ban_ip_address) {
+
                 if (!ip_is_banned($ban_ip_address)) {
-                    if (($t_ban_ipaddress != $ipaddress) && !($user['STATUS']&PERM_CHECK_SOLDIER)) {
-                        ban_ip($ban_ip_address);
-                        admin_addlog($uid, 0, 0, 0, 0, 0, 4);
-                    }
+
+                    ban_ip($ban_ip_address);
+                    admin_addlog($uid, 0, 0, 0, 0, 0, 4);
                 }
             }
         }
@@ -394,7 +396,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['userstatus']}:</td>\n";
+    echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['userstatus']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -441,7 +443,7 @@ if (isset($_POST['t_delete_posts'])) {
         echo "            <td class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}:</td>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td>&nbsp;</td>\n";
@@ -566,7 +568,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['usergroups']}:</td>\n";
+    echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['usergroups']}</td>\n";
     echo "                </tr>\n";
 
     if ($user_groups_array = perm_user_get_groups($uid)) {
@@ -612,6 +614,9 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                          </table>\n";
         echo "                        </td>\n";
         echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
@@ -648,68 +653,52 @@ if (isset($_POST['t_delete_posts'])) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}:</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['useripaddresses']}</td>\n";
     echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"90%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td>{$lang['listofthelastknownipaddresses']}</td>\n";
+    echo "                      </tr>\n";
 
-    if ($user_alias_array = user_get_aliases($user['UID'])) {
+    if ($user_ip_address_array = user_get_ip_addresses($user['UID'])) {
 
-        if (sizeof($user_alias_array) > 0) {
+        if (sizeof($user_ip_address_array) > 0) {
 
-            echo "                <tr>\n";
-            echo "                  <td>&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"box\" width=\"90%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td>\n";
-            echo "                          <table class=\"posthead\" width=\"100%\">\n";
-            echo "                            <tr>\n";
-            echo "                              <td class=\"subhead\">&nbsp;</td>\n";
-            echo "                              <td class=\"subhead\" width=\"150\">&nbsp;LOGON</td>\n";
-            echo "                              <td class=\"subhead\">&nbsp;IP Address</td>\n";
-            echo "                            </tr>\n";
+            echo "                        <td>&nbsp;</td>\n";
+            echo "                      </tr>\n";
 
-            foreach ($user_alias_array as $user_alias) {
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\">", form_checkbox("t_ban_ipaddress[]", $user_alias['IPADDRESS'], "", ip_is_banned($user_alias['IPADDRESS'])), "</td>\n";
-                echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
-                echo "                              <td align=\"left\">&nbsp;{$user_alias['IPADDRESS']}";
+            foreach ($user_ip_address_array as $ip_address) {
 
-                if (ip_is_banned($user_alias['IPADDRESS'])) echo form_input_hidden("t_ip_banned[]", $user_alias['IPADDRESS']);
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">";
+
+                if (ip_is_banned($ip_address)) {
+
+                    echo form_input_hidden("t_ip_banned[]", $ip_address), form_checkbox("t_ban_ipaddress[]", $ip_address, $ip_address, true);
+
+                }else {
+
+                    echo form_checkbox("t_ban_ipaddress[]", $ip_address, $ip_address, false);
+                }
 
                 echo "</td>\n";
-                echo "                            </tr>\n";
+                echo "                      </tr>\n";
             }
-
-            echo "                            </tr>\n";
-            echo "                          </table>\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td class=\"smalltext\" align=\"left\">{$lang['tobananIPaddress']}</td>\n";
-            echo "                </tr>\n";
         }
 
     }else {
 
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
         echo "                        <td>{$lang['nomatches']}</td>\n";
         echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
     }
 
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";
@@ -729,7 +718,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}:</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -759,7 +748,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['attachments']}:</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['attachments']}</td>\n";
     echo "                </tr>\n";
 
     if ($attachments_array = admin_get_users_attachments($uid, true)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.18 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.19 2004-12-10 08:46:58 decoyduck Exp $ */
 
 include_once("./include/lang.inc.php");
 include_once("./include/html.inc.php");
@@ -51,10 +51,15 @@ function header_redirect_cookie($uri)
 {
     // Microsoft-IIS bug prevents redirect at same time as setting cookies.
 
-        if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
-                header_redirect($uri);
-        } else {
+    if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+
+        header_redirect($uri);
+
+    }else {
+
         html_draw_top();
+
+        $lang = load_language_file();
 
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";

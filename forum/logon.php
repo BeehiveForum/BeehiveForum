@@ -38,6 +38,10 @@ if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }
 
+if (isset($HTTP_GET_VARS['msg'])) {
+    $msg = $HTTP_GET_VARS['msg'];
+}
+
 if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
     $final_uri = './discussion.php';
 }
@@ -121,7 +125,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
           $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $passhash_array[$key], true);
 
-	}
+        }
 
       }
 
@@ -143,79 +147,81 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
           bh_session_init(0); // Use UID 0 for guest account.
 
-	}
+        }
 
       }else {
 
         bh_session_init($luid);
 
-	// Prepare Form Data
+        // Prepare Form Data
 
-	$logon = _stripslashes($HTTP_POST_VARS['logon']);
-	$passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['password'])));
-	$passh = md5(_stripslashes($HTTP_POST_VARS['password']));
+        $logon = _stripslashes($HTTP_POST_VARS['logon']);
+        $passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['password'])));
+        $passh = md5(_stripslashes($HTTP_POST_VARS['password']));
 
-	// Check to see if Form Data already exists in cookie
+        // Check to see if Form Data already exists in cookie
 
         if (!in_array($logon, $username_array)) {
 
           array_unshift($username_array, $logon);
 
-	  if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-	    array_unshift($password_array, $passw);
-	    array_unshift($passhash_array, $passh);
-	  }else {
-	    array_unshift($password_array, str_repeat(chr(255), 4));
-	    array_unshift($passhash_array, str_repeat(chr(255), 4));
-	  }
+          if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+            array_unshift($password_array, $passw);
+            array_unshift($passhash_array, $passh);
+          }else {
+            array_unshift($password_array, str_repeat(chr(255), 4));
+            array_unshift($passhash_array, str_repeat(chr(255), 4));
+          }
 
         }else {
 
-	  if (($key = array_search($logon, $username_array)) !== false) {
+          if (($key = array_search($logon, $username_array)) !== false) {
 
-	    $uncookie = array_splice($username_array, $key, 1);
-	    $pwcookie = array_splice($password_array, $key, 1);
-	    $phcookie = array_splice($passhash_array, $key, 1);
+            $uncookie = array_splice($username_array, $key, 1);
+            $pwcookie = array_splice($password_array, $key, 1);
+            $phcookie = array_splice($passhash_array, $key, 1);
 
             array_unshift($username_array, $uncookie[0]);
 
             if(isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
-	      if ($pwcookie[0] == str_repeat(chr(255), 4)) {
-	        array_unshift($password_array, $passw);
-	        array_unshift($passhash_array, $passh);
-	      }else {
-  	        array_unshift($password_array, $pwcookie[0]);
-	        array_unshift($passhash_array, $phcookie[0]);
-	      }
-	    }else {
-	      array_unshift($password_array, str_repeat(chr(255), 4));
-	      array_unshift($passhash_array, str_repeat(chr(255), 4));
-	    }
+              if ($pwcookie[0] == str_repeat(chr(255), 4)) {
+                array_unshift($password_array, $passw);
+                array_unshift($passhash_array, $passh);
+              }else {
+                array_unshift($password_array, $pwcookie[0]);
+                array_unshift($passhash_array, $phcookie[0]);
+              }
+            }else {
+              array_unshift($password_array, str_repeat(chr(255), 4));
+              array_unshift($passhash_array, str_repeat(chr(255), 4));
+            }
 
-	  }
+          }
 
-	}
+        }
 
-	// Set the cookies
+        // Set the cookies
 
         for ($i = 0; $i < sizeof($username_array); $i++) {
 
           setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
           setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-	  setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+          setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
 
         }
 
-	// Get Start Page
+        // Get Start Page
 
         $user_prefs = user_get_prefs($luid);
 
-        if (!strstr($final_uri, 'discussion.php')) {
+        if (!strstr($final_uri, 'discussion.php') && !isset($msg)) {
           if ($user_prefs['START_PAGE'] == 1) {
             $final_uri = "./discussion.php";
           }else {
-  	    $final_uri = "./start.php";
-	  }
+            $final_uri = "./start.php";
+          }
+        }elseif (isset($msg)) {
+          $final_uri = "./discussion.php?msg=$msg";
         }
 
       }

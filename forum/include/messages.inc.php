@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.207 2003-12-11 14:28:33 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.208 2003-12-16 00:30:34 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -51,7 +51,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
-    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
+    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON as EDIT_LOGON, POST.IPADDRESS, ";
     $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP ";
     $sql .= "from " . forum_table("POST") . " POST ";
@@ -61,6 +61,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "on (USER_PEER_TO.uid = '$uid' and USER_PEER_TO.PEER_UID = POST.TO_UID) ";
     $sql .= "left join " . forum_table("USER_PEER") . " USER_PEER_FROM ";
     $sql .= "on (USER_PEER_FROM.uid = '$uid' and USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
+    $sql .= "left join " . forum_table("USER") . " EDIT_USER on (POST.EDITED_BY = EDIT_USER.UID) ";
     $sql .= "where POST.TID = '$tid' ";
     $sql .= "and POST.PID >= '$pid' ";
     $sql .= "order by POST.PID ";
@@ -100,7 +101,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
             $messages[$i]['CREATED'] = $message['CREATED'];
             $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
 	    $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
-	    $messages[$i]['EDITED_BY'] = $message['EDITED_BY'];
+	    $messages[$i]['EDIT_LOGON'] = $message['EDIT_LOGON'];
 	    $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
             $messages[$i]['CONTENT'] = '';
             $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
@@ -237,9 +238,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
-    if (isset($message['EDITED']) && isset($message['EDITED_BY']) && $message['EDITED'] > 0 && $message['EDITED_BY'] > 0) {
+    if (isset($message['EDITED']) && $message['EDITED'] > 0) {
         $message['CONTENT'].= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". format_time($message['EDITED'], 1, "d/m/y H:i T");
-        $message['CONTENT'].= " {$lang['by']} ". user_get_logon($message['EDITED_BY']);
+        $message['CONTENT'].= " {$lang['by']} {$message['EDIT_LOGON']}";
         $message['CONTENT'].= "</p>";
     }
 

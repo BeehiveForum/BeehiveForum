@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.17 2003-11-27 12:00:32 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.18 2003-12-16 00:30:34 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 
@@ -82,7 +82,7 @@ function light_poll_confirm_close($tid)
     global $HTTP_SERVER_VARS, $lang;
 
     if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
-        edit_refuse();
+        edit_refuse($tid, 1);
         return;
     }
 

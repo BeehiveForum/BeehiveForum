@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.130 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: logon.php,v 1.131 2004-04-11 22:37:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -179,7 +179,7 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
     if (perform_logon(true)) {
 
         // IIS bug prevents redirect at same time as setting cookies.
-
+        
         if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], "Microsoft-IIS")) {
 
             if (isset($final_uri)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.53 2004-04-28 20:38:56 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.54 2004-05-23 13:39:35 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -98,38 +98,6 @@ function form_textarea($name, $value = false, $rows = false, $cols = false, $wra
     }
 
     $html.= "dir=\"{$lang['_textdir']}\" autocomplete=\"off\">$value</textarea>";
-    return $html;
-}
-
-// Creates a dropdown with values from database
-
-function form_dropdown_sql($name, $sql, $default, $custom_html = false)
-{
-    $lang = load_language_file();
-
-    $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" ";
-    $html.= "dir=\"{$lang['_textdir']}\" ";
-
-    if ($custom_html) {
-        $custom_html = trim($custom_html);
-        $html.= "$custom_html ";
-    }
-
-    $html.= ">";
-
-    $db_form_dropdown_sql = db_connect();
-    $result = db_query($sql, $db_form_dropdown_sql);
-
-    while ($row = db_fetch_array($result)) {
-        $sel = ($row[0] == $default) ? " selected=\"selected\"" : "";
-        if ($row[1]) {
-            $html.= "<option value=\"". _stripslashes($row[0]). "\"$sel>". _stripslashes($row[1]). "</option>";
-        }else {
-            $html.= "<option$sel>". _stripslashes($row[0]). "</option>";
-        }
-    }
-
-    $html.= "</select>";
     return $html;
 }
 

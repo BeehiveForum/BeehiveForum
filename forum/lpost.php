@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.48 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.49 2004-05-23 13:39:36 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -424,7 +424,7 @@ if (!isset($t_threadtitle)) {
 if ($newthread) {
 
     echo "<p>{$lang['selectfolder']}: ";
-    echo folder_draw_dropdown($t_fid,"t_fid","",FOLDER_ALLOW_NORMAL_THREAD) . "</p>\n";
+    echo light_folder_draw_dropdown($t_fid, "t_fid", ""), "</p>\n";
     echo "<p>{$lang['threadtitle']}: ";
     echo light_form_input_text("t_threadtitle", _htmlentities(_stripslashes($t_threadtitle)), 30, 64);
     echo "</p>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.47 2004-05-20 16:14:08 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.48 2004-05-23 13:39:35 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -414,7 +414,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>{$lang['wormeduser']}</b> ";
+            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
             echo "&nbsp;".format_time($message['CREATED'], 1)."<br />";
         }
@@ -621,43 +621,42 @@ function light_html_guest_error ()
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
+    $db_light_folder_draw_dropdown = db_connect();
+
     $uid = bh_session_get_value('UID');
 
-    if (!is_numeric($default_fid))
+    if (!is_numeric($default_fid));
+
+    if (!$table_data = get_table_prefix()) return "";
 
     $access_allowed = USER_PERM_POST_READ;
+    $allowed_types = FOLDER_ALLOW_NORMAL_THREAD;
 
-    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = FOLDER.FID) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 OR GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "AND (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
-    $sql.= "ORDER BY FOLDER.FID ";
+    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "WHERE FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL ";
+    $sql.= "ORDER BY FOLDER.FID";
 
-    return form_dropdown_sql($field_name.$suffix, $sql, $default_fid);
-}
+    $result = db_query($sql, $db_light_folder_draw_dropdown);
 
-function light_form_dropdown_sql($name, $sql, $default)
-{
-    $html = "<select name=\"$name\">";
+    if (db_num_rows($result) > 0) {
 
-    $db_form_dropdown_sql = db_connect();
+        while($row = db_fetch_array($result, MYSQL_ASSOC)) {
 
-    $result = db_query($sql, $db_form_dropdown_sql);
+            if (perm_check_folder_permissions($row['FID'], $access_allowed)) {
 
-    while($row = db_fetch_array($result)){
-        $sel = ($row[0] == $default) ? " selected" : "";
-        if($row[1]){
-            $html.= "<option value=\"".$row[0]."\"$sel>".$row[1]."</option>";
-        } else {
-            $html.= "<option$sel>".$row[0]."</option>";
+                $folders['FIDS'][] = $row['FID'];
+                $folders['TITLES'][] = $row['TITLE'];
+            }
+        }
+
+        if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
+
+            return light_form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid);
         }
     }
 
-    return $html."</select>";
+    return false;
 }
 
 function light_form_textarea($name, $value = "", $rows = 0, $cols = 0)

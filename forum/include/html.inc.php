@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.121 2004-08-10 21:43:11 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.122 2004-08-12 22:53:16 tribalonline Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -390,16 +390,22 @@ function html_draw_bottom ()
 
 function style_image($img)
 {
+	$webtag = get_webtag($webtag_search);
+
     $forum_settings = get_forum_settings();
 
-    $style = bh_session_get_value('STYLE');
-    $file  = "./styles/". ($style ? $style : forum_get_setting('default_style')) . "/images/$img";
+    if ($user_style = bh_session_get_value('STYLE')) {
 
-    if (@file_exists($file)) {
-        return $file;
-    } else {
-        return "./images/$img";
+        if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/images/$img")) {
+            return "styles/$user_style/images/$img";
+        }
+
+        if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/images/$img")) {
+            return "forums/$webtag/styles/$user_style/images/$img";
+        }
     }
+
+	return "./images/$img";
 }
 
 function bh_setcookie($name, $value, $expires = 0)

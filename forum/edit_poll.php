@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.29 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.30 2003-10-29 21:05:20 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -253,6 +253,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
 
+  /*
   $max_value   = 0;
   $totalvotes  = 0;
   $optioncount = 0;
@@ -280,7 +281,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $vertical_bar_height = 0;
     $vertical_bar_width = round(400 / $optioncount, 2);
 
-  }
+  } */
 
   if ($polldata['SHOWRESULTS'] == 1) {
 
@@ -416,11 +417,15 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                       $t_post_html = false;
                     }
                   }else {
-                    if (strip_tags($pollresults['OPTION_NAME'][0]) != $pollresults['OPTION_NAME'][0]) {
-                      $t_post_html = true;
-                    }else {
+		    if (isset($pollresults['OPTION_NAME'][0])) {
+                      if (strip_tags($pollresults['OPTION_NAME'][0]) != $pollresults['OPTION_NAME'][0]) {
+                        $t_post_html = true;
+                      }else {
+                        $t_post_html = false;
+                      }
+		    }else {
                       $t_post_html = false;
-                    }
+		    }
                   }
 
                   for ($i = 0; $i < $answercount; $i++) {

@@ -79,7 +79,11 @@ $cookie_domain = ""; // Specifies the domain name that the cookies set
 
 // Forum options -------------------------------------------------------
 
-$show_links = true;             // Show the links section
+$show_stats = true;             // Show Forum stats at the bottom of
+                                // message pane.
+
+$show_links = true;             // Show the links section.
+
 $auto_logon = true;             // Automatically logs on the user as a
                                 // guest unless they have previously
                                 // visited the logon page.

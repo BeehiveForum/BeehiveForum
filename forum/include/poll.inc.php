@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.73 2003-10-28 15:53:13 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.74 2003-10-29 21:05:21 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -406,7 +406,15 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       }
 
       $poll_group_count = sizeof($group_array);
-      $totalvotes = ceil($totalvotes / $poll_group_count);
+
+	  if ($poll_group_count > 0 && $totalvotes > 0) {
+
+        $totalvotes = ceil($totalvotes / $poll_group_count);
+
+	  }else {
+
+	    $totalvotes = 0;
+	  }
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
@@ -823,56 +831,56 @@ function poll_horizontal_graph($tid)
 
     $polldisplay = "            <table width=\"100%\" align=\"center\">\n";
 
-    for ($i = 0; $i <= sizeof($pollresults['OPTION_ID']); $i++) {
+	if (sizeof($pollresults['OPTION_ID']) > 0) {
 
-      if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
+      for ($i = 0; $i <= sizeof($pollresults['OPTION_ID']); $i++) {
 
-      if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
+        if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
 
-        if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+        if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
+
+          if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
             $polldisplay.= "                <td colspan=\"2\"><hr /></td>\n";
             $poll_group_count++;
-        }
+          }
 
-        $polldisplay.= "              <tr>\n";
-        $polldisplay.= "                <td width=\"150\" class=\"postbody\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
+          $polldisplay.= "              <tr>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"postbody\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
 
-        if ($pollresults['VOTES'][$i] > 0) {
+          if ($pollresults['VOTES'][$i] > 0) {
 
-          $polldisplay.= "                <td width=\"300\">\n";
-          $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: 25px; width: ". floor(round(300 / $max_values[$pollresults['GROUP_ID'][$i]], 2) * $pollresults['VOTES'][$i]). "px\">\n";
-          $polldisplay.= "                    <tr>\n";
-          $polldisplay.= "                      <td class=\"pollbar". $bar_color. "\">&nbsp;</td>\n";
-          $polldisplay.= "                    </tr>\n";
-          $polldisplay.= "                  </table>\n";
-          $polldisplay.= "                </td>\n";
+            $polldisplay.= "                <td width=\"300\">\n";
+            $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: 25px; width: ". floor(round(300 / $max_values[$pollresults['GROUP_ID'][$i]], 2) * $pollresults['VOTES'][$i]). "px\">\n";
+            $polldisplay.= "                    <tr>\n";
+            $polldisplay.= "                      <td class=\"pollbar". $bar_color. "\">&nbsp;</td>\n";
+            $polldisplay.= "                    </tr>\n";
+            $polldisplay.= "                  </table>\n";
+            $polldisplay.= "                </td>\n";
 
-        }else {
+          }else {
 
-          $polldisplay.= "                <td class=\"postbody\" height=\"25\">&nbsp;</td>\n";
+            $polldisplay.= "                <td class=\"postbody\" height=\"25\">&nbsp;</td>\n";
+          }
 
-        }
-
-        if (isset($totalvotes[$pollresults['GROUP_ID'][$i]]) && $totalvotes[$pollresults['GROUP_ID'][$i]] > 0) {
+          if (isset($totalvotes[$pollresults['GROUP_ID'][$i]]) && $totalvotes[$pollresults['GROUP_ID'][$i]] > 0) {
             $vote_percent = round((100 / $totalvotes[$pollresults['GROUP_ID'][$i]]) * $pollresults['VOTES'][$i], 2);
-        }else {
+          }else {
             $vote_percent = 0;
+          }
+
+          $polldisplay.= "              </tr>\n";
+          $polldisplay.= "              <tr>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
+          $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
+          $polldisplay.= "              </tr>\n";
+
+          $poll_previous_group = $pollresults['GROUP_ID'][$i];
         }
 
-        $polldisplay.= "              </tr>\n";
-        $polldisplay.= "              <tr>\n";
-        $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
-        $polldisplay.= "              </tr>\n";
-
-        $poll_previous_group = $pollresults['GROUP_ID'][$i];
-
+        $bar_color++;
+        if ($bar_color > 5) $bar_color = 1;
       }
-
-      $bar_color++;
-      if ($bar_color > 5) $bar_color = 1;
-
-    }
+	}
 
     $polldisplay.= "            </table>\n";
 

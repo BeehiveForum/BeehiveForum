@@ -270,11 +270,13 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0) {
     $selectedfolder = 0;
   }
 
+  $ignored_folders = array();
+
   while (list($fid, $folder_data) = each($folder_info)) {
     if (!$folder_data['INTEREST'] || ($selectedfolder == $fid)) {
-      if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+      if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
     }else {
-      $ignored_folders[] = $fid;
+      if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
     }
   }
 
@@ -419,6 +421,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"Subscribed\" align=\"middle\"> ";
                     if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"This is a poll\" align=\"middle\"> ";
                     if ($thread['relationship'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Discussion started by a friend\" align=\"middle\"> ";
+		    if ($thread['attachments']) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"Discussion contains an attachment\" align=\"middle\"> ";
                     echo "<span class=\"threadxnewofy\">".$number."</span>";
                     echo "</td><td valign=\"top\" nowrap=\"nowrap\" align=\"right\">";
                     echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";

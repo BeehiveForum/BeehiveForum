@@ -24,6 +24,8 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/config.inc.php");
+require_once("./include/format.inc.php");
 
 function user_exists($logon)
 {
@@ -282,7 +284,7 @@ function user_get_prefs($uid)
                     'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
                     'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
                     'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
-                    'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '');
+                    'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '', 'DOB_DISPLAY' => '');
     } else {
         $fa = db_fetch_array($result);
     }
@@ -290,11 +292,13 @@ function user_get_prefs($uid)
     return $fa;
 }
 
-function user_update_prefs($uid,$firstname,$lastname,$dob,$homepage_url,$pic_url,
-                           $email_notify,$timezone,$dl_saving,$mark_as_of_int,
-                           $posts_per_page, $font_size, $style, $view_sigs,
-                           $start_page = 0, $language = "", $pm_notify, $pm_notify_email)
+function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_url = "",$pic_url = "",
+                           $email_notify = "",$timezone = 0,$dl_saving = "",$mark_as_of_int = "",
+                           $posts_per_page = 5, $font_size = 10, $style, $view_sigs = "",
+                           $start_page = 0, $language = "", $pm_notify = "", $pm_notify_email = "", $dob_display = 0)
 {
+
+    global $default_style;
 
     $db_user_update_prefs = db_connect();
 
@@ -302,17 +306,17 @@ function user_update_prefs($uid,$firstname,$lastname,$dob,$homepage_url,$pic_url
     $result = db_query($sql, $db_user_update_prefs);
 
     if (empty($timezone)) $timezone = 0;
-    if (empty($posts_per_page)) $posts_per_page = 0;
-    if (empty($font_size)) $font_size = 0;
-        if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
+    if (empty($posts_per_page)) $posts_per_page = 5;
+    if (empty($font_size)) $font_size = 10;
+    if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
-    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL) ";
+    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY) ";
     $sql.= "values ($uid, '". _htmlentities($firstname). "', '". _htmlentities($lastname). "', '$dob', ";
     $sql.= "'". _htmlentities($homepage_url). "', '". _htmlentities($pic_url). "', ";
     $sql.= "'". _htmlentities($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int', ";
-    $sql.= "$posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language', '$pm_notify', '$pm_notify_email')";
+    $sql.= "$posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language', '$pm_notify', '$pm_notify_email', '$dob_display')";
 
     $result = db_query($sql, $db_user_update_prefs);
 
@@ -410,4 +414,45 @@ function user_guest_enabled()
 
 }
 
+function user_get_dob($uid)
+{
+    $prefs = user_get_prefs($uid);
+    if ($prefs['DOB_DISPLAY'] == 2 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
+        return format_date($prefs['DOB']);
+    } else {
+        return false;
+    }
+}
+
+function user_get_age($uid)
+{
+	$prefs = user_get_prefs($uid);
+	if ($prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
+	    return format_age($prefs['DOB']);
+    } else {
+        return false;
+    }
+}
+
+function user_get_forthcoming_birthdays()
+{
+    $db_user_get_forthcoming_birthdays = db_connect();
+    $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) ";
+    $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
+    $sql .= "FROM " . forum_table("USER"). " U, ". forum_table("USER_PREFS") . " UP ";
+    $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 ";
+    $sql .= "ORDER BY DAYS_TO_BIRTHDAY ASC ";
+    $sql .= "LIMIT 0, 5";
+    
+    $result = db_query($sql, $db_user_get_forthcoming_birthdays);
+    if (db_num_rows($result)) {
+        $birthdays = array();
+        while ($row = db_fetch_array($result)) {
+            $birthdays[] = $row;
+        }
+    } else {
+        return false;
+    }
+    return $birthdays;
+}
 ?>

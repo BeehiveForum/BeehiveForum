@@ -99,6 +99,20 @@ if ($relationship & USER_IGNORED) echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;<
 echo "</h2></td>\n";
 echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
+
+if ($age = user_get_age($uid)) {
+    echo "          <tr>\n";
+    echo "            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "            <td align=\"right\" class=\"smalltext\">";
+
+    if ($dob = user_get_dob($uid)) {
+        echo "{$lang['birthday']}: " . $dob . " ({$lang['aged']} " . $age . ")<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    } else {
+        echo "{$lang['age']}: " . $age . "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    }
+    echo "          </tr>\n";
+}
+
 echo "          <tr>\n";
 echo "            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "            <td align=\"right\" class=\"smalltext\">{$lang['posts']}: " . user_get_post_count($uid). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";

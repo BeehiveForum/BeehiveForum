@@ -62,7 +62,7 @@ function _html_draw_top1($title = false)
         $user_style = bh_session_get_value('STYLE');
         $user_style = $user_style ? $user_style : $default_style;
 
-        if (is_dir("./styles/$user_style")) {
+        if (is_dir("./styles/$user_style") && file_exists("./styles/$user_style/style.css")) {
             $stylesheet = "styles/$user_style/style.css";
         }else {
             $stylesheet = "styles/style.css";

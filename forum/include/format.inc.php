@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+require_once("./include/constants.inc.php");
+
 function format_user_name($u_logon,$u_nickname)
 {
     if($u_nickname != ""){
@@ -77,8 +79,6 @@ function format_time($time, $verbose = 0)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
-    include_once("./include/constants.inc.php");
-
     // Calculate $time in local timezone and current local time (the cookie bh_sess_tz = hours difference from GMT, West = negative)
     $local_time = $time + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
     $local_time_now = time() + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
@@ -119,8 +119,6 @@ function timestamp_to_date($timestamp)
 
 function timestamp_amend_bst($timestamp)
 {
-
-
     $year = date("Y", mktime());
 
     $ldmarw = date("w", mktime(2, 0, 0, 4,  0, $year));
@@ -139,8 +137,6 @@ function timestamp_amend_bst($timestamp)
     }else{
       return $timestamp; // return unadjusted timestamp
     }
-
-
 }
 
 // Lazy htmlentities function which ensures the use of
@@ -203,4 +199,35 @@ function _addslashes($string)
 
 }
 
+function get_local_time()
+{
+    if (bh_session_get_value('DL_SAVING')) {
+        $local_time = timestamp_amend_bst(time() + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS));
+    } else {
+        $local_time = time() + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
+    }
+    
+    return $local_time;
+}
+
+function format_age($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
+{
+	$local_time = get_local_time();
+    $todays_date = date("j", $local_time);
+    $todays_month = date("n", $local_time);
+    $todays_year = date("Y", $local_time);
+    
+    $birthday = explode("-", $dob);
+
+    $age = $todays_year - $birthday[0];
+    if (($todays_month < $birthday[1]) && ($todays_date < $birthday[2])) $age--;
+    
+    return $age;
+}
+
+function format_date($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
+{
+    $date_bits = explode("-", $date);
+    return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $date_bits[0]));
+}
 ?>

@@ -100,6 +100,11 @@ if(isset($HTTP_POST_VARS['submit'])){
         $valid = false;
     }
 
+    if (!isset($HTTP_POST_VARS['dob_year']) || !isset($HTTP_POST_VARS['dob_month']) || !isset($HTTP_POST_VARS['dob_day']) || !checkdate($HTTP_POST_VARS['dob_month'], $HTTP_POST_VARS['dob_day'], $HTTP_POST_VARS['dob_year'])) {
+        $error_html .= "<h2>{$lang['birthdayrequired']}</h2>";
+        $valid = false;
+    }
+
     if ($valid) {
 
         if (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y"){
@@ -108,19 +113,11 @@ if(isset($HTTP_POST_VARS['submit'])){
             $HTTP_POST_VARS['sig_content'] = _stripslashes($HTTP_POST_VARS['sig_content']);
         }
 
-        $dob_day   = isset($HTTP_POST_VARS['dob_day'])   ? trim($HTTP_POST_VARS['dob_day'])   : 0;
-        $dob_month = isset($HTTP_POST_VARS['dob_month']) ? trim($HTTP_POST_VARS['dob_month']) : 0;
-        $dob_year  = isset($HTTP_POST_VARS['dob_year'])  ? trim($HTTP_POST_VARS['dob_year'])  : 0;
+        $dob_day   = trim($HTTP_POST_VARS['dob_day']);
+        $dob_month = trim($HTTP_POST_VARS['dob_month']);
+        $dob_year  = trim($HTTP_POST_VARS['dob_year']);
 
-        if ($dob_day > 0 && $dob_month > 0 && $dob_year > 0) {
-          $user_dob = date('Y-m-d', mktime(0, 0, 0, $dob_month, $dob_day, $dob_year));
-        }else {
-          $user_dob = '0000-00-00';
-        }
-
-        //$user_dob = str_pad(trim($HTTP_POST_VARS['dob_year']),  4, '0', STR_PAD_LEFT). '-';
-        //$user_dob.= str_pad(trim($HTTP_POST_VARS['dob_month']), 2, '0', STR_PAD_LEFT). '-';
-        //$user_dob.= str_pad(trim($HTTP_POST_VARS['dob_day']),   2, '0', STR_PAD_LEFT);
+        $user_dob = "$dob_year-$dob_month-$dob_day"; // We know this date is valid since we checked above
 
         // Update basic settings in USER table
 
@@ -150,7 +147,7 @@ if(isset($HTTP_POST_VARS['submit'])){
                           $HTTP_POST_VARS['font_size'], $HTTP_POST_VARS['style'],
                           $HTTP_POST_VARS['view_sigs'], $HTTP_POST_VARS['start_page'],
                           $HTTP_POST_VARS['language'], $HTTP_POST_VARS['pm_notify'],
-                          $HTTP_POST_VARS['pm_notify_email']);
+                          $HTTP_POST_VARS['pm_notify_email'], $HTTP_POST_VARS['dob_display']);
 
         // Update USER_SIG
 
@@ -176,20 +173,16 @@ $user = user_get(bh_session_get_value('UID'));
 $user_prefs = user_get_prefs(bh_session_get_value('UID'));
 user_get_sig(bh_session_get_value('UID'), $user_sig['CONTENT'], $user_sig['HTML']);
 
-// Arrays for Birthday
-
-$birthday_days   = array(' ', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31');
-$birthday_months = array(' ', $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'], $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'], $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
-$birthday_years  = array_merge(array(' '), range(1900, date('Y', mktime())));
-
 // Split the DOB into usable variables.
 
 if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_prefs['DOB'])) {
     list($dob_year, $dob_month, $dob_day) = explode('-', $user_prefs['DOB']);
+    $dob_blank_fields = ($dob_year == 0 || $dob_month == 0 || $dob_day == 0) ? true : false;
 }else {
     $dob_year = 0;
     $dob_month = 0;
     $dob_day = 0;
+    $dob_blank_fields = true;
 }
 
 // Start output here
@@ -260,7 +253,7 @@ if(!empty($error_html)) {
       </tr>
       <tr>
         <td><?php echo $lang['dateofbirth']; ?></td>
-        <td>: <?php echo form_dropdown_array("dob_day", range (0, 31), $birthday_days, $dob_day); ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><?php echo form_dropdown_array("dob_month", range (0, 12), $birthday_months, $dob_month); ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><?php echo form_dropdown_array("dob_year", $birthday_years, $birthday_years, $dob_year); ?></td>
+        <td>: <?php echo form_dob_dropdowns($dob_year, $dob_month, $dob_day, $dob_blank_fields); ?></td>
       </tr>
       <tr>
         <td><?php echo $lang['homepageURL']; ?></td>
@@ -366,6 +359,10 @@ if(!empty($error_html)) {
       <tr>
         <td><?php echo $lang['startpage']; ?></td>
         <td><?php echo form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
+      </tr>
+      <tr>
+        <td><?php echo $lang['ageanddob']; ?></td>
+        <td><?php echo form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), isset($user_prefs['DOB_DISPLAY']) ? $user_prefs['DOB_DISPLAY'] : 0); ?></td>
       </tr>
       <tr>
         <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>

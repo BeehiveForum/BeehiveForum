@@ -103,8 +103,8 @@ if (isset($HTTP_GET_VARS['usersearch']) && strlen($HTTP_GET_VARS['usersearch']) 
 
 // Draw the form
 echo "<h1>{$lang['manageusers']}</h1>\n";
-echo "<p>{$lang['manageusersexp_1']}</p>\n";
-echo "<p>{$lang['manageusersexp_2']}</p>\n";
+echo "<p>{$lang['manageusersexp_1']} {$sort_by}. {$lang['manageusersexp_2']}</p>\n";
+echo "<p>{$lang['manageusersexp_3']}</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";

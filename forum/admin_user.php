@@ -339,7 +339,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   }elseif (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
 
     echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_checkbox("t_ban_ipaddress", 1, $lang['banthisipaddress'], ip_is_banned($user['LOGON_FROM'])), form_input_hidden("t_ip_address", $user['LOGON_FROM']);
+    echo "          <td align=\"left\">", form_checkbox("t_ban_ipaddress", 1, $lang['banthisip'], ip_is_banned($user['LOGON_FROM'])), form_input_hidden("t_ip_address", $user['LOGON_FROM']);
 
     if (ip_is_banned($user['LOGON_FROM'])) {
       echo form_input_hidden("t_ip_banned", 1);

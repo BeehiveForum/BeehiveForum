@@ -30,7 +30,7 @@ require_once("./include/lang.inc.php");
 function light_html_draw_top ($title = false)
 {
 
-    global $forum_name;
+    global $forum_name, $lang;
 
     if(!$title){
         $title = $forum_name;

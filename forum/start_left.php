@@ -194,9 +194,32 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"visitor_log.php\" target=\"right\">{$lang['showmorevisitors']}</a><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-echo "  </tr>\n";
+
+if ($birthdays = user_get_forthcoming_birthdays()) {
+    echo "  <tr>\n";
+    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\" colspan=\"2\">{$lang['forthcomingbirthdays']}</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td>\n";
+    echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+    foreach ($birthdays as $row) {
+        echo "        <tr>\n";
+        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"".style_image('bullet.png')."\" width=\"12\" height=\"16\" alt=\"bullet\" /></td>\n";
+        echo "          <td><a href=\"#\" target=\"_self\" onclick=\"openProfile(".$row['UID'].")\">". $row['NICKNAME']. "</a></td>\n";
+        echo "          <td align=\"right\" nowrap=\"nowrap\">". format_date($row['DOB']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+        echo "        </tr>\n";
+    }
+    echo "      </table>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "  </tr>\n";
+}
+
 echo "  <tr>\n";
 echo "    <td class=\"subhead\" colspan=\"2\">{$lang['navigate']}</td>\n";
 echo "  </tr>\n";

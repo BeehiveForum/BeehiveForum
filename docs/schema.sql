@@ -439,6 +439,7 @@ CREATE TABLE USER_PREFS (
   LANGUAGE varchar(32) default NULL,
   PM_NOTIFY char(1) default NULL,
   PM_NOTIFY_EMAIL char(1) default NULL,
+  DOB_DISPLAY tinyint(3) unsigned default NULL,
   KEY STYLE (STYLE),
   KEY UID (UID)
 ) TYPE=MyISAM;

@@ -70,14 +70,17 @@ if ($pid == '') $pid = 1;
 if (isset($HTTP_POST_VARS['pollsubmit'])) {
 
   poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
+  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");
   
 }elseif (isset($HTTP_POST_VARS['pollclose'])) {
 
   poll_close($HTTP_POST_VARS['tid']);
+  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");  
   
 }elseif (isset($HTTP_POST_VARS['pollchangevote'])) {
 
   poll_delete_vote($HTTP_POST_VARS['tid']);
+  header_redirect("messages.php?msg=". $HTTP_POST_VARS['tid']. ".1");  
   
 }
 

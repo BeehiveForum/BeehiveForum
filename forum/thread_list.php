@@ -191,7 +191,7 @@ while (list($key1, $folder) = each($folder_order)) {
 	if (is_array($thread_info)) {	
 		echo "<tr>\n";
 		echo "<td class=\"threads\" style=\"border-bottom: 0;\">\n";
-		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder."\" class=\"folderinfo\">".$folder_msgs[$folder]." msgs</a>\n";
+		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder."\" class=\"folderinfo\">".$folder_msgs[$folder]." threads</a>\n";
 		echo "<a href=\"post.php?fid=".$folder."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
 		echo "</td></tr>\n";
 		echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
@@ -247,12 +247,8 @@ while (list($key1, $folder) = each($folder_order)) {
 						echo "<img src=\"./images/bullet.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\" />";
 					}
 				}
-				// work out how long ago the thread was posted and format the time to display - this is going to need modification to account for differing timezones
-				if (date("j", $thread['modified']) == date("j") && date("n", $thread['modified']) == date("n") && date("Y", $thread['modified']) == date("Y")) {
-					$thread_time = date("H:i", $thread['modified']);
-				} else {
-					$thread_time = date("j M", $thread['modified']);
-				}
+				// work out how long ago the thread was posted and format the time to display
+				$thread_time = format_time($thread['modified']);
 				
 				echo "&nbsp;</td><td valign\"top\">";
 				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". thread_get_author($thread['tid']) ."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a> <span class=\"threadxnewofy\">".$number."</span>";

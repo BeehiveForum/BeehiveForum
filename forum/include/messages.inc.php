@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.324 2005-02-09 21:45:34 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.325 2005-02-09 21:56:52 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -201,13 +201,15 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     $webtag = get_webtag($webtag_search);
 
+    $uid = bh_session_get_value('UID');
+
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
 
         message_display_deleted($tid, $message['PID'], $message);
         return;
     }
 
-    if (bh_session_get_value('UID') != $message['FROM_UID']) {
+    if ($uid != $message['FROM_UID']) {
 
         if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
 
@@ -324,7 +326,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
     }
 
-    if (forum_get_setting('require_post_approval', 'Y', false)) {
+    if (forum_get_setting('require_post_approval', 'Y', false) && $message['FROM_UID'] != $uid) {
 
         if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !perm_is_moderator($message['FID'])) {
 
@@ -381,7 +383,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</td>\n";
     echo "                <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && bh_session_get_value('UID') != 0) {
+    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $uid != 0) {
 
         echo "<b>{$lang['ignoredmsg']}</b>";
 
@@ -389,7 +391,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if ($in_list) {
 
-            $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+            $user_prefs = user_get_prefs($uid);
 
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
@@ -439,7 +441,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "</td>\n";
     echo "                <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
-    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
+    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $uid != 0) {
 
         echo "<a href=\"set_relation.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;rel=0&amp;exists=1&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['stopignoringthisuser']}</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewmessage']}</a>";
@@ -601,13 +603,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\">{$lang['reply']}</a>";
             }
 
-            if ((bh_session_get_value('UID') == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_DELETE)) || perm_is_moderator($message['FID'])) {
+            if (($uid == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_DELETE)) || perm_is_moderator($message['FID'])) {
 
                 echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
             }
 
-            if ((bh_session_get_value('UID') == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && (((time() - $message['CREATED']) < (forum_get_setting('post_edit_time') * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time') == 0) && (forum_get_setting('allow_post_editing', 'Y', false)))) || perm_is_moderator($message['FID'])) {
+            if (($uid == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && (((time() - $message['CREATED']) < (forum_get_setting('post_edit_time') * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time') == 0) && (forum_get_setting('allow_post_editing', 'Y', false)))) || perm_is_moderator($message['FID'])) {
 
                 if ($is_poll && $message['PID'] == 1) {
 
@@ -632,7 +634,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"", style_image('print.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['print']}\" title=\"{$lang['print']}\" /></a>&nbsp;";
             echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=", ($message['PID'] - 1), "\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"", style_image('markasunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['markasunread']}\" title=\"{$lang['markasunread']}\" /></a>&nbsp;";
 
-            if (bh_session_get_value('UID') != $message['FROM_UID']) {
+            if ($uid != $message['FROM_UID']) {
 
                 echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"", style_image('enemy.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" /></a>&nbsp;";
             }

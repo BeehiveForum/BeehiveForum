@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.106 2005-02-04 19:35:38 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.107 2005-02-09 21:56:52 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -43,7 +43,7 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content)
 
     if (!$table_data = get_table_prefix()) return -1;
 
-    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL)) {
+    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL) && !perm_is_moderator($fid)) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
         $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";

@@ -45,28 +45,30 @@ function format_url2link($html)
 
 function format_time($time)
 {
+    // $time is a UNIX timestamp, which by definition is in GMT/UTC
+
     include_once("./include/constants.inc.php");
     global $HTTP_COOKIE_VARS;
     
-    // Make sure that $time is in GMT
-    $GMT_time = gmdate("U", $time);
+    // Calculate time in local timezone (the cookie bh_sess_tz = hours difference from GMT, West = negative)
+    $local_time = $time + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
 
-    // Work out the current time in GMT
-    $GMT_now = gmdate("U");
-
-    // Calculate time in local timezone from $GMT_time (the cookie bh_sess_tz = hours difference from GMT, West = negative)
-    $local_time = $GMT_time + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
-    
     // Amend $local_time for daylight saving if necessary (using critera for British Summer Time)
     if ($HTTP_COOKIE_VARS['bh_sess_dlsav']) $local_time = timestamp_amend_bst($local_time);
 
-    // Test to see if the time in question is less than 24 hours ago
-    if (($GMT_now - $GMT_time) < DAY_IN_SECONDS) {
-        $fmt = date("H:i", $local_time); // time < 24h ago, display hours and minutes
+    if ((gmdate("Y", $local_time) != gmdate("Y")) || (gmdate("n", $local_time) != gmdate("n")) || (gmdate("j", $local_time) != gmdate("j"))) {
+        $fmt = gmdate("j M", $local_time); // time not today, display day and date
     } else {
-        $fmt = date("j M", $local_time); // time >= 24h ago, display day and date
+        $fmt = gmdate("H:i", $local_time); // time is today, display hours and minutes
     }
-    
+
+    /*// Test to see if the time in question is less than 24 hours ago
+    if ((time() - $time) < DAY_IN_SECONDS) {
+        $fmt = gmdate("H:i", $local_time); // time < 24h ago, display hours and minutes
+    } else {
+        $fmt = gmdate("j M", $local_time); // time >= 24h ago, display day and date
+    }*/
+
     return $fmt;
 }
 

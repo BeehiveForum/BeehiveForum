@@ -31,6 +31,7 @@ require_once("./include/form.inc.php"); // Form drawing functions
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/folder.inc.php");
+require_once("./include/constants.inc.php");
 
 if(!bh_session_check()){
 
@@ -141,9 +142,10 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 
   $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
                   "2 Days Back","7 Days Back","High Interest","Unread High Interest",
-                  "I've recently seen","I've ignored","I've subscribed to");
+                  "I've recently seen","I've ignored","I've subscribed to","Started by Friend",
+                  "Unread std by Friend");
 
-  echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\""). "\n        ";
+  echo form_dropdown_array("mode",range(0,12),$labels,$mode,"onchange=\"submit()\""). "\n        ";
 
 }
 
@@ -193,6 +195,12 @@ if(isset($folder)){
             break;
         case 10; // Subscribed to
             list($thread_info, $folder_order) = threads_get_by_interest($user, 2);
+            break;
+        case 11: // Started by friend
+            list($thread_info, $folder_order) = threads_get_by_relationship($user, USER_FRIEND);
+            break;
+        case 12: // Unread started by friend
+            list($thread_info, $folder_order) = threads_get_unread_by_relationship($user, USER_FRIEND);
             break;
     }
 }
@@ -394,13 +402,14 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"High Interest\" align=\"middle\"> ";
                     if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"Subscribed\" align=\"middle\"> ";
                     if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"This is a poll\" align=\"middle\"> ";
+                    if ($thread['relationship'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Discussion started by a friend\" align=\"middle\"> ";
                     echo "<span class=\"threadxnewofy\">".$number."</span>";
                     echo "</td><td valign=\"top\" nowrap=\"nowrap\" align=\"right\">";
                     echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";
                     echo "</td></tr>\n";
                 }
             }
-            
+
             if (isset($folder) && $folder_number == $folder) {
             
                 $more_threads = $folder_msgs[$folder] - $start_from - 50;

@@ -28,106 +28,95 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/form.inc.php");
 
-// Where are we going after we've logged on?
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
-} else {
+}else {
     $final_uri = dirname($HTTP_SERVER_VARS['PHP_SELF']) . "/";
 }
 
-// Are we already logged on?
-if(bh_session_check()){
+if(bh_session_check()) {
+
     html_draw_top();
     echo "<p>User ID " . $HTTP_COOKIE_VARS['bh_sess_uid'] . " already logged in.</p>";
-    echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>";
+    echo "<p><a href=\"". $final_uri. "\" target=\"_top\">Continue</a></p>";
     html_draw_bottom();
     exit;
+    
 }
 
-$valid = true;
+if (isset($HTTP_POST_VARS['submit'])) {
 
-if(isset($HTTP_POST_VARS['logon'])){
-    $logon = $HTTP_POST_VARS['logon'];
-} else {
-    $logon = "";
-    $valid = false;
-}
-
-if(isset($HTTP_POST_VARS['password'])){
-    $password = $HTTP_POST_VARS['password'];
-} else {
-    $password = "";
-    $valid = false;
-}
-
-if(isset($HTTP_POST_VARS['submit'])){
-    if($logon==""){
-        $error_html = "<h2>A logon name is required</h2>";
-        $valid = false;
-    } else if($password==""){
-        $error_html = "<h2>A password is required</h2>";
-        $valid = false;
+  if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
+  
+    $luid = user_logon($HTTP_POST_VARS['logon'], $HTTP_POST_VARS['password']);
+    
+    if($luid > -1){
+    
+      bh_session_init($luid);
+        
+      if($HTTP_POST_VARS['remember_user'] == "Y") {
+        
+        setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
+        setcookie('bh_remember_password', $HTTP_POST_VARS['password'], time() + YEAR_IN_SECONDS, '/');
+            
+      }else {
+        
+        setcookie("bh_remember_user","", time() - YEAR_IN_SECONDS, '/');
+        setcookie("bh_remember_password", time() - YEAR_IN_SECONDS, '/');
+      }
+      
+      header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
+        
+    }else {
+    
+      $error_html = "<h2>Invalid login</h2>";
+        
     }
+    
+  }else {
+  
+    $error_html = "<h2>A username and password is required</h2>";
+  }
+  
 }
-
-if($valid){
-    $luid = user_logon($logon,$password);
-    if($luid>-1){
-        bh_session_init($luid);
-//      setcookie("bh_sess_uid",$luid);
-        if($HTTP_POST_VARS['remember_user'] == "Y"){
-            setcookie("bh_remember_user",$logon,YEAR_IN_SECONDS);
-            setcookie("bh_remember_password",$password,YEAR_IN_SECONDS);
-        } else {
-            setcookie("bh_remember_user","",-3600);
-            setcookie("bh_remember_password","",-3600);
-        }
-    } else {
-        $error_html = "<h2>Invalid login</h2>";
-        $valid = false;
-    }
-}
-
-if($valid) header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
 
 html_draw_top();
 
-if(!$valid){
-    if($logon == ""){
-        if(isset($HTTP_COOKIE_VARS['bh_remember_user'])){
-            $logon = $HTTP_COOKIE_VARS['bh_remember_user'];
-            $password = $HTTP_COOKIE_VARS['bh_remember_password'];
-        }
-    }
-    if(isset($error_html)){
-        echo $error_html;
-    }
-    echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-    echo "<form name=\"logon\" action=\"" . $HTTP_SERVER_VARS['REQUEST_URI'] . "\" method=\"POST\">\n";
-    echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
-    echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
-    echo "</tr>\n</table>\n";
-    echo "<table class=\"posthead\" width=\"100%\">\n";
-    echo "<tr>\n<td align=\"right\">User Name:</td>\n";
-    echo "<td>".form_input_text("logon",$logon)."</td>\n";
-    echo "</tr><tr><td align=\"right\">Password</td>\n";
-    echo "<td>".form_input_password("password",$password)."</td>\n";
-    echo "</tr><tr><td>&nbsp;</td><td align=\"right\">\n";
-    echo form_checkbox("remember_user","Y","Remember me",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")));
-    echo "</td></tr>\n";
-    echo "</table>\n";
-    echo "<table class=\"posthead\" width=\"100%\">\n";
-    echo "<tr><td align=\"center\">";
-    echo form_submit();
-    echo "</td></tr></table>\n";
-    echo "</td></tr></table>\n";
-    echo "</form></div>\n";
-    echo "<div align=\"center\">\n";
-    echo "<p class=\"smalltext\">\nDon't have an account? ";
-    echo "<a href=\"register.php?final_uri=" . urlencode($final_uri);
-    echo "\" target=\"_self\">Register now.</a></p>";
-    echo "</div>\n";
+if (isset($error_html)) echo $error_html;
+
+if(isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
+
+  $logon = $HTTP_COOKIE_VARS['bh_remember_user'];
+  $password = $HTTP_COOKIE_VARS['bh_remember_password'];
+  
 }
+    
+echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+echo "<form name=\"logon\" action=\"". $HTTP_SERVER_VARS['REQUEST_URI']. "&". md5(uniqid(rand())). "\" method=\"POST\">\n";
+echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
+echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
+echo "</tr>\n</table>\n";
+echo "<table class=\"posthead\" width=\"100%\">\n";
+echo "<tr>\n<td align=\"right\">User Name:</td>\n";
+echo "<td>".form_input_text("logon",$logon)."</td>\n";
+echo "</tr><tr><td align=\"right\">Password</td>\n";
+echo "<td>".form_input_password("password",$password)."</td>\n";
+echo "</tr><tr><td>&nbsp;</td><td align=\"right\">\n";
+echo form_checkbox("remember_user","Y","Remember me",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")));
+echo "</td></tr>\n";
+echo "</table>\n";
+echo "<table class=\"posthead\" width=\"100%\">\n";
+echo "<tr><td align=\"center\">";
+echo form_submit();
+echo "</td></tr></table>\n";
+echo "</td></tr></table>\n";
+echo "</form></div>\n";
+echo "<div align=\"center\">\n";
+echo "<p class=\"smalltext\">\nDon't have an account? ";
+echo "<a href=\"register.php?final_uri=" . urlencode($final_uri);
+echo "\" target=\"_self\">Register now.</a></p>";
+echo "</div>\n";
 
 html_draw_bottom();
+
 ?>

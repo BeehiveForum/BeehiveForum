@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.113 2005-03-24 18:54:39 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.114 2005-03-24 18:55:33 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -655,7 +655,7 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
         $result = db_query($sql, $db_search_index_post);
 
-        $sql = "INSERT INTO SEARCH_POSTS (FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED) ";
+        $sql = "INSERT IGNORE INTO SEARCH_POSTS (FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED) ";
         $sql.= "VALUES ($forum_fid, $fid, $tid, $pid, $by_uid, $fuid, $tuid, $created)";
 
         return db_query($sql, $db_search_index_post);

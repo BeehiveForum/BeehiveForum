@@ -46,12 +46,12 @@ html_draw_top();
 
 <script language="JavaScript">
 // Func to change the little icon next to each discussion title
-function changeTid (newTidIdx) {
-	if (TidIdx > 0){
-		document["t" + TidIdx].src = "./images/bullet.png";
-		document["t" + newTidIdx].src = "./images/poll.png";
+function change_current_status (thread_id) {
+	if (current_thread > 0){
+		document["t" + current_thread].src = "./images/bullet.png";
+		document["t" + thread_id].src = "./images/poll.png";
 	}
-	TidIdx = newTidIdx;
+	current_thread = thread_id;
 }
 // -->
 </script>
@@ -136,16 +136,33 @@ while (list($key1, $folder) = each($folder_order)) {
 					$number = "[".$new_posts." new of ".$thread['length']."]";
 					$latest_post = $thread['last_read'] + 1;
 				}*/
+
+				echo "<tr><td>\n";
+
 				if ($thread['last_read'] < $thread['length']) {
 					$new_posts = $thread['length'] - $thread['last_read'];
 					$number = "[".$new_posts." new of ".$thread['length']."]";
 					$latest_post = $thread['last_read'] + 1;
                                 }elseif ($thread['last_read'] == 0) {
 					$number = "[".$thread['length']." new]";
-					$latest_post = 1;					
+					$latest_post = 1;
+
+					if(!isset($first_thread)){
+						$first_thread = $thread['tid'];
+						echo "<img src=\"./images/poll.png\" name=\"t".$thread['tid']."\" />\n";
+					} else {
+						echo "<img src=\"./images/folder.png\" name=\"t".$thread['tid']."\" />\n";
+					}
 				}else {
 					$number = "[".$thread['length']."]";
 					$latest_post = 1;
+
+					if(!isset($first_thread)){
+						$first_thread = $thread['tid'];
+						echo "<img src=\"./images/poll.png\" name=\"t".$thread['tid']."\" />\n";
+					} else {
+						echo "<img src=\"./images/bullet.png\" name=\"t".$thread['tid']."\" />\n";
+					}
 				}
 				// work out how long ago the thread was posted and format the time to display - this is going to need modification to account for differing timezones
 				if (date("j", $thread['modified']) == date("j") && date("n", $thread['modified']) == date("n") && date("Y", $thread['modified']) == date("Y")) {
@@ -154,17 +171,10 @@ while (list($key1, $folder) = each($folder_order)) {
 					$thread_time = date("j M", $thread['modified']);
 				}
 
-				echo "<tr><td>\n";
-				if(!isset($first_thread)){
-					$first_thread = $thread['tid'];
-					echo "<img src=\"./images/poll.png\" name=\"t".$thread['tid']."\" />\n";
-				} else {
-					echo "<img src=\"./images/folder.png\" name=\"t".$thread['tid']."\" />\n";
-				}
 				echo "</td><td>\n";
-				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"changeTid('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ".format_user_name($thread['authorlogon'], $thread['authornick'])."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a>";
+				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ".format_user_name($thread['authorlogon'], $thread['authornick'])."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a> <span class=\"threadxnewofy\">".$number."</span>";
 				echo "</td><td>\n";
-				echo "<span class=\"threadtime\">".$thread_time."</span><span class=\"threadxnewofy\">$number</span>\n";
+				echo "<span class=\"threadtime\">".$thread_time."</span>\n";
 				echo "</td></tr>";
 
 
@@ -191,11 +201,13 @@ while (list($key1, $folder) = each($folder_order)) {
 echo "</table>\n";
 echo "<script language=\"JavaScript\">\n";
 echo "<!--\n";
-echo "TidIdx = ".$first_thread."\n";
+echo "current_thread = ".$first_thread."\n";
 echo "// -->";
 echo "</script>\n";
 
 html_draw_bottom();
 
 ?>
+
+
 

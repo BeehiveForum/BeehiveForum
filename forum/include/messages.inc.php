@@ -342,12 +342,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
 
-                if (!$is_poll || $message['PID'] > 1) {
+                if ($is_poll && $message['PID'] == 1) {
+                
+                  echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
+                  echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
+                  
+                }else {
 
                   echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
                   echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
 
                 }
+                
             }
 
             if($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {

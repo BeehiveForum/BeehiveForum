@@ -32,8 +32,6 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
 
     $db_poll_create = db_connect();
 
-    $option_id = 0;
-
     $sql = "insert into ". forum_table("POLL"). " (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS) ";
     $sql.= "values ('$tid', '$closes', '$change_vote', '$poll_type', '$show_results')";
 
@@ -59,6 +57,46 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
     }
 
 }
+
+function poll_edit($tid, $poll_options, $closes, $change_vote, $poll_type, $show_results)
+{
+
+    $db_poll_edit = db_connect();
+    
+    // Delete the recorded user votes for this poll
+    
+    $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where TID = '$tid'";
+    $result = db_query($sql, $db_poll_edit);
+    
+    // Update the Poll settings
+    
+    $sql = "update ". forum_table("POLL"). " set CHANGEVOTE = '$change_vote', POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results' ";
+    if ($closes) $sql.= ", CLOSES = '$closes' ";
+    $sql.= "where TID = '$tid'";
+    $result = db_query($sql, $db_poll_edit);
+    
+    // Delete the available options for the poll
+    
+    $sql = "delete from ". forum_table("POLL_VOTES"). " where TID = '$tid'";
+    $result = db_query($sql, $db_poll_edit);    
+    
+    // Insert the new poll options
+      
+    foreach($poll_options as $option_name) {
+
+      if (!empty($option_name)) {
+        
+        $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
+        $sql.= "values ('$tid', '". addslashes($option_name). "')";
+
+        $result = db_query($sql, $db_poll_edit);
+
+      }
+
+    }
+                  
+}
+      
 
 function poll_get($tid)
 {

@@ -90,13 +90,12 @@ $valid = true;
 html_draw_top_script();
 
 if (isset($HTTP_POST_VARS['preview'])) {
+
     $to_uid = $HTTP_POST_VARS['t_to_uid'];
     $from_uid = $HTTP_POST_VARS['t_from_uid'];
 
     $edit_msg = $HTTP_POST_VARS['t_msg'];
-    $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");
-
-    
+    $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");   
 
     if (isset($HTTP_POST_VARS['t_content'])) {
     

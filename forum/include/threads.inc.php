@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.91 2003-09-06 13:54:27 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.92 2003-10-21 18:24:10 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -245,8 +245,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql .= "AND POST.tid = THREAD.tid ";
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
-    $sql .= "AND USER_THREAD.INTEREST = $interest ";
-    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "AND (USER_THREAD.INTEREST = $interest OR NOT USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
@@ -284,8 +283,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql .= "AND POST.pid = 1 ";
     $sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql .= "AND USER_THREAD.last_read < THREAD.length ";
-    $sql .= "AND USER_THREAD.INTEREST = $interest ";
-    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "AND (USER_THREAD.INTEREST = $interest OR NOT USER_FOLDER.INTEREST <=> -1) ";
     $sql .= "GROUP BY THREAD.tid ";
     $sql .= "ORDER BY THREAD.sticky DESC, THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";

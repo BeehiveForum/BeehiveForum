@@ -56,11 +56,14 @@ $style_names = array();
 if ($dir = @opendir('styles')) {
   while (($file = readdir($dir)) !== false) {
     if (is_dir("styles/$file") && $file != '.' && $file != '..') {
-      if (file_exists("styles/$file/desc.txt")) {
-        if ($fp = fopen("styles/$file/desc.txt", "r")) {
+      if (@file_exists("./styles/$file/desc.txt")) {
+        if ($fp = fopen("./styles/$file/desc.txt", "r")) {
           $available_styles[] = $file;
           $style_names[] = htmlspecialchars(fread($fp, filesize("styles/$file/desc.txt")));
           fclose($fp);
+        }else {
+          $available_styles[] = $file;
+          $style_names[] = $file;
         }
       }
     }

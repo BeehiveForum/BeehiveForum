@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.23 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: links.php,v 1.24 2003-11-01 19:11:06 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -93,6 +93,12 @@ if (isset($HTTP_GET_VARS['viewmode'])) {
     $viewmode = $HTTP_GET_VARS['viewmode'];
 }else {
     $viewmode = 0;
+}
+
+if (isset($HTTP_GET_VARS['offset']) && $viewmode == 1) {
+    $offset = ($HTTP_GET_VARS['offset'] < 0) ? 0 : $HTTP_GET_VARS['offset'];
+}else {
+    $offset = 0;
 }
 
 html_draw_top();
@@ -184,7 +190,7 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
 if ($viewmode == 0) {
     $links = links_get_in_folder($fid, perm_is_moderator(), $sort_by, $sort_dir);
 }else {
-    $links = links_get_all(perm_is_moderator(), $sort_by, $sort_dir);
+    $links = links_get_all(perm_is_moderator(), $sort_by, $sort_dir, $offset);
 }
 
 echo "<table width=\"95%\" align=\"center\">\n";
@@ -192,33 +198,33 @@ echo "  <tr>\n";
 
 echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "TITLE" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>";
 }
 echo "&nbsp;</td>\n";
 
 echo "    <td class=\"posthead\" width=\"250\">&nbsp;";
 if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>";
 }
 echo "&nbsp;</td>\n";
 
 echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
-    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>";
 }
 echo "&nbsp;</td>\n";
 
 echo "    <td class=\"posthead\">&nbsp;";
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
-    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>";
 } else {
-    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>";
+    echo "<a href=\"links.php?fid=$fid&amp;viewmode=$viewmode&amp;offset=$offset&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>";
 }
 echo "&nbsp;</td>\n";
 echo "    <td class=\"posthead\">{$lang['commentsslashvote']}</td>\n";
@@ -240,13 +246,43 @@ if (sizeof($links) > 0 ) {
     echo "  <tr>\n    <td colspan=\"5\" class=\"postbody\">{$lang['nolinksinfolder']}</td>\n  </tr>\n";
 }
 
-if (bh_session_get_value('UID') && $viewmode == 0) {
-    echo "  <tr>\n";
-    echo "    <td class=\"postbody\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links_add.php?mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
-    echo "  </tr>\n";
+if (bh_session_get_value('UID')) {
+
+    if ($viewmode == 0) {
+
+        echo "  <tr>\n";
+        echo "    <td class=\"postbody\">&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links_add.php?mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
+        echo "  </tr>\n";
+
+    }else {
+
+        if ($offset > 0) {
+
+	    $next_offset = $offset + 20;
+	    $prev_offset = $offset - 20;
+
+	    if ($prev_offset < 0) $prev_offset = 0;
+
+            echo "  <tr>\n";
+            echo "    <td class=\"postbody\">&nbsp;</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links.php?fid=1&amp;viewmode=1&amp;offset=$prev_offset\"><b>{$lang['prev']}</b></a> | <a href=\"links.php?fid=1&amp;viewmode=1&amp;offset=$next_offset\"><b>{$lang['next']}</b></a></td>\n";
+            echo "  </tr>\n";
+
+	}else {
+
+            echo "  <tr>\n";
+            echo "    <td class=\"postbody\">&nbsp;</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links.php?fid=1&amp;viewmode=1&amp;offset=", ($offset + 20), "\"><b>{$lang['next']}</b></a></td>\n";
+            echo "  </tr>\n";
+	}
+    }
 }
 
 echo "</table>\n";

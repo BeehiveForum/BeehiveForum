@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.197 2004-05-25 15:40:38 decoyduck Exp $ */
+/* $Id: post.php,v 1.198 2004-05-25 15:51:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -334,7 +334,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($_fid, USER_PERM_POST_ATTACHMENTS)) {
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
 
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
@@ -364,7 +364,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($_fid, USER_PERM_POST_ATTACHMENTS)) {
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
 
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;

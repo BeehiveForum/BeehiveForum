@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.99 2004-12-10 16:52:16 decoyduck Exp $ */
+/* $Id: index.php,v 1.100 2004-12-17 18:36:43 tribalonline Exp $ */
 
 // This page doesn't validate as XHTML Frameset, but I don't care.
 
@@ -214,6 +214,8 @@ echo "<noframes>\n";
 echo "<body>\n";
 echo "<h1>{$lang['noframessupport']}</h1>\n";
 echo "<p>{$lang['uselightversion']}</p>\n";
+// Mikee says this strange linking is good for our search-engine ranking
+echo "<p><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive</a><span>&nbsp;</span><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">forum software</a></p>\n";
 echo "</body>\n";
 echo "</noframes>\n";
 echo "</frameset>\n";

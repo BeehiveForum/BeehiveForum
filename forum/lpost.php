@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.55 2004-08-26 16:53:52 rowan_hill Exp $ */
+/* $Id: lpost.php,v 1.56 2004-09-23 08:37:44 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -101,9 +101,9 @@ if (isset($_POST['cancel'])) {
     $uri = "./lthread_list.php?webtag=$webtag";
 
     if (isset($_POST['t_tid']) && isset($_POST['t_rpid'])) {
-        $uri.= "?msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
+        $uri.= "&msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
     }elseif (isset($_GET['replyto'])) {
-        $uri.= "?msg={$_GET['replyto']}";
+        $uri.= "&msg={$_GET['replyto']}";
     }
 
     header_redirect($uri);
@@ -180,44 +180,44 @@ if (isset($_POST['t_newthread'])) {
 
 if (isset($_POST['t_post_html'])) {
 
-	$t_post_html = $_POST['t_post_html'];
+        $t_post_html = $_POST['t_post_html'];
 
-	if ($t_post_html == "enabled_auto") {
-		$post_html = 1;
-	} else if ($t_post_html == "enabled") {
-		$post_html = 2;
-	} else {
-		$post_html = 0;
-	}
+        if ($t_post_html == "enabled_auto") {
+                $post_html = 1;
+        } else if ($t_post_html == "enabled") {
+                $post_html = 2;
+        } else {
+                $post_html = 0;
+        }
 }
 
 if (isset($_POST['t_sig_html'])) {
 
-	$t_sig_html = $_POST['t_sig_html'];
+        $t_sig_html = $_POST['t_sig_html'];
 
-	if ($t_sig_html != "N") {
-		$sig_html = 2;
-	}
+        if ($t_sig_html != "N") {
+                $sig_html = 2;
+        }
 
-	$fetched_sig = false;
+        $fetched_sig = false;
 
-	if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
-		$t_sig = _stripslashes($_POST['t_sig']);
-	}else {
-		$t_sig = "";
-	}
+        if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+                $t_sig = _stripslashes($_POST['t_sig']);
+        }else {
+                $t_sig = "";
+        }
 
 } else {
-	// Fetch the current user's sig
-	user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+        // Fetch the current user's sig
+        user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
 
-	if ($t_sig_html != "N") {
-		$sig_html = 2;
-	}
+        if ($t_sig_html != "N") {
+                $sig_html = 2;
+        }
 
-	$t_sig = tidy_html($t_sig, false);
+        $t_sig = tidy_html($t_sig, false);
 
-	$fetched_sig = true;
+        $fetched_sig = true;
 }
 
 if (!isset($sig_html)) $sig_html = 0;
@@ -327,21 +327,21 @@ $allow_html = true;
 $allow_sig = true;
 
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
-	$allow_html = false;
+        $allow_html = false;
 }
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
-	$allow_sig = false;
+        $allow_sig = false;
 }
 
 if ($allow_html == false) {
-	if ($post->getHTML() > 0) {
-		$post->setHTML(false);
-		$t_content = $post->getContent();
-	}
-	if ($sig->getHTML() > 0) {
-		$sig->setHTML(false);
-		$t_sig = $sig->getContent();
-	}
+        if ($post->getHTML() > 0) {
+                $post->setHTML(false);
+                $t_content = $post->getContent();
+        }
+        if ($sig->getHTML() > 0) {
+                $sig->setHTML(false);
+                $t_sig = $sig->getContent();
+        }
 }
 
 
@@ -518,22 +518,22 @@ echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "&nbsp;", light_for
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-	echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
+        echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
 }
 
 if ($allow_html == true) {
 
-	$tph_radio = $post->getHTML();
+        $tph_radio = $post->getHTML();
 
-	echo "<p>{$lang['htmlinmessage']}:<br />\n";
-	echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0)." \n";
-	echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-	echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
-	echo "</p>";
+        echo "<p>{$lang['htmlinmessage']}:<br />\n";
+        echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0)." \n";
+        echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo "</p>";
 
 } else {
 
-	echo form_input_hidden("t_post_html", "disabled");
+        echo form_input_hidden("t_post_html", "disabled");
 }
 
 echo "<p>", light_form_submit("submit",$lang['post']), "&nbsp;", light_form_submit("preview",$lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
@@ -547,7 +547,7 @@ if (isset($_POST['t_dedupe'])) {
 
 echo "</form>\n";
 
-if (!$newthread) {
+if (!$newthread && $reply_to_pid > 0) {
 
     echo "<p>{$lang['inreplyto']}:</p>\n";
 

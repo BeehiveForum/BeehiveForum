@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.54 2004-08-26 16:53:52 rowan_hill Exp $ */
+/* $Id: light.inc.php,v 1.55 2004-09-23 08:37:44 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -392,7 +392,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     if(!isset($message['TO_RELATIONSHIP'])) {
         $message['TO_RELATIONSHIP'] = 0;
     }
-    
+
     // Check for words that should be filtered ---------------------------------
 
     $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
@@ -400,7 +400,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
-    
+
     if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length'))));
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
@@ -426,17 +426,17 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || isset($temp_ignore)) {
         echo "&nbsp;({$lang['ignoreduser']}) ";
     }
-    
+
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
         echo "<b>{$lang['ignoredmsg']}</b>";
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
-            
+
             //This is commented out because as far as I know, all sigs are ignored in Light. Correct me if I'm wrong. - Rowan
             //if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
-            
+
             echo "&nbsp;".format_time($message['CREATED'], 1)."<br />";
         }
     }
@@ -467,24 +467,24 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
 
-	    if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
+            if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
 
-		$msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
+                $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
 
-		$tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split) - 1]);
+                $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split) - 1]);
 
-		$msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
+                $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
 
-		$message['CONTENT'] = "";
+                $message['CONTENT'] = "";
 
-		for ($i = 0; $i < count($msg_split); $i++) {
+                for ($i = 0; $i < count($msg_split); $i++) {
 
-		    if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
-		    $message['CONTENT'].= $msg_split[$i];
-		}
+                    if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
+                    $message['CONTENT'].= $msg_split[$i];
+                }
 
-		$message['CONTENT'].= "</div>";
-	    }
+                $message['CONTENT'].= "</div>";
+            }
         }
 
         echo "<p>". $message['CONTENT']. "</p>\n";
@@ -636,8 +636,15 @@ function light_html_guest_error ()
 {
      $lang = load_language_file();
 
+     $webtag = get_webtag($webtag_search);
+
+     $final_uri = rawurlencode(get_request_uri(true));
+
      light_html_draw_top();
-     echo "<h1>{$lang['guesterror']}</h1>";
+
+     echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag";
+     echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
+
      light_html_draw_bottom();
 }
 

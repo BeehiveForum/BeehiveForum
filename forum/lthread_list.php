@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.57 2004-09-16 12:00:02 tribalonline Exp $ */
+/* $Id: lthread_list.php,v 1.58 2004-09-23 08:37:44 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -52,6 +52,7 @@ include_once("./include/lang.inc.php");
 include_once("./include/light.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
 include_once("./include/threads.inc.php");
 include_once("./include/word_filter.inc.php");
 
@@ -79,7 +80,7 @@ if (!forum_check_access_level()) {
 
 // Check that required variables are set
 
-$user = bh_session_get_value('UID');
+$uid = bh_session_get_value('UID');
 
 if (isset($_GET['markread'])) {
 
@@ -125,7 +126,7 @@ light_html_draw_top();
 echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
 echo "  ", form_input_hidden("webtag", $webtag), "\n";
 
-if (bh_session_get_value('UID') == 0) {
+if ($uid == 0) {
 
   $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'], $lang['7daysback']);
   echo light_form_dropdown_array("mode", array(0, 3, 4, 5), $labels, $mode). "\n        ";
@@ -148,7 +149,7 @@ echo "</form>\n";
 // The tricky bit - displaying the right threads for whatever mode is selected
 
 if (isset($folder)) {
-    list($thread_info, $folder_order) = threads_get_folder($user, $folder, $start_from);
+    list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
 } else {
     switch ($mode) {
         case 0: // All discussions
@@ -231,7 +232,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_GET['msg']);
 
-    if (thread_can_view($tid, bh_session_get_value('UID'))) {
+    if (thread_can_view($tid, $uid)) {
 
         list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'],
              $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);
@@ -415,7 +416,7 @@ if ($mode == 0 && !isset($folder)) {
     }
 }
 
-if (bh_session_get_value('UID') != 0) {
+if ($uid != 0) {
 
     echo "  <h5>{$lang['markasread']}:</h5>\n";
     echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";

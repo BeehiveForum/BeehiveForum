@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+include_once("./include/emoticons.inc.php");
+
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
 
@@ -389,7 +391,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 					$ret_text .= "<".$html_parts[$i].">";
 				}
 			} else {
-				$ret_text .= $html_parts[$i];
+				$ret_text .= emoticons_convert($html_parts[$i]);
 			}
 		}
 
@@ -612,6 +614,11 @@ function tidy_html ($html, $linebreaks = true) {
 	}
 
 	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/ie", "regex_output('$1')", $html);
+
+
+	// convert smileys back to plain text
+	$html = preg_replace("/<span class=\"e_[^>]*\" title=\"[^>]*\"><span>([^<]*)<\/span><\/span>/i", "$1", $html);
+
 	return $html;
 }
 

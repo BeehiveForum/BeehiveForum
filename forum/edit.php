@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.92 2004-03-15 21:33:29 decoyduck Exp $ */
+/* $Id: edit.php,v 1.93 2004-03-17 03:57:17 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -226,7 +226,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
 
-        if ($old_t_sig != $t_sig) {
+        if ($old_t_sig != tidy_html($t_sig, false)) {
             $sig_html_changes = true;
         }
 
@@ -244,15 +244,16 @@ if (isset($HTTP_POST_VARS['preview'])) {
 			$old_t_content = $t_content;
 			$t_content = fix_html($t_content);
 
+			if ($old_t_content != tidy_html($t_content)) {
+				$content_html_changes = true;
+			}
+
 			if ($auto_linebreaks == true) {
 				$t_content = add_paragraphs($t_content);
 			}
 			$preview_message['CONTENT'] = $t_content;
 //			$t_content = str_replace("&", "&amp;", $t_content);
 
-			if ($old_t_content != $t_content) {
-				$content_html_changes = true;
-			}
 /*            $t_content = fix_html($t_content);
             $preview_message['CONTENT'] = $t_content;
             $t_content = str_replace("&", "&amp;", $t_content);*/
@@ -360,12 +361,12 @@ if (isset($HTTP_POST_VARS['preview'])) {
 			$old_t_content = _stripslashes($t_content);
 			$t_content = fix_html($t_content);
 
-			if ($auto_linebreaks == true) {
-				$t_content = add_paragraphs($t_content);
+			if ($old_t_content != tidy_html($t_content)) {
+				$content_html_changes = true;
 			}
 
-			if ($old_t_content != $t_content) {
-				$content_html_changes = true;
+			if ($auto_linebreaks == true) {
+				$t_content = add_paragraphs($t_content);
 			}
         }else{
             $t_content = make_html($t_content);
@@ -647,6 +648,7 @@ if ($aid = get_attachment_id($tid, $pid)) {
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
 echo tools_junk()."\n";
+$t_sig = tidy_html($t_sig, false);
 echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\" ".tools_textfield_js())."\n";
 echo tools_junk()."\n";
 

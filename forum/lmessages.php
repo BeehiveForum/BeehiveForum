@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.47 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.48 2005-02-24 23:32:01 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -96,14 +96,15 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }
 
 list($tid, $pid) = explode('.', $msg);
-if ($tid == '') $tid = 1;
-if ($pid == '') $pid = 1;
+
+if (!is_numeric($pid)) $pid = 1;
+if (!is_numeric($tid)) $tid = 1;
 
 if (!thread_can_view($tid, bh_session_get_value('UID'))) {
-        light_html_draw_top();
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-        light_html_draw_bottom();
-        exit;
+    light_html_draw_top();
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+    light_html_draw_bottom();
+    exit;
 }
 
 // Poll stuff

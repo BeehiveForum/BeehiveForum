@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.68 2005-02-04 00:21:55 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.69 2005-02-24 23:32:01 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -411,7 +411,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length'))));
-        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if($in_list){

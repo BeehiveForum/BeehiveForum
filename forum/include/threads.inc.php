@@ -417,7 +417,7 @@ function threads_mark_all_read()
 {
     global $HTTP_COOKIE_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    
+
     $sql = "select T.TID, T.LENGTH, UT.LAST_READ ";
     $sql.= "from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
     $sql.= "on (UT.TID = T.TID and UT.UID = $uid) ";
@@ -429,7 +429,7 @@ function threads_mark_all_read()
     for($i=0;$row[$i] = db_fetch_array($result);$i++);
 
     for($j=0;$j<$i;$j++){
-        if($row[$j]['LAST_READ']){
+        if(!$row[$j]['LAST_READ']){
             $sql = "insert into ".forum_table("USER_THREAD")." (UID,TID,LAST_READ,LAST_READ_AT,INTEREST) ";
             $sql.= "values ($uid, ".$row[$j]['TID'].", ".$row[$j]['LENGTH'].",NOW(),0)";
         } else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.23 2004-02-03 13:01:28 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.24 2004-02-05 21:14:19 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -583,6 +583,8 @@ $lang['editthepoll'] = "Edit tha pizoll";
 $lang['torenamethisthread'] = "to change tha thread tag";
 $lang['reopenforposting'] = "Speak on it";
 $lang['closeforposting'] = "Fuck this shit up real proper like";
+$lang['preventediting'] = "Stop Homiez from fucking shit up";
+$lang['allowediting'] = "Allow Homiez to fuck up shit";
 $lang['makesticky'] = "Make stizicky";
 $lang['makenonsticky'] = "Make nizon-stizicky";
 $lang['until'] = "Until 00:00 UTC";

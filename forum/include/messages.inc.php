@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.220 2004-02-02 23:21:38 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.221 2004-02-05 21:14:19 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -642,7 +642,7 @@ function messages_interest_form($tid,$pid)
     echo "</div>\n";
 }
 
-function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky = false, $sticky_until = false)
+function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky = false, $sticky_until = false, $locked = false)
 {
     global $HTTP_SERVER_VARS, $lang;
 
@@ -662,6 +662,12 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     } else {
         echo "&nbsp;".form_submit("close",$lang['closeforposting']);
     }
+    
+    if ($locked) {
+        echo "&nbsp;".form_submit("unlock", $lang['allowediting']);
+    } else {
+        echo "&nbsp;".form_submit("lock", $lang['preventediting']);
+    }    
 
     echo "</p>\n";
 
@@ -691,7 +697,7 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     echo "</div>\n";
 }
 
-function messages_edit_thread_title($tid, $pid, $title)
+function messages_edit_thread($fid, $tid, $pid, $title)
 {
     global $HTTP_SERVER_VARS, $lang;
     
@@ -703,6 +709,8 @@ function messages_edit_thread_title($tid, $pid, $title)
     }else {
         echo "<p>{$lang['renamethread']}: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", $lang['apply']). "</p>\n";
     }
+    
+    echo "<p>{$lang['movethread']}: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", $lang['move']);    
 
     echo form_input_hidden("t_tid", $tid);
     echo form_input_hidden("t_pid", $pid);

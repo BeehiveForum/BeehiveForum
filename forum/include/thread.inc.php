@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.38 2004-01-07 20:11:43 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.39 2004-02-05 21:14:19 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -59,12 +59,12 @@ function thread_get($tid)
 
     $sql = "SELECT DISTINCT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, ";
     $sql.= "THREAD.POLL_FLAG, THREAD.STICKY, UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, ";
-    $sql.= "USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
+    $sql.= "THREAD.ADMIN_LOCK, USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
     $sql.= "USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
     $sql.= "FROM ". forum_table("THREAD"). " THREAD ";
     $sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid)";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql.= "JOIN " . forum_table("USER") . " USER ";
     $sql.= "JOIN " . forum_table("POST") . " POST ";
     $sql.= "LEFT JOIN " . forum_table("USER_PEER") . " UP ON ";
@@ -97,6 +97,10 @@ function thread_get($tid)
 
         if (!isset($threaddata['STICKY_UNTIL'])) {
             $threaddata['STICKY_UNTIL'] = 0;
+        }
+        
+        if (!isset($threaddata['ADMIN_LOCK'])) {
+            $threaddata['ADMIN_LOCK'] = 0;
         }
     }
 
@@ -203,6 +207,21 @@ function thread_set_closed($tid, $closed = true)
     }
 
     return db_query($sql,$db_thread_set_closed);
+}
+
+function thread_admin_lock($tid, $locked = true)
+{
+    $db_thread_admin_lock = db_connect();
+
+    if (!is_numeric($tid)) return false;
+
+    if ($locked) {
+        $sql = "UPDATE ".forum_table("THREAD")." SET ADMIN_LOCK = NOW() WHERE TID = $tid";
+    } else {
+        $sql = "UPDATE ".forum_table("THREAD")." SET ADMIN_LOCK = NULL WHERE TID = $tid";
+    }
+
+    return db_query($sql, $db_thread_admin_lock);
 }
 
 function thread_change_folder($tid, $new_fid)

@@ -31,7 +31,7 @@ function confirmFolderUnignore() {
         return window.confirm('Are you sure you want to stop ignoring this folder?');
 }
 
-function disable_button (button) {
+function disable_button(button) {
 
     button.className = 'button_disabled';
     
@@ -43,3 +43,21 @@ function disable_button (button) {
 
     return true;
 }
+
+function submit_form(form) {
+
+    var form_obj;
+
+    if (document.getElementById) {
+        form_obj = eval("document.getElementById('" + form + "')");
+    }else if (document.all) {
+        form_obj = eval("document.all." + form);
+    }else if (document.layer) {
+        form_obj = eval("document." + form);
+    }else {
+        return false;
+    }
+    
+    form_obj.submit();
+}        
+

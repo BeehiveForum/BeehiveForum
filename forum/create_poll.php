@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.101 2004-04-26 12:57:22 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.102 2004-04-27 19:02:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -156,85 +156,85 @@ if (!isset($sig_html)) $sig_html = 0;
 
 if (isset($_POST['cancel'])) {
 
-  $uri = "./discussion.php?webtag=$webtag";
-  header_redirect($uri);
+    $uri = "./discussion.php?webtag=$webtag";
+    header_redirect($uri);
 
 }elseif (isset($_POST['preview']) || isset($_POST['submit'])) {
 
-  $valid = true;
+    $valid = true;
 
-  if (strlen(trim($_POST['question'])) == 0) {
-    $error_html = "<h2>{$lang['mustenterpollquestion']}</h2>";
-    $valid = false;
-  }
-
-  if ($valid && !isset($_POST['t_fid'])) {
-    $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
-    $valid = false;
-  }
-
-  if ($valid && !folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_POLL_THREAD)) {
-      $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
-      $valid = false;
-  }
-
-  if ($valid && strlen(trim($_POST['answers'][0])) == 0) {
-    $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
-    $valid = false;
-  }
-
-  if ($valid && strlen(trim($_POST['answers'][1])) == 0) {
-    $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
-    $valid = false;
-  }
-
-  if ($valid && $_POST['pollvotetype'] == 1 && $_POST['changevote']  == 2) {
-    $error_html = "<h2>{$lang['cannotcreatemultivotepublicballot']}</h2>";
-    $valid = false;
-  }
-
-  if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
-
-    $t_message_text = trim($_POST['t_message_text']);
-
-    if (strlen($t_message_text) >= 65535) {
-        $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
+    if (strlen(trim($_POST['question'])) == 0) {
+        $error_html = "<h2>{$lang['mustenterpollquestion']}</h2>";
         $valid = false;
     }
 
-    if (attachment_embed_check($t_message_text) && $t_message_html == "Y") {
-        $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-        $valid = false;
-    }
-  }
-
-  if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
-
-    $t_sig = trim($_POST['t_sig']);
-
-    if (strlen($t_sig) >= 65535) {
-        $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+    if ($valid && !isset($_POST['t_fid'])) {
+        $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
         $valid = false;
     }
 
-    if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
-        $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";
+    if ($valid && !folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_POLL_THREAD)) {
+        $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
         $valid = false;
     }
-  }
 
-  $answer_group_check = array();
+    if ($valid && strlen(trim($_POST['answers'][0])) == 0) {
+        $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+        $valid = false;
+    }
 
-  for ($i = 0; $i < sizeof($_POST['answer_groups']); $i++) {
-      if (!in_array($_POST['answer_groups'][$i], $answer_group_check)) {
-          $answer_group_check[] = $_POST['answer_groups'][$i];
-      }
-  }
+    if ($valid && strlen(trim($_POST['answers'][1])) == 0) {
+        $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
+        $valid = false;
+    }
 
-  if ($valid && (sizeof($answer_group_check) >= sizeof($_POST['answers']))) {
-    $error_html = "<h2>{$lang['groupcountmustbelessthananswercount']}</h2>";
-    $valid = false;
-  }
+    if ($valid && $_POST['pollvotetype'] == 1 && $_POST['changevote']  == 2) {
+        $error_html = "<h2>{$lang['cannotcreatemultivotepublicballot']}</h2>";
+        $valid = false;
+    }
+
+    if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
+
+        $t_message_text = trim($_POST['t_message_text']);
+
+        if (strlen($t_message_text) >= 65535) {
+            $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_message_text)).")</h2>";
+            $valid = false;
+        }
+
+        if (attachment_embed_check($t_message_text) && $t_message_html == "Y") {
+            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+            $valid = false;
+        }
+    }
+
+    if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+
+        $t_sig = trim($_POST['t_sig']);
+
+        if (strlen($t_sig) >= 65535) {
+            $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+            $valid = false;
+        }
+
+        if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
+            $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";
+            $valid = false;
+        }
+    }
+
+    $answer_group_check = array();
+
+    for ($i = 0; $i < sizeof($_POST['answer_groups']); $i++) {
+        if (!in_array($_POST['answer_groups'][$i], $answer_group_check)) {
+            $answer_group_check[] = $_POST['answer_groups'][$i];
+        }
+    }
+
+    if ($valid && (sizeof($answer_group_check) >= sizeof($_POST['answers']))) {
+        $error_html = "<h2>{$lang['groupcountmustbelessthananswercount']}</h2>";
+        $valid = false;
+    }
 }
 
 if (!isset($t_content)) $t_content = "";
@@ -245,89 +245,89 @@ $sig = new MessageText($sig_html, $t_sig);
 
 if ($valid && isset($_POST['submit'])) {
 
-  if (check_ddkey($_POST['t_dedupe'])) {
+    if (check_ddkey($_POST['t_dedupe'])) {
 
-     $folderdata = folder_get($_POST['t_fid']);
+        $folderdata = folder_get($_POST['t_fid']);
 
-     if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($_POST['t_fid']) && !perm_is_moderator()) {
+        if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($_POST['t_fid']) && !perm_is_moderator()) {
 
-       html_draw_top();
+            html_draw_top();
 
-       echo "<form name=\"f_post\" action=\"./create_poll.php\" method=\"post\" target=\"_self\">\n";
-       echo form_input_hidden('webtag', $webtag), "\n";
-       echo "<table class=\"posthead\" width=\"720\">\n";
-       echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
-       echo "<tr><td>\n";
-       echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
-       echo "</td></tr>\n";
+            echo "<form name=\"f_post\" action=\"./create_poll.php\" method=\"post\" target=\"_self\">\n";
+            echo form_input_hidden('webtag', $webtag), "\n";
+            echo "<table class=\"posthead\" width=\"720\">\n";
+            echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
+            echo "<tr><td>\n";
+            echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
+            echo "</td></tr>\n";
 
-       echo "<tr><td align=\"center\">\n";
-       echo form_submit('cancel', $lang['cancel']);
-       echo "</td></tr>\n";
-       echo "</table></form>\n";
+            echo "<tr><td align=\"center\">\n";
+            echo form_submit('cancel', $lang['cancel']);
+            echo "</td></tr>\n";
+            echo "</table></form>\n";
 
-       html_draw_bottom();
-       exit;
+            html_draw_bottom();
+            exit;
+        }
+
+        // Work out when the poll will close.
+
+        if ($_POST['closepoll'] == 0) {
+            $poll_closes = gmmktime() + DAY_IN_SECONDS;
+        }elseif ($_POST['closepoll'] == 1) {
+            $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
+        }elseif ($_POST['closepoll'] == 2) {
+            $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
+        }elseif ($_POST['closepoll'] == 3) {
+            $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
+        }elseif ($_POST['closepoll'] == 4) {
+            $poll_closes = false;
+        }
+
+        // Check HTML tick box, innit.
+
+        $answers = array();
+        $ans_h = 0;
+
+        if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+            $ans_h = 2;
+        }
+
+        for ($i = 0; $i < sizeof($_POST['answers']); $i++) {
+            $answers[$i] = new MessageText($ans_h, $_POST['answers'][$i]);
+            $_POST['answers'][$i] = $answers[$i]->getContent();
+        }
+
+        $_POST['question'] = trim($_POST['question']);
+
+        // Create the poll thread with the poll_flag set to Y and sticky flag set to N
+
+        $t_tid = post_create_thread($_POST['t_fid'], $_POST['question'], 'Y', 'N');
+        $t_pid = post_create($t_tid, 0, bh_session_get_value('UID'), 0, '');
+
+        poll_create($t_tid, $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
+
+        if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
+            if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($t_tid, $t_pid, $_POST['aid']);
+        }
+
+        if (strlen($t_message_text) > 0) {
+
+            $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
+            post_create($t_tid, 1, bh_session_get_value('UID'), 0, $t_message_text);
+        }
+
+        if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, true);
+
     }
 
-    // Work out when the poll will close.
-
-    if ($_POST['closepoll'] == 0) {
-      $poll_closes = gmmktime() + DAY_IN_SECONDS;
-    }elseif ($_POST['closepoll'] == 1) {
-      $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
-    }elseif ($_POST['closepoll'] == 2) {
-      $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
-    }elseif ($_POST['closepoll'] == 3) {
-      $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
-    }elseif ($_POST['closepoll'] == 4) {
-      $poll_closes = false;
+    if (isset($t_tid) && $t_tid > 0) {
+        $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
+    }else {
+        $uri = "./discussion.php?webtag=$webtag";
     }
 
-    // Check HTML tick box, innit.
-	$answers = array();
-	$ans_h = 0;
-	if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
-		$ans_h = 2;
-	}
-    for ($i = 0; $i < sizeof($_POST['answers']); $i++) {
-		$answers[$i] = new MessageText($ans_h, $_POST['answers'][$i]);
-        $_POST['answers'][$i] = $answers[$i]->getContent();
-    }
-
-    $_POST['question'] = trim($_POST['question']);
-
-    // Create the poll thread with the poll_flag set to Y and sticky flag set to N
-
-    $t_tid = post_create_thread($_POST['t_fid'], $_POST['question'], 'Y', 'N');
-    $t_pid = post_create($t_tid, 0, bh_session_get_value('UID'), 0, '');
-
-    poll_create($t_tid, $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
-
-    if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-        if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($t_tid, $t_pid, $_POST['aid']);
-    }
-
-    if (strlen($t_message_text) > 0) {
-
-      $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
-
-      post_create($t_tid, 1, bh_session_get_value('UID'), 0, $t_message_text);
-
-    }
-
-    if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, true);
-
-  }
-
-  if (isset($t_tid) && $t_tid > 0) {
-      $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
-  }else {
-      $uri = "./discussion.php?webtag=$webtag";
-  }
-
-  header_redirect($uri);
-
+    header_redirect($uri);
 }
 
 html_draw_top("basetarget=_blank", "openprofile.js", "post.js", "htmltools.js");
@@ -335,123 +335,120 @@ html_draw_top("basetarget=_blank", "openprofile.js", "post.js", "htmltools.js");
 echo "<h1>{$lang['createpoll']}</h1>\n";
 
 if (!isset($_POST['aid'])) {
-  $aid = md5(uniqid(rand()));
+    $aid = md5(uniqid(rand()));
 }else{
-  $aid = $_POST['aid'];
+    $aid = $_POST['aid'];
 }
 
 if ($valid && isset($_POST['preview'])) {
 
-  echo "<h2>{$lang['preview']}:</h2>";
+    echo "<h2>{$lang['preview']}:</h2>";
 
-  $polldata['TLOGON'] = "ALL";
-  $polldata['TNICK'] = "ALL";
+    $polldata['TLOGON'] = "ALL";
+    $polldata['TNICK'] = "ALL";
 
-  $preview_tuser = user_get(bh_session_get_value('UID'));
+    $preview_tuser = user_get(bh_session_get_value('UID'));
 
-  $polldata['FLOGON']   = $preview_tuser['LOGON'];
-  $polldata['FNICK']    = $preview_tuser['NICKNAME'];
-  $polldata['FROM_UID'] = $preview_tuser['UID'];
+    $polldata['FLOGON']   = $preview_tuser['LOGON'];
+    $polldata['FNICK']    = $preview_tuser['NICKNAME'];
+    $polldata['FROM_UID'] = $preview_tuser['UID'];
 
-  $polldata['CONTENT'] = "<br />\n";
-  $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
-  $polldata['CONTENT'].= "  <tr>\n";
-  $polldata['CONTENT'].= "    <td>\n";
-  $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
-  $polldata['CONTENT'].= "        <tr>\n";
-  $polldata['CONTENT'].= "          <td><h2>". _stripslashes($_POST['question']). "</h2></td>\n";
-  $polldata['CONTENT'].= "        </tr>\n";
-  $polldata['CONTENT'].= "        <tr>\n";
-  $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
+    $polldata['CONTENT'] = "<br />\n";
+    $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+    $polldata['CONTENT'].= "  <tr>\n";
+    $polldata['CONTENT'].= "    <td>\n";
+    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+    $polldata['CONTENT'].= "        <tr>\n";
+    $polldata['CONTENT'].= "          <td><h2>". _stripslashes($_POST['question']). "</h2></td>\n";
+    $polldata['CONTENT'].= "        </tr>\n";
+    $polldata['CONTENT'].= "        <tr>\n";
+    $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
 
-  $pollresults = array();
+    $pollresults = array();
 
-  $max_value   = 0;
-  $totalvotes  = 0;
-  $optioncount = 0;
+    $max_value   = 0;
+    $totalvotes  = 0;
+    $optioncount = 0;
 
-  $ans_h = 0;
-  if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
-	  $ans_h = 2;
-  }
+    $ans_h = 0;
 
-  foreach($_POST['answers'] as $key => $answer_text) {
+    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
+        $ans_h = 2;
+    }
 
-		if (strlen(trim($answer_text)) > 0) {
-			$answer_tmp = new MessageText($ans_h, $answer_text);
-			$poll_answers_array[$key] = $answer_tmp->getContent();
+    foreach($_POST['answers'] as $key => $answer_text) {
 
-          srand((double)microtime()*1000000);
-          $poll_vote = rand(1, 10);
+        if (strlen(trim($answer_text)) > 0) {
 
-          if ($poll_vote > $max_value) $max_value = $poll_vote;
+            $answer_tmp = new MessageText($ans_h, $answer_text);
+            $poll_answers_array[$key] = $answer_tmp->getContent();
 
-          $poll_votes_array[] = $poll_vote;
-          $totalvotes += $poll_vote;
-          $optioncount++;
+            srand((double)microtime()*1000000);
+            $poll_vote = rand(1, 10);
 
-      }else {
+            if ($poll_vote > $max_value) $max_value = $poll_vote;
 
-          unset($_POST['answers'][$key]);
-          unset($_POST['answer_groups'][$key]);
-      }
-  }
+            $poll_votes_array[] = $poll_vote;
+            $totalvotes += $poll_vote;
+            $optioncount++;
 
-  $poll_groups_array = $_POST['answer_groups'];
+        }else {
 
-  // Construct the pollresults array that will be used to display the graph
-  // Modified to handle the new Group ID.
+            unset($_POST['answers'][$key]);
+            unset($_POST['answer_groups'][$key]);
+        }
+    }
 
-  $pollresults = array('OPTION_ID'   => array_keys($poll_answers_array),
-                       'OPTION_NAME' => $poll_answers_array,
-                       'GROUP_ID'    => $poll_groups_array,
-                       'VOTES'       => $poll_votes_array);
+    $poll_groups_array = $_POST['answer_groups'];
 
-  if ($_POST['polltype'] == 1) {
+    // Construct the pollresults array that will be used to display the graph
+    // Modified to handle the new Group ID.
 
-    $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
+    $pollresults = array('OPTION_ID'   => array_keys($poll_answers_array),
+                         'OPTION_NAME' => $poll_answers_array,
+                         'GROUP_ID'    => $poll_groups_array,
+                         'VOTES'       => $poll_votes_array);
 
-  }else {
+    if ($_POST['polltype'] == 1) {
+        $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
+    }else {
+        $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
+    }
 
-    $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
-  }
+    $polldata['CONTENT'].= "          </td>\n";
+    $polldata['CONTENT'].= "        </tr>\n";
+    $polldata['CONTENT'].= "      </table>\n";
+    $polldata['CONTENT'].= "    </td>\n";
+    $polldata['CONTENT'].= "  </tr>\n";
+    $polldata['CONTENT'].= "  <tr>\n";
+    $polldata['CONTENT'].= "    <td>";
+    $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+    $polldata['CONTENT'].= "        <tr>\n";
+    $polldata['CONTENT'].= "          <td class=\"postbody\">";
 
-  $polldata['CONTENT'].= "          </td>\n";
-  $polldata['CONTENT'].= "        </tr>\n";
-  $polldata['CONTENT'].= "      </table>\n";
-  $polldata['CONTENT'].= "    </td>\n";
-  $polldata['CONTENT'].= "  </tr>\n";
-  $polldata['CONTENT'].= "  <tr>\n";
-  $polldata['CONTENT'].= "    <td>";
-  $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
-  $polldata['CONTENT'].= "        <tr>\n";
-  $polldata['CONTENT'].= "          <td class=\"postbody\">";
+    if ($_POST['changevote'] == 1) {
+        $polldata['CONTENT'].= $lang['abletochangevote'];
+    }elseif ($_POST['changevote'] == 2) {
+        $polldata['CONTENT'].= $lang['abletovotemultiple'];
+    }else {
+        $polldata['CONTENT'].= $lang['notabletochangevote'];
+    }
 
-  if ($_POST['changevote'] == 1) {
-    $polldata['CONTENT'].= $lang['abletochangevote'];
-  }elseif ($_POST['changevote'] == 2) {
-    $polldata['CONTENT'].= $lang['abletovotemultiple'];
-  }else {
-    $polldata['CONTENT'].= $lang['notabletochangevote'];
-  }
-
-  $polldata['CONTENT'].= "          </td>";
-  $polldata['CONTENT'].= "        </tr>\n";
-  $polldata['CONTENT'].= "      </table>\n";
-  $polldata['CONTENT'].= "    </td>";
-  $polldata['CONTENT'].= "  </tr>\n";
-  $polldata['CONTENT'].= "</table>\n";
-  $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
-
-  message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
-
-  if (strlen($t_message_text) > 0) {
-
-    $polldata['CONTENT'] = $t_message_text."<div class=\"sig\">". $t_sig. "</div>";
+    $polldata['CONTENT'].= "          </td>";
+    $polldata['CONTENT'].= "        </tr>\n";
+    $polldata['CONTENT'].= "      </table>\n";
+    $polldata['CONTENT'].= "    </td>";
+    $polldata['CONTENT'].= "  </tr>\n";
+    $polldata['CONTENT'].= "</table>\n";
+    $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
     message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
 
-  }
+    if (strlen($t_message_text) > 0) {
+
+        $polldata['CONTENT'] = $t_message_text."<div class=\"sig\">". $t_sig. "</div>";
+        message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
+    }
 }
 
 if (isset($error_html)) echo $error_html. "\n";

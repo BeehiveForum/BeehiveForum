@@ -27,13 +27,47 @@ USA
 // instead of the usual database functions.
 
 // Connects to the database and returns the connection ID
+
+require_once('./include/html.inc.php');
+require_once('./include/form.inc.php');
+
+function db_connection_error()
+{
+
+    global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS;
+
+    foreach ($HTTP_GET_VARS as $key => $value) {
+      $getvars.= $key. '='. $value. '&';
+    }
+
+    $getvars = substr($getvars, 0, -1);
+
+    html_draw_top();
+    echo "<div align=\"center\">\n";
+    echo "<p>An error occured while trying to connect to the database. Please wait a few minutes and then click the Retry button below.</p>\n";
+    echo "<p>As long as this browser window remains open, any form data you've submitted remains safe.</p>\n";
+    echo "<form name=\"f_error\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?$getvars\" target=\"_self\">\n";
+
+    foreach ($HTTP_POST_VARS as $key => $value) {
+      echo form_input_hidden($key, rawurlencode($value)), "\n";
+    }
+
+    srand((double)microtime()*1000000);
+
+    echo form_submit(md5(uniqid(rand())), 'Retry', 'onclick="document.location.reload();"'), "\n";
+    echo "</form>\n";
+    echo "</div>\n";
+    html_draw_bottom();
+
+}
+
 function db_connect ()
 {
     static $connection_id = false;
     
     if(!$connection_id){
     	require ("./include/config.inc.php"); // requires database information
-    	$connection_id = mysql_connect($db_server, $db_username, $db_password) or die(mysql_error());
+    	$connection_id = @mysql_connect($db_server, $db_username, $db_password) or die(db_connection_error()); //or die(mysql_error());
     	mysql_select_db($db_database, $connection_id) or die(mysql_error());
     }
 	return $connection_id;

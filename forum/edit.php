@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.140 2004-08-08 23:47:10 tribalonline Exp $ */
+/* $Id: edit.php,v 1.141 2004-08-09 21:08:17 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -559,56 +559,12 @@ if (isset($_POST['preview'])) {
         $to_uid = $editmessage['TO_UID'];
         $from_uid = $editmessage['FROM_UID'];
 
-        $t_content_temp = preg_split("/<div class=\"sig\">/", $editmessage['CONTENT']);
+        $parsed_message = new MessageTextParse($editmessage['CONTENT'], $emots_enabled);
 
-        if (count($t_content_temp) > 1) {
-
-            $t_sig_temp = array_pop($t_content_temp);
-            $t_sig_temp = preg_split("/<\/div>/", $t_sig_temp);
-
-            $t_sig = "";
-
-            for ($i = 0; $i < count($t_sig_temp) - 1; $i++) {
-                $t_sig.= $t_sig_temp[$i];
-                if ($i < count($t_sig_temp) - 2 ) {
-                    $t_sig.= "</div>";
-                }
-            }
-
-        }else {
-            $t_sig = "";
-        }
-
-        $t_content = "";
-
-        for ($i = 0; $i < count($t_content_temp); $i++) {
-            $t_content.= $t_content_temp[$i];
-            if ($i < count($t_content_temp) - 1) {
-                $t_content.= "<div class=\"sig\">";
-            }
-        }
-
-		$t_sig = clean_emoticons($t_sig);
-
-        $t_content_temp = clean_emoticons($t_content);
-		if ($t_content_temp == $t_content && emoticons_convert($t_content_temp) != $t_content) {
-			$emots_enabled = false;
-		} else if ($t_content_temp != $t_content) {
-			$emots_enabled = true;
-		}
-		$t_content = $t_content_temp;
-
-        $post_html = 0;
-        $t_content_temp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
-
-        if (strip_tags($t_content, '<p><br>') != $t_content_temp) {
-            $post_html = 2;
-                if (add_paragraphs($t_content) == $t_content) {
-                        $post_html = 1;
-                }
-        } else {
-            $t_content = strip_tags($t_content);
-        }
+		$emots_enabled = $parsed_message->getEmoticons();
+		$t_content = $parsed_message->getMessage();
+		$post_html = $parsed_message->getMessageHTML();
+		$t_sig = $parsed_message->getSig();
 
         $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled);
         $sig = new MessageText($allow_html ? $sig_html : false, $t_sig);

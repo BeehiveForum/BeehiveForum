@@ -206,6 +206,36 @@ $folder_msgs = threads_get_folder_msgs();
 // Check to see if $folder_order is an array, and define it as one if not
 if (!is_array($folder_order)) $folder_order = array();
 
+
+// Sort the folders and threads correctly as per the URL query for the TID
+
+if (isset($HTTP_GET_VARS['msg'])) {
+
+    $threadvisible = false;
+
+    list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+    list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'], $thread['modified'], $thread['closed'])  = thread_get($tid);
+    
+    if ($thread['tid'] == $tid) {
+    
+      array_splice($folder_order, array_search($thread['fid'], $folder_order), 1);
+      array_unshift($folder_order, $thread['fid']);
+      
+      for ($i = 0; $i < sizeof($thread_info); $i++) {
+      
+        if ($thread_info[$i]['tid'] == $tid) {
+          $thread_info = array_merge(array_splice($thread_info, $i, 1), $thread_info);
+          $threadvisible = true;
+        }
+        
+      }
+      
+      if (!$threadvisible) array_unshift($thread_info, $thread);
+      
+    }
+    
+}
+
 // Work out if any folders have no messages - if so, they still need to be displayed, so add them to $folder_order
 while (list($fid, $title) = each($folder_info)) {
 	if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
@@ -226,7 +256,7 @@ while (list($key1, $folder) = each($folder_order)) {
 	echo "<tr>\n";
 	echo "<td class=\"foldername\">\n";
 	echo "<img src=\"./images/folder.png\" alt=\"folder\" />\n";
-	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder."\">".$folder_info[$folder]."</a>";
+	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder. "\">".$folder_info[$folder]."</a>";
 	echo "</td>\n";
 	echo "</tr>\n";
 	if (is_array($thread_info)) {	

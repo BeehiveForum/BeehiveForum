@@ -1,0 +1,11 @@
+Beehive Forum Styles
+====================
+
+Some of the foler names for the styles contain uppercase characters, but to
+maintain cross-platform compatibility, please ensure they are all in
+lowercase when creating a new distribution to place on SF.net (or whatever)
+
+Don't ask why this happened, because I refuse to explain why.
+
+--
+Matt

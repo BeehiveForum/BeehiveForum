@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.131 2004-10-07 22:13:20 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.132 2004-10-08 19:53:11 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -135,7 +135,7 @@ function bh_session_check($add_guest_sess = true)
                 // Everything checks out OK. If the user's session is older
                 // then 5 minutes we should update it.
 
-                if ($current_time - $user_sess['TIME'] > 300) {
+                if (($current_time - $user_sess['TIME']) > 300) {
 
                     // Update the session for the current forum
 
@@ -159,7 +159,7 @@ function bh_session_check($add_guest_sess = true)
                 // Everything checks out OK. If the user's session is older
                 // then 5 minutes we should update it.
 
-                if ($current_time - $user_sess['TIME'] > 300) {
+                if (($current_time - $user_sess['TIME']) > 300) {
 
                     // Update the main user session
 
@@ -178,12 +178,9 @@ function bh_session_check($add_guest_sess = true)
                 }
             }
 
-            // Delete expires sessions
+            // Delete expired sessions
 
-            $sql = "DELETE LOW_PRIORITY FROM SESSIONS WHERE ";
-            $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
-
-            db_query($sql, $db_bh_session_check);
+            bh_remove_stale_sessions();
 
             return $user_sess;
 
@@ -356,10 +353,14 @@ function bh_session_init($uid)
     if (db_num_rows($result) > 0) {
 
         $user_sess = db_fetch_array($result);
-        $user_hash = $user_sess['HASH'];
 
-        $sql = "UPDATE LOW_PRIORITY SESSIONS SET IPADDRESS = '$ipaddress', ";
-        $sql.= "TIME = NOW() WHERE HASH = '$user_hash'";
+        if (isset($user_sess['HASH']) && is_md5($user_sess['HASH'])) {
+
+            $user_hash = $user_sess['HASH'];
+
+            $sql = "UPDATE LOW_PRIORITY SESSIONS SET IPADDRESS = '$ipaddress', ";
+            $sql.= "TIME = NOW() WHERE HASH = '$user_hash'";
+        }
 
     }else {
 

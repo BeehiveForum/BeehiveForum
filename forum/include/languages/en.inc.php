@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.182 2004-09-25 16:31:05 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.183 2004-10-08 19:53:07 decoyduck Exp $ */
 
 // International English language file
 
@@ -543,6 +543,7 @@ $lang['enternewpasswdforuser'] = "Enter a new password for user";
 // Deleting messages (delete.php) --------------------------------------
 
 $lang['nomessagespecifiedfordel'] = "No message specified for deletion";
+$lang['deletemessage'] = "Delete Message";
 $lang['postdelsuccessfully'] = "Post deleted successfully";
 $lang['errordelpost'] = "Error deleting post";
 $lang['delthismessage'] = "Delete this message";

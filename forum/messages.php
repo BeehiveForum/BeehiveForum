@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.158 2004-09-07 01:50:48 tribalonline Exp $ */
+/* $Id: messages.php,v 1.159 2004-09-08 01:55:35 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -359,7 +359,13 @@ echo "  </tr>\n";
 echo "  <tr valign=\"top\">\n";
 echo "    <td width=\"33%\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
 
-echo "    <td width=\"33%\" align=\"center\"><p><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></p></td>\n";
+echo "    <td width=\"33%\" align=\"center\"><p>";
+if (bh_session_get_value('UID') != 0) {
+	echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
+} else {
+	echo "&nbsp;";
+}
+echo "</p></td>\n";
 
 echo "    <td width=\"33%\" align=\"right\">";
 if ($last_pid < $threaddata['LENGTH']) {

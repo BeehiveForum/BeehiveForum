@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.123 2004-09-08 00:49:46 tribalonline Exp $ */
+/* $Id: session.inc.php,v 1.124 2004-09-08 01:55:35 tribalonline Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -242,7 +242,7 @@ function bh_session_check($add_guest_sess = true)
                  'MARK_AS_OF_INT'   => 0,
                  'FONT_SIZE'        => 10,
                  'STYLE'            => forum_get_setting('default_style'),
-                 'VIEW_SIGS'        => 0,
+                 'VIEW_SIGS'        => 'Y',
                  'START_PAGE'       => 0,
                  'LANGUAGE'         => forum_get_setting('default_language'),
                  'PM_NOTIFY'        => 'N',
@@ -250,7 +250,7 @@ function bh_session_check($add_guest_sess = true)
                  'IMAGES_TO_LINKS'  => 'N',
                  'USE_WORD_FILTER'  => 'Y',
                  'USE_ADMIN_FILTER' => 'Y',
-                                 'POST_PAGE'            => 0);
+                 'POST_PAGE'            => 0);
 }
 
 // Fetches a value from the session

@@ -136,7 +136,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
       if($new_uid > -1) {
 
-          bh_session_init($luid);
+          bh_session_init($new_uid);
 
           if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
 
@@ -158,6 +158,9 @@ if(isset($HTTP_POST_VARS['submit'])) {
             $passwords = array();
 
           }
+
+  	  if (!is_array($usernames)) $usernames = array();
+	  if (!is_array($passwords)) $passwords = array();
 
           if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
 

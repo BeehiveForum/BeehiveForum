@@ -540,7 +540,7 @@ X-Hacker languages.
 3.3.1 Translating BeehiveForums into my native language
 =======================================================
 
-Unfortunately the BeehiveForum coding team consists primarily of born and bread
+Unfortunately the BeehiveForum coding team consists primarily of born and bred
 English men who have enough trouble speaking our own tongue as it is. Because
 of this, we're on the look out for people to start translating Beehive for us.
 If you feel you have the necessary skills to do this (no babelfish / direct

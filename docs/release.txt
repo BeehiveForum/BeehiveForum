@@ -34,6 +34,9 @@ What's new in 0.5 ("TBD", released 5th Never)
 	- New 'Reply as PM' link on every post will quickly create a new PM
 	  addressed to the post author, with the thread title as the subject.
 	- Number of PMs per user can be restricted by the admin.
+	- PM auto-pruning - messages not in the 'saved' folder can be 
+	  automatically deleted after a certain time has passed.
+	- Option to reply a PM with the in-reply-to PM's text quoted.
         - New user option to change all images embedded into a post by users
           (inc. signature images) into clickable links.
 	- 'Reply to all' allows a user to reply to an entire thread instead of
@@ -97,6 +100,7 @@ What's new in 0.5 ("TBD", released 5th Never)
           handle the newer method.
         - The search page has been remade with a better design and better 
 	  functionality.
+	- 'Page [1] 2 3 ...' on various pages rewritten a bit posher.
 
 - Fixes
         - Lots and lots!

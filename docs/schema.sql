@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Dec 07, 2003 at 21:15 PM
 #
-# $Id: schema.sql,v 1.56 2003-12-11 12:49:34 decoyduck Exp $
+# $Id: schema.sql,v 1.57 2004-03-07 20:03:43 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -58,7 +58,10 @@ CREATE TABLE DEDUPE (
 
 CREATE TABLE FILTER_LIST (
   ID mediumint(8) unsigned NOT NULL auto_increment,
-  FILTER text NOT NULL,
+  UID mediumint(8) UNSIGNED default '0' NOT NULL,
+  MATCH_TEXT varchar(255) NOT NULL,
+  REPLACE_TEXT varchar(255) NOT NULL,
+  PREG_EXPR tinyint(1) unsigned default '0' NOT NULL,
   PRIMARY KEY  (ID)
 ) TYPE=MyISAM;
 
@@ -165,6 +168,7 @@ CREATE TABLE PM (
   FROM_UID mediumint(8) unsigned NOT NULL default '0',
   SUBJECT varchar(64) NOT NULL default '',
   CREATED datetime NOT NULL default '0000-00-00 00:00:00',
+  NOTIFIED TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
   PRIMARY KEY (MID),
   KEY TO_UID (TO_UID)
 ) TYPE=MyISAM;
@@ -222,7 +226,6 @@ CREATE TABLE POLL_VOTES (
   OPTION_ID mediumint(8) unsigned NOT NULL auto_increment,
   OPTION_NAME char(255) NOT NULL default '',
   GROUP_ID mediumint(8) unsigned NOT NULL default '0',
-  VOTES mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (TID,OPTION_ID)
 ) TYPE=MyISAM;
 
@@ -400,6 +403,7 @@ CREATE TABLE THREAD (
   CLOSED datetime default NULL,
   STICKY char(1) default NULL,
   STICKY_UNTIL datetime default NULL,
+  ADMIN_LOCK datetime default NULL,
   PRIMARY KEY  (TID),
   KEY ix_thread_fid (FID),
   KEY BY_UID (BY_UID)
@@ -505,6 +509,8 @@ CREATE TABLE USER_PREFS (
   DOB_DISPLAY tinyint(3) unsigned default NULL,
   ANON_LOGON tinyint(3) unsigned default NULL,
   SHOW_STATS tinyint(3) unsigned default NULL,
+  IMAGES_TO_LINKS char(1) default NULL,
+  USE_ADMIN_FILTER char(1) default NULL,
   KEY STYLE (STYLE),
   KEY UID (UID)
 ) TYPE=MyISAM;

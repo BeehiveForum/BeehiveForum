@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.138 2004-05-23 12:33:55 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.139 2004-05-25 14:11:24 decoyduck Exp $ */
 
 // International English language file
 
@@ -375,6 +375,22 @@ $lang['deletegroups'] = "Delete Groups";
 $lang['useringroups'] = "This user is a member of the following groups";
 $lang['usernotinanygroups'] = "This user is not in any user groups";
 $lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
+
+$lang['usercanaccessadmintools'] = "User can access admin tools";
+$lang['userisbanned'] = "User is banned";
+$lang['useriswormed'] = "User is wormed";
+
+$lang['groupcanaccessadmintools'] = "Group can access admin tools";
+$lang['groupisbanned'] = "Group is banned";
+$lang['groupiswormed'] = "Group is wormed";
+
+$lang['readposts'] = "Read Posts";
+$lang['replytothreads'] = "Reply to threads";
+$lang['createnewthreads'] = "Create new threads";
+$lang['editposts'] = "Edit posts";
+$lang['deleteposts'] = "Delete posts";
+$lang['uploadattachments'] = "Upload attachments";
+$lang['moderatefolder'] = "Moderate folder";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

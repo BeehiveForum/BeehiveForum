@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.13 2004-05-20 22:17:49 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.14 2004-05-25 14:11:24 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -264,16 +264,16 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"90%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_post_read", USER_PERM_POST_READ, "Read Posts", $folder_data['PERM'] & USER_PERM_POST_READ), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_create", USER_PERM_POST_CREATE, "Reply to threads", $folder_data['PERM'] & USER_PERM_POST_CREATE), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_read", USER_PERM_POST_READ, $lang['readposts'], $folder_data['PERM'] & USER_PERM_POST_READ), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_create", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder_data['PERM'] & USER_PERM_POST_CREATE), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, "Create new threads", $folder_data['PERM'] & USER_PERM_THREAD_CREATE), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, "Edit Posts", $folder_data['PERM'] & USER_PERM_POST_EDIT), "</td>\n";
+echo "                        <td>", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], $folder_data['PERM'] & USER_PERM_THREAD_CREATE), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, $lang['editposts'], $folder_data['PERM'] & USER_PERM_POST_EDIT), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, "Delete Posts", $folder_data['PERM'] & USER_PERM_POST_DELETE), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, "Upload Attachments", $folder_data['PERM'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, $lang['deleteposts'], $folder_data['PERM'] & USER_PERM_POST_DELETE), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder_data['PERM'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

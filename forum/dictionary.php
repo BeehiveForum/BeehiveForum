@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.6 2004-11-26 09:35:09 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.7 2004-11-26 09:50:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -336,7 +336,7 @@ echo "                  <td>Change to:</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"270\">", form_input_text("change_to", $dictionary->get_best_suggestion() , 32, false, "style=\"width: 99%\""), "</td>\n";
+echo "                  <td width=\"270\">", form_input_text("change_to", $dictionary->get_best_suggestion(), 32, false, "style=\"width: 99%\""), "</td>\n";
 echo "                  <td rowspan=\"2\" width=\"130\" valign=\"top\">\n";
 echo "                    <table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"120\">\n";
 echo "                      <tr>\n";
@@ -359,7 +359,7 @@ echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"270\">\n";
-echo "                    ", form_dropdown_array("suggestion", $dictionary->get_suggestions(), false, false, "size=\"10\" style=\"width: 100%; height: 90px\" onchange=\"changeword()\""), "\n";
+echo "                    ", form_dropdown_array("suggestion", $dictionary->get_suggestions_array(), false, $dictionary->get_best_suggestion(), "size=\"10\" style=\"width: 100%; height: 90px\" onchange=\"changeword()\""), "\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.8 2004-08-02 18:03:15 decoyduck Exp $ */
+/* $Id: install.php,v 1.9 2004-08-02 18:59:56 rowan_hill Exp $ */
 
 if (@file_exists("../include/config.inc.php")) {
     include_once("../include/config.inc.php");
@@ -372,7 +372,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
         echo "</head>\n";
 
-        echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation (Doesn't work 100% yet!)</h2>\n";
+        echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h2>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -452,7 +452,7 @@ echo "<link rel=\"icon\" href=\"../images/favicon.ico\" type=\"image/ico\">\n";
 echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
 echo "</head>\n";
 
-echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation (Doesn't work 100% yet!)</h2>\n";
+echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h2>\n";
 
 if (!defined('BEEHIVE_INSTALLED')) {
 
@@ -548,7 +548,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"2\">Admin Account</td>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">Admin Account (New installations only)</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Admin Username:</td>\n";

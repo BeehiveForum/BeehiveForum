@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.54 2004-11-18 20:13:39 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.55 2004-11-27 01:33:45 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -1302,5 +1302,9 @@ $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
 $lang['interestupdated'] = "Thread Interest Status Updated Successfully";
+
+// Dictionary (dictionary.php) -----------------------------------------
+
+$lang['spellcheck'] = "Spizellin'";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.143 2004-11-14 17:29:48 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.144 2004-11-27 01:33:45 tribalonline Exp $ */
 
 // International English language file
 
@@ -1305,5 +1305,9 @@ $lang['markasunread'] = "m@rK 4\$ unRE4d";
 $lang['makethreadsticky'] = "M4KE ThRE4d 5+1cKy";
 $lang['threareadstatusupdated'] = "thRE4D REaD S+@+US UpD@+3D 5uCCe\$5FUlLY";
 $lang['interestupdated'] = "thRe4D 1n+3r3St 5+AtUS UPd4T3D SuCCes5fuLLY";
+
+// Dictionary (dictionary.php) -----------------------------------------
+
+$lang['spellcheck'] = "5p3l7 cH3cK";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.15 2004-01-26 19:40:19 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.16 2004-03-01 22:58:02 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -49,53 +49,89 @@ require_once("./include/form.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/lang.inc.php");
 
-if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
+html_draw_top();
 
-    html_draw_top();
+if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
-
 }
-
-html_draw_top();
 
 if (isset($HTTP_POST_VARS['save'])) {
 
-    if (isset($HTTP_POST_VARS['wordlist']) && strlen($HTTP_POST_VARS['wordlist']) > 0) {
-        admin_save_word_filter($HTTP_POST_VARS['wordlist']);
-    }else {
-        admin_clear_word_filter();
+    admin_clear_word_filter();
+    
+    if (isset($HTTP_POST_VARS['match']) && is_array($HTTP_POST_VARS['match'])) {
+        for ($i = 0; $i < sizeof($HTTP_POST_VARS['match']); $i++) {
+            if (isset($HTTP_POST_VARS['replace'][$i])) {
+                admin_add_word_filter($HTTP_POST_VARS['match'][$i], $HTTP_POST_VARS['replace'][$i]);
+            }else {
+                admin_add_word_filter($HTTP_POST_VARS['match'][$i], "");
+            }
+        }
+    }
+    
+    if (isset($HTTP_POST_VARS['new_match']) && strlen(trim($HTTP_POST_VARS['new_match'])) > 0) {
+        if (isset($HTTP_POST_VARS['new_replace']) && strlen(trim($HTTP_POST_VARS['new_replace'])) > 0) {
+            admin_add_word_filter($HTTP_POST_VARS['new_match'], $HTTP_POST_VARS['new_replace']);
+        }else {
+            admin_add_word_filter($HTTP_POST_VARS['new_match'], "");
+        }
     }
 
     $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
-    admin_addlog(0, 0, 0, 0, 0, 0, 24);
 }
 
 $word_filter_array = admin_get_word_filter();
-$wordlist = implode("\n", $word_filter_array);
 
-echo "<form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
 echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
 if (isset($status_text)) echo $status_text;
 
 echo "<p>{$lang['wordfilterexp_1']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
-echo "  <tr>\n";
-echo "    <td>\n";
-echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td>", form_textarea('wordlist', _htmlentities($wordlist), 20, 90, 'off', 'style="font-family: monospace"'), "</td>\n";
-echo "        </tr>\n";
-echo "      </table>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-echo "<p>", form_submit('save', $lang['save']), "&nbsp;", form_reset(), "</p>\n";
-echo "</form>\n";
+echo "<div class=\"postbody\">\n";
+echo "  <form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
+echo "      <tr>\n";
+echo "        <td>\n";
+echo "          <table class=\"box\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td class=\"posthead\">\n";
+echo "                <table class=\"posthead\" width=\"100%\">\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\">&nbsp;</td>\n";
+echo "                    <td class=\"subhead\">Matched Text</td>\n";
+echo "                    <td class=\"subhead\">Replacement Text</td>\n";
+echo "                  </tr>\n";
+
+foreach ($word_filter_array as $word_filter) {
+    echo "                  <tr>\n";
+    echo "                    <td>&nbsp;</td>\n";
+    echo "                    <td>", form_input_text("match[]", $word_filter['MATCH_TEXT'], 30), "</td>\n";
+    echo "                    <td>", form_input_text("replace[]", $word_filter['REPLACE_TEXT'], 30), "</td>\n";
+    echo "                  </tr>\n";    
+}
+
+echo "                  <tr>\n";
+echo "                    <td>{$lang['newcaps']}</td>\n";
+echo "                    <td>", form_input_text("new_match", "", 30), "</td>\n";
+echo "                    <td>", form_input_text("new_replace", "", 30), "</td>\n";
+echo "                  </tr>\n"; 
+echo "                  <tr>\n";
+echo "                    <td>&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                </table>\n";
+echo "              </td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "        </td>\n";
+echo "      </tr>\n";
+echo "      <tr>\n";
+echo "        <td align=\"center\"><p>", form_submit("save", $lang['save']), "</p></td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
 
 html_draw_bottom();
 

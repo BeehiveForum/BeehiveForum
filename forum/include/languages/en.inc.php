@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.74 2004-02-27 22:00:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.75 2004-03-01 22:58:04 decoyduck Exp $ */
 
 // International English language file
 
@@ -65,6 +65,7 @@ $lang['subscribe'] = "Subscribe";
 $lang['apply'] = "Apply";
 $lang['submit'] = "Submit";
 $lang['save'] = "Save";
+$lang['update'] = "Update";
 $lang['cancel'] = "Cancel";
 $lang['continue'] = "Continue";
 $lang['queen'] = "Queen";
@@ -119,6 +120,7 @@ $lang['emailaddress'] = "Email address";
 $lang['confirm'] = "Confirm";
 $lang['email'] = "Email";
 $lang['new'] = "new";
+$lang['newcaps'] = "NEW";
 $lang['poll'] = "Poll";
 $lang['friend'] = "Friend";
 $lang['error'] = "Error";
@@ -291,6 +293,7 @@ $lang['wordfilterupdated'] = "Word Filter updated";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['wordfilterexp_1'] = "Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line.";
 $lang['wordfilterexp_2'] = "Perl-compatible regular expressions can also be used to match words if you know how.";
+$lang['wordfilterexp_3'] = "Use this page to edit your personal Word Filter. Place each word to be filtered on a new line.";
 $lang['allow'] = "Allow";
 $lang['normalthreadsonly'] = "Normal threads only";
 $lang['pollthreadsonly'] = "Poll threads only";
@@ -642,6 +645,8 @@ $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
 $lang['newrelationship'] = "New Relationship";
 $lang['editrelationships'] = "Edit Relationships";
+$lang['editattachments'] = "Edit Attachments";
+$lang['editwordfilter'] = "Edit Word Filter";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
 $lang['newpasswd'] = "New Password";
@@ -695,6 +700,7 @@ $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";
 $lang['privacysettings'] = "Privacy Settings";
+$lang['includeadminfilter'] = "Include admin word filter in my list.";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

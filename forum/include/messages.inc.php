@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.231 2004-02-29 20:29:52 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.232 2004-03-01 22:58:03 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -189,16 +189,18 @@ function message_sort_filter($a, $b)
 function message_filter($content)
 {
     $db_mf = db_connect();
+    
+    $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT FILTER FROM ". forum_table("FILTER_LIST");
+    $sql = "SELECT * FROM ". forum_table("FILTER_LIST"). " WHERE UID = '$uid'";
     $result = db_query($sql, $db_mf);
 
     $pattern_array = array();
     $replace_array = array();
 
     while($row = db_fetch_array($result)) {
-      $pattern_array[] = "/". trim($row['FILTER']). "/i";
-      $replace_array[] = str_repeat('*', strlen(trim($row['FILTER'])));
+      $pattern_array[] = "/". trim($row['MATCH_TEXT']). "/i";
+      $replace_array[] = $row['REPLACE_TEXT'];
     }
 
     usort($pattern_array, 'message_sort_filter');

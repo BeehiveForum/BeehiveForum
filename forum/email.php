@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.19 2003-08-26 18:30:48 decoyduck Exp $ */
+/* $Id: email.php,v 1.20 2003-08-26 18:31:03 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -124,7 +124,7 @@ echo "      <tr>\n";
 echo "        <td>\n";
 echo "          <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "            <tr>\n";
-echo "              <td><h2>&nbsp;{$lang['email']}&nbsp;{$to_user['LOGON']}</h2></td>\n";
+echo "              <td><h2>&nbsp;{$lang['email']}&nbsp;{$to_user['NICKNAME']}</h2></td>\n";
 echo "            </tr>\n";
 echo "          </table>\n";
 echo "          <table width=\"100%\" class=\"posthead\" border=\"0\">\n";

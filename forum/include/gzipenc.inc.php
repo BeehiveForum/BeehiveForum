@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.34 2004-07-09 18:05:02 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.35 2004-11-24 18:27:22 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -54,6 +54,8 @@ function bh_check_gzip()
 
     // determine which gzip encoding the client asked for
     // (x-gzip = IE; gzip = everything else).
+
+    if (!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) return false;
 
     if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) return "x-gzip";
     if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) return "gzip";

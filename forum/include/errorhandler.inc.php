@@ -21,13 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.53 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.54 2004-11-24 18:27:22 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
-
-define("FATAL", E_USER_ERROR);
-define("ERROR", E_USER_WARNING);
-define("WARNING", E_USER_NOTICE);
 
 // Define PHP 5.0's new E_STRICT constant here if it's not defined.
 // This will be meaningless to PHP versions below 5.0 but it saves
@@ -101,16 +97,16 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
             switch ($errno) {
 
-                case FATAL:
-                    echo "<p><b>FATAL</b> [$errno] $errstr</p>\n";
+                case E_USER_ERROR:
+                    echo "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
                     echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
-                case ERROR:
-                    echo "<p><b>ERROR</b> [$errno] $errstr</p>\n";
+                case E_USER_WARNING:
+                    echo "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
                     echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
                     break;
-                case WARNING:
-                    echo "<p><b>WARNING</b> [$errno] $errstr</p>\n";
+                case E_USER_NOTICE:
+                    echo "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
                     echo "<p>Warning in line $errline of file ", basename($errfile), "</p>\n";
                     break;
                 default:
@@ -208,7 +204,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
             if ($errstr == BH_DB_CONNECT_ERROR) {
 
-                echo "            <p><b>FATAL</b> [$errno]</p>\n";
+                echo "            <p><b>E_USER_ERROR</b> [$errno]</p>\n";
                 echo "            <p>An error has occured while connecting to the database.</p>\n";
                 echo "            <p>If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:</p>\n";
                 echo "            <pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre>\n";
@@ -218,16 +214,16 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
                 switch ($errno) {
 
-                    case FATAL:
-                        echo "            <p><b>FATAL</b> [$errno] $errstr</p>\n";
+                    case E_USER_ERROR:
+                        echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
                         echo "            <p>Fatal error in line $errline of file $errfile</p>\n";
                         break;
-                    case ERROR:
-                        echo "            <p><b>ERROR</b> [$errno] $errstr</p>\n";
+                    case E_USER_WARNING:
+                        echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
                         echo "            <p>Error in line $errline of file $errfile</p>\n";
                         break;
-                    case WARNING:
-                        echo "            <p><b>WARNING</b> [$errno] $errstr</p>\n";
+                    case E_USER_NOTICE:
+                        echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
                         echo "            <p>Warning in line $errline of file $errfile</p>\n";
                         break;
                     default:
@@ -256,7 +252,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
 // Should we enable our error handler?
 
-if (isset($show_friendly_errors) && $show_friendly_errors) {
+if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
     set_error_handler("bh_error_handler");
 }
 

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.14 2005-02-28 00:24:40 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.15 2005-03-10 21:17:52 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -70,102 +70,7 @@ $lang = load_language_file();
 
 light_html_draw_top();
 
-if ($user_sess && bh_session_get_value('UID') <> 0) {
-
-    if ($forums_array = get_my_forums()) {
-
-        echo "<h2>{$lang['myforums']}</h2>\n";
-
-        if (sizeof($forums_array['FAV_FORUMS']) > 0) {
-
-            echo "<h3>{$lang['favouriteforums']}</h3>\n";
-
-            foreach ($forums_array['FAV_FORUMS'] as $forum) {
-
-                echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-
-                if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
-                }else {
-                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
-                }
-
-                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
-                    echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
-                }else {
-                    echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
-                }
-            }
-        }
-
-        if (sizeof($forums_array['RECENT_FORUMS']) > 0) {
-
-            echo "<h3>{$lang['recentlyvisitedforums']}</h3>\n";
-
-            foreach ($forums_array['RECENT_FORUMS'] as $forum) {
-
-                echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-
-                if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
-                }else {
-                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
-                }
-
-                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
-                    echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
-                }else {
-                    echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
-                }
-            }
-        }
-
-        if (sizeof($forums_array['OTHER_FORUMS']) > 0) {
-
-            echo "<h3>{$lang['availableforums']}</h3>\n";
-
-            foreach ($forums_array['OTHER_FORUMS'] as $forum) {
-
-                echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-
-                if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
-                }else {
-                    echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
-                }
-
-                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
-                    echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
-                }else {
-                    echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
-                }
-            }
-        }
-
-    }else {
-
-        echo "<h2>{$lang['myforums']}</h2>\n";
-        echo "<p>{$lang['noforumsavailablelogin']}</p>\n";
-    }
-
-}else {
-
-    if ($forums_array = get_forum_list()) {
-
-        echo "<h2>{$lang['availableforums']}</h2>\n";
-
-        foreach ($forums_array as $forum) {
-
-            echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-            echo "<p>{$forum['MESSAGES']} {$lang['messages']}</p>\n";
-        }
-
-    }else {
-
-        echo "<h2>{$lang['availableforums']}</h2>\n";
-        echo "<p>{$lang['noforumsavailablelogin']}</p>\n";
-    }
-}
+light_draw_my_forums();
 
 echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
 

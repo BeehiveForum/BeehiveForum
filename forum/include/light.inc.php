@@ -21,11 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.75 2005-03-09 23:26:52 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.76 2005-03-10 21:17:51 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/myforums.inc.php");
+include_once("./include/threads.inc.php");
 include_once("./include/user.inc.php");
 include_once("./include/word_filter.inc.php");
 
@@ -81,6 +83,446 @@ function light_draw_logon_form()
     echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
 
     echo "</form>\n";
+}
+
+function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
+{
+    $webtag = get_webtag($webtag_search);
+
+    $lang = load_language_file();
+
+    $uid = bh_session_get_value('UID');
+
+    echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
+    echo "  ", form_input_hidden("webtag", $webtag), "\n";
+    echo "  ", light_threads_draw_discussions_dropdown($mode), "\n";
+    echo "  ", light_form_submit("go",$lang['goexcmark']), "\n";
+    echo "</form>\n";
+
+    // The tricky bit - displaying the right threads for whatever mode is selected
+
+    if (isset($folder) && $folder !== false) {
+        list($thread_info, $folder_order) = threads_get_folder($uid, $folder, $start_from);
+    } else {
+        switch ($mode) {
+            case 0: // All discussions
+                list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
+                break;
+            case 1; // Unread discussions
+                list($thread_info, $folder_order) = threads_get_unread($uid);
+                break;
+            case 2; // Unread discussions To: Me
+                list($thread_info, $folder_order) = threads_get_unread_to_me($uid);
+                break;
+            case 3; // Today's discussions
+                list($thread_info, $folder_order) = threads_get_by_days($uid, 1);
+                break;
+            case 4: // Unread today
+                list($thread_info, $folder_order) = threads_get_unread_by_days($uid);
+                break;
+            case 5; // 2 days back
+                list($thread_info, $folder_order) = threads_get_by_days($uid, 2);
+                break;
+            case 6; // 7 days back
+                list($thread_info, $folder_order) = threads_get_by_days($uid, 7);
+                break;
+            case 7; // High interest
+                list($thread_info, $folder_order) = threads_get_by_interest($uid, 1);
+                break;
+            case 8; // Unread high interest
+                list($thread_info, $folder_order) = threads_get_unread_by_interest($uid, 1);
+                break;
+            case 9; // Recently seen
+                list($thread_info, $folder_order) = threads_get_recently_viewed($uid);
+                break;
+            case 10; // Ignored
+                list($thread_info, $folder_order) = threads_get_by_interest($uid, -1);
+                break;
+            case 11; // By Ignored Users
+                list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_IGNORED_COMPLETELY);
+                break;
+            case 12; // Subscribed to
+                list($thread_info, $folder_order) = threads_get_by_interest($uid, 2);
+                break;
+            case 13: // Started by friend
+                list($thread_info, $folder_order) = threads_get_by_relationship($uid, USER_FRIEND);
+                break;
+            case 14: // Unread started by friend
+                list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, USER_FRIEND);
+                break;
+            case 15: // Started by me
+                list($thread_info, $folder_order) = threads_get_started_by_me($uid);
+                break;
+            case 16: // Polls
+                list($thread_info, $folder_order) = threads_get_polls($uid);
+                break;
+            case 17: // Sticky threads
+                list($thread_info, $folder_order) = threads_get_sticky($uid);
+                break;
+            case 18: // Most unread posts
+                list($thread_info, $folder_order) = threads_get_longest_unread($uid);
+                break;
+            default: // Default to all threads
+                list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
+                break;
+        }
+    }
+
+    // Now, the actual bit that displays the threads...
+
+    // Get folder FIDs and titles
+    $folder_info = threads_get_folders();
+    if (!$folder_info) die ("<p>{$lang['couldnotretrievefolderinformation']}</p>");
+
+    // Get total number of messages for each folder
+    $folder_msgs = threads_get_folder_msgs();
+
+    // Check to see if $folder_order is an array, and define it as one if not
+    if (!is_array($folder_order)) $folder_order = array();
+
+    // Sort the folders and threads correctly as per the URL query for the TID
+
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+        $threadvisible = false;
+
+        list($tid, $pid) = explode('.', $_GET['msg']);
+
+        if (thread_can_view($tid, bh_session_get_value('UID'))) {
+
+            if ($thread = thread_get($tid)) {
+
+                foreach ($thread as $key => $value) {
+                    $thread[strtolower($key)] = $value;
+                    unset($thread[$key]);
+                }
+
+                if (!isset($thread['relationship'])) $thread['relationship'] = 0;
+
+                if ($thread['tid'] == $tid) {
+
+                    if (in_array($thread['fid'], $folder_order)) {
+                        array_splice($folder_order, array_search($thread['fid'], $folder_order), 1);
+                    }
+
+                    array_unshift($folder_order, $thread['fid']);
+
+                    if (!is_array($thread_info)) $thread_info = array();
+
+                    foreach ($thread_info as $key => $thread_data) {
+                        if ($thread_data['tid'] == $tid) {
+                            unset($thread_info[$key]);
+                            break;
+                        }
+                    }
+
+                    array_unshift($thread_info, $thread);
+                }
+            }
+        }
+    }
+
+    // Work out if any folders have no messages and add them.
+    // Seperate them by INTEREST level
+
+    if (bh_session_get_value('UID') > 0) {
+
+        if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+            list($tid, $pid) = explode('.', $_GET['msg']);
+
+            if (thread_can_view($tid, bh_session_get_value('UID'))) {
+
+                list(,$selectedfolder) = thread_get($tid);
+            }
+
+        }elseif (isset($_GET['folder'])) {
+
+            $selectedfolder = $_GET['folder'];
+
+        }else {
+
+            $selectedfolder = 0;
+        }
+
+        $ignored_folders = array();
+
+        while (list($fid, $folder_data) = each($folder_info)) {
+            if ($folder_data['INTEREST'] == 0 || (isset($selectedfolder) && $selectedfolder == $fid)) {
+                if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
+            }else {
+                if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
+            }
+        }
+
+        // Append ignored folders onto the end of the folder list.
+        // This will make them appear at the bottom of the thread list.
+
+        $folder_order = array_merge($folder_order, $ignored_folders);
+
+    }else {
+
+        while (list($fid, $folder_data) = each($folder_info)) {
+            if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+        }
+    }
+
+    // If no threads are returned, say something to that effect
+
+    if (!$thread_info) {
+
+        echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"lthread_list.php?webtag=$webtag&amp;mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
+    }
+
+    if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></p>\n";
+
+    // Iterate through the information we've just got and display it in the right order
+
+    foreach ($folder_order as $key1 => $folder_number) {
+
+        if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
+
+            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=".$folder_number. "\">". apply_wordfilter($folder_info[$folder_number]['TITLE']) . "</a></h3>";
+
+            if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
+
+                if (is_array($thread_info)) {
+
+                    echo "<p>";
+
+                    if (isset($folder_msgs[$folder_number])) {
+                        echo $folder_msgs[$folder_number];
+                    }else {
+                        echo "0";
+                    }
+
+                    echo " {$lang['threads']}";
+
+                    if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
+
+                        if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?webtag=$webtag&amp;fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+                    }
+
+                    echo "</p>\n";
+
+                    if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></i></p>\n";
+
+                    echo "<ul>\n";
+
+                    foreach($thread_info as $key2 => $thread) {
+
+                        if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
+                        if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
+
+                        if ($thread['fid'] == $folder_number) {
+
+                            echo "<li>\n";
+
+                            if ($thread['last_read'] == 0) {
+
+                                $number = "[".$thread['length']."&nbsp;new]";
+                                $latest_post = 1;
+
+                            }elseif ($thread['last_read'] < $thread['length']) {
+
+                                $new_posts = $thread['length'] - $thread['last_read'];
+                                $number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
+                                $latest_post = $thread['last_read'] + 1;
+
+                            } else {
+
+                                $number = "[".$thread['length']."]";
+                                $latest_post = 1;
+
+                            }
+
+                            // work out how long ago the thread was posted and format the time to display
+                            $thread_time = format_time($thread['modified']);
+
+                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " {$lang['startedby']} ". format_user_name($thread['logon'], $thread['nickname']) . "\">".apply_wordfilter($thread['title'])."</a> ";
+                            if ($thread['interest'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
+                            if ($thread['interest'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
+                            if ($thread['poll_flag'] == 'Y') echo "(P) ";
+                            if ($thread['sticky'] == 'Y') echo "(St) ";
+                            if ($thread['relationship']&USER_FRIEND) echo "(Fr) ";
+                            echo $number." ";
+                            echo $thread_time." ";
+                            echo "</li>\n";
+                        }
+                    }
+
+                    echo "</ul>\n";
+
+                    if (isset($folder) && $folder_number == $folder) {
+
+                        $more_threads = $folder_msgs[$folder] - $start_from - 50;
+
+                        if ($more_threads > 0 && $more_threads <= 50) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</a></i></p>\n";
+                        if ($more_threads > 50) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></i></p>\n";
+
+                    }
+
+                }elseif ($folder_info[$folder_number]['INTEREST'] != -1) {
+
+                    echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=".$folder_number."\">";
+
+                    if (isset($folder_msgs[$folder_number])) {
+                        echo $folder_msgs[$folder_number];
+                    }else {
+                        echo "0";
+                    }
+
+                    echo " {$lang['threads']}</a>";
+                    if ($folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?webtag=$webtag&amp;fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+                    echo "</p>\n";
+                }
+
+            }
+
+            if (is_array($thread_info)) reset($thread_info);
+        }
+    }
+
+    if ($mode == 0 && !isset($folder)) {
+
+        $total_threads = 0;
+
+        if (is_array($folder_msgs)) {
+
+          while (list($fid, $num_threads) = each($folder_msgs)) {
+            $total_threads += $num_threads;
+          }
+
+          $more_threads = $total_threads - $start_from - 50;
+          if ($more_threads > 0 && $more_threads <= 50) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</p>\n";
+          if ($more_threads > 50) echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></p>\n";
+
+        }
+    }
+
+    if ($uid != 0) {
+
+        echo "  <h5>{$lang['markasread']}:</h5>\n";
+        echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";
+        echo "      ", form_input_hidden("webtag", $webtag), "\n";
+
+        $labels = array($lang['alldiscussions'], $lang['next50discussions']);
+
+        if (isset($visiblethreads) && is_array($visiblethreads)) {
+
+            $labels[] = $lang['visiblediscussions'];
+            echo form_input_hidden("tids", implode(',', $visiblethreads));
+        }
+
+        echo light_form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n        ";
+        echo light_form_submit("go",$lang['goexcmark']). "\n";
+        echo "    </form>\n";
+
+    }
+}
+
+function light_draw_my_forums()
+{
+    $lang = load_language_file();
+
+    $uid = bh_session_get_value('UID');
+
+    if ($uid <> 0) {
+
+        if ($forums_array = get_my_forums()) {
+
+            echo "<h2>{$lang['myforums']}</h2>\n";
+
+            if (sizeof($forums_array['FAV_FORUMS']) > 0) {
+
+                echo "<h3>{$lang['favouriteforums']}</h3>\n";
+
+                foreach ($forums_array['FAV_FORUMS'] as $forum) {
+
+                    echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+
+                    if ($forum['UNREAD_TO_ME'] > 0) {
+                        echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
+                    }else {
+                        echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
+                    }
+
+                    if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                        echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                    }else {
+                        echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
+                    }
+                }
+            }
+
+            if (sizeof($forums_array['RECENT_FORUMS']) > 0) {
+
+                echo "<h3>{$lang['recentlyvisitedforums']}</h3>\n";
+
+                foreach ($forums_array['RECENT_FORUMS'] as $forum) {
+
+                    echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+
+                    if ($forum['UNREAD_TO_ME'] > 0) {
+                        echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
+                    }else {
+                        echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
+                    }
+
+                    if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                        echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                    }else {
+                        echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
+                    }
+                }
+            }
+
+            if (sizeof($forums_array['OTHER_FORUMS']) > 0) {
+
+                echo "<h3>{$lang['availableforums']}</h3>\n";
+
+                foreach ($forums_array['OTHER_FORUMS'] as $forum) {
+
+                    echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+
+                    if ($forum['UNREAD_TO_ME'] > 0) {
+                        echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
+                    }else {
+                        echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
+                    }
+
+                    if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                        echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                    }else {
+                        echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
+                    }
+                }
+            }
+
+        }else {
+
+            echo "<h2>{$lang['myforums']}</h2>\n";
+            echo "<p>{$lang['noforumsavailablelogin']}</p>\n";
+        }
+
+    }else {
+
+        if ($forums_array = get_forum_list()) {
+
+            echo "<h2>{$lang['availableforums']}</h2>\n";
+
+            foreach ($forums_array as $forum) {
+
+                echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+                echo "<p>{$forum['MESSAGES']} {$lang['messages']}</p>\n";
+            }
+
+        }else {
+
+            echo "<h2>{$lang['availableforums']}</h2>\n";
+            echo "<p>{$lang['noforumsavailablelogin']}</p>\n";
+        }
+    }
 }
 
 // create a <select> dropdown with values from array(s)

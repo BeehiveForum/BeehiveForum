@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.190 2004-04-29 21:01:28 decoyduck Exp $ */
+/* $Id: post.php,v 1.191 2004-05-04 17:10:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -58,14 +58,14 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+    html_draw_top();
+
+    if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
 
         if (perform_logon(false)) {
 
             $lang = load_language_file();
             $webtag = get_webtag($webtag_search);
-
-            html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
             echo "<div align=\"center\">\n";
@@ -89,7 +89,6 @@ if (!$user_sess = bh_session_check()) {
         }
     }
 
-    html_draw_top();
     draw_logon_form(false);
     html_draw_bottom();
     exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.69 2004-04-29 21:01:08 decoyduck Exp $ */
+/* $Id: delete.php,v 1.70 2004-05-04 17:10:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,18 +49,19 @@ include_once("./include/poll.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
+include_once("./include/threads.inc.php");
 include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+    html_draw_top();
+
+    if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
 
         if (perform_logon(false)) {
 
             $lang = load_language_file();
             $webtag = get_webtag($webtag_search);
-
-            html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
             echo "<div align=\"center\">\n";
@@ -84,7 +85,6 @@ if (!$user_sess = bh_session_check()) {
         }
     }
 
-    html_draw_top();
     draw_logon_form(false);
     html_draw_bottom();
     exit;
@@ -179,6 +179,22 @@ if ($valid) {
 
             echo "<div align=\"center\">";
             echo "<p>{$lang['postdelsuccessfully']}</p>";
+
+            $thread_length = thread_get_length($tid);
+
+            if ($thread_length < 1) {
+
+                if (threads_any_unread()) {
+
+                    $msg = messages_get_most_recent_unread(bh_session_get_value('UID'));
+
+                }else {
+
+                    bh_setcookie('bh_thread_mode', 0);
+                    $msg = messages_get_most_recent(bh_session_get_value('UID'));
+                }
+            }
+
             form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
             echo "</div>";
             html_draw_bottom();
@@ -187,9 +203,7 @@ if ($valid) {
         }else {
 
             $error_html = "<h2>{$lang['errordelpost']}</h2>";
-
         }
-
     }
 
     echo "<h1>{$lang['delthismessage']}</h1>";

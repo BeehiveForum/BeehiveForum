@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.37 2004-04-28 14:28:51 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.38 2004-05-04 17:10:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -127,7 +127,7 @@ if (isset($_POST['submit'])) {
 if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($_GET['h'])) {
     $uid = $_GET['u'];
     $key = $_GET['h'];
-}elseif (isset($_POST['uid']) && is_numeric($_GET['uid']) && isset($_POST['key']) && is_md5($_GET['key'])) {
+}elseif (isset($_POST['uid']) && is_numeric($_POST['uid']) && isset($_POST['key']) && is_md5($_POST['key'])) {
     $uid = $_POST['uid'];
     $key = $_POST['key'];
 }else {

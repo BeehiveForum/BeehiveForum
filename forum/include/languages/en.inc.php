@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.124 2004-04-30 21:10:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.125 2004-05-04 17:10:19 decoyduck Exp $ */
 
 // International English language file
 
@@ -798,6 +798,7 @@ $lang['editattachments'] = "Edit Attachments";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
+$lang['currentpasswd'] = "Current Password";
 $lang['newpasswd'] = "New Password";
 $lang['confirmpasswd'] = "Confirm Password";
 $lang['passwdsdonotmatch'] = "Passwords do not match!";

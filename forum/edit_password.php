@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.29 2004-04-29 21:01:09 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.30 2004-05-04 17:10:18 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,14 +47,14 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+    html_draw_top();
+
+    if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
 
         if (perform_logon(false)) {
 
             $lang = load_language_file();
             $webtag = get_webtag($webtag_search);
-
-            html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
             echo "<div align=\"center\">\n";
@@ -75,10 +75,11 @@ if (!$user_sess = bh_session_check()) {
 
             html_draw_bottom();
             exit;
+            html_draw_bottom();
+            exit;
         }
     }
 
-    html_draw_top();
     draw_logon_form(false);
     html_draw_bottom();
     exit;
@@ -107,33 +108,41 @@ if (isset($_POST['submit'])) {
 
     // Required fields
 
-    if (isset($_POST['pw']) && strlen(trim($_POST['pw'])) > 0) {
+    if (isset($_POST['opw']) && strlen(trim(_stripslashes($_POST['opw']))) > 0) {
 
-        if (isset($_POST['cpw']) && strlen(trim($_POST['cpw'])) > 0) {
+        if (isset($_POST['npw']) && strlen(trim(_stripslashes($_POST['npw']))) > 0) {
 
-            if (trim($_POST['pw']) == trim($_POST['cpw'])) {
+            if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
 
-                if (_htmlentities(trim($_POST['pw'])) != trim($_POST['pw'])) {
-                    $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+                if (trim(_stripslashes($_POST['npw'])) == trim(_stripslashes($_POST['cpw']))) {
+
+                    if (_htmlentities(trim(_stripslashes($_POST['npw']))) != trim(trim(_stripslashes($_POST['npw'])))) {
+                        $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+                        $valid = false;
+                    }
+
+                    if (!preg_match("/^[a-z0-9_-]+$/i", trim(_stripslashes($_POST['npw'])))) {
+                        $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+                        $valid = false;
+                    }
+
+                    if (strlen(trim(_stripslashes($_POST['npw']))) < 6) {
+                        $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+                        $valid = false;
+                    }
+
+                    if ($valid) {
+                        $t_password = trim(_stripslashes($_POST['npw']));
+                        $t_passhash = md5(trim(_stripslashes($_POST['opw'])));
+                    }
+
+                }else {
+                    $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
                     $valid = false;
-                }
-
-                if (!preg_match("/^[a-z0-9_-]+$/i", trim($_POST['pw']))) {
-                    $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
-                    $valid = false;
-                }
-
-                if (strlen(trim($_POST['pw'])) < 6) {
-                    $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
-                    $valid = false;
-                }
-
-                if ($valid) {
-                    $t_password = $_POST['pw'];
                 }
 
             }else {
-                $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+                $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
                 $valid = false;
             }
 
@@ -141,10 +150,6 @@ if (isset($_POST['submit'])) {
             $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
             $valid = false;
         }
-
-    }else {
-        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
-        $valid = false;
     }
 
     if ($valid) {
@@ -155,7 +160,7 @@ if (isset($_POST['submit'])) {
 
         // Update the password (and cookie)
 
-        user_change_pw($uid, $t_password);
+        user_change_pw($uid, $t_password, $t_passhash);
 
         // Username array
 
@@ -185,19 +190,14 @@ if (isset($_POST['submit'])) {
 
         foreach ($username_array as $key => $logon) {
             if (stristr($logon, bh_session_get_value('LOGON'))) {
-                $passw = str_repeat(chr(32), strlen(_stripslashes($t_password)));
-                $passh = md5(_stripslashes($t_password));
+                $t_passhash = md5($t_password);
+                $t_password = str_repeat(chr(32), strlen($t_password));
                 if (isset($password_array[$key]) && isset($passhash_array[$key])) {
-                    bh_setcookie("bh_remember_password[$key]", $passw, time() + YEAR_IN_SECONDS);
-                    bh_setcookie("bh_remember_passhash[$key]", $passh, time() + YEAR_IN_SECONDS);
+                    bh_setcookie("bh_remember_password[$key]", $t_password, time() + YEAR_IN_SECONDS);
+                    bh_setcookie("bh_remember_passhash[$key]", $t_passhash, time() + YEAR_IN_SECONDS);
                 }
             }
         }
-
-        // Reinitialize the User's Session otherwise they will get logged out when their
-        // password check fails on the next page load.
-
-        bh_session_init($uid);
 
         // IIS bug prevents redirect at same time as setting cookies.
 
@@ -218,7 +218,7 @@ if (isset($_POST['submit'])) {
 
             // If they're still here, Javascript's not working. Give up, give a link.
             echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-            echo "<p>{$lang['userpreferences']}</p>";
+            echo "<p>{$lang['passwdchanged']}</p>";
 
             form_quick_button("./edit_password.php", $lang['continue'], false, false, "_top");
 
@@ -256,8 +256,12 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['changepassword']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
+echo "                  <td>{$lang['currentpasswd']}:</td>\n";
+echo "                  <td>", form_field("opw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
 echo "                  <td>{$lang['newpasswd']}:</td>\n";
-echo "                  <td>", form_field("pw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                  <td>", form_field("npw", "", 37, 0, "password"), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['confirmpasswd']}:</td>\n";

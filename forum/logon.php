@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.138 2004-04-29 16:29:07 decoyduck Exp $ */
+/* $Id: logon.php,v 1.139 2004-05-04 17:10:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -46,6 +46,31 @@ include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
+
+// Retrieve the final_uri request
+
+if (isset($_GET['final_uri'])) {
+
+    $final_uri = rawurldecode($_GET['final_uri']);
+
+}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+    $final_uri = "./discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
+
+}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+    $final_uri = "./discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
+
+}elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+
+    $final_uri = "./pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
+}
+
+// If the final_uri contains logout.php then unset it.
+
+if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
+    unset($final_uri);
+}
 
 if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
 
@@ -75,31 +100,6 @@ $lang = load_language_file();
 // Fetch the forum webtag
 
 $webtag = get_webtag($webtag_search);
-
-// Retrieve the final_uri request
-
-if (isset($_GET['final_uri'])) {
-
-    $final_uri = rawurldecode($_GET['final_uri']);
-
-}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-    $final_uri = "./discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
-
-}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-
-    $final_uri = "./discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
-
-}elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-
-    $final_uri = "./pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
-}
-
-// If the final_uri contains logout.php then unset it.
-
-if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
-    unset($final_uri);
-}
 
 // Retrieve existing cookie data if any
 
@@ -181,7 +181,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         exit;
     }
 
-}elseif (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+}elseif (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
 
     if (perform_logon(true)) {
 
@@ -228,12 +228,80 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
             html_draw_bottom();
             exit;
         }
+
+    }else {
+
+        html_draw_top();
+
+        echo "<div align=\"center\">\n";
+        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+        echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
+
+        if ($logon_main) {
+
+            if (isset($final_uri)) {
+                form_quick_button("./index.php", $lang['back'], "final_uri", rawurlencode($final_uri), "_top");
+            }else {
+                form_quick_button("./index.php", $lang['back'], false, false, "_top");
+            }
+
+            echo "<hr width=\"350\" />\n";
+            echo "<h2>{$lang['problemsloggingon']}</h2>\n";
+
+            if (isset($final_uri)) {
+                $final_uri = rawurlencode($final_uri);
+                echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+                echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+            }else {
+                echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+                echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+            }
+
+        }else {
+
+            echo "</div>\n";
+            draw_logon_form();
+        }
+
+        html_draw_bottom();
+        exit;
     }
 }
 
 html_draw_top('logon.js');
 
 draw_logon_form(true);
+
+if (user_guest_enabled()) {
+
+    echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";
+    echo "    <p class=\"smalltext\">{$lang['enterasa']} ". form_input_hidden("user_logon", "guest"). form_input_hidden("user_password", "guest"). form_submit(md5(uniqid(rand())), $lang['guest']). "</p>\n";
+    echo "  </form>\n";
+}
+
+if (isset($final_uri)) {
+
+    $final_uri = rawurlencode($final_uri);
+
+    echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">Register now.</a></p>\n";
+    echo "  <hr width=\"350\" />\n";
+    echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
+    echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+
+}else {
+
+    echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag=$webtag\" target=\"_self\">Register now.</a></p>\n";
+    echo "  <hr width=\"350\" />\n";
+    echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
+    echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+}
+
+echo "  <hr width=\"350\" />\n";
+echo "  <h2>{$lang['usingaPDA']}</h2>\n";
+echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag=$webtag\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

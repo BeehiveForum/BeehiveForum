@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.66 2005-03-21 15:36:06 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.67 2005-03-25 21:37:54 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -357,10 +357,12 @@ function perm_remove_group($gid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM GROUP_USERS WHERE GID = '$gid'";
+    $sql = "SELECT COUNT(*) AS GROUP_COUNT FROM GROUP_USERS WHERE GID = '$gid'";
     $result = db_query($sql, $db_perm_remove_group);
 
-    if (db_num_rows($result) < 1) {
+    list($group_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    if ($group_count < 1) {
 
         $sql = "DELETE FROM GROUPS WHERE GID = $gid";
         return db_query($sql, $db_perm_remove_group);

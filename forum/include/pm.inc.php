@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.116 2005-03-22 21:47:44 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.117 2005-03-25 21:37:54 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -866,7 +866,6 @@ function pm_archive_message($mid)
     // ------------------------------------------------------------
 
     $sql = "SELECT * FROM PM WHERE MID = '$mid'";
-
     $result = db_query($sql, $db_pm_archive_message);
 
     $db_pm_archive_message_row = db_fetch_array($result);

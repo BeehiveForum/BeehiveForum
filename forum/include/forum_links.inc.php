@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.9 2005-03-15 21:29:47 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.10 2005-03-25 21:37:54 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "links.inc.php");
@@ -33,7 +33,6 @@ function forum_links_get_links()
     $db_forum_draw_friends_dropdown = db_connect();
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}FORUM_LINKS ORDER BY POS ASC, LID ASC";
-
     $result = db_query($sql, $db_forum_draw_friends_dropdown);
 
     if (db_num_rows($result) > 0) {

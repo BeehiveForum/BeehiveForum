@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.27 2003-08-01 22:09:48 hodcroftcj Exp $ */
+/* $Id: thread.inc.php,v 1.28 2003-08-02 00:02:53 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -134,45 +134,66 @@ function thread_set_interest($tid, $interest, $new = false)
 
 function thread_can_view($tid = 0, $uid = 0)
 {
-        $fidlist = folder_get_available();
+    $fidlist = folder_get_available();
+    $db_thread_can_view = db_connect();
 
-        $db_thread_can_view = db_connect();
+    $sql = "select * from ".forum_table("THREAD")." where TID = '$tid' and FID in ($fidlist)";
 
-        $sql = "select * from ".forum_table("THREAD")." where TID = '$tid' and FID in ($fidlist)";
+    $result = db_query($sql,$db_thread_can_view);
+    $count = db_num_rows($result);
 
-        $result = db_query($sql,$db_thread_can_view);
-        $count = db_num_rows($result);
-
-        return ($count > 0);
+    return ($count > 0);
 }
 
 function thread_set_sticky($tid, $sticky = true)
 {
     $db_thread_set_sticky = db_connect();
-    
+
     if ($sticky) {
         $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = \"Y\" WHERE TID = $tid";
     } else {
         $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = \"N\" WHERE TID = $tid";
     }
-    
+
     $result = db_query($sql,$db_thread_set_sticky);
-    
+
     return $result;
 }
 
 function thread_set_closed($tid, $closed = true)
 {
     $db_thread_set_closed = db_connect();
-    
+
     if ($closed) {
         $sql = "UPDATE ".forum_table("THREAD")." SET CLOSED = NOW() WHERE TID = $tid";
     } else {
         $sql = "UPDATE ".forum_table("THREAD")." SET CLOSED = NULL WHERE TID = $tid";
     }
-    
+
     $result = db_query($sql,$db_thread_set_closed);
-    
+
     return $result;
 }
+
+function thread_change_folder($tid, $new_fid)
+{
+    $db_thread_set_closed = db_connect();
+
+    $sql = "UPDATE ". forum_table("THREAD"). " SET FID = $new_fid WHERE TID = $tid";
+    $result = db_query($sql, $db_thread_set_closed);
+
+    return $result;
+}
+
+function thread_change_title($tid, $new_title)
+{
+    $db_thread_change_title = db_connect();
+    $new_title = _addslashes(_htmlentities($new_title));
+
+    $sql = "UPDATE ". forum_table("THREAD"). " SET TITLE = '$new_title' WHERE TID = $tid";
+    $result = db_query($sql, $db_thread_change_title);
+
+    return $result;
+}
+
 ?>

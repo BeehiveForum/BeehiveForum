@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: userdb_beehive.php,v 1.1 2005-02-09 23:18:44 decoyduck Exp $ */
+/* $Id: userdb_beehive.php,v 1.2 2005-02-20 22:07:33 decoyduck Exp $ */
 
 // Put Ewiki in protected mode and default to view / browse only
 
@@ -68,23 +68,20 @@ function ewiki_auth_query_beehive(&$data, $force_query = false) {
 
     if ($force_query && !$t_success || ($force_query >= 2)) {
 
-        $ewiki_errmsg = "<div class=\"login-form auth-login\">\n";
         $ewiki_errmsg.= "<form action=\"{$_SERVER['REQUEST_URI']}\" method=\"post\">\n";
-        $ewiki_errmsg.= "<p>Please login to continue.</p>\n";
-        $ewiki_errmsg.= "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"200\">\n";
+        $ewiki_errmsg.= "<p>Please enter your forum logon and password below to continue.</p>\n";
+        $ewiki_errmsg.= "<table>\n";
         $ewiki_errmsg.= "  <tr>\n";
-        $ewiki_errmsg.= "    <td>". ewiki_t("_{Logon}"). ":&nbsp;</td>\n";
+        $ewiki_errmsg.= "    <td>". ewiki_t("_{Logon}"). ":</td>\n";
         $ewiki_errmsg.= "    <td>". ewiki_t("<input type=\"text\" size=\"20\" name=\"logon\">"). "</td>\n";
         $ewiki_errmsg.= "  </tr>\n";
         $ewiki_errmsg.= "  <tr>\n";
-        $ewiki_errmsg.= "    <td>". ewiki_t("_{Password}"). ":&nbsp;</td>\n";
+        $ewiki_errmsg.= "    <td>". ewiki_t("_{Password}"). ":</td>\n";
         $ewiki_errmsg.= "    <td>". ewiki_t("<input type=\"password\" size=\"20\" name=\"passwd\">"). "</td>\n";
         $ewiki_errmsg.= "  </tr>\n";
         $ewiki_errmsg.= "  <tr>\n";
-        $ewiki_errmsg.= "    <td colspan=\"2\">&nbsp;</td>\n";
-        $ewiki_errmsg.= "  </tr>\n";
-        $ewiki_errmsg.= "  <tr>\n";
-        $ewiki_errmsg.= "    <td align=\"center\" colspan=\"2\">". ewiki_t("<input type=\"submit\" value=\"_{Logon}\">"). "</td>\n";
+        $ewiki_errmsg.= "    <td>&nbsp;</td>\n";
+        $ewiki_errmsg.= "    <td>". ewiki_t("<input type=\"submit\" value=\"_{Logon}\">"). "</td>\n";
         $ewiki_errmsg.= "  </tr>\n";
         $ewiki_errmsg.= "</table>\n";
 

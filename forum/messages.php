@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.157 2004-08-26 19:52:02 decoyduck Exp $ */
+/* $Id: messages.php,v 1.158 2004-09-07 01:50:48 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -354,18 +354,25 @@ if ($msg_count > 0 && bh_session_get_value('UID') != 0 && !isset($_GET['markasre
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "  <td><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
+echo "    <td colspan=\"3\">&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "  <tr valign=\"top\">\n";
+echo "    <td width=\"33%\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
 
+echo "    <td width=\"33%\" align=\"center\"><p><img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a></p></td>\n";
+
+echo "    <td width=\"33%\" align=\"right\">";
 if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
-    echo "    <td align=\"right\">";
     form_quick_button("./messages.php", "{$lang['keepreading']} &gt;&gt;", "msg", "$tid.$npid");
-    echo "</td>\n";
+} else {
+	echo "&nbsp;";
 }
+echo "    </td>\n";
 
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table></div>\n";
 
@@ -380,7 +387,6 @@ if (bh_session_get_value('UID') != 0) {
 
     messages_interest_form($tid,$pid);
     messages_fontsize_form($tid, $pid);
-    form_quick_button("thread_options.php", $lang['threadoptions'], "msg", $msg);
 }
 
 draw_beehive_bar();

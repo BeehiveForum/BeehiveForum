@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.36 2004-08-14 23:25:36 tribalonline Exp $ */
+/* $Id: constants.inc.php,v 1.37 2004-09-07 01:50:48 tribalonline Exp $ */
 
 // Beehive Version
 
-define("BEEHIVE_VERSION", "0.5-alpha");
+define("BEEHIVE_VERSION", "0.5-RC2");
 
 // Constants for date / time.
 
@@ -79,6 +79,7 @@ define("POST_AUTOHTML_DEFAULT", 8);
 define("POST_HTML_DEFAULT", 16);
 define("POST_EMOTICONS_DISABLED", 32);
 define("POST_AUTO_LINKS", 64);
+define("POST_SIGNATURE_DISPLAY", 128);
 
 // Poll Constants
 

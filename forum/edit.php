@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.145 2004-08-24 10:12:24 tribalonline Exp $ */
+/* $Id: edit.php,v 1.146 2004-09-07 01:50:48 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -240,11 +240,13 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 $page_prefs = bh_session_get_value('POST_PAGE');
 
 if ($page_prefs == 0) {
-        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
+        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
 }
 
 
 $valid = true;
+
+$fix_html = true;
 
 html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprofile.js", "htmltools.js", "emoticons.js");
 
@@ -524,7 +526,19 @@ if (isset($_POST['preview'])) {
         }
     }
 
-} else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
+} else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
+
+	if (isset($_POST['t_content'])) {
+		$t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
+        $post->setContent($t_content);
+        $t_content = $post->getContent();
+	}
+
+	if (isset($_POST['t_sig'])) {
+		$t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
+        $sig->setContent($t_sig);
+        $t_sig = $sig->getContent();
+	}
 
     $preview_message = messages_get($tid, $pid, 1);
 
@@ -542,9 +556,15 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-	$page_prefs ^= POST_EMOTICONS_DISPLAY;
+	if (isset($_POST['emots_toggle_x'])) {
+		$page_prefs ^= POST_EMOTICONS_DISPLAY;
+	} else {
+		$page_prefs ^= POST_SIGNATURE_DISPLAY;
+	}
 
 	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+
+	$fix_html = false;
 
 } else {
 
@@ -664,6 +684,11 @@ echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\
 echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
 echo "</a><br /><br />\n";
 
+echo "<h2>". $lang['messageoptions'] .":</h2>\n";
+
+echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br /><br />\n";
+
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
@@ -707,13 +732,17 @@ echo "<tr><td>\n";
 
 echo "<h2>". $lang['message'] .":</h2>\n";
 
+$t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
+
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+	echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+	echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+
+} else {
+	echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 }
 
-echo $tools->textarea("t_content", $post->getTidyContent(), 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
-
-if ($post->isDiff()) {
+if ($post->isDiff() && $fix_html) {
 
         echo $tools->compare_original("t_content", $post->getOriginalContent());
 
@@ -735,12 +764,7 @@ if ($allow_html == true) {
 	echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<h2>". $lang['messageoptions'] .":</h2>\n";
-
-echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
-echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
-
-echo "<br />\n";
+echo "<br /><br />\n";
 echo form_submit('submit',$lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
@@ -759,17 +783,46 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_pe
 
 // ---- SIGNATURE ----
 if ($allow_sig == true) {
-	echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-	echo $tools->textarea("t_sig", $sig->getTidyContent(), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+	echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+	echo "  <tr>\n";
+	echo "    <td class=\"subhead\">\n";
+	echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
+
+	$t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+
+	if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
+		echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
+		echo "    </td>\n";
+		echo "  </tr>\n";
+
+		echo "  <tr>\n";
+		echo "    <td colspan=\"2\">\n";
+
+		if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+			echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+		} else {
+			echo form_textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+		}
+
+		echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+
+		if ($sig->isDiff() && $fix_html && !$fetched_sig) {
+			echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+		}
+
+	} else {
+		echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
+		echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
+	}
+
+	echo "    </td>\n";
+	echo "  </tr>\n";
+	echo "</table>\n";
+
 }
 
 echo $tools->js();
-
-if ($sig->isDiff()) {
-
-        echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-}
 
 echo "</td></tr>\n";
 echo "</table>";

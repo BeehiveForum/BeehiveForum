@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.129 2004-09-03 19:59:52 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.130 2004-09-07 01:50:49 tribalonline Exp $ */
 
 // International English language file
 
@@ -949,6 +949,7 @@ $lang['containsinvalidchars'] = "C0nT4INEd iNvAl1d Ch@rAc+3R\$!";
 $lang['postpage'] = "P05+ p49E";
 $lang['displayhtmltoolbar'] = "di5pl4y hTMl T00LB4r";
 $lang['displayemoticonspanel'] = "Di\$Play 3m0+Ic0nS p4N3L";
+$lang['displaysignature'] = "Di\$Play 51gN47uR3";
 $lang['disableemoticonsinpostsbydefault'] = "DI5A8Le EM0+1cON5 1n M3SsA9Es by d3pH4uL+";
 $lang['automaticallyparseurlsbydefault'] = "@U+Om4+1C@LlY p4RsE UrLs IN M355@935 bY D3F4UL+";
 $lang['postinplaintextbydefault'] = "P0S+ in plA1n tEx+ 8y D3pHauLt";
@@ -1149,6 +1150,7 @@ $lang['groupsresultsbythread'] = "9r0up ResuL+\$ 8y THrE@d";
 $lang['recentthreads'] = "R3CeNT THre4Ds";
 $lang['startreading'] = "st@rT R34D1NG";
 $lang['threadoptions'] = "+HRe@D oP+iOn5";
+$lang['editthreadoptions'] = "3d17 +HRe@D oP+iOn5";
 $lang['showmorevisitors'] = "SHOw M0RE viSI+0r5";
 $lang['forthcomingbirthdays'] = "f0r+Hc0M1N9 BIrthd4ys";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.31 2004-04-13 17:57:50 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.32 2004-04-13 18:12:11 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -64,11 +64,19 @@ function admin_get_log_entries($offset, $sort_by, $sort_dir)
 
     $sort_array = array('ADMIN_LOG.LOG_TIME', 'ADMIN_LOG.ADMIN_UID', 'ADMIN_LOG.ACTION');
 
+    $admin_log_array = array();                                         
+
     if (!is_numeric($offset)) $offset = 0;
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
     
-    if (!$table_data = get_table_prefix()) return false;
+    if (!$table_data = get_table_prefix()) return array('admin_log_count' => 0,
+                                                        'admin_log_array' => array());
+
+    $sql = "SELECT LOG_ID FROM {$table_data['PREFIX']}ADMIN_LOG ";
+
+    $result = db_query($sql, $db_admin_get_log_entries);
+    $admin_log_count = db_num_rows($result);
 
     $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
     $sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
@@ -86,14 +94,13 @@ function admin_get_log_entries($offset, $sort_by, $sort_dir)
     $result = db_query($sql, $db_admin_get_log_entries);
 
     if (db_num_rows($result)) {
-	$admin_log_array = array();
 	while ($row = db_fetch_array($result)) {
 	    $admin_log_array[] = $row;
 	}
-	return $admin_log_array;
-    }else {
-        return false;
     }
+
+    return array('admin_log_count' => $admin_log_count,
+                 'admin_log_array' => $admin_log_array);
 }
 
 function admin_get_word_filter()

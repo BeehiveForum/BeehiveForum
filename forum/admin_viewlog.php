@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.48 2004-04-12 14:31:20 tribalonline Exp $ */
+/* $Id: admin_viewlog.php,v 1.49 2004-04-13 18:12:10 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -129,7 +129,7 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
 }
 
 if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
-    $start = $HTTP_GET_VARS['page'] * 20;
+    $start = floor($HTTP_GET_VARS['page'] - 1) * 20;
 }else {
     $start = 0;
 }
@@ -173,9 +173,11 @@ if ($sort_by == 'ADMIN_LOG.ACTION' && $sort_dir == 'ASC') {
 
 echo "                  </tr>\n";
 
-if ($admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir)) {
+$admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 
-    foreach ($admin_log_array as $admin_log_entry) {
+if (sizeof($admin_log_array['admin_log_array']) > 0) {
+
+    foreach ($admin_log_array['admin_log_array'] as $admin_log_entry) {
 
         echo "                  <tr>\n";
         echo "                    <td class=\"posthead\" align=\"left\">", format_time($admin_log_entry['LOG_TIME']), "</td>\n";
@@ -357,27 +359,27 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>";
 echo "    </tr>\n";
 echo "    <tr>\n";
+echo "      <td align=\"center\">Pages: ";
 
-if (sizeof($admin_log_array) == 20) {
-    if ($start < 20) {
-        echo "      <td align=\"center\">";
-        echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag&page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
-        echo "      </td>\n";
-    }elseif ($start >= 20) {
-        echo "      <td align=\"center\">";
-        echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;\n";
-        echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag&page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;\n";
-        echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag&page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
-        echo "      </td>\n";        
+$page_count = ceil($admin_log_array['admin_log_count'] / 10);
+    
+if ($page_count > 1) {
+
+    for ($page = 1; $page <= $page_count; $page++) {
+        echo "<a href=\"admin_viewlog.php?webtag=$webtag&amp;page=$page\" target=\"_self\">$page</a> ";
     }
+
 }else {
-    if ($start >= 20) {
-        echo "      <td align=\"center\">";    
-        echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;\n";
-        echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag&page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-        echo "      </td>\n";
-    }
+
+    echo "<a href=\"admin_viewlog.php?webtag=$webtag&amp;page=1\" target=\"_self\">1</a> ";
 }
+
+echo "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 
 if (bh_session_get_value('STATUS') & USER_PERM_QUEEN && $admin_log_array) {
     echo "    <tr>\n";

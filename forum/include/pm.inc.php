@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.81 2004-07-22 19:41:56 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.82 2004-08-07 16:04:02 tribalonline Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -334,7 +334,7 @@ function pm_get_free_space($uid = false)
 
     if (isset($row['PM_USED_SPACE'])) return ($max_pm_space - $row['PM_USED_SPACE']);
 
-    return $max_pm_size;
+    return $max_pm_space;
 }
 
 function pm_get_user($mid)

@@ -26,33 +26,31 @@ USA
 
 require_once("./include/db.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/forum.inc.php");
 
-if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])){
+if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel'])) {
+
     $uid = $HTTP_GET_VARS['uid'];
     $rel = $HTTP_GET_VARS['rel'];
-    $exists = $HTTP_GET_VARS['exists'];
     $myuid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
     $db = db_connect();
-
-    if(!$exists){
-        $sql = "insert into USER_PEER(UID,PEER_UID,RELATIONSHIP) ";
-        $sql.= "values ($myuid,$uid,$rel)";
-    } else {
-        $sql = "update USER_PEER set RELATIONSHIP = $rel where UID = $myuid and PEER_UID = $uid";
-    }
-
+    
+    $sql = "delete from ". forum_table("USER_PEER"). " where UID = $myuid and PEER_UID = $uid";
+    db_query($sql, $db);
+    
+    $sql = "insert into ". forum_table("USER_PEER"). " (UID,PEER_UID,RELATIONSHIP) values ($myuid, $uid, $rel)";
     db_query($sql,$db);
 
 }
 
 if(isset($HTTP_GET_VARS['ret'])){
 
-    header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$ret);
+    header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST']. $ret);
     
 }else{
 
-    header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].dirname($HTTP_SERVER_VARS['PHP_SELF'])."/user_profile.php?uid=$uid");
+    header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/user_profile.php?uid=$uid");
     
 }
 

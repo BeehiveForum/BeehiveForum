@@ -192,7 +192,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         
             $polldata['CONTENT'].= "        <tr>\n";
             $polldata['CONTENT'].= "          <td>\n";
-            $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width);
+            $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
             $polldata['CONTENT'].= "          </td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
                
@@ -200,7 +200,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
             $polldata['CONTENT'].= "        <tr>\n";
             $polldata['CONTENT'].= "          <td>\n";
-            $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width);
+            $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
             $polldata['CONTENT'].= "          </td>\n";
             $polldata['CONTENT'].= "        </tr>\n";
                 
@@ -250,29 +250,29 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
       
       if ($totalvotes == 0 && ($poll['CLOSES'] <= gmmktime() && $poll['CLOSES'] != 0)) {
       
-        $polldata['CONTENT'].= "Nobody voted.";
+        $polldata['CONTENT'].= "<b>Nobody voted.</b>";
         
       }elseif ($totalvotes == 0 && ($poll['CLOSES'] > gmmktime() || $poll['CLOSES'] == 0)) {
       
-        $polldata['CONTENT'].= "Nobody has voted.";
+        $polldata['CONTENT'].= "<b>Nobody has voted.</b>";
       
       }elseif ($totalvotes == 1 && ($poll['CLOSES'] <= gmmktime() && $poll['CLOSES'] != 0)) {
       
-        $polldata['CONTENT'].= "1 person voted.";
+        $polldata['CONTENT'].= "<b>1 person voted.</b>";
         
       }elseif ($totalvotes == 1 && ($poll['CLOSES'] > gmmktime() || $poll['CLOSES'] == 0)) {
       
-        $polldata['CONTENT'].= "1 person has voted,";
+        $polldata['CONTENT'].= "<b>1 person has voted.</b>";
         
       }else {
       
         if ($poll['CLOSES'] <= gmmktime() && $poll['CLOSES'] != 0) {
       
-          $polldata['CONTENT'].= $totalvotes. " people voted.";
+          $polldata['CONTENT'].= "<b>". $totalvotes. " people voted.</b>";
           
         }else {
         
-          $polldata['CONTENT'].= $totalvotes. " people have voted.";
+          $polldata['CONTENT'].= "<b>". $totalvotes. " people have voted.</b>";
           
         }
         
@@ -333,7 +333,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "        <tr>\n";
           $polldata['CONTENT'].= "          <td align=\"center\">";
           
-          if ($poll['SHOWRESULTS'] == 1) {
+          if ($poll['SHOWRESULTS'] == 1 && $totalvotes > 0) {
           
             $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=350, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
             
@@ -365,7 +365,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     
 }
 
-function poll_horizontal_graph($pollresults, $bar_width)
+function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
 {
 
     usort($pollresults, "poll_sort");
@@ -381,14 +381,18 @@ function poll_horizontal_graph($pollresults, $bar_width)
         
         if ($pollresults[$i]['votes'] > 0) {
         
-          $polldisplay.= "                <td class=\"postbody\" height=\"20\"><img src=\"./images/pollbar". $i. ".png\" height=\"20\" width=\"". $bar_width * $pollresults[$i]['votes']. "\" alt=\"\"></td>\n";
+          $polldisplay.= "                <td class=\"pollbar". ($i + 1). "\" style=\"height: 25px; width: ". $bar_width * $pollresults[$i]['votes']. "px\">&nbsp;</td>\n";
           
         }else {
         
-          $polldisplay.= "                <td class=\"postbody\" height=\"20\">&nbsp;</td>\n";
+          $polldisplay.= "                <td class=\"postbody\" height=\"25\">&nbsp;</td>\n";
           
         }
         
+        $polldisplay.= "              </tr>\n";
+        $polldisplay.= "              <tr>\n";
+        $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['votes']. " votes (". (100 / $totalvotes) * $pollresults[$i]['votes']. "%)</td>\n";
         $polldisplay.= "              </tr>\n";
         
       }
@@ -401,7 +405,7 @@ function poll_horizontal_graph($pollresults, $bar_width)
     
 }
 
-function poll_vertical_graph($pollresults, $bar_height, $bar_width)
+function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
 {
 
     usort($pollresults, "poll_sort");
@@ -415,11 +419,11 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width)
         
         if ($pollresults[$i]['votes'] > 0) {
         
-          $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"bottom\"><img src=\"./images/pollbar". $i. ".png\" height=\"". $bar_height * $pollresults[$i]['votes']. "\" width=\"". $bar_width. "\" alt=\"\"></td>\n";
+          $polldisplay.= "                <td align=\"center\" valign=\"bottom\" class=\"pollbar". ($i + 1). "\" style=\"height: ". $bar_height * $pollresults[$i]['votes']. "px; width: ". $bar_width. "px\">&nbsp;</td>\n";
           
         }else {
         
-          $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"bottom\"><img src=\"./images/pollbar". $i. ".png\" height=\"0\" width=\"". $bar_width. "\" alt=\"\"></td>\n";
+          $polldisplay.= "                <td align=\"center\" valign=\"bottom\" class=\"postbody\" style=\"width: ". $bar_width. "px\">&nbsp;</td>\n";
           
         }
         
@@ -434,7 +438,7 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width)
     
       if (!empty($pollresults[$i]['option'])) {
      
-        $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['option']. "</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['option']. "<br />". $pollresults[$i]['votes']. " votes (". (100 / $totalvotes) * $pollresults[$i]['votes']. "%)</td>\n";
         
       }
       

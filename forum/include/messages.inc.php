@@ -194,10 +194,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>";
     }
 
+    // Check for search words to highlight -------------------------------------
+
     if (sizeof($highlight) > 0) {
+        $message_parts = preg_split('/([<|>])/', $message['CONTENT'], -1, PREG_SPLIT_DELIM_CAPTURE);
         foreach ($highlight as $word) {
-            $message['CONTENT'] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $message['CONTENT']);
+            for ($i = 0; $i < sizeof($message_parts); $i++) {
+                if (!($i % 4)) {
+                    $message_parts[$i] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $message_parts[$i]);
+                }
+            }
         }
+        $message['CONTENT'] = implode('', $message_parts);
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------

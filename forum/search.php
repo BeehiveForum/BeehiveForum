@@ -96,8 +96,8 @@ html_draw_top();
 // Construct the unique part of the query
 
 if (isset($HTTP_POST_VARS['submit'])) {
-  if (isset($HTTP_POST_VARS['search_string']) && strlen($HTTP_POST_VARS['search_string']) > 0) {
-    $search_string = $HTTP_POST_VARS['search_string'];
+  if (isset($HTTP_POST_VARS['search_string']) && strlen(trim($HTTP_POST_VARS['search_string'])) > 0) {
+    $search_string = trim($HTTP_POST_VARS['search_string']);
     search_construct_query($HTTP_POST_VARS, $searchsql, $urlquery);
   }else {
     echo "<h1>Search Results</h1>";
@@ -106,8 +106,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
     exit;
   }
 }elseif (isset($HTTP_GET_VARS['sstart'])) {
-  if (isset($HTTP_GET_VARS['search_string']) && strlen($HTTP_GET_VARS['search_string']) > 0) {
-    $search_string = $HTTP_POST_VARS['search_string'];
+  if (isset($HTTP_GET_VARS['search_string']) && strlen(trim($HTTP_GET_VARS['search_string'])) > 0) {
+    $search_string = trim($HTTP_POST_VARS['search_string']);
     search_construct_query($HTTP_GET_VARS, $searchsql, $urlquery);
   }else {
     echo "<h1>Search Results</h1>";
@@ -208,7 +208,7 @@ if (isset($searchsql)) {
 
       }
 
-      echo "<li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "&search_string=", rawurlencode($search_string), "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
+      echo "<li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "&search_string=", rawurlencode(trim($search_string)), "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";
       echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></p></li>\n";
 
       //echo ($i + 1). ". <a href=\"messages.php?msg=". $row['TID'], ".", $row['PID'], "\" target=\"right\">", $message['CONTENT'], "</a><br />\n";

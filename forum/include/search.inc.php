@@ -60,11 +60,11 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
     if ($fromuid > -1) $fromtouser.= " AND POST.FROM_UID = ". $fromuid;
   }
 
-  if (!empty($argarray['search_string'])) {
+  if (!empty(trim($argarray['search_string']))) {
 
     if ($argarray['method'] == 1) { // AND
 
-      $keywords = explode(' ', $argarray['search_string']);
+      $keywords = explode(' ', trim($argarray['search_string']));
 
       $threadtitle = "";
       foreach($keywords as $word) {
@@ -96,7 +96,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
     }elseif ($argarray['method'] == 2) { // OR
 
-      $keywords = explode(' ', $argarray['search_string']);
+      $keywords = explode(' ', trim($argarray['search_string']));
 
       $threadtitle = "";
       foreach($keywords as $word) {
@@ -128,8 +128,8 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
     }elseif ($argarray['method'] == 3) { // EXACT
 
-      $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". _addslashes($argarray['search_string']). "%' ";
-      $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". _addslashes($argarray['search_string']). "%<div class=\"sig\">') ";
+      $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". _addslashes(trim($argarray['search_string'])). "%' ";
+      $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". _addslashes(trim($argarray['search_string'])). "%<div class=\"sig\">') ";
       $searchsql.= $daterange;
 
       if ($argarray['me_only'] == 'Y') {
@@ -168,7 +168,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
   }
 
   $urlquery = "&fid=". $argarray['fid']. "&date_from=". $argarray['date_from']. "&date_to=". $argarray['date_to'];
-  $urlquery.= "&search_string=". rawurlencode($argarray['search_string']). "&method=". $argarray['method']. "&me_only=". $argarray['me_only'];
+  $urlquery.= "&search_string=". rawurlencode(trim($argarray['search_string'])). "&method=". $argarray['method']. "&me_only=". $argarray['me_only'];
   $urlquery.= "&to_other=". $argarray['to_other']. "&to_uid=". $argarray['to_uid']. "&from_other=". $argarray['from_other'];
   $urlquery.= "&from_uid=". $argarray['from_uid']. "&order_by=". $argarray['order_by'];
 

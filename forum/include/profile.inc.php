@@ -30,7 +30,7 @@ require_once("./include/db.inc.php");
 function profile_section_get_name($psid)
 {
    $db_profile_section_get_name = db_connect();
-   $sql = "select PROFILE_SECTION.NAME from " . forum_table("PROFILE_SECTION") . " where PSID = $psid";
+   $sql = "SELECT PS.NAME FROM ".forum_table("PROFILE_SECTION")." PS WHERE PS.PSID = $psid";
    $resource_id = db_query($sql, $db_profile_section_get_name);
    if(!db_num_rows($resource_id)){
      $sectionname = "The Unknown Section";

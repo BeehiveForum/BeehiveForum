@@ -66,7 +66,7 @@ function threads_get_folders()
 
     $db_threads_get_folders = db_connect();
 
-    $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
+    $sql = "select DISTINCT F.FID, F.TITLE, UF.INTEREST from ".forum_table("FOLDER")." F left join ";
     $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) order by F.FID";
     
@@ -76,7 +76,8 @@ function threads_get_folders()
          $folder_titles = FALSE;
     } else {
         while($query_data = db_fetch_array($result)) {
-            $folder_titles[$query_data['FID']] = $query_data['TITLE'];
+            $folder_titles[$query_data['FID']]['TITLE'] = $query_data['TITLE'];
+	    $folder_titles[$query_data['FID']]['INTEREST'] = $query_data['INTEREST'];
         }
     }
 
@@ -300,7 +301,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
         // Loop through the results and construct an array to return
 
-           for($i = 0; $i < $max; $i++){
+        for($i = 0; $i < $max; $i++){
 
             $thread = db_fetch_array($resource_id);
 

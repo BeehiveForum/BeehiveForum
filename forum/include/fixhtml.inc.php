@@ -27,6 +27,7 @@ USA
 function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea"))
 {
 	if (!empty($html)) {
+		$html = stripslashes($html);
 
 		$open_pos = strpos($html, "<");
 		$next_open_pos = strpos($html, "<", $open_pos+1);
@@ -130,7 +131,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 						}
 
-						$html_parts[$i] = "/".$tag;
+						//$html_parts[$i] = "/".$tag;
 					}
 
 				} else {
@@ -139,7 +140,11 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 					}
 //
 					$firstspace = strpos($html_parts[$i], " ");
-					if(is_integer($firstspace)){
+
+					if(substr($html_parts[$i], 0, 3) == "!--"){
+						$tag = "!--";
+
+					} else if(is_integer($firstspace)){
 						$html_parts[$i] = clean_attributes($html_parts[$i]);
 
 						$tag = substr($html_parts[$i], 0, $firstspace);

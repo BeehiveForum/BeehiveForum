@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.107 2004-06-25 22:14:06 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.108 2004-07-27 20:53:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -179,12 +179,14 @@ if (isset($_POST['del'])) {
 
     }elseif (!isset($_POST['t_delete_posts']) || (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] != "Y")) {
 
-        $t_admintools = (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
-        $t_banned     = (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
-        $t_wormed     = (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
-	$t_moderator  = (isset($_POST['t_moderator']))  ? $_POST['t_moderator']  : 0;
+        $new_user_perms = (double) 0;
 
-        $new_user_perms = (double) $t_banned | $t_wormed | $t_moderator;
+        $t_admintools = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
+        $t_banned     = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
+        $t_wormed     = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
+        $t_globalmod  = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
+
+        $new_user_perms = (double) ($t_banned | $t_wormed | $t_globalmod);
 
         if (perm_has_forumtools_access()) {
 
@@ -399,7 +401,7 @@ if (isset($_POST['t_delete_posts'])) {
     echo "                        <td>", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms['STATUS'] & USER_PERM_WORMED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_moderator", USER_PERM_FOLDER_MODERATE, $lang['userisglobalmod'], $user_perms['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
+    echo "                        <td>", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['userisglobalmod'], $user_perms['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>&nbsp;</td>\n";
@@ -555,7 +557,7 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                        <td>{$lang['useringroups']}:</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-	echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td>&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td>\n";
@@ -565,7 +567,6 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                                <table class=\"posthead\" width=\"100%\">\n";
         echo "                                  <tr>\n";
         echo "                                    <td class=\"subhead\">&nbsp;{$lang['groups']}</td>\n";
-        echo "                                    <td class=\"subhead\">&nbsp;{$lang['description']}</td>\n";
         echo "                                    <td class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
         echo "                                    <td class=\"subhead\">&nbsp;</td>\n";
         echo "                                  </tr>\n";
@@ -573,13 +574,17 @@ if (isset($_POST['t_delete_posts'])) {
         foreach ($user_groups_array as $user_group) {
 
             echo "                                  <tr>\n";
-            echo "                                    <td>&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
-            echo "                                    <td>&nbsp;{$user_group['GROUP_DESC']}</td>\n";
-            echo "                                    <td>&nbsp;{$user_group['USER_COUNT']}</td>\n";
-            echo "                                    <td align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
+            echo "                                    <td valign=\"top\"><a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+            echo "                                    <td valign=\"top\" align=\"center\">{$user_group['USER_COUNT']}</td>\n";
+            echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
             echo "                                  </tr>\n";
         }
 
+        echo "                                  <tr>\n";
+        echo "                                    <td>&nbsp;</td>\n";
+        echo "                                    <td>&nbsp;</td>\n";
+        echo "                                    <td>&nbsp;</td>\n";
+        echo "                                  </tr>\n";
         echo "                                </table>\n";
         echo "                              </td>\n";
         echo "                            </tr>\n";
@@ -597,6 +602,9 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
         echo "                        <td>&nbsp;{$lang['usernotinanygroups']}</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -633,12 +641,12 @@ if (isset($_POST['t_delete_posts'])) {
         if (sizeof($user_alias_array) > 0) {
 
             echo "                <tr>\n";
-	    echo "                  <td>&nbsp;</td>\n";
-	    echo "                </tr>\n";
-	    echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"box\" width=\"90%\">\n";
-	    echo "                      <tr>\n";
+            echo "                      <tr>\n";
             echo "                        <td>\n";
             echo "                          <table class=\"posthead\" width=\"100%\">\n";
             echo "                            <tr>\n";
@@ -659,10 +667,10 @@ if (isset($_POST['t_delete_posts'])) {
                 echo "                            </tr>\n";
             }
 
-	    echo "                            </tr>\n";
-	    echo "                          </table>\n";
-	    echo "                        </td>\n";
-	    echo "                      </tr>\n";
+            echo "                            </tr>\n";
+            echo "                          </table>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
             echo "                </tr>\n";
@@ -742,7 +750,7 @@ if (isset($_POST['t_delete_posts'])) {
     if ($attachments_array = admin_get_users_attachments($uid, true)) {
 
         echo "                <tr>\n";
-	echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td>&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
@@ -801,7 +809,7 @@ if (isset($_POST['t_delete_posts'])) {
                 }
             }else {
                 echo "                              <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-	    }
+            }
 
             echo "                              <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachment['filesize']). "</td>\n";
             echo "                              <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";

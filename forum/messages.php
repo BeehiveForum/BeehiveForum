@@ -60,6 +60,7 @@ if($msg_count>0){
     echo "<p>first_msg: $first_msg</p>";
     foreach($messages as $message) {
         message_display($tid,$message,$msg_count,$first_msg);
+        $last_pid = $message[PID];
     }
 }
 
@@ -68,7 +69,7 @@ messages_bottom();
 html_draw_bottom();
 
 if($msg_count > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
-    messages_update_read($tid,$pid+$n-1,$HTTP_COOKIE_VARS['bh_sess_uid']);
+    messages_update_read($tid,$last_pid,$HTTP_COOKIE_VARS['bh_sess_uid']);
 }
 
 ?>

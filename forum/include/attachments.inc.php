@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.55 2004-04-08 13:17:20 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.56 2004-04-12 19:44:43 decoyduck Exp $ */
 
 include_once("./include/perm.inc.php");
 
@@ -359,9 +359,7 @@ function attachment_inc_dload_count($hash)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "SET DOWNLOADS = DOWNLOADS + 1 WHERE HASH = '$hash'";
 
-    $result = db_query($sql, $db_attachment_inc_dload_count);
-
-    return (db_affected_rows($db_attachment_inc_dload_count) > 0);
+    return db_query($sql, $db_attachment_inc_dload_count);
 }
 
 // Checks to see if an attachment has been embedded in the content

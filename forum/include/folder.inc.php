@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.55 2004-04-11 22:19:20 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.56 2004-04-12 19:44:43 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -282,20 +282,23 @@ function user_set_folder_interest($fid, $interest)
     
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET INTEREST = '$interest' ";
+    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_FOLDER ";
     $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
 
     $result = db_query($sql, $db_user_set_folder_interest);
 
-    if (db_affected_rows($db_user_set_folder_interest) < 1) {
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET INTEREST = '$interest' ";
+        $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
+    
+    }else {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, INTEREST) ";
         $sql.= "VALUES ('$uid', '$fid', '$interest')";
-
-	$result = db_query($sql, $db_user_set_folder_interest);
     }
 
-    return $result;
+    return db_query($sql, $db_user_set_folder_interest);
 }
 
 function user_get_restricted_folders($uid)

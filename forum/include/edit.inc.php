@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.43 2004-04-08 07:49:09 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.44 2004-04-12 19:44:43 decoyduck Exp $ */
 
 function post_update($tid, $pid, $content)
 {
@@ -57,25 +57,28 @@ function post_add_edit_text($tid, $pid)
 function post_delete($tid, $pid)
 {
     if (!is_numeric($tid) || !is_numeric($pid)) return false;
+    
+    if (!$table_data = get_table_prefix()) return false;
 
     $db_post_delete = db_connect();
 
     if (thread_is_poll($tid) && $pid == 1) {
-        $sql = "UPDATE {$table_data['PREFIX']}THREAD SET POLL_FLAG = 'N' WHERE TID = '$tid'";
+        
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD ";
+        $sql.= "SET POLL_FLAG = 'N' WHERE TID = '$tid'";
+
         $result = db_query($sql, $db_post_delete);
     }
-    
-    if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid' AND LENGTH = 1";
+    $sql = "DELETE FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "WHERE TID = '$tid' AND LENGTH = 1";
+
     $result = db_query($sql, $db_post_delete);
 
     $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT SET CONTENT = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    $result = db_query($sql, $db_post_delete);
-
-    return (db_affected_rows($db_post_delete) > 0);
+    return db_query($sql, $db_post_delete);
 }
 
 function edit_refuse($tid, $pid)

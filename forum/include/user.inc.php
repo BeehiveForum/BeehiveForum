@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.159 2004-04-12 15:34:50 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.160 2004-04-12 19:44:43 decoyduck Exp $ */
 
 function user_count()
 {
@@ -98,21 +98,24 @@ function user_update($uid, $nickname, $email)
 function user_change_pw($uid, $password, $hash = false)
 {
     $db_user_change_pw = db_connect();
+
     $password = md5($password);
     
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE USER SET PASSWD = '$password' WHERE UID = $uid ";
-
     if ($hash) {
-        $hash = addslashes($hash);
-        $sql.= "AND PASSWD = '$hash'";
+    
+        $sql = "UPDATE USER SET PASSWD = '$password' ";
+        $sql.= "WHERE UID = '$uid' AND PASSWD = '$hash'";
+    
+    }elseif (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
+
+        $sql = "UPDATE USER SET PASSWD = '$password' ";
+        $sql.= "WHERE UID = '$uid'";
     }
 
-    $result = db_query($sql, $db_user_change_pw);
-    return (db_affected_rows($db_user_change_pw) > 0);
+    return db_query($sql, $db_user_change_pw);
 }
-
 
 function user_get_status($uid)
 {
@@ -140,72 +143,87 @@ function user_update_status($uid, $status)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($status)) return false;
 
-    $sql = "UPDATE USER_STATUS SET STATUS = '$status' ";
+    $sql = "SELECT UID FROM USER_STATUS ";
     $sql.= "WHERE UID = '$uid' AND FID = '{$table_data['FID']}'";
 
     $result = db_query($sql, $db_user_update_status);
 
-    if (db_affected_rows($db_user_update_status) < 1) {
+    if (db_num_rows($result) > 0) {
     
+        $sql = "UPDATE USER_STATUS SET STATUS = '$status' ";
+        $sql.= "WHERE UID = '$uid' AND FID = '{$table_data['FID']}'";
+
+    }else {
+
         $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) ";
         $sql.= "VALUES ('$uid', '{$table_data['FID']}', '$status')";
-    
-        $result = db_query($sql, $db_user_update_status);
     }
 
-    return $result;
+    return db_query($sql, $db_user_update_status);
 }
    
-function user_update_folders($uid, $folders)
+function user_update_folders($uid, $folders_array)
 {
     $db_user_update_folders = db_connect();
     
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($uid)) return false;
-    if (!is_array($folders)) return false;
+    if (!is_array($folders_array)) return false;
 
-    foreach ($folders as $folder) {
+    foreach ($folders_array as $folder) {
 
         if (is_numeric($folder['allowed']) && is_numeric($folder['fid'])) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET ALLOWED = '{$folder['allowed']}' ";
-            $sql.= "WHERE UID = '$uid' AND FID = '{$folder['fid']}'";
+            $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_FOLDER ";
+	    $sql.= "WHERE UID = '$uid' AND FID = '{$folder['fid']}'";
 
 	    $result = db_query($sql, $db_user_update_folders);
 
-	    if (db_affected_rows($db_user_update_folders) < 1) {
+	    if (db_num_rows($result) > 0) {
+            
+                $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET ALLOWED = '{$folder['allowed']}' ";
+                $sql.= "WHERE UID = '$uid' AND FID = '{$folder['fid']}'";
+
+	    }else {
 
                 $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, ALLOWED) ";
                 $sql.= "VALUES ('$uid', '{$folder['fid']}', '{$folder['allowed']}')";
 	    }
-        }
+
+    	    $result = db_query($sql, $db_user_update_folders);
+    	}
     }
 }
 
-function user_update_forums($uid, $forums)
+function user_update_forums($uid, $forums_array)
 {
     $db_user_update_forums = db_connect();
 
     if (!is_numeric($uid)) return false;
-    if (!is_array($forums)) return false;
+    if (!is_array($forums_array)) return false;
 
-    foreach ($forums as $forum) {
+    foreach ($forums_array as $forum) {
 
         if (is_numeric($forum['allowed']) && is_numeric($forum['fid'])) {
         
-            $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
+            $sql = "SELECT UID FROM USER_FORUM ";
 	    $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
 
 	    $result = db_query($sql, $db_user_update_forums);
 
-	    if (db_affected_rows($db_user_update_forums) < 1) {
+	    if (db_num_rows($result) > 0) {
+            
+                $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
+	        $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
+	    
+	    }else {
 
 	        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
 		$sql.= "VALUES ('$uid', '{$forum['fid']}', '{$forum['allowed']}')";
-
-		$result = db_query($sql, $db_user_update_forums);
 	    }
+
+            $result = db_query($sql, $db_user_update_forums);
 	}
     }
 }
@@ -422,20 +440,23 @@ function user_update_sig($uid, $content, $html)
     
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
-    $sql.= "HTML = '$html' WHERE UID = '$uid'";
+    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_SIG ";
+    $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_user_update_sig);
 
-    if (db_affected_rows($db_user_update_sig) < 1) {
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}USER_SIG SET CONTENT = '$content', ";
+        $sql.= "HTML = '$html' WHERE UID = '$uid'";
+
+    }else {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
         $sql.= "VALUES ('$uid', '$content', '$html')";
-
-        $result = db_query($sql, $db_user_update_sig);
     }
 
-    return $result;
+    return db_query($sql, $db_user_update_sig);
 }
 
 function user_update_global_sig($uid, $value)

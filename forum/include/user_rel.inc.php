@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.17 2004-04-11 22:19:22 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.18 2004-04-12 19:44:44 decoyduck Exp $ */
 
 function user_rel_update($uid, $peer_uid, $value)
 {
@@ -29,20 +29,23 @@ function user_rel_update($uid, $peer_uid, $value)
     
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}USER_PEER SET RELATIONSHIP = '$value' ";
+    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PEER ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     $result = db_query($sql, $db_user_rel_update);
 
-    if (db_affected_rows($db_user_rel_update) < 1) {
+    if (db_num_rows($result) > 0) {
+    
+        $sql = "UPDATE {$table_data['PREFIX']}USER_PEER SET RELATIONSHIP = '$value' ";
+        $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+
+    }else {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_PEER (UID, PEER_UID, RELATIONSHIP) ";
         $sql.= "VALUES ('$uid', '$peer_uid', '$value')";
-
-        $result = db_query($sql, $db_user_rel_update);
     }
 
-    return $result;
+    return db_query($sql, $db_user_rel_update);
 }
 
 function user_rel_get($uid, $peer_uid)

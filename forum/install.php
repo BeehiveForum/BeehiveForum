@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.33 2005-04-02 21:40:41 decoyduck Exp $ */
+/* $Id: install.php,v 1.34 2005-04-02 21:43:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -554,7 +554,7 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
     echo "<input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
     echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
     echo "<div align=\"center\">\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td colspan=\"2\">\n";
     echo "        <p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
@@ -569,7 +569,7 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td><img src=\"./images/warning.png\" /></td>\n";
-        echo "      <td><h2>The following errors have occured. Correct them before trying again:</h2></td>\n";
+        echo "      <td><h2>The following errors need correcting before you continue:</h2></td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td colspan=\"2\">\n";

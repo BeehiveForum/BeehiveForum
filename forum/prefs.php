@@ -143,15 +143,15 @@ if(!empty($error_html)) {
     
     echo "<h2>Preferences were successfully updated.</h2>\n";
 
-    if(isset($default_style)) {
-        $user_style = isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style;
-        $top_html = "./styles/$user_style/top.html";
-        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-        echo "<!--\n";
-        echo "top.frames['ftop'].location.replace('$top_html'); top.frames['fnav'].location.reload();\n";
-        echo "-->\n";
-        echo "</script>";
-    }
+	$top_html = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/top.html";
+	if (!file_exists($top_html)) {
+		$top_html = "./top.html";
+	}
+	echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+	echo "<!--\n";
+	echo "top.frames['ftop'].location.replace('$top_html'); top.frames['fnav'].location.reload();\n";
+	echo "-->\n";
+	echo "</script>";
 }
 
 ?>

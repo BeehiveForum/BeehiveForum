@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.338 2005-03-22 21:47:43 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.339 2005-03-23 21:35:56 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -745,7 +745,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             }else {
 
-                echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['logged']}&nbsp;</span>";
+                if ($uid == $message['FROM_UID']) {
+
+                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
+
+                }else {
+
+                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['logged']}&nbsp;</span>";
+                }
             }
 
             echo "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.33 2005-03-20 17:53:31 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.34 2005-03-23 21:36:28 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -161,8 +161,8 @@ function profile_item_create($psid, $name, $position, $type)
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "insert into {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-    $sql.= "values ($psid, '$name', $type, $position)";
+    $sql = "INSERT INTO {$table_data['PREFIX']}PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
+    $sql.= "VALUES ($psid, '$name', $type, $position)";
 
     $result = db_query($sql, $db_profile_item_create);
 

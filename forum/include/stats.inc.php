@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.24 2004-04-10 21:45:32 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.25 2004-04-13 14:45:27 decoyduck Exp $ */
 
 function update_stats()
 {
@@ -73,20 +73,22 @@ function get_num_sessions()
     $get_num_sessions = db_connect();
     
     if (!$table_data = get_table_prefix()) return 0;
+
+    $sessions_array = array();
     
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
-    $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM SESSIONS ";
-    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp)";
+    $sql = "SELECT UID FROM SESSIONS ";
+    $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
+    $sql.= "AND FID = '{$table_data['FID']}'";
     
     $result = db_query($sql, $get_num_sessions);
 
-    if (db_num_rows($result)) {
-        $row = db_fetch_array($result);
-        return $row['SESSION_COUNT'];
+    while ($row = db_fetch_array($result)) {
+        $sessions_array[$row['UID']] = $row;
     }
 
-    return 0;
+    return sizeof($sessions_array);
 }
 
 function get_active_users()

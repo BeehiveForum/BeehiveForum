@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.71 2004-04-10 16:35:00 decoyduck Exp $ */
+/* $Id: index.php,v 1.72 2004-04-10 16:44:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -54,15 +54,6 @@ if (!file_exists($top_html)) {
     $top_html = "./top.html";
 }
 
-echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
-echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
-echo "<head>\n";
-echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</title>\n";
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
-echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
-echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-echo "</head>\n";
-
 if (isset($HTTP_GET_VARS['autologon']) && $HTTP_GET_VARS['autologon'] == 0) {
     bh_session_end();
     $auto_logon = false;
@@ -81,6 +72,15 @@ if ($user_sess = bh_session_check()) {
     
     $navsize = bh_session_get_value('FONT_SIZE');
     $navsize = ($navsize) ? $navsize * 2 : 20;
+
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
+    echo "<head>\n";
+    echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</title>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
+    echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
+    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+    echo "</head>\n";
 
     echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
@@ -159,6 +159,15 @@ if ($user_sess = bh_session_check()) {
 
 }else {
 
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
+    echo "<head>\n";
+    echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</title>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
+    echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
+    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
+    echo "</head>\n";
+
     // Check to see if the user has visited before and logged in.
 
     if (!isset($HTTP_COOKIE_VARS['bh_logon']) && user_guest_enabled() && $auto_logon) {
@@ -222,6 +231,11 @@ if ($user_sess = bh_session_check()) {
 	}
 
     }else {
+
+        // Fetch the forum settings
+    
+        $webtag = get_webtag();
+        $forum_settings = get_forum_settings();
 
         echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
         echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";

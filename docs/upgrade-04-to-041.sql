@@ -4,7 +4,7 @@
 #
 # Generation Time: Mar 16, 2004 at 00:17
 #
-# $Id: upgrade-04-to-041.sql,v 1.15 2004-03-17 20:41:50 decoyduck Exp $
+# $Id: upgrade-04-to-041.sql,v 1.16 2004-03-17 21:36:08 decoyduck Exp $
 #
 # --------------------------------------------------------#
 
@@ -257,6 +257,8 @@ CREATE TABLE VISITOR_LOG (
   LAST_LOGON DATETIME NOT NULL,
   PRIMARY KEY (UID, FID)
 ) TYPE=MyISAM;
+
+INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) SELECT UID, 1, LAST_LOGON FROM USER;
 
 CREATE TABLE USER_STATUS (
   UID MEDIUMINT(8) UNSIGNED NOT NULL,

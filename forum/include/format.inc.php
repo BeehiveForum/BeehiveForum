@@ -26,20 +26,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.53 2003-09-15 19:04:31 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.54 2003-09-20 17:59:49 decoyduck Exp $ */
 
 require_once("./include/constants.inc.php");
 
-function format_user_name($u_logon,$u_nickname)
+function format_user_name($u_logon, $u_nickname)
 {
-    if($u_nickname != ""){
-        if(strtoupper($u_logon) == strtoupper($u_nickname)){
+    if ($u_nickname != "") {
+        if (strtoupper($u_logon) == strtoupper($u_nickname)) {
             $fmt = $u_nickname;
         } else {
-            $fmt = $u_nickname . " (" . strtoupper($u_logon) . ")";
+            $fmt = _stripslashes($u_nickname) . " (" . _stripslashes(strtoupper($u_logon)) . ")";
         }
-    } else {
-        $fmt = strtoupper($u_logon);
+    }else {
+        $fmt = strtoupper(_stripslashes($u_logon));
     }
 
     return $fmt;

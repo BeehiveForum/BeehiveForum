@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.142 2004-06-03 16:42:48 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.143 2004-06-13 22:52:00 decoyduck Exp $ */
 
 // International English language file
 
@@ -1072,10 +1072,12 @@ $lang['searchdiscussions'] = "Search discussions";
 $lang['containingallwords'] = "Containing all of the words";
 $lang['containinganywords'] = "Containing any of the words";
 $lang['containingexactphrase'] = "Containing the exact phrase";
+$lang['usingbooleanquery'] = "Use boolean query";
 $lang['find'] = "Find";
 $lang['wordsshorterthan_1'] = "Words shorter than";
 $lang['wordsshorterthan_2'] = "characters will not be included";
 $lang['additionalcriteria'] = "Additional Criteria";
+$lang['searchbyuser'] = "Search by user (optional)";
 $lang['folderbrackets_s'] = "Folder(s)";
 $lang['postedfrom'] = "Posted from";
 $lang['postedto'] = "Posted to";

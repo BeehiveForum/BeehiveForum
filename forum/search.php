@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.86 2004-05-10 17:40:07 decoyduck Exp $ */
+/* $Id: search.php,v 1.87 2004-06-13 22:52:00 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -142,12 +142,65 @@ if (isset($_POST['search_string'])) {
     echo "                  <td colspan=\"2\" class=\"subhead\">&nbsp;{$lang['searchdiscussions']}:</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"50%\">&nbsp;{$lang['keywords']}:</td>\n";
+    echo "                  <td width=\"40%\">&nbsp;{$lang['keywords']}:</td>\n";
     echo "                  <td>", form_input_text("search_string", "", 32), "&nbsp;</td>\n";
     echo "                </tr>\n";
+
+    if (db_fetch_mysql_version() > 33232) {
+
+        echo "                <tr>\n";
+        echo "                  <td width=\"40%\">&nbsp;</td>\n";
+        echo "                  <td>", form_dropdown_array("method", range(1, 4), array($lang['usingbooleanquery'], $lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 1), "&nbsp;</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td width=\"40%\">&nbsp;</td>\n";
+        echo "                  <td>", form_dropdown_array("method", range(2, 4), array($lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 2), "&nbsp;</td>\n";
+        echo "                </tr>\n";
+    }
+
     echo "                <tr>\n";
-    echo "                  <td width=\"50%\">&nbsp;</td>\n";
-    echo "                  <td>", form_dropdown_array("method", range(1,3), array($lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 1), "&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\" class=\"subhead\">&nbsp;{$lang['searchbyuser']}:</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"40%\">&nbsp;{$lang['username']}:</td>\n";
+    echo "                  <td>", form_input_text("username", "", 32), "&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>", form_radio("user_include", 1, "Posts from user", true), "&nbsp;", "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>", form_radio("user_include", 2, "Posts to user", false), "&nbsp;", "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>", form_radio("user_include", 3, "Posts to and from user", false), "&nbsp;", "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
@@ -162,9 +215,6 @@ if (isset($_POST['search_string'])) {
     echo "    <tr>\n";
     echo "      <td align=\"center\">&nbsp;</td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['find']), "</td>\n";
-    echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -178,16 +228,8 @@ if (isset($_POST['search_string'])) {
     echo "                  <td colspan=\"2\" class=\"subhead\">&nbsp;{$lang['additionalcriteria']}:</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;{$lang['folderbrackets_s']}:</td>\n";
+    echo "                  <td width=\"40%\">&nbsp;{$lang['folderbrackets_s']}:</td>\n";
     echo "                  <td>", folder_search_dropdown(), "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;{$lang['to']}:</td>\n";
-    echo "                  <td>", search_draw_user_dropdown("to_uid"), " or ", form_input_text("to_other", "", 20, 32, "style=\"width: 150px\""), "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td>&nbsp;{$lang['from']}:</td>\n";
-    echo "                  <td>", search_draw_user_dropdown("from_uid"), " or ", form_input_text("from_other", "", 20, 32, "style=\"width: 150px\""), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['postedfrom']}:</td>\n";

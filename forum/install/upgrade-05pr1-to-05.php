@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.17 2005-02-13 16:46:43 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.18 2005-03-05 21:59:16 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -406,6 +406,12 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                     return;
                 }
             }
+
+        }else {
+
+            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+            $valid = false;
+            return;
         }
 
         // Drop the old PM table

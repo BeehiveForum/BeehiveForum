@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.64 2004-05-20 16:14:08 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.65 2004-05-31 12:31:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -74,12 +74,14 @@ function search_execute($argarray, &$urlquery, &$error)
     $date_range_sql = search_date_range($argarray['date_from'], $argarray['date_to']);
 
     if (isset($argarray['to_other']) && strlen(trim($argarray['to_other'])) > 0) {
+
         if ($to_uid = user_get_uid($argarray['to_other'])) {
             $from_to_user_sql = "AND POST.TO_UID = '{$to_uid['UID']}'";
         }else {
             $error = SEARCH_USER_NOT_FOUND;
             return false;
         }
+
     }elseif (isset($argarray['to_uid']) && is_numeric($argarray['to_uid']) && $argarray['to_uid'] > 0) {
         $from_to_user_sql = "AND POST.TO_UID = {$argarray['to_uid']}";
     }else {
@@ -87,12 +89,14 @@ function search_execute($argarray, &$urlquery, &$error)
     }
 
     if (isset($argarray['from_other']) && strlen(trim($argarray['from_other'])) > 0) {
+
         if ($from_uid = user_get_uid($argarray['from_other'])) {
             $from_to_user_sql.= " AND POST.FROM_UID = '{$from_uid['UID']}'";
         }else {
             $error = SEARCH_USER_NOT_FOUND;
             return false;
         }
+
     }elseif (isset($argarray['from_uid']) && is_numeric($argarray['from_uid']) && $argarray['from_uid'] > 0) {
         $from_to_user_sql.= " AND POST.FROM_UID = {$argarray['from_uid']}";
     }
@@ -108,6 +112,7 @@ function search_execute($argarray, &$urlquery, &$error)
             $keywords_array = explode(' ', trim($argarray['search_string']));
 
             foreach ($keywords_array as $key => $value) {
+
                 if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
                     unset($keywords_array[$key]);
                 }
@@ -142,6 +147,7 @@ function search_execute($argarray, &$urlquery, &$error)
             $keywords_array = explode(' ', trim($argarray['search_string']));
 
             foreach ($keywords_array as $key => $value) {
+
                 if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3))) {
                     unset($keywords_array[$key]);
                 }
@@ -188,60 +194,65 @@ function search_execute($argarray, &$urlquery, &$error)
             }
         }
 
-        if ($argarray['me_only'] == 'Y') {
+        if ($thread_title_sql || $post_content_sql || $attach_files_sql) {
 
-            $keyword_search_sql = "{$folder_sql} AND (";
+            if ($argarray['me_only'] == 'Y') {
 
-            if ($thread_title_sql) {
-                $keyword_search_sql.= "(({$thread_title_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
-            }
+                $keyword_search_sql = "{$folder_sql} AND (";
 
-            if ($post_content_sql) {
                 if ($thread_title_sql) {
-                    $keyword_search_sql.= "OR (({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
-                }else {
-                    $keyword_search_sql.= "(({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                    $keyword_search_sql.= "(({$thread_title_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
                 }
-            }
 
-            if ($attach_files_sql) {
-                if ($thread_title_sql || $post_content_sql) {
-                    $keyword_search_sql.= "OR (({$attach_files_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
-                }else {
-                    $keyword_search_sql.= "(({$attach_files_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                if ($post_content_sql) {
+                    if ($thread_title_sql) {
+                        $keyword_search_sql.= "OR (({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                    }else {
+                        $keyword_search_sql.= "(({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                    }
                 }
-            }
 
-            $keyword_search_sql.= ") ";
+                if ($attach_files_sql) {
+                    if ($thread_title_sql || $post_content_sql) {
+                        $keyword_search_sql.= "OR (({$attach_files_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                    }else {
+                        $keyword_search_sql.= "(({$attach_files_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                    }
+                }
 
-        }else {
+                $keyword_search_sql.= ") ";
 
-            $keyword_search_sql = "{$folder_sql} AND (";
+            }else {
 
-            if ($thread_title_sql) {
-                $keyword_search_sql.= "(({$thread_title_sql}) {$date_range_sql} {$from_to_user_sql}) ";
-            }
+                $keyword_search_sql = "{$folder_sql} AND (";
 
-            if ($post_content_sql) {
                 if ($thread_title_sql) {
-                    $keyword_search_sql.= "OR (({$post_content_sql}) {$date_range_sql} {$from_to_user_sql}) ";
-                }else {
-                    $keyword_search_sql.= "(({$post_content_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                    $keyword_search_sql.= "(({$thread_title_sql}) {$date_range_sql} {$from_to_user_sql}) ";
                 }
-            }
 
-            if ($attach_files_sql) {
-                if ($thread_title_sql || $post_content_sql) {
-                    $keyword_search_sql.= "OR (({$attach_files_sql}) {$date_range_sql} {$from_to_user_sql}) ";
-                }else {
-                    $keyword_search_sql.= "(({$attach_files_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                if ($post_content_sql) {
+                    if ($thread_title_sql) {
+                        $keyword_search_sql.= "OR (({$post_content_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                    }else {
+                        $keyword_search_sql.= "(({$post_content_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                    }
                 }
-            }
 
-            $keyword_search_sql.= ") ";
+                if ($attach_files_sql) {
+                    if ($thread_title_sql || $post_content_sql) {
+                        $keyword_search_sql.= "OR (({$attach_files_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                    }else {
+                        $keyword_search_sql.= "(({$attach_files_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                    }
+                }
+
+                $keyword_search_sql.= ") ";
+            }
         }
 
-    }elseif (strlen(trim($from_to_user_sql)) > 0) {
+    }
+
+    if (!isset($keyword_search_sql) && strlen(trim($from_to_user_sql)) > 0) {
 
         $keyword_search_sql = "{$folder_sql} {$date_range_sql} {$from_to_user_sql}";
     }

@@ -35,8 +35,12 @@ header_no_cache();
 // Check that required variables are set
 if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
     $user = 0; // default to UID 0 if no other UID specified
-    if (!isset($HTTP_GET_VARS['mode'])) { 
-        $mode = 0;
+    if (!isset($HTTP_GET_VARS['mode'])) {
+        if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
+            $mode = 0;
+        }else{
+            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+        }
     } else {
         // non-logged in users can only display "All" threads or those in the past x days, since the other options would be impossible
         if ($HTTP_GET_VARS['mode'] == 0 || $HTTP_GET_VARS['mode'] == 3 || $HTTP_GET_VARS['mode'] == 4 || $HTTP_GET_VARS['mode'] == 5) {
@@ -49,20 +53,26 @@ if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
     $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
     if (isset($mark_all_read)) threads_mark_all_read();
     if (!isset($HTTP_GET_VARS['mode'])) {
-        if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
-            $mode = 1;
-        } else {
-            $mode = 0;
+        if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
+            if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
+                $mode = 1;
+            } else {
+                $mode = 0;
+            }
+        }else {
+            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
         }
     } else { 
         $mode = $HTTP_GET_VARS['mode'];
     }
 }
 
-if(isset($HTTP_GET_VARS['folder'])){
+if (isset($HTTP_GET_VARS['folder'])) {
     $folder = $HTTP_GET_VARS['folder'];
     $mode = 0;
 }
+
+setcookie('bh_thread_mode', $mode);
 
 if(!isset($HTTP_GET_VARS['start_from'])) { $start_from = 0; } else { $start_from = $HTTP_GET_VARS['start_from']; }
 

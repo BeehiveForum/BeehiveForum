@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.53 2004-04-24 18:42:46 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.54 2004-05-04 17:10:20 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -126,6 +126,25 @@ function thread_get_author($tid)
     $author = db_fetch_array($result);
 
     return format_user_name($author['LOGON'], $author['NICKNAME']);
+}
+
+function thread_get_length($tid)
+{
+    $db_thread_get_length = db_connect();
+
+    if (!$table_data = get_table_prefix()) return 0;
+
+    if (!is_numeric($tid)) return false;
+
+    $sql = "SELECT LENGTH FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
+    $result = db_query($sql, $db_thread_get_length);
+
+    if (db_num_rows($result)) {
+        $row = db_fetch_array($result);
+        return isset($row['LENGTH']) ? $row['LENGTH'] : 0;
+    }else {
+        return 0;
+    }
 }
 
 function thread_get_interest($tid)
@@ -304,9 +323,9 @@ function thread_delete($tid)
     if (!is_numeric($tid)) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT ";
-    $sql.= "SET CONTENT = NULL WHERE TID = '{$row['TID']}'";
+    $sql.= "SET CONTENT = NULL WHERE TID = '$tid'";
 
-    return db_query($sql, $db_thread_delete_by_user);
+    return db_query($sql, $db_thread_delete);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.168 2004-04-29 21:01:32 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.169 2004-05-04 17:10:20 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -94,7 +94,7 @@ function user_update($uid, $nickname, $email)
     return db_query($sql, $db_user_update);
 }
 
-function user_change_pw($uid, $password, $hash = false)
+function user_change_pw($uid, $password, $hash)
 {
     $db_user_change_pw = db_connect();
 
@@ -107,13 +107,17 @@ function user_change_pw($uid, $password, $hash = false)
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid' AND PASSWD = '$hash'";
 
+        return db_query($sql, $db_user_change_pw);
+
     }elseif (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
 
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid'";
+
+        return db_query($sql, $db_user_change_pw);
     }
 
-    return db_query($sql, $db_user_change_pw);
+    return false;
 }
 
 function user_get_status($uid)

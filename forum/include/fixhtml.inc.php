@@ -20,8 +20,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.78 2004-06-21 12:04:26 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.79 2004-06-22 11:51:17 tribalonline Exp $ */
 
+include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
 include_once("./include/html.inc.php");
 
@@ -40,6 +41,8 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 	global $fix_html_code_text;
 	global $fix_html_quote_text;
 	global $fix_html_spoiler_text;
+
+	global $beaut_highlighter;
 
 	$ret_text = '';
 
@@ -73,6 +76,10 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 					if ($tag == "code" && $close == true) {
 						$html_parts[$i] = "/pre";
 					} else if ($tag == "code") {
+						$lang_tmp = array();
+						preg_match("/ language=[\"\']?([^\"\']+)/i", $html_parts[$i], $lang_tmp);
+						$lang = isset($lang_tmp[1]) ? $lang_tmp[1] : "";
+
 						$tmpcode = "";
 						$html_parts[$i] = "pre class=\"code\"";
 						$open_code = 1;
@@ -81,7 +88,17 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 								if (substr($html_parts[$j], 0, 5) == "/code") {
 									if ($open_code == 1) {
 										$html_parts[$j] = "/pre";
-	//									$tmpcode = preg_replace("/([^\n]{80})/", "$1\n", $tmpcode);
+
+										if (isset($beaut_highlighter[$lang])) {
+											set_error_handler("fix_html_error_handler");
+											$tmpcode = $beaut_highlighter[$lang]->highlight_text($tmpcode);
+											restore_error_handler();
+
+					//						$tmpcode = str_replace("        ", "\t", $tmpcode);
+										} else {
+											$tmpcode = _htmlentities($tmpcode);
+										}
+
 										array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
 										$tmpcode = "<closed>";
 										break;
@@ -92,18 +109,19 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 								} else if (substr($html_parts[$j], 0, 4) == "code") {
 									$open_code++;
 								}
-								$tmpcode .= _htmlentities("<".$html_parts[$j].">");
+								$tmpcode .= "<".$html_parts[$j].">";
 
 							} else {
-								$tmpcode .= _htmlentities($html_parts[$j]);
+								$tmpcode .= $html_parts[$j];
 							}
 						}
 						if ($tmpcode != "<closed>") {
 							array_splice($html_parts, $i+1, 0, array("", "/pre"));
 							$i += 2;
 						}
-						array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code\"", "", "b", $fix_html_code_text, "/b", "", "/div", ""));
-						$i += 8;
+						if ($lang != "") $lang = "-".$lang;
+						array_splice($html_parts, $i, 0, array("div class=\"quotetext\" id=\"code$lang\"", "", "b", $fix_html_code_text, "/b", "", "/div", ""));
+						$i += 10;
 
 					} else if ($tag == "quote" && $close == true) {
 						$html_parts[$i] = "/div";
@@ -453,6 +471,10 @@ function fix_html ($html, $emoticons = true, $bad_tags = array("plaintext", "app
 	}
 }
 
+function fix_html_error_handler () {
+	return;
+}
+
 // $tag being everything with the < and >, e.g. $tag = 'a href="file.html"';
 function clean_attributes ($tag)
 {
@@ -599,7 +621,7 @@ function tidy_html ($html, $linebreaks = true)
 	}
 
 	// make <code>..</code> tag, and html_entity_decode
-	$html = preg_replace_callback("/<div class=\"quotetext\" id=\"code\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/i", "tidy_html_callback", $html);
+	$html = preg_replace_callback("/<div class=\"quotetext\" id=\"code(-\w+)?\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">(.*?)<\/pre>/is", "tidy_html_callback", $html);
 
 	// make <quote source=".." url="..">..</quote> tag
 	$html_left = "";
@@ -703,7 +725,10 @@ function tidy_html ($html, $linebreaks = true)
 
 function tidy_html_callback ($matches)
 {
-    return "<code>"._htmlentities_decode($matches[1])."</code>";
+	$lang = "";
+	if (isset($matches[1])) $lang = substr($matches[1], 1);
+
+    return "<code language=\"$lang\">"._htmlentities_decode(strip_tags($matches[2]))."</code>";
 }
 
 function clean_emoticons($html)

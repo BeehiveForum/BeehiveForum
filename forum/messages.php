@@ -174,15 +174,24 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
 
-if($msg_count > 0){
+if($msg_count > 0) {
+
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
 
-        if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
+        if (isset($message['RELATIONSHIP'])) {
+        
+          if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
             $message['CONTENT'] = message_get_content($tid, $message['PID']);
-        } else {
+          }else {
             $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
-        }
+          }
+
+	}else {
+
+	  $message['CONTENT'] = message_get_content($tid, $message['PID']);
+
+	}
 
         if($threaddata['POLL_FLAG'] == 'Y') {
 

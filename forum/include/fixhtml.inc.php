@@ -31,6 +31,9 @@ require_once("./include/gzipenc.inc.php");
 // "$bad_tags" is an array of tags to be filtered
 function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea"))
 {
+
+	$ret_text = '';
+
 	if (!empty($html)) {
 		$html = _stripslashes($html);
 		$html = preg_replace("/<xmp[^>]*>((.|\n)*)<\/xmp[^>]*>/i", "<xmp>\\1</xmp>", $html);
@@ -108,7 +111,12 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				$close_pos = false;
 			}
 		}
-		$html_parts[count($html_parts)] .= $html;
+
+		if (sizeof($html_parts) > 0) {
+			$html_parts[count($html_parts)] .= $html;
+		}else {
+			$html_parts[0] = $html;
+		}
 
 		$opentags = array();
 		$last_tag = array();
@@ -233,6 +241,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				$ret_text .= "</$tag>";
 			}
 		}
+
 		return $ret_text;
 
 	}else{

@@ -209,6 +209,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $userpolldata = poll_get_user_vote($tid);
 
     $totalvotes   = 0;
+    $optioncount  = 0;
 
     for ($i = 1; $i <= sizeof($pollresults); $i++) {
       $totalvotes = $totalvotes + $pollresults[$i]['VOTES'];

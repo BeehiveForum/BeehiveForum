@@ -363,7 +363,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
             echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
             while (list($key2, $thread) = each($thread_info)) {
 
-                if (!is_array($visiblethreads)) $visiblethreads = array();
+                if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
                 if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
 
                 if ($thread['fid'] == $folder_number) {
@@ -499,7 +499,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
 
     $labels = array("All Discussions", "Next 50 discussions");
 
-    if (is_array($visiblethreads)) {
+    if (isset($visiblethreads) && is_array($visiblethreads)) {
 
         $labels[] = "Visible discussions";
         echo form_input_hidden("tids", implode(',', $visiblethreads));

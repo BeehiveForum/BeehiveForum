@@ -121,10 +121,19 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         $preview_message['CONTENT'] .= "<div class=\"sig\">".$t_sig."</div>";
 
-        $preview_tuser = user_get($to_uid);
-        $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-        $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-        $preview_message['TO_UID'] = $to_uid;
+        if ($to_uid == 0) {
+
+            $preview_message['TLOGON'] = "ALL";
+            $preview_message['TNICK'] = "ALL";
+
+        }else{
+
+            $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
+            $preview_message['TLOGON'] = $preview_tuser['LOGON'];
+            $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
+            $preview_message['TO_UID'] = $preview_tuser['UID'];
+
+        }
 
         $preview_tuser = user_get($from_uid);
         $preview_message['FLOGON'] = $preview_tuser['LOGON'];

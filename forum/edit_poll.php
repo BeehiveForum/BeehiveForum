@@ -109,7 +109,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   for ($i = 1; $i <= sizeof($HTTP_POST_VARS['answers']); $i++) {
     if (strlen($HTTP_POST_VARS['answers'][$i]) > 0) {
-      if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
+      if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
         $polldata['CONTENT'].= "          <li>". fix_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
       }else {
         $polldata['CONTENT'].= "          <li>". make_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
@@ -164,7 +164,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   // Check HTML tick box, innit.  
   
   for ($i = 1; $i <= sizeof($HTTP_POST_VARS['answers']); $i++) {
-    if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
+    if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
       $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
     }else {
       $HTTP_POST_VARS['answers'][$i] = make_html($HTTP_POST_VARS['answers'][$i]);
@@ -234,7 +234,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "</table>\n";
   $polldata['CONTENT'].= "<br><br>\n";
   
-  if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $editmessage['FROM_UID'] && !perm_is_moderator()) {
+  if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $polldata['FROM_UID'] && !perm_is_moderator()) {
     edit_refuse($tid, $pid);
     exit;
   }  
@@ -308,11 +308,15 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
                     if (isset($HTTP_POST_VARS['answers'][$i])) {
                       echo form_input_text("answers[$i]", htmlspecialchars(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 64);
                     }else {
-                      if (strip_tags($pollresults[$i]['OPTION_NAME']) != $pollresults[$i]['OPTION_NAME']) {
-                        echo form_input_text("answers[$i]", htmlspecialchars($pollresults[$i]['OPTION_NAME']), 40, 64);
-                      }else {
-                        echo form_input_text("answers[$i]", $pollresults[$i]['OPTION_NAME'], 40, 64);
-                      }
+		      if (isset($pollresults[$i]['OPTION_NAME'])) {
+                        if (strip_tags($pollresults[$i]['OPTION_NAME']) != $pollresults[$i]['OPTION_NAME']) {
+                          echo form_input_text("answers[$i]", htmlspecialchars($pollresults[$i]['OPTION_NAME']), 40, 64);
+                        }else {
+                          echo form_input_text("answers[$i]", $pollresults[$i]['OPTION_NAME'], 40, 64);
+                        }
+		      }else {
+		        echo form_input_text("answers[$i]", '', 40, 64);
+		      }
                     }
                     
                     echo "  </td>\n";
@@ -323,7 +327,7 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
 		?>
 		<tr>
                   <td>&nbsp;</td>
-		  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", ($HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
+		  <td><?php echo form_checkbox("t_post_html", "Y", "Answers Contain HTML (not including signature)", (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
                 </tr>
 	      </table>
 	    </td>

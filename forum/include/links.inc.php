@@ -35,7 +35,11 @@ require_once("format.inc.php");
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
+    
+    $links = array();
+
     $db_links_get_in_folder = db_connect();
+
     $sql  = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
     $sql .= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
     $sql .= "AVG(LINKS_VOTE.RATING) AS RATING ";
@@ -104,6 +108,8 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     global $HTTP_SERVER_VARS;
 
     $tree_fid = $fid;
+    $tree     = '';
+
     while ($tree_fid != 1) {
           $tree[] = $tree_fid;
           $tree_fid = $folders[$tree_fid]['PARENT_FID'];
@@ -112,7 +118,9 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     $link_base = $link_base ? $link_base : $HTTP_SERVER_VARS['PHP_SELF'];
 
     $html = $links ? "<a href=\"$link_base?fid=1\">" . _stripslashes($folders[1]['NAME']) . "</a>" : $folders[1]['NAME'];
+
     if (is_array($tree)) {
+
         while ($val = array_pop($tree)) {
             if (($val != $fid && $links) || $link_last_too) {
                 $html .= "&nbsp;>&nbsp;<a href=\"$link_base?fid=$val\">" . _stripslashes($folders[$val]['NAME']) . "</a>";

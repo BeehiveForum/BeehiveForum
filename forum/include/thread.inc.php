@@ -36,7 +36,7 @@ function thread_get_title($tid)
      $threadtitle = "The Unknown Thread";
    } else {
      $data = db_fetch_array($resource_id);
-     $threadtitle = stripslashes($data['title']);
+     $threadtitle = _stripslashes($data['title']);
    }
    return $threadtitle;
 }

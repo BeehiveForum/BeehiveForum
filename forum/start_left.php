@@ -89,7 +89,7 @@ while($row = db_fetch_array($result)){
     /* With status mouseover: echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\"onmouseOver=\"status='#$tid Started by $thread_author';return true\" onmouseOut=\"window.status='';return true\" title=\"#$tid Started by $thread_author\">"; */
     
     echo "&nbsp;</td><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by $thread_author\">";
-    echo stripslashes($row['TITLE'])."</a>&nbsp;";
+    echo _stripslashes($row['TITLE'])."</a>&nbsp;";
     if ($row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\">";
     if ($row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\">";
     echo "</td></tr>\n";

@@ -194,7 +194,7 @@ function user_get_sig($uid, &$content, &$html)
         $ret = false;
     } else {
         $fa = db_fetch_array($result);
-        $content = stripslashes($fa['content']);
+        $content = _stripslashes($fa['content']);
         $html = $fa['html'];
         $ret = true;
     }

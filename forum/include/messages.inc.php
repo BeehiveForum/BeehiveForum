@@ -463,7 +463,7 @@ function messages_admin_form($tid,$pid,$title,$closed = false)
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
-    echo "Rename thread:".form_input_text("t_name",stripslashes($title),30,64)."&nbsp;";
+    echo "Rename thread:".form_input_text("t_name",_stripslashes($title),30,64)."&nbsp;";
     echo form_submit("rename","Apply");
     echo "<br />Move thread:" . folder_draw_dropdown(0,"t_move");
     echo "&nbsp;".form_submit("move","Move");

@@ -127,7 +127,7 @@ for($i=0;$i<$result_count;$i++){
 
 
     $new = isset($row['CHECK_PIID']) ? "N" : "Y";
-    $row['ENTRY'] = isset($row['ENTRY']) ? stripslashes($row['ENTRY']) : "";
+    $row['ENTRY'] = isset($row['ENTRY']) ? _stripslashes($row['ENTRY']) : "";
 
 
     if($row['PSID'] != $last_psid){

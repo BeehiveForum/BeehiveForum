@@ -54,7 +54,7 @@ function email_sendnotification($tuid, $msg, $fuid)
             $thread = thread_get($tid);
 
             $message = strtoupper($mailfrom['LOGON']). " posted a message to you on $forum_name\n\n";
-            $message.= "The subject is:  ". htmlspecialchars_reverse(stripslashes($thread['TITLE'])). "\n\n";
+            $message.= "The subject is:  ". htmlspecialchars_reverse(_stripslashes($thread['TITLE'])). "\n\n";
             $message.= "To read that message and others in the same discussion, go to:\n";
             $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
             
@@ -111,7 +111,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         $message = strtoupper($mailfrom['LOGON']). " posted a message in a thread you\n";
         $message.= "have subscribed to on $forum_name\n\n";
-        $message.= "The subject is:  ". htmlspecialchars_reverse(stripslashes($thread['TITLE'])). "\n\n";
+        $message.= "The subject is:  ". htmlspecialchars_reverse(_stripslashes($thread['TITLE'])). "\n\n";
         $message.= "To read that message and others in the same discussion, go to:\n";
         $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
             

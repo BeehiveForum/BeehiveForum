@@ -75,9 +75,9 @@ for ($i = 0; $i < $row_count; $i++) {
     echo "<td width=\"25%\">";
     if($row['PSID'] != $psid){
         echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&psid=" . $row['PSID'] . "\">";
-        echo stripslashes($row['NAME']) . "</a></td>\n";
+        echo _stripslashes($row['NAME']) . "</a></td>\n";
     } else {
-        echo "<b>" . stripslashes($row['NAME']) . "</b></td>\n";
+        echo "<b>" . _stripslashes($row['NAME']) . "</b></td>\n";
     }
 }
 
@@ -99,7 +99,7 @@ $result = db_query($sql,$db);
 
 while($row = db_fetch_array($result)){
     echo "<tr><td class=\"subhead\" width=\"33%\">" . $row['NAME'] . "</td>";
-    echo "<td width=\"67%\" class=\"posthead\">" . stripslashes($row['ENTRY']) . "</td></tr>\n";
+    echo "<td width=\"67%\" class=\"posthead\">" . _stripslashes($row['ENTRY']) . "</td></tr>\n";
 }
 
 echo "</table></td>\n";

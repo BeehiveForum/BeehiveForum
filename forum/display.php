@@ -51,7 +51,7 @@ $foldertitle = folder_get_title($threaddata['FID']);
 if($closed) $foldertitle .= " (closed)";
 
 echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
-messages_top($foldertitle,stripslashes($threaddata['TITLE']));
+messages_top($foldertitle,_stripslashes($threaddata['TITLE']));
 echo "</td></tr></table></div>\n";
 
 if($message){

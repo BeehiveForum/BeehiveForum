@@ -155,15 +155,15 @@ if($valid) {
         }
     }
     
-}else{
+}else {
 
     if($t_post_html == "Y") {
-        $t_content = stripslashes($t_content);
+        $t_content = _stripslashes($t_content);
     }
     
     if(isset($t_sig)) {
         if($t_sig_html == "Y") {
-            $t_sig = stripslashes($t_sig);
+            $t_sig = _stripslashes($t_sig);
         }
     }
 }
@@ -404,7 +404,7 @@ if($newthread) {
     echo "<tr><td><h2>Select folder:</h2></td></tr>\n";
     echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>\n";
     echo "<tr><td><h2>Thread title:</h2></td></tr>\n";
-    echo "<tr><td>".form_input_text("t_threadtitle", htmlspecialchars(stripslashes($t_threadtitle)), 30, 64);    
+    echo "<tr><td>".form_input_text("t_threadtitle", htmlspecialchars(_stripslashes($t_threadtitle)), 30, 64);    
     echo "\n";
     echo form_input_hidden("t_newthread","Y")."</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>\n";    
@@ -432,18 +432,11 @@ if($newthread) {
     
 }
 
-if($t_post_html != "Y") {
-    $t_content = isset($t_content) ? stripslashes($t_content) : "";
-}
-if(isset($t_sig)) {
-    //if($t_sig_html != "Y") {
-        $t_sig = stripslashes($t_sig);
-    //}
-}
+if($t_post_html != "Y") $t_content = isset($t_content) ? _stripslashes($t_content) : "";
+if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
+  
+if(!isset($t_to_uid)) $t_to_uid = -1;
 
-if(!isset($t_to_uid)) {
-    $t_to_uid = -1;
-}
 
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.29 2004-04-05 21:55:44 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.30 2004-04-06 11:15:26 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -111,13 +111,12 @@ function get_forum_settings()
     
     $db_get_forum_settings = db_connect();
     
-    if (!$table_data = get_table_prefix()) return array();
+    if (!$table_data = get_table_prefix()) return $forum_settings;
     
     $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_get_forum_settings);
     
     while ($row = db_fetch_array($result)) {
-        
         $forum_settings[$row['SNAME']] = $row['SVALUE'];
     }
     

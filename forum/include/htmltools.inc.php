@@ -143,7 +143,7 @@ class TextAreaHTML {
 	// CALL THIS FUNCTION **AFTER** YOU HAVE CREATED ALL
 	// YOUR TEXTAREAS/TOOLBARS
 	// ----------------------------------------------------
-	function js () {
+	function js ($focus = true) {
 		$str = "<script language=\"Javascript\">\n";
 		$str.= "  <!--\n";
 
@@ -157,7 +157,9 @@ class TextAreaHTML {
 		$str.= "      for (var i=1; i<=".$this->tbs."; i++) {\n";
 		$str.= "	      show_hide('_tb' + i, 'block');\n";
 		$str.= "      }\n";
-		$str.= "      document.".$this->form.".".$this->tas[0].".focus();\n";
+		if ($focus != false) {
+			$str.= "      document.".$this->form.".".($focus == true ? $this->tas[0] : $focus).".focus();\n";
+		}
 		$str.= "	    active_text(document.".$this->form.".".$this->tas[0].");\n";
 		$str.= "    }\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.58 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.59 2004-04-14 17:15:37 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -44,6 +44,8 @@ include_once("./include/messages.inc.php");
 include_once("./include/poll.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
+include_once("./include/thread.inc.php");
+
 
 if (!$user_sess = bh_session_check()) {
 
@@ -146,7 +148,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
 }
 
-html_draw_top("openprofile.js");
+html_draw_top("basetarget=_blank", "openprofile.js", "post.js");
 
 if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
@@ -180,15 +182,16 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $totalvotes  = 0;
   $optioncount = 0;
 
+  $ans_h = 0;
+  if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
+	  $ans_h = 2;
+  }
+
   foreach($HTTP_POST_VARS['answers'] as $key => $answer_text) {
 
       if (strlen(trim($answer_text)) > 0) {
-
-          if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
-              $poll_answers_array[$key] = fix_html($answer_text);
-          }else {
-              $poll_answers_array[$key] = make_html($answer_text, true);
-          }
+			$answer_tmp = new MessageText($ans_h, $answer_text);
+			$poll_answers_array[$key] = $answer_tmp->getContent();
 
           srand((double)microtime()*1000000);
           $poll_vote = rand(1, 10);
@@ -268,15 +271,16 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     $poll_closes = false;
   }
 
-  // Check HTML tick box, innit.
-
-  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
-    if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
-      $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
-    }else {
-      $HTTP_POST_VARS['answers'][$i] = make_html($HTTP_POST_VARS['answers'][$i], true);
+    // Check HTML tick box, innit.
+	$answers = array();
+	$ans_h = 0;
+	if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
+		$ans_h = 2;
+	}
+    for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
+		$answers[$i] = new MessageText($ans_h, $HTTP_POST_VARS['answers'][$i]);
+        $HTTP_POST_VARS['answers'][$i] = $answers[$i]->getContent();
     }
-  }
 
   poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
   post_add_edit_text($tid, 1);
@@ -483,14 +487,15 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                     echo "  <td>";
 
                     if (isset($HTTP_POST_VARS['answers'][$i])) {
-                      echo form_input_text("answers[$i]", _htmlentities(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 255);
+                      echo form_input_text("answers[$i]", _htmlentities(clean_emoticons(_stripslashes($HTTP_POST_VARS['answers'][$i]))), 40, 255);
                     }else {
                       if (isset($pollresults['OPTION_NAME'][$i])) {
+						  $pollresults['OPTION_NAME'][$i] = clean_emoticons(_stripslashes($pollresults['OPTION_NAME'][$i]));
                         if (strip_tags($pollresults['OPTION_NAME'][$i]) != $pollresults['OPTION_NAME'][$i]) {
                           if (!isset($HTTP_POST_VARS['t_post_html'])) $t_post_html = true;
-                          echo form_input_text("answers[$i]", _htmlentities(_stripslashes($pollresults['OPTION_NAME'][$i])), 40, 255);
+                          echo form_input_text("answers[$i]", _htmlentities($pollresults['OPTION_NAME'][$i]), 40, 255);
                         }else {
-                          echo form_input_text("answers[$i]", _stripslashes($pollresults['OPTION_NAME'][$i]), 40, 255);
+                          echo form_input_text("answers[$i]", $pollresults['OPTION_NAME'][$i], 40, 255);
                         }
                       }else {
                         echo form_input_text("answers[$i]", '', 40, 255);

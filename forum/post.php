@@ -179,6 +179,8 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
         
             if($t_post_html != "Y") {
                 $t_content = make_html($t_content);
+            }else{
+                $t_content = stripslashes($t_content);
             }
 
             if($t_sig) {
@@ -269,7 +271,7 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
     
     }else{
     
-      $preview_message['CONTENT'] = $t_content;
+      $preview_message['CONTENT'] = stripslashes($t_content);
     
     }
         
@@ -292,7 +294,7 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
       $t_sig = " ";
     
     }
-        
+    
     message_display(0, $preview_message, 0, 0, false, false, false);
     echo "<br />\n";
 

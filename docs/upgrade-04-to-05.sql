@@ -4,7 +4,7 @@
 #
 # Generation Time: Mar 16, 2004 at 00:17
 #
-# $Id: upgrade-04-to-05.sql,v 1.6 2004-04-28 18:36:14 decoyduck Exp $
+# $Id: upgrade-04-to-05.sql,v 1.7 2004-04-29 19:08:26 decoyduck Exp $
 #
 # --------------------------------------------------------#
 
@@ -333,3 +333,5 @@ CREATE TABLE USER_FORUM (
   ALLOWED TINYINT(4) DEFAULT '0',
   PRIMARY KEY (UID, FID)
 ) TYPE = MYISAM;
+
+DELETE FROM USERS WHERE LOGON = 'GUEST' AND (PASSWD = MD5('GUEST') OR PASSWD = MD5('guest'));

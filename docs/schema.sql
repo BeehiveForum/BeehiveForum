@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.72 2004-04-28 18:36:14 decoyduck Exp $
+# $Id: schema.sql,v 1.73 2004-04-29 19:08:24 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -359,7 +359,6 @@ CREATE TABLE DEFAULT_POST_ATTACHMENT_FILES (
   MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',
   HASH VARCHAR(32) NOT NULL DEFAULT '',
   DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
-  DOWNLOADS TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (ID),
   KEY AID (AID),
   KEY HASH (HASH)
@@ -533,7 +532,6 @@ CREATE TABLE USER (
 #
 
 INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) VALUES ('ADMIN', 'b60eb83bf533eecf1bde65940925a981', 'Administrator', 'your@email.com');
-INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) VALUES ('GUEST', '084e0343a0486ff05530df6c705c8bb4', 'Guest', 'guest@email.com');
 
 # --------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.46 2003-09-01 21:31:56 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.47 2003-09-09 03:25:56 tribalonline Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -109,7 +109,7 @@ function make_html($text)
     $html = _stripslashes($text);
     $html = _htmlentities($html);
     $html = format_url2link($html);
-    $html = nl2br($html);
+    $html = add_paragraphs($html);
 
     return $html;
 }

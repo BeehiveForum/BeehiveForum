@@ -86,7 +86,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						$i += 8;
 
 					} else if ($tag == "quote" && $close == true) {
-						$html_parts[$i] = "/div";
+						$html_parts[$i] = "/pre";
 					} else if ($tag == "quote") {
 						$source_name = stristr($html_parts[$i], " source=");
 						$source_name = substr($source_name, 8);
@@ -112,7 +112,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 							$source_name = "";
 						}
 								
-						$html_parts[$i] = "div class=\"quote\"";
+						$html_parts[$i] = "pre class=\"quote\"";
 						array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", $source_name, "/div", ""));
 						$i += 8;
 					}
@@ -499,6 +499,192 @@ function clean_attributes($tag)
 function clean_styles ($style) {
 	$style = preg_replace("/position\s*:\s*absolute\s*;?/", "", $style);
 	return $style;
+}
+
+function add_paragraphs ($html) {
+	$html = str_replace("\r", "", $html);
+
+	$tags = array("table", "div", "pre", "ul", "ol", "object");
+
+	$tags_nest = array();
+	$tags_nest["table"] = array("td", "th");
+	$tags_nest["ul"] = array("li");
+	$tags_nest["ol"] = array("li");
+	$tags_nest["div"] = true;
+	$tags_nest["pre"] = false;
+	$tags_nest["object"] = false;
+
+	$cur_tag = "";
+
+	$html_a = array($html);
+	$html_p = 0;
+
+	while (trim($html_a[count($html_a)-1]) != "") {
+		$cur_pos = strlen($html_a[$html_p]);
+
+		for ($i=0; $i<count($tags); $i++) {
+			$open = strpos($html_a[$html_p], "<".$tags[$i]);
+			if ($open < $cur_pos && is_integer($open)) {
+				$cur_pos = $open;
+				$cur_tag = $tags[$i];
+			}
+		}
+
+		if ($cur_pos >= strlen($html_a[$html_p])) break;
+
+		$close = -1;
+		$open_num = 0;
+		$j = $cur_pos+1;
+		while (1 != 2) {
+			$open = strpos($html_a[$html_p], "<".$cur_tag, $j);
+			$close = strpos($html_a[$html_p], "</".$cur_tag, $j);
+			if (!is_integer($open)) {
+				$open = $close+1;
+			}
+			if ($close < $open && $open_num == 0) {
+				break;
+			} else if ($close < $open) {
+				$open_num--;
+				$open = $close;
+			} else {
+				$open_num++;
+			}
+			$j = $open+1;
+		}
+
+		$close = strpos($html_a[$html_p], ">", $close)+1;
+		$html_a[$html_p+1] = substr($html_a[$html_p], $cur_pos, $close-$cur_pos);
+		$html_a[$html_p+2] = substr($html_a[$html_p], $close);
+		$html_a[$html_p] = substr($html_a[$html_p], 0, $cur_pos);
+
+		$html_a[$html_p] = preg_replace("/\n$/", "", $html_a[$html_p]);
+		$html_a[$html_p+2] = preg_replace("/^\n{1,2}/", "", $html_a[$html_p+2]);
+
+		$html_p += 2;
+	}
+
+	$return = "";
+
+	for ($i=0; $i<count($html_a); $i++) {
+		if ($i%2) {
+			$tag = array();
+			preg_match("/^<(\w+)(\b[^<>]*)>/i", $html_a[$i], $tag);
+
+			if (isset($tags_nest[$tag[1]][0])) {
+				$nest = $tags_nest[$tag[1]];
+				for ($j=0; $j<count($nest); $j++) {
+					$offset = 0;
+					while (is_integer(strpos($html_a[$i], "<".$nest[$j], $offset))) {
+						$cur_pos = strpos($html_a[$i], "<".$nest[$j], $offset);
+						$cur_pos = strpos($html_a[$i], ">", $cur_pos)+1;
+						$k = $cur_pos;
+						$open_num = 0;
+						while (1 != 2) {
+							$open = strpos($html_a[$i], "<".$nest[$j], $k);
+							$close = strpos($html_a[$i], "</".$nest[$j], $k);
+							if (!is_integer($open)) {
+								$open = $close+1;
+							}
+							if ($close < $open && $open_num == 0) {
+								break;
+							} else if ($close < $open) {
+								$open_num--;
+								$open = $close;
+							} else {
+								$open_num++;
+							}
+							$k = $open+1;
+						}
+
+						$tmp = array();
+						$tmp[0] = substr($html_a[$i], 0, $cur_pos);
+						$tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
+						$tmp[2] = substr($html_a[$i], $close);
+
+						$tmp[1] = add_paragraphs($tmp[1]);
+
+						$offset = strlen($tmp[0].$tmp[1]);
+
+						$html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
+					}
+				}
+			} else if ($tags_nest[$tag[1]] == true) {
+				$cur_pos = strpos($html_a[$i], ">")+1;
+				$close = strrpos($html_a[$i], "<");
+
+				$tmp = array();
+				$tmp[0] = substr($html_a[$i], 0, $cur_pos);
+				$tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
+				$tmp[2] = substr($html_a[$i], $close);
+
+				$tmp[1] = add_paragraphs($tmp[1]);
+
+				$html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
+			}
+
+			if (trim($html_a[$i+1]) == "") {
+				$return .= $html_a[$i]."\n";
+			} else {
+				$return .= $html_a[$i]."\n\n";
+			}
+
+		} else {
+			$html_a[$i] = preg_replace("/(<br( [^>]*)?>)([^\n\r])/i", "$1\n$3", $html_a[$i]);
+			$html_a[$i] = preg_replace("/([^\n\r])(<p( [^>]*)?>)/i", "$1\n\n$2", $html_a[$i]);
+			$html_a[$i] = preg_replace("/(<\/p( [^>]*)?>)([^\n\r])/i", "</p>\n\n$3", $html_a[$i]);
+
+			$tmp = split("\n", $html_a[$i]);
+			if (count($tmp) > 1) {
+				if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[0])) {
+					$tmp[0] = "<p>".$tmp[0];
+				}
+				if (!preg_match("/<\/p>$/i", $tmp[count($tmp)-1])) {
+					$tmp[count($tmp)-1] .= "</p>";
+				}
+			}
+	//		print_r($tmp);
+	//		echo "<br />\n\n";
+
+			for ($j=0; $j<count($tmp)-1; $j++) {
+				if (preg_match("/<\/p>$/i", $tmp[$j])) {
+					$tmp[$j+1] = preg_replace("/^<p( [^>]*)?>/i", "", $tmp[$j+1]);
+					$tmp[$j+1] = preg_replace("/<br( [^>]*)?>$/i", "", $tmp[$j+1]);
+					$tmp[$j+1] = preg_replace("/<\/p>$/i", "", $tmp[$j+1]);
+					if (!isset($tmp[$j+2])) break;
+					if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[$j+2])) {
+						$tmp[$j+2] = "<p>".$tmp[$j+2];
+					}
+					$j++;
+				} else if (!preg_match("/<br( [^>]*)?>$/i", $tmp[$j])) {
+					$tmp[$j+1] = preg_replace("/^<p( [^>]*)?>/i", "", $tmp[$j+1]);
+					$tmp[$j+1] = preg_replace("/<br( [^>]*)?>$/i", "", $tmp[$j+1]);
+					$tmp[$j+1] = preg_replace("/<\/p>$/i", "", $tmp[$j+1]);
+					if (preg_match("/^\s*$/", $tmp[$j+1])) {
+						$tmp[$j] .= "</p>";
+						if (!isset($tmp[$j+2])) break;
+						if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[$j+2])) {
+							$tmp[$j+2] = "<p>".$tmp[$j+2];
+						}
+						$j++;
+					} else {
+						$tmp[$j] .= "<br />";
+					}
+				} else {
+					$tmp[$j+1] = preg_replace("/^<p( [^>]*)?>/i", "", $tmp[$j+1]);
+					$tmp[$j+1] = preg_replace("/<br( [^>]*)?>$/i", "", $tmp[$j+1]);
+					$tmp[$j+1] = preg_replace("/<\/p>$/i", "", $tmp[$j+1]);
+				}
+			}
+			$html_a[$i] = implode("\n", $tmp);
+			$html_a[$i] = preg_replace("/(<p( [^>]*)?>)\s*<\/p>/i", "$1&nbsp;</p>", $html_a[$i]);
+
+			if (trim($html_a[$i]) != "") {
+				$return .= $html_a[$i]."\n\n";
+			}
+		}
+	}
+
+	return trim($return);
 }
 
 // $text to be filtered

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.28 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.29 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -55,12 +55,15 @@ include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 include_once("./include/user.inc.php");
 
-if (!bh_session_check() || bh_session_get_value('UID') == 0){
+if (!$user_sess = bh_session_check()) {
 
     $uri = "./llogon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 if (bh_session_get_value('UID') == 0) {
         light_html_guest_error();

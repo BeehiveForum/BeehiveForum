@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.18 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.19 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -46,13 +46,13 @@ include_once("./include/light.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if(isset($HTTP_GET_VARS['final_uri'])){
+if (isset($HTTP_GET_VARS['final_uri'])) {
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
 }else {
     $final_uri = "./lthread_list.php?webtag=$webtag";
 }
 
-if(bh_session_check() && bh_session_get_value('UID') != 0) {
+if (bh_session_check() && bh_session_get_value('UID') != 0) {
 
     light_html_draw_top();
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
@@ -64,7 +64,7 @@ if(bh_session_check() && bh_session_get_value('UID') != 0) {
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-  if(isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
+  if (isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
 
     $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
 
@@ -104,7 +104,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       }
 
-    }else if($luid == -2) { // User is banned - everybody hide
+    }else if ($luid == -2) { // User is banned - everybody hide
 
         if (!strstr(php_sapi_name(), 'cgi')) {
             header("HTTP/1.0 500 Internal Server Error");

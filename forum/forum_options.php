@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.9 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.10 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,11 +41,15 @@ include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if(!bh_session_check()){
+if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 if (bh_session_get_value('UID') == 0) {
     html_guest_error();
@@ -140,7 +144,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $user_prefs['IMAGES_TO_LINKS'] = "Y";
     }else {
         $user_prefs['IMAGES_TO_LINKS'] = "";
-    }    
+    }
+    
+    if (isset($HTTP_POST_VARS['use_word_filter']) && $HTTP_POST_VARS['use_word_filter'] == "Y") {
+        $user_prefs['USE_WORD_FILTER'] = "Y";
+    }else {
+        $user_prefs['USE_WORD_FILTER'] = "";
+    }     
 
     if (isset($HTTP_POST_VARS['show_stats']) && $HTTP_POST_VARS['show_stats'] == "Y") {
         $user_prefs['SHOW_STATS'] = 1;
@@ -337,7 +347,10 @@ echo "                  <td>", form_checkbox("images_to_links", "Y", $lang['conv
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == 1) ? true : false), "</td>\n";
-echo "                  </tr>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "&nbsp;<span class=\"smalltext\">[<a href=\"edit_wordfilter.php\">{$lang['editwordfilter']}</a>]</span></td>\n";
+echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";
 echo "                </tr>\n";

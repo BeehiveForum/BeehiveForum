@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.5 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.6 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -45,11 +45,15 @@ include_once("./include/light.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if (!bh_session_check() || bh_session_get_value('UID') == 0) {
+if (!$user_sess = bh_session_check()) {
 
-    $uri = "./llogon.php?webtag=$webtag";
+    $uri = "./llogon.php?webtag=$webtag");
     header_redirect($uri);
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 // Where are we going after we've logged off?
 

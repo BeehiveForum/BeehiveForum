@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.80 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.81 2004-03-13 00:00:22 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -29,15 +29,11 @@ include_once("./include/ip.inc.php");
 include_once("./include/stats.inc.php");
 include_once("./include/user.inc.php");
 
-// An array to cache the user session in - saves querying the database lots of times.
-
-if (!isset($user_sess) || !is_array($user_sess)) $user_sess = array();
-
-// Checks the session and loads it into an array.
+// Checks the session and returns it as an array.
 
 function bh_session_check()
 {
-    global $HTTP_COOKIE_VARS, $user_sess, $session_cutoff, $show_stats, $default_language, $default_style;
+    global $HTTP_COOKIE_VARS, $session_cutoff, $show_stats, $default_language, $default_style;
     
     if (!isset($default_style)) $default_style = "default";
     if (!isset($default_language)) $default_language = "en";
@@ -79,22 +75,24 @@ function bh_session_check()
 
 	    if (isset($user_sess['UID']) && $user_sess['UID'] == 0) {
 
-                $guest_user_sess = array('UID'             => 0,
-                                         'LOGON'           => 'GUEST',
-                                         'PASSWD'          => md5('GUEST'),
-                                         'STATUS'          => 0,
-                                         'POSTS_PER_PAGE'  => 5,
-                                         'TIMEZONE'        => 0,
-                                         'DL_SAVING'       => 0,
-                                         'MARK_AS_OF_INT'  => 0,
-                                         'FONT_SIZE'       => 10,
-                                         'STYLE'           => $default_style,
-                                         'VIEW_SIGS'       => 0,
-                                         'START_PAGE'      => 0,
-                                         'LANGUAGE'        => $default_language,
-                                         'PM_NOTIFY'       => 'N',
-                                         'SHOW_STATS'      => 1,
-                                         'IMAGES_TO_LINKS' => 'N');
+                $guest_user_sess = array('UID'              => 0,
+                                         'LOGON'            => 'GUEST',
+                                         'PASSWD'           => md5('GUEST'),
+                                         'STATUS'           => 0,
+                                         'POSTS_PER_PAGE'   => 5,
+                                         'TIMEZONE'         => 0,
+                                         'DL_SAVING'        => 0,
+                                         'MARK_AS_OF_INT'   => 0,
+                                         'FONT_SIZE'        => 10,
+                                         'STYLE'            => $default_style,
+                                         'VIEW_SIGS'        => 0,
+                                         'START_PAGE'       => 0,
+                                         'LANGUAGE'         => $default_language,
+                                         'PM_NOTIFY'        => 'N',
+                                         'SHOW_STATS'       => 1,
+                                         'IMAGES_TO_LINKS'  => 'N',
+                                         'USE_WORD_FILTER'  => 'Y',
+                                         'USE_ADMIN_FILTER' => 'Y');
 
 		$user_sess = array_merge($user_sess, $guest_user_sess);
 	    }
@@ -145,7 +143,7 @@ function bh_session_check()
                         if ($show_stats) update_stats();
 		    }
 
-                    return true;
+                    return $user_sess;
 		}
             }
 	}

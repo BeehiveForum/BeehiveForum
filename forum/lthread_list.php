@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.30 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.31 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -45,12 +45,15 @@ include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/threads.inc.php");
 
-if(!bh_session_check() || bh_session_get_value('UID') == 0){
+if (!$user_sess = bh_session_check()) {
 
     $uri = "./llogon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 // Check that required variables are set
 
@@ -121,7 +124,7 @@ echo "</form>\n";
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 
-if(isset($folder)){
+if (isset($folder)) {
     list($thread_info, $folder_order) = threads_get_folder($user, $folder, $start_from);
 } else {
     switch ($mode) {
@@ -196,7 +199,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
 
-    if(thread_can_view($tid, bh_session_get_value('UID'))) {
+    if (thread_can_view($tid, bh_session_get_value('UID'))) {
 
         list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'],
              $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);

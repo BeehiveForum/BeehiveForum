@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.54 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.55 2004-03-13 00:00:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,12 +45,15 @@ include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 include_once("./include/threads.inc.php");
 
-if (!bh_session_check()) {
+if (!$user_sess = bh_session_check()) {
 
-    $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 html_draw_top("openprofile.js");
 
@@ -68,7 +71,7 @@ if ($thread_array = threads_get_most_recent()) {
 
         $tid = $thread['TID'];
 
-        if (isset($thread['LAST_READ']) && $thread['LAST_READ'] && $thread['LENGTH'] > $thread['LAST_READ']){
+        if (isset($thread['LAST_READ']) && $thread['LAST_READ'] && $thread['LENGTH'] > $thread['LAST_READ']) {
             $pid = $thread['LAST_READ'] + 1;
         } else {
             $pid = 1;

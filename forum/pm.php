@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.28 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: pm.php,v 1.29 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -43,10 +43,15 @@ include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if (!bh_session_check()) {
+if (!$user_sess = bh_session_check()) {
+
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 include_once("./include/html.inc.php");
 
@@ -197,7 +202,7 @@ if (sizeof($listmessages_array) == 0) {
         echo "    <tr>\n";
         echo "      <td class=\"postbody\">";
 
-        if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])){
+        if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
             $mid = $HTTP_GET_VARS['mid'];
         }else {
             $mid = NULL;

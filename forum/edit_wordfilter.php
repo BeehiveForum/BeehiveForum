@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.9 2004-03-12 22:41:37 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.10 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -43,12 +43,15 @@ include_once("./include/perm.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-if(!bh_session_check()){
+if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 html_draw_top();
 
@@ -80,11 +83,17 @@ if (isset($HTTP_POST_VARS['submit'])) {
         }
     }
     
-    if (isset($HTTP_POST_VARS['useadminfilter'])) {
+    if (isset($HTTP_POST_VARS['use_admin_filter'])) {
         $user_prefs['USE_ADMIN_FILTER'] = "Y";
     }else {
         $user_prefs['USE_ADMIN_FILTER'] = "N";
     }
+    
+    if (isset($HTTP_POST_VARS['use_word_filter'])) {
+        $user_prefs['USE_WORD_FILTER'] = "Y";
+    }else {
+        $user_prefs['USE_WORD_FILTER'] = "N";
+    }    
     
     user_update_prefs($uid, $user_prefs);
     if (!isset($status_text)) $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
@@ -108,6 +117,8 @@ if (isset($status_text)) echo $status_text;
 
 echo "<p>{$lang['wordfilterexp_3']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
+
+
 echo "<form name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php?webtag=$webtag\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
@@ -147,10 +158,36 @@ echo "                  <td>{$lang['newcaps']}</td>\n";
 echo "                  <td>", form_input_text("new_match", "", 30), "</td>\n";
 echo "                  <td>", form_input_text("new_replace", "", 30), "</td>\n";
 echo "                  <td align=\"center\">", form_checkbox("new_preg_expr", "Y", "", false), "</td>\n";
-echo "                </tr>\n"; 
+echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
-echo "                  <td colspan=\"3\">", form_checkbox("useadminfilter", "Y", $lang['includeadminfilter'], ($user_prefs['USE_ADMIN_FILTER'] == 'Y')), "</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], (isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y')), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -164,6 +201,7 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
 echo "    </tr>\n";
+echo "    <tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 

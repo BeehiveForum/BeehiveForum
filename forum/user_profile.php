@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.51 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.52 2004-03-13 00:00:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -42,7 +42,15 @@ include_once("./include/user.inc.php");
 include_once("./include/user_profile.inc.php");
 include_once("./include/user_rel.inc.php");
 
-bh_session_check();
+if (!$user_sess = bh_session_check()) {
+
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    header_redirect($uri);
+}
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
     $uid = $HTTP_GET_VARS['uid'];
@@ -131,7 +139,7 @@ for ($i = 0; $i < sizeof($profile_sections); $i++) {
             $psid = $profile_sections[$i]['PSID'];
         }
 
-    } else if(!($i % 4)){ // Start new row every 4 sections
+    } else if (!($i % 4)) { // Start new row every 4 sections
         echo "          </tr>\n";
         echo "          <tr>\n";
     }
@@ -146,7 +154,7 @@ for ($i = 0; $i < sizeof($profile_sections); $i++) {
     }
 }
 
-for(;$i % 4; $i++){
+for(;$i % 4; $i++) {
     echo "            <td width=\"25%\">&nbsp;</td>\n";
 }
 

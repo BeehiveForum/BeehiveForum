@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.21 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.22 2004-03-13 00:00:21 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -51,12 +51,15 @@ include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 include_once("./include/user.inc.php");
 
-if(!bh_session_check() || bh_session_get_value('UID') == 0){
+if (!$user_sess = bh_session_check()) {
 
-    $uri = "./llogon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -64,7 +67,7 @@ if(!bh_session_check() || bh_session_get_value('UID') == 0){
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }else {
-    if (bh_session_get_value('UID')){
+    if (bh_session_get_value('UID')) {
         $msg = messages_get_most_recent(bh_session_get_value('UID'));
     } else {
         $msg = "1.1";
@@ -75,7 +78,7 @@ list($tid, $pid) = explode('.', $msg);
 if ($tid == '') $tid = 1;
 if ($pid == '') $pid = 1;
 
-if(!thread_can_view($tid, bh_session_get_value('UID'))){
+if (!thread_can_view($tid, bh_session_get_value('UID'))) {
         light_html_draw_top();
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         light_html_draw_bottom();
@@ -121,13 +124,13 @@ $msg_count = count($messages);
 
 light_messages_top($foldertitle, _stripslashes($threaddata['TITLE']), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
 
-if($msg_count > 0){
+if ($msg_count > 0) {
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
 
         if (isset($message['RELATIONSHIP'])) {
 
-            if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
+            if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
                 $message['CONTENT'] = message_get_content($tid, $message['PID']);
             } else {
                 $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
@@ -139,7 +142,7 @@ if($msg_count > 0){
 
             }
 
-        if($threaddata['POLL_FLAG'] == 'Y') {
+        if ($threaddata['POLL_FLAG'] == 'Y') {
 
           if ($message['PID'] == 1) {
 
@@ -164,7 +167,7 @@ if($msg_count > 0){
 
 unset($messages, $message);
 
-if($last_pid < $threaddata['LENGTH']){
+if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
     echo form_quick_button("./lmessages.php?webtag=$webtag", $lang['keepreading'], "msg", "$tid.$npid");
 }
@@ -175,7 +178,7 @@ echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']
 
 light_html_draw_bottom();
 
-if($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0){
+if ($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0) {
     messages_update_read($tid,$last_pid,bh_session_get_value('UID'));
 }
 

@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.27 2004-03-12 18:46:50 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.28 2004-03-13 00:00:22 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -44,24 +44,22 @@ include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user_rel.inc.php");
 
-if (!bh_session_check()) {
+if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-      $uri = "./index.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
-    }else {
-      $uri = "./index.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
-    }
-
+    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
 
 if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
 
-if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['rel'])) {
+if (isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['rel'])) {
 
     $uid  = bh_session_get_value('UID');
     $puid = $HTTP_GET_VARS['uid'];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.65 2004-12-27 22:04:36 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.66 2005-01-30 17:21:57 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -162,7 +162,29 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
         $html.= " $custom_html ";
     }
 
-    $html.= "/><label for=\"$id\">$text</label></span>";
+    $html.= "/><label for=\"$id\">";
+
+    if (is_array($text)) {
+
+        foreach($text as $text_part) {
+
+            if (!strstr($text_part, "<")) {
+
+                $html.= $text_part;
+
+            }else {
+
+                $html.= "</label>$text_part<label for=\"$id\">";
+            }
+        }
+
+    }else {
+
+        $html.= $text;
+    }
+
+    $html.= "</label></span>";
+
     return $html;
 }
 
@@ -182,7 +204,28 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
         $html.= " $custom_html ";
     }
 
-    $html.= "/><label for=\"$id\">$text</label></span>";
+    $html.= "/><label for=\"$id\">";
+
+    if (is_array($text)) {
+
+        foreach($text as $text_part) {
+
+            if (!strstr($text_part, "<")) {
+
+                $html.= $text_part;
+
+            }else {
+
+                $html.= "</label>$text_part<label for=\"$id\">";
+            }
+        }
+
+    }else {
+
+        $html.= $text;
+    }
+
+    $html.= "</label></span>";
     return $html;
 }
 

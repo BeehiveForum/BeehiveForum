@@ -50,6 +50,7 @@ function format_time($time)
 	} else {
 		$fmt = gmdate("j M", $time);
 	}
+	
     return $fmt;
 }
 
@@ -82,9 +83,9 @@ function timestamp_is_bst($timestamp = mktime())
     $endofbst   = mktime(2, 0, 0, 10, $ldoctd, $year);
       
     if (($timestamp > $startofbst) && ($timestamp < $endofbst)) {
-      return true;
+      return $timestamp + 3600;  // return adjusted timestamp
     }else{
-      return false;
+      return $timestamp; // return unadjusted timestamp
     }
 
 }

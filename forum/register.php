@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.103 2005-01-31 15:44:09 decoyduck Exp $ */
+/* $Id: register.php,v 1.104 2005-02-18 10:06:36 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -312,7 +312,7 @@ if (isset($_POST['submit'])) {
         $new_user['STYLE'] = forum_get_setting('default_style');
     }
 
-    if (isset($_POST['EMOTICONS']) && _in_array($_POST['EMOTICONS'], $available_emots)) {
+    if (isset($_POST['EMOTICONS']) && _in_array($_POST['EMOTICONS'], $available_emoticons)) {
         $new_user['EMOTICONS'] = $_POST['EMOTICONS'];
     }else {
         $new_user['EMOTICONS'] = forum_get_setting('default_emoticons');

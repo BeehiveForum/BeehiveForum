@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.71 2003-09-09 11:07:58 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.72 2003-09-29 09:28:10 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -199,14 +199,16 @@ function poll_get_user_votes($tid)
 {
     $db_poll_get_user_vote_hashes = db_connect();
 
-    $sql = "select PTUID, OPTION_ID from ". forum_table("USER_POLL_VOTES"). " where TID = $tid";
+    $sql = "SELECT UP.UID, UP.OPTION_ID FROM ". forum_table("USER_POLL_VOTES"). " UP ";
+    $sql.= "LEFT JOIN ". forum_table("POLL"). " POLL ON (UP.TID = POLL.TID) ";
+    $sql.= "WHERE UP.TID = $tid AND POLL.VOTETYPE = 1";
+
     $result = db_query($sql, $db_poll_get_user_vote_hashes);
 
     $poll_get_user_votes = array();
 
     while($row = db_fetch_array($result)) {
-      $poll_get_user_votes[] = array('PTUID' => $row['PTUID'],
-                                     'OPTION_ID' => $row['OPTION_ID']);
+      $poll_get_user_votes[$row['OPTION_ID']][] = $row['UID'];
     }
 
     return $poll_get_user_votes;
@@ -1010,8 +1012,7 @@ function poll_public_ballot($tid)
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
-    $user_votes = poll_get_user_votes($tid);
-    $user_count = user_count();
+    $user_poll_votes = poll_get_user_votes($tid);
 
     $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
     $polldisplay.= "              <tr>\n";
@@ -1041,19 +1042,16 @@ function poll_public_ballot($tid)
           $polldisplay.= "                <td  class=\"$row_class\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
           $polldisplay.= "              </tr>\n";
 
-          for($j = 0; $j < sizeof($user_votes); $j++) {
+          if (isset($user_poll_votes[$pollresults['OPTION_ID'][$i]]) && is_array($user_poll_votes[$pollresults['OPTION_ID'][$i]])) {
 
-            for ($k = 1; $k <= $user_count; $k++) {
+            for ($j = 0; $j < sizeof($user_poll_votes[$pollresults['OPTION_ID'][$i]]); $j++) {
 
-              if ((md5("$tid.$k") == $user_votes[$j]['PTUID']) && ($user_votes[$j]['OPTION_ID'] == $pollresults['OPTION_ID'][$i])) {
-
-                $user = user_get($k);
+              if ($user = user_get($user_poll_votes[$pollresults['OPTION_ID'][$i]][$j])) {
 
                 $polldisplay.= "              <tr>\n";
                 $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-                $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$k})\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']})\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
                 $polldisplay.= "              </tr>\n";
-
               }
             }
           }
@@ -1187,8 +1185,17 @@ function poll_vote($tid, $vote_array)
 
       foreach ($vote_array as $user_vote) {
 
-        $sql = "insert into ". forum_table("USER_POLL_VOTES"). " (TID, PTUID, OPTION_ID, TSTAMP) ";
-        $sql.= "values ($tid, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
+        if ($polldata['VOTETYPE'] == 0) {
+
+          $sql = "insert into ". forum_table("USER_POLL_VOTES"). " (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
+          $sql.= "values ($tid, 0, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
+
+        }else {
+
+          $sql = "insert into ". forum_table("USER_POLL_VOTES"). " (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
+          $sql.= "values ($tid, $uid, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
+
+        }
 
         $result = db_query($sql, $db_poll_vote);
 

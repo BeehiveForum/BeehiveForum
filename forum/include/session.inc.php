@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.107 2004-04-28 22:54:39 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.108 2004-04-28 22:57:42 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -69,6 +69,8 @@ function bh_session_check()
 
 	}else {
 
+	    $table_data['FID'] = 0;
+
 	    $sql = "SELECT USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, SESSIONS.UID, ";
 	    $sql.= "SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
@@ -111,7 +113,7 @@ function bh_session_check()
                 // If the user is not logged into the current forum, we should
                 // do that now for them.
 
-                if ($user_sess['FID'] <> $table_data['FID']) {
+                if ($user_sess['FID'] != $table_data['FID']) {
 
                     $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash' ";
                     $sql.= "AND FID = '{$table_data['FID']}'";

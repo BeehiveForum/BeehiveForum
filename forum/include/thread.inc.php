@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.28 2003-08-02 00:02:53 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.29 2003-08-05 03:11:21 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -35,18 +35,19 @@ function thread_get_title($tid)
    $db_thread_get_title = db_connect();
    $sql = "SELECT thread.title FROM " . forum_table("THREAD") . " thread WHERE tid = $tid";
    $resource_id = db_query($sql, $db_thread_get_title);
-   if(!db_num_rows($resource_id)){
+
+   if (!db_num_rows($resource_id)) {
      $threadtitle = "The Unknown Thread";
-   } else {
+   }else {
      $data = db_fetch_array($resource_id);
      $threadtitle = _stripslashes($data['title']);
    }
+
    return $threadtitle;
 }
 
 function thread_get($tid)
 {
-
    $db_thread_get = db_connect();
 
    $uid = bh_session_get_value('UID');
@@ -92,27 +93,31 @@ function thread_get($tid)
 
 function thread_get_author($tid)
 {
-        $db_thread_get_author = db_connect();
+    $db_thread_get_author = db_connect();
 
-        $sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
-        $sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
+    $sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
+    $sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
 
-        $result = db_query($sql, $db_thread_get_author);
-        $author = db_fetch_array($result);
+    $result = db_query($sql, $db_thread_get_author);
+    $author = db_fetch_array($result);
 
-        return format_user_name($author['LOGON'], $author['NICKNAME']);
-
+    return format_user_name($author['LOGON'], $author['NICKNAME']);
 }
 
 function thread_get_interest($tid)
 {
-        $uid = bh_session_get_value('UID');
-        $db_thread_get_interest = db_connect();
-        $sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
-        $resource_id = db_query($sql, $db_thread_get_interest);
-        $fa = db_fetch_array($resource_id);
-        $return = isset($fa['INTEREST']) ? $fa['INTEREST'] : 0;
-        return $return;
+    $uid = bh_session_get_value('UID');
+    $db_thread_get_interest = db_connect();
+
+    $sql = "select INTEREST from USER_THREAD where UID = $uid and TID = $tid";
+    $result = db_query($sql, $db_thread_get_interest);
+
+    if (db_num_rows($result)) {
+        $row = db_fetch_array($resource_id);
+        return $row['INTEREST'];
+    }else {
+        return 0;
+    }
 }
 
 function thread_set_interest($tid, $interest, $new = false)
@@ -129,7 +134,6 @@ function thread_set_interest($tid, $interest, $new = false)
 
     $db_thread_set_interest = db_connect();
     db_query($sql, $db_thread_set_interest);
-
 }
 
 function thread_can_view($tid = 0, $uid = 0)
@@ -150,9 +154,9 @@ function thread_set_sticky($tid, $sticky = true)
     $db_thread_set_sticky = db_connect();
 
     if ($sticky) {
-        $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = \"Y\" WHERE TID = $tid";
+        $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = 'Y' WHERE TID = $tid";
     } else {
-        $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = \"N\" WHERE TID = $tid";
+        $sql = "UPDATE ".forum_table("THREAD")." SET STICKY = 'N' WHERE TID = $tid";
     }
 
     $result = db_query($sql,$db_thread_set_sticky);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.156 2003-08-01 19:58:42 hodcroftcj Exp $ */
+/* $Id: messages.inc.php,v 1.157 2003-08-05 03:11:21 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -424,7 +424,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
         }
-        
+
         echo "</table>\n";
         echo "<table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
 
@@ -630,13 +630,13 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     } else {
         echo "&nbsp;".form_submit("close",$lang['closeforposting']);
     }
-    
+
     if ($sticky) {
             echo "&nbsp;".form_submit("nonsticky",$lang['makenonsticky']). "</p>\n";
     } else {
             echo "&nbsp;".form_submit("sticky",$lang['makesticky']). "</p>\n";
     }
-    
+
     echo form_input_hidden("t_tid",$tid);
     echo form_input_hidden("t_pid",$pid);
     echo "</form>\n";
@@ -703,7 +703,7 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
 function messages_get_most_recent($uid, $fid = false)
 {
-    $return = "1.1";
+    $db_messages_get_most_recent = db_connect();
 
     if ($fid) {
         $fidlist = $fid;
@@ -711,37 +711,34 @@ function messages_get_most_recent($uid, $fid = false)
         $fidlist = folder_get_available();
     }
 
-    $db_messages_get_most_recent = db_connect();
-
-    $sql = "select THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
-    $sql .= "from " . forum_table("THREAD") . " THREAD ";
-    $sql .= "left join " . forum_table("USER_THREAD") . " USER_THREAD on (USER_THREAD.TID = THREAD.TID and USER_THREAD.UID = $uid) ";
-    $sql .= "left join " . forum_table("USER_FOLDER") . " USER_FOLDER on (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql .= "where THREAD.FID in ($fidlist) ";
-    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
-    $sql .= "and (USER_THREAD.INTEREST >= 0 or USER_THREAD.INTEREST is null) ";
-    $sql .= "order by THREAD.MODIFIED DESC LIMIT 0,1";
+    $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
+    $sql.= "FROM " . forum_table("THREAD") . " THREAD ";
+    $sql.= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ";
+    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+    $sql.= "WHERE THREAD.FID in ($fidlist) ";
+    $sql.= "AND NOT ((USER_FOLDER.INTEREST <=> -1) OR (USER_THREAD.INTEREST <=> -1)) ";
+    $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
 
     $result = db_query($sql, $db_messages_get_most_recent);
 
-    if(db_num_rows($result)) {
+    if (db_num_rows($result)) {
 
         $fa = db_fetch_array($result);
 
         if (isset($fa['LAST_READ'])) {
 
             if ($fa['LAST_READ'] < $fa['LENGTH']) {
-              $return = $fa['TID'] . ".". ($fa['LAST_READ'] + 1);
+              return $fa['TID'] . ".". ($fa['LAST_READ'] + 1);
             }else {
-              $return = $fa['TID'] . "." . $fa['LAST_READ'];
+              return $fa['TID'] . "." . $fa['LAST_READ'];
             }
 
-        } else {
-            $return = $fa['TID'] . ".1";
+        }else {
+            return $fa['TID'] . ".1";
         }
     }
-
-    return $return;
 }
 
 function messages_fontsize_form($tid, $pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.33 2003-08-01 20:00:50 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.34 2003-08-05 03:11:21 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -61,12 +61,15 @@ function folder_get_title($fid)
    return $foldertitle;
 }
 
-function folder_create($title,$access,$description = "",$allowed_types = FOLDER_ALLOW_ALL_THREAD)
+function folder_create($title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $db_folder_create = db_connect();
 
+    $title = _addslashes($title);
+    $description = _addslashes($description);
+
     $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES) ";
-    $sql.= "values (\"$title\",$access,\"$description\",$allowed_types)";
+    $sql.= "values ('$title', $access, '$description', $allowed_types)";
 
     $result = db_query($sql, $db_folder_create);
 
@@ -79,17 +82,18 @@ function folder_create($title,$access,$description = "",$allowed_types = FOLDER_
     return $new_fid;
 }
 
-function folder_update($fid,$title,$access,$description = "",$allowed_types = FOLDER_ALLOW_ALL_THREAD)
+function folder_update($fid, $title, $access, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $db_folder_update = db_connect();
-    $sql = "update low_priority " . forum_table("FOLDER") . " ";
-    $sql.= "set TITLE = \"$title\", ";
-    $sql.= "ACCESS_LEVEL = $access, ";
-    $sql.= "DESCRIPTION = \"$description\", ";
-    $sql.= "ALLOWED_TYPES = $allowed_types ";
-    $sql.= "where FID = $fid";
-    $result = db_query($sql, $db_folder_update);
-    return $result;
+
+    $title = _addslashes($title);
+    $description = _addslashes($description);
+
+    $sql = "UPDATE LOW_PRIORITY ". forum_table("FOLDER"). " SET TITLE = '$title', ";
+    $sql.= "ACCESS_LEVEL = $access, DESCRIPTION = '$description', ";
+    $sql.= "ALLOWED_TYPES = $allowed_types WHERE FID = $fid";
+
+    return db_query($sql, $db_folder_update);
 }
 
 function folder_move_threads($from,$to)
@@ -112,42 +116,39 @@ function folder_get_available()
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
 
     $result = db_query($sql, $db_folder_get_available);
-    $count = db_num_rows($result);
 
-    if ($count==0) {
-        $return = "0";
-    } else {
-        $row = db_fetch_array($result);
-        $return = $row['FID'];
-
+    if (db_num_rows($result)) {
+        $folder_list = array();
         while($row = db_fetch_array($result)){
-            $return .= ",".$row['FID'];
+            $folder_list[] = $row['FID'];
         }
+        return implode(',', $folder_list);
     }
 
-    return $return;
+    return '0';
 }
 
 function folder_get_all()
 {
-
-    $return = array();
-
     $db_folder_get_all = db_connect();
 
-    $sql = "select FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, FOLDER.ALLOWED_TYPES, count(*) as THREAD_COUNT ";
-    $sql.= "from " . forum_table("FOLDER") . " FOLDER LEFT JOIN " . forum_table("THREAD") . " THREAD ";
-    $sql.= " on (THREAD.FID = FOLDER.FID) ";
-    $sql.= "group by FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
+    $sql.= "FOLDER.ALLOWED_TYPES, COUNT(*) AS THREAD_COUNT ";
+    $sql.= "FROM " . forum_table("FOLDER") . " FOLDER LEFT JOIN " . forum_table("THREAD") . " THREAD ";
+    $sql.= "ON (THREAD.FID = FOLDER.FID) ";
+    $sql.= "GROUP BY FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";
 
     $result = db_query($sql, $db_folder_get_all);
 
-    while ($row = db_fetch_array($result)) {
-      $return[] = $row;
+    if (db_num_rows($result)) {
+        $folder_list = array();
+        while ($row = db_fetch_array($result)) {
+            $folder_list[] = $row;
+        }
+        return $folder_list;
+    }else {
+        return array();
     }
-
-    return $return;
-
 }
 
 function folder_get($fid)

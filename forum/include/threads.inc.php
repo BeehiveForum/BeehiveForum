@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.85 2003-08-05 02:24:58 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.86 2003-08-05 03:11:21 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -603,9 +603,8 @@ function threads_any_unread()
 
     $db_threads_any_unread = db_connect();
     $result = db_query($sql, $db_threads_any_unread);
-    $return = (db_num_rows($result) > 0);
 
-    return $return;
+    return (db_num_rows($result) > 0);
 }
 
 function threads_mark_all_read()

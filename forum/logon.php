@@ -27,6 +27,7 @@ require_once("./include/constants.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/beehive.inc.php");
 
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
@@ -189,16 +190,12 @@ if (isset($HTTP_GET_VARS['other'])) {
   $otherlogon = false;  
 }
    
-print_r($HTTP_COOKIE_VARS['bh_remember_user']);
-
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
 echo "<form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
 echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
 echo "</tr>\n</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
-
-
 
 if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
 

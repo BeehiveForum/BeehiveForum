@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.142 2004-08-14 23:25:35 tribalonline Exp $ */
+/* $Id: edit.php,v 1.143 2004-08-15 00:35:28 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -251,6 +251,25 @@ html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprof
 $t_content = "";
 $t_sig = "";
 
+if (isset($_POST['t_post_emots'])) {
+        if ($_POST['t_post_emots'] == "disabled") {
+                $emots_enabled = false;
+        } else {
+                $emots_enabled = true;
+        }
+} else {
+	$emots_enabled = true;
+}
+if (isset($_POST['t_post_links'])) {
+        if ($_POST['t_post_links'] == "enabled") {
+                $links_enabled = true;
+        } else {
+                $links_enabled = false;
+        }
+} else {
+	$links_enabled = false;
+}
+
 $post_html = 0;
 $sig_html = 2;
 
@@ -263,6 +282,18 @@ if (isset($_POST['t_post_html'])) {
     } else if ($t_post_html == "enabled") {
                 $post_html = 2;
     }
+
+} else {
+	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+		$post_html = 1;
+	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+		$post_html = 2;
+	} else {
+		$post_html = 0;
+	}
+
+	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+	$links_enabled = $page_prefs & POST_AUTO_LINKS;
 }
 
 if (isset($_POST['t_sig_html'])) {
@@ -272,25 +303,6 @@ if (isset($_POST['t_sig_html'])) {
         if ($t_sig_html != "N") {
                 $sig_html = 2;
         }
-}
-
-if (isset($_POST['t_post_emots'])) {
-        if ($_POST['t_post_emots'] == "disabled") {
-                $emots_enabled = false;
-        } else {
-                $emots_enabled = true;
-        }
-} else {
-	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-}
-if (isset($_POST['t_post_links'])) {
-        if ($_POST['t_post_links'] == "enabled") {
-                $links_enabled = true;
-        } else {
-                $links_enabled = false;
-        }
-} else {
-	$links_enabled = !($page_prefs & POST_AUTO_LINKS);
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {

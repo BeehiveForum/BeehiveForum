@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.41 2003-11-16 22:11:50 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.42 2003-11-27 12:00:32 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -33,14 +33,16 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 {
     $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
+    
+    if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
 
     if ($ustatus & PERM_CHECK_WORKER) {
-        $sql = "select FID, TITLE from ".forum_table("FOLDER")." WHERE ";
+        $sql = "SELECT FID, TITLE FROM ".forum_table("FOLDER")." WHERE ";
         $sql.= "ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL";
     } else {
-        $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
-        $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
-        $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+        $sql = "SELECT DISTINCT F.FID, F.TITLE FROM ".forum_table("FOLDER")." F LEFT JOIN ";
+        $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
+        $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
         $sql.= "AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
     }
 
@@ -50,14 +52,19 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 function folder_get_title($fid)
 {
    $db_folder_get_title = db_connect();
-   $sql = "select FOLDER.TITLE from " . forum_table("FOLDER") . " FOLDER where FID = $fid";
-   $resource_id = db_query($sql, $db_folder_get_title);
-   if(!db_num_rows($resource_id)){
+
+   if (!is_numeric($fid)) return "The Unknown Folder";
+
+   $sql = "SELECT FOLDER.TITLE FROM " . forum_table("FOLDER") . " FOLDER WHERE FID = $fid";
+   $result = db_query($sql, $db_folder_get_title);
+
+   if (!db_num_rows($result)) {
      $foldertitle = "The Unknown Folder";
-   } else {
-     $data = db_fetch_array($resource_id);
+   }else {
+     $data = db_fetch_array($result);
      $foldertitle = $data['TITLE'];
    }
+
    return $foldertitle;
 }
 
@@ -68,8 +75,11 @@ function folder_create($title, $access, $description = "", $allowed_types = FOLD
     $title = addslashes($title);
     $description = addslashes($description);
 
-    $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
-    $sql.= "values ('$title', $access, '$description', $allowed_types, $position)";
+    if (!is_numeric($access)) $access = 0;
+    if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
+
+    $sql = "INSERT INTO " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
+    $sql.= "VALUES ('$title', $access, '$description', $allowed_types, $position)";
 
     $result = db_query($sql, $db_folder_create);
 
@@ -99,10 +109,13 @@ function folder_update($fid, $title, $access, $description = "", $allowed_types 
 function folder_move_threads($from, $to)
 {
     $db_folder_move_threads = db_connect();
-    $sql = "update " . forum_table("THREAD") . " ";
-    $sql.= "set FID = $to ";
-    $sql.= "where FID = $from";
+
+    if (!is_numeric($from)) return false;
+    if (!is_numeric($to)) return false;
+
+    $sql = "UPDATE ". forum_table("THREAD"). " SET FID = '$to' WHERE FID = '$from'";
     $result = db_query($sql, $db_folder_move_threads);
+
     return $result;
 }
 
@@ -111,9 +124,9 @@ function folder_get_available()
     $uid = bh_session_get_value('UID');
     $db_folder_get_available = db_connect();
 
-    $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
-    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+    $sql = "SELECT DISTINCT F.FID FROM ".forum_table("FOLDER")." F LEFT JOIN ";
+    $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
+    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
     $sql.= "ORDER BY F.POSITION";
 
     $result = db_query($sql, $db_folder_get_available);
@@ -157,11 +170,13 @@ function folder_get($fid)
 {
     $db_folder_get = db_connect();
 
+    if (!is_numeric($fid)) return false;
+
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES, COUNT(*) AS THREAD_COUNT ";
     $sql.= "FROM ". forum_table("FOLDER"). " FOLDER ";
     $sql.= "LEFT JOIN " . forum_table("THREAD") . " THREAD ON (THREAD.FID = FOLDER.FID) ";
-    $sql.= "WHERE FOLDER.FID = $fid GROUP BY FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";
+    $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";
 
     $result = db_query($sql, $db_folder_get);
 
@@ -176,10 +191,12 @@ function folder_get_permissions($fid)
 {
     $db_folder_get_permissions = db_connect();
 
+    if (!is_numeric($fid)) return false;
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM ";
     $sql.= forum_table("USER"). " USER, ". forum_table("FOLDER"). " FOLDER ";
     $sql.= "LEFT JOIN ". forum_table("USER_FOLDER"). " UF ON (UF.UID = USER.UID AND UF.FID = FOLDER.FID) ";
-    $sql.= "WHERE FOLDER.FID = $fid AND UF.ALLOWED = 1";
+    $sql.= "WHERE FOLDER.FID = '$fid' AND UF.ALLOWED = 1";
 
     $result = db_query($sql, $db_folder_get_permissions);
 
@@ -200,7 +217,9 @@ function folder_is_valid($fid)
 {
     $db_folder_get_available = db_connect();
 
-    $sql = "SELECT DISTINCT FID FROM ". forum_table("FOLDER"). " WHERE FID = $fid";
+    if (!is_numeric($fid)) return false;
+
+    $sql = "SELECT DISTINCT FID FROM ". forum_table("FOLDER"). " WHERE FID = '$fid'";
     $result = db_query($sql, $db_folder_get_available);
 
     if (db_num_rows($result)) {
@@ -217,10 +236,12 @@ function folder_is_accessible($fid)
     $uid = bh_session_get_value('UID');
     $db_folder_get_available = db_connect();
 
+    if (!is_numeric($fid)) return false;
+
     $sql = "SELECT DISTINCT F.FID FROM ".forum_table("FOLDER")." F LEFT JOIN ";
     $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID and UF.UID = $uid) ";
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
-    $sql.= "and F.FID = $fid";
+    $sql.= "and F.FID = '$fid'";
 
     $result = db_query($sql, $db_folder_get_available);
 
@@ -237,6 +258,9 @@ function user_set_folder_interest($fid, $interest)
 
     $db_user_set_folder_interest = db_connect();
 
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($interest)) return false;
+
     $sql = "SELECT FID FROM ". forum_table("USER_FOLDER"). " WHERE UID = '$uid' AND FID = '$fid'";
     $result = db_query($sql, $db_user_set_folder_interest);
 
@@ -251,16 +275,18 @@ function user_set_folder_interest($fid, $interest)
         $sql.= "VALUES ('$uid', '$fid', '$interest')";
     }
 
-    $result = db_query($sql, $db_user_set_folder_interest);
+    return db_query($sql, $db_user_set_folder_interest);
 }
 
 function user_get_restricted_folders($uid)
 {
     $db_user_get_restricted_folders = db_connect();
 
-    $sql = "select F.FID, F.TITLE, UF.ALLOWED from ". forum_table("FOLDER"). " F ";
-    $sql.= "left join ". forum_table("USER_FOLDER"). " UF on (UF.UID = $uid and UF.FID = F.FID) ";
-    $sql.= "where F.ACCESS_LEVEL = 1";
+    if (!is_numeric($uid)) return false;
+
+    $sql = "SELECT F.FID, F.TITLE, UF.ALLOWED FROM ". forum_table("FOLDER"). " F ";
+    $sql.= "LEFT JOIN ". forum_table("USER_FOLDER"). " UF ON (UF.UID = $uid AND UF.FID = F.FID) ";
+    $sql.= "WHERE F.ACCESS_LEVEL = 1";
 
     $result = db_query($sql, $db_user_get_restricted_folders);
 
@@ -279,7 +305,10 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
 {
     $db_folder_thread_type_allowed = db_connect();
 
-    $sql = "SELECT ALLOWED_TYPES FROM ".forum_table("FOLDER")." WHERE FID = $fid";
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($type)) $type = FOLDER_ALLOW_ALL_THREAD;
+
+    $sql = "SELECT ALLOWED_TYPES FROM ".forum_table("FOLDER")." WHERE FID = '$fid'";
     $result = db_query($sql, $db_folder_thread_type_allowed);
 
     if (db_num_rows($result)) {
@@ -301,9 +330,11 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
     $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
 
-    $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
-    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+    if (!is_numeric($type)) $type = FOLDER_ALLOW_ALL_THREAD;
+
+    $sql = "SELECT DISTINCT F.FID FROM ".forum_table("FOLDER")." F LEFT JOIN ";
+    $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
+    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
     $sql.= "AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
 
     $result = db_query($sql, $db_folder_get_by_type_allowed);

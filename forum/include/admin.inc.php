@@ -21,12 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.9 2003-10-05 16:46:24 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.10 2003-11-27 12:00:31 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
     $db_admin_addlog = db_connect();
     $admin_uid = bh_session_get_value('UID');
+
+    $uid    = addslashes($uid);
+    $tid    = addslashes($tid);
+    $pid    = addslashes($pid);
+    $psid   = addslashes($psid);
+    $piid   = addslashes($piid);
+    $action = addslashes($action);
 
     $sql = "INSERT INTO ". forum_table("ADMIN_LOG"). " (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
     $sql.= "VALUES (NOW(), '$admin_uid', '$uid', '$fid', '$tid', '$pid', '$psid', '$piid', '$action')";
@@ -50,6 +57,12 @@ function admin_clearlog()
 function admin_get_log_entries($offset, $sort_by, $sort_dir)
 {
     $db_admin_get_log_entries = db_connect();
+
+    $sort_array = array('ADMIN_LOG.LOG_TIME', 'ADMIN_LOG.ADMIN_UID', 'ADMIN_LOG.ACTION');
+
+    if (!is_numeric($offset)) $offset = 0;
+    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
 
     $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
     $sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
@@ -116,7 +129,7 @@ function admin_save_word_filter($filter)
        }
 
        $sql = "INSERT INTO ". forum_table("FILTER_LIST"). " (FILTER) ";
-       $sql.= "VALUES ('". $filter_array[$i]. "')";
+       $sql.= "VALUES ('". addslashes($filter_array[$i]). "')";
 
        $result = db_query($sql, $db_admin_save_word_filter);
     }
@@ -125,6 +138,12 @@ function admin_save_word_filter($filter)
 function admin_user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $offset = 0)
 {
     $db_user_search = db_connect();
+
+    $sort_array = array('UID', 'LOGON', 'STATUS', 'LAST_LOGON', 'LOGON_FROM');
+    
+    $usersearch = addslashes($usersearch);
+    if (!is_numeric($offset)) $offset = 0;
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM " . forum_table("USER") . " USER ";
@@ -150,6 +169,11 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
 {
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
+
+    $sort_array = array('UID', 'LOGON', 'STATUS', 'LAST_LOGON', 'LOGON_FROM');
+
+    if (!is_numeric($offset)) $offset = 0;
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM ". forum_table("USER"). " USER ";

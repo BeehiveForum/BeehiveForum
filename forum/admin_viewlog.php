@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.23 2003-11-17 16:01:42 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.24 2003-11-27 12:00:31 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -61,8 +61,8 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 // Column sorting stuff
 
 if (isset($HTTP_GET_VARS['sort_by'])) {
-    if ($HTTP_GET_VARS['sort_by'] == "LOG_ID") {
-        $sort_by = "ADMIN_LOG.LOG_ID";
+    if ($HTTP_GET_VARS['sort_by'] == "LOG_TIME") {
+        $sort_by = "ADMIN_LOG.LOG_TIME";
     } elseif ($HTTP_GET_VARS['sort_by'] == "ADMIN_UID") {
         $sort_by = "ADMIN_LOG.ADMIN_UID";
     } elseif ($HTTP_GET_VARS['sort_by'] == "ACTION") {
@@ -106,22 +106,22 @@ echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
-if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=DESC\">{$lang['datetime']}</a></td>\n";
+if ($sort_by == 'ADMIN_LOG.LOG_TIME' && $sort_dir == 'ASC') {
+    echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=DESC\">{$lang['datetime']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=ASC\">{$lang['datetime']}</a></td>\n";
+    echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=ASC\">{$lang['datetime']}</a></td>\n";
 }
 
-if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
-}else {
-  echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
+if ($sort_by == 'ADMIN_LOG.ADMIN_UID' && $sort_dir == 'ASC') {
+    echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
+}else {                                                                
+    echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
 }
 
-if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=DESC\">{$lang['action']}</a></td>\n";
+if ($sort_by == 'ADMIN_LOG.ACTION' && $sort_dir == 'ASC') {
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=DESC\">{$lang['action']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=ASC\">{$lang['action']}</a></td>\n";
+    echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=ASC\">{$lang['action']}</a></td>\n";
 }
 
 echo "        </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.17 2003-11-01 19:11:06 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.18 2003-11-27 12:00:32 decoyduck Exp $ */
 
 // Functions for the links database
 
@@ -34,10 +34,14 @@ require_once('./include/format.inc.php');
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
-
     $links = array();
 
     $db_links_get_in_folder = db_connect();
+
+    $sort_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
+
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
+    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
 
     $sql  = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
     $sql .= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
@@ -79,33 +83,35 @@ function links_folders_get($invisible = false)
     }
 
     return $folders;
-
 }
 
 function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 {
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($uid)) return false;
 
     $db_links_add = db_connect();
+
     $visible = $visible ? "Y" : "N";
-    $sql  = "INSERT INTO " . forum_table("LINKS") . " (LID, URI, TITLE, DESCRIPTION, FID, UID, VISIBLE, CREATED) ";
-    $sql .= "VALUES (NULL, '$uri', '$title', '$description', $fid, $uid, '$visible', NOW())";
 
-    $result_id = db_query($sql, $db_links_add);
+    $sql = "INSERT INTO " . forum_table("LINKS") . " (URI, TITLE, DESCRIPTION, FID, UID, VISIBLE, CREATED) ";
+    $sql.= "VALUES ('$uri', '$title', '$description', '$fid', '$uid', '$visible', NOW())";
 
-    return $result_id;
+    return db_query($sql, $db_links_add);
 }
 
 function links_add_folder($fid, $name, $visible = false)
 {
+    if (!is_numeric($fid)) return false;
 
     $db_links_add_folder = db_connect();
+
     $visible = $visible ? "Y" : "N";
-    $sql  = "INSERT INTO " . forum_table("LINKS_FOLDERS") . " (FID, PARENT_FID, NAME, VISIBLE) ";
-    $sql .= "VALUES (NULL, $fid, '$name', '$visible')";
 
-    $result_id = db_query($sql, $db_links_add_folder);
+    $sql = "INSERT INTO " . forum_table("LINKS_FOLDERS") . " (FID, PARENT_FID, NAME, VISIBLE) ";
+    $sql.= "VALUES (NULL, $fid, '$name', '$visible')";
 
-    return $result_id;
+    return db_query($sql, $db_links_add_folder);
 }
 
 function links_display_folder_path($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
@@ -157,29 +163,37 @@ function links_get_subfolders($fid, $folders)
 
 function links_change_visibility($lid, $visible = true)
 {
-
+    if (!is_numeric($lid)) return false;
     $visible = $visible ? "Y" : "N";
+
     $db_links_change_visibility = db_connect();
-    $sql = "UPDATE " . forum_table("LINKS") . " SET VISIBLE = '$visible' WHERE LID = $lid";
-    $result_id = db_query($sql, $db_links_change_visibility);
-    return $result_id;
+
+    $sql = "UPDATE " . forum_table("LINKS") . " SET VISIBLE = '$visible' WHERE LID = '$lid'";
+    return db_query($sql, $db_links_change_visibility);
 }
 
 function links_click($lid)
 {
+    if (!is_numeric($lid)) return false;
+
     $db_links_click = db_connect();
-    $sql = "UPDATE " . forum_table("LINKS") . " SET CLICKS = CLICKS + 1 WHERE LID = $lid";
+
+    $sql = "UPDATE ". forum_table("LINKS"). " SET CLICKS = CLICKS + 1 WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_click);
-    $sql = "SELECT URI FROM " . forum_table("LINKS") . " WHERE LID = $lid";
+
+    $sql = "SELECT URI FROM ". forum_table("LINKS"). " WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_click);
+
     $uri = db_fetch_array($result_id);
     header_redirect($uri['URI']);
-    return true;
 }
 
 function links_get_single($lid)
 {
+    if (!is_numeric($lid)) return false;
+
     $db_links_get_single = db_connect();
+
     $sql  = "SELECT LINKS.FID, LINKS.UID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, ";
     $sql .= "LINKS.VISIBLE, LINKS.CLICKS, USER.LOGON, USER.NICKNAME, AVG(LINKS_VOTE.RATING) AS RATING, COUNT(LINKS_VOTE.RATING) AS VOTES ";
     $sql .= "FROM " . forum_table("LINKS") . " LINKS ";
@@ -187,9 +201,11 @@ function links_get_single($lid)
     $sql .= "ON (LINKS.UID = USER.UID) ";
     $sql .= "LEFT JOIN " . forum_table("LINKS_VOTE") . " LINKS_VOTE ";
     $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql .= "WHERE LINKS.LID = $lid ";
+    $sql .= "WHERE LINKS.LID = '$lid' ";
     $sql .= "GROUP BY LINKS_VOTE.LID";
+
     $result_id = db_query($sql, $db_links_get_single);
+
     if ($result_id) {
         $link = db_fetch_array($result_id);
         return $link;
@@ -201,6 +217,12 @@ function links_get_single($lid)
 function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC", $offset = 0)
 {
     $links = array();
+
+    $sort_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
+
+    if (!is_numeric($offset)) $offset = 0;
+    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
 
     $db_links_get_in_folder = db_connect();
 
@@ -229,29 +251,48 @@ function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC"
 function links_folder_change_visibility($fid, $visible = true)
 {
     $db_links_folder_change_visibility = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
     $visible = $visible ? "Y" : "N";
+
     $sql = "UPDATE " . forum_table("LINKS_FOLDERS") . " SET VISIBLE = '$visible' WHERE FID = $fid";
-    $result_id = db_query($sql, $db_links_folder_change_visibility);
-    return $result_id;
+    return db_query($sql, $db_links_folder_change_visibility);
 }
 
 function links_folder_delete($fid)
 {
-    if ($fid == 1) return false; // can't delete the top level folder
+    if (!is_numeric($fid)) return false;
+
     $folders = links_folders_get(perm_is_moderator());
+
     $db_links_folder_delete = db_connect();
-    $sql = "UPDATE " . forum_table("LINKS") . " SET FID = {$folders[$fid]['PARENT_FID']} WHERE FID = $fid";
+
+    $sql = "SELECT MIN(FID) AS FID FROM ". forum_table("LINKS");
     $result_id = db_query($sql, $db_links_folder_delete);
-    $sql = "DELETE FROM " . forum_table("LINKS_FOLDERS") . " WHERE FID = $fid";
+
+    $link_array = db_fetch_array($result_id);
+    if ($link_array['FID'] == $fid) return false;
+
+    $sql = "UPDATE ". forum_table("LINKS"). " SET FID = '{$folders[$fid]['PARENT_FID']}' WHERE FID = '$fid'";
     $result_id = db_query($sql, $db_links_folder_delete);
+
+    $sql = "DELETE FROM ". forum_table("LINKS_FOLDERS"). " WHERE FID = $fid";
+    $result_id = db_query($sql, $db_links_folder_delete);
+
     return $result_id;
 }
 
 function links_get_vote($lid, $uid)
 {
     $db_links_get_vote = db_connect();
+
+    if (!is_numeric($lid)) return false;
+    if (!is_numeric($uid)) return false;
+
     $sql = "SELECT RATING FROM " . forum_table("LINKS_VOTE") . " WHERE LID = $lid AND UID = $uid";
     $result_id = db_query($sql, $db_links_get_vote);
+
     if ($result_id) {
         $vote = db_fetch_array($result_id);
         return $vote['RATING'];
@@ -263,33 +304,45 @@ function links_get_vote($lid, $uid)
 function links_vote($lid, $vote, $uid)
 {
     $db_links_vote = db_connect();
-    $sql = "DELETE FROM " . forum_table("LINKS_VOTE") . " WHERE UID = $uid AND LID = $lid";
-    $result_id = db_query($sql, $db_links_vote);
-    $sql  = "INSERT INTO " . forum_table("LINKS_VOTE") . " (LID, UID, RATING, TSTAMP) ";
-    $sql .= "VALUES ($lid, $uid, $vote, NOW())";
-    $result_id = db_query($sql, $db_links_vote);
-    return $result_id;
+
+    if (!is_numeric($lid))  return false;
+    if (!is_numeric($vote)) return false;
+    if (!is_numeric($uid))  return false;
+
+    $sql = "DELETE FROM " . forum_table("LINKS_VOTE") . " WHERE UID = '$uid' AND LID = '$lid'";
+    $result = db_query($sql, $db_links_vote);
+
+    $sql = "INSERT INTO " . forum_table("LINKS_VOTE") . " (LID, UID, RATING, TSTAMP) ";
+    $sql.= "VALUES ($lid, $uid, $vote, NOW())";
+
+    return db_query($sql, $db_links_vote);
 }
 
 function links_add_comment($lid, $uid, $comment)
 {
     $db_links_add_comment = db_connect();
-    $sql  = "INSERT INTO " . forum_table("LINKS_COMMENT") . " (LID, UID, COMMENT, CREATED) ";
-    $sql .= "VALUES ($lid, $uid, '$comment', NOW())";
-    $result_id = db_query($sql, $db_links_add_comment);
-    return $result_id;
+
+    if (!is_numeric($lid))  return false;
+    if (!is_numeric($uid))  return false;
+
+    $sql = "INSERT INTO " . forum_table("LINKS_COMMENT") . " (LID, UID, COMMENT, CREATED) ";
+    $sql.= "VALUES ('$lid', '$uid', '$comment', NOW())";
+
+    return db_query($sql, $db_links_add_comment);
 }
 
 function links_get_comments($lid)
 {
     $db_links_get_comments = db_connect();
 
+    if (!is_numeric($lid))  return false;
+
     $sql  = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS_COMMENT.CREATED) AS CREATED, ";
     $sql .= "LINKS_COMMENT.CID, LINKS_COMMENT.COMMENT ";
     $sql .= "FROM " . forum_table("LINKS_COMMENT") . " LINKS_COMMENT ";
     $sql .= "LEFT JOIN " . forum_table("USER") . " USER ";
     $sql .= "ON (LINKS_COMMENT.UID = USER.UID) ";
-    $sql .= "WHERE LINKS_COMMENT.LID = $lid ORDER BY CREATED ASC";
+    $sql .= "WHERE LINKS_COMMENT.LID = '$lid' ORDER BY CREATED ASC";
 
     $result_id = db_query($sql, $db_links_get_comments);
 
@@ -327,42 +380,54 @@ function links_delete_comment($cid)
 function links_delete($lid)
 {
     $db_links_delete = db_connect();
-    /* This query will work on MySQL > 4.0 since it supports multiple table deletes. For now, we have to do them one at a time.
-    $sql  = "DELETE FROM " . forum_table("LINKS") . " LINKS, " . forum_table("LINKS_COMMENT") . " COMMENT, " . forum_table("LINKS_VOTE") . " VOTE ";
-    $sql .= "WHERE LINKS.LID = $lid OR LINKS_COMMENT.LID = $lid OR LINKS_VOTE.LID = $lid";
-    */
-    $sql = "DELETE FROM " . forum_table("LINKS") . " WHERE LID = $lid";
+
+    if (!is_numeric($lid))  return false;
+
+    $sql = "DELETE FROM " . forum_table("LINKS") . " WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_delete);
-    $sql = "DELETE FROM " . forum_table("LINKS_COMMENT") . " WHERE LID = $lid";
+
+    $sql = "DELETE FROM " . forum_table("LINKS_COMMENT") . " WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_delete);
-    $sql = "DELETE FROM " . forum_table("LINKS_VOTE") . " WHERE LID = $lid";
+
+    $sql = "DELETE FROM " . forum_table("LINKS_VOTE") . " WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_delete);
 }
 
 function links_update($lid, $fid, $title, $uri, $description)
 {
     $db_links_update = db_connect();
-    $sql = "UPDATE " . forum_table("LINKS") . " SET LID = $lid, FID = $fid, TITLE = '$title', URI = '$uri', DESCRIPTION = '$description' WHERE LID = $lid";
-    $result_id = db_query($sql, $db_links_update);
-    return $result_id;
+
+    if (!is_numeric($lid))  return false;
+    if (!is_numeric($fid))  return false;
+
+    $sql = "UPDATE " . forum_table("LINKS") . " SET LID = '$lid', FID = '$fid', ";
+    $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description' WHERE LID = '$lid'";
+
+    return db_query($sql, $db_links_update);
 }
 
 function links_get_creator_uid($lid)
 {
     $db_links_get_creator_uid = db_connect();
-    $sql = "SELECT UID FROM " . forum_table("LINKS") . " WHERE LID = $lid";
+
+    if (!is_numeric($lid))  return false;
+
+    $sql = "SELECT UID FROM " . forum_table("LINKS") . " WHERE LID = '$lid'";
     $result_id = db_query($sql, $db_links_get_creator_uid);
-    $result = db_fetch_array($result_id);
-    return $result;
+
+    return db_fetch_array($result_id);
 }
 
 function links_get_comment_uid($cid)
 {
     $db_links_get_comment_uid = db_connect();
-    $sql = "SELECT UID FROM " . forum_table("LINKS_COMMENT") . " WHERE CID = $cid";
+
+    if (!is_numeric($cid))  return false;
+
+    $sql = "SELECT UID FROM " . forum_table("LINKS_COMMENT") . " WHERE CID = '$cid'";
     $result_id = db_query($sql, $db_links_get_comment_uid);
-    $result = db_fetch_array($result_id);
-    return $result;
+
+    return db_fetch_array($result_id);
 }
 
 ?>

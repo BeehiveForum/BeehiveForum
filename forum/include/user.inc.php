@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.104 2003-11-09 23:15:56 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.105 2003-11-27 12:00:32 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -173,18 +173,19 @@ function user_logon($logon, $password, $md5hash = false)
       $md5pass = md5($password);
     }
 
-    $sql = "SELECT uid, status FROM ". forum_table("USER"). " WHERE logon = '$logon' AND passwd = '$md5pass'";
+    $sql = "SELECT UID, STATUS FROM ". forum_table("USER"). " WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
 
     $db_user_logon = db_connect();
     $result = db_query($sql, $db_user_logon);
 
-    if(!db_num_rows($result)){
+    if (!db_num_rows($result)) {
         $uid = -1;
     }else {
-        $fa = db_fetch_array($result);
-        $uid = $fa['uid'];
 
-        if (isset($fa['status']) && $fa['status'] & USER_PERM_SPLAT) { // User is banned
+        $fa = db_fetch_array($result);
+        $uid = $fa['UID'];
+
+        if (isset($fa['STATUS']) && $fa['STATUS'] & USER_PERM_SPLAT) { // User is banned
             $uid = -2;
         }
 
@@ -192,7 +193,10 @@ function user_logon($logon, $password, $md5hash = false)
             $ipaddress = "";
         }
 
-        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW(), LOGON_FROM = '$ipaddress' where UID = $uid", $db_user_logon);
+	$sql = "UPDATE ". forum_table("USER"). " SET LAST_LOGON = NOW(), ";
+	$sql.= "LOGON_FROM = '$ipaddress' WHERE UID = '$uid'";
+
+        db_query($sql, $db_user_logon);
     }
 
     return $uid;

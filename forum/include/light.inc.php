@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.16 2003-09-15 19:04:31 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.17 2003-11-27 12:00:32 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 
@@ -555,17 +555,19 @@ function light_html_guest_error ()
      light_html_draw_bottom();
 }
 
-function light_folder_draw_dropdown($default_fid,$field_name="t_fid",$suffix="")
+function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
     $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
 
-    if(bh_session_get_value('STATUS') & PERM_CHECK_WORKER){
-        $sql = "select FID, TITLE from ".forum_table("FOLDER");
+    if (!is_numeric($default_fid))
+
+    if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
+        $sql = "SELECT FID, TITLE FROM ". forum_table("FOLDER");
     } else {
-        $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
-        $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
-        $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+        $sql = "SELECT DISTINCT F.FID, F.TITLE FROM ". forum_table("FOLDER"). " F LEFT JOIN ";
+        $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
+        $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
     }
 
     return form_dropdown_sql($field_name.$suffix, $sql, $default_fid);

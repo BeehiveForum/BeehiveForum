@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.197 2003-11-20 22:14:31 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.198 2003-11-27 12:00:32 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -146,11 +146,16 @@ function messages_get($tid, $pid = 1, $limit = 1)
     return isset($messages) ? $messages : false;
 }
 
-function message_get_content($tid,$pid)
+function message_get_content($tid, $pid)
 {
     $db_mgc = db_connect();
-    $sql = "select CONTENT from " . forum_table('POST_CONTENT') . " where TID = '$tid' and PID = '$pid'";
+
+    if (!is_numeric($tid)) return "";
+    if (!is_numeric($pid)) return "";
+
+    $sql = "SELECT CONTENT FROM " . forum_table('POST_CONTENT') . " WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql,$db_mgc);
+
     $fa = db_fetch_array($result);
     return isset($fa['CONTENT']) ? $fa['CONTENT'] : "";
 }
@@ -674,12 +679,14 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     echo "</div>\n";
 }
 
-function message_get_user($tid,$pid)
+function message_get_user($tid, $pid)
 {
     $db_message_get_user = db_connect();
 
-    $sql = "select from_uid from " . forum_table("POST") . " where tid = $tid and pid = $pid";
+    if (!is_numeric($tid)) return "";
+    if (!is_numeric($pid)) return "";
 
+    $sql = "SELECT FROM_UID FROM " . forum_table("POST") . " WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql, $db_message_get_user);
 
     if($result){
@@ -696,11 +703,17 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 {
     $db_message_update_read = db_connect();
 
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+    if (!is_numeric($uid)) return false;
+    if (!is_numeric($spid)) return false;
+
     // Check for existing entry in USER_THREAD
-    $sql = "select LAST_READ from " . forum_table("USER_THREAD") . " where UID = $uid and TID = $tid";
+
+    $sql = "SELECT LAST_READ FROM ". forum_table("USER_THREAD"). " WHERE UID = '$uid' AND TID = '$tid'";
     $result = db_query($sql, $db_message_update_read);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $fa = db_fetch_array($result);
 
@@ -710,44 +723,45 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
         if ($pid > $fa['LAST_READ']) {
 
-            $sql = "update low_priority " . forum_table("USER_THREAD");
-            $sql.= " set LAST_READ = $pid, LAST_READ_AT = NOW()";
-            $sql.= "where UID = $uid and TID = $tid";
+            $sql = "UPDATE LOW_PRIORITY ". forum_table("USER_THREAD");
+            $sql.= " SET LAST_READ = '$pid', LAST_READ_AT = NOW()";
+            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
             db_query($sql, $db_message_update_read);
-
         }
 
     }else {
 
-        $sql = "insert into " . forum_table("USER_THREAD") . " (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-        $sql .= "values ($uid, $tid, $pid, NOW(), 0)";
+        $sql = "INSERT INTO ". forum_table("USER_THREAD"). " (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
         db_query($sql, $db_message_update_read);
-
     }
 
     // Mark posts as Viewed...
-    $sql = "update low_priority ". forum_table("POST"). " set VIEWED = NOW() where TID = $tid and PID between $spid and $pid and TO_UID = $uid and VIEWED is null";
-    db_query($sql, $db_message_update_read);
+    $sql = "UPDATE LOW_PRIORITY ". forum_table("POST"). " SET VIEWED = NOW() WHERE TID = '$tid' ";
+    $sql.= "AND PID BETWEEN '$spid' AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
 
+    db_query($sql, $db_message_update_read);
 }
 
 function messages_get_most_recent($uid, $fid = false)
 {
     $db_messages_get_most_recent = db_connect();
 
-    if ($fid) {
+    if (is_numeric($fid)) {
         $fidlist = $fid;
     }else {
         $fidlist = folder_get_available();
     }
 
+    if (!is_numeric($uid)) return false;
+
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
     $sql.= "FROM " . forum_table("THREAD") . " THREAD ";
     $sql.= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "LEFT JOIN " . forum_table("USER_FOLDER") . " USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST <> -1) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST <> -1) ";

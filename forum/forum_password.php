@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.1 2004-06-19 11:30:33 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.2 2004-06-28 22:07:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -74,7 +74,11 @@ if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
 // and if the password matches they'll be able to
 // access the forum.
 
-bh_setcookie("{$webtag}_PASSWORD", $forum_password);
+if (isset($_POST['remember_password']) && $_POST['remember_password'] == "Y") {
+    bh_setcookie("bh_{$webtag}_password", $forum_password, time() + YEAR_IN_SECONDS);
+}else {
+    bh_setcookie("bh_{$webtag}_password", $forum_password);
+}
 
 header_redirect($ret);
 

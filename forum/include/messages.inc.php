@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.209 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.210 2003-12-29 20:07:26 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -820,12 +820,12 @@ function messages_fontsize_form($tid, $pid)
     }elseif (bh_session_get_value('FONT_SIZE') == 5) {
 
         $fontlarger = bh_session_get_value('FONT_SIZE') + 1;
-        $fontstrip.= bh_session_get_value('FONT_SIZE'). "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=6\" target=\"_self\" onclick=\"fontResize($fontlarger)\">{$lang['larger']}</a></p>\n";
+        $fontstrip.= "{$lang['smaller']} ". bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=6\" target=\"_self\" onclick=\"fontResize($fontlarger)\">{$lang['larger']}</a></p>\n";
 
     }elseif (bh_session_get_value('FONT_SIZE') == 15) {
 
         $fontsmaller = bh_session_get_value('FONT_SIZE') - 1;
-        $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\" onclick=\"fontResize($fontsmaller)\">{$lang['smaller']}</a> ". bh_session_get_value('FONT_SIZE'). "</p>\n";
+        $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\" onclick=\"fontResize($fontsmaller)\">{$lang['smaller']}</a> ". bh_session_get_value('FONT_SIZE'). " {$lang['larger']}</p>\n";
 
     }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.83 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.84 2003-12-29 20:07:26 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -428,6 +428,19 @@ if (!empty($error_html)) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";
+    
+    if (isset($t_font_size)) {
+        echo "top.document.body.rows='60,' + $t_font_size * 2 + ',*';\n";
+    }elseif (isset($user_prefs['FONT_SIZE'])) {
+        if ($user_prefs['FONT_SIZE'] == '') {
+            echo "top.document.body.rows='60,20,*';\n";
+        }else{
+            echo "top.document.body.rows='60,' + {$user_prefs['FONT_SIZE']} * 2 + ',*';\n";
+        }
+    }else {
+        echo "top.document.body.rows='60,20,*';\n";
+    }    
+
     echo "top.frames['ftop'].location.replace('$top_html'); top.frames['fnav'].location.reload();\n";
     echo "-->\n";
     echo "</script>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fontsize.php,v 1.12 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: fontsize.php,v 1.13 2003-12-29 20:07:26 decoyduck Exp $ */
 
 // style.php : handles site styles with user preferences
 
@@ -82,7 +82,7 @@ if ($fontsize <> 10) {
     echo ".highlight         { font-size: ", $fontsize, "pt }\n";
     echo ".quotetext         { font-size: ", floor($fontsize * 0.8), "pt }\n";
     echo ".activeusers       { font-size: ", floor($fontsize * 0.8), "pt }\n";
-    echo ".adminipdisplay    { font-size: ", floor($fibtsuze * 0.8), "pt }\n";
+    echo ".adminipdisplay    { font-size: ", floor($fontsize * 0.8), "pt }\n";
 }
 
 ?>

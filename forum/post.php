@@ -380,12 +380,13 @@ if(!isset($t_threadtitle)){
 if($newthread) {
 
     echo "<table>\n";
-    echo "<tr><td>Select folder:</td></tr>\n";
+    echo "<tr><td><h2>Select folder:</h2></td></tr>\n";
     echo "<tr><td>" . folder_draw_dropdown($t_fid) . "</td></tr>\n";
-    echo "<tr><td>Thread title:</td></tr>\n";
-    echo "<tr><td>".form_input_text("t_threadtitle", htmlspecialchars(stripslashes($t_threadtitle)), 30,64);    
+    echo "<tr><td><h2>Thread title:</h2></td></tr>\n";
+    echo "<tr><td>".form_input_text("t_threadtitle", htmlspecialchars(stripslashes($t_threadtitle)), 30, 64);    
     echo "\n";
     echo form_input_hidden("t_newthread","Y")."</td></tr>\n";
+    echo "<tr><td>&nbsp;</td></tr>\n";    
     echo "</table>\n";
     
 }else{
@@ -400,28 +401,41 @@ if($t_post_html != "Y") {
     $t_content = isset($t_content) ? stripslashes($t_content) : "";
 }
 if(isset($t_sig)) {
-	if($t_sig_html != "Y") {
-		$t_sig = stripslashes($t_sig);
-	}
+    //if($t_sig_html != "Y") {
+        $t_sig = stripslashes($t_sig);
+    //}
 }
 
 if(!isset($t_to_uid)){
     $t_to_uid = 0;
 }
 
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";
-echo "<table class=\"posthead\" border=\"0\" width=\"100%\"><tr>\n";
-echo "<td>To: \n";
-echo post_draw_to_dropdown($t_to_uid). "&nbsp;";
-echo  "<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\">\n";
-echo "</td></tr></table>\n";
-echo "<table border=\"0\" class=\"posthead\">\n";
-echo "<tr><td>".form_textarea("t_content", htmlspecialchars($t_content), 12, 80). "</tr></td>";
-echo "<tr><td>Signature:<br />".form_textarea("t_sig", htmlspecialchars($t_sig), 4, 80). form_input_hidden("t_sig_html", $t_sig_html)."</td></tr>\n";
-echo "<tr><td>".form_checkbox("t_post_html","Y","Contains HTML (not including signature)",($t_post_html == "Y"))."</td></tr>\n";
+echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td>\n";
+echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td>To: ". post_draw_to_dropdown($t_to_uid). "&nbsp;<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\"></td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "      <table border=\"0\" class=\"posthead\">\n";
+echo "        <tr>\n";
+echo "          <td>Type in your message and click ". form_submit("submit","Post"). "</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td>".form_textarea("t_content", htmlspecialchars($t_content), 15, 85). "</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td>Signature:<br />".form_textarea("t_sig", htmlspecialchars($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td>".form_checkbox("t_post_html","Y","Contains HTML (not including signature)",($t_post_html == "Y"))."</td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
-echo "</td></tr></table>\n";
-echo form_submit("submit","Submit");
+echo form_submit("submit","Post");
 echo "&nbsp;".form_submit("preview","Preview");
 echo "&nbsp;".form_submit("cancel", "Cancel");
 echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
@@ -439,7 +453,7 @@ if(!$newthread) {
 
     echo "<p>In reply to:</p>\n";
     $reply_message = messages_get($reply_to_tid,$reply_to_pid);
-    $reply_message['CONTENT'] = message_get_content($reply_to_tid,$reply_to_pid);
+    $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     message_display(0,$reply_message,0,0,false,false,false);
     echo "<p>&nbsp;&nbsp;</p>\n";
     

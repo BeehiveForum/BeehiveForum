@@ -77,7 +77,8 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 		$messages[$i]['TO_UID'] = $message['TO_UID'];
 		$messages[$i]['CREATED'] = $message['CREATED'];
 		$messages[$i]['VIEWED'] = $message['VIEWED'];
-		$messages[$i]['CONTENT'] = stripslashes($message['CONTENT']);
+		//$messages[$i]['CONTENT'] = stripslashes($message['CONTENT']);
+		$messages[$i]['CONTENT'] = $message['CONTENT'];
 		$messages[$i]['RELATIONSHIP'] = $message['RELATIONSHIP'];
 		$messages[$i]['FNICK'] = $message['FNICK'];
 		$messages[$i]['FLOGON'] = $message['FLOGON'];

@@ -84,7 +84,7 @@ function change_current_thread (thread_id) {
 // -->
 </script>
 
-<table width="215" border="0" cellpadding="0" cellspacing="0">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td class="postbody" colspan="2">
       <img src="./images/star.png" width="14" height="14" alt="" />&nbsp;<a href="post.php" target="main">New Discussion</a><br />

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.72 2005-03-05 22:36:43 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.73 2005-03-06 16:49:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -63,6 +63,8 @@ function light_html_draw_bottom ()
 
 function light_draw_logon_form()
 {
+    $lang = load_language_file();
+
     echo "<p>{$lang['welcometolight']}</p>\n";
     echo "<form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"post\">\n";
 

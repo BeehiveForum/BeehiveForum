@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.59 2005-01-19 21:49:26 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.60 2005-02-04 19:35:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -173,7 +173,7 @@ echo "                <tr>\n";
 echo "                  <td>", $tools->toolbar(true, form_submit('submit', $lang['save'])), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", $tools->textarea('content', _htmlentities($content), 20, 80, 'off', 'style="font-family: monospace"'), "</td>\n";
+echo "                  <td>", $tools->textarea("content", _htmlentities($content), 20, 80, "off", "class=\"admin_startpage_textarea\""), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.18 2005-01-19 21:49:26 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.19 2005-02-04 19:35:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -322,7 +322,7 @@ if ($folder_array = folder_get_all()) {
     echo "                            </tr>\n";
     echo "                            <tr>\n";
     echo "                              <td colspan=\"2\">\n";
-    echo "                                <div style=\"width: 500px; height: 120px\" class=\"admin_folder_perms\">\n";
+    echo "                                <div class=\"admin_folder_perms\">\n";
 
     foreach($folder_array as $folder) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.82 2005-01-21 01:19:45 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.83 2005-02-04 19:35:38 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -510,7 +510,7 @@ function folder_search_dropdown()
             array_unshift($folders['FIDS'], 0);
             array_unshift($folders['TITLES'], $lang['all_caps']);
 
-            return form_dropdown_array("fid", $folders['FIDS'], $folders['TITLES'], 0, "style=\"width: 175px\"");
+            return form_dropdown_array("fid", $folders['FIDS'], $folders['TITLES'], 0, "class=\"search_dropdown\"");
         }
     }
 
@@ -552,7 +552,7 @@ function search_draw_user_dropdown($name)
 
     }
 
-    return form_dropdown_array($name, $uids, $names, 0, "style=\"width: 175px\"");
+    return form_dropdown_array($name, $uids, $names, 0, "class=\"search_dropdown\"");
 }
 
 ?>

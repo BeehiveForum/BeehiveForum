@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.4 2005-01-24 23:13:19 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.5 2005-02-04 19:35:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -315,7 +315,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td colspan=\"2\">", form_dropdown_array('banned_ipaddress[]', $ban_list_array['IPADDRESS'], $ban_list_array['IPADDRESS'], false, "multiple=\"multiple\" style=\"width: 250px; height: 100px\""), "</td>\n";
+echo "                              <td colspan=\"2\">", form_dropdown_array('banned_ipaddress[]', $ban_list_array['IPADDRESS'], $ban_list_array['IPADDRESS'], false, "multiple=\"multiple\" class=\"banned_dropdown\""), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"right\" width=\"250\">", form_submit('remove_banned_ipaddress', $lang['remove']), "</td>\n";
@@ -368,7 +368,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td colspan=\"2\">", form_dropdown_array('banned_logon[]', $ban_list_array['LOGON'], $ban_list_array['LOGON'], false, "multiple=\"multiple\" style=\"width: 250px; height: 100px\""), "</td>\n";
+echo "                              <td colspan=\"2\">", form_dropdown_array('banned_logon[]', $ban_list_array['LOGON'], $ban_list_array['LOGON'], false, "multiple=\"multiple\" class=\"banned_dropdown\""), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"right\" width=\"250\">", form_submit('remove_banned_logon', $lang['remove']), "</td>\n";
@@ -425,7 +425,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td colspan=\"2\">", form_dropdown_array('banned_nickname[]', $ban_list_array['NICKNAME'], $ban_list_array['NICKNAME'], false, "multiple=\"multiple\" style=\"width: 250px; height: 100px\""), "</td>\n";
+echo "                              <td colspan=\"2\">", form_dropdown_array('banned_nickname[]', $ban_list_array['NICKNAME'], $ban_list_array['NICKNAME'], false, "multiple=\"multiple\" class=\"banned_dropdown\""), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"right\" width=\"250\">", form_submit('remove_banned_nickname', $lang['remove']), "</td>\n";
@@ -478,7 +478,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td colspan=\"2\">", form_dropdown_array('banned_email[]', $ban_list_array['EMAIL'], $ban_list_array['EMAIL'], false, "multiple=\"multiple\" style=\"width: 250px; height: 100px\""), "</td>\n";
+echo "                              <td colspan=\"2\">", form_dropdown_array('banned_email[]', $ban_list_array['EMAIL'], $ban_list_array['EMAIL'], false, "multiple=\"multiple\" class=\"banned_dropdown\""), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"right\" width=\"250\">", form_submit('remove_banned_email', $lang['remove']), "</td>\n";

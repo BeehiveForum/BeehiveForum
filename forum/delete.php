@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.84 2005-01-19 21:49:27 decoyduck Exp $ */
+/* $Id: delete.php,v 1.85 2005-02-04 19:35:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -189,7 +189,7 @@ if ($valid) {
 
             admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 22);
 
-            echo "<h1 style=\"width: 99%\">{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
+            echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
             echo "<br />\n";
             echo "<table class=\"posthead\" width=\"720\">\n";
             echo "  <tr>\n";

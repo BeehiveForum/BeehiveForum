@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.20 2004-12-01 09:25:47 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.21 2005-02-04 19:35:37 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -237,7 +237,7 @@ function draw_logon_form($logon_main)
             $usernames[$key] = _stripslashes($value);
         }
 
-        echo form_dropdown_array("logonarray", $usernames, $usernames, "", "onchange=\"changepassword()\" style=\"width: 135px\"");
+        echo form_dropdown_array("logonarray", $usernames, $usernames, "", "onchange=\"changepassword()\" class=\"logon_dropdown\"");
         echo form_input_hidden("user_logon", _stripslashes($username_array[0]));
 
         for ($i = 0; $i < sizeof($username_array); $i++) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.105 2005-02-04 00:21:56 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.106 2005-02-04 19:35:38 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -226,7 +226,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
 function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 {
-    $html = "<select name=\"t_to_uid_recent\" style=\"width: 190px\" onclick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
+    $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
     if (!$table_data = get_table_prefix()) return "";
@@ -287,7 +287,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
 function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $inc_blank = false, $custom_html = "")
 {
-    $html = "<select name=\"t_to_uid_in_thread\" style=\"width: 190px\" ".$custom_html.">\n";
+    $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" ".$custom_html.">\n";
     $db_post_draw_to_dropdown = db_connect();
 
     if (!is_numeric($tid)) return false;

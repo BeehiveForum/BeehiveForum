@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.15 2003-11-27 12:00:32 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.16 2003-11-29 11:37:09 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -49,7 +49,6 @@ function ip_check()
         }
     }
 }
-
 
 function ban_ip($ipaddress)
 {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.108 2004-04-28 22:57:42 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.109 2004-04-29 12:45:58 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -83,30 +83,6 @@ function bh_session_check()
 	if (db_num_rows($result) > 0) {
 
 	    $user_sess = db_fetch_array($result, MYSQL_ASSOC);
-
-	    if (isset($user_sess['UID']) && $user_sess['UID'] == 0) {
-
-                $guest_user_sess = array('UID'              => 0,
-                                         'LOGON'            => 'GUEST',
-                                         'PASSWD'           => md5('GUEST'),
-                                         'STATUS'           => 0,
-                                         'POSTS_PER_PAGE'   => 5,
-                                         'TIMEZONE'         => 0,
-                                         'DL_SAVING'        => 0,
-                                         'MARK_AS_OF_INT'   => 0,
-                                         'FONT_SIZE'        => 10,
-                                         'STYLE'            => forum_get_setting('default_style'),
-                                         'VIEW_SIGS'        => 0,
-                                         'START_PAGE'       => 0,
-                                         'LANGUAGE'         => forum_get_setting('default_language'),
-                                         'PM_NOTIFY'        => 'N',
-                                         'SHOW_STATS'       => 1,
-                                         'IMAGES_TO_LINKS'  => 'N',
-                                         'USE_WORD_FILTER'  => 'Y',
-                                         'USE_ADMIN_FILTER' => 'Y');
-
-		$user_sess = array_merge($user_sess, $guest_user_sess);
-	    }
 
 	    if (isset($user_sess['UID']) && isset($user_sess['LOGON']) && isset($user_sess['PASSWD'])) {
 
@@ -183,7 +159,24 @@ function bh_session_check()
 	}
     }
 
-    return false;
+    return array('UID'              => 0,
+                 'LOGON'            => 'GUEST',
+                 'PASSWD'           => md5('GUEST'),
+                 'STATUS'           => 0,
+                 'POSTS_PER_PAGE'   => 5,
+                 'TIMEZONE'         => 0,
+                 'DL_SAVING'        => 0,
+                 'MARK_AS_OF_INT'   => 0,
+                 'FONT_SIZE'        => 10,
+                 'STYLE'            => forum_get_setting('default_style'),
+                 'VIEW_SIGS'        => 0,
+                 'START_PAGE'       => 0,
+                 'LANGUAGE'         => forum_get_setting('default_language'),
+                 'PM_NOTIFY'        => 'N',
+                 'SHOW_STATS'       => 1,
+                 'IMAGES_TO_LINKS'  => 'N',
+                 'USE_WORD_FILTER'  => 'Y',
+                 'USE_ADMIN_FILTER' => 'Y');
 }
 
 // Fetches a value from the session
@@ -193,6 +186,7 @@ function bh_session_get_value($session_key)
     global $user_sess;
 
     if (isset($user_sess[$session_key])) return $user_sess[$session_key];
+    if (strtoupper($session_key) == 'UID') return 0;
 
     return false;
 }

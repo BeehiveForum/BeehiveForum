@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.20 2004-04-28 21:33:18 decoyduck Exp $ */
+/* $Id: forums.php,v 1.21 2004-04-29 12:45:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -333,6 +333,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
+        echo "  <br />\n";
         echo "</div>\n";
 
     }else {

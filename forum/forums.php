@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.25 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: forums.php,v 1.26 2004-06-18 19:56:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -321,7 +321,8 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 
         echo "<h1>{$lang['myforums']}</h1>\n";
         echo "<br>\n";
-        echo "<h2>{$lang['noforumsavailable']}.</h2>\n";
+        echo "<h2>{$lang['noforumsavailable']}</h2>\n";
+	echo "<br>\n";
     }
 
 }else {
@@ -379,6 +380,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "<h1>{$lang['availableforums']}</h1>\n";
         echo "<br>\n";
         echo "<h2>{$lang['noforumsavailablelogin']}</h2>\n";
+        echo "<br>\n";
     }
 }
 

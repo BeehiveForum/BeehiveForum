@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.68 2004-06-13 11:49:07 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.69 2004-06-18 19:56:30 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -41,9 +41,9 @@ function get_table_prefix()
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag'])) {
+        if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
             $webtag = trim($_GET['webtag']);
-        }else if (isset($_POST['webtag'])) {
+        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {
             $webtag = trim($_POST['webtag']);
         }else {
             $webtag = false;
@@ -56,7 +56,7 @@ function get_table_prefix()
 
             $sql = "SELECT F.FID, CONCAT(F.WEBTAG, '', '_') AS PREFIX  FROM FORUMS F ";
             $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
             $sql.= "AND F.WEBTAG = '$webtag'";
 
             $result = db_query($sql, $db_get_table_prefix);
@@ -74,7 +74,7 @@ function get_table_prefix()
 
             $sql = "SELECT F.FID, CONCAT(F.WEBTAG, '', '_') AS PREFIX  FROM FORUMS F ";
 	    $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
 	    $sql.= "AND F.DEFAULT_FORUM = 1";
 
             $result = db_query($sql, $db_get_table_prefix);
@@ -101,9 +101,9 @@ function get_webtag(&$webtag_search)
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag'])) {
+        if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
             $webtag = trim($_GET['webtag']);
-        }else if (isset($_POST['webtag'])) {
+        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {
             $webtag = trim($_POST['webtag']);
         }else {
             $webtag = false;
@@ -116,7 +116,7 @@ function get_webtag(&$webtag_search)
 
             $sql = "SELECT F.WEBTAG FROM FORUMS F ";
             $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
             $sql.= "AND F.WEBTAG = '$webtag'";
 
             $result = db_query($sql, $db_get_webtag);
@@ -135,7 +135,7 @@ function get_webtag(&$webtag_search)
 
  	    $sql = "SELECT F.WEBTAG FROM FORUMS F ";
 	    $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
 	    $sql.= "AND F.DEFAULT_FORUM = 1";
 
             $result = db_query($sql, $db_get_webtag);
@@ -804,6 +804,8 @@ function forum_update_access($fid, $access)
 
     if (perm_has_forumtools_access()) {
 
+        $uid = bh_session_get_value('UID');
+
         $db_forum_update_access = db_connect();
 
         $sql = "SELECT COUNT(*) FROM FORUMS WHERE FID = '$fid'";
@@ -814,6 +816,21 @@ function forum_update_access($fid, $access)
 	    $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access' WHERE FID = '$fid'";
 	    $result = db_query($sql, $db_forum_update_access);
 
+	    $sql = "SELECT * FROM USER_FORUM WHERE FID = '$fid' AND UID = '$uid'";
+	    $result = db_query($sql, $db_forum_update_access);
+
+	    if (db_num_rows($result) > 0) {
+
+	        $sql = "UPDATE USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
+	        $result = db_query($sql, $db_forum_update_access);
+
+	    }else {
+
+	        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+		$sql.= "VALUES ('$uid', '$fid', '1')";
+
+		$result = db_query($sql, $db_forum_update_access);
+	    }
 	}
 
 	return $result;
@@ -906,6 +923,8 @@ function forum_update_default($fid)
 
 function forum_search($search_string)
 {
+    $uid = bh_session_get_value('UID');
+
     $search_string = addslashes(trim($search_string));
     $search_string = preg_replace("/[^\w]/", "", $search_string);
 
@@ -924,7 +943,9 @@ function forum_search($search_string)
 
     $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG FROM FORUM_SETTINGS ";
     $sql.= "LEFT JOIN FORUMS ON (FORUMS.FID = FORUM_SETTINGS.FID) ";
-    $sql.= "WHERE $forum_webtag_sql OR (FORUM_SETTINGS.SNAME = 'forum_keywords' ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
+    $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED <=> 1)) ";
+    $sql.= "AND $forum_webtag_sql OR (FORUM_SETTINGS.SNAME = 'forum_keywords' ";
     $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_desc' ";
     $sql.= "AND ($forum_settings_sql)) OR (FORUM_SETTINGS.SNAME = 'forum_name' ";
     $sql.= "AND ($forum_settings_sql))";

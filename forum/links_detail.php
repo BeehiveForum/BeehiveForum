@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.60 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.61 2005-02-06 13:58:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -100,6 +100,19 @@ if (isset($_POST['lid'])) {
     exit;
 }
 
+if (isset($_POST['parent_fid'])) {
+
+    $parent_fid = $_POST['parent_fid'];
+
+}else if (isset($_GET['parent_fid'])) {
+
+    $parent_fid = $_GET['parent_fid'];
+
+}else {
+
+    $parent_fid = 1;
+}
+
 $uid = bh_session_get_value('UID');
 
 if (isset($_POST['submit']) && $uid != 0) {
@@ -141,7 +154,7 @@ if (isset($_POST['submit']) && $uid != 0) {
             if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
 
                 links_delete($lid);
-                header_redirect("./links.php?webtag=$webtag");
+                header_redirect("./links.php?webtag=$webtag&fid=$parent_fid");
                 exit;
 
             }else {
@@ -293,6 +306,7 @@ if ($uid != 0) {
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("type", "vote"), "\n";
     echo "  ", form_input_hidden("lid", $lid), "\n";
+    echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -383,6 +397,7 @@ if ($uid != 0) {
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("type", "comment"), "\n";
     echo "  ", form_input_hidden("lid", $lid), "\n";
+    echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -422,6 +437,7 @@ if (perm_is_moderator() || $link['UID'] == $uid) {
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("type", "moderation") . "\n";
     echo "  ", form_input_hidden("lid", $lid) . "\n";
+    echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";

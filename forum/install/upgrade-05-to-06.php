@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.13 2005-02-06 00:20:49 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.14 2005-02-06 13:58:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -91,7 +91,7 @@ $sql.= "  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (ID),";
 $sql.= "  KEY AID (AID),";
 $sql.= "  KEY HASH (HASH)";
-$sql.= ") TYPE=MyISAM";
+$sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -116,7 +116,7 @@ $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (FID, TID, PID),";
 $sql.= "  KEY AID (AID)";
-$sql.= ") TYPE=MyISAM";
+$sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -137,7 +137,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
     $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
     $sql.= "  PRIMARY KEY  (ID)";
-    $sql.= ") TYPE=MyISAM";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -215,7 +215,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  KEY BY_UID (BY_UID),";
     $sql.= "  KEY FID (FID),";
     $sql.= "  FULLTEXT KEY TITLE (TITLE)";
-    $sql.= ") TYPE=MyISAM";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -273,23 +273,23 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // (Unable to write to /tmp/[file] error)
 
     $sql = "CREATE TABLE {$forum_webtag}_POST_NEW(";
-    $sql.= "TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "VIEWED DATETIME DEFAULT NULL,";
-    $sql.= "CREATED DATETIME DEFAULT NULL,";
-    $sql.= "STATUS TINYINT(4) DEFAULT '0',";
-    $sql.= "APPROVED DATETIME DEFAULT NULL,";
-    $sql.= "APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "EDITED DATETIME DEFAULT NULL,";
-    $sql.= "EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
-    $sql.= "PRIMARY KEY (TID, PID),";
-    $sql.= "KEY TO_UID (TO_UID),";
-    $sql.= "KEY IPADDRESS (IPADDRESS),";
-    $sql.= "KEY CREATED (CREATED)";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  VIEWED DATETIME DEFAULT NULL,";
+    $sql.= "  CREATED DATETIME DEFAULT NULL,";
+    $sql.= "  STATUS TINYINT(4) DEFAULT '0',";
+    $sql.= "  APPROVED DATETIME DEFAULT NULL,";
+    $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  EDITED DATETIME DEFAULT NULL,";
+    $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
+    $sql.= "  PRIMARY KEY (TID, PID),";
+    $sql.= "  KEY TO_UID (TO_UID),";
+    $sql.= "  KEY IPADDRESS (IPADDRESS),";
+    $sql.= "  KEY CREATED (CREATED)";
     $sql.= ") TYPE = MYISAM";
 
     if (!$result = db_query($sql, $db_install)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.72 2005-01-19 21:49:27 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.73 2005-01-20 00:14:56 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -86,6 +86,7 @@ echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" d
 echo "<head>\n";
 echo "<title>$forum_name</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
+echo "<meta name=\"robots\" content=\"noindex,follow\" />\n";
 echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\" />\n";

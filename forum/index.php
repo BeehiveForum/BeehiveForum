@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.100 2004-12-17 18:36:43 tribalonline Exp $ */
+/* $Id: index.php,v 1.101 2005-01-20 00:14:56 tribalonline Exp $ */
 
 // This page doesn't validate as XHTML Frameset, but I don't care.
 
@@ -87,6 +87,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
     echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\" />\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
+    echo "<meta name=\"robots\" content=\"noindex,follow\" />\n";
     echo "</head>\n";
 
     echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
@@ -179,6 +180,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
     echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} RSS Feed\" href=\"threads_rss.php\" />\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
+    echo "<meta name=\"robots\" content=\"noindex,follow\" />\n";
     echo "</head>\n";
 
     // Fetch the forum settings
@@ -215,7 +217,7 @@ echo "<body>\n";
 echo "<h1>{$lang['noframessupport']}</h1>\n";
 echo "<p>{$lang['uselightversion']}</p>\n";
 // Mikee says this strange linking is good for our search-engine ranking
-echo "<p><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive</a><span>&nbsp;</span><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">forum software</a></p>\n";
+echo "<p><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive</a><span>&nbsp;</span><a href=\"http://www.beehiveforum.net/\" target=\"_blank\">PHP forum software</a></p>\n";
 echo "</body>\n";
 echo "</noframes>\n";
 echo "</frameset>\n";

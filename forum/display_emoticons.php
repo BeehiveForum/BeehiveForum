@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.1 2004-03-23 02:41:59 tribalonline Exp $ */
+/* $Id: display_emoticons.php,v 1.2 2004-03-23 03:49:57 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -85,7 +85,7 @@ array_multisort($emot_names, $available_emots);
 echo "<h1>{$lang['emoticons']}</h1>\n";
 
 echo "<br />\n";
-echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+echo "<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"box\" width=\"100%\">\n";
@@ -97,7 +97,7 @@ echo "              <tr>\n";
 if ($pack != "user") {
 	echo "              <td valign=\"top\" width=\"200\">\n";
 	for ($i=0; $i<count($emot_names); $i++) {
-		echo "                  <a href=\"display_emoticons.php?webtag={$webtag['WEBTAG']}&pack=".$available_emots[$i]."\" target=\"_self\">".$emot_names[$i]."</a><br />\n";
+		echo "                  <p><a href=\"display_emoticons.php?webtag={$webtag['WEBTAG']}&pack=".$available_emots[$i]."\" target=\"_self\">".$emot_names[$i]."</a></p>\n";
 	}
 	echo "                </td>\n";
 }
@@ -114,20 +114,27 @@ $style = file_get_contents("$path/style.css");
 
 preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
 
+for ($i=0; $i<count($matches[1]); $i++) {
+	if (isset($emoticon_text[$matches[1][$i]])) {
+		$tmp = "";
+		for ($j=0; $j<count($emoticon_text[$matches[1][$i]]); $j++) {
+			$tmp.= $emoticon_text[$matches[1][$i]][$j]." &nbsp; ";
+		}
+		$emot_match[] = $tmp;
+		$emot_text[] = $matches[1][$i];
+		$emot_image[] = $matches[2][$i];
+	}
+}
+array_multisort($emot_match, $emot_text, $emot_image);
+
 echo "                <td>\n";
 echo "                  <table class=\"posthead\" width=\"300\">\n";
 
-for ($i=0; $i<count($matches[1]); $i++) {
-	if (isset($emoticon_text[$matches[1][$i]])) {
-		echo "                    <tr>\n";
-		echo "                      <td width=\"100\"><img src=\"$path/".$matches[2][$i]."\" title=\"".$matches[1][$i]."\"></td>\n";
-		echo "                      <td>";
-		for ($j=0; $j<count($emoticon_text[$matches[1][$i]]); $j++) {
-			echo $emoticon_text[$matches[1][$i]][$j]." &nbsp; ";
-		}
-		echo "</td>\n";
-		echo "                    </tr>\n";
-	}
+for ($i=0; $i<count($emot_match); $i++) {
+	echo "                    <tr>\n";
+	echo "                      <td width=\"100\"><img src=\"$path/".$emot_image[$i]."\" title=\"".$emot_text[$i]."\"></td>\n";
+	echo "                      <td>".$emot_match[$i]."</td>\n";
+	echo "                    </tr>\n";
 }
 
 echo "                  </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.102 2004-03-23 02:41:58 tribalonline Exp $ */
+/* $Id: edit.php,v 1.103 2004-03-23 03:49:57 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -158,7 +158,7 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
-html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprofile.js", "htmltools.js");
+html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprofile.js", "htmltools.js", "emoticons.js");
 
 $t_content = "";
 $edit_type = "text";
@@ -589,7 +589,7 @@ echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($from_uid, '{$webtag
 echo _stripslashes(format_user_name($preview_message['FLOGON'], $preview_message['FNICK']));
 echo "</a><br />\n";
 
-echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openWindow('display_emoticons?webtag={$webtag['WEBTAG']}&pack=user', 'emoticons', '500', '400')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
+echo "<br /><h2><a href=\"javascript:void(0);\" onclick=\"openEmoticons('user','{$webtag['WEBTAG']}')\" target=\"_self\">{$lang['emoticons']}</a></h2><br />\n";
 
 echo "</td></tr>\n";
 echo "</table>\n";

@@ -245,19 +245,18 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
 }
 
-function threads_get_folder($uid,$fid, $start = 0)
+function threads_get_folder($uid, $fid, $start = 0)
 {
 //  $folders = threads_get_available_folders();
 	$db_threads_get_folder = db_connect();
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
 	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
 	$sql .= "WHERE THREAD.fid = $fid ";
-	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
-//	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
+	$sql .= "AND USER_THREAD.UID = $uid ";
 	$sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
 	$sql .= "ORDER BY THREAD.modified DESC ";
 	$sql .= "LIMIT $start, 50";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.69 2005-02-06 14:28:04 decoyduck Exp $ */
+/* $Id: links.php,v 1.70 2005-03-06 23:36:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -86,7 +86,7 @@ if (forum_get_setting('show_links', 'N', false)) {
     exit;
 }
 
-$folders = links_folders_get(perm_is_moderator());
+$folders = links_folders_get(perm_is_links_moderator());
 
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
@@ -99,13 +99,13 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 }else {
 
     links_add_folder(1, $lang['toplevel'], true);
-    $folders = links_folders_get(perm_is_moderator());
+    $folders = links_folders_get(perm_is_links_moderator());
     $fid = 1;
 }
 
 if (isset($_GET['action'])) {
 
-    if (perm_is_moderator() && $_GET['action'] == "folderhide") {
+    if (perm_is_links_moderator() && $_GET['action'] == "folderhide") {
 
         links_folder_change_visibility($fid, false);
 
@@ -115,7 +115,7 @@ if (isset($_GET['action'])) {
             $fid = 1;
         }
 
-    }elseif (perm_is_moderator() && $_GET['action'] == "foldershow") {
+    }elseif (perm_is_links_moderator() && $_GET['action'] == "foldershow") {
 
         links_folder_change_visibility($fid, true);
 
@@ -125,9 +125,9 @@ if (isset($_GET['action'])) {
             $fid = 1;
         }
 
-    }elseif (perm_is_moderator() && $_GET['action'] == "folderdel") {
+    }elseif (perm_is_links_moderator() && $_GET['action'] == "folderdel") {
 
-        $folders = links_folders_get(perm_is_moderator());
+        $folders = links_folders_get(perm_is_links_moderator());
         if (count(links_get_subfolders($fid, $folders)) == 0) links_folder_delete($fid);
 
         if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {
@@ -201,16 +201,16 @@ if ($viewmode == 0) {
             echo "  <tr>\n";
             echo "    <td class=\"postbody\"><img src=\"" . style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td><td class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "class=\"link_hidden\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
 
-            if (perm_is_moderator() && $folders[$val]['VISIBLE'] == "Y") {
+            if (perm_is_links_moderator() && $folders[$val]['VISIBLE'] == "Y") {
 
                 echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['hide']}]</a>\n";
 
-            }elseif (perm_is_moderator() && $folders[$val]['VISIBLE'] == "N") {
+            }elseif (perm_is_links_moderator() && $folders[$val]['VISIBLE'] == "N") {
 
                 echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['unhide']}]</a>\n";
             }
 
-            if (perm_is_moderator() && count(links_get_subfolders($val, $folders)) == 0) echo "<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['delete']}]</a>\n";
+            if (perm_is_links_moderator() && count(links_get_subfolders($val, $folders)) == 0) echo "<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[{$lang['delete']}]</a>\n";
 
             echo "</td>\n";
             echo "  </tr>\n";
@@ -218,7 +218,7 @@ if ($viewmode == 0) {
 
         echo "</table>\n";
 
-        if (perm_is_moderator()) echo "<p class=\"threadtime\">{$lang['linksdelexp']}</p>";
+        if (perm_is_links_moderator()) echo "<p class=\"threadtime\">{$lang['linksdelexp']}</p>";
     }
 
 }else {
@@ -270,9 +270,9 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if ($viewmode == 0) {
-    $links = links_get_in_folder($fid, perm_is_moderator(), $sort_by, $sort_dir, $start);
+    $links = links_get_in_folder($fid, perm_is_links_moderator(), $sort_by, $sort_dir, $start);
 }else {
-    $links = links_get_all(perm_is_moderator(), $sort_by, $sort_dir, $start);
+    $links = links_get_all(perm_is_links_moderator(), $sort_by, $sort_dir, $start);
 }
 
 echo "<div align=\"center\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.233 2005-02-25 14:18:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.234 2005-03-06 23:36:41 decoyduck Exp $ */
 
 // International English language file
 
@@ -200,6 +200,8 @@ $lang['show'] = "Show";
 
 // Admin interface (admin*.php) ----------------------------------------
 
+$lang['admintools'] = "Admin Tools";
+$lang['forummanagement'] = "Forum Management";
 $lang['accessdenied'] = "Access Denied";
 $lang['accessdeniedexp'] = "You do not have permission to use this section.";
 $lang['managefolders'] = "Manage Folders";
@@ -434,10 +436,17 @@ $lang['usergroupwarning'] = "Note: This user may be inheriting additional permis
 $lang['successfullyaddedgroup'] = "Successfully added group";
 $lang['successfullydeletedgroup'] = "Successfully deleted group";
 
-$lang['usercanaccessadmintools'] = "User can access admin tools";
+$lang['usercanaccessforumtools'] = "User can access forum tools";
+
+$lang['userhasglobalaccesstoadmintools'] = "User has global access to admin tools";
+$lang['usercanaccessadmintools'] = "User has access to forum admin tools";
+$lang['usercanmoderateallfolders'] = "User can moderate all folders";
+$lang['usercanmoderatelinkssection'] = "User can moderate Links section";
+
 $lang['userisbanned'] = "User is banned";
 $lang['useriswormed'] = "User is wormed";
-$lang['userisglobalmod'] = "User is global moderator";
+
+
 
 $lang['groupcanaccessadmintools'] = "Group can access admin tools";
 $lang['groupisbanned'] = "Group is banned";
@@ -495,6 +504,10 @@ $lang['emailisalreadybanned'] = "That Email Address is already banned. Check you
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 
 $lang['requirepostapproval'] = "Require Post Approval";
+
+$lang['globaluserpermissions'] = "Global User Permissions";
+$lang['admintools'] = "Admin Tools";
+$lang['forumtools'] = "Forum Tools";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

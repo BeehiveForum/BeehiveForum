@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.114 2005-03-05 21:09:45 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.115 2005-03-06 23:36:41 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -156,17 +156,18 @@ function forum_check_access_level()
 
     $uid = bh_session_get_value('UID');
 
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT F.FID, F.WEBTAG, CONCAT(F.WEBTAG, '', '_') AS PREFIX, F.ACCESS_LEVEL FROM FORUMS F ";
-    $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 ";
-    $sql.= "OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1))";
-    $sql.= "AND F.WEBTAG = '{$table_data['WEBTAG']}'";
+    $sql = "SELECT COUNT(FORUMS.FID) AS FID_COUNT FROM FORUMS FORUMS ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID) ";
+    $sql.= "WHERE (FORUMS.ACCESS_LEVEL IN (0, 2) ";
+    $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1 ";
+    $sql.= "AND USER_FORUM.UID = $uid)) AND FORUMS.FID = '{$table_data['FID']}'";
 
     $result = db_query($sql, $db_forum_check_access_level);
+    list($fid_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return (db_num_rows($result) > 0);
+    return ($fid_count > 0);
 }
 
 function forum_check_password($forum_data)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_main.php,v 1.49 2005-01-19 22:44:14 decoyduck Exp $ */
+/* $Id: admin_main.php,v 1.50 2005-03-06 23:36:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -70,7 +70,7 @@ $lang = load_language_file();
 
 html_draw_top();
 
-if (!perm_has_admin_access()) {
+if (!perm_has_admin_access() && !perm_has_forumtools_access()) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -79,7 +79,7 @@ if (!perm_has_admin_access()) {
 
 echo "<h1>{$lang['forumadmin']}</h1>\n";
 
-if (forum_check_access_level()) {
+if (perm_has_admin_access()) {
 
     echo "<p>{$lang['adminexp_1']}</p>\n";
     echo "<p>{$lang['adminexp_2']}</p>\n";
@@ -93,12 +93,13 @@ if (forum_check_access_level()) {
     echo "<p>{$lang['adminexp_10']}</p>\n";
     echo "<p>{$lang['adminexp_11']}</p>\n";
     echo "<p>{$lang['adminexp_12']}</p>\n";
+    echo "<p>{$lang['adminexp_13']}</p>\n";
 }
 
 if (perm_has_forumtools_access()) {
 
-    echo "<p>{$lang['adminexp_13']}</p>\n";
     echo "<p>{$lang['adminexp_14']}</p>\n";
+    echo "<p>{$lang['adminexp_15']}</p>\n";
 }
 
 html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.107 2004-03-05 21:23:06 decoyduck Exp $ */
+/* $Id: logon.php,v 1.108 2004-03-05 21:29:29 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -161,7 +161,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 $passw = _stripslashes($HTTP_POST_VARS['password']);
                 $passh = _stripslashes($HTTP_POST_VARS['passhash']);
 
-                $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password'], true);
+                $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['passhash'], true);
             }
 
         }else {
@@ -278,7 +278,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 form_quick_button("./index.php", $lang['back'], "", "", "_top");
             }
             
-            echo "<p>&nbsp;</p>\n";
+            echo "<hr width=\"350\" />\n";
             echo "<h2>{$lang['problemsloggingon']}</h2>\n";
             echo "<p class=\"smalltext\"><a href=\"logon.php?deletecookie=yes", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
 	    echo "<p class=\"smalltext\"><a href=\"forgot_pw.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";

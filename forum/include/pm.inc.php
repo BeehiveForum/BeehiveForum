@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.27 2004-01-26 19:41:05 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.28 2004-02-13 01:14:11 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -578,7 +578,7 @@ function pm_archive_message($mid)
     $result = db_query($sql, $db_pm_archive_message);
 }
 
-function pm_new_check($markseen = true)
+function pm_new_check()
 {
     $db_pm_new_check = db_connect();
     $uid = bh_session_get_value('UID');
@@ -588,7 +588,7 @@ function pm_new_check($markseen = true)
     // ------------------------------------------------------------
 
     $sql = "SELECT MID FROM ". forum_table("PM"). " ";
-    $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
+    $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
 
@@ -600,17 +600,28 @@ function pm_new_check($markseen = true)
     // the page, so set all NEW messages to UNREAD.
     // ------------------------------------------------------------
     
-    if ($markseen) {
+    $sql = "UPDATE ". forum_table("PM"). " SET NOTIFIED = 1 ";
+    $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
 
-        $sql = "UPDATE ". forum_table("PM"). " SET TYPE = ". PM_UNREAD. " ";
-        $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
-
-        $result = db_query($sql, $db_pm_new_check);
-    }
+    $result = db_query($sql, $db_pm_new_check);
     
-    if ($num_rows > 0) return $num_rows;
+    return ($num_rows > 0);
+}
 
-    return false;
+function pm_get_unread_count()
+{
+    $db_pm_get_unread_count = db_connect();
+    $uid = bh_session_get_value('UID');
+
+    // ------------------------------------------------------------
+    // Check to see if the user has any new PMs
+    // ------------------------------------------------------------
+
+    $sql = "SELECT MID FROM ". forum_table("PM"). " ";
+    $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
+
+    $result = db_query($sql, $db_pm_get_unread_count);
+    return db_num_rows($result);
 }
 
 ?>

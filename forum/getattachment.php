@@ -46,11 +46,19 @@ if (!$attachments_enabled) {
     exit;
 }
 
-preg_match("/[\/getattachment.php]?\/(.*)\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+// Different PHP versions format the PHP_SELF variable differently if
+// a spoofed path type URL query is used.
+
+if (strstr($HTTP_SERVER_VARS['PHP_SELF'], 'getattachment.php')) {
+    preg_match("/\/getattachment.php\/(.*)\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+}else {
+    preg_match("/\/(.*)\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data);
+}
 
 if (isset($attachment_data[1])) {
 
-    $hash = $attachment_data[1];
+    $hash = explode('/', $attachment_data[1]);
+    $hash = $hash[sizeof($hash) - 1];
 
     $db = db_connect();
 

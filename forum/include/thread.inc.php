@@ -26,6 +26,7 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/format.inc.php"); // Formatting functions
+require_once("./include/folder.inc.php");
 
 function thread_get_title($tid)
 {
@@ -111,6 +112,20 @@ function thread_set_interest($tid, $interest, $new = false)
     $db_thread_set_interest = db_connect();
     db_query($sql, $db_thread_set_interest);
 
+}
+
+function thread_can_view($tid = 0, $uid = 0)
+{
+	$fidlist = folder_get_available();
+
+	$db_thread_can_view = db_connect();
+
+	$sql = "select * from ".forum_table("THREAD")." where TID = '$tid' and FID in ($fidlist)";
+
+	$result = db_query($sql,$db_thread_can_view);
+	$count = db_num_rows($result);
+
+	return ($count > 0);
 }
 
 ?>

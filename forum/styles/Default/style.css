@@ -463,14 +463,17 @@ A		{
 }
 
 .pmbar_container {
-		height: 18px;
+		height: 13px;
 		width: 100%;
-		border: 1px solid #000000;
+		border: 1px solid #686868;
+		background-color: #FFFFFF;
 }
 
 .pmbar {
-		height: 16px;
-		background-color: #C8D7E6;
+		height: 11px;
+		background-color: transparent;
+		background-image: url('../../images/pbar.png');
+		background-repeat: repeat-x;
 }
 
 .pagenum_text {

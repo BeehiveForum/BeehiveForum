@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.4 2004-05-25 22:09:11 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.5 2004-06-13 11:49:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -300,7 +300,7 @@ if ($folder_array = folder_get_all()) {
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder['FOLDER_PERMS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
-            echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_MODERATOR, $lang['moderatefolder'], $folder['FOLDER_PERMS'] & USER_PERM_MODERATOR), "</td>\n";
+            echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $folder['FOLDER_PERMS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td colspan=\"4\">&nbsp;</td>\n";
@@ -325,7 +325,7 @@ if ($folder_array = folder_get_all()) {
             echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], true), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
-            echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_MODERATOR, $lang['moderatefolder'], false), "</td>\n";
+            echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], false), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td colspan=\"4\">&nbsp;</td>\n";

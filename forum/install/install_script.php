@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.3 2004-06-10 16:35:33 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.4 2004-06-13 11:49:07 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -483,7 +483,6 @@ if(!$result = mysql_query($sql, $db_install)) {
 $sql = "CREATE TABLE {$forum_webtag}_THREAD (";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
 $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
@@ -493,8 +492,7 @@ $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
 $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
 $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (TID),";
-$sql.= "  KEY IX_THREAD_FID (FID),";
-$sql.= "  KEY BY_UID (BY_UID)";
+$sql.= "  KEY FID (FID)";
 $sql.= ")";
 
 if(!$result = mysql_query($sql, $db_install)) {

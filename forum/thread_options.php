@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.22 2004-05-17 15:57:00 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.23 2004-06-13 11:49:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -377,7 +377,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td class=\"posthead\">{$lang['movethread']}:</td>\n";
-    echo "                  <td>", folder_draw_dropdown($threaddata['FID'], "move", "", $thread_type, "", USER_PERM_THREAD_CREATE), "</td>\n";
+    echo "                  <td>", folder_draw_dropdown($threaddata['FID'], "move", "", $thread_type), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";

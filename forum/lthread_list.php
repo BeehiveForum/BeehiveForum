@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.37 2004-03-21 20:00:01 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.38 2004-03-24 20:46:01 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -404,7 +404,7 @@ if (bh_session_get_value('UID') != 0) {
 
 }
 
-echo "<p><a href=\"llogout.php?webtag={$webtag['WEBTAG']}\">{$lang['logout']}</a></p>\n";
+echo "<h4><a href=\"llogout.php?webtag={$webtag['WEBTAG']}\">{$lang['logout']}</a></h4>\n";
 light_html_draw_bottom();
 
 ?>

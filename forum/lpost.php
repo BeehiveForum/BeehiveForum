@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.34 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.35 2004-03-24 20:46:01 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -83,13 +83,13 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 if (isset($HTTP_POST_VARS['cancel'])) {
 
     $uri = "./lthread_list.php?webtag={$webtag['WEBTAG']}";
-    
+
     if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid'])) {
         $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
     }elseif (isset($HTTP_GET_VARS['replyto'])) {
         $uri.= "?msg={$HTTP_GET_VARS['replyto']}";
     }
-    
+
     header_redirect($uri);
 
 }
@@ -385,8 +385,9 @@ if (!$newthread) {
 
     if (!isset($HTTP_POST_VARS['t_to_uid'])) {
         $t_to_uid = message_get_user($reply_to_tid,$reply_to_pid);
+    }else {
+        $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
     }
-
 }
 
 if (!isset($t_sig) || !$t_sig) {

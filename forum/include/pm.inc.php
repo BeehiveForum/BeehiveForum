@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.79 2004-06-30 20:08:47 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.80 2004-07-07 19:04:37 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -318,7 +318,8 @@ function pm_get_free_space($uid = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT DISTINCT PM.SUBJECT, PM_CONTENT.CONTENT FROM {$table_data['PREFIX']}PM PM ";
+    $sql = "SELECT DISTINCT SUM(CHAR_LENGTH(PM.SUBJECT)) + SUM(CHAR_LENGTH(PM_CONTENT.CONTENT)) AS PM_USED_SPACE ";
+    $sql.= "FROM {$table_data['PREFIX']}PM PM ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_CONTENT PM_CONTENT ";
     $sql.= "ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "WHERE (PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
@@ -329,12 +330,11 @@ function pm_get_free_space($uid = false)
 
     $result = db_query($sql, $db_pm_get_free_space);
 
-    while($result_array = db_fetch_array($result)) {
-        $pm_used_space+= (strlen(trim($result_array['SUBJECT'])) + strlen(trim($result_array['CONTENT'])));
-    }
+    $row = db_fetch_array($result);
 
-    if ($pm_used_space > $max_pm_space) return 0;
-    return $max_pm_space - $pm_used_space;
+    if (isset($row['PM_USED_SPACE'])) return ($max_pm_size - $row['PM_USED_SPACE']);
+
+    return $max_pm_size;
 }
 
 function pm_get_user($mid)

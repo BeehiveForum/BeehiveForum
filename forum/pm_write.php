@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.82 2004-07-03 23:08:19 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.83 2004-07-07 19:04:37 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -123,8 +123,9 @@ if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 
 // Get the tid.pid if any.
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-    @list($tid, $pid) = explode('.', $_GET['msg']); 
-    
+
+    @list($tid, $pid) = explode('.', $_GET['msg']);
+
     if (is_numeric($tid) && is_numeric($pid)) {
     	if ($threaddata = thread_get($tid)) {
    	   $t_subject = "Re:".$threaddata['TITLE']." [$tid.$pid]";

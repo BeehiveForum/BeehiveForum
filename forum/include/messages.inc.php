@@ -270,14 +270,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(!($message['FROM_RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
         if($in_list) {
-            echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
+            echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             if($message['PID'] > 1) {
                 echo " in reply to ";
                 if(intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
                     echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
                     echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                 }else {
-                    echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
+                    echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid." . $message['REPLY_TO_PID'] . "\" target=\"_top\">";
                     echo $tid . "." . $message['REPLY_TO_PID'] . "</a>";
                 }
             }

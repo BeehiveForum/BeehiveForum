@@ -277,7 +277,7 @@ if (!isset($HTTP_POST_VARS['aid'])) {
 
 if($valid && isset($HTTP_POST_VARS['preview'])) {
 
-    echo "<h2>Message Preview:</h2>";
+    echo "<h1>Preview Message</h1>";
 
     if($HTTP_POST_VARS['t_to_uid'] == 0) {
 
@@ -328,7 +328,7 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
 
     }
 
-    message_display(0, $preview_message, 0, 0, false, false, false);
+    message_display(0, $preview_message, 0, 0, false, false, false, false, true);
     echo "<br />\n";
 
 }
@@ -370,7 +370,9 @@ if(isset($HTTP_GET_VARS['replyto'])) {
 if(!$newthread) {
 
     if(!isset($HTTP_POST_VARS['t_to_uid'])) {
-        $t_to_uid = message_get_user($reply_to_tid,$reply_to_pid);
+        $t_to_uid = message_get_user($reply_to_tid, $reply_to_pid);
+    }else {
+	$t_to_uid = $HTTP_POST_VARS['t_to_uid'];
     }
 
 }
@@ -440,7 +442,7 @@ if($newthread) {
 
       }else{
 
-        echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
+        echo "<h2>Thread title: " . $threaddata['TITLE'] . "</h2>\n";
         echo form_input_hidden("t_tid",$reply_to_tid);
         echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
 
@@ -505,11 +507,13 @@ if(!$newthread) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-      poll_display($reply_to_tid,$reply_message,0,0,false,false,false);
+      poll_display($reply_to_tid,$reply_message,0,0,false,false,false,true);
 
     }else {
 
-      message_display(0,$reply_message,0,0,false,false,false);
+      // $tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true
+      
+      message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, true);
 
     }
 

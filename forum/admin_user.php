@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.126 2005-02-04 19:35:35 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.127 2005-02-09 21:56:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -201,11 +201,12 @@ if (isset($_POST['del'])) {
                     $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
                     $t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
                     $t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                    $t_post_approval = (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
                     $new_folder_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
                     $new_folder_perms = (double)$new_folder_perms | $t_post_edit | $t_post_delete;
                     $new_folder_perms = (double)$new_folder_perms | $t_moderator | $t_post_attach;
-                    $new_folder_perms = (double)$new_folder_perms | $t_post_html | $t_post_sig;
+                    $new_folder_perms = (double)$new_folder_perms | $t_post_html | $t_post_sig | $t_post_approval;
 
                     perm_update_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
                 }
@@ -226,11 +227,12 @@ if (isset($_POST['del'])) {
                     $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
                     $t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
                     $t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                    $t_post_approval = (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
                     $new_folder_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
                     $new_folder_perms = (double)$new_folder_perms | $t_post_edit | $t_post_delete;
                     $new_folder_perms = (double)$new_folder_perms | $t_moderator | $t_post_attach;
-                    $new_folder_perms = (double)$new_folder_perms | $t_post_html | $t_post_sig;
+                    $new_folder_perms = (double)$new_folder_perms | $t_post_html | $t_post_sig | $t_post_approval;
 
                     perm_add_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
                 }

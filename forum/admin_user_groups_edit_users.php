@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.2 2004-05-22 17:58:14 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.3 2004-05-26 13:19:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -155,6 +155,16 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
+$user_perms = perm_get_user_permissions(bh_session_get_value('UID'));
+$group_permissions = perm_get_group_permissions($gid);
+
+if (!perm_user_in_group(bh_session_get_value('UID'), $gid) && $user_perms['STATUS'] < $group_permissions) {
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_bottom();
+    exit;
+}
+
 if (isset($_POST['add'])) {
 
     if (isset($_POST['add_user']) && is_array($_POST['add_user'])) {
@@ -162,7 +172,6 @@ if (isset($_POST['add'])) {
         foreach($_POST['add_user'] as $uid) {
 
             if (!perm_user_in_group($uid, $gid)) {
-                echo $uid, "<br>\n";
                 perm_add_user_to_group($uid, $gid);
             }
         }
@@ -173,10 +182,9 @@ if (isset($_POST['remove'])) {
 
     if (isset($_POST['remove_user']) && is_array($_POST['remove_user'])) {
 
-        foreach($_POST['add_user'] as $uid) {
+        foreach($_POST['remove_user'] as $uid) {
 
             if (perm_user_in_group($uid, $gid)) {
-                echo $uid, "<br>\n";
                 perm_remove_user_from_group($uid, $gid);
             }
         }

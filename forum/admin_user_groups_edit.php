@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.4 2004-05-25 14:11:24 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.5 2004-05-26 13:19:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -142,6 +142,14 @@ if (!$group = perm_get_group($gid)) {
 
 $group = perm_get_group($gid);
 $group_permissions = perm_get_group_permissions($gid);
+$user_perms = perm_get_user_permissions(bh_session_get_value('UID'));
+
+if (!perm_user_in_group(bh_session_get_value('UID'), $gid) && $user_perms['STATUS'] < $group_permissions) {
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_bottom();
+    exit;
+}
 
 // Draw the form
 echo "<h1>{$lang['admin']} : {$lang['manageusergroups']} : {$group['GROUP_NAME']}</h1>\n";
@@ -331,7 +339,7 @@ if ($folder_array = folder_get_all()) {
 
         $group_folder_permissions = perm_get_group_folder_perms($gid, $folder['FID']);
 
-        if (isset($group_folder_permissions['GID'])) {
+        if (isset($group_folder_permissions['STATUS'])) {
 
             echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
@@ -362,19 +370,19 @@ if ($folder_array = folder_get_all()) {
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
             echo "                                      <td rowspan=\"4\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
-            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $group_folder_permissions['STATUS'] & USER_PERM_POST_READ), "</td>\n";
-            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $group_folder_permissions['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
+            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], true), "</td>\n";
+            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], true), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
-            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], $group_folder_permissions['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
-            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], $group_folder_permissions['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
+            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], true), "</td>\n";
+            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], true), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
-            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $group_folder_permissions['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
-            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $group_folder_permissions['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], true), "</td>\n";
+            echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], true), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
-            echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_MODERATOR, $lang['moderatefolder'], $group_folder_permissions['STATUS'] & USER_PERM_MODERATOR), "</td>\n";
+            echo "                                      <td colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_MODERATOR, $lang['moderatefolder'], false), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td colspan=\"4\">&nbsp;</td>\n";

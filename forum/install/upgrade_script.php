@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.38 2004-11-25 09:02:14 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.39 2004-11-29 22:52:21 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -1393,7 +1393,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         if (!$result_gid = db_query($sql, $db_install)) {
 
             $valid = false;
-        return;
+            return;
         }
 
         $gid = db_insert_id($db_install);
@@ -1403,7 +1403,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (!$result_uid = db_query($sql, $db_install)) {
 
-                $valid = false;
+            $valid = false;
             return;
         }
 
@@ -1417,7 +1417,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (!$result_perm = db_query($sql, $db_install)) {
 
-                $valid = false;
+            $valid = false;
             return;
         }
 
@@ -1429,7 +1429,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
             if (!$result_fid = db_query($sql, $db_install)) {
 
-                        $valid = false;
+                $valid = false;
                 return;
             }
         }
@@ -1448,7 +1448,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
-    $sql.= "SELECT 0, FID, 6396 FROM {$forum_webtag}_FOLDER WHERE ";
+    $sql.= "SELECT 0, FID, 14588 FROM {$forum_webtag}_FOLDER WHERE ";
     $sql.= "ACCESS_LEVEL = 0";
 
     if (!$result = db_query($sql, $db_install)) {

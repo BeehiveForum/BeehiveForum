@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.66 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: edit.php,v 1.67 2003-09-16 10:19:12 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -526,7 +526,7 @@ echo form_input_hidden("t_to_uid", $to_uid);
 echo form_input_hidden("t_from_uid", $from_uid);
 
 echo "<h2>".$lang['to'].":</h2>\n";
-echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $preview_message[$to_uid] . ")\" target=\"_self\">";
+echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $from_uid . ")\" target=\"_self\">";
 echo _stripslashes(format_user_name($preview_message['FLOGON'], $preview_message['FNICK']));
 echo "</a>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.169 2003-09-15 19:04:31 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.170 2003-09-16 10:19:12 tribalonline Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -366,7 +366,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "&nbsp;</span></td></tr>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-			if (preg_match("/<div class=\"sig\">/", $message['CONTENT']) && $is_preview == false) {
+			if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
 				$msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
 				$tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
 				$msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];

@@ -50,6 +50,18 @@ CREATE TABLE DEDUPE (
 # --------------------------------------------------------
 
 #
+# Table structure for table `FILTER_LIST`
+#
+
+CREATE TABLE FILTER_LIST (
+  ID mediumint(8) unsigned NOT NULL auto_increment,
+  FILTER text NOT NULL,
+  PRIMARY KEY  (ID)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
 # Table structure for table `FOLDER`
 #
 

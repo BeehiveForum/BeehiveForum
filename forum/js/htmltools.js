@@ -209,7 +209,7 @@ function add_tag (tag, a, v, enclose) {
 			str_enclose = str;
 			se += 3;
 		}*/
-	} else if (/<[^<>]*$/.test(left_bound) == true) {
+	} else if (/<[^<>]*$/.test(left_bound) == true && /^[^<>]*>/.test(right_bound) == true) {
 		var re = new RegExp("<[^<>]*$");
 		re = re.exec(left_bound);
 		extra_left = re[0] + extra_left;
@@ -281,7 +281,7 @@ function add_tag (tag, a, v, enclose) {
 			str_enclose = str_enclose.replace(/<([^<>]*$)/, "&lt;$1");
 			se += 3;
 		}*/
-	} else if (/^[^<>]*>/.test(right_bound) == true) {
+	} else if (/^[^<>]*>/.test(right_bound) == true && /<[^<>]*$/.test(left_bound) == true) {
 		var re = new RegExp("^[^<>]*>");
 		re = re.exec(right_bound);
 		extra_right += re[0];
@@ -353,15 +353,25 @@ function add_tag (tag, a, v, enclose) {
 		}
 
 		var text_start = 0;
+
+		var mark_open = false;
+		var mark_close = false;
+
 		for (i=0; i<=str.length; i++) {
-			if (str.charAt(i) == ">" && str.charAt(i+1) != "<") {
+			if (str.charAt(i) == "<" && mark_open == false) {
+				mark_open = true;
+			}
+			if (str.charAt(i) == ">" && str.charAt(i+1) != "<" && mark_open == true) {
 				text_start = i+1;
 				break;
 			}
 		}
 		var text_end = str.length;
 		for (i=str.length; i>=0; i--) {
-			if (str.charAt(i) == "<" && str.charAt(i-1) != ">") {
+			if (str.charAt(i) == ">" && mark_close == false) {
+				mark_close = true;
+			}
+			if (str.charAt(i) == "<" && str.charAt(i-1) != ">" && mark_close == true) {
 				text_end = i;
 				break;
 			}
@@ -377,14 +387,19 @@ function add_tag (tag, a, v, enclose) {
 		var str_left = "";
 		var str_right = "";
 
+		var open_found = false;
+		var close_found = false;
+
 		if (/^<[^<>]*>$/.test(str_enclose) != true && enclose != true) {
 			for (i=0; i<str_mid.length; i++) {
 				var ca = str_mid.charAt(i);
 				if (i==0 && ca != "<") {
 					break;
 				}
+				open_found = true;
 				str_left += ca;
 				if (ca == ">" && str_mid.charAt(i+1) != "<") {
+					open_found = false;
 					i++;
 					break
 				}
@@ -394,12 +409,20 @@ function add_tag (tag, a, v, enclose) {
 				if (j==str_mid.length-1 && ca != ">") {
 					break;
 				}
+				close_found = true;
 				str_right = ca + str_right;
 				if (ca == "<" && str_mid.charAt(j-1) != ">") {
+					close_found = false;
 					j--;
 					break
 				}
 			}
+
+			if (close_found == true && open_found == false) {
+				j = str_mid.length-1;
+				str_right = "";
+			}
+
 			if (str_left != str) {
 				str_mid = str_mid.substr(i, j-i+1);
 			} else {

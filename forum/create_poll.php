@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.135 2004-11-29 22:31:52 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.136 2004-12-07 17:48:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -259,7 +259,7 @@ if (isset($_POST['cancel'])) {
     $uri = "./discussion.php?webtag=$webtag";
     header_redirect($uri);
 
-}elseif (isset($_POST['preview']) || isset($_POST['submit'])) {
+}elseif (isset($_POST['preview']) || isset($_POST['submit']) || isset($_POST['change_count'])) {
 
     $valid = true;
 
@@ -436,7 +436,12 @@ if (isset($_POST['cancel'])) {
 
     $fix_html = false;
 
-}else if (isset($_POST['change_count'])) {
+}
+
+if (isset($_POST['change_count'])) {
+
+    $valid = true;
+    unset($error_html);
 
     if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
         $t_answer_count = $_POST['answer_count'];

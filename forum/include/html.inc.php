@@ -48,7 +48,7 @@ function _html_draw_top1($title = false)
 
     global $HTTP_GET_VARS, $forum_name, $default_style, $lang;
 
-    if(!$title) $title = $forum_name;
+    if (!$title) $title = $forum_name;
 
     echo "<?xml version=\"1.0\" encoding=\"", $lang['_charset'], "\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -80,20 +80,11 @@ function _html_draw_top1($title = false)
 
 }
 
-function _html_draw_top2($body_class = false, $pm_popup = false)
+function _html_draw_top2($body_class = false)
 {
     echo "</head>\n\n";
-    echo "<body";
+    echo "<body", ($body_class) ? " class=\"$body_class\"" : "", " onload=\"pm_notification();\">\n";
 
-    if ($body_class) {
-        echo " class=\"$body_class\"";
-    }
-
-    if ($pm_popup) {
-        echo " onload=\"pm_notification();\"";
-    }
-
-    echo ">\n";
 }
 
 function _html_draw_top_script()
@@ -135,20 +126,23 @@ function _html_draw_pm_top2()
 function _html_draw_post_top2()
 {
     echo "</head>\n";
-    echo "<body onload=\"document.f_post.t_content.focus();\">\n";
+    echo "<body onload=\"document.f_post.t_content.focus(); pm_notification();\">\n";
 }
 
 
-function html_draw_top($title = false, $body_class = false, $pm_popup = false)
+function html_draw_top($title = false, $body_class = false)
 {
     _html_draw_top1($title);
-    _html_draw_top2($body_class, $pm_popup);
+    _html_draw_top_script();
+    _html_draw_pm_script();
+    _html_draw_top2($body_class);
 }
 
 function html_draw_top_script($title = false)
 {
     _html_draw_top1($title);
     _html_draw_top_script();
+    _html_draw_pm_script();
     _html_draw_top2();
 }
 
@@ -156,16 +150,9 @@ function html_draw_top_post_script($title = false)
 {
     _html_draw_top1($title);
     _html_draw_top_script();
+    _html_draw_pm_script();
     _html_draw_post_top2();
 }
-
-function html_draw_pm_script($title = false)
-{
-    _html_draw_top1($title);
-    _html_draw_pm_script();
-    _html_draw_pm_top2();
-}
-
 
 function html_draw_bottom ()
 {

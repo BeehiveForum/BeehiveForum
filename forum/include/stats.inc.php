@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.30 2004-04-29 15:58:33 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.31 2004-07-09 18:05:02 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -43,7 +43,7 @@ function update_stats()
 
         if ($num_sessions > $stats_array['MOST_USERS_COUNT']) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}STATS SET ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
             $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = $num_sessions";
 
             $result = db_query($sql, $db_update_stats);
@@ -51,7 +51,7 @@ function update_stats()
 
         if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}STATS SET ";
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
             $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = $num_recent_posts";
 
             $result = db_query($sql, $db_update_stats);
@@ -59,7 +59,7 @@ function update_stats()
 
     }else {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}STATS (MOST_USERS_DATE, ";
+        $sql = "INSERT LOW_PRIORITY INTO {$table_data['PREFIX']}STATS (MOST_USERS_DATE, ";
         $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
         $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
 
@@ -78,17 +78,18 @@ function get_num_sessions()
 
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
-    $sql = "SELECT UID FROM SESSIONS ";
+    $sql = "SELECT COUNT(UID) AS USER_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
     $sql.= "AND FID = '{$table_data['FID']}'";
 
     $result = db_query($sql, $get_num_sessions);
 
-    while ($row = db_fetch_array($result)) {
-        $sessions_array[$row['UID']] = $row;
+    if (db_num_rows($result)) {
+        $row = db_fetch_array($result);
+        return $row['USER_COUNT'];
     }
 
-    return sizeof($sessions_array);
+    return 0;
 }
 
 function get_active_users()

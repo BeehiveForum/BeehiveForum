@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.72 2004-04-29 14:02:53 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.73 2004-04-29 16:53:55 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -48,7 +48,7 @@ if (!$user_sess = bh_session_check()) {
         if (perform_logon(false)) {
 
             $lang = load_language_file();
-            $webtag = get_webtag();
+            $webtag = get_webtag($webtag_search);
 
             html_draw_top();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.25 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.26 2004-01-24 16:41:47 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -122,9 +122,11 @@ if (isset($HTTP_POST_VARS['delete']) && isset($HTTP_POST_VARS['f_aid']) && isset
 <h1><?php echo $lang['attachments']; ?></h1>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
-    <td width="300" class="postbody">&nbsp;</td>
-    <td width="200" class="postbody">&nbsp;</td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td class="postbody">&nbsp;</td>
+    <td class="postbody">&nbsp;</td>
+    <td class="postbody">&nbsp;</td>
+    <td class="postbody">&nbsp;</td>
+    <td class="postbody">&nbsp;</td>    
   </tr>
 <?php
 
@@ -139,7 +141,7 @@ if (isset($HTTP_POST_VARS['delete']) && isset($HTTP_POST_VARS['f_aid']) && isset
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
       echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=true\" title=\"";
+      echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php/", $attachments[$i]['hash'], "/", $attachments[$i]['filename'], "?download=true\" title=\"";
 
       if (strlen($attachments[$i]['filename']) > 16) {
         echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
@@ -167,11 +169,11 @@ if (isset($HTTP_POST_VARS['delete']) && isset($HTTP_POST_VARS['f_aid']) && isset
       }
 
       if (!isset($aid)) {
-          echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+          echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"", get_message_link($attachments[$i]['aid']), "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
       }
 
-      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
-      echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
+      echo "    <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachments[$i]['filesize']), "</td>\n";
+      echo "    <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"edit_attachments.php\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']), "\n";
       echo "        ". form_input_hidden('f_aid', $attachments[$i]['aid']), "\n";
@@ -191,33 +193,35 @@ if (isset($HTTP_POST_VARS['delete']) && isset($HTTP_POST_VARS['f_aid']) && isset
   }else {
 
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">({$lang['none']})</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td valign=\"top\" class=\"postbody\">({$lang['none']})</td>\n";
+    echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
 
   }
 
   echo "  <tr>\n";
-  echo "    <td width=\"500\" colspan=\"3\"><hr width=\"500\"/></td>\n";
+  echo "    <td colspan=\"5\"><hr width=\"600\" /></td>\n";
   echo "  </tr>\n";
   echo "  <tr>\n";
-  echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
-  echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
-  echo "    <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+  echo "    <td valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
+  echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";  
+  echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
+  echo "    <td class=\"postbody\">&nbsp;</td>\n";
   echo "  </tr>\n";
   echo "  <tr>\n";
-  echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">{$lang['freespace']}:</td>\n";
-  echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
-  echo "    <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+  echo "    <td valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
+  echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";    
+  echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
+  echo "    <td class=\"postbody\">&nbsp;</td>\n";
   echo "  </tr>\n";
   echo "  <tr>\n";
-  echo "    <td width=\"500\" colspan=\"3\"><hr width=\"500\"/></td>\n";
+  echo "    <td colspan=\"5\"><hr width=\"600\" /></td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
   echo "<form method=\"post\" action=\"edit_attachments.php\">\n";

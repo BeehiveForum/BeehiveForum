@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.95 2004-09-26 19:35:33 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.96 2004-10-21 21:28:19 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -170,6 +170,10 @@ function pm_get_inbox($offset)
         while ($result_array = db_fetch_array($result)) {
             $pm_get_inbox_array[] = $result_array;
         }
+
+    }else if ($offset > 0) {
+
+        return pm_get_inbox($offset - 10);
     }
 
     return array('message_count' => $message_count,
@@ -215,6 +219,10 @@ function pm_get_outbox($offset)
         while ($result_array = db_fetch_array($result)) {
             $pm_get_outbox_array[] = $result_array;
         }
+
+    }else if ($offset > 0) {
+
+        return pm_get_outbox($offset - 10);
     }
 
     return array('message_count' => $message_count,
@@ -260,6 +268,10 @@ function pm_get_sent($offset)
         while ($result_array = db_fetch_array($result)) {
             $pm_get_outbox_array[] = $result_array;
         }
+
+    }else if ($offset > 0) {
+
+        return pm_get_sent($offset - 10);
     }
 
     return array('message_count' => $message_count,
@@ -307,6 +319,10 @@ function pm_get_saveditems($offset)
         while ($result_array = db_fetch_array($result)) {
             $pm_get_saveditems_array[] = $result_array;
         }
+
+    }else if ($offset > 0) {
+
+        return pm_get_saveditems($offset - 10);
     }
 
     return array('message_count' => $message_count,

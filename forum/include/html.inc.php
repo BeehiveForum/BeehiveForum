@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.133 2004-10-08 01:22:17 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.134 2004-10-21 21:28:19 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -461,8 +461,12 @@ function href_remove_query_keys($uri, $remove_keys)
 
             if ((is_array($remove_keys) && !in_array($key, $keys)) || ($key != $remove_keys)) {
 
-                $new_uri_query.= "{$key}={$value}";
+                $new_uri_query.= "{$key}={$value}&amp;";
             }
+        }
+
+        if (substr($new_uri_query, -5) == '&amp;') {
+            $new_uri_query = substr($new_uri_query, 0, -5);
         }
 
         $uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
@@ -485,13 +489,16 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     $lang = load_language_file();
 
     $page_count   = ceil($total_rows / $rows_per_page);
-    $current_page = floor($offset / $rows_per_page) + 1;
+    $current_page = ceil($offset / $rows_per_page) + 1;
+
+    if ($current_page > $page_count) $current_page = $page_count;
+    if ($current_page < 1) $current_page = 1;
 
     $uri = href_remove_query_keys($uri, $page_var);
 
     if ($page_count > 1) {
 
-        echo "<span class=\"pagenum_text\">{$lang['pages']} (", ($page_count - 1), "): ";
+        echo "<span class=\"pagenum_text\">{$lang['pages']} ($page_count): ";
 
     }else {
 

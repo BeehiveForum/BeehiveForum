@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.74 2004-09-26 19:35:33 decoyduck Exp $ */
+/* $Id: pm.php,v 1.75 2004-10-21 21:28:19 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -195,7 +195,8 @@ echo "</script>\n";
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 
-$start = floor($page - 1) * 20;
+$start = floor($page - 1) * 10;
+
 if ($start < 0) $start = 0;
 
 if ($folder == PM_FOLDER_INBOX) {
@@ -243,7 +244,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 }
 
 echo "<div align=\"center\">\n";
-echo "<form name=\"pm\" action=\"pm.php\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"pm\" action=\"pm.php?page=$page\" method=\"POST\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden('folder', $folder), "\n";
 echo "  <table width=\"95%\" border=\"0\">\n";

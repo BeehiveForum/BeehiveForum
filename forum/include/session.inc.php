@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.137 2004-10-19 19:31:41 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.138 2004-10-21 21:28:19 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -102,15 +102,18 @@ function bh_session_check($add_guest_sess = true)
             // may have failed because they weren't logging
             // in to a specific forum.
 
-            if ($user_sess['USER_PERM_COUNT'] > 0 && $user_sess['STATUS'] & USER_PERM_BANNED) {
+            if (isset($user_sess['USER_PERM_COUNT']) && $user_sess['USER_PERM_COUNT'] > 0) {
 
-                if (!strstr(php_sapi_name(), 'cgi')) {
-                    header("HTTP/1.0 500 Internal Server Error");
-                }else {
-                    echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
+                if (isset($user_sess['STATUS']) && $user_sess['STATUS'] & USER_PERM_BANNED) {
+
+                    if (!strstr(php_sapi_name(), 'cgi')) {
+                        header("HTTP/1.0 500 Internal Server Error");
+                    }else {
+                        echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
+                    }
+
+                    exit;
                 }
-
-                exit;
             }
 
             // If the user is not logged into the current forum, we should

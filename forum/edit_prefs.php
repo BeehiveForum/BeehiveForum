@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.35 2004-08-15 11:40:36 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.36 2004-10-10 13:38:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -121,16 +121,22 @@ if (isset($_POST['submit'])) {
     // Required Fields
 
     if (isset($_POST['nickname']) && trim($_POST['nickname']) != "") {
+
         $user_info['NICKNAME'] = _stripslashes(trim($_POST['nickname']));
+
     }else {
-        $error_html .= "<h2>{$lang['nicknamerequired']}</h2>";
+
+        $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
         $valid = false;
     }
 
     if (isset($_POST['email']) && trim($_POST['email']) != "") {
+
         $user_info['EMAIL'] = _stripslashes(trim($_POST['email']));
+
     }else {
-        $error_html .= "<h2>{$lang['emailaddressrequired']}</h2>";
+
+        $error_html.= "<h2>{$lang['emailaddressrequired']}</h2>";
         $valid = false;
     }
 
@@ -141,52 +147,70 @@ if (isset($_POST['submit'])) {
         $dob['YEAR']  = _stripslashes(trim($_POST['dob_year']));
 
         $user_prefs['DOB'] = sprintf("%04d-%02d-%02d", $dob['YEAR'], $dob['MONTH'], $dob['DAY']);
+
     }else {
-        $error_html .= "<h2>{$lang['birthdayrequired']}</h2>";
+
+        $error_html.= "<h2>{$lang['birthdayrequired']}</h2>";
         $valid = false;
     }
 
     // Optional fields
 
     if (isset($_POST['firstname'])) {
+
         if (user_check_pref('FIRSTNAME', _stripslashes(trim($_POST['firstname'])))) {
-                        $user_prefs['FIRSTNAME'] = _stripslashes(trim($_POST['firstname']));
-                } else {
-                    $error_html .= "<h2>{$lang['firstname']} {$lang['containsinvalidchars']}</h2>";
-                        $valid = false;
-                }
+
+            $user_prefs['FIRSTNAME'] = _stripslashes(trim($_POST['firstname']));
+
+        }else {
+
+            $error_html.= "<h2>{$lang['firstname']} {$lang['containsinvalidchars']}</h2>";
+            $valid = false;
+        }
     }
 
     if (isset($_POST['lastname'])) {
+
         if (user_check_pref('LASTNAME', _stripslashes(trim($_POST['lastname'])))) {
-                        $user_prefs['LASTNAME'] = _stripslashes(trim($_POST['lastname']));
-                } else {
-                    $error_html .= "<h2>{$lang['lastname']} {$lang['containsinvalidchars']}</h2>";
-                    $valid = false;
-                }
+
+            $user_prefs['LASTNAME'] = _stripslashes(trim($_POST['lastname']));
+
+        }else {
+
+            $error_html.= "<h2>{$lang['lastname']} {$lang['containsinvalidchars']}</h2>";
+            $valid = false;
+        }
     }
 
     if (isset($_POST['homepage_url'])) {
+
         if (user_check_pref('HOMEPAGE_URL', _stripslashes(trim($_POST['homepage_url'])))) {
-                        $user_prefs['HOMEPAGE_URL'] = _stripslashes(trim($_POST['homepage_url']));
-                $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
-        } else {
-                    $error_html .= "<h2>{$lang['homepageURL']} {$lang['containsinvalidchars']}</h2>";
-                    $valid = false;
-                }
+
+            $user_prefs['HOMEPAGE_URL'] = _stripslashes(trim($_POST['homepage_url']));
+            $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
+
+        }else {
+
+            $error_html.= "<h2>{$lang['homepageURL']} {$lang['containsinvalidchars']}</h2>";
+            $valid = false;
+        }
     }
 
     if (isset($_POST['pic_url'])) {
-            if (user_check_pref('PIC_URL', _stripslashes(trim($_POST['pic_url'])))) {
-                        $user_prefs['PIC_URL'] = _stripslashes(trim($_POST['pic_url']));
-                $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;
-                } else {
-                    $error_html .= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
-                    $valid = false;
-                }
-        }
 
-        if ($valid) {
+        if (user_check_pref('PIC_URL', _stripslashes(trim($_POST['pic_url'])))) {
+
+            $user_prefs['PIC_URL'] = _stripslashes(trim($_POST['pic_url']));
+            $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;
+
+        }else {
+
+            $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
+            $valid = false;
+        }
+    }
+
+    if ($valid) {
 
         // User's UID for updating with.
 
@@ -215,14 +239,14 @@ if (!isset($uid)) $uid = bh_session_get_value('UID');
 // Get User Prefs
 if (isset($user_prefs)) {
         $user_prefs = array_merge(user_get_prefs($uid), $user_prefs);
-} else {
+}else {
         $user_prefs = user_get_prefs($uid);
 }
 
 // Get user information
 if (isset($user_info)) {
         $user_info = array_merge(user_get($uid), $user_info);
-} else {
+}else {
         $user_info = user_get($uid);
 }
 

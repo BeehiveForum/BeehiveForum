@@ -89,7 +89,7 @@ echo "</table></td></tr><tr><td>&nbsp;</td></tr>\n";
 
 // Display "Start Reading" button
 echo "<tr><td align=\"center\">\n";
-echo form_quick_button("discussion.php","Start reading >>");
+echo form_quick_button("discussion.php","Start reading >>", 0, 0, "main");
 echo "</td></tr>\n";
 
 echo "<tr><td>&nbsp;</td></tr>\n";

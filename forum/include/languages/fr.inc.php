@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.99 2004-08-07 22:39:47 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.100 2004-08-08 20:53:29 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -942,9 +942,9 @@ $lang['enterpollquestionexp'] = "Entrer les réponses pour votre question de sond
 $lang['numberanswers'] = "No les Réponses";
 $lang['answerscontainHTML'] = "Les réponses Contiennent HTML (pas y compris la signature)";
 $lang['optionsdisplay'] = "Answers display type";
-$lang['optionsdisplayexp'] = "How should the possible answers be displayed to potential voters?";
+$lang['optionsdisplayexp'] = "How should the answers be presented?";
 $lang['dropdown'] = "As drop-down list(s)";
-$lang['radios'] = "As series of radio buttons";
+$lang['radios'] = "As a series of radio buttons";
 $lang['votechanging'] = "Voter Changer";
 $lang['votechangingexp'] = "Pouvoir une personne change son ou son vote?";
 $lang['allowmultiplevotes'] = "Permettre des Votes Multiples";

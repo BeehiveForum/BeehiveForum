@@ -84,7 +84,7 @@ if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
 
 // Base Query - The same for all searches
 
-$basesql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
+$basesql = "SELECT DISTINCT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
 $basesql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST_CONTENT.CONTENT ";
 $basesql.= "FROM ". forum_table("THREAD"). " THREAD ";
 $basesql.= "LEFT JOIN ". forum_table("POST"). " POST ON (THREAD.TID = POST.TID) ";

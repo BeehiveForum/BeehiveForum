@@ -212,7 +212,10 @@ if (isset($HTTP_GET_VARS['msg'])) {
     
     if ($thread['tid'] == $tid) {
     
-      array_splice($folder_order, array_search($thread['fid'], $folder_order), 1);
+      if (in_array($thread['fid'], $folder_order)) {
+        array_splice($folder_order, array_search($thread['fid'], $folder_order), 1);
+      }
+      
       array_unshift($folder_order, $thread['fid']);
       
       for ($i = 0; $i < sizeof($thread_info); $i++) {
@@ -223,7 +226,7 @@ if (isset($HTTP_GET_VARS['msg'])) {
         }
         
       }
-      
+            
       if (!$threadvisible && is_array($thread_info)) array_unshift($thread_info, $thread);
       
     }

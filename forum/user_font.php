@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.29 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.30 2004-04-17 17:39:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -44,7 +44,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -58,7 +58,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -91,16 +91,16 @@ $user_wordfilter = load_wordfilter();
 
 $uid = bh_session_get_value('UID');
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-    $msg = $HTTP_GET_VARS['msg'];
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    $msg = $_GET['msg'];
 }else {
     $msg = messages_get_most_recent($uid);
 }
 
-if (isset($HTTP_GET_VARS['fontsize']) && is_numeric($HTTP_GET_VARS['fontsize']) && $HTTP_GET_VARS['fontsize'] > 4 && $HTTP_GET_VARS['fontsize'] < 16 && $uid > 0) {
+if (isset($_GET['fontsize']) && is_numeric($_GET['fontsize']) && $_GET['fontsize'] > 4 && $_GET['fontsize'] < 16 && $uid > 0) {
     
     $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-    $user_prefs['FONT_SIZE'] = $HTTP_GET_VARS['fontsize'];
+    $user_prefs['FONT_SIZE'] = $_GET['fontsize'];
 
     user_update_prefs($uid, $user_prefs);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.17 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.18 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -64,11 +64,11 @@ $user_wordfilter = load_wordfilter();
 
 // Where are we going after we've logged off?
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
     
     bh_session_end();
 
-    if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
+    if (!strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
         header_redirect("./llogon.php");
 

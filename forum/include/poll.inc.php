@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.110 2004-04-12 13:56:39 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.111 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -335,7 +335,7 @@ function poll_sort_groups($a, $b) {
 
 function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
     
@@ -353,7 +353,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "  <tr>\n";
     $polldata['CONTENT'].= "    <td>\n";
 
-    $polldata['CONTENT'].= "      <form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
+    $polldata['CONTENT'].= "      <form method=\"post\" action=\"". $_SERVER['PHP_SELF']. "\" target=\"_self\">\n";
     $polldata['CONTENT'].= "        ". form_input_hidden("webtag", $webtag). "\n";
     $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "      <table width=\"450\" align=\"center\">\n";
@@ -1219,7 +1219,7 @@ function poll_public_ballot($tid, $viewstyle)
 
 function poll_confirm_close($tid)
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
 

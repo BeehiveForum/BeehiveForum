@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.55 2004-04-13 14:04:03 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.56 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -121,20 +121,20 @@ html_draw_top("post.js");
 // Get any UID from the GET or POST request
 // or default to the current user if not specified.
 
-if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
-    $uid = $HTTP_GET_VARS['uid'];
-}elseif (isset($HTTP_POST_VARS['uid']) && is_numeric($HTTP_POST_VARS['uid'])) {
-    $uid = $HTTP_POST_VARS['uid'];
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+    $uid = $_GET['uid'];
+}elseif (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+    $uid = $_POST['uid'];
 }else {
     $uid = bh_session_get_value('UID');
 }
 
 // Get any AID from the GET or POST request
 
-if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
-    $aid = $HTTP_GET_VARS['aid'];
-}elseif (isset($HTTP_POST_VARS['aid']) && is_md5($HTTP_POST_VARS['aid'])) {
-    $aid = $HTTP_POST_VARS['aid'];
+if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
+    $aid = $_GET['aid'];
+}elseif (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+    $aid = $_POST['aid'];
 }else {
     $aid = false;
 }
@@ -159,14 +159,14 @@ if (!is_dir('attachments')) {
   chmod('attachments', 0777);
 }
 
-if (isset($HTTP_POST_VARS['del'])) {
+if (isset($_POST['del'])) {
 
-    if (isset($HTTP_POST_VARS['hash']) && is_md5($HTTP_POST_VARS['hash'])) {
+    if (isset($_POST['hash']) && is_md5($_POST['hash'])) {
 
-        delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['hash']);
+        delete_attachment(bh_session_get_value('UID'), $_POST['hash']);
     }
 
-}elseif (isset($HTTP_POST_VARS['close'])) {
+}elseif (isset($_POST['close'])) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -176,7 +176,7 @@ if (isset($HTTP_POST_VARS['del'])) {
     exit;
 }
   
-if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
+if (isset($_GET['popup']) || isset($_POST['popup'])) {
     $popup = true;
 }else {
     $popup = false;
@@ -302,10 +302,10 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
   
   if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
-      if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
-          $aid = $HTTP_GET_VARS['aid'];
-      }elseif (isset($HTTP_POST_VARS['aid']) && is_md5($HTTP_POST_VARS['aid'])) {
-          $aid = $HTTP_POST_VARS['aid'];
+      if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
+          $aid = $_GET['aid'];
+      }elseif (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+          $aid = $_POST['aid'];
       }else {
           $aid = md5(uniqid(rand()));
       }

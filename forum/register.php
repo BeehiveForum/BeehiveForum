@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.83 2004-04-15 11:43:06 decoyduck Exp $ */
+/* $Id: register.php,v 1.84 2004-04-17 17:39:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,8 +47,8 @@ include_once("./include/user.inc.php");
 
 // Where are we going after we've logged on?
 
-if (isset($HTTP_GET_VARS['final_uri'])) {
-    $final_uri = rawurldecode($HTTP_GET_VARS['final_uri']);
+if (isset($_GET['final_uri'])) {
+    $final_uri = rawurldecode($_GET['final_uri']);
 }
 
 if ($user_sess = bh_session_check()) {
@@ -130,14 +130,14 @@ $timezones = array("GMT -12h", "GMT -11h", "GMT -10h", "GMT -9h30m", "GMT -9h", 
 $timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,
                         6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     $valid = true;
     $error_html = "";
 
-    if (isset($HTTP_POST_VARS['LOGON']) && strlen(trim($HTTP_POST_VARS['LOGON'])) > 0) {
+    if (isset($_POST['LOGON']) && strlen(trim($_POST['LOGON'])) > 0) {
 
-        $new_user['LOGON'] = strtoupper(_stripslashes(trim($HTTP_POST_VARS['LOGON'])));
+        $new_user['LOGON'] = strtoupper(_stripslashes(trim($_POST['LOGON'])));
       
         if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['LOGON'])) {
             $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
@@ -160,9 +160,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['PW']) && strlen(trim($HTTP_POST_VARS['PW'])) > 0) {
+    if (isset($_POST['PW']) && strlen(trim($_POST['PW'])) > 0) {
 
-        $new_user['PW'] = _stripslashes(trim($HTTP_POST_VARS['PW']));
+        $new_user['PW'] = _stripslashes(trim($_POST['PW']));
       
         if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['PW'])) {
             $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
@@ -180,9 +180,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid.= false;
     }
 
-    if (isset($HTTP_POST_VARS['CPW']) && strlen(trim($HTTP_POST_VARS['CPW'])) > 0) {
+    if (isset($_POST['CPW']) && strlen(trim($_POST['CPW'])) > 0) {
 
-        $new_user['CPW'] = _stripslashes(trim($HTTP_POST_VARS['CPW']));
+        $new_user['CPW'] = _stripslashes(trim($_POST['CPW']));
       
         if (_htmlentities($new_user['CPW']) != $new_user['CPW']) {
             $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
@@ -195,9 +195,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['NICKNAME']) && strlen(trim($HTTP_POST_VARS['NICKNAME'])) > 0) {
+    if (isset($_POST['NICKNAME']) && strlen(trim($_POST['NICKNAME'])) > 0) {
       
-        $new_user['NICKNAME'] = _stripslashes(trim($HTTP_POST_VARS['NICKNAME']));
+        $new_user['NICKNAME'] = _stripslashes(trim($_POST['NICKNAME']));
         
     }else {
   
@@ -205,9 +205,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['EMAIL']) && strlen(trim($HTTP_POST_VARS['EMAIL'])) > 0) {
+    if (isset($_POST['EMAIL']) && strlen(trim($_POST['EMAIL'])) > 0) {
 
-        $new_user['EMAIL'] = _stripslashes(trim($HTTP_POST_VARS['EMAIL']));
+        $new_user['EMAIL'] = _stripslashes(trim($_POST['EMAIL']));
 
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $new_user['EMAIL'])) {
 
@@ -221,11 +221,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['dob_year']) && isset($HTTP_POST_VARS['dob_month']) && isset($HTTP_POST_VARS['dob_day']) && checkdate($HTTP_POST_VARS['dob_month'], $HTTP_POST_VARS['dob_day'], $HTTP_POST_VARS['dob_year'])) {
+    if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $new_user['DOB_DAY']   = _stripslashes(trim($HTTP_POST_VARS['dob_day']));
-        $new_user['DOB_MONTH'] = _stripslashes(trim($HTTP_POST_VARS['dob_month']));
-        $new_user['DOB_YEAR']  = _stripslashes(trim($HTTP_POST_VARS['dob_year']));
+        $new_user['DOB_DAY']   = _stripslashes(trim($_POST['dob_day']));
+        $new_user['DOB_MONTH'] = _stripslashes(trim($_POST['dob_month']));
+        $new_user['DOB_YEAR']  = _stripslashes(trim($_POST['dob_year']));
           
         $new_user['DOB'] = "{$new_user['DOB_YEAR']}-{$new_user['DOB_MONTH']}-{$new_user['DOB_DAY']}";
         $new_user['DOB_BLANK_FIELDS'] = ($new_user['DOB_YEAR'] == 0 || $new_user['DOB_MONTH'] == 0 || $new_user['DOB_DAY'] == 0) ? true : false;
@@ -236,25 +236,25 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
     
-    if (isset($HTTP_POST_VARS['FIRSTNAME']) && strlen(trim($HTTP_POST_VARS['FIRSTNAME'])) > 0) {
-        $new_user['FIRSTNAME'] = _stripslashes(trim($HTTP_POST_VARS['FIRSTNAME']));
+    if (isset($_POST['FIRSTNAME']) && strlen(trim($_POST['FIRSTNAME'])) > 0) {
+        $new_user['FIRSTNAME'] = _stripslashes(trim($_POST['FIRSTNAME']));
     }else {
         $new_user['FIRSTNAME'] = "";
     }
       
-    if (isset($HTTP_POST_VARS['LASTNAME']) && strlen(trim($HTTP_POST_VARS['LASTNAME'])) > 0) {
-        $new_user['LASTNAME'] = _stripslashes(trim($HTTP_POST_VARS['LASTNAME']));
+    if (isset($_POST['LASTNAME']) && strlen(trim($_POST['LASTNAME'])) > 0) {
+        $new_user['LASTNAME'] = _stripslashes(trim($_POST['LASTNAME']));
     }else {
         $new_user['LASTNAME'] = "";
     }      
         
-    if (isset($HTTP_POST_VARS['SIG_CONTENT']) && strlen(trim($HTTP_POST_VARS['SIG_CONTENT'])) > 0) {
-        $new_user['SIG_CONTENT'] = trim($HTTP_POST_VARS['SIG_CONTENT']);
+    if (isset($_POST['SIG_CONTENT']) && strlen(trim($_POST['SIG_CONTENT'])) > 0) {
+        $new_user['SIG_CONTENT'] = trim($_POST['SIG_CONTENT']);
     }else {
         $new_user['SIG_CONTENT'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['SIG_HTML']) && $HTTP_POST_VARS['SIG_HTML'] == "Y") {
+    if (isset($_POST['SIG_HTML']) && $_POST['SIG_HTML'] == "Y") {
         $new_user['SIG_CONTENT'] = fix_html($new_user['SIG_CONTENT']);
         $new_user['SIG_HTML'] = "Y";
     }else {
@@ -262,56 +262,56 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $new_user['SIG_HTML'] = "N";
     }
         
-    if (isset($HTTP_POST_VARS['EMAIL_NOTIFY']) && $HTTP_POST_VARS['EMAIL_NOTIFY'] == "Y") {
+    if (isset($_POST['EMAIL_NOTIFY']) && $_POST['EMAIL_NOTIFY'] == "Y") {
         $new_user['EMAIL_NOTIFY'] = "Y";
     }else {
         $new_user['EMAIL_NOTIFY'] = "N";
     }
         
-    if (isset($HTTP_POST_VARS['PM_NOTIFY_EMAIL']) && $HTTP_POST_VARS['PM_NOTIFY_EMAIL'] == "Y") {
+    if (isset($_POST['PM_NOTIFY_EMAIL']) && $_POST['PM_NOTIFY_EMAIL'] == "Y") {
         $new_user['PM_NOTIFY_EMAIL'] = "Y";
     }else {
         $new_user['PM_NOTIFY_EMAIL'] = "N";
     }
         
-    if (isset($HTTP_POST_VARS['PM_NOTIFY']) && $HTTP_POST_VARS['PM_NOTIFY'] == "Y") {
+    if (isset($_POST['PM_NOTIFY']) && $_POST['PM_NOTIFY'] == "Y") {
         $new_user['PM_NOTIFY'] = "Y";
     }else {
         $new_user['PM_NOTIFY'] = "N";
     }
 
-    if (isset($HTTP_POST_VARS['MARK_AS_OF_INT']) && $HTTP_POST_VARS['MARK_AS_OF_INT'] == "Y") {
+    if (isset($_POST['MARK_AS_OF_INT']) && $_POST['MARK_AS_OF_INT'] == "Y") {
         $new_user['MARK_AS_OF_INT'] = "Y";
     }else {
         $new_user['MARK_AS_OF_INT'] = "N";
     }
         
-    if (isset($HTTP_POST_VARS['DL_SAVING']) && $HTTP_POST_VARS['DL_SAVING'] == "Y") {
+    if (isset($_POST['DL_SAVING']) && $_POST['DL_SAVING'] == "Y") {
         $new_user['DL_SAVING'] = "Y";
     }else {
         $new_user['DL_SAVING'] = "N";
     }
         
-    if (isset($HTTP_POST_VARS['TIMEZONE']) && _in_array($HTTP_POST_VARS['TIMEZONE'], $timezones_data)) {
-        $new_user['TIMEZONE'] = $HTTP_POST_VARS['TIMEZONE'];
+    if (isset($_POST['TIMEZONE']) && _in_array($_POST['TIMEZONE'], $timezones_data)) {
+        $new_user['TIMEZONE'] = $_POST['TIMEZONE'];
     }else {
         $new_user['TIMEZONE'] = 0;
     }
         
-    if (isset($HTTP_POST_VARS['LANGUAGE']) && _in_array($HTTP_POST_VARS['LANGUAGE'], $available_langs_labels)) {
-        $new_user['LANGUAGE'] = $HTTP_POST_VARS['LANGUAGE'];
+    if (isset($_POST['LANGUAGE']) && _in_array($_POST['LANGUAGE'], $available_langs_labels)) {
+        $new_user['LANGUAGE'] = $_POST['LANGUAGE'];
     }else {
         $new_user['LANGUAGE'] = forum_get_setting('default_language');
     }
         
-    if (isset($HTTP_POST_VARS['STYLE']) && _in_array($HTTP_POST_VARS['STYLE'], $available_styles)) {
-        $new_user['STYLE'] = $HTTP_POST_VARS['STYLE'];
+    if (isset($_POST['STYLE']) && _in_array($_POST['STYLE'], $available_styles)) {
+        $new_user['STYLE'] = $_POST['STYLE'];
     }else {
         $new_user['STYLE'] = forum_get_setting('default_style');
     }
 
-    if (isset($HTTP_POST_VARS['EMOTICONS']) && _in_array($HTTP_POST_VARS['EMOTICONS'], $available_emots)) {
-        $new_user['EMOTICONS'] = $HTTP_POST_VARS['EMOTICONS'];
+    if (isset($_POST['EMOTICONS']) && _in_array($_POST['EMOTICONS'], $available_emots)) {
+        $new_user['EMOTICONS'] = $_POST['EMOTICONS'];
     }else {
         $new_user['EMOTICONS'] = forum_get_setting('default_emoticons');
     }    
@@ -352,24 +352,24 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             // Username array
 
-            if (isset($HTTP_COOKIE_VARS['bh_remember_username']) && is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
-                $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
+            if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
+                $username_array = $_COOKIE['bh_remember_username'];
             }else {
                 $username_array = array();
             }
 
             // Password array
 
-            if (isset($HTTP_COOKIE_VARS['bh_remember_password']) && is_array($HTTP_COOKIE_VARS['bh_remember_password'])) {
-                $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
+            if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
+                $password_array = $_COOKIE['bh_remember_password'];
             }else {
                 $password_array = array();
             }
 
             // Passhash array
 
-            if (isset($HTTP_COOKIE_VARS['bh_remember_passhash']) && is_array($HTTP_COOKIE_VARS['bh_remember_passhash'])) {
-                $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
+            if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
+                $passhash_array = $_COOKIE['bh_remember_passhash'];
             }else {
                 $passhash_array = array();
             }
@@ -388,7 +388,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             array_unshift($username_array, $new_user['LOGON']);
         
-            if (isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+            if (isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y')) {
         
                 array_unshift($password_array, $passw);
                 array_unshift($passhash_array, $passh);
@@ -490,7 +490,7 @@ echo "            <td>", form_dob_dropdowns((isset($new_user['DOB_YEAR']) ? $new
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td>&nbsp;</td>\n";
-echo "            <td>", form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")), "</td>\n";
+echo "            <td>", form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($_POST['remember_user']) && $_POST['remember_user'] == "Y")), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td colspan=\"2\">&nbsp;</td>\n";

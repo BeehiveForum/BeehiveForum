@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.34 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: interest.php,v 1.35 2004-04-17 17:39:27 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -39,7 +39,7 @@ include_once("./include/thread.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -53,7 +53,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -89,17 +89,17 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest']) && is_numeric($HTTP_POST_VARS['tid']) && is_numeric($HTTP_POST_VARS['interest']) && thread_can_view($HTTP_POST_VARS['tid'], bh_session_get_value('UID'))) {
+if (isset($_POST['tid']) && isset($_POST['interest']) && is_numeric($_POST['tid']) && is_numeric($_POST['interest']) && thread_can_view($_POST['tid'], bh_session_get_value('UID'))) {
 
-    $tid = $HTTP_POST_VARS['tid'];
-    $int = $HTTP_POST_VARS['interest'];
+    $tid = $_POST['tid'];
+    $int = $_POST['interest'];
     $uid = bh_session_get_value('UID');
 
     thread_set_interest($tid, $int);
 }
 
-if (isset($HTTP_GET_VARS['ret'])) {
-    header_redirect($HTTP_GET_VARS['ret']);
+if (isset($_GET['ret'])) {
+    header_redirect($_GET['ret']);
 }else {
     header_redirect("./messages.php?webtag=$webtag");
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.44 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.45 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,7 +47,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -61,7 +61,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -108,20 +108,20 @@ if (bh_session_get_value('UID') == 0) {
 
 $uid = bh_session_get_value('UID');
 
-if (isset($HTTP_POST_VARS['cancel'])) header_redirect("./links.php?webtag=$webtag&fid={$HTTP_POST_VARS['fid']}");
+if (isset($_POST['cancel'])) header_redirect("./links.php?webtag=$webtag&fid={$_POST['fid']}");
 
-if (isset($HTTP_GET_VARS['mode'])) {
-    if ($HTTP_GET_VARS['mode'] == 'link') {
+if (isset($_GET['mode'])) {
+    if ($_GET['mode'] == 'link') {
         $mode = 'link';
-    }elseif ($HTTP_GET_VARS['mode'] = 'folder') {
+    }elseif ($_GET['mode'] = 'folder') {
         $mode = 'folder';
     }else {
         $mode = 'link';
     }
-} elseif (isset($HTTP_POST_VARS['mode'])) {
-    if ($HTTP_POST_VARS['mode'] == 'link') {
+} elseif (isset($_POST['mode'])) {
+    if ($_POST['mode'] == 'link') {
         $mode = 'link';
-    }elseif ($HTTP_POST_VARS['mode'] = 'folder') {
+    }elseif ($_POST['mode'] = 'folder') {
         $mode = 'folder';
     }else {
         $mode = 'link';
@@ -132,13 +132,13 @@ if (isset($HTTP_GET_VARS['mode'])) {
 
 $error = false;
 
-if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
+if (isset($_POST['submit']) && $_POST['mode'] == "link") {
     // validate input
-    $fid = $HTTP_POST_VARS['fid'];
-    $uri = $HTTP_POST_VARS['uri'];
-    $name = $HTTP_POST_VARS['name'];
-    $description = $HTTP_POST_VARS['description'];
-    if (!preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $HTTP_POST_VARS['uri'])) {
+    $fid = $_POST['fid'];
+    $uri = $_POST['uri'];
+    $name = $_POST['name'];
+    $description = $_POST['description'];
+    if (!preg_match("/\b([a-z]+:\/\/([-\w]{2,}\.)*[-\w]{2,}(:\d+)?(([^\s;,.?\"'[\]() {}<>]|\S[^\s;,.?\"'[\]() {}<>])*)?)/i", $_POST['uri'])) {
         $error = $lang['notvalidURI'];
     }
     if ($name == "") $error = $lang['mustspecifyname'];
@@ -149,9 +149,9 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
         header_redirect("./links.php?webtag=$webtag&fid=$fid");
         exit;
     }
-} elseif (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "folder") {
-    $fid = $HTTP_POST_VARS['fid'];
-    $name = $HTTP_POST_VARS['name'];
+} elseif (isset($_POST['submit']) && $_POST['mode'] == "folder") {
+    $fid = $_POST['fid'];
+    $name = $_POST['name'];
     if ($name == "") $error = $lang['mustspecifyname'];
     if (!$error) {
         $name = addslashes(_htmlentities($name));
@@ -159,9 +159,9 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
         header_redirect("./links.php?webtag=$webtag&fid=$fid");
         exit;
     }
-} elseif (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
-    $fid = $HTTP_GET_VARS['fid'];
-    if ($HTTP_GET_VARS['mode'] == 'link' && !in_array($fid, array_keys($folders))) { // this did use array_key_exists(), but that's only supported in PHP/4.1.0+
+} elseif (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+    $fid = $_GET['fid'];
+    if ($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders))) { // this did use array_key_exists(), but that's only supported in PHP/4.1.0+
         html_draw_top();
         echo "<h2>{$lang['mustspecifyvalidfolder']}</h2>";
         html_draw_bottom();

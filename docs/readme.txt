@@ -49,7 +49,7 @@ A list of changes since previous Beehive versions can be found in release.txt.
 1.1 Requirements
 ================
 You need web hosting which provides:
-  - PHP 4.x (tested on 4.0.6, 4.1.x, 4.2.x, 4.3.0, 4.3.3 and 4.3.4) and
+  - PHP 4.1.0 or above (tested on 4.1.x, 4.2.x, 4.3.x and 5.0 RC1) and
   - MySQL 3.5 or above (must support compound AUTO_INCREMENT).
 
 

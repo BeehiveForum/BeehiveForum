@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.27 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.28 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -98,37 +98,37 @@ html_draw_top();
 
 $uid = bh_session_get_value('UID');
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     user_clear_word_filter();
     
-    if (isset($HTTP_POST_VARS['match']) && is_array($HTTP_POST_VARS['match'])) {
-        foreach ($HTTP_POST_VARS['match'] as $key => $value) {
-            $filter_option = (isset($HTTP_POST_VARS['filter_option'][$key])) ? $HTTP_POST_VARS['filter_option'][$key] : 0;
-            if (isset($HTTP_POST_VARS['replace'][$key]) && trim(strlen($HTTP_POST_VARS['replace'][$key])) > 0) {
-                user_add_word_filter($HTTP_POST_VARS['match'][$key], $HTTP_POST_VARS['replace'][$key], $filter_option);
+    if (isset($_POST['match']) && is_array($_POST['match'])) {
+        foreach ($_POST['match'] as $key => $value) {
+            $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
+            if (isset($_POST['replace'][$key]) && trim(strlen($_POST['replace'][$key])) > 0) {
+                user_add_word_filter($_POST['match'][$key], $_POST['replace'][$key], $filter_option);
             }else {
-                user_add_word_filter($HTTP_POST_VARS['match'][$key], "", $filter_option);
+                user_add_word_filter($_POST['match'][$key], "", $filter_option);
             }
         }
     }
     
-    if (isset($HTTP_POST_VARS['new_match']) && strlen(trim($HTTP_POST_VARS['new_match'])) > 0) {
-        $filter_option = (isset($HTTP_POST_VARS['new_filter_option'])) ? $HTTP_POST_VARS['new_filter_option'][$key] : 0;
-        if (isset($HTTP_POST_VARS['new_replace']) && strlen(trim($HTTP_POST_VARS['new_replace'])) > 0) {
-            user_add_word_filter($HTTP_POST_VARS['new_match'], $HTTP_POST_VARS['new_replace'], $filter_option);
+    if (isset($_POST['new_match']) && strlen(trim($_POST['new_match'])) > 0) {
+        $filter_option = (isset($_POST['new_filter_option'])) ? $_POST['new_filter_option'][$key] : 0;
+        if (isset($_POST['new_replace']) && strlen(trim($_POST['new_replace'])) > 0) {
+            user_add_word_filter($_POST['new_match'], $_POST['new_replace'], $filter_option);
         }else {
-            user_add_word_filter($HTTP_POST_VARS['new_match'], "", $filter_option);
+            user_add_word_filter($_POST['new_match'], "", $filter_option);
         }
     }
     
-    if (isset($HTTP_POST_VARS['use_admin_filter']) && $HTTP_POST_VARS['use_admin_filter'] == "Y") {
+    if (isset($_POST['use_admin_filter']) && $_POST['use_admin_filter'] == "Y") {
         $user_prefs['USE_ADMIN_FILTER'] = "Y";
     }else {
         $user_prefs['USE_ADMIN_FILTER'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['use_word_filter']) && $HTTP_POST_VARS['use_word_filter'] == "Y") {
+    if (isset($_POST['use_word_filter']) && $_POST['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
     }else {
         $user_prefs['USE_WORD_FILTER'] = "N";
@@ -137,9 +137,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
     user_update_prefs($uid, $user_prefs);
     if (!isset($status_text)) $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
 
-}elseif (isset($HTTP_POST_VARS['delete'])) {
+}elseif (isset($_POST['delete'])) {
 
-    list($id) = array_keys($HTTP_POST_VARS['delete']);
+    list($id) = array_keys($_POST['delete']);
     user_delete_word_filter($id);
 }
 

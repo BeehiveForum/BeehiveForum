@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.44 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.45 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -101,57 +101,57 @@ if (forum_get_setting('show_links', 'N', false)) {
 }
 
 $error = false;
-if (isset($HTTP_POST_VARS['submit']) && bh_session_get_value('UID') != 0) {
-    if ($HTTP_POST_VARS['type'] == "vote") {
-        if (isset($HTTP_POST_VARS['vote'])) {
-            links_vote($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['vote'], bh_session_get_value('UID'));
+if (isset($_POST['submit']) && bh_session_get_value('UID') != 0) {
+    if ($_POST['type'] == "vote") {
+        if (isset($_POST['vote'])) {
+            links_vote($_POST['lid'], $_POST['vote'], bh_session_get_value('UID'));
         } else {
             $error = "<b>{$lang['mustchooserating']}</b>";
         }
-        $lid = $HTTP_POST_VARS['lid'];
-    } elseif ($HTTP_POST_VARS['type'] == "comment") {
-        if ($HTTP_POST_VARS['comment'] != "") {
-            $comment = addslashes(_htmlentities($HTTP_POST_VARS['comment']));
-            links_add_comment($HTTP_POST_VARS['lid'], bh_session_get_value('UID'), $comment);
+        $lid = $_POST['lid'];
+    } elseif ($_POST['type'] == "comment") {
+        if ($_POST['comment'] != "") {
+            $comment = addslashes(_htmlentities($_POST['comment']));
+            links_add_comment($_POST['lid'], bh_session_get_value('UID'), $comment);
             $error = "<b>{$lang['commentadded']}</b>";
         } else {
             $error = "<b>{$lang['musttypecomment']}</b>";
         }
-        $lid = $HTTP_POST_VARS['lid'];
-    } elseif ($HTTP_POST_VARS['type'] == "moderation") {
-        $creator = links_get_creator_uid($HTTP_POST_VARS['lid']);
+        $lid = $_POST['lid'];
+    } elseif ($_POST['type'] == "moderation") {
+        $creator = links_get_creator_uid($_POST['lid']);
         if (perm_is_moderator() || $creator['UID'] == bh_session_get_value('UID')) {
-            if (isset($HTTP_POST_VARS['delete']) && $HTTP_POST_VARS['delete'] == "confirm") {
-                links_delete($HTTP_POST_VARS['lid']);
+            if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
+                links_delete($_POST['lid']);
                 header_redirect("./links.php?webtag=$webtag");
                 exit;
             } else {
-                links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], addslashes(_htmlentities($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], addslashes(_htmlentities($HTTP_POST_VARS['description'])));
-                $lid = $HTTP_POST_VARS['lid'];
+                links_update($_POST['lid'], $_POST['fid'], addslashes(_htmlentities($_POST['title'])), $_POST['uri'], addslashes(_htmlentities($_POST['description'])));
+                $lid = $_POST['lid'];
             }
-            if (isset($HTTP_POST_VARS['hide']) && $HTTP_POST_VARS['hide'] == "confirm") {
-                links_change_visibility($HTTP_POST_VARS['lid'], false);
-            }elseif (!isset($HTTP_POST_VARS['hide']) || (isset($HTTP_POST_VARS['hide']) && $HTTP_POST_VARS['hide'] != "confirm")) {
-                links_change_visibility($HTTP_POST_VARS['lid'], true);
+            if (isset($_POST['hide']) && $_POST['hide'] == "confirm") {
+                links_change_visibility($_POST['lid'], false);
+            }elseif (!isset($_POST['hide']) || (isset($_POST['hide']) && $_POST['hide'] != "confirm")) {
+                links_change_visibility($_POST['lid'], true);
             }
         }
     }
 }
 
-if (isset($HTTP_GET_VARS['action'])) {
-    if ($HTTP_GET_VARS['action'] == "delete_comment") {
-        $creator = links_get_comment_uid($HTTP_GET_VARS['cid']);
-        if (perm_is_moderator() || $creator['UID'] == bh_session_get_value('UID')) links_delete_comment($HTTP_GET_VARS['cid']);
+if (isset($_GET['action'])) {
+    if ($_GET['action'] == "delete_comment") {
+        $creator = links_get_comment_uid($_GET['cid']);
+        if (perm_is_moderator() || $creator['UID'] == bh_session_get_value('UID')) links_delete_comment($_GET['cid']);
     }
 }
 
-if (!isset($HTTP_GET_VARS['lid']) && !isset($lid)) {
+if (!isset($_GET['lid']) && !isset($lid)) {
     html_draw_top();
     echo "<h2>{$lang['mustprovidelinkID']}</h2>\n";
     html_draw_bottom();
     exit;
 } elseif (!isset($lid)) {
-    $lid = $HTTP_GET_VARS['lid'];
+    $lid = $_GET['lid'];
 }
 
 $link = links_get_single($lid);
@@ -166,7 +166,7 @@ $folders = links_folders_get(perm_is_moderator());
 
 html_draw_top();
 echo "<h1>{$lang['links']}: ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;:&nbsp;<a href=\"links.php?webtag=$webtag&lid=$lid&action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
-if (isset($HTTP_POST_VARS['type']) && $HTTP_POST_VARS['type'] == "vote" && bh_session_get_value('UID') != 0 && isset($HTTP_POST_VARS['vote'])) echo "<h2>Your vote has been recorded.</h2>\n";
+if (isset($_POST['type']) && $_POST['type'] == "vote" && bh_session_get_value('UID') != 0 && isset($_POST['vote'])) echo "<h2>Your vote has been recorded.</h2>\n";
 $error = $error ? $error : "&nbsp;";
 echo "<p>$error</p>\n";
 echo "<table class=\"box\" cellpadding=\"5\" cellspacing=\"2\" align=\"center\">\n";

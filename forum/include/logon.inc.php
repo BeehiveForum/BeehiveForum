@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.4 2004-04-08 13:17:20 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.5 2004-04-17 17:39:29 decoyduck Exp $ */
 
 function perform_logon($logon_main)
 {
-    global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
 
@@ -33,55 +33,55 @@ function perform_logon($logon_main)
 
     // Username array
 
-    if (isset($HTTP_COOKIE_VARS['bh_remember_username']) && is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
-        $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
+    if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
+        $username_array = $_COOKIE['bh_remember_username'];
     }else {
         $username_array = array();
     }
 
     // Password array
 
-    if (isset($HTTP_COOKIE_VARS['bh_remember_password']) && is_array($HTTP_COOKIE_VARS['bh_remember_password'])) {
-        $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
+    if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
+        $password_array = $_COOKIE['bh_remember_password'];
     }else {
         $password_array = array();
     }
 
     // Passhash array
 
-    if (isset($HTTP_COOKIE_VARS['bh_remember_passhash']) && is_array($HTTP_COOKIE_VARS['bh_remember_passhash'])) {
-        $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
+    if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
+        $passhash_array = $_COOKIE['bh_remember_passhash'];
     }else {
         $passhash_array = array();
     }
 
-    if (isset($HTTP_POST_VARS['user_logon']) && isset($HTTP_POST_VARS['user_password'])) {
+    if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
-        if (preg_match("/^ +$/", _stripslashes($HTTP_POST_VARS['user_password']))) {
+        if (preg_match("/^ +$/", _stripslashes($_POST['user_password']))) {
 
-            if (isset($HTTP_POST_VARS['user_passhash']) && is_md5(_stripslashes($HTTP_POST_VARS['user_passhash']))) {
+            if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
 
-                $logon = _stripslashes($HTTP_POST_VARS['user_logon']);
-                $passw = _stripslashes($HTTP_POST_VARS['user_password']);
-                $passh = _stripslashes($HTTP_POST_VARS['user_passhash']);
+                $logon = _stripslashes($_POST['user_logon']);
+                $passw = _stripslashes($_POST['user_password']);
+                $passh = _stripslashes($_POST['user_passhash']);
 
-                $luid = user_logon(strtoupper($HTTP_POST_VARS['user_logon']), $HTTP_POST_VARS['user_passhash'], true);
+                $luid = user_logon(strtoupper($_POST['user_logon']), $_POST['user_passhash'], true);
             }
 
         }else {
 
-            $logon = _stripslashes($HTTP_POST_VARS['user_logon']);
-            $passw = str_repeat(chr(32), strlen(_stripslashes($HTTP_POST_VARS['user_password'])));
-            $passh = md5(_stripslashes($HTTP_POST_VARS['user_password']));
+            $logon = _stripslashes($_POST['user_logon']);
+            $passw = str_repeat(chr(32), strlen(_stripslashes($_POST['user_password'])));
+            $passh = md5(_stripslashes($_POST['user_password']));
 
-            $luid = user_logon(strtoupper($HTTP_POST_VARS['user_logon']), $HTTP_POST_VARS['user_password'], false);
+            $luid = user_logon(strtoupper($_POST['user_logon']), $_POST['user_password'], false);
         }
 
         if (isset($luid) && $luid > -1) {
 
             bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
 
-            if ((strtoupper($HTTP_POST_VARS['user_logon']) == "GUEST") && (strtoupper($HTTP_POST_VARS['user_password']) == "GUEST")) {
+            if ((strtoupper($_POST['user_logon']) == "GUEST") && (strtoupper($_POST['user_password']) == "GUEST")) {
 
                 if (user_guest_enabled()) {
 
@@ -101,7 +101,7 @@ function perform_logon($logon_main)
 
                 array_unshift($username_array, $logon);
 
-                if (isset($HTTP_POST_VARS['remember_user']) && ($HTTP_POST_VARS['remember_user'] == 'Y')) {
+                if (isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y')) {
 
                     array_unshift($password_array, $passw);
                     array_unshift($passhash_array, $passh);
@@ -192,7 +192,7 @@ function perform_logon($logon_main)
 
 function draw_logon_form($logon_main)
 {
-    global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
 
@@ -200,31 +200,31 @@ function draw_logon_form($logon_main)
 
     // Username array
 
-    if (isset($HTTP_COOKIE_VARS['bh_remember_username']) && is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
-        $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
+    if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
+        $username_array = $_COOKIE['bh_remember_username'];
     }else {
         $username_array = array();
     }
 
     // Password array
 
-    if (isset($HTTP_COOKIE_VARS['bh_remember_password']) && is_array($HTTP_COOKIE_VARS['bh_remember_password'])) {
-        $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
+    if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
+        $password_array = $_COOKIE['bh_remember_password'];
     }else {
         $password_array = array();
     }
 
     // Passhash array
 
-    if (isset($HTTP_COOKIE_VARS['bh_remember_passhash']) && is_array($HTTP_COOKIE_VARS['bh_remember_passhash'])) {
-        $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
+    if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
+        $passhash_array = $_COOKIE['bh_remember_passhash'];
     }else {
         $passhash_array = array();
     }
 
     // Has the 'Other' button been clicked?
 
-    if (isset($HTTP_GET_VARS['other'])) {
+    if (isset($_GET['other'])) {
         $otherlogon = true;
     }else {
         $otherlogon = false;
@@ -241,7 +241,7 @@ function draw_logon_form($logon_main)
 
         echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_self\" onsubmit=\"return has_clicked;\">\n";
 
-        foreach($HTTP_POST_VARS as $key => $value) {
+        foreach($_POST as $key => $value) {
 	    form_input_hidden($key, _htmlentities(_stripslashes($value)));
         }
     }

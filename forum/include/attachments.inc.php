@@ -21,15 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.60 2004-04-14 19:34:44 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.61 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/edit.inc.php");
 include_once("./include/perm.inc.php");
 
 function get_attachments($uid, $aid)
 {
-    global $HTTP_SERVER_VARS, $forum_settings;
-
     $userattachments = false;
 
     $db_get_attachments = db_connect();
@@ -38,6 +36,8 @@ function get_attachments($uid, $aid)
     if (!is_md5($aid)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
+    
+    $forum_settings = get_forum_settings();
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid' AND AID = '$aid'";
@@ -65,8 +65,6 @@ function get_attachments($uid, $aid)
 
 function get_all_attachments($uid, $aid)
 {
-    global $HTTP_SERVER_VARS, $forum_settings;
-
     $userattachments = false;
 
     $db_get_all_attachments = db_connect();
@@ -75,6 +73,8 @@ function get_all_attachments($uid, $aid)
     if (!is_md5($aid)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
+    
+    $forum_settings = get_forum_settings();
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid' AND AID <> '$aid'";
@@ -102,8 +102,6 @@ function get_all_attachments($uid, $aid)
 
 function get_users_attachments($uid)
 {
-    global $HTTP_SERVER_VARS, $forum_settings;
-
     $userattachments = false;
 
     $db_get_users_attachments = db_connect();
@@ -111,6 +109,8 @@ function get_users_attachments($uid)
     if (!is_numeric($uid)) return false;
     
     if (!$table_data = get_table_prefix()) return $userattachments;
+    
+    $forum_settings = get_forum_settings();
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "WHERE UID = '$uid'";
@@ -161,14 +161,14 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
 
 function delete_attachment($uid, $hash)
 {
-    global $forum_settings;
-    
     if (!is_numeric($uid)) return false;
     if (!is_md5($hash)) return false;
 
     $db_delete_attachment = db_connect();
 
     if(!$table_data = get_table_prefix()) return false;
+    
+    $forum_settings = get_forum_settings();
    
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -224,8 +224,6 @@ function delete_attachment($uid, $hash)
 
 function get_free_attachment_space($uid)
 {
-    global $HTTP_SERVER_VARS, $forum_settings;
-    
     $used_attachment_space = 0;
 
     $db_get_free_attachment_space = db_connect();
@@ -233,6 +231,8 @@ function get_free_attachment_space($uid)
     if (!is_numeric($uid)) return false;
     
     if (!$table_data = get_table_prefix()) return 0;
+    
+    $forum_settings = get_forum_settings();
 
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.24 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.25 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/htmltools.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -99,17 +99,17 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    if (isset($HTTP_POST_VARS['sig_content']) && trim($HTTP_POST_VARS['sig_content']) != "") {
-        $t_sig_content = _stripslashes(trim($HTTP_POST_VARS['sig_content']));
+    if (isset($_POST['sig_content']) && trim($_POST['sig_content']) != "") {
+        $t_sig_content = _stripslashes(trim($_POST['sig_content']));
     }else {
         $t_sig_content = "";
     }
 
-    if (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y") {
+    if (isset($_POST['sig_html']) && $_POST['sig_html'] == "Y") {
         $t_sig_html = "Y";
     }else {
         $t_sig_html = "N";
@@ -124,8 +124,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
 	}
 
 	// If nothing's changed, don't update
-	if (isset($HTTP_POST_VARS['sig_content_old']) && $t_sig_content == $HTTP_POST_VARS['sig_content_old'] &&
-		isset($HTTP_POST_VARS['sig_html_old']) && $t_sig_html == $HTTP_POST_VARS['sig_html_old']) {
+	if (isset($_POST['sig_content_old']) && $t_sig_content == $_POST['sig_content_old'] &&
+		isset($_POST['sig_html_old']) && $t_sig_html == $_POST['sig_html_old']) {
 		$valid = false;
 	}
 
@@ -150,7 +150,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         // IIS bug prevents redirect at same time as setting cookies.
 
-        if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+        if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
             header_redirect("./edit_signature.php?webtag=$webtag&updated=true");
 
@@ -191,7 +191,7 @@ echo "<h1>{$lang['editsignature']}</h1>\n";
 
 if (!empty($error_html)) {
     echo $error_html;
-}else if (isset($HTTP_GET_VARS['updated'])) {
+}else if (isset($_GET['updated'])) {
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.30 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.31 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -65,23 +65,23 @@ $webtag = get_webtag();
 
 // Get the final_uri from the URL
 
-if (isset($HTTP_GET_VARS['final_uri'])) {
-    $final_uri = rawurldecode($HTTP_GET_VARS['final_uri']);
+if (isset($_GET['final_uri'])) {
+    $final_uri = rawurldecode($_GET['final_uri']);
 }else {
     $final_uri = "./lthread_list.php?webtag=$webtag";
 }
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
-  if (isset($HTTP_POST_VARS['logon']) && isset($HTTP_POST_VARS['password'])) {
+  if (isset($_POST['logon']) && isset($_POST['password'])) {
 
-    $luid = user_logon(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['password']);
+    $luid = user_logon(strtoupper($_POST['logon']), $_POST['password']);
 
     if ($luid > -1) {
 
       bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
 
-      if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
+      if ((strtoupper($_POST['logon']) == 'GUEST') && (strtoupper($_POST['password']) == 'GUEST')) {
 
         bh_session_init(0); // Use UID 0 for guest account.
 
@@ -91,13 +91,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       }
       
-      if (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == 'Y') {
+      if (isset($_POST['remember_user']) && $_POST['remember_user'] == 'Y') {
       
-          bh_setcookie("bh_light_remember_username", $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS);
-	  bh_setcookie("bh_light_remember_password", $HTTP_POST_VARS['password'], time() + YEAR_IN_SECONDS);
+          bh_setcookie("bh_light_remember_username", $_POST['logon'], time() + YEAR_IN_SECONDS);
+	  bh_setcookie("bh_light_remember_password", $_POST['password'], time() + YEAR_IN_SECONDS);
       }
 
-      if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
+      if (!strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
           header_redirect("./lthread_list.php?webtag=$webtag");
 
@@ -147,12 +147,12 @@ echo "<p>{$lang['welcometolight']}</p>\n";
 echo "  <form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"POST\">\n";
 
 echo "<p>{$lang['username']}: ";
-echo light_form_input_text("logon", (isset($HTTP_COOKIE_VARS['bh_light_remember_username']) ? $HTTP_COOKIE_VARS['bh_light_remember_username'] : "")). "</p>\n";
+echo light_form_input_text("logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";
 
 echo "<p>{$lang['passwd']}: ";
-echo light_form_input_password("password", (isset($HTTP_COOKIE_VARS['bh_light_remember_password']) ? $HTTP_COOKIE_VARS['bh_light_remember_password'] : "")). "</p>\n";
+echo light_form_input_password("password", (isset($_COOKIE['bh_light_remember_password']) ? $_COOKIE['bh_light_remember_password'] : "")). "</p>\n";
 
-echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($HTTP_COOKIE_VARS['bh_light_remember_username']) && isset($HTTP_COOKIE_VARS['bh_light_remember_password']) ? true : false)), "</p>\n";
+echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
 
 echo "<p>", form_submit('submit', $lang['logon']), "</p>\n";
 

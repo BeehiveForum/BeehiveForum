@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.40 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.41 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -103,31 +103,31 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     admin_clear_word_filter();
     
-    if (isset($HTTP_POST_VARS['match']) && is_array($HTTP_POST_VARS['match'])) {
-        foreach ($HTTP_POST_VARS['match'] as $key => $value) {
-            $filter_option = (isset($HTTP_POST_VARS['filter_option'][$key])) ? $HTTP_POST_VARS['filter_option'][$key] : 0;
-            if (isset($HTTP_POST_VARS['replace'][$key]) && trim(strlen($HTTP_POST_VARS['replace'][$key])) > 0) {
-                admin_add_word_filter($HTTP_POST_VARS['match'][$key], $HTTP_POST_VARS['replace'][$key], $filter_option);
+    if (isset($_POST['match']) && is_array($_POST['match'])) {
+        foreach ($_POST['match'] as $key => $value) {
+            $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
+            if (isset($_POST['replace'][$key]) && trim(strlen($_POST['replace'][$key])) > 0) {
+                admin_add_word_filter($_POST['match'][$key], $_POST['replace'][$key], $filter_option);
             }else {
-                admin_add_word_filter($HTTP_POST_VARS['match'][$key], "", $filter_option);
+                admin_add_word_filter($_POST['match'][$key], "", $filter_option);
             }
         }
     }    
     
-    if (isset($HTTP_POST_VARS['new_match']) && strlen(trim($HTTP_POST_VARS['new_match'])) > 0) {
-        $new_filter_option = (isset($HTTP_POST_VARS['new_filter_option'][$key])) ? $HTTP_POST_VARS['new_filter_option'][$key] : 0;
-        if (isset($HTTP_POST_VARS['new_replace']) && strlen(trim($HTTP_POST_VARS['new_replace'])) > 0) {
-            admin_add_word_filter($HTTP_POST_VARS['new_match'], $HTTP_POST_VARS['new_replace'], $new_filter_option);
+    if (isset($_POST['new_match']) && strlen(trim($_POST['new_match'])) > 0) {
+        $new_filter_option = (isset($_POST['new_filter_option'][$key])) ? $_POST['new_filter_option'][$key] : 0;
+        if (isset($_POST['new_replace']) && strlen(trim($_POST['new_replace'])) > 0) {
+            admin_add_word_filter($_POST['new_match'], $_POST['new_replace'], $new_filter_option);
         }else {
-            admin_add_word_filter($HTTP_POST_VARS['new_match'], "", $new_filter_option);
+            admin_add_word_filter($_POST['new_match'], "", $new_filter_option);
         }
     }
     
-    if (isset($HTTP_POST_VARS['admin_force_word_filter']) && $HTTP_POST_VARS['admin_force_word_filter'] == "Y") {
+    if (isset($_POST['admin_force_word_filter']) && $_POST['admin_force_word_filter'] == "Y") {
         $new_forum_settings['admin_force_word_filter'] = "Y";
     }else {
         $new_forum_settings['admin_force_word_filter'] = "N";
@@ -138,7 +138,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     $uid = bh_session_get_value('UID');        
     admin_addlog($uid, 0, 0, 0, 0, 0, 28);
     
-    if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+    if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
         header_redirect("./admin_wordfilter.php?webtag=$webtag&updated=true");
 
@@ -163,9 +163,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
         exit;
     }    
 
-}elseif (isset($HTTP_POST_VARS['delete'])) {
+}elseif (isset($_POST['delete'])) {
 
-    list($id) = array_keys($HTTP_POST_VARS['delete']);
+    list($id) = array_keys($_POST['delete']);
     admin_delete_word_filter($id);
 }
 
@@ -173,7 +173,7 @@ $word_filter_array = admin_get_word_filter();
 
 echo "<h1>{$lang['admin']} : {$lang['editwordfilter']}</h1>\n";
 
-if (isset($HTTP_GET_VARS['updated'])) {
+if (isset($_GET['updated'])) {
     echo "<h2>{$lang['wordfilterupdated']}</h2>\n";
 }
 

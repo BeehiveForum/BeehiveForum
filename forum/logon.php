@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.131 2004-04-11 22:37:03 decoyduck Exp $ */
+/* $Id: logon.php,v 1.132 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -71,21 +71,21 @@ $webtag = get_webtag();
 
 // Retrieve the final_uri request
 
-if (isset($HTTP_GET_VARS['final_uri'])) {
+if (isset($_GET['final_uri'])) {
 
-    $final_uri = rawurldecode($HTTP_GET_VARS['final_uri']);
+    $final_uri = rawurldecode($_GET['final_uri']);
 
-}elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $final_uri = "./discussion.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
+    $final_uri = "./discussion.php?webtag=$webtag&msg=". $_GET['msg'];
 
-}elseif (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
+}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    $final_uri = "./discussion.php?webtag=$webtag&folder=". $HTTP_GET_VARS['folder'];
+    $final_uri = "./discussion.php?webtag=$webtag&folder=". $_GET['folder'];
 
-}elseif (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
+}elseif (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-    $final_uri = "./pm.php?webtag=$webtag&mid=". $HTTP_GET_VARS['pmid'];
+    $final_uri = "./pm.php?webtag=$webtag&mid=". $_GET['pmid'];
 }
 
 // If the final_uri contains logout.php then unset it.
@@ -98,31 +98,31 @@ if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
 
 // Username array
 
-if (isset($HTTP_COOKIE_VARS['bh_remember_username']) && is_array($HTTP_COOKIE_VARS['bh_remember_username'])) {
-    $username_array = $HTTP_COOKIE_VARS['bh_remember_username'];
+if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
+    $username_array = $_COOKIE['bh_remember_username'];
 }else {
     $username_array = array();
 }
 
 // Password array
 
-if (isset($HTTP_COOKIE_VARS['bh_remember_password']) && is_array($HTTP_COOKIE_VARS['bh_remember_password'])) {
-    $password_array = $HTTP_COOKIE_VARS['bh_remember_password'];
+if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
+    $password_array = $_COOKIE['bh_remember_password'];
 }else {
     $password_array = array();
 }
 
 // Passhash array
 
-if (isset($HTTP_COOKIE_VARS['bh_remember_passhash']) && is_array($HTTP_COOKIE_VARS['bh_remember_passhash'])) {
-    $passhash_array = $HTTP_COOKIE_VARS['bh_remember_passhash'];
+if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
+    $passhash_array = $_COOKIE['bh_remember_passhash'];
 }else {
     $passhash_array = array();
 }
 
 // Delete the user's cookie as requested and send them back to the login form.
 
-if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == 'yes') {
+if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
     for ($i = 0; $i < sizeof($username_array); $i++) {
 
@@ -133,7 +133,7 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
     bh_session_end();
 
-    if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+    if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
         if (isset($final_uri)) {
             $final_uri = rawurlencode($final_uri);
@@ -174,13 +174,13 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
         exit;
     }
 
-}elseif (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+}elseif (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (perform_logon(true)) {
 
         // IIS bug prevents redirect at same time as setting cookies.
         
-        if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], "Microsoft-IIS")) {
+        if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], "Microsoft-IIS")) {
 
             if (isset($final_uri)) {
                 $final_uri = rawurlencode($final_uri);

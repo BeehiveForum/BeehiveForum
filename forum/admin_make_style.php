@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.44 2004-04-11 21:13:12 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.45 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -105,20 +105,20 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 
 $success = false;
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
-    if (isset($HTTP_POST_VARS['stylename']) && strlen(trim($HTTP_POST_VARS['stylename'])) > 0) {
+    if (isset($_POST['stylename']) && strlen(trim($_POST['stylename'])) > 0) {
 
         // Get the style filename
         
-        $stylename = trim($HTTP_POST_VARS['stylename']);
+        $stylename = trim($_POST['stylename']);
         $stylename = strtolower(str_replace(" ", "_", $stylename));
         $stylename = preg_replace("/[^a-z|0-9|'_']/", "", $stylename);
         
         // Get the style desc - if no description use the filename.
         
-        if (isset($HTTP_POST_VARS['styledesc']) && strlen(trim($HTTP_POST_VARS['styledesc'])) > 0) {
-            $styledesc = trim($HTTP_POST_VARS['styledesc']);
+        if (isset($_POST['styledesc']) && strlen(trim($_POST['styledesc'])) > 0) {
+            $styledesc = trim($_POST['styledesc']);
         }else {
             $styledesc = $stylename;
         }
@@ -131,7 +131,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         
         // Modify it with the colours specified by the post data.
         
-        foreach ($HTTP_POST_VARS['elements'] as $key => $value) {
+        foreach ($_POST['elements'] as $key => $value) {
             $stylesheet = str_replace("\$elements[$key]", strtoupper($value), $stylesheet);
             $stylesheet = str_replace("\$text_colour[$key]", strtoupper(contrastFont($value)), $stylesheet);
         }        
@@ -224,8 +224,8 @@ echo "<h1>{$lang['admin']} : {$lang['createforumstyle']}</h1>\n";
 // Check to see if any of the required variables were passed via the URL Query or POST_VARS
 // Otherwise create some random numbers to work with.
 
-if (isset($HTTP_GET_VARS['seed'])) {
-    $seed = substr(preg_replace("/[^0-9|A-F]/i", "", $HTTP_GET_VARS['seed']), 0, 6);
+if (isset($_GET['seed'])) {
+    $seed = substr(preg_replace("/[^0-9|A-F]/i", "", $_GET['seed']), 0, 6);
     list ($red, $green, $blue) = hexToDec($seed);
 }else {
     $red = rand(0, 255);
@@ -233,7 +233,7 @@ if (isset($HTTP_GET_VARS['seed'])) {
     $blue = rand(0, 255);
 }
 
-if (isset($HTTP_GET_VARS['mode']) && $HTTP_GET_VARS['mode'] == 'rand') {
+if (isset($_GET['mode']) && $_GET['mode'] == 'rand') {
     $mode = 'rand';
 }else {
     $mode = '';
@@ -273,11 +273,11 @@ echo "            <td colspan=\"2\" class=\"posthead\">\n";
 echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
-    $elements = $HTTP_POST_VARS['elements'];
+    $elements = $_POST['elements'];
 
-    foreach ($HTTP_POST_VARS['elements'] as $key => $value) {
+    foreach ($_POST['elements'] as $key => $value) {
 
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $value, "\" align=\"center\">\n";
         echo "                    <a href=\"admin_make_style.php?webtag=$webtag&seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
@@ -387,11 +387,11 @@ reset($elements);
 echo "                      <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                        <tr>\n";
 echo "                          <td class=\"posthead\">{$lang['filename']}:</td>\n";
-echo "                          <td>", form_input_text("stylename", isset($HTTP_POST_VARS['stylename']) ? $HTTP_POST_VARS['stylename'] : '', 35, 10), "</td>\n";
+echo "                          <td>", form_input_text("stylename", isset($_POST['stylename']) ? $_POST['stylename'] : '', 35, 10), "</td>\n";
 echo "                        </tr>\n";
 echo "                        <tr>\n";
 echo "                          <td class=\"posthead\">{$lang['styledesc']}:</td>\n";
-echo "                          <td>", form_input_text("styledesc", isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : '', 35, 20), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
+echo "                          <td>", form_input_text("styledesc", isset($_POST['styledesc']) ? $_POST['styledesc'] : '', 35, 20), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </form>\n";

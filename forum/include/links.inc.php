@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.37 2004-04-14 20:39:12 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.38 2004-04-17 17:39:29 decoyduck Exp $ */
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0) // setting $invisible to true gets links that are marked as not visible too
 {
@@ -126,8 +126,6 @@ function links_add_folder($fid, $name, $visible = false)
 
 function links_display_folder_path($fid, $folders, $links = true, $link_last_too = false, $link_base = false)
 {
-    global $HTTP_SERVER_VARS;
-
     $webtag = get_webtag();
 
     $tree_fid = $fid;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.25 2004-04-13 14:04:03 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.26 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,7 +50,7 @@ include_once("./include/emoticons.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -64,7 +64,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -106,33 +106,33 @@ $error_html = "";
 
 $available_langs = lang_get_available(); // get list of available languages
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     $valid = true;
 
-    if (isset($HTTP_POST_VARS['forum_name']) && strlen(trim($HTTP_POST_VARS['forum_name'])) > 0) {
-        $new_forum_settings['forum_name'] = _htmlentities(trim($HTTP_POST_VARS['forum_name']));
+    if (isset($_POST['forum_name']) && strlen(trim($_POST['forum_name'])) > 0) {
+        $new_forum_settings['forum_name'] = _htmlentities(trim($_POST['forum_name']));
     }else {
         $error_html = "<h2>{$lang['mustsupplyforumname']}</h2>\n";
         $valid = false;
     }
     
-    if (isset($HTTP_POST_VARS['forum_email']) && strlen(trim($HTTP_POST_VARS['forum_email'])) > 0) {
-        $new_forum_settings['forum_email'] = trim($HTTP_POST_VARS['forum_email']);
+    if (isset($_POST['forum_email']) && strlen(trim($_POST['forum_email'])) > 0) {
+        $new_forum_settings['forum_email'] = trim($_POST['forum_email']);
     }else {
         $error_html = "<h2>{$lang['mustsupplyforumemail']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['forum_desc']) && strlen(trim($HTTP_POST_VARS['forum_desc'])) > 0) {
-        $new_forum_settings['forum_desc'] = trim($HTTP_POST_VARS['forum_desc']);
+    if (isset($_POST['forum_desc']) && strlen(trim($_POST['forum_desc'])) > 0) {
+        $new_forum_settings['forum_desc'] = trim($_POST['forum_desc']);
     }else {
         $new_forum_settings['forum_desc'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['default_style']) && strlen(trim($HTTP_POST_VARS['default_style'])) > 0) {
+    if (isset($_POST['default_style']) && strlen(trim($_POST['default_style'])) > 0) {
 
-        $new_forum_settings['default_style'] = trim($HTTP_POST_VARS['default_style']);
+        $new_forum_settings['default_style'] = trim($_POST['default_style']);
         
         if (!style_exists($new_forum_settings['default_style'])) {
         
@@ -145,8 +145,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['default_emoticons']) && strlen(trim($HTTP_POST_VARS['default_emoticons'])) > 0) {
-        $new_forum_settings['default_emoticons'] = trim($HTTP_POST_VARS['default_emoticons']);
+    if (isset($_POST['default_emoticons']) && strlen(trim($_POST['default_emoticons'])) > 0) {
+        $new_forum_settings['default_emoticons'] = trim($_POST['default_emoticons']);
 
         if (!emoticons_set_exists($new_forum_settings['default_emoticons'])) {
             $error_html = "<h2>{$lang['unknownemoticonsname']}</h2>\n";
@@ -158,8 +158,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
     
-    if (isset($HTTP_POST_VARS['default_language']) && strlen(trim($HTTP_POST_VARS['default_language'])) > 0) {
-        $new_forum_settings['default_language'] = trim($HTTP_POST_VARS['default_language']);
+    if (isset($_POST['default_language']) && strlen(trim($_POST['default_language'])) > 0) {
+        $new_forum_settings['default_language'] = trim($_POST['default_language']);
 
         if (!_in_array($new_forum_settings['default_language'], $available_langs)) {
         
@@ -172,73 +172,73 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
     
-    if (isset($HTTP_POST_VARS['show_friendly_errors']) && $HTTP_POST_VARS['show_friendly_errors'] == "Y") {
+    if (isset($_POST['show_friendly_errors']) && $_POST['show_friendly_errors'] == "Y") {
         $new_forum_settings['show_friendly_errors'] = "Y";
     }else {
         $new_forum_settings['show_friendly_errors'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['gzip_compress_output']) && $HTTP_POST_VARS['gzip_compress_output'] == "Y") {
+    if (isset($_POST['gzip_compress_output']) && $_POST['gzip_compress_output'] == "Y") {
         $new_forum_settings['gzip_compress_output'] = "Y";
     }else {
         $new_forum_settings['gzip_compress_output'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['gzip_compress_level']) && is_numeric($HTTP_POST_VARS['gzip_compress_level'])) {
-        if ($HTTP_POST_VARS['gzip_compress_level'] > 0 && $HTTP_POST_VARS['gzip_compress_level'] < 10) {
-            $new_forum_settings['gzip_compress_level'] = $HTTP_POST_VARS['gzip_compress_level'];
+    if (isset($_POST['gzip_compress_level']) && is_numeric($_POST['gzip_compress_level'])) {
+        if ($_POST['gzip_compress_level'] > 0 && $_POST['gzip_compress_level'] < 10) {
+            $new_forum_settings['gzip_compress_level'] = $_POST['gzip_compress_level'];
         }else {
-            $HTTP_POST_VARS['gzip_compress_level'] = 1;
+            $_POST['gzip_compress_level'] = 1;
         }
     }else {
         $new_forum_settings['gzip_compress_level'] = 1;
     }
     
-    if (isset($HTTP_POST_VARS['cookie_domain']) && strlen(trim($HTTP_POST_VARS['cookie_domain'])) > 0) {
-        $new_forum_settings['cookie_domain'] = trim($HTTP_POST_VARS['cookie_domain']);
+    if (isset($_POST['cookie_domain']) && strlen(trim($_POST['cookie_domain'])) > 0) {
+        $new_forum_settings['cookie_domain'] = trim($_POST['cookie_domain']);
     }else {
         $new_forum_settings['cookie_domain'] = "";
     }
     
-    if (isset($HTTP_POST_VARS['allow_post_editing']) && $HTTP_POST_VARS['allow_post_editing'] == "Y") {
+    if (isset($_POST['allow_post_editing']) && $_POST['allow_post_editing'] == "Y") {
         $new_forum_settings['allow_post_editing'] = "Y";
     }else {
         $new_forum_settings['allow_post_editing'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['post_edit_time']) && is_numeric($HTTP_POST_VARS['post_edit_time'])) {
-        $new_forum_settings['post_edit_time'] = $HTTP_POST_VARS['post_edit_time'];
+    if (isset($_POST['post_edit_time']) && is_numeric($_POST['post_edit_time'])) {
+        $new_forum_settings['post_edit_time'] = $_POST['post_edit_time'];
     }else {
         $new_forum_settings['post_edit_time'] = 0;
     }
     
-    if (isset($HTTP_POST_VARS['maximum_post_length']) && is_numeric($HTTP_POST_VARS['maximum_post_length'])) {
-        $new_forum_settings['maximum_post_length'] = $HTTP_POST_VARS['maximum_post_length'];
+    if (isset($_POST['maximum_post_length']) && is_numeric($_POST['maximum_post_length'])) {
+        $new_forum_settings['maximum_post_length'] = $_POST['maximum_post_length'];
     }else {
         $new_forum_settings['maximum_post_length'] = 6226;
     }
     
-    if (isset($HTTP_POST_VARS['allow_polls']) && $HTTP_POST_VARS['allow_polls'] == "Y") {
+    if (isset($_POST['allow_polls']) && $_POST['allow_polls'] == "Y") {
         $new_forum_settings['allow_polls'] = "Y";
     }else {
         $new_forum_settings['allow_polls'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['search_min_word_length']) && is_numeric($HTTP_POST_VARS['search_min_word_length'])) {
-        $new_forum_settings['search_min_word_length'] = $HTTP_POST_VARS['search_min_word_length'];
+    if (isset($_POST['search_min_word_length']) && is_numeric($_POST['search_min_word_length'])) {
+        $new_forum_settings['search_min_word_length'] = $_POST['search_min_word_length'];
     }else {
         $new_forum_settings['search_min_word_length'] = 3;
     }
     
-    if (isset($HTTP_POST_VARS['session_cutoff']) && is_numeric($HTTP_POST_VARS['session_cutoff'])) {
-        $new_forum_settings['session_cutoff'] = $HTTP_POST_VARS['session_cutoff'];
+    if (isset($_POST['session_cutoff']) && is_numeric($_POST['session_cutoff'])) {
+        $new_forum_settings['session_cutoff'] = $_POST['session_cutoff'];
     }else {
         $new_forum_settings['session_cutoff'] = 86400;
     }
     
-    if (isset($HTTP_POST_VARS['active_sess_cutoff']) && is_numeric($HTTP_POST_VARS['active_sess_cutoff'])) {
-        if ($HTTP_POST_VARS['active_sess_cutoff'] < $HTTP_POST_VARS['session_cutoff']) {
-            $new_forum_settings['active_sess_cutoff'] = $HTTP_POST_VARS['active_sess_cutoff'];
+    if (isset($_POST['active_sess_cutoff']) && is_numeric($_POST['active_sess_cutoff'])) {
+        if ($_POST['active_sess_cutoff'] < $_POST['session_cutoff']) {
+            $new_forum_settings['active_sess_cutoff'] = $_POST['active_sess_cutoff'];
         }else {
             $error_html = "<h2>{$lang['activesessiongreaterthansession']}</h2>\n";
             $valid = false;
@@ -247,51 +247,51 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $new_forum_settings['active_sess_cutoff'] = 900;
     }
     
-    if (isset($HTTP_POST_VARS['show_stats']) && $HTTP_POST_VARS['show_stats'] == "Y") {
+    if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $new_forum_settings['show_stats'] = "Y";
     }else {
         $new_forum_settings['show_stats'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['show_pms']) && $HTTP_POST_VARS['show_pms'] == "Y") {
+    if (isset($_POST['show_pms']) && $_POST['show_pms'] == "Y") {
         $new_forum_settings['show_pms'] = "Y";
     }else {
         $new_forum_settings['show_pms'] = "N";
     }
 
-    if (isset($HTTP_POST_VARS['pm_max_user_space']) && is_numeric($HTTP_POST_VARS['pm_max_user_space'])) {
-        $new_forum_settings['pm_max_user_space'] = ($HTTP_POST_VARS['pm_max_user_space'] * 1024);
+    if (isset($_POST['pm_max_user_space']) && is_numeric($_POST['pm_max_user_space'])) {
+        $new_forum_settings['pm_max_user_space'] = ($_POST['pm_max_user_space'] * 1024);
     }else {
         $new_forum_settings['pm_max_user_space'] = 102400;
     }
     
-    if (isset($HTTP_POST_VARS['pm_allow_attachments']) && $HTTP_POST_VARS['pm_allow_attachments'] == "Y") {
+    if (isset($_POST['pm_allow_attachments']) && $_POST['pm_allow_attachments'] == "Y") {
         $new_forum_settings['pm_allow_attachments'] = "Y";
     }else {
         $new_forum_settings['pm_allow_attachments'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['guest_account_enabled']) && $HTTP_POST_VARS['guest_account_enabled'] == "Y") {
+    if (isset($_POST['guest_account_enabled']) && $_POST['guest_account_enabled'] == "Y") {
         $new_forum_settings['guest_account_enabled'] = "Y";
     }else {
         $new_forum_settings['guest_account_enabled'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['auto_logon']) && $HTTP_POST_VARS['auto_logon'] == "Y") {
+    if (isset($_POST['auto_logon']) && $_POST['auto_logon'] == "Y") {
         $new_forum_settings['auto_logon'] = "Y";
     }else {
         $new_forum_settings['auto_logon'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['attachments_enabled']) && $HTTP_POST_VARS['attachments_enabled'] == "Y") {
+    if (isset($_POST['attachments_enabled']) && $_POST['attachments_enabled'] == "Y") {
         $new_forum_settings['attachments_enabled'] = "Y";
     }else {
         $new_forum_settings['attachments_enabled'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['attachment_dir']) && strlen(trim($HTTP_POST_VARS['attachment_dir'])) > 0) {
+    if (isset($_POST['attachment_dir']) && strlen(trim($_POST['attachment_dir'])) > 0) {
 
-        $new_forum_settings['attachment_dir'] = trim($HTTP_POST_VARS['attachment_dir']);
+        $new_forum_settings['attachment_dir'] = trim($_POST['attachment_dir']);
         
         if (!(@is_dir($new_forum_settings['attachment_dir']))) {
             @mkdir($new_forum_settings['attachment_dir'], 0755);
@@ -314,19 +314,19 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $valid = false;
     }
     
-    if (isset($HTTP_POST_VARS['attachments_max_user_space']) && is_numeric($HTTP_POST_VARS['attachments_max_user_space'])) {
-        $new_forum_settings['attachments_max_user_space'] = ($HTTP_POST_VARS['attachments_max_user_space'] * 1024) * 1024;
+    if (isset($_POST['attachments_max_user_space']) && is_numeric($_POST['attachments_max_user_space'])) {
+        $new_forum_settings['attachments_max_user_space'] = ($_POST['attachments_max_user_space'] * 1024) * 1024;
     }else {
         $new_forum_settings['attachments_max_user_space'] = 1048576; // 1MB in bytes
     }
     
-    if (isset($HTTP_POST_VARS['attachments_allow_embed']) && $HTTP_POST_VARS['attachments_allow_embed'] == "Y") {
+    if (isset($_POST['attachments_allow_embed']) && $_POST['attachments_allow_embed'] == "Y") {
         $new_forum_settings['attachments_allow_embed'] = "Y";
     }else {
         $new_forum_settings['attachments_allow_embed'] = "N";
     }
     
-    if (isset($HTTP_POST_VARS['attachment_use_old_method']) && $HTTP_POST_VARS['attachment_use_old_method'] == "Y") {
+    if (isset($_POST['attachment_use_old_method']) && $_POST['attachment_use_old_method'] == "Y") {
         $new_forum_settings['attachment_use_old_method'] = "Y";
     }else {
         $new_forum_settings['attachment_use_old_method'] = "N";
@@ -339,7 +339,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $uid = bh_session_get_value('UID');        
         admin_addlog($uid, 0, 0, 0, 0, 0, 29);
         
-        if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+        if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
             header_redirect("./admin_forum_settings.php?webtag=$webtag&updated=true");
 
@@ -380,7 +380,7 @@ if ($webtag) {
 
 if (!empty($error_html)) {
     echo $error_html;
-}else if (isset($HTTP_GET_VARS['updated'])) {
+}else if (isset($_GET['updated'])) {
     echo "<h2>{$lang['forumsettingsupdated']}</h2>\n";
 }
 
@@ -542,7 +542,7 @@ echo "                  <td colspan=\"3\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td>{$lang['cookiedomain']}:</td>\n";
-echo "                        <td colspan=\"2\">", form_input_text("cookie_domain", forum_get_setting('cookie_domain', false, $HTTP_SERVER_VARS['HTTP_HOST']), 45, 32), "&nbsp;</td>\n";
+echo "                        <td colspan=\"2\">", form_input_text("cookie_domain", forum_get_setting('cookie_domain', false, $_SERVER['HTTP_HOST']), 45, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

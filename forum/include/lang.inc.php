@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.13 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.14 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/session.inc.php");
@@ -36,12 +36,12 @@ if ($pref_language && $pref_language != "") { // if the user has expressed a pre
     }
 }
 
-if (!isset($HTTP_SERVER_VARS['HTTP_ACCEPT_LANGUAGE'])) {
+if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
    include_once("./include/languages/{$default_language}.inc.php"); // if the browser doesn't send an Accept-Language header, give up.
    return;
 }
 
-$langs = preg_split("/\s*,\s*/", $HTTP_SERVER_VARS['HTTP_ACCEPT_LANGUAGE']); // split the provided Accept-Language string into individual languages
+$langs = preg_split("/\s*,\s*/", $_SERVER['HTTP_ACCEPT_LANGUAGE']); // split the provided Accept-Language string into individual languages
 
 foreach ($langs as $key => $value) { // work out what the q values associated with each language are
     if (strstr($value, ";q=")) {

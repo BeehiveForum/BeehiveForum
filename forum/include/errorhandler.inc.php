@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.43 2004-04-12 23:51:58 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.44 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/lang.inc.php");
@@ -38,7 +38,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
     if (error_reporting()) {
 
-        global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS, $lang, $forum_settings;
+        global $lang;
 
         srand((double)microtime()*1000000);
 
@@ -58,21 +58,21 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "<p>{$lang['errorpleasewaitandretry']}</p>\n";
             echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
 
-            foreach ($HTTP_POST_VARS as $key => $value) {
+            foreach ($_POST as $key => $value) {
                 echo "<input type=\"hidden\" name=\"$key}\" value=\"", _htmlentities($value), "\">\n";
             }
 
             echo "<input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"{$lang['retry']}\" />\n";
 
-            if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+            if (isset($_GET['retryerror']) && basename($_SERVER['PHP_SELF']) == 'post.php') {
 
                 echo "<p>{$lang['multipleerroronpost']}</p>\n";
-                echo "<textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), "</textarea>\n";
+                echo "<textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea>\n";
 
-                if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
+                if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
                     echo "<p>{$lang['replymsgnumber']}:</p>\n";
-                    echo "<input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$HTTP_GET_VARS['replyto']}\">\n";
+                    echo "<input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\">\n";
 
                 }
 
@@ -131,7 +131,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "        <tr>\n";
             echo "          <td>\n";
 
-            foreach ($HTTP_POST_VARS as $key => $value) {
+            foreach ($_POST as $key => $value) {
                 echo "<input type=\"hidden\" name=\"{$key}\" value=\"", _htmlentities($value), "\">\n";
             }
 
@@ -141,7 +141,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"{$lang['retry']}\" /></td>\n";
             echo "        </tr>\n";
 
-            if (isset($HTTP_GET_VARS['retryerror']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+            if (isset($_GET['retryerror']) && basename($_SERVER['PHP_SELF']) == 'post.php') {
 
                 echo "        <tr>\n";
                 echo "          <td>&nbsp;</td>\n";
@@ -156,10 +156,10 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 echo "          <td>&nbsp;</td>\n";
                 echo "        </tr>\n";
                 echo "        <tr>\n";
-                echo "          <td><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($HTTP_POST_VARS['t_content'])), "</textarea></td>\n";
+                echo "          <td><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea></td>\n";
                 echo "        </tr>\n";
 
-                if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
+                if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
                     echo "        <tr>\n";
                     echo "          <td>&nbsp;</td>\n";
@@ -168,7 +168,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                     echo "          <td class=\"postbody\">{$lang['replymsgnumber']}:</td>\n";
                     echo "        </tr>\n";
                     echo "        <tr>\n";
-                    echo "          <td><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$HTTP_GET_VARS['replyto']}\"></td>\n";
+                    echo "          <td><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\"></td>\n";
                     echo "        </tr>\n";
 
                 }

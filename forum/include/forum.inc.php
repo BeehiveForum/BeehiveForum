@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.51 2004-04-12 19:44:43 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.52 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -34,18 +34,16 @@ include_once("./include/session.inc.php");
 
 function get_table_prefix()
 {
-    global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
-
     static $forum_data = false;
 
     if (!$forum_data) {
     
         $db_get_table_prefix = db_connect();    
     
-        if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
-            $webtag = trim($HTTP_GET_VARS['webtag']);
-        }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
-            $webtag = trim($HTTP_POST_VARS['webtag']);
+        if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
+            $webtag = trim($_GET['webtag']);
+        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {        
+            $webtag = trim($_POST['webtag']);
         }else {
             $webtag = "";
         }
@@ -69,18 +67,16 @@ function get_table_prefix()
 
 function get_webtag()
 {
-    global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
-
     static $webtag_data = false;
 
     if (!$webtag_data) {
     
         $db_get_webtag = db_connect();    
     
-        if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
-            $webtag = trim($HTTP_GET_VARS['webtag']);
-        }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
-            $webtag = trim($HTTP_POST_VARS['webtag']);
+        if (isset($_GET['webtag']) && strlen(trim($_GET['webtag'])) > 0) {
+            $webtag = trim($_GET['webtag']);
+        }else if (isset($_POST['webtag']) && strlen(trim($_POST['webtag'])) > 0) {        
+            $webtag = trim($_POST['webtag']);
         }else {
             $webtag = "";
         }
@@ -139,11 +135,11 @@ function get_webtag()
 
 function get_forum_settings()
 {
-    global $forum_settings;
-    
     $db_get_forum_settings = db_connect();
     
     if (!$table_data = get_table_prefix()) $table_data['FID'] == 0;
+    
+    $forum_settings = get_forum_settings();
     
     $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_get_forum_settings);
@@ -190,8 +186,8 @@ function save_forum_settings($forum_settings_array)
 
 function forum_get_setting($setting_name, $value = false, $default = false)
 {
-    global $forum_settings;
-    
+    $forum_settings = get_forum_settings();
+   
     if (isset($forum_settings[$setting_name])) {
         if ($value) {
             if (strtoupper($forum_settings[$setting_name]) == strtoupper($value)) {

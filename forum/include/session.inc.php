@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.100 2004-04-14 21:28:02 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.101 2004-04-17 17:39:30 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -33,12 +33,12 @@ include_once("./include/user.inc.php");
 
 function bh_session_check()
 {
-    global $HTTP_COOKIE_VARS, $forum_settings;
-    
     ip_check();
 
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
+    
+    $forum_settings = get_forum_settings();
 
     // Current server time.
 
@@ -53,9 +53,9 @@ function bh_session_check()
     // we have stored in the database then the user gets logged out
     // automatically.
 
-    if (isset($HTTP_COOKIE_VARS['bh_sess_hash']) && is_md5($HTTP_COOKIE_VARS['bh_sess_hash'])) {
+    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
 
-        $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
+        $user_hash = $_COOKIE['bh_sess_hash'];
 
         if ($table_data = get_table_prefix()) {
 
@@ -188,12 +188,12 @@ function bh_session_get_value($session_key)
 
 function bh_session_init($uid)
 {
-    global $HTTP_COOKIE_VARS, $forum_settings;
-
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
     
     if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
+    
+    $forum_settings = get_forum_settings();
     
     $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
 
@@ -232,13 +232,11 @@ function bh_session_init($uid)
 
 function bh_session_end()
 {
-    global $HTTP_COOKIE_VARS;
-
     $db_bh_session_end = db_connect();
     
-    if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
+    if (isset($_COOKIE['bh_sess_hash'])) {
 
-        $user_hash = $HTTP_COOKIE_VARS['bh_sess_hash'];
+        $user_hash = $_COOKIE['bh_sess_hash'];
 
         // Delete the session for the current MD5 hash
         
@@ -258,13 +256,11 @@ function bh_session_end()
 // IIS does not support the REQUEST_URI server var, so we will make one for it
 function get_request_uri()
 {
-    global $HTTP_SERVER_VARS, $HTTP_GET_VARS;
-
-    if (isset($HTTP_SERVER_VARS['REQUEST_URI'])) {
-        $request_uri = $HTTP_SERVER_VARS['REQUEST_URI'];
+    if (isset($_SERVER['REQUEST_URI'])) {
+        $request_uri = $_SERVER['REQUEST_URI'];
     }else {
-        $request_uri = "{$HTTP_SERVER_VARS['PHP_SELF']}?";
-        foreach ($HTTP_GET_VARS as $key => $value) {
+        $request_uri = "{$_SERVER['PHP_SELF']}?";
+        foreach ($_GET as $key => $value) {
             $request_uri.= "{$key}=". rawurlencode($value). "&";
         }
     }

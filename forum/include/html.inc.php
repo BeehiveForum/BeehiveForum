@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.98 2004-04-12 18:32:24 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.99 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -43,6 +43,7 @@ function html_guest_error ()
 function html_poll_edit_error ()
 {
     global $lang;
+    
     html_draw_top();
     echo "<h1>{$lang['pollediterror']}</h1>";
     html_draw_bottom();
@@ -51,6 +52,7 @@ function html_poll_edit_error ()
 function html_message_type_error()
 {
     global $lang;
+    
     html_draw_top();
     echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
     html_draw_bottom();
@@ -123,13 +125,14 @@ function html_message_type_error()
 
 function html_draw_top()
 {
-    global $HTTP_GET_VARS, $HTTP_SERVER_VARS, $forum_settings, $lang;
+    global $lang;
     
     $onload_array = array();
     $onunload_array = array();
     $arg_array = func_get_args();
     $meta_refresh = false;
 
+    $forum_settings = get_forum_settings();
     $webtag = get_webtag();
 
     foreach($arg_array as $key => $func_args) {
@@ -216,7 +219,7 @@ function html_draw_top()
         echo "<style type=\"text/css\">@import \"fontsize.php?webtag=$webtag\";</style>\n";
     }
     
-    if (isset($HTTP_GET_VARS['fontresize'])) {
+    if (isset($_GET['fontresize'])) {
        
         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
         echo "<!--\n\n";
@@ -227,7 +230,7 @@ function html_draw_top()
         echo "</script>\n";	
     }
 
-    if (!stristr($HTTP_SERVER_VARS['PHP_SELF'], 'pm') && !stristr($HTTP_SERVER_VARS['PHP_SELF'], 'nav.php')) {
+    if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php')) {
         if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
             echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 	    echo "<!--\n\n";
@@ -268,7 +271,7 @@ function html_draw_bottom ()
 
 function style_image($img)
 {
-    global $forum_settings;
+    $forum_settings = get_forum_settings();
 
     $style = bh_session_get_value('STYLE');
     $file  = "./styles/". ($style ? $style : forum_get_setting('default_style')) . "/images/$img";
@@ -282,11 +285,9 @@ function style_image($img)
 
 function bh_setcookie($name, $value = "", $expires = 0)
 {
-    global $HTTP_SERVER_VARS;
+    if (isset($_SERVER['HTTP_HOST'])) {
 
-    if (isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
-
-        $hostname = $HTTP_SERVER_VARS['HTTP_HOST'];
+        $hostname = $_SERVER['HTTP_HOST'];
         $cookie_domain = forum_get_setting('cookie_domain', false, $hostname);
 
         if (strstr($cookie_domain, $hostname) && strlen($cookie_domain) > 0) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.42 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.43 2004-04-17 17:39:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/user_rel.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -99,17 +99,17 @@ if (bh_session_get_value('UID') == 0) {
         exit;
 }
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-    $msg = $HTTP_GET_VARS['msg'];
-}elseif (isset($HTTP_POST_VARS['msg']) && validate_msg($HTTP_POST_VARS['msg'])) {
-    $msg = $HTTP_POST_VARS['msg'];
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    $msg = $_GET['msg'];
+}elseif (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
+    $msg = $_POST['msg'];
 }else {
     $msg = messages_get_most_recent(bh_session_get_value('UID'));
 }
 
-if (isset($HTTP_GET_VARS['edit_rel']) && is_numeric($HTTP_GET_VARS['edit_rel'])) {
+if (isset($_GET['edit_rel']) && is_numeric($_GET['edit_rel'])) {
     $edit_rel = true;
-}elseif (isset($HTTP_POST_VARS['edit_rel']) && is_numeric($HTTP_POST_VARS['edit_rel'])) {
+}elseif (isset($_POST['edit_rel']) && is_numeric($_POST['edit_rel'])) {
     $edit_rel = true;
 }else {
     $edit_rel = false;
@@ -117,14 +117,14 @@ if (isset($HTTP_GET_VARS['edit_rel']) && is_numeric($HTTP_GET_VARS['edit_rel']))
 
 $my_uid = bh_session_get_value('UID');
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
-    $rel = isset($HTTP_POST_VARS['rel']) ? $HTTP_POST_VARS['rel'] : 0;
-    $rel+= isset($HTTP_POST_VARS['sig']) ? $HTTP_POST_VARS['sig'] : 0;
+    $rel = isset($_POST['rel']) ? $_POST['rel'] : 0;
+    $rel+= isset($_POST['sig']) ? $_POST['sig'] : 0;
 
-    $sig_global = isset($HTTP_POST_VARS['sig_global']) ? $HTTP_POST_VARS['sig_global'] : '';
+    $sig_global = isset($_POST['sig_global']) ? $_POST['sig_global'] : '';
 
-    user_rel_update($my_uid, $HTTP_POST_VARS['uid'], $rel);
+    user_rel_update($my_uid, $_POST['uid'], $rel);
 
     user_update_global_sig($my_uid, $sig_global);
 
@@ -133,7 +133,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 }
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
     if ($edit_rel) {
         header_redirect("./edit_relations.php?webtag=$webtag");
     }else {
@@ -141,8 +141,8 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     }
 }
 
-if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
-    $uid = $HTTP_GET_VARS['uid'];
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+    $uid = $_GET['uid'];
     if (!$user = user_get($uid)) {
         html_draw_top();
         echo "<h1>{$lang['error']}:</h1>";

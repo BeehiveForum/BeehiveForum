@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.64 2004-04-15 09:15:30 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.65 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -457,7 +457,7 @@ function pm_single_get($mid, $folder, $uid = false)
 
 function draw_pm_message($pm_elements_array)
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
 
@@ -535,7 +535,7 @@ function draw_pm_message($pm_elements_array)
                     echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                 }
 
-                if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+                if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'post.php') {
                     echo " target=\"_blank\"";
                 }else {
                     echo " target=\"_self\"";

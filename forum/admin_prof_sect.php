@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.47 2004-04-11 21:13:12 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.48 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -105,32 +105,32 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 
 // Do updates
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
-    if (isset($HTTP_POST_VARS['t_psid'])) {
+    if (isset($_POST['t_psid'])) {
 
-        foreach($HTTP_POST_VARS['t_psid'] as $psid => $value) {
+        foreach($_POST['t_psid'] as $psid => $value) {
 
-            if (($HTTP_POST_VARS['t_name'][$psid] != $HTTP_POST_VARS['t_old_name'][$psid]) || ($HTTP_POST_VARS['t_position'][$psid] != $HTTP_POST_VARS['t_old_position'][$psid])) {
+            if (($_POST['t_name'][$psid] != $_POST['t_old_name'][$psid]) || ($_POST['t_position'][$psid] != $_POST['t_old_position'][$psid])) {
 
-                $new_name = (trim($HTTP_POST_VARS['t_name'][$psid]) != "") ? $HTTP_POST_VARS['t_name'][$psid] : $HTTP_POST_VARS['t_old_name'][$psid];
-                profile_section_update($HTTP_POST_VARS['t_psid'][$psid], $HTTP_POST_VARS['t_position'][$psid], $new_name);
-                admin_addlog(0, 0, 0, 0, $HTTP_POST_VARS['t_psid'][$psid], 0, 10);
+                $new_name = (trim($_POST['t_name'][$psid]) != "") ? $_POST['t_name'][$psid] : $_POST['t_old_name'][$psid];
+                profile_section_update($_POST['t_psid'][$psid], $_POST['t_position'][$psid], $new_name);
+                admin_addlog(0, 0, 0, 0, $_POST['t_psid'][$psid], 0, 10);
             }
         }
 
     }
 
-    if (trim($HTTP_POST_VARS['t_name_new']) != "" && trim($HTTP_POST_VARS['t_name_new']) != $lang['newsection']) {
+    if (trim($_POST['t_name_new']) != "" && trim($_POST['t_name_new']) != $lang['newsection']) {
 
-        $new_psid = profile_section_create(trim($HTTP_POST_VARS['t_name_new']), (isset($HTTP_POST_VARS['t_psid']) ? sizeof($HTTP_POST_VARS['t_psid']) : 1));
+        $new_psid = profile_section_create(trim($_POST['t_name_new']), (isset($_POST['t_psid']) ? sizeof($_POST['t_psid']) : 1));
         admin_addlog(0, 0, 0, 0, $new_psid, 0, 11);
 
     }
 
-}elseif (isset($HTTP_POST_VARS['t_delete'])) {
+}elseif (isset($_POST['t_delete'])) {
 
-    list($psid) = array_keys($HTTP_POST_VARS['t_delete']);
+    list($psid) = array_keys($_POST['t_delete']);
     profile_section_delete($psid);
     admin_addlog(0, 0, 0, 0, 0, $psid, 15);
 

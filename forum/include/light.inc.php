@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.36 2004-04-08 13:17:20 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.37 2004-04-17 17:39:29 decoyduck Exp $ */
 
 function light_html_draw_top ($title = false)
 {
@@ -72,7 +72,7 @@ function light_form_submit($name = "submit", $value = "Submit")
 function light_poll_confirm_close($tid)
 {
 
-    global $HTTP_SERVER_VARS, $lang;
+    global $_SERVER, $lang;
 
     if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
         edit_refuse($tid, 1);
@@ -102,7 +102,7 @@ function light_poll_confirm_close($tid)
 
     light_poll_display($tid, $preview_message, 0, 0, false);
 
-    echo "<p><form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
+    echo "<p><form name=\"f_delete\" action=\"" . $_SERVER['PHP_SELF'] . "\" method=\"POST\" target=\"_self\">";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
     echo light_form_submit("pollclose", $lang['endpoll']);
@@ -132,7 +132,7 @@ function light_form_radio($name, $value, $text, $checked = false)
 
 function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $_SERVER, $lang;
 
     $uid = bh_session_get_value('UID');
 
@@ -143,7 +143,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
     $totalvotes       = 0;
     $poll_group_count = 1;
 
-    $polldata['CONTENT'] = "<form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
+    $polldata['CONTENT'] = "<form method=\"post\" action=\"". $_SERVER['PHP_SELF']. "\" target=\"_self\">\n";
     $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "<h2>". thread_get_title($tid). "</h2>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.9 2004-04-13 00:57:21 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.10 2004-04-17 17:39:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -54,7 +54,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
         
@@ -68,7 +68,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
                 form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -105,10 +105,10 @@ if (bh_session_get_value('UID') == 0) {
 
 // Check that required variables are set
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-    list($tid, $pid) = explode(".", $HTTP_GET_VARS['msg']);
-}elseif (isset($HTTP_GET_VARS['tid']) && is_numeric($HTTP_GET_VARS['tid'])) {
-    $tid = $HTTP_GET_VARS['tid'];
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    list($tid, $pid) = explode(".", $_GET['msg']);
+}elseif (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
+    $tid = $_GET['tid'];
     $pid = 1;
 }else {
     html_draw_top();
@@ -137,7 +137,7 @@ if (!$threaddata = thread_get($tid)) {
 
 $update = false;
 
-if (isset($HTTP_POST_VARS['back'])) {
+if (isset($_POST['back'])) {
 
     $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid";
     header_redirect($uri);
@@ -146,15 +146,15 @@ if (isset($HTTP_POST_VARS['back'])) {
 
 // User Options
 
-if (isset($HTTP_POST_VARS['markasread']) && is_numeric($HTTP_POST_VARS['markasread']) && $HTTP_POST_VARS['markasread'] != $threaddata['LAST_READ']) {
+if (isset($_POST['markasread']) && is_numeric($_POST['markasread']) && $_POST['markasread'] != $threaddata['LAST_READ']) {
 
-    $threaddata['LAST_READ'] = $HTTP_POST_VARS['markasread'];
+    $threaddata['LAST_READ'] = $_POST['markasread'];
     messages_set_read($tid, $threaddata['LAST_READ'], $uid);
     $update = true;
 
-}else if (isset($HTTP_GET_VARS['markasread']) && is_numeric($HTTP_GET_VARS['markasread'])) {
+}else if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
-    $markasread = $HTTP_GET_VARS['markasread'];
+    $markasread = $_GET['markasread'];
     messages_set_read($tid, $markasread, $uid);
     
     $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&markasread=1";
@@ -162,8 +162,8 @@ if (isset($HTTP_POST_VARS['markasread']) && is_numeric($HTTP_POST_VARS['markasre
     exit;
 }
 
-if (isset($HTTP_POST_VARS['interest']) && is_numeric($HTTP_POST_VARS['interest']) && $HTTP_POST_VARS['interest'] != $threaddata['INTEREST']) {
-    $threaddata['INTEREST'] = $HTTP_POST_VARS['interest'];
+if (isset($_POST['interest']) && is_numeric($_POST['interest']) && $_POST['interest'] != $threaddata['INTEREST']) {
+    $threaddata['INTEREST'] = $_POST['interest'];
     thread_set_interest($tid, $threaddata['INTEREST']);
     $update = true;
 }
@@ -172,11 +172,11 @@ if (isset($HTTP_POST_VARS['interest']) && is_numeric($HTTP_POST_VARS['interest']
 
 if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)))) {
 
-    if (isset($HTTP_POST_VARS['rename'])) {
+    if (isset($_POST['rename'])) {
 
-        if ($HTTP_POST_VARS['rename'] != $threaddata['TITLE']) {
+        if ($_POST['rename'] != $threaddata['TITLE']) {
 
-            $threaddata['TITLE'] = $HTTP_POST_VARS['rename'];
+            $threaddata['TITLE'] = $_POST['rename'];
             thread_change_title($tid, $threaddata['TITLE']);
             post_add_edit_text($tid, 1);
             admin_addlog(0, 0, $tid, 0, 0, 0, 21);
@@ -184,11 +184,11 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
         }
     }
 
-    if (isset($HTTP_POST_VARS['move']) && is_numeric($HTTP_POST_VARS['move'])) {
+    if (isset($_POST['move']) && is_numeric($_POST['move'])) {
 
-        if (folder_is_valid($HTTP_POST_VARS['move']) && $HTTP_POST_VARS['move'] != $threaddata['FID']) {
+        if (folder_is_valid($_POST['move']) && $_POST['move'] != $threaddata['FID']) {
 
-            $threaddata['FID'] = $HTTP_POST_VARS['move'];
+            $threaddata['FID'] = $_POST['move'];
             thread_change_folder($tid, $threaddata['FID']);
             admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 18);
             $update = true;
@@ -198,57 +198,57 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
 
 if (perm_is_moderator()) {
 
-    if (isset($HTTP_POST_VARS['closed'])) {
+    if (isset($_POST['closed'])) {
 
-        if (($HTTP_POST_VARS['closed'] == "Y") != $threaddata['CLOSED']) {
+        if (($_POST['closed'] == "Y") != $threaddata['CLOSED']) {
 
-            $threaddata['CLOSED'] = ($HTTP_POST_VARS['closed'] == "Y");
+            $threaddata['CLOSED'] = ($_POST['closed'] == "Y");
             thread_set_closed($tid, $threaddata['CLOSED']);
             admin_addlog(0, 0, $tid, 0, 0, 0, ($threaddata['CLOSED']) ? 19 : 20);
             $update = true;
         }
     }
 
-    if (isset($HTTP_POST_VARS['lock'])) {
+    if (isset($_POST['lock'])) {
 
-        if (($HTTP_POST_VARS['lock'] == "Y") != $threaddata['ADMIN_LOCK']) {
+        if (($_POST['lock'] == "Y") != $threaddata['ADMIN_LOCK']) {
 
-            $threaddata['ADMIN_LOCK'] = ($HTTP_POST_VARS['lock'] == "Y");
+            $threaddata['ADMIN_LOCK'] = ($_POST['lock'] == "Y");
             thread_admin_lock($tid, $threaddata['ADMIN_LOCK']);
             admin_addlog(0, 0, $tid, 0, 0, 0, ($threaddata['ADMIN_LOCK']) ? 30 : 31);
             $update = true;
         }
     }
 
-    if (isset($HTTP_POST_VARS['sticky'])) {
+    if (isset($_POST['sticky'])) {
 
-        if ($HTTP_POST_VARS['sticky'] == "Y") {
+        if ($_POST['sticky'] == "Y") {
 
-            $day = isset($HTTP_POST_VARS['sticky_day']) && is_numeric($HTTP_POST_VARS['sticky_day']) ? $HTTP_POST_VARS['sticky_day'] : 0;
-            $month = isset($HTTP_POST_VARS['sticky_month']) && is_numeric($HTTP_POST_VARS['sticky_month']) ? $HTTP_POST_VARS['sticky_month'] : 0;
-            $year = isset($HTTP_POST_VARS['sticky_year']) && is_numeric($HTTP_POST_VARS['sticky_year']) ? $HTTP_POST_VARS['sticky_year'] : 0;
+            $day = isset($_POST['sticky_day']) && is_numeric($_POST['sticky_day']) ? $_POST['sticky_day'] : 0;
+            $month = isset($_POST['sticky_month']) && is_numeric($_POST['sticky_month']) ? $_POST['sticky_month'] : 0;
+            $year = isset($_POST['sticky_year']) && is_numeric($_POST['sticky_year']) ? $_POST['sticky_year'] : 0;
             $tmp_sticky_until = $day || $month || $year ? mktime(0, 0, 0, $month, $day, $year) : false;
 
-            if (($HTTP_POST_VARS['sticky'] == $threaddata['STICKY'] && $tmp_sticky_until != $threaddata['STICKY_UNTIL']) || $HTTP_POST_VARS['sticky'] != $threaddata['STICKY']) {
+            if (($_POST['sticky'] == $threaddata['STICKY'] && $tmp_sticky_until != $threaddata['STICKY_UNTIL']) || $_POST['sticky'] != $threaddata['STICKY']) {
 
-                $threaddata['STICKY'] = $HTTP_POST_VARS['sticky'];
+                $threaddata['STICKY'] = $_POST['sticky'];
                 $threaddata['STICKY_UNTIL'] = $tmp_sticky_until;
                 thread_set_sticky($tid, true, $threaddata['STICKY_UNTIL']);
                 admin_addlog(0, 0, $tid, 0, 0, 0, 25);
                 $update = true;
             }
 
-        }elseif ($HTTP_POST_VARS['sticky'] != $threaddata['STICKY']) {
-            $threaddata['STICKY'] = $HTTP_POST_VARS['sticky'];
+        }elseif ($_POST['sticky'] != $threaddata['STICKY']) {
+            $threaddata['STICKY'] = $_POST['sticky'];
             thread_set_sticky($tid, false);
             admin_addlog(0, 0, $tid, 0, 0, 0, 26);
             $update = true;
         }
     }
 
-    if (isset($HTTP_POST_VARS['t_to_uid_in_thread']) && is_numeric($HTTP_POST_VARS['t_to_uid_in_thread']) && isset($HTTP_POST_VARS['deluser_con']) && $HTTP_POST_VARS['deluser_con'] == "Y") {
+    if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread']) && isset($_POST['deluser_con']) && $_POST['deluser_con'] == "Y") {
         
-        if ($del_uid = $HTTP_POST_VARS['t_to_uid_in_thread']) {
+        if ($del_uid = $_POST['t_to_uid_in_thread']) {
 
             thread_delete_by_user($tid, $del_uid['UID']);
             admin_addlog($del_uid['UID'], 0, $tid, 0, 0, 0, 32);
@@ -256,9 +256,9 @@ if (perm_is_moderator()) {
         }
     }
 
-    if (isset($HTTP_POST_VARS['delthread']) && $HTTP_POST_VARS['delthread'] == "Y") {
+    if (isset($_POST['delthread']) && $_POST['delthread'] == "Y") {
 
-        if (isset($HTTP_POST_VARS['delthread_con']) && $HTTP_POST_VARS['delthread_con'] == "Y") {
+        if (isset($_POST['delthread_con']) && $_POST['delthread_con'] == "Y") {
 
             thread_delete($tid);
             admin_addlog(0, 0, $tid, 0, 0, 0, 33);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.70 2004-04-13 17:58:53 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.71 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -55,7 +55,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -69,7 +69,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -113,18 +113,18 @@ $sort_by_array = array('USER.UID'        => 'UID',
                
 // Column sorting stuff               
 
-if (isset($HTTP_GET_VARS['sort_by'])) {
-    if ($HTTP_GET_VARS['sort_by'] == "UID") {
+if (isset($_GET['sort_by'])) {
+    if ($_GET['sort_by'] == "UID") {
         $sort_by = "USER.UID";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "LOGON") {
+    } elseif ($_GET['sort_by'] == "LOGON") {
         $sort_by = "USER.LOGON";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "NICKNAME") {
+    } elseif ($_GET['sort_by'] == "NICKNAME") {
         $sort_by = "USER.NICKNAME";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "STATUS") {
+    } elseif ($_GET['sort_by'] == "STATUS") {
         $sort_by = "USER.STATUS";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "LAST_LOGON") {
+    } elseif ($_GET['sort_by'] == "LAST_LOGON") {
         $sort_by = "USER.LAST_LOGON";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "SESSID") {
+    } elseif ($_GET['sort_by'] == "SESSID") {
         $sort_by = "SESSIONS.SESSID";        
     } else {
         $sort_by = "USER.LAST_LOGON";
@@ -133,8 +133,8 @@ if (isset($HTTP_GET_VARS['sort_by'])) {
     $sort_by = "USER.LAST_LOGON";
 }
 
-if (isset($HTTP_GET_VARS['sort_dir'])) {
-    if ($HTTP_GET_VARS['sort_dir'] == "DESC") {
+if (isset($_GET['sort_dir'])) {
+    if ($_GET['sort_dir'] == "DESC") {
         $sort_dir = "DESC";
     } else {
         $sort_dir = "ASC";
@@ -143,27 +143,27 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
     $sort_dir = "DESC";
 }
 
-if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
-    $start = floor($HTTP_GET_VARS['page'] - 1) * 20;
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $start = floor($_GET['page'] - 1) * 20;
 }else {
     $start = 0;
 }
 
-if (isset($HTTP_GET_VARS['usersearch']) && strlen(trim($HTTP_GET_VARS['usersearch'])) > 0) {
-    $usersearch = trim($HTTP_GET_VARS['usersearch']);
+if (isset($_GET['usersearch']) && strlen(trim($_GET['usersearch'])) > 0) {
+    $usersearch = trim($_GET['usersearch']);
 }else {
     $usersearch = "";
 }
 
-if (isset($HTTP_GET_VARS['reset'])) {
+if (isset($_GET['reset'])) {
     $usersearch = "";
 }
 
 // Draw the form
 echo "<h1>{$lang['admin']} : {$lang['manageusers']}</h1>\n";
 
-if (isset($HTTP_POST_VARS['t_kick'])) {
-    list($user_uid) = array_keys($HTTP_POST_VARS['t_kick']);
+if (isset($_POST['t_kick'])) {
+    list($user_uid) = array_keys($_POST['t_kick']);
     if (admin_session_end($user_uid)) {
         $admin_uid = bh_session_get_value('UID');
         admin_addlog($admin_uid, 0, 0, 0, 0, $user_uid, 27);

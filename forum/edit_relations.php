@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.20 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.21 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/user_rel.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -110,11 +110,11 @@ $uid = bh_session_get_value('UID');
 
 $update_array = array();
 
-if (isset($HTTP_POST_VARS['submit'])) {
-    if (isset($HTTP_POST_VARS['relationship']) && is_array($HTTP_POST_VARS['relationship'])) {
-        foreach ($HTTP_POST_VARS['relationship'] as $peer_uid => $peer_rel) {
-            if (isset($HTTP_POST_VARS['signature'][$peer_uid])) {
-                $peer_rel = $peer_rel | $HTTP_POST_VARS['signature'][$peer_uid];
+if (isset($_POST['submit'])) {
+    if (isset($_POST['relationship']) && is_array($_POST['relationship'])) {
+        foreach ($_POST['relationship'] as $peer_uid => $peer_rel) {
+            if (isset($_POST['signature'][$peer_uid])) {
+                $peer_rel = $peer_rel | $_POST['signature'][$peer_uid];
             }
             if ($peer_uid != $uid) {
                 if (user_rel_update($uid, $peer_uid, $peer_rel)) {
@@ -129,11 +129,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }
 }
 
-if (isset($HTTP_POST_VARS['add'])) {
-    if (isset($HTTP_POST_VARS['add_relationship']) && is_array($HTTP_POST_VARS['add_relationship'])) {
-        foreach ($HTTP_POST_VARS['add_relationship'] as $peer_uid => $peer_rel) {
-            if (isset($HTTP_POST_VARS['add_signature'][$peer_uid])) {
-                $peer_rel = $peer_rel | $HTTP_POST_VARS['add_signature'][$peer_uid];
+if (isset($_POST['add'])) {
+    if (isset($_POST['add_relationship']) && is_array($_POST['add_relationship'])) {
+        foreach ($_POST['add_relationship'] as $peer_uid => $peer_rel) {
+            if (isset($_POST['add_signature'][$peer_uid])) {
+                $peer_rel = $peer_rel | $_POST['add_signature'][$peer_uid];
             }
             if ($peer_uid != $uid) {
                 if (user_rel_update($uid, $peer_uid, $peer_rel)) {
@@ -148,8 +148,8 @@ if (isset($HTTP_POST_VARS['add'])) {
     }
 }
 
-if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
-    $start = $HTTP_GET_VARS['page'] * 20;
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $start = $_GET['page'] * 20;
 }else {
     $start = 0;
 }
@@ -170,8 +170,8 @@ if ($user_peers = user_get_relationships($uid, $start)) {
 
     echo "<form name=\"prefs\" action=\"edit_relations.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
     
-    if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
-        echo "  ", form_input_hidden("usersearch", trim($HTTP_POST_VARS['usersearch'])), "\n";
+    if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
+        echo "  ", form_input_hidden("usersearch", trim($_POST['usersearch'])), "\n";
     }
     
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
@@ -246,9 +246,9 @@ if ($user_peers = user_get_relationships($uid, $start)) {
     echo "<br />\n";
 }
 
-if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
+if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
 
-    $usersearch = trim($HTTP_POST_VARS['usersearch']);
+    $usersearch = trim($_POST['usersearch']);
     
     echo "<form method=\"post\" action=\"edit_relations.php?webtag=$webtag\" target=\"_self\">\n";
     echo "  ", form_input_hidden("usersearch", $usersearch), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.54 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.55 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,7 +45,7 @@ include_once("./include/thread.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -59,7 +59,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -92,7 +92,7 @@ $user_wordfilter = load_wordfilter();
 
 html_draw_top("openprofile.js");
 
-if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['submit'] == $lang['close']) {
+if (isset($_POST['submit']) && $_POST['submit'] == $lang['close']) {
 
   echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
   echo "  window.close();\n";
@@ -103,9 +103,9 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['submit'] == $lang['clos
 
 }
 
-if (isset($HTTP_GET_VARS['tid']) && is_numeric($HTTP_GET_VARS['tid'])) {
+if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
-  $tid = $HTTP_GET_VARS['tid'];
+  $tid = $_GET['tid'];
 
 }else {
 
@@ -123,8 +123,8 @@ if (isset($HTTP_GET_VARS['tid']) && is_numeric($HTTP_GET_VARS['tid'])) {
 
 $polldata = poll_get($tid);
 
-if (isset($HTTP_GET_VARS['viewstyle']) && is_numeric($HTTP_GET_VARS['viewstyle'])) {
-    $viewstyle = $HTTP_GET_VARS['viewstyle'];
+if (isset($_GET['viewstyle']) && is_numeric($_GET['viewstyle'])) {
+    $viewstyle = $_GET['viewstyle'];
     if ($viewstyle < 0 || $viewstyle > 1) $viewstyle = 0;
 }else {
     $viewstyle = 0;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.161 2004-04-13 17:57:50 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.162 2004-04-17 17:39:30 decoyduck Exp $ */
 
 function user_count()
 {
@@ -54,8 +54,6 @@ function user_exists($logon)
 
 function user_create($logon, $password, $nickname, $email)
 {
-    global $HTTP_SERVER_VARS;
-
     $logon = addslashes($logon);
     $nickname = addslashes($nickname);
     $email = addslashes($email);
@@ -230,8 +228,6 @@ function user_update_forums($uid, $forums_array)
 
 function user_logon($logon, $password, $md5hash = false)
 {
-    global $HTTP_SERVER_VARS;
-
     if ($md5hash) {
       $md5pass = addslashes($password);
     }else {
@@ -387,14 +383,14 @@ function user_get_prefs($uid)
 
 function user_update_prefs($uid, $prefs_array)
 {
-    global $forum_settings;
-
     if (!is_numeric($uid)) return false;
     if (!is_array($prefs_array)) return false;
 
     $db_user_update_prefs = db_connect();
     
     if (!$table_data = get_table_prefix()) return false;
+    
+    $forum_settings = get_forum_settings();
     
     // Get the current prefs and merge them with the new ones.   
 
@@ -546,8 +542,6 @@ function user_get_last_logon_time($uid, $verbose = true)
 
 function user_guest_enabled()
 {
-    global $forum_settings;
-    
     if (forum_get_setting('guest_account_enabled', 'N', false)) {
         return false;
     }
@@ -555,6 +549,8 @@ function user_guest_enabled()
     $db_user_guest_account = db_connect();
     
     $table_data = get_table_prefix();
+    
+    $forum_settings = get_forum_settings();
 
     $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
     $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";

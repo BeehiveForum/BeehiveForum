@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.3 2004-04-13 17:57:50 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.4 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -52,7 +52,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -66,7 +66,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -105,10 +105,10 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 
 // Update stuff here
 
-if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
-    $fid = $HTTP_GET_VARS['fid'];
-}else if (isset($HTTP_POST_VARS['fid']) && is_numeric($HTTP_POST_VARS['fid'])) {
-    $fid = $HTTP_POST_VARS['fid'];
+if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+    $fid = $_GET['fid'];
+}else if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+    $fid = $_POST['fid'];
 }else {
     $fid = 1;
 }
@@ -123,37 +123,37 @@ if ($forum_array = forum_get($fid)) {
         exit;
     }
 
-    if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
-        $usersearch = trim($HTTP_POST_VARS['usersearch']);
+    if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
+        $usersearch = trim($_POST['usersearch']);
     }else {
         $usersearch = '';
     }
 
     // Clear the search results?
 
-    if (isset($HTTP_POST_VARS['clear'])) {
+    if (isset($_POST['clear'])) {
         $usersearch = '';
     }
 
-    if (isset($HTTP_POST_VARS['add_recent_user'])) {
+    if (isset($_POST['add_recent_user'])) {
         $uf[0]['fid'] = $fid;
         $uf[0]['allowed'] = 1;
-        user_update_forums($HTTP_POST_VARS['t_to_uid'], $uf);
-    }elseif (isset($HTTP_POST_VARS['add_searched_user'])) {
-        if (isset($HTTP_POST_VARS['user_add']) && is_array($HTTP_POST_VARS['user_add'])) {
-            for ($i = 0; $i < sizeof($HTTP_POST_VARS['user_add']); $i++) {
+        user_update_forums($_POST['t_to_uid'], $uf);
+    }elseif (isset($_POST['add_searched_user'])) {
+        if (isset($_POST['user_add']) && is_array($_POST['user_add'])) {
+            for ($i = 0; $i < sizeof($_POST['user_add']); $i++) {
                 $uf[0]['fid'] = $fid;
                 $uf[0]['allowed'] = 1;
-                user_update_forums($HTTP_POST_VARS['user_add'][$i], $uf);
+                user_update_forums($_POST['user_add'][$i], $uf);
 	    }
         }
-    }elseif (isset($HTTP_POST_VARS['remove_user'])) {
-        if (isset($HTTP_POST_VARS['user_remove']) && is_array($HTTP_POST_VARS['user_remove'])) {
-            for ($i = 0; $i < sizeof($HTTP_POST_VARS['user_remove']); $i++) {
+    }elseif (isset($_POST['remove_user'])) {
+        if (isset($_POST['user_remove']) && is_array($_POST['user_remove'])) {
+            for ($i = 0; $i < sizeof($_POST['user_remove']); $i++) {
                 $uf[0]['fid'] = $fid;
                 $uf[0]['allowed'] = 0;
-                user_update_forums($HTTP_POST_VARS['user_remove'][$i], $uf);
-                admin_addlog($HTTP_POST_VARS['user_remove'][$i], 0, 0, 0, 0, 0, 2);
+                user_update_forums($_POST['user_remove'][$i], $uf);
+                admin_addlog($_POST['user_remove'][$i], 0, 0, 0, 0, 0, 2);
 	    }
         }
     }

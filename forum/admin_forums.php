@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.7 2004-04-11 23:41:08 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.8 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -51,7 +51,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -65,7 +65,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -100,35 +100,35 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 
 // Do updates
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     $valid = true;
     $message_html = "";
 
-    if (isset($HTTP_POST_VARS['t_access']) && is_array($HTTP_POST_VARS['t_access'])) {
+    if (isset($_POST['t_access']) && is_array($_POST['t_access'])) {
 
-        foreach($HTTP_POST_VARS['t_access'] as $fid => $new_access) {
+        foreach($_POST['t_access'] as $fid => $new_access) {
             forum_update_access($fid, $new_access);
         }
     }
 
-    if (isset($HTTP_POST_VARS['t_webtag_new']) && strlen(trim($HTTP_POST_VARS['t_webtag_new'])) > 0) {
+    if (isset($_POST['t_webtag_new']) && strlen(trim($_POST['t_webtag_new'])) > 0) {
 	       
-        $new_webtag = strtoupper(trim(_stripslashes($HTTP_POST_VARS['t_webtag_new'])));
+        $new_webtag = strtoupper(trim(_stripslashes($_POST['t_webtag_new'])));
         
         if (!preg_match("/^[A-Z0-9_-]+$/", $new_webtag)) {
             $message_html.= "<h2>{$lang['webtaginvalidchars']}</h2>\n";
             $valid = false;
         }
 
-	if (isset($HTTP_POST_VARS['t_name_new']) && strlen(trim($HTTP_POST_VARS['t_name_new'])) > 0) {
-	    $new_name = trim(_stripslashes($HTTP_POST_VARS['t_name_new']));
+	if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
+	    $new_name = trim(_stripslashes($_POST['t_name_new']));
 	}else {
 	    $new_name = "";
 	}
         
-	if (isset($HTTP_POST_VARS['t_access_new']) && is_numeric($HTTP_POST_VARS['t_access_new'])) {
-	    $new_access = $HTTP_POST_VARS['t_access_new'];
+	if (isset($_POST['t_access_new']) && is_numeric($_POST['t_access_new'])) {
+	    $new_access = $_POST['t_access_new'];
 	}else {
 	    $new_access = 0;
 	}
@@ -142,9 +142,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
 	}
     }
 
-}elseif (isset($HTTP_POST_VARS['t_delete']) && is_array($HTTP_POST_VARS['t_delete'])) {
+}elseif (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
-    list($fid) = array_keys($HTTP_POST_VARS['t_delete']);
+    list($fid) = array_keys($_POST['t_delete']);
     
     echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
     echo "<br />\n";
@@ -188,14 +188,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
     html_draw_bottom();
     exit;
 
-}elseif (isset($HTTP_POST_VARS['t_confirm_delete'])) {
+}elseif (isset($_POST['t_confirm_delete'])) {
     
-    list($fid) = array_keys($HTTP_POST_VARS['t_confirm_delete']);
+    list($fid) = array_keys($_POST['t_confirm_delete']);
     forum_delete($fid);
 
-}elseif (isset($HTTP_POST_VARS['t_default']) && is_array($HTTP_POST_VARS['t_default'])) {
+}elseif (isset($_POST['t_default']) && is_array($_POST['t_default'])) {
 
-    list($fid) = array_keys($HTTP_POST_VARS['t_default']);
+    list($fid) = array_keys($_POST['t_default']);
     forum_update_default($fid);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.22 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.23 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,7 +47,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -61,7 +61,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -99,31 +99,31 @@ if (bh_session_get_value('UID') == 0) {
 
 $error_html = "";
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     $valid = true;
     
     // Required Fields
 
-    if (isset($HTTP_POST_VARS['nickname']) && trim($HTTP_POST_VARS['nickname']) != "") {
-        $user_prefs['NICKNAME'] = _stripslashes(trim($HTTP_POST_VARS['nickname']));       
+    if (isset($_POST['nickname']) && trim($_POST['nickname']) != "") {
+        $user_prefs['NICKNAME'] = _stripslashes(trim($_POST['nickname']));       
     }else {
         $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['email']) && trim($HTTP_POST_VARS['email']) != "") {
-        $user_prefs['EMAIL'] = _stripslashes(trim($HTTP_POST_VARS['email']));      
+    if (isset($_POST['email']) && trim($_POST['email']) != "") {
+        $user_prefs['EMAIL'] = _stripslashes(trim($_POST['email']));      
     }else {
         $error_html.= "<h2>{$lang['emailaddressrequired']}</h2>";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['dob_year']) && isset($HTTP_POST_VARS['dob_month']) && isset($HTTP_POST_VARS['dob_day']) && checkdate($HTTP_POST_VARS['dob_month'], $HTTP_POST_VARS['dob_day'], $HTTP_POST_VARS['dob_year'])) {
+    if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $user_prefs['DOB_DAY']   = _stripslashes(trim($HTTP_POST_VARS['dob_day']));
-        $user_prefs['DOB_MONTH'] = _stripslashes(trim($HTTP_POST_VARS['dob_month']));
-        $user_prefs['DOB_YEAR']  = _stripslashes(trim($HTTP_POST_VARS['dob_year']));
+        $user_prefs['DOB_DAY']   = _stripslashes(trim($_POST['dob_day']));
+        $user_prefs['DOB_MONTH'] = _stripslashes(trim($_POST['dob_month']));
+        $user_prefs['DOB_YEAR']  = _stripslashes(trim($_POST['dob_year']));
         
         $user_prefs['DOB'] = "{$user_prefs['DOB_YEAR']}-{$user_prefs['DOB_MONTH']}-{$user_prefs['DOB_DAY']}";
         $user_prefs['DOB_BLANK_FIELDS'] = ($user_prefs['DOB_YEAR'] == 0 || $user_prefs['DOB_MONTH'] == 0 || $user_prefs['DOB_DAY'] == 0) ? true : false;
@@ -135,26 +135,26 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     // Optional fields
 
-    if (isset($HTTP_POST_VARS['firstname']) && trim($HTTP_POST_VARS['firstname']) != "") {
-        $user_prefs['FIRSTNAME'] = _stripslashes(trim($HTTP_POST_VARS['firstname']));       
+    if (isset($_POST['firstname']) && trim($_POST['firstname']) != "") {
+        $user_prefs['FIRSTNAME'] = _stripslashes(trim($_POST['firstname']));       
     }else {
         $user_prefs['FIRSTNAME'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['lastname']) && trim($HTTP_POST_VARS['lastname']) != "") {
-        $user_prefs['LASTNAME'] = _stripslashes(trim($HTTP_POST_VARS['lastname']));
+    if (isset($_POST['lastname']) && trim($_POST['lastname']) != "") {
+        $user_prefs['LASTNAME'] = _stripslashes(trim($_POST['lastname']));
     }else {
         $user_prefs['LASTNAME'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['homepage_url']) && trim($HTTP_POST_VARS['homepage_url']) != "") {
-        $user_prefs['HOMEPAGE_URL'] = _stripslashes(trim($HTTP_POST_VARS['homepage_url']));
+    if (isset($_POST['homepage_url']) && trim($_POST['homepage_url']) != "") {
+        $user_prefs['HOMEPAGE_URL'] = _stripslashes(trim($_POST['homepage_url']));
     }else {
         $user_prefs['HOMEPAGE_URL'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['pic_url']) && trim($HTTP_POST_VARS['pic_url']) != "") {
-        $user_prefs['PIC_URL'] = _stripslashes(trim($HTTP_POST_VARS['pic_url']));
+    if (isset($_POST['pic_url']) && trim($_POST['pic_url']) != "") {
+        $user_prefs['PIC_URL'] = _stripslashes(trim($_POST['pic_url']));
     }else {
         $user_prefs['PIC_URL'] = "";
     }
@@ -179,7 +179,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         // IIS bug prevents redirect at same time as setting cookies.
 
-        if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+        if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
             header_redirect("./edit_prefs.php?webtag=$webtag&updated=true");
 
@@ -234,7 +234,7 @@ echo "<h1>{$lang['userdetails']}</h1>\n";
 
 if (!empty($error_html)) {
     echo $error_html;
-}else if (isset($HTTP_GET_VARS['updated'])) {
+}else if (isset($_GET['updated'])) {
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 }
 

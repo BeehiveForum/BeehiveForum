@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.48 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.49 2004-04-17 17:39:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,7 +50,7 @@ include_once("./include/thread.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -64,7 +64,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -97,10 +97,10 @@ $user_wordfilter = load_wordfilter();
 
 // Check to see if we are requesting a thread rename or move first.
 
-if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+if (isset($_POST['rename']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
 
-    $tid  = $HTTP_POST_VARS['t_tid'];
-    $name = $HTTP_POST_VARS['t_name'];
+    $tid  = $_POST['t_tid'];
+    $name = $_POST['t_name'];
     
     $threaddata = thread_get($tid);    
     
@@ -122,10 +122,10 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
         }
     }
 
-}elseif (isset($HTTP_POST_VARS['move']) && isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move']) && is_numeric($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_move']) && folder_is_valid($HTTP_POST_VARS['t_move'])) {
+}elseif (isset($_POST['move']) && isset($_POST['t_tid']) && isset($_POST['t_move']) && is_numeric($_POST['t_tid']) && is_numeric($_POST['t_move']) && folder_is_valid($_POST['t_move'])) {
 
-    $tid = $HTTP_POST_VARS['t_tid'];
-    $fid = $HTTP_POST_VARS['t_move'];
+    $tid = $_POST['t_tid'];
+    $fid = $_POST['t_move'];
     
     $threaddata = thread_get($tid);    
     
@@ -155,50 +155,50 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
         exit;
     }
 
-    if (isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    if (isset($_POST['close']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
 
-        $tid = $HTTP_POST_VARS['t_tid'];
+        $tid = $_POST['t_tid'];
         thread_set_closed($tid, true);
         admin_addlog(0, 0, $tid, 0, 0, 0, 19);
 
-    }else if (isset($HTTP_POST_VARS['reopen']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    }else if (isset($_POST['reopen']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
 
-        $tid = $HTTP_POST_VARS['t_tid'];
+        $tid = $_POST['t_tid'];
         thread_set_closed($tid, false);
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);
         
-    }else if (isset($HTTP_POST_VARS['lock']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    }else if (isset($_POST['lock']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
     
-        $tid = $HTTP_POST_VARS['t_tid'];
+        $tid = $_POST['t_tid'];
         thread_admin_lock($tid, true);
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);
 
-    }else if (isset($HTTP_POST_VARS['unlock']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    }else if (isset($_POST['unlock']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
     
-        $tid = $HTTP_POST_VARS['t_tid'];
+        $tid = $_POST['t_tid'];
         thread_admin_lock($tid, false);
         admin_addlog(0, 0, $tid, 0, 0, 0, 20);
 
-    }else if (isset($HTTP_POST_VARS['sticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    }else if (isset($_POST['sticky']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
 
-        $day = isset($HTTP_POST_VARS['sticky_day']) && is_numeric($HTTP_POST_VARS['sticky_day']) ? $HTTP_POST_VARS['sticky_day'] : 0;
-        $month = isset($HTTP_POST_VARS['sticky_month']) && is_numeric($HTTP_POST_VARS['sticky_month']) ? $HTTP_POST_VARS['sticky_month'] : 0;
-        $year = isset($HTTP_POST_VARS['sticky_year']) && is_numeric($HTTP_POST_VARS['sticky_year']) ? $HTTP_POST_VARS['sticky_year'] : 0;
+        $day = isset($_POST['sticky_day']) && is_numeric($_POST['sticky_day']) ? $_POST['sticky_day'] : 0;
+        $month = isset($_POST['sticky_month']) && is_numeric($_POST['sticky_month']) ? $_POST['sticky_month'] : 0;
+        $year = isset($_POST['sticky_year']) && is_numeric($_POST['sticky_year']) ? $_POST['sticky_year'] : 0;
         $sticky_until = $day || $month || $year ? mktime(0, 0, 0, $month, $day, $year) : false;
-        thread_set_sticky($HTTP_POST_VARS['t_tid'], true, $sticky_until);
-        admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 25);
+        thread_set_sticky($_POST['t_tid'], true, $sticky_until);
+        admin_addlog(0, 0, $_POST['t_tid'], 0, 0, 0, 25);
 
-    }else if (isset($HTTP_POST_VARS['nonsticky']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {
+    }else if (isset($_POST['nonsticky']) && isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && thread_can_view($_POST['t_tid'], bh_session_get_value('UID'))) {
 
-        thread_set_sticky($HTTP_POST_VARS['t_tid'], false);
-        admin_addlog(0, 0, $HTTP_POST_VARS['t_tid'], 0, 0, 0, 26);
+        thread_set_sticky($_POST['t_tid'], false);
+        admin_addlog(0, 0, $_POST['t_tid'], 0, 0, 0, 26);
     }
 }
 
 $uri = "./messages.php?webtag=$webtag";
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-    $uri.= "&msg=". $HTTP_GET_VARS['msg'];
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    $uri.= "&msg=". $_GET['msg'];
 }
 
 header_redirect($uri);

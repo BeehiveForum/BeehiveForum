@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.111 2004-04-05 21:12:36 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.112 2004-04-17 17:39:30 decoyduck Exp $ */
 
 function threads_get_available_folders()
 {
@@ -681,10 +681,8 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
         // If the user has clicked on a folder header, we want that folder to be first in the list
 
-        global $HTTP_GET_VARS;
-
-        if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
-            $folder_order[] = $HTTP_GET_VARS['folder'];
+        if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+            $folder_order[] = $_GET['folder'];
         }
 
         // Loop through the results and construct an array to return

@@ -20,9 +20,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
 
@@ -292,7 +289,9 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 		$reverse_lt = array_reverse($last_tag);
 		for($i=0;$i<count($reverse_lt);$i++) {
-			$ret_text .= "</".$reverse_lt[$i].">";
+			if (strlen($reverse_lt[$i]) > 1) {
+				$ret_text .= "</".$reverse_lt[$i].">";
+			}
 		}
 
 		return $ret_text;

@@ -210,7 +210,7 @@ if(!empty($error_html)) {
 
 ?>
 <div class="postbody">
-  <form name="prefs" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="post">
+  <form name="prefs" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="post" target="_self">
     <table class="posthead" width="400">
       <tr>
         <td class="subhead" colspan="2">User Details</td>

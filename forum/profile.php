@@ -93,7 +93,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 echo "<table width=\"600\" class=\"box\">\n  <tr>\n    <td class=\"posthead\">\n";
 
 
-echo "      <form name=\"f_profile\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
+echo "      <form name=\"f_profile\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\" target=\"_self\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 
 

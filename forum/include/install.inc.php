@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.6 2004-05-11 17:32:28 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.7 2004-05-11 20:01:21 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -37,8 +37,15 @@ function check_install()
 
     if (file_exists('install') && !defined("BEEHIVE_INSTALL_NOWARN")) {
 
-        html_draw_top();
-
+        echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
+	echo "<head>\n";
+	echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+	echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
+	echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+        echo "</head>\n";
         echo "<h1>BeehiveForum Installation Error</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
@@ -66,8 +73,8 @@ function check_install()
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</div>\n";
-
-        html_draw_bottom();
+        echo "</body>\n";
+        echo "</html>\n";
         exit;
     }
 }

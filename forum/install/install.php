@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.5 2004-05-10 15:56:49 decoyduck Exp $ */
+/* $Id: install.php,v 1.6 2004-05-11 20:01:21 decoyduck Exp $ */
 
 if (@file_exists("../include/config.inc.php")) {
     include_once("../include/config.inc.php");
@@ -153,7 +153,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                     $sql = "SHOW TABLES LIKE 'FORUMS'";
                     $result = mysql_query($sql, $db_install);
 
-                    if (db_num_rows($result) > 0) {
+                    if (mysql_num_rows($result) > 0) {
 
                         $sql = "SELECT WEBTAG FROM FORUMS";
                         $result = mysql_query($sql, $db_install);

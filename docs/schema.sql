@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 16, 2004 at 19:29
 #
-# $Id: schema.sql,v 1.58 2004-03-16 19:22:49 decoyduck Exp $
+# $Id: schema.sql,v 1.59 2004-03-16 19:24:49 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -640,7 +640,7 @@ CREATE TABLE USER_STATUS (
   UID mediumint(8) unsigned NOT NULL default '0',
   FID mediumint(8) unsigned NOT NULL default '0',
   STATUS int(16) NOT NULL default '0',
-  PRIMARY KEY  (UID)
+  KEY UID (UID)
 ) TYPE=MyISAM;
 
 #

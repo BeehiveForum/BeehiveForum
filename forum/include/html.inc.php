@@ -133,7 +133,6 @@ function _html_draw_post_top2()
 function html_draw_top($title = false, $body_class = false)
 {
     _html_draw_top1($title);
-    _html_draw_top_script();
     _html_draw_pm_script();
     _html_draw_top2($body_class);
 }

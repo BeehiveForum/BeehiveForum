@@ -50,47 +50,119 @@ require_once("./include/form.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/pm.inc.php");
+require_once("./include/constants.inc.php");
 
-if (isset($HTTP_POST_VARS['delete'])) {
-  if (is_array($HTTP_POST_VARS['delete'])) {
-    for ($i = 0; $i < sizeof($HTTP_POST_VARS['delete']); $i++) {
-      pm_delete_message($HTTP_POST_VARS['delete'][$i]);
+// Delete Messages
+
+if (isset($HTTP_POST_VARS['deletemessages'])) {
+    if (is_array($HTTP_POST_VARS['process'])) {
+        for ($i = 0; $i < sizeof($HTTP_POST_VARS['process']); $i++) {
+            pm_delete_message($HTTP_POST_VARS['process'][$i]);
+        }
     }
-  }
+}
+
+// Archive Messages
+
+if (isset($HTTP_POST_VARS['savemessages'])) {
+    if (is_array($HTTP_POST_VARS['process'])) {
+        for ($i = 0; $i < sizeof($HTTP_POST_VARS['process']); $i++) {
+            pm_archive_message($HTTP_POST_VARS['process'][$i]);
+        }
+    }
+}
+
+// Which folder are we in?
+
+if (isset($HTTP_POST_VARS['folder'])) {
+    if ($HTTP_POST_VARS['folder'] == 1) {
+        $folder_bitwise = PM_FOLDER_SENT;
+        $folder = 1;
+    }elseif ($HTTP_POST_VARS['folder'] == 2) {
+        $folder_bitwise = PM_FOLDER_OUTBOX;
+        $folder = 2;
+    }elseif ($HTTP_POST_VARS['folder'] == 3) {
+        $folder_bitwise = PM_FOLDER_SAVED;
+        $folder = 3;
+    }else {
+        $folder_bitwise = PM_FOLDER_INBOX;
+        $folder = 0;
+    }
+}else {
+    $folder_bitwise = PM_FOLDER_INBOX;
+    $folder = 0;
+}
+
+if (isset($HTTP_GET_VARS['folder'])) {
+    if ($HTTP_GET_VARS['folder'] == 1) {
+        $folder_bitwise = PM_FOLDER_SENT;
+        $folder = 1;
+    }elseif ($HTTP_GET_VARS['folder'] == 2) {
+        $folder_bitwise = PM_FOLDER_OUTBOX;
+        $folder = 2;
+    }elseif ($HTTP_GET_VARS['folder'] == 3) {
+        $folder_bitwise = PM_FOLDER_SAVED;
+        $folder = 3;
+    }else {
+        $folder_bitwise = PM_FOLDER_INBOX;
+        $folder = 0;
+    }
+}else {
+    $folder = PM_FOLDER_INBOX;
+    $folder = 0;
 }
 
 html_draw_top_script();
 
-echo "<h1>{$lang['privatemessages']}: {$lang['pminbox']}</h1>\n";
-echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></div><br />\n";
+echo "<h1>{$lang['privatemessages']}: ";
+
+if ($folder == 0) {
+    echo $lang['pminbox'];
+}elseif ($folder == 1) {
+    echo $lang['pmsentitems'];
+}elseif ($folder == 2) {
+    echo $lang['pmoutbox'];
+}elseif ($folder == 3) {
+    echo $lang['pmsaveditems'];
+}
+
+echo "</h1>\n";
+echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a></div><br />\n";
 
 if (isset($HTTP_GET_VARS['mid'])) {
 
     $pm_elements_array = array();
 
-    if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'])) {
-        draw_pm_message($pm_elements_array, $HTTP_GET_VARS['mid']);
+    if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'], $folder)) {
+        if ($folder == PM_FOLDER_INBOX) {
+            draw_pm_message($pm_elements_array, $HTTP_GET_VARS['mid']);
+        }else {
+            draw_pm_message($pm_elements_array);
+        }
         echo "<p>&nbsp;</p>\n";
     }else {
         echo "<p>{$lang['messagehasbeendeleted']}</p>\n";
     }
 }
 
-// new array
-$listmessages_array = array();
-
 // get message list
-
-$listmessages_array = pm_list_get(bh_session_get_value('TO_UID'));
+$listmessages_array = pm_list_get($folder_bitwise);
 
 echo "<form action=\"pm.php\" method=\"POST\" target=\"_self\">\n";
-echo "  <table width=\"95%\" align=\"center\">\n";
+echo "  ", form_input_hidden('folder', $folder), "\n";
+echo "  <table width=\"95%\" align=\"center\" border=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td width=\"20\" align=\"center\">&nbsp;</td>\n";
 echo "      <td class=\"posthead\" width=\"50%\">&nbsp;{$lang['subject']}</td>\n";
-echo "      <td class=\"posthead\">&nbsp;{$lang['sentby']}</td>\n";
+
+if ($folder == 1 || $folder == 2) {
+    echo "      <td class=\"posthead\">&nbsp;{$lang['to']}</td>\n";
+}else {
+    echo "      <td class=\"posthead\">&nbsp;{$lang['from']}</td>\n";
+}
+
 echo "      <td class=\"posthead\">&nbsp;{$lang['timesent']}</td>\n";
-echo "      <td class=\"posthead\">&nbsp;{$lang['delete']}</td>\n";
+echo "      <td class=\"posthead\" width=\"20\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
 if (sizeof($listmessages_array) == 0) {
@@ -113,38 +185,53 @@ if (sizeof($listmessages_array) == 0) {
         }
 
         if ($mid == $listmessages_array[$i]['MID']) {
-            echo "<img src=\"".style_image('current_thread.png')."\" align=\"middle\" height=\"15\" alt=\"\"/>";
+            echo "<img src=\"".style_image('current_thread.png')."\" align=\"middle\" height=\"15\" title=\"Current Message\" alt=\"\"/>";
         }else {
-            if ($listmessages_array[$i]['VIEWED'] > 0) {
-                echo "<img src=\"".style_image('bullet.png')."\" align=\"middle\" height=\"15\" alt=\"\"/>";
+            if (($listmessages_array[$i]['TYPE'] == PM_UNREAD) || ($listmessages_array[$i]['TYPE'] == PM_NEW)) {
+                echo "<img src=\"".style_image('unread_thread.png')."\" align=\"middle\" height=\"15\" title=\"Unread Message\" alt=\"\" />";
             }else {
-                echo "<img src=\"".style_image('unread_thread.png')."\" align=\"middle\" height=\"15\" alt=\"\"/>";
+                echo "<img src=\"".style_image('bullet.png')."\" align=\"middle\" height=\"15\" title=\"Read Message\" alt=\"\" />";
             }
         }
 
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">";
-        echo "<a href=\"pm.php?mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
+        echo "<a href=\"pm.php?folder=$folder&amp;mid=".$listmessages_array[$i]['MID']."\" target=\"_self\">", stripslashes($listmessages_array[$i]['SUBJECT']), "</a>";
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">";
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['FROM_UID'] . ")\" target=\"_self\">";
-        echo format_user_name($listmessages_array[$i]['LOGON'], $listmessages_array[$i]['NICKNAME']) . "</a>";
+
+        if ($folder == 1 || $folder == 2) {
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['TO_UID'] . ")\" target=\"_self\">";
+            echo format_user_name($listmessages_array[$i]['TLOGON'], $listmessages_array[$i]['TNICK']) . "</a>";
+        }else {
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $listmessages_array[$i]['FROM_UID'] . ")\" target=\"_self\">";
+            echo format_user_name($listmessages_array[$i]['FLOGON'], $listmessages_array[$i]['FNICK']) . "</a>";
+        }
+
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">", format_time($listmessages_array[$i]['CREATED']), "</td>\n";
-        echo "      <td class=\"postbody\">", form_checkbox('delete[]', $listmessages_array[$i]['MID'], ''), "</td>\n";
+        echo "      <td class=\"postbody\">", form_checkbox('process[]', $listmessages_array[$i]['MID'], ''), "</td>\n";
         echo "    </tr>\n";
     }
 
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" colspan=\"4\">&nbsp;</td>\n";
-    echo "      <td class=\"postbody\">", form_submit("Delete", $lang['delete']), "</td>\n";
+    echo "      <td class=\"postbody\" colspan=\"5\" align=\"right\">", (($folder_bitwise <> PM_FOLDER_SAVED) && ($folder_bitwise <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
     echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
+
 }
+
+echo "    <tr>\n";
+echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td class=\"postbody\">&nbsp;</td>\n";
+echo "      <td class=\"postbody\" colspan=\"4\"><a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 
 html_draw_bottom ();
 

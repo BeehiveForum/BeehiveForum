@@ -50,6 +50,7 @@ require_once("./include/form.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/pm.inc.php");
+require_once("./include/email.inc.php");
 
 // Get the Message ID (MID)
 
@@ -255,7 +256,7 @@ draw_new_pm($t_subject, $t_content, $t_to_uid, $t_post_html);
 if (isset($mid)) {
 
     $pm_elements_array = array();
-    $pm_elements_array = pm_single_get($mid, bh_session_get_value('TO_UID'));
+    $pm_elements_array = pm_single_get($mid, 0, bh_session_get_value('TO_UID'));
     echo "<p>in reply to:</p>";
     draw_pm_message($pm_elements_array);
 

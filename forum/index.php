@@ -73,6 +73,10 @@ if (bh_session_check()) {
 
       echo "<frame src=\"./discussion.php?folder=". $HTTP_GET_VARS['folder']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
+    }else if (isset($HTTP_GET_VARS['pmid'])) {
+
+      echo "<frame src=\"./pm.php?mid=". $HTTP_GET_VARS['pmid']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
     }else {
 
       $user_prefs = user_get_prefs(bh_session_get_value('UID'));
@@ -114,6 +118,14 @@ if (bh_session_check()) {
         }elseif(isset($HTTP_GET_VARS['msg'])) {
 
             echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else if (isset($HTTP_GET_VARS['folder'])) {
+
+            echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?folder=". $HTTP_GET_VARS['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+        }else if (isset($HTTP_GET_VARS['pmid'])) {
+
+            echo "<frame src=\"./logon.php?final_uri=". urlencode("./pm.php?mid=". $HTTP_GET_VARS['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
         }else {
 

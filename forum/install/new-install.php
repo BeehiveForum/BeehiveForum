@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.45 2005-03-24 18:54:39 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.46 2005-03-25 20:45:43 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -49,6 +49,49 @@ if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
     return;
 }
 
+if (isset($remove_conflicts) && $remove_conflicts === true) {
+
+    $forum_tables = array('ADMIN_LOG',     'BANNED',          'FILTER_LIST',
+                          'FOLDER',        'FORUM_LINKS',     'LINKS',
+                          'LINKS_COMMENT', 'LINKS_FOLDERS',   'LINKS_VOTE',
+                          'POLL',          'POLL_VOTES',      'POST',
+                          'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
+                          'STATS',         'THREAD',          'USER_FOLDER',
+                          'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
+                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
+                          'VISITOR_LOG');
+
+    $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
+                           'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
+                           'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
+                           'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SEARCH_KEYWORDS',
+                           'SEARCH_MATCH', 'SEARCH_POSTS',        'SESSIONS',
+                           'USER',         'USER_FORUM',          'USER_PREFS',
+                           'USER_TRACK');
+
+    foreach ($forum_tables as $forum_table) {
+
+        $sql = "DROP TABLE IF EXISTS {$forum_webtag}_{$forum_table}";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    foreach ($global_tables as $global_table) {
+
+        $sql = "DROP TABLE IF EXISTS $global_table";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+}
+
 $sql = "CREATE TABLE {$forum_webtag}_ADMIN_LOG (";
 $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -58,9 +101,8 @@ $sql.= "  ENTRY TEXT,";
 $sql.= "  PRIMARY KEY (ID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -74,9 +116,8 @@ $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (ID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -89,9 +130,8 @@ $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -105,9 +145,8 @@ $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (ID, UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -121,9 +160,8 @@ $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
 $sql.= "  PRIMARY KEY (FID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -131,9 +169,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
 $sql.= "VALUES ('General', NULL, NULL, 0);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -146,9 +183,8 @@ $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (LID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -156,9 +192,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
 $sql.= "VALUES (1, 'Forum Links:', NULL)";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -166,9 +201,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
 $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -176,9 +210,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
 $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -191,45 +224,40 @@ $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (GID, FORUM, FID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
 $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 1, 1, 6652)";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
 $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 0, 0, 1536)";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
 $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (0, 1, 1, 14588)";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
 $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 1, 0, 34560)";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -240,18 +268,16 @@ $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (GID, UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
 $sql = "INSERT INTO GROUP_USERS (GID, UID) VALUES (1, 1)";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -265,9 +291,8 @@ $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (GID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -275,9 +300,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
 $sql.= "VALUES (1, NULL, NULL, 1);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -296,9 +320,8 @@ $sql.= "  PRIMARY KEY (LID),";
 $sql.= "  KEY FID (FID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -313,9 +336,8 @@ $sql.= "  PRIMARY KEY (CID),";
 $sql.= "  KEY LID (LID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -328,9 +350,8 @@ $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY (FID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -338,9 +359,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) ";
 $sql.= "VALUES (NULL, 'Top Level', 'Y');";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -353,9 +373,8 @@ $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  PRIMARY KEY (LID, UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -373,9 +392,8 @@ $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY TYPE (TYPE)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -387,9 +405,8 @@ $sql.= "  PRIMARY KEY (MID),";
 $sql.= "  KEY AID (AID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -401,9 +418,8 @@ $sql.= "  PRIMARY KEY (MID),";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -419,9 +435,8 @@ $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (TID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -434,9 +449,8 @@ $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (TID, OPTION_ID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -463,9 +477,8 @@ $sql.= "  KEY CREATED (CREATED),";
 $sql.= "  KEY FROM_UID (FROM_UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -475,9 +488,8 @@ $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED,
 $sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) VALUES (1, 0, 1, 0, NULL, NOW(), ";
 $sql.= "0, NOW(), 1, NULL, 0, '');";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -496,9 +508,8 @@ $sql.= "  KEY AID (AID),";
 $sql.= "  KEY HASH (HASH)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -512,9 +523,8 @@ $sql.= "  PRIMARY KEY (FID, TID, PID),";
 $sql.= "  KEY AID (AID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -527,9 +537,8 @@ $sql.= "  PRIMARY KEY (TID, PID),";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -537,9 +546,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_POST_CONTENT (TID, PID, CONTENT) ";
 $sql.= "VALUES (1, 1, 'Welcome to your new Beehive Forum');";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -553,9 +561,8 @@ $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
 $sql.= "  PRIMARY KEY (PIID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -563,9 +570,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
 $sql.= "VALUES (1, 'Location', 0, 1);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -573,9 +579,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
 $sql.= "VALUES (1, 'Age', 0, 2);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -583,9 +588,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
 $sql.= "VALUES (1, 'Gender', 0, 3);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -593,9 +597,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
 $sql.= "VALUES (1, 'Quote', 0, 4);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -603,9 +606,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
 $sql.= "VALUES (1, 'Occupation', 0, 5);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -617,9 +619,8 @@ $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
 $sql.= "  PRIMARY KEY (PSID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -627,9 +628,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_SECTION (NAME, POSITION) ";
 $sql.= "VALUES ('Personal', 1);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -643,9 +643,8 @@ $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (ID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -669,9 +668,8 @@ $sql.= "  KEY BY_UID (BY_UID),";
 $sql.= "  FULLTEXT KEY TITLE (TITLE)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -680,9 +678,8 @@ $sql = "INSERT INTO {$forum_webtag}_THREAD ";
 $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
 $sql.= "VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NOW(), NULL, 'N', NULL, NULL);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -695,9 +692,8 @@ $sql.= "  PRIMARY KEY (UID, FID),";
 $sql.= "  KEY INTEREST (INTEREST)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -710,9 +706,8 @@ $sql.= "  PRIMARY KEY (UID, PEER_UID),";
 $sql.= "  KEY RELATIONSHIP (RELATIONSHIP)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -726,9 +721,8 @@ $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  PRIMARY KEY (ID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -759,9 +753,8 @@ $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -773,9 +766,8 @@ $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (UID, PIID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -787,9 +779,8 @@ $sql.= "  HTML CHAR(1) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -805,9 +796,8 @@ $sql.= "  KEY LAST_READ (LAST_READ),";
 $sql.= "  KEY INTEREST (INTEREST)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -819,9 +809,8 @@ $sql.= "  SVALUE VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY (FID, SNAME)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -862,10 +851,9 @@ foreach ($forum_settings as $forum => $settings_array) {
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
         $sql.= "VALUES ('$forum', '$sname', '$svalue')";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
+                    $valid = false;
             return;
         }
     }
@@ -880,9 +868,8 @@ $sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY (FID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -890,9 +877,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM, ACCESS_LEVEL) ";
 $sql.= "VALUES ('{$forum_webtag}', 1, 0);";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -904,9 +890,8 @@ $sql.= "  PRIMARY KEY (WORD),";
 $sql.= "  KEY WORD_ID (WID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -919,9 +904,8 @@ $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (WID,FORUM,TID,PID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -942,9 +926,8 @@ $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -958,9 +941,8 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (HASH, UID, IPADDRESS)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -974,9 +956,8 @@ $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -984,9 +965,8 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
 $sql.= "VALUES ('$admin_username', MD5('$admin_password'), '$admin_username', '$admin_email');";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -999,9 +979,8 @@ $sql.= "  ALLOWED TINYINT(4) DEFAULT '0',";
 $sql.= "  PRIMARY KEY (UID, FID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -1043,9 +1022,8 @@ $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -1056,9 +1034,8 @@ $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -1072,34 +1049,35 @@ $sql.= "  KEY UID (UID),";
 $sql.= "  KEY WORD (WORD)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
-if (@$fp = fopen('./install/english.dic', 'r')) {
+if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
-    while (!feof($fp)) {
+    if ($fp = @fopen('./install/english.dic', 'r')) {
 
-        $word = fgets($fp, 100);
+        while (!feof($fp)) {
 
-        $metaphone = addslashes(metaphone(trim($word)));
-        $word = addslashes(trim($word));
+            $word = fgets($fp, 100);
 
-        $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-        $sql.= "VALUES ('$word', '$metaphone', 0)";
+            $metaphone = addslashes(metaphone(trim($word)));
+            $word = addslashes(trim($word));
 
-        if (!$result = db_query($sql, $db_install)) {
+            $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+            $sql.= "VALUES ('$word', '$metaphone', 0)";
 
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
-            return;
+            if (!$result = @db_query($sql, $db_install)) {
+
+                        $valid = false;
+                return;
+            }
         }
-    }
 
-    fclose($fp);
+        fclose($fp);
+    }
 }
 
 ?>

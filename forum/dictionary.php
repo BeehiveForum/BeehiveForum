@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.19 2005-03-14 13:27:17 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.20 2005-03-25 20:45:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -156,6 +156,17 @@ if (isset($_POST['offset_match']) && is_numeric($_POST['offset_match'])) {
 // Intialise the dictionary
 
 $dictionary = new dictionary($t_content, $t_ignored_words, $current_word, $obj_id, $offset_match);
+
+if (!$dictionary->is_installed()) {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['dictionary']}</h1>\n";
+    echo "<h2>{$lang['dictionarynotinstalled']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
+}
 
 // Close the window
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.38 2005-03-24 18:54:39 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.39 2005-03-25 20:45:44 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -48,7 +48,7 @@ $forum_webtag_array = array();
 
 $sql = "SHOW TABLES LIKE 'FORUMS'";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
     $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
     $valid = false;
@@ -59,7 +59,7 @@ if (db_num_rows($result) > 0) {
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS";
 
-    if ($result = db_query($sql, $db_install)) {
+    if ($result = @db_query($sql, $db_install)) {
 
         while ($row = db_fetch_array($result)) {
 
@@ -76,9 +76,8 @@ if (db_num_rows($result) > 0) {
 
 $sql = "DROP TABLE IF EXISTS DEDUPE";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -91,18 +90,16 @@ $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
 $sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_FILES";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -121,18 +118,16 @@ $sql.= "  KEY AID (AID),";
 $sql.= "  KEY HASH (HASH)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
 
 $sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_IDS";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -146,9 +141,8 @@ $sql.= "  PRIMARY KEY  (FID, TID, PID),";
 $sql.= "  KEY AID (AID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -161,9 +155,8 @@ $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID,FORUM,FID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -174,9 +167,8 @@ $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID,UID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -190,9 +182,8 @@ $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -204,9 +195,8 @@ $sql.= "  PRIMARY KEY (WORD),";
 $sql.= "  KEY WORD_ID (WID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -219,9 +209,8 @@ $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (WID,FORUM,TID,PID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -242,9 +231,8 @@ $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
     $valid = false;
     return;
 }
@@ -255,9 +243,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_ADMIN_LOG";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -271,9 +258,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  PRIMARY KEY  (ID)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -282,7 +268,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "SELECT * FROM {$forum_webtag}_GROUPS";
 
-    if ($result = db_query($sql, $db_install)) {
+    if ($result = @db_query($sql, $db_install)) {
 
         while ($group_data = db_fetch_array($result)) {
 
@@ -290,7 +276,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql.= "VALUES ('$forum_fid', '{$group_data['GROUP_NAME']}', ";
             $sql.= "'{$group_data['GROUP_DESC']}', '{$group_data['AUTO_GROUP']}')";
 
-            if ($result_group = db_query($sql, $db_instal)) {
+            if ($result_group = @db_query($sql, $db_instal)) {
 
                 $new_group_gid = db_insert_id($db_install);
 
@@ -298,9 +284,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 $sql.= "SELECT $new_group_gid, $forum_fid, FID, PERMS FROM ";
                 $sql.= "{$forum_webtag}_GROUP_PERMS WHERE GID = '{$group_data['GID']}'";
 
-                if (!$result = db_query($sql, $db_install)) {
+                if (!$result = @db_query($sql, $db_install)) {
 
-                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                     $valid = false;
                     return;
                 }
@@ -309,16 +294,14 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 $sql.= "SELECT $new_group_gid, UID FROM {$forum_webtag}_GROUP_USERS ";
                 $sql.= "WHERE GID = '{$group_data['GID']}'";
 
-                if (!$result = db_query($sql, $db_install)) {
+                if (!$result = @db_query($sql, $db_install)) {
 
-                    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                     $valid = false;
                     return;
                 }
 
             }else {
 
-                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                 $valid = false;
                 return;
             }
@@ -326,7 +309,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     }else {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -338,16 +320,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "WHERE (PERM & 1024 > 0 OR PERM & 512 > 0) ";
     $sql.= "AND FID = 0";
 
-    if ($result = db_query($sql, $db_install)) {
+    if ($result = @db_query($sql, $db_install)) {
 
         while ($user_data = db_fetch_array($result)) {
 
             $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERMS) ";
             $sql.= "VALUES ('{$user_data['GID']}', 0, 0, '{$user_data['PERM']}')";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
-                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                 $valid = false;
                 return;
             }
@@ -355,34 +336,30 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     }else {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_GROUPS";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_GROUPS_PERMS";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_GROUPS_USERS";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -399,9 +376,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  PRIMARY KEY  (ID)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -411,18 +387,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "INSERT INTO {$forum_webtag}_BANNED (IPADDRESS) ";
     $sql.= "SELECT IP FROM {$forum_webtag}_BANNED_IP";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_BANNED_IP";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -434,9 +408,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "FILENAME, MIMETYPE, HASH, DOWNLOADS, DELETED ";
     $sql.= "FROM {$forum_webtag}_POST_ATTACHMENT_FILES ";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -448,9 +421,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "SELECT $forum_fid, TID, PID, AID ";
     $sql.= "FROM {$forum_webtag}_POST_ATTACHMENT_IDS ";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -460,9 +432,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_THREAD_NEW";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -486,9 +457,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  FULLTEXT KEY TITLE (TITLE)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -506,9 +476,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON ";
     $sql.= "(POST.TID = THREAD.TID AND POST.PID = 1)";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -517,9 +486,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "DROP TABLE {$forum_webtag}_THREAD";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -528,9 +496,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -563,9 +530,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  KEY CREATED (CREATED)";
     $sql.= ") TYPE = MYISAM";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -582,9 +548,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, ";
     $sql.= "NOW(), FROM_UID, EDITED, EDITED_BY, IPADDRESS FROM {$forum_webtag}_POST";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -593,9 +558,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_POST";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -604,9 +568,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_POST_NEW RENAME {$forum_webtag}_POST";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -618,9 +581,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_POLL_VOTES_NEW";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -634,9 +596,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  PRIMARY KEY (ID)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -645,14 +606,13 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES ";
     $sql.= "WHERE UID > 0";
 
-    if ($result = db_query($sql, $db_install)) {
+    if ($result = @db_query($sql, $db_install)) {
 
         $sql = "SELECT MAX(UID) AS NUM_USERS FROM USER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
-            $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-            $valid = false;
+                $valid = false;
             return;
         }
 
@@ -664,35 +624,31 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql.= "SELECT TID, $uid, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES ";
             $sql.= "WHERE PTUID = MD5(CONCAT(TID, '.', $uid)) AND UID = 0";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
-                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
-                $valid = false;
+                        $valid = false;
                 return;
             }
         }
 
     }else {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_POLL_VOTES";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_POLL_VOTES_NEW RENAME {$forum_webtag}_USER_POLL_VOTES";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -701,99 +657,88 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE FORUMS ADD INDEX (WEBTAG) ";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE FORUM_SETTINGS ADD INDEX (SVALUE) ";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (LAST_READ) ";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (INTEREST) ";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_FOLDER ADD INDEX (INTEREST)";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD INDEX (RELATIONSHIP)";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE PM ADD INDEX (TYPE)";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE USER_PREFS ADD SHOW_THUMBS CHAR(2) DEFAULT '2' NOT NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD SHOW_THUMBS CHAR(2) DEFAULT '2' NOT NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE USER_PREFS ADD ENABLE_WIKI_WORDS CHAR(1) DEFAULT 'Y' NOT NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ENABLE_WIKI_WORDS CHAR(1) DEFAULT 'Y' NOT NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -801,9 +746,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE USER_PREFS CHANGE PM_AUTO_PRUNE ";
     $sql.= "PM_AUTO_PRUNE CHAR(3) DEFAULT '-60' NOT NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -811,9 +755,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "UPDATE USER_PREFS SET PM_AUTO_PRUNE = PM_AUTO_PRUNE_LENGTH ";
     $sql.= "WHERE PM_AUTO_PRUNE = 'Y'";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -821,9 +764,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "UPDATE USER_PREFS SET PM_AUTO_PRUNE = PM_AUTO_PRUNE_LENGTH * -1 ";
     $sql.= "WHERE PM_AUTO_PRUNE = 'N'";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
@@ -831,7 +773,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
     $sql.= "SNAME = 'pm_auto_prune_length' AND FID = $forum_fid";
 
-    if ($result = db_query($sql, $db_install)) {
+    if ($result = @db_query($sql, $db_install)) {
 
         if (db_num_rows($result) > 0) {
 
@@ -841,9 +783,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql.= "WHERE SVALUE = 'Y' AND SNAME = 'pm_auto_prune' ";
             $sql.= "AND FID = $forum_fid";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
-                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                 $valid = false;
                 return;
             }
@@ -852,9 +793,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql.= "WHERE SVALUE = 'N' AND SNAME = 'pm_auto_prune' ";
             $sql.= "AND FID = $forum_fid";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
-                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                 $valid = false;
                 return;
             }
@@ -862,9 +802,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql = "DELETE FROM FORUM_SETTINGS WHERE SNAME = 'pm_auto_prune_length' ";
             $sql.= "AND FID = $forum_fid";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
-                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                 $valid = false;
                 return;
             }
@@ -874,9 +813,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = $forum_fid ";
             $sql.= "AND SVALUE LIKE 'pm_auto_prune%'";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
-                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                 $valid = false;
                 return;
             }
@@ -884,9 +822,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ($forum_fid, 'pm_auto_prune', -60)";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
-                $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
                 $valid = false;
                 return;
             }
@@ -894,88 +831,78 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     }else {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "ALTER TABLE USER_PREFS DROP PM_AUTO_PRUNE_LENGTH";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'Y' WHERE SHOW_STATS = 1;";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'N' WHERE SHOW_STATS = 0;";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'Y' WHERE SHOW_STATS = 1;";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'N' WHERE SHOW_STATS = 0;";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }
 
     $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
-        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
         $valid = false;
         return;
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.53 2005-01-24 22:19:55 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.54 2005-01-31 20:29:16 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -46,9 +46,9 @@ function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
         $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
         $sql.= "VALUES (NOW(), '$admin_uid', '$uid', '$fid', '$tid', '$pid', '$psid', '$piid', '$action')";
 
-        $result = db_query($sql, $db_admin_addlog);
+        if (!$result = db_query($sql, $db_admin_addlog)) return false;
 
-        return $result;
+        return true;
     }
 }
 
@@ -59,7 +59,10 @@ function admin_clearlog()
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}ADMIN_LOG";
-    $result = db_query($sql, $db_admin_clearlog);
+
+    if (!$result = db_query($sql, $db_admin_clearlog)) return false;
+
+    return true;
 }
 
 function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_dir = 'DESC')
@@ -76,13 +79,13 @@ function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_d
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (!$table_data = get_table_prefix()) return array('admin_log_count' => 0,
-                                                        'admin_log_array' => array());
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(LOG_ID) AS LOG_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ";
 
-    $result = db_query($sql, $db_admin_get_log_entries);
+    if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
+
     list($admin_log_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
@@ -98,7 +101,7 @@ function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_d
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = ADMIN_LOG.TID) ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
-    $result = db_query($sql, $db_admin_get_log_entries);
+    if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -119,7 +122,8 @@ function admin_get_word_filter()
     if (!$table_data = get_table_prefix()) return array();
 
     $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
-    $result = db_query($sql, $db_admin_get_word_filter);
+
+    if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
 
     $filter_array = array();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.3 2005-01-30 00:23:31 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.4 2005-01-31 20:29:11 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -73,6 +73,8 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// Check to see if attachments are actually enabled
+
 if (forum_get_setting('attachments_enabled', 'N', false)) {
     html_draw_top();
     echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
@@ -80,23 +82,39 @@ if (forum_get_setting('attachments_enabled', 'N', false)) {
     exit;
 }
 
+// If the attachments directory is undefined we can't go any further
+
+if (!$attachment_dir = forum_get_setting('attachment_dir')) {
+    html_draw_top();
+    echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
+    html_draw_bottom();
+    exit;
+}
+
+// Check to see which method we are using to fetch the attachment.
+// The old method is to simply refer to the hash in the URL query
+// i.e. get_attachment.php?hash=[MD5Hash] which although fine
+// in it's own right creates complications with some browsers
+// (mostly Netscape based ones) which prompt the user to download
+// get_attachment.php rather than the filename specified in the
+// HTTP headers. The newer and default method gets around this
+// by fooling the browser into thinking it is downloading the
+// file directly however this doesn't work with all webservers
+// hence the option to disable it.
+
 if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
 
     if (isset($_GET['hash'])) {
-
         $hash = $_GET['hash'];
     }
 
 }else {
 
     if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) {
-
         if (preg_match("/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data)) {
             $hash = $attachment_data[1];
         }
-
     }else {
-
         if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data)) {
             $hash = $attachment_data[1];
         }
@@ -108,12 +126,20 @@ if (isset($hash) && is_md5($hash)) {
     // Increment the 'Downloaded x times tooltip text'
     attachment_inc_dload_count($hash);
 
-    if ($attachmentdetails = get_attachment_by_hash($hash)) {
+    if ($attachment_details = get_attachment_by_hash($hash)) {
 
-        // Use these quite a few times, so assign them to variables to save some time.
+        // If we're requesting the thumbnail then we need
+        // to apprent .thumb to the filepath
 
-        $filepath = forum_get_setting('attachment_dir'). '/'. $attachmentdetails['HASH'];
-        $filename = rawurldecode(basename($attachmentdetails['FILENAME']));
+        if (isset($_GET['thumb']) && $_GET['thumb'] == 1) {
+            $filepath = "{$attachment_dir}/{$attachment_details['HASH']}.thumb";
+        }else {
+            $filepath = "{$attachment_dir}/{$attachment_details['HASH']}";
+        }
+
+        // Use the filename quite a few times, so assign it to a variable to save some time.
+
+        $filename = rawurldecode(basename($attachment_details['FILENAME']));
 
         if (@file_exists($filepath)) {
 
@@ -126,7 +152,7 @@ if (isset($hash) && is_md5($hash)) {
             if (isset($_GET['download']) || strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
                 header("Content-Type: application/x-ms-download", true);
             }else {
-                header("Content-Type: ". $attachmentdetails['MIMETYPE'], true);
+                header("Content-Type: ". $attachment_details['MIMETYPE'], true);
             }
 
             // Only do the cache control if we're not running

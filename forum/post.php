@@ -541,7 +541,7 @@ if (!$newthread) {
 
     }
 
-    echo "<p>&nbsp;&nbsp;</p>\n";
+    echo "<p><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></p>\n";
 
 }
 

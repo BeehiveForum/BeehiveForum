@@ -148,7 +148,7 @@ for($i=0;$i<$result_count;$i++){
     echo "          <tr>\n            <td>".$row['ITEM_NAME'].form_input_hidden("t_piid_$i",$row['PIID'])."</td>\n";
     echo "            <td nowrap=\"nowrap\" align=\"right\">:&nbsp;". form_field("t_entry_$i",$row['ENTRY'], 60, 255);
     echo form_input_hidden("t_old_entry_$i", $row['ENTRY']);
-    echo form_input_hidden("t_new_$i", $new)."&nbsp;&nbsp;</td>\n          </tr>\n";
+    echo form_input_hidden("t_new_$i", $new)."<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></td>\n          </tr>\n";
 }
 
 

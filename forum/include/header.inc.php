@@ -28,9 +28,12 @@ USA
 
 function header_no_cache()
 {
+
+    global $lang;
+
     header("Expires: Mon, 08 Apr 2002 12:00:00 GMT");               // Date in the past (Beehive birthday)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified
-    header("Content-Type: text/html; charset=UTF-8");          // Internet Explorer Bug
+    header("Content-Type: text/html; charset=". $lang['_charset']);          // Internet Explorer Bug
     header("Cache-Control: no-store, no-cache, must-revalidate");   // HTTP/1.1
     header("Cache-Control: post-check=0, pre-check=0", false);
     header("Pragma: no-cache");

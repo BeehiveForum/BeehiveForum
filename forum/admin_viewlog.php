@@ -310,12 +310,12 @@ if (db_num_rows($result) == 20) {
   if ($start < 20) {
     echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
     echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?offset=", $start + 20, "&sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?sort_by=$sort_by&sort_dir=$sort_dir\" target=\"_self\">{$lang['recententries']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
   }
 }
 

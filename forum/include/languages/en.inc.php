@@ -23,6 +23,12 @@ USA
 
 // International English language file
 
+// Language character set and text direction options -------------------
+
+$lang['_charset'] = "UTF-8";
+$lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
+
+
 // Common words --------------------------------------------------------
 
 $lang['go'] = "Go";
@@ -198,8 +204,8 @@ $lang['workerdesc'] = "<b>Workers</b> can edit or delete any post.";
 $lang['wormdesc'] = "<b>Worms</b> can read messages and post as normal, but their messages will appear deleted to all other users.";
 $lang['waspdesc'] = "<b>Wasps</b> can read messages, but cannot reply or post new messages.";
 $lang['splatdesc'] = "<b>Splats</b> cannot access the forum. Use this to ban persistent idiots.";
-$lang['aliasdesc'] = "<b>Possible Aliases</b> is a list of other users who\'s last recorded IP address match this user.";
-$lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by \$sort_by. To alter a user\'s permissions click their name.";
+$lang['aliasdesc'] = "<b>Possible Aliases</b> is a list of other users who's last recorded IP address match this user.";
+$lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by $sort_by. To alter a user's permissions click their name.";
 $lang['manageusersexp_2'] = "To see the last few users to logon, sort the list by LAST_LOGON.";
 $lang['lastlogon'] = "Last Logon";
 $lang['logonfrom'] = "Logon From";

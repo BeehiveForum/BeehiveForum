@@ -223,12 +223,12 @@ if (db_num_rows($result) == 20) {
   if ($start < 20) {
     echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
     echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}<s</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}<s</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
   }else {
     echo "<p>&nbsp;</p>\n";
   }

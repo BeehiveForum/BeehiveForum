@@ -150,8 +150,11 @@ function timestamp_amend_bst($timestamp)
 
 function _htmlentities($text)
 {
+
+    global $lang;
+
     if (phpversion() >= "4.1.0") {
-        return htmlentities($text, ENT_COMPAT, "UTF-8");
+        return htmlentities($text, ENT_COMPAT, $lang['_charset']);
     }else {
         return htmlentities($text, ENT_COMPAT);
     }

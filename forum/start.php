@@ -44,15 +44,14 @@ require_once("./include/config.inc.php");
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-        <head>
-                <title><?= $forum_name ?></title>
-                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                <link rel="stylesheet" href="./styles/style.css" type="text/css">
-        </head>
-        <frameset cols="250,*" border="1">
-          <frame src="./start_left.php" name="left" border="1">
-          <frame src="./start_main.php" name="right" border="1">
-        </frameset>
-
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="<?php echo $lang['_textdir']; ?>">
+<head>
+<title><?php echo $forum_name ?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $lang['_charset']; ?>">
+<link rel="stylesheet" href="./styles/style.css" type="text/css">
+</head>
+<frameset cols="250,*" border="1">
+<frame src="./start_left.php" name="left" border="1">
+<frame src="./start_main.php" name="right" border="1">
+</frameset>
 </html>

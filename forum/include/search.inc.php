@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.60 2004-04-30 17:49:19 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.61 2004-04-30 21:10:50 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -41,6 +41,7 @@ function search_execute($argarray, &$urlquery, &$error)
     if (!isset($argarray['to_uid'])) $argarray['to_uid'] = 0;
     if (!isset($argarray['from_uid'])) $argarray['from_uid'] = 0;
     if (!isset($argarray['me_only'])) $argarray['me_only'] = "N";
+    if (!isset($argarray['include'])) $argarray['include'] = 2;
 
     $db_search_execute = db_connect();
 
@@ -98,6 +99,10 @@ function search_execute($argarray, &$urlquery, &$error)
 
     if (strlen(trim($argarray['search_string'])) > 0) {
 
+        $thread_title_sql = false;
+        $post_content_sql = false;
+        $attach_files_sql = false;
+
         if ($argarray['method'] == 1) { // AND
 
             $keywords_array = explode(' ', trim($argarray['search_string']));
@@ -112,29 +117,25 @@ function search_execute($argarray, &$urlquery, &$error)
 
                 $keyword_search_sql = "";
 
-                $thread_title_sql = "THREAD.TITLE LIKE '%";
-                $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
-                $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
+                if ($argarray['include'] > 0) {
 
-                $thread_title_sql.= implode("%' AND THREAD.TITLE LIKE '%", $keywords_array);
-                $post_content_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
-                $attach_files_sql.= implode("%' AND POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
+                    $thread_title_sql = "THREAD.TITLE LIKE '%";
+                    $thread_title_sql.= implode("%' AND THREAD.TITLE LIKE '%", $keywords_array);
+                    $thread_title_sql.= "%'";
+                }
 
-                $thread_title_sql.= "%'";
-                $post_content_sql.= "%'";
-                $attach_files_sql.= "%'";
+                if ($argarray['include'] > 1) {
 
-                if (isset($argarray['me_only']) && $argarray['me_only'] == 'Y') {
+                    $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
+                    $post_content_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                    $post_content_sql.= "%'";
+                }
 
-                    $keyword_search_sql.= "{$folder_sql} AND ({$thread_title_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
-                    $keyword_search_sql.= "{$post_content_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
-                    $keyword_search_sql.= "{$attach_files_sql} AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql})";
+                if ($argarray['include'] > 2) {
 
-                }else {
-
-                    $keyword_search_sql.= "({$folder_sql} AND {$thread_title_sql} {$date_range_sql} {$from_to_user_sql}) ";
-                    $keyword_search_sql.= "OR ({$folder_sql} AND {$post_content_sql} {$date_range_sql} {$from_to_user_sql}) ";
-                    $keyword_search_sql.= "OR ({$folder_sql} AND {$attach_files_sql} {$date_range_sql} {$from_to_user_sql}) ";
+                    $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
+                    $attach_files_sql.= implode("%' AND POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
+                    $attach_files_sql.= "%'";
                 }
             }
 
@@ -152,51 +153,96 @@ function search_execute($argarray, &$urlquery, &$error)
 
                 $keyword_search_sql = "";
 
-                $thread_title_sql = "THREAD.TITLE LIKE '%";
-                $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
-                $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
+                if ($argarray['include'] > 0) {
 
-                $thread_title_sql.= implode("%' OR THREAD.TITLE LIKE '%", $keywords_array);
-                $post_content_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
-                $attach_files_sql.= implode("%' OR POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
+                    $thread_title_sql = "THREAD.TITLE LIKE '%";
+                    $thread_title_sql.= implode("%' OR THREAD.TITLE LIKE '%", $keywords_array);
+                    $thread_title_sql.= "%'";
+                }
 
-                $thread_title_sql.= "%'";
-                $post_content_sql.= "%'";
-                $attach_files_sql.= "%'";
+                if ($argarray['include'] > 1) {
 
-                if ($argarray['me_only'] == 'Y') {
+                    $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
+                    $post_content_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                    $post_content_sql.= "%'";
+                }
 
-                    $keyword_search_sql.= "{$folder_sql} AND (({$thread_title_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
-                    $keyword_search_sql.= "({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) OR (";
-                    $keyword_search_sql.= "({$attach_files_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql})";
+                if ($argarray['include'] > 2) {
 
-                }else {
-
-                    $keyword_search_sql.= "({$folder_sql} AND ({$thread_title_sql}) {$date_range_sql} {$from_to_user_sql}) ";
-                    $keyword_search_sql.= "OR ({$folder_sql} AND ({$post_content_sql}) {$date_range_sql} {$from_to_user_sql}) ";
-                    $keyword_search_sql.= "OR ({$folder_sql} AND ({$attach_files_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                    $attach_files_sql = "POST_ATTACHMENT_FILES.FILENAME LIKE '%";
+                    $attach_files_sql.= implode("%' OR POST_ATTACHMENT_FILES.FILENAME LIKE '%", $keywords_array);
+                    $attach_files_sql.= "%'";
                 }
             }
 
         }elseif ($argarray['method'] == 3) { // EXACT
 
-            $keyword_search_sql = "";
-
             $words = addslashes(trim($argarray['search_string']));
 
-            $keyword_search_sql.= "$folder_sql AND (INSTR(THREAD.TITLE, ' {$words} ') ";
-            $keyword_search_sql.= "OR INSTR(POST_CONTENT.CONTENT, ' {$words} ') ";
-            $keyword_search_sql.= "OR INSTR(POST_ATTACHMENT_FILES.FILENAME, ' {$words} ')) ";
-            $keyword_search_sql.= "$date_range_sql ";
-
-            if ($argarray['me_only'] == 'Y') {
-
-                $keyword_search_sql.= "AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') ";
-
-            }else {
-
-                $keyword_search_sql.= "$from_to_user_sql";
+            if ($argarray['include'] > 0) {
+                $thread_title_sql.= "(INSTR(THREAD.TITLE, ' {$words} ') ";
             }
+
+            if ($argarray['include'] > 1) {
+                $post_content_sql = "INSTR(POST_CONTENT.CONTENT, ' {$words} ') ";
+            }
+
+            if ($argarray['include'] > 2) {
+                $attach_files_sql = "INSTR(POST_ATTACHMENT_FILES.FILENAME, ' {$words} ')";
+            }
+        }
+
+        if ($argarray['me_only'] == 'Y') {
+
+            $keyword_search_sql.= "{$folder_sql} AND (";
+
+            if ($thread_title_sql) {
+                $keyword_search_sql.= "(({$thread_title_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+            }
+
+            if ($post_content_sql) {
+                if ($thread_title_sql) {
+                    $keyword_search_sql.= "OR (({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                }else {
+                    $keyword_search_sql.= "(({$post_content_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                }
+            }
+
+            if ($attach_files_sql) {
+                if ($thread_title_sql || $post_content_sql) {
+                    $keyword_search_sql.= "OR (({$attach_files_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                }else {
+                    $keyword_search_sql.= "(({$attach_files_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
+                }
+            }
+
+            $keyword_search_sql.= ") ";
+
+        }else {
+
+            $keyword_search_sql.= "{$folder_sql} AND (";
+
+            if ($thread_title_sql) {
+                $keyword_search_sql.= "(({$thread_title_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+            }
+
+            if ($post_content_sql) {
+                if ($thread_title_sql) {
+                    $keyword_search_sql.= "OR (({$post_content_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                }else {
+                    $keyword_search_sql.= "(({$post_content_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                }
+            }
+
+            if ($attach_files_sql) {
+                if ($thread_title_sql || $post_content_sql) {
+                    $keyword_search_sql.= "OR (({$attach_files_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                }else {
+                    $keyword_search_sql.= "(({$attach_files_sql}) {$date_range_sql} {$from_to_user_sql}) ";
+                }
+            }
+
+            $keyword_search_sql.= ") ";
         }
 
     }elseif (strlen(trim($from_to_user_sql)) > 0) {
@@ -206,7 +252,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
     if (isset($keyword_search_sql) && strlen(trim($keyword_search_sql)) > 0) {
 
-        $search_sql.= $keyword_search_sql;
+        $search_sql = "{$search_sql}{$keyword_search_sql}";
 
         if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
             $search_sql.= " GROUP BY THREAD.TID";
@@ -219,6 +265,7 @@ function search_execute($argarray, &$urlquery, &$error)
         }
 
         $search_sql.= " LIMIT ". $argarray['sstart']. ", 50";
+        $search_sql = preg_replace("/ +/", " ", $search_sql);
 
         $result = db_query($search_sql, $db_search_execute);
 
@@ -410,7 +457,7 @@ function folder_search_dropdown()
 
     }
 
-    return form_dropdown_array("fid", $fids, $titles, 0);
+    return form_dropdown_array("fid", $fids, $titles, 0, "style=\"width: 175px\"");
 }
 
 function search_draw_user_dropdown($name)
@@ -447,7 +494,7 @@ function search_draw_user_dropdown($name)
 
     }
 
-    return form_dropdown_array($name, $uids, $names, 0);
+    return form_dropdown_array($name, $uids, $names, 0, "style=\"width: 175px\"");
 }
 
 ?>

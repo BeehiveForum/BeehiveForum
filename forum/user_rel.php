@@ -73,11 +73,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     // Update the User's Session to save them having to logout and back in
     bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
-    header_redirect("messages.php?msg=$msg");
+    header_redirect("./messages.php?msg=$msg");
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    header_redirect("messages.php?msg=$msg");
+    header_redirect("./messages.php?msg=$msg");
 }
 
 if (isset($HTTP_GET_VARS['uid'])) {

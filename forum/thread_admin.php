@@ -81,7 +81,7 @@ if(isset($HTTP_GET_VARS['ret'])){
 
 } else {
 
-    header_redirect(dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
+    header_redirect("./messages.php");
 
 }
 

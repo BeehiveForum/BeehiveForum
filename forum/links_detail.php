@@ -70,7 +70,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
         if (perm_is_moderator() || $creator['UID'] == $HTTP_COOKIE_VARS['bh_sess_uid']) {
             if ($HTTP_POST_VARS['delete'] == "confirm") {
                 links_delete($HTTP_POST_VARS['lid']);
-                header_redirect("links.php");
+                header_redirect("./links.php");
                 exit;
             } else {
                 links_update($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['fid'], addslashes(htmlentities($HTTP_POST_VARS['title'])), $HTTP_POST_VARS['uri'], addslashes(htmlentities($HTTP_POST_VARS['description'])));

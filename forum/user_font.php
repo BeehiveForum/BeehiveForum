@@ -51,11 +51,11 @@ if (isset($HTTP_GET_VARS['fontsize']) && $HTTP_GET_VARS['fontsize'] > 0 && $HTTP
                       $userprefs['STYLE'], $userprefs['VIEW_SIGS'], $userprefs['START_PAGE']);
 
     bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
-    header_redirect("messages.php?msg=$msg");
+    header_redirect("./messages.php?msg=$msg");
 
 }else {
 
-   header_redirect("messages.php?msg=$msg");
+   header_redirect("./messages.php?msg=$msg");
 
 }
 

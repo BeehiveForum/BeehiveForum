@@ -40,7 +40,7 @@ if(!bh_session_check()){
 
 if(isset($HTTP_POST_VARS['cancel'])) {
 
-    $uri = "./discussion.php?msg=" . $HTTP_POST_VARS['t_back'];
+    $uri = "./discussion.php?msg=". $HTTP_POST_VARS['t_back'];
     header_redirect($uri);
 
 }

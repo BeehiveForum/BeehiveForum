@@ -145,7 +145,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
         bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
 
-        header_redirect("prefs.php?updated=true");
+        header_redirect("./prefs.php?updated=true");
 
     }
 

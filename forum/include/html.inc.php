@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.115 2004-06-08 19:22:52 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.116 2004-06-08 21:16:29 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -346,7 +346,7 @@ function bh_setcookie($name, $value, $expires = 0)
 {
     global $cookie_domain;
 
-    if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0 && !is_defined('BEEHIVEMODE_LIGHT')) {
+    if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0 && !defined('BEEHIVEMODE_LIGHT')) {
 
         $cookie_domain = preg_replace("/^http:\/\//", "", trim($cookie_domain));
 

@@ -40,6 +40,7 @@ require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
+require_once("./include/threads.inc.php");
 
 html_draw_top_script();
 
@@ -64,7 +65,8 @@ while($row = db_fetch_array($result)){
     } else {
         $pid = 1;
     }
-    echo "<tr><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\">".$row['TITLE']."</a></td></tr>\n";
+    echo "<tr><td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\">";
+    echo stripslashes($row['TITLE'])."</a></td></tr>\n";
 }
 
 echo "<tr><td>&nbsp;</td></tr>";

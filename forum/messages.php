@@ -57,8 +57,8 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_ppp'])){
 $messages = messages_get($tid,$pid,$ppp);
 $threaddata = thread_get($tid);
 $closed = isset($threaddata['CLOSED']);
-if($closed) echo "<p>closed</p>";
 $foldertitle = folder_get_title($threaddata['FID']);
+if($closed) $foldertitle .= " (closed)";
 
 $msg_count = count($messages);
 
@@ -85,7 +85,7 @@ messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
 messages_interest_form($tid,$pid);
 
 if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
-    messages_admin_form($tid,$pid);
+    messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);
 }
 
 messages_end_panel();

@@ -286,16 +286,22 @@ function messages_interest_form($tid,$pid)
     echo "</p>\n";
 }
 
-function messages_admin_form($tid,$pid)
+function messages_admin_form($tid,$pid,$title,$closed = false)
 {
     global $HTTP_SERVER_VARS;
     echo "<p align=\"center\">\n";
     echo "<form name=\"thread_admin\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
-    echo "Move thread to: " . folder_draw_dropdown(0,"t_move");
-    echo " <input class=\"button\" type=\"submit\" name=\"move\" value=\"Move\">\n";
-    echo "&nbsp;&nbsp;<input class=\"button\" type=\"submit\" name=\"close\" value=\"Close for posting\">\n";
+    echo "Rename thread:<input type=\"text\" name=\"t_name\" value=\"$title\" width=\"64\" maxchars=\"64\">";
+    echo "<input class=\"button\" type=\"submit\" name=\"rename\" value=\"Apply\">";
+    echo "<br />Move thread:" . folder_draw_dropdown(0,"t_move");
+    echo "<input class=\"button\" type=\"submit\" name=\"move\" value=\"Move\">\n";
+    if($closed){
+        echo "&nbsp;&nbsp;<input class=\"button\" type=\"submit\" name=\"reopen\" value=\"Reopen for posting\">\n";
+    } else {
+        echo "&nbsp;&nbsp;<input class=\"button\" type=\"submit\" name=\"close\" value=\"Close for posting\">\n";
+    }
     echo "<input type=\"hidden\" name=\"t_tid\" value=\"$tid\">\n";
     echo "<input type=\"hidden\" name=\"t_pid\" value=\"$pid\">\n";
     echo "</p>\n";

@@ -28,13 +28,18 @@ require_once("./include/db.inc.php");
 // create a <input type="text"> field
 function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text")
 {
+
+    global $lang;
+
     $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\"";
     $html.= " value=\"$value\"";
 
     if($width) $html.= " size=\"$width\"";
     if($maxchars) $html.= " maxlength=\"$maxchars\"";
 
-    return $html." />";
+    $html.= " dir=\"". $lang['_textdir']. "\"";
+
+    return $html. " />";
 }
 
 function form_input_text($name, $value = "", $width = 0, $maxchars = 0)
@@ -57,15 +62,18 @@ function form_input_hidden($name, $value = "")
 function form_textarea($name, $value = "", $rows = 0, $cols = 0, $wrap = "virtual", $custom_html = "")
 {
 
+    global $lang;
+
     //wrap attribute removed for XHTML 1.0 compliance.
     //$html = "<textarea name=\"$name\" class=\"bhtextarea\" wrap=\"$wrap\" $custom_html";
 
-    $html = "<textarea name=\"$name\" class=\"bhtextarea\" $custom_html";
+    $html = trim("<textarea name=\"$name\" class=\"bhtextarea\" $custom_html");
 
     if($rows) $html.= " rows=\"$rows\"";
     if($cols) $html.= " cols=\"$cols\"";
 
-    $html .= ">$value</textarea>";
+    $html.= " dir=\"". $lang['_textdir']. "\"";
+    $html.= ">$value</textarea>";
 
     return $html;
 }
@@ -73,7 +81,9 @@ function form_textarea($name, $value = "", $rows = 0, $cols = 0, $wrap = "virtua
 // create a <select> dropdown with values from database
 function form_dropdown_sql($name, $sql, $default)
 {
-    $html = "<select name=\"$name\" class=\"bhselect\">";
+    global $lang;
+
+    $html = "<select name=\"$name\" class=\"bhselect\" dir=\"". $lang['_textdir']. "\">";
 
     $db_form_dropdown_sql = db_connect();
 
@@ -94,7 +104,9 @@ function form_dropdown_sql($name, $sql, $default)
 // create a <select> dropdown with values from array(s)
 function form_dropdown_array($name, $value, $label, $default = "", $custom_html = "")
 {
-    $html = "<select name=\"$name\" class=\"bhselect\" $custom_html>";
+    global $lang;
+
+    $html = "<select name=\"$name\" class=\"bhselect\" $custom_html dir=\"". $lang['_textdir']. "\">";
 
     for ($i = 0; $i < count($value); $i++) {
         $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";

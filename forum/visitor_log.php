@@ -101,12 +101,12 @@ if (db_num_rows($result) == 20) {
   if ($start < 20) {
     echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
     echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">{$lang['recentvisitors']}</a><bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo>";
   }
 }
 

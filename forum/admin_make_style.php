@@ -334,7 +334,7 @@ reset($elements);
     <td>
       <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="background-color: #<?php echo $elements['body']; ?>; color: #<?php echo contrastFont($elements['body']); ?>">
         <tr>
-          <td colspan="3" height="20" style="background-color: #<?php echo $elements['navpage']; ?>; color: #<?php echo contrastFont($elements['navpage']); ?>; font-size: 10px; font-weight: bold; text-decoration: none">&nbsp;&nbsp;
+          <td colspan="3" height="20" style="background-color: #<?php echo $elements['navpage']; ?>; color: #<?php echo contrastFont($elements['navpage']); ?>; font-size: 10px; font-weight: bold; text-decoration: none"><bdo dir="<?php echo $lang['_textdir']; ?>">&nbsp;&nbsp;</bdo>
             <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['start']; ?></a>&nbsp;|&nbsp;
             <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['messages']; ?></a>&nbsp;|&nbsp;
             <a href="#" style="color: #<?php echo contrastFont($elements['navpage'])."\">".$lang['links']; ?></a>&nbsp;|&nbsp;
@@ -500,9 +500,9 @@ reset($elements);
                       <tr>
                         <td align="center">
                           <span class="postresponse">
-                            <img src="./images/post.png" height="15" border="0" alt="<?php echo $lang['reply']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['reply']; ?></a>&nbsp;&nbsp;
-                            <img src="./images/delete.png" height="15" border="0" alt="<?php echo $lang['delete']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['delete']; ?></a>&nbsp;&nbsp;
-                            <img src="./images/edit.png" height="15" border="0" alt="<?php echo $lang['edit']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['edit']; ?></a>&nbsp;&nbsp;
+                            <img src="./images/post.png" height="15" border="0" alt="<?php echo $lang['reply']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['reply']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>">&nbsp;&nbsp;</bdo>
+                            <img src="./images/delete.png" height="15" border="0" alt="<?php echo $lang['delete']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['delete']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>">&nbsp;&nbsp;</bdo>
+                            <img src="./images/edit.png" height="15" border="0" alt="<?php echo $lang['edit']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['edit']; ?></a><bdo dir="<?php echo $lang['_textdir']; ?>">&nbsp;&nbsp;</bdo>
                             <img src="./images/admintool.png" height="15" border="0" alt="<?php echo $lang['privileges']; ?>" />&nbsp;<a href="#" style="color: #<?php echo contrastFont($elements['box']); ?>"><?php echo $lang['privileges']; ?></a>
                           </span>
                         </td>

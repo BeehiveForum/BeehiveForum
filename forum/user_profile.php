@@ -93,8 +93,8 @@ echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\
 echo "          <tr>\n";
 echo "            <td><h2>&nbsp;" . format_user_name($user['LOGON'], $user['NICKNAME']);
 
-if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
-if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
+if ($relationship & USER_FRIEND) echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" />";
+if ($relationship & USER_IGNORED) echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
 
 echo "</h2></td>\n";
 echo "            <td align=\"right\" class=\"smalltext\">{$lang['lastvisit']}: " . format_time(user_get_last_logon_time($uid), 1) . "&nbsp;</td>\n";

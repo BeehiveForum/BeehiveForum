@@ -21,7 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// International English language file
+// International X-Hacker language file
+
+// Language character set and text direction options -------------------
+
+$lang['_charset'] = "UTF-8";
+$lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
+
 
 // Common words --------------------------------------------------------
 

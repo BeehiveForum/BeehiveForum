@@ -36,14 +36,14 @@ function light_html_draw_top ($title = false)
         $title = $forum_name;
     }
 
-        echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        echo "<?xml version=\"1.0\" encoding=\"", $lang['_charset'], "\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
-        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
-        echo "\t<head>\n";
-        echo "\t\t<title>$title</title>\n";
-        echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n";
-        echo "\t</head>\n";
-        echo "\t<body>\n";
+        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"", $lang['_textdir'], "\">\n";
+        echo "<head>\n";
+        echo "<title>$title</title>\n";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=", $lang['_charset'], "\"/>\n";
+        echo "</head>\n";
+        echo "<body>\n";
 }
 
 function light_html_draw_bottom ()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.40 2004-08-14 21:40:36 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.41 2004-08-17 20:37:59 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -118,7 +118,7 @@ if (isset($_POST['submit'])) {
     $valid = true;
 
     if (isset($_POST['forum_name']) && strlen(trim($_POST['forum_name'])) > 0) {
-        $new_forum_settings['forum_name'] = _htmlentities(trim($_POST['forum_name']));
+        $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));
     }else {
         $error_html = "<h2>{$lang['mustsupplyforumname']}</h2>\n";
         $valid = false;
@@ -325,7 +325,6 @@ if (isset($_POST['submit'])) {
         admin_addlog($uid, 0, 0, 0, 0, 0, 29);
 
         if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
-
             header_redirect("./admin_forum_settings.php?webtag=$webtag&updated=true");
 
         }else {

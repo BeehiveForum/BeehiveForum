@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.72 2004-03-17 22:21:36 decoyduck Exp $ */
+/* $Id: register.php,v 1.73 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -221,8 +221,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
       $user_prefs['MARK_AS_OF_INT']  = (isset($HTTP_POST_VARS['autohighinterest']) && $HTTP_POST_VARS['autohighinterest'] == "Y") ? "Y" : "N";
       $user_prefs['DL_SAVING']       = (isset($HTTP_POST_VARS['daylightsaving']) && $HTTP_POST_VARS['daylightsaving'] == "Y") ? "Y" : "N";
       $user_prefs['TIMEZONE']        = (isset($HTTP_POST_VARS['timezone'])) ? $HTTP_POST_VARS['timezone'] : 0;
-      $user_prefs['LANGUAGE']        = (isset($HTTP_POST_VARS['language'])) ? $HTTP_POST_VARS['language'] : $forum_settings['default_language'];
-      $user_prefs['STYLE']           = (isset($HTTP_POST_VARS['forumstyle'])) ? $HTTP_POST_VARS['forumstyle'] : $forum_settings['default_style'];
+      $user_prefs['LANGUAGE']        = (isset($HTTP_POST_VARS['language'])) ? $HTTP_POST_VARS['language'] : forum_get_setting('default_language');
+      $user_prefs['STYLE']           = (isset($HTTP_POST_VARS['forumstyle'])) ? $HTTP_POST_VARS['forumstyle'] : forum_get_setting('default_style');
 
       if ($new_uid > -1) {
 
@@ -494,10 +494,10 @@ echo "            <td>";
 if (isset($HTTP_POST_VARS['forumstyle'])) {
     $selected_style = $HTTP_POST_VARS['forumstyle'];
     if (!in_array($selected_style, $available_styles)) {
-        $selected_style = $forum_settings['default_style'];
+        $selected_style = forum_get_setting('default_style');
     }
 }else {
-    $selected_style = $forum_settings['default_style'];
+    $selected_style = forum_get_setting('default_style');
 }
 
 foreach ($available_styles as $key => $style) {

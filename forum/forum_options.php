@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.16 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.17 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -175,7 +175,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     if (isset($HTTP_POST_VARS['style'])) {
         $user_prefs['STYLE'] = _stripslashes(trim($HTTP_POST_VARS['style']));
     }else {
-        $user_prefs['STYLE'] = $forum_settings['default_style'];
+        $user_prefs['STYLE'] = forum_get_setting('default_style');
     }
 
     if (isset($HTTP_POST_VARS['start_page'])) {
@@ -242,7 +242,7 @@ if (!empty($error_html)) {
 
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 
-    $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $forum_settings['default_style']) . "/top.html";
+    $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : forum_get_setting('default_style')) . "/top.html";
 
     if (!file_exists($top_html)) {
         $top_html = "./top.html";
@@ -404,7 +404,7 @@ echo "                  <td width=\"250\">{$lang['forumstyle']}:</td>\n";
 if (_in_array($user_prefs['STYLE'], $available_styles)) {
     $selected_style = $user_prefs['STYLE'];
 }else {
-    $selected_style = $forum_settings['default_style'];
+    $selected_style = forum_get_setting('default_style');
 }
       
 foreach ($available_styles as $key => $style) {

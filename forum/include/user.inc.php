@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.139 2004-03-16 23:03:22 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.140 2004-03-18 23:22:51 decoyduck Exp $ */
 
 function user_count()
 {
@@ -404,7 +404,7 @@ function user_update_prefs($uid, $prefs_array)
     if (empty($prefs_array['POSTS_PER_PAGE'])) $prefs_array['POSTS_PER_PAGE'] = 5;
     if (empty($prefs_array['FONT_SIZE']))      $prefs_array['FONT_SIZE']      = 10;
     
-    if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = $forum_settings['default_style'];
+    if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = forum_get_setting('default_style');
 
     $sql = "INSERT INTO {$webtag['PREFIX']}USER_PREFS (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
@@ -534,7 +534,7 @@ function user_guest_enabled()
 {
     global $forum_settings;
     
-    if (strtoupper($forum_settings['guest_account_enabled']) == "N") {
+    if (forum_get_setting('guest_account_enabled', 'N', false)) {
         return false;
     }
 

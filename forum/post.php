@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.163 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: post.php,v 1.164 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -429,7 +429,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                 email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
             }
             
-            if (isset($HTTP_POST_VARS['aid']) && (strtoupper($forum_settings['attachments_enabled']) == "Y")) {
+            if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
                 if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);
             }             
         }      
@@ -758,7 +758,7 @@ echo form_submit('submit', $lang['post'], 'tabindex="2" onclick="closeAttachWin(
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
-if (strtoupper($forum_settings['attachments_enabled']) == "Y") {
+if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}')\"");
     echo form_input_hidden("aid", $aid);

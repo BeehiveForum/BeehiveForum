@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.50 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.51 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -55,7 +55,7 @@ if (!$user_sess = bh_session_check()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (strtoupper($forum_settings['allow_polls']) == "N") {
+if (forum_get_setting('allow_polls', 'N', false)) {
     html_draw_top();
     echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -244,7 +244,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
   post_add_edit_text($tid, 1);
 
-  if (isset($HTTP_POST_VARS['aid']) && (strtoupper($forum_settings['attachments_enabled']) == "Y")) {
+  if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
     if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
   }  
   

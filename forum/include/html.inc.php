@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.86 2004-03-16 23:15:05 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.87 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -159,7 +159,7 @@ function html_draw_top()
         }
     }
 
-    if (!isset($title)) $title = $forum_settings['forum_name'];
+    if (!isset($title)) $title = forum_get_setting('forum_name');
     if (!isset($body_class)) $body_class = false;
     if (!isset($base_target)) $base_target = false;
 
@@ -175,10 +175,10 @@ function html_draw_top()
         echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag={$webtag['WEBTAG']}\">\n";
     }
 
-    if (isset($forum_settings['default_style'])) {
+    if (forum_get_setting('default_style')) {
 
         $user_style = bh_session_get_value('STYLE');
-        $user_style = $user_style ? $user_style : $forum_settings['default_style'];
+        $user_style = $user_style ? $user_style : forum_get_setting('default_style');
 
         if (is_dir("./styles/$user_style") && file_exists("./styles/$user_style/style.css")) {
             $stylesheet = "styles/$user_style/style.css";
@@ -253,7 +253,7 @@ function style_image($img)
     global $forum_settings;
 
     $style = bh_session_get_value('STYLE');
-    $file  = "./styles/". ($style ? $style : $forum_settings['default_style']) . "/images/$img";
+    $file  = "./styles/". ($style ? $style : forum_get_setting('default_style')) . "/images/$img";
 
     if (@file_exists($file)) {
         return $file;
@@ -268,12 +268,12 @@ function bh_setcookie($name, $value = "", $expires = 0)
 
     $hostname = "";
 
-    if (isset($forum_settings['cookie_domain']) && strlen(trim($forum_settings['cookie_domain'])) > 0 && isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
+    if ($cookie_domain = forum_get_setting('cookie_domain', false, '') && isset($HTTP_SERVER_VARS['HTTP_HOST'])) {
 
         if (!strstr($HTTP_SERVER_VARS['HTTP_HOST'], 'localhost')) {
 
-            if (strstr($HTTP_SERVER_VARS['HTTP_HOST'], $forum_settings['cookie_domain'])) {
-                $hostname = $forum_settings['cookie_domain'];
+            if (strstr($HTTP_SERVER_VARS['HTTP_HOST'], forum_get_setting('cookie_domain'))) {
+                $hostname = forum_get_setting('cookie_domain');
             }else {
                 $hostname = $HTTP_SERVER_VARS['HTTP_HOST'];
             }

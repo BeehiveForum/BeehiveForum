@@ -72,7 +72,7 @@ function get_num_sessions()
     
     $webtag = get_webtag();
     
-    $session_stamp = time() - intval($forum_settings['active_sess_cutoff']);
+    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
     $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp)";
@@ -95,7 +95,7 @@ function get_active_users()
     
     $webtag = get_webtag();
     
-    $session_stamp = time() - intval($forum_settings['active_sess_cutoff']);
+    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
     $uid = bh_session_get_value('UID');
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.121 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: messages.php,v 1.122 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -286,7 +286,7 @@ if (bh_session_get_value('UID') != 0) {
             
         }elseif (($threaddata['FROM_UID'] == bh_session_get_value('UID')) && $threaddata['ADMIN_LOCK'] == 0) {
                     
-            if (((strtoupper($forum_settings['allow_post_editing']) == "Y") && intval($forum_settings['post_edit_time']) == 0) || ((time() - $threaddata['CREATED']) < (intval($forum_settings['post_edit_time']) * HOUR_IN_SECONDS))) {
+            if (((forum_get_setting('allow_post_editing', 'Y', false)) && intval(forum_get_setting('post_edit_time')) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS))) {
         
                 messages_edit_thread($threaddata['FID'], $tid, $pid, $threaddata['TITLE']);
             }

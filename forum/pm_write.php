@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.49 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.50 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -327,7 +327,7 @@ echo "</table>\n";
 echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
 echo form_submit('cancel', $lang['cancel']);
 
-if (strtoupper($forum_settings['attachments_enabled']) == "N" && strtoupper($forum_settings['pm_allow_attachments']) == "N") {
+if (forum_get_setting('attachments_enabled', 'Y', false) && forum_get_setting('pm_allow_attachments', 'Y', false)) {
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?webtag={$webtag['WEBTAG']}&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
     echo form_input_hidden("aid", $aid);
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.45 2004-03-17 23:41:47 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.46 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -58,7 +58,16 @@ $user_wordfilter = load_wordfilter();
 
 // If attachments are disabled then no need to go any further.
 
-if (strtoupper($forum_settings['attachments_enabled']) == "N") {
+if (forum_get_setting('attachments_enabled', 'N', false)) {
+    html_draw_top();
+    echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
+    html_draw_bottom();
+    exit;
+}
+
+// If the attachments directory is undefined we can't go any further
+
+if (!$attachment_dir = forum_get_setting('attachment_dir')) {
     html_draw_top();
     echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -69,8 +78,6 @@ if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
-
-if (!isset($forum_settings['attachment_dir'])) $forum_settings['attachment_dir'] = "attachments";
 
 html_draw_top("post.js");
 
@@ -159,12 +166,12 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
     
-      if (@file_exists("{$forum_settings['attachment_dir']}/{$attachments[$i]['hash']}")) {
+      if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
 
         echo "  <tr>\n";
         echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
         
-        if (strtoupper($forum_settings['attachment_use_old_method']) == "Y") {
+        if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
             echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $attachments[$i]['hash'], "\" title=\"";
         }else {
             echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "\" title=\"";
@@ -174,7 +181,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
           echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
         }
 
-        if (@$imageinfo = getimagesize($forum_settings['attachment_dir']. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+        if (@$imageinfo = getimagesize("$attachment_dir/". md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
           echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
         }
 
@@ -255,7 +262,7 @@ if (isset($HTTP_GET_VARS['popup']) || isset($HTTP_POST_VARS['popup'])) {
   echo "  </tr>\n";
   echo "</table>\n";
   
-  if (strtoupper($forum_settings['attachments_enabled']) == "Y") {
+  if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
       if (isset($HTTP_GET_VARS['aid']) && is_md5($HTTP_GET_VARS['aid'])) {
           $aid = $HTTP_GET_VARS['aid'];

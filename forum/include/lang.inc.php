@@ -21,15 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.12 2004-03-17 22:21:37 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.13 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/session.inc.php");
 
-if (!isset($forum_settings['default_language']) || strlen(trim($forum_settings['default_language'])) == 0) {
-    $forum_settings['default_language'] = "en";
-}
-
+$default_language = forum_get_setting('default_language', false, 'en');
 $pref_language = bh_session_get_value("LANGUAGE");
 
 if ($pref_language && $pref_language != "") { // if the user has expressed a preference for language, ignore what the browser wants and use that if available
@@ -40,7 +37,7 @@ if ($pref_language && $pref_language != "") { // if the user has expressed a pre
 }
 
 if (!isset($HTTP_SERVER_VARS['HTTP_ACCEPT_LANGUAGE'])) {
-   include_once("./include/languages/{$forum_settings['default_language']}.inc.php"); // if the browser doesn't send an Accept-Language header, give up.
+   include_once("./include/languages/{$default_language}.inc.php"); // if the browser doesn't send an Accept-Language header, give up.
    return;
 }
 
@@ -59,7 +56,7 @@ foreach ($langs as $key => $value) { // work out what the q values associated wi
 arsort($qvalue); // sort the array in descending order of q value
 
 foreach ($qvalue as $key => $value) { // go through the array and use the first language installed that matches
-    if ($langs[$key] == "*") $langs[$key] = $forum_settings['default_language']; // if we've got to the stage where the user will accept any language, default to what is specified in config.inc.php
+    if ($langs[$key] == "*") $langs[$key] = forum_get_setting('default_language'); // if we've got to the stage where the user will accept any language, default to what is specified in config.inc.php
     if (file_exists("./include/languages/".$langs[$key].".inc.php")) {
         include_once("./include/languages/".$langs[$key].".inc.php");
         return;
@@ -67,7 +64,7 @@ foreach ($qvalue as $key => $value) { // go through the array and use the first 
 }
 
 // if we're still here, no languages matched. Use the default specified in config.inc.php
-include_once ("./include/languages/{$forum_settings['default_language']}.inc.php");
+include_once ("./include/languages/{$default_language}.inc.php");
 
 function lang_get_available()
 {

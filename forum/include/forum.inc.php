@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.17 2004-03-17 22:23:50 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.18 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/db.inc.php");
@@ -88,6 +88,46 @@ function get_forum_settings()
     
     return $forum_settings;
 }
+
+function save_forum_settings($forum_settings_array)
+{
+    if (!is_array($forum_settings_array)) return false;
+    
+    $db_save_forum_settings = db_connect();
+    
+    $webtag = get_webtag();
+    
+    $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '{$webtag['FID']}'";
+    $result = db_query($sql, $db_save_forum_settings);
+    
+    foreach ($forum_settings_array as $sname => $svalue) {
+    
+        $sname = addslashes($sname);
+        $svalue = addslashes($svalue);
+        
+        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+        $sql.= "VALUES ('{$webtag['FID']}', '$sname', '$svalue')";
+        
+        $result = db_query($sql, $db_save_forum_settings);
+    }
+}
+
+function forum_get_setting($setting_name, $value = false, $default = false)
+{
+    global $forum_settings;
+    
+    if (isset($forum_settings[$setting_name])) {
+        if ($value) {
+            if (strtoupper($forum_settings[$setting_name]) == strtoupper($value)) {
+                return true;
+            }
+        }else {
+            return _stripslashes($forum_settings[$setting_name]);
+        }
+    }
+    
+    return $default;
+}    
 
 function draw_start_page()
 {

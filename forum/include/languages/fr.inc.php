@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.37 2004-03-16 19:22:50 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.38 2004-03-18 23:22:51 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -314,6 +314,53 @@ $lang['madethreadnonsticky'] = "Le Fil fait Non-Collant";
 $lang['matchedtext'] = "Texte Assorti";
 $lang['replacementtext'] = "Texte De rechange";
 $lang['preg'] = "PREG";
+
+// Admin Forum Settings (admin_forum_settings.php) -------------------------------
+
+$lang['mustsupplyforumname'] = "You must supply a forum name";
+$lang['mustsupplyforumemail'] = "You must supply a forum email address";
+$lang['mustchoosedefaultstyle'] = "You must choose a default forum style";
+$lang['unknownstylename'] = "Unknown style name";
+$lang['mustchoosedefaultlang'] = "You must choose a default forum language";
+$lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";
+$lang['attachmentdirnotwritable'] = "Choosen attachment directory and it's parent directory must be writable by PHP";
+$lang['attachmentdirblank'] = "You must supply a directory to save attachments in";
+$lang['mainsettings'] = "Main Settings";
+$lang['forumname'] = "Forum Name";
+$lang['forumemail'] = "Forum Email";
+$lang['defaultstyle'] = "Default Style";
+$lang['defaultlanguage'] = "Default Language";
+$lang['errorhandler'] = "Error Handler";
+$lang['showfriendlyerrors'] = "Show Friendly Error Messages";
+$lang['gzipcompression'] = "GZIP Compression";
+$lang['compresspagesusinggzip'] = "Compress pages using GZIP";
+$lang['gzipcompressionlevel'] = "GZIP Compression Level";
+$lang['cookieoptions'] = "Cookie Options";
+$lang['cookiedomain'] = "Cookie Domain";
+$lang['postoptions'] = "Post Options";
+$lang['allowpostoptions'] = "Allow Post Editing";
+$lang['postedittimeout'] = "Post Edit Timeout";
+$lang['maximumpostlength'] = "Maximum Post Length";
+$lang['allowcreationofpolls'] = "Allow creation of polls";
+$lang['searchoptions'] = "Search Options";
+$lang['minsearchwordlength'] = "Min search word length";
+$lang['sessions'] = "Sessions";
+$lang['sessioncutoffseconds'] = "Session cut off (seconds)";
+$lang['activesessioncutoffseconds'] = "Active session cut off (seconds)";
+$lang['stats'] = "stats";
+$lang['enablestatsdisplay'] = "Enable Stats Display at bottom of message pane";
+$lang['personalmessages'] = "Personal Messages";
+$lang['enablepersonalmessages'] = "Enable Personal Messages";
+$lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachments";
+$lang['guestaccount'] = "Guest Account";
+$lang['enableguestaccount'] = "Enable Guest Account";
+$lang['autologinguests'] = "Automatically Login Guests";
+$lang['enableattachments'] = "Enable Attachments";
+$lang['attachmentdir'] = "Attachment Dir";
+$lang['showdeletedattachments'] = "Show Deleted Attachments in messages";
+$lang['allowembeddingofattachments'] = "Allow embedding of attachments in messages / signatures";
+$lang['usealtattachmentmethod'] = "Use Alternative attachment method";
+$lang['forumsettingsupdated'] = "Forum settings successfully updated";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 

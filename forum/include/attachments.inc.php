@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.47 2004-03-15 21:33:31 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.48 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/perm.inc.php");
 
@@ -45,11 +45,11 @@ function get_attachments($uid, $aid)
 
         if (!is_array($userattachments)) $userattachments = array();
         
-        if (@file_exists($forum_settings['attachment_dir']. '/'. $row['HASH'])) {
+        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                       "filesize"  => filesize($forum_settings['attachment_dir']. '/'. $row['HASH']),
-                                       "filedate"  => filemtime($forum_settings['attachment_dir']. '/'. $row['HASH']),
+                                       "filesize"  => filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
+                                       "filedate"  => filemtime(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
@@ -91,11 +91,11 @@ function get_all_attachments($uid, $aid)
 
         if (!is_array($userattachments)) $userattachments = array();
 
-        if (@file_exists($forum_settings['attachment_dir']. '/'. $row['HASH'])) {
+        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                       "filesize"  => filesize($forum_settings['attachment_dir']. '/'. $row['HASH']),
-                                       "filedate"  => filemtime($forum_settings['attachment_dir']. '/'. $row['HASH']),
+                                       "filesize"  => filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
+                                       "filedate"  => filemtime(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
@@ -136,11 +136,11 @@ function get_users_attachments($uid)
 
         if (!is_array($userattachments)) $userattachments = array();
 
-        if (@file_exists($forum_settings['attachment_dir']. '/'. $row['HASH'])) {
+        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                       "filesize"  => filesize($forum_settings['attachment_dir']. '/'. $row['HASH']),
-                                       "filedate"  => filemtime($forum_settings['attachment_dir']. '/'. $row['HASH']),
+                                       "filesize"  => filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
+                                       "filedate"  => filemtime(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
@@ -197,14 +197,16 @@ function delete_attachment($uid, $hash)
     
     $hash = addslashes($hash);
     
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    
     $sql = "SELECT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "WHERE HASH = '$hash' AND UID = $uid";
     
     $result = db_query($sql, $db_delete_attachment);
     
     if ((db_num_rows($result) > 0) || perm_is_moderator()) {
-        if (file_exists("{$forum_settings['attachment_dir']}/$hash")) {
-            return unlink("{$forum_settings['attachment_dir']}/$hash");
+        if (file_exists("$attachment_dir/$hash")) {
+            return unlink("$attachment_dir/$hash");
         }
     }    
 }
@@ -226,8 +228,8 @@ function get_free_attachment_space($uid)
 
     while($row = db_fetch_array($result)) {
 
-        if (@file_exists($forum_settings['attachment_dir']. '/'. $row['HASH'])) {
-            $used_attachment_space += filesize($forum_settings['attachment_dir']. '/'. $row['HASH']);
+        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
+            $used_attachment_space += filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']);
         }
     }
     
@@ -364,9 +366,7 @@ function attachment_inc_dload_count($hash)
 
 function attachment_embed_check($content)
 {
-    global $forum_settings;
-
-    if (strtoupper($forum_settings['attachment_allow_embed']) == "Y") return false;
+    if (forum_get_setting('attachments_allow_embed', 'Y', false)) return false;
     $content_check = preg_replace('/\&\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
     
     if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $content_check)) {

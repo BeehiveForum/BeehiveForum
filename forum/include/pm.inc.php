@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.47 2004-03-17 17:20:35 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.48 2004-03-18 23:22:51 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -353,7 +353,7 @@ function draw_pm_message($pm_elements_array)
             for ($i = 0; $i < sizeof($attachments); $i++) {
                 if (isset($attachments[$i]['deleted']) && !$attachments[$i]['deleted']) {
                     $visible_attachments[] = $attachments[$i];
-                }elseif (strtoupper($forum_settings['attachments_show_deleted']) == "Y") {
+                }elseif (forum_get_setting('attachments_show_deleted', 'Y', false)) {
                     $visible_attachments[] = $attachments[$i];
                 }
             }
@@ -395,7 +395,7 @@ function draw_pm_message($pm_elements_array)
 
                         echo " title=\"";
 
-                        if ($imageinfo = @getimagesize($forum_settings['attachment_dir']. '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
+                        if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($visible_attachments[$i]['aid']. rawurldecode($visible_attachments[$i]['filename'])))) {
                             echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                         }
  

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.76 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.77 2005-02-18 10:06:36 decoyduck Exp $ */
 
 include_once("./include/lang.inc.php");
 include_once("./include/word_filter.inc.php");
@@ -212,6 +212,8 @@ function _array_search($needle, $haystack)
 
 function _in_array($needle, $haystack)
 {
+    if (!is_array($haystack)) return false;
+
     foreach ($haystack as $key => $value) {
         if (is_array($value)) {
             return _in_array($needle, $value);

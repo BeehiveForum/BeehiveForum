@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.71 2004-04-26 11:21:13 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.72 2004-04-27 23:07:11 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -361,12 +361,14 @@ function pm_get_user($mid)
     return $logon;
 }
 
-function pm_draw_to_dropdown($default_uid)
+function pm_draw_to_dropdown_friends($default_uid)
 {
-    $html = "<select name=\"t_to_uid\">\n";
-    $html.= "<option value=\"0\">&amp;lt;select recipient&gt;</option>\n";
+    $html = "<select name=\"t_to_uid\" style=\"width: 190px\" onchange=\"checkToRadio(0)\">\n";
+    $html.= "<option value=\"0\">&lt;select recipient&gt;</option>\n";
 
     $db_post_draw_to_dropdown = db_connect();
+
+    $uid = bh_session_get_value('UID');
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
@@ -379,11 +381,17 @@ function pm_draw_to_dropdown($default_uid)
 
     if (!$table_data = get_table_prefix()) return "";
 
+    $relationship = USER_FRIEND;
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')) ";
-    $sql.= "AND USER.UID <> '$default_uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "AND USER.UID <> '$default_uid' ";
+    $sql.= "AND USER_PEER.RELATIONSHIP & $relationship = $relationship ";
+    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.53 2004-11-14 17:29:48 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.54 2004-11-18 20:13:39 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -581,7 +581,7 @@ $lang['subject'] = "Subject";
 $lang['send'] = "Send";
 $lang['msgnotificationemail_1'] = "pizosted a mizessage to you on";
 $lang['msgnotificationemail_2'] = "tha motherfuckin 'subject iz";
-$lang['msgnotificationemail_3'] = "To read that shit and others in tha same shit, go to";
+$lang['msgnotificationemail_3'] = "To read that shit and others in tha same shit, go to:";
 $lang['msgnotificationemail_4'] = "Yo: If yo ain't wishin' to receive e-fuckin'-mail notifiizcations of Fizorum shit";
 $lang['msgnotificationemail_5'] = "posted to you, fuck you.";
 $lang['msgnotificationemail_6'] = "Oh, and clizick";
@@ -592,7 +592,7 @@ $lang['subnotification_2'] = "are down wit'";
 $lang['subnotification_3'] = "tha subject iz";
 $lang['subnotification_4'] = "To read that shit and others shit in tha same shit, bring yo ass to";
 $lang['subnotification_5'] = "Note: If you do not wish to receive email notifications of new messages";
-$lang['subnotification_6'] = "in this thread, fuck you. And go to";
+$lang['subnotification_6'] = "in this thread, fuck you. And go to:";
 $lang['subnotification_7'] = "and adjust yo Interest level at tha end of tha page.";
 $lang['subnotification_subject'] = "Fuck ass Subsizcription Nizotificization from";
 $lang['pmnotification_1'] = "posted a P to tha M to you on";

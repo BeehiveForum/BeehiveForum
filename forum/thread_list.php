@@ -28,6 +28,9 @@ require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/form.inc.php"); // Form drawing functions
+require_once("./include/header.inc.php");
+
+header_no_cache();
 
 // Check that required variables are set
 if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {

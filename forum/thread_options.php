@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.10 2004-04-17 17:39:28 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.11 2004-04-20 11:22:04 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -174,12 +174,14 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
 
     if (isset($_POST['rename'])) {
 
-        if ($_POST['rename'] != $threaddata['TITLE']) {
+        if ($_POST['rename'] != $threaddata['TITLE'] && trim($_POST['rename']) != "") {
 
             $threaddata['TITLE'] = $_POST['rename'];
             thread_change_title($tid, $threaddata['TITLE']);
             post_add_edit_text($tid, 1);
-            admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+			if (perm_is_moderator() && $threaddata['FROM_UID'] != $uid) {
+	            admin_addlog(0, 0, $tid, 0, 0, 0, 21);
+			}
             $update = true;
         }
     }
@@ -190,7 +192,9 @@ if (perm_is_moderator() || ((($threaddata['FROM_UID'] == $uid) && $threaddata['A
 
             $threaddata['FID'] = $_POST['move'];
             thread_change_folder($tid, $threaddata['FID']);
-            admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 18);
+			if (perm_is_moderator() && $threaddata['FROM_UID'] != $uid) {
+	            admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 18);
+			}
             $update = true;
         }
     }

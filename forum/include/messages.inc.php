@@ -433,6 +433,11 @@ function message_fontsize_form($fontsize, $tid, $pid)
       }
     }
     
+    if (!isset($user_prefs['FIRST_NAME'])) $user_prefs['FIRST_NAME'] = "";
+    if (!isset($user_prefs['LAST_NAME'])) $user_prefs['LAST_NAME'] = "";
+    if (!isset($user_prefs['HOMEPAGE_URL'])) $user_prefs['HOMEPAGE_URL'] = "";
+    if (!isset($user_prefs['PIC_URL'])) $user_prefs['PIC_URL'] = "";
+
     user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $user_prefs['FIRST_NAME'],
                       $user_prefs['LAST_NAME'], $user_prefs['HOMEPAGE_URL'],
                       $user_prefs['PIC_URL'], $user_prefs['EMAIL_NOTIFY'],

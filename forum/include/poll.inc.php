@@ -41,9 +41,9 @@ function poll_create($tid, $poll_options, $closes, $change_vote, $poll_type, $sh
       foreach($poll_options as $option_name) {
 
         if (!empty($option_name)) {
-
+        
           $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, OPTION_NAME) ";
-          $sql.= "values ('$tid', '$option_name')";
+          $sql.= "values ('$tid', '". addslashes($option_name). "')";
 
 	  $result = db_query($sql, $db_poll_create);
 

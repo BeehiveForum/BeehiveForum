@@ -238,7 +238,7 @@ if(!empty($error_html)) {
       </tr>
       <tr>
         <td>Posts per page</td>
-        <td><?php echo form_dropdown_array("posts_per_page" ,array(5,10,20), array(5,10,20), isset($user_prefs['POSTS_PER_PAGE']) ? $user_prefs['POSTS_PER_PAGE'] : 10); ?></td>
+        <td><?php echo form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), isset($user_prefs['POSTS_PER_PAGE']) ? $user_prefs['POSTS_PER_PAGE'] : 10); ?></td>
       </tr>
       <tr>
         <td>Font size</td>
@@ -260,7 +260,23 @@ if(!empty($error_html)) {
       </tr>
       <tr>
         <td>Forum Style</td>
-        <td><?php echo form_dropdown_array("style", $available_styles, $style_names, isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style); ?></td>
+        <td>
+          <?php 
+          
+            if (isset($HTTP_COOKIE_VARS['bh_sess_style'])) {
+              $selected_style = $HTTP_COOKIE_VARS['bh_sess_style'];
+            }else {
+              $selected_style = $default_style;
+            }
+            
+            if (list($key) = array_keys($available_styles, $selected_style)) {
+              echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]);
+            }else {
+              echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]);
+            }
+                        
+          ?>
+        </td>
       </tr>
       <tr>
         <td>&nbsp;</td>

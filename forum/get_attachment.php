@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.6 2005-03-14 13:27:19 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.7 2005-03-24 19:17:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -105,19 +105,20 @@ if (!$attachment_dir = forum_get_setting('attachment_dir')) {
 // file directly however this doesn't work with all webservers
 // hence the option to disable it.
 
-if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
+if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
-    if (isset($_GET['hash'])) {
-        $hash = $_GET['hash'];
-    }
+    $hash = $_GET['hash'];
 
 }else {
 
     if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) {
+
         if (preg_match("/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data)) {
             $hash = $attachment_data[1];
         }
+
     }else {
+
         if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data)) {
             $hash = $attachment_data[1];
         }

@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+require_once("./include/html.inc.php");
+
 function get_forum_list()
 {
     $db_get_forum_list = db_connect();
@@ -63,7 +65,7 @@ function get_forum_list()
 
             if (db_num_rows($result)) {
             
-                $row = db_fetch_array($lv_result);
+                $row = db_fetch_array($result);
                 $forum_data['DESCRIPTION'] = $row['SVALUE'];
             
             }else{

@@ -84,19 +84,19 @@ function change_current_thread (thread_id) {
 // -->
 </script>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<table width="215" border="0" cellpadding="0" cellspacing="0">
   <tr>
-    <td class="postbody">
-      <img src="./images/star.png" width="14" height="14" alt="star.png" />&nbsp;<a href="post.php" target="main">New Discussion</a><br />
-      <img src="./images/star.png" width="14" height="14" alt="star.png" />&nbsp;<a href="#">Create Poll</a><br />
-      <img src="./images/star.png" width="14" height="14" alt="star.png" />&nbsp;<a href="#">Search</a><br />
+    <td class="postbody" colspan="2">
+      <img src="./images/star.png" width="14" height="14" alt="" />&nbsp;<a href="post.php" target="main">New Discussion</a><br />
+      <img src="./images/star.png" width="14" height="14" alt="" />&nbsp;<a href="#">Create Poll</a><br />
+      <img src="./images/star.png" width="14" height="14" alt="" />&nbsp;<a href="#">Search</a><br />
     </td>
   </tr>
   <tr>
-    <td>&nbsp;</td>
+    <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td>
+    <td colspan="2">
 <?
 
 $labels = array("All Discussions","Unread Discussions","Unread \"To: Me\"","Today's Discussions",
@@ -208,34 +208,33 @@ while (list($fid, $title) = each($folder_info)) {
 
 if (!$thread_info) {
     echo "<tr>\n";
-    echo "<td class=\"smalltext\">\n";
+    echo "<td class=\"smalltext\" colspan=\"2\">\n";
     echo "No messages in this category. Please select another, or <a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0\">click here</a> for all threads.\n";
     echo "</td>\n";
     echo "</tr>\n<tr>\n<td>&nbsp;</td>\n<tr>\n";
 }
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"star.png\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr><tr><td>&nbsp;</td></tr>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr><tr><td>&nbsp;</td></tr>\n";
 
 // Iterate through the information we've just got and display it in the right order
 while (list($key1, $folder_number) = each($folder_order)) {
 	echo "<tr>\n";
-	echo "<td class=\"foldername\">\n";
+	echo "<td class=\"foldername\" colspan=\"2\">\n";
 	echo "<img src=\"./images/folder.png\" alt=\"folder\" />\n";
 	echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number. "\">".$folder_info[$folder_number]."</a>";
 	echo "</td>\n";
 	echo "</tr>\n";
 	if (is_array($thread_info)) {
 		echo "<tr>\n";
-		echo "<td class=\"threads\" style=\"border-bottom: 0;\">\n";
-		echo "<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." threads</a>\n";
-		echo "<a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
-		echo "</td></tr>\n";
+		echo "<td class=\"threads\" style=\"border-bottom: 0px; border-right: 0px;\" align=\"left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=".$folder_number."\" class=\"folderinfo\">".$folder_msgs[$folder_number]." threads</a></td>\n";
+		echo "<td class=\"threads\" style=\"border-bottom: 0px; border-left: 0px;\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"post.php?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">Post New</a></td>\n";
+		echo "</tr>\n";
 		if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<tr><td class=\"threads\" style=\"border-top: 0px; border-bottom: 0px;\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from - 50)."\" class=\"folderinfo\">Previous 50 threads</a></td></tr>\n";
-		echo "<tr><td class=\"threads\" style=\"border-top: 0px;\">\n";
+		echo "<tr><td class=\"threads\" style=\"border-top: 0px;\" colspan=\"2\">\n";
 		echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 		while (list($key2, $thread) = each($thread_info)) {
 			if ($thread['fid'] == $folder_number) {
-				echo "<tr><td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
+				echo "<tr><td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"16\">";
 				
                                 if ($thread['last_read'] == 0) {
 					$number = "[".$thread['length']."&nbsp;new]";
@@ -243,9 +242,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
-						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"ct.png\" />";
+						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
 					} else {                                                                                                                                                                            
-						echo "<img src=\"./images/star.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"star.png\"/>";
+						echo "<img src=\"./images/star.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\"/>";
 					}				
 
 				} elseif ($thread['last_read'] < $thread['length']) {
@@ -255,9 +254,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
-						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"ct.png\" />";
+						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
 					} else {
-						echo "<img src=\"./images/star.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"star.png\" />";
+						echo "<img src=\"./images/star.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
 					}
 
 				} else {
@@ -266,9 +265,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
-						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"ct.png\" />";
+						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
 					} else {
-						echo "<img src=\"./images/bullet.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"bullet.png\" />";
+						echo "<img src=\"./images/bullet.png\" name=\"t".$thread['tid']."\" align=\"middle\" alt=\"\" />";
 					}
 				}
 				// work out how long ago the thread was posted and format the time to display
@@ -277,7 +276,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
 				echo "&nbsp;</td><td valign=\"top\">";
 				// With mouseover status message: echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". $thread_author ."';return true\" onmouseOut=\"window.status='';return true\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a>&nbsp;";
-				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a>&nbsp;";
+				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a> ";
 				if ($thread['interest'] == 1) echo "<img src=\"./images/high_interest.png\" alt=\"High Interest\" align=\"middle\"> ";
 				if ($thread['interest'] == 2) echo "<img src=\"./images/subscribe.png\" alt=\"Subscribed\" align=\"middle\"> ";
 				echo "<span class=\"threadxnewofy\">".$number."</span>";
@@ -317,10 +316,10 @@ if ($mode == 0 && !isset($folder)) {
         $total_threads += $num_threads;
     }
     $more_threads = $total_threads - $start_from - 50;
-  if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td>&nbsp;</td></tr><tr><td class=\"smalltext\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"star.png\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
-  if ($more_threads > 50) echo "<tr><td>&nbsp;</td></tr><tr><td class=\"smalltext\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"star.png\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></td></tr>\n";
+  if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
+  if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></td></tr>\n";
 }
-echo "<tr>\n<td>&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"star.png\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark all as read</a></td></tr>\n";
+echo "<tr>\n<td colspan=\"2\">&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\" colspan=\"2\"><img src=\"./images/star.png\" width=\"14\" height=\"14\" alt=\"\" />&nbsp;<a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark all as read</a></td></tr>\n";
 echo "</table>\n";
 echo "<script language=\"JavaScript\">\n";
 echo "<!--\n";

@@ -361,14 +361,14 @@
 	display: none;
 }
 
-.e_heart { /* (heart) */
+.e_heartbeat { /* (heart) */
 	padding-left: 15px;
     height: 13px;
 	font-size: 13px;
     background-image: url("./images/heart.png");
     background-repeat: no-repeat;
 }
-.e_heart span {
+.e_heartbeat span {
 	display: none;
 }
 

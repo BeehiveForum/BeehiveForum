@@ -109,7 +109,7 @@ function threads_get_unread($uid) // get unread messages for $uid
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
@@ -132,7 +132,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid
 
 	// Formulate query
 
-	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
 	$sql .= "FROM " . forum_table("THREAD") . " THREAD ";
 	$sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
 	$sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";

@@ -21,13 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.68 2004-05-23 12:33:55 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.69 2004-05-23 13:39:35 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
 
 function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "", $access_allowed = USER_PERM_THREAD_CREATE)
 {
+    $db_folder_draw_dropdown = db_connect();
+
     $uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return "";
@@ -35,19 +37,34 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     if (!is_numeric($allowed_types)) return "";
     if (!is_numeric($access_allowed)) return "";
 
-    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON ((GROUP_PERMS.GID = GROUP_USERS.GID) AND GROUP_PERMS.FID = FOLDER.FID) ";
-    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 AND GROUP_PERMS.PERM IS NOT NULL) ";
-    $sql.= "OR (FOLDER.PERM & $access_allowed > 0 AND FOLDER.PERM IS NOT NULL AND GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "OR (FOLDER.PERM IS NULL AND GROUP_PERMS.PERM IS NULL) ";
-    $sql.= "GROUP BY GROUP_PERMS.PERM, FOLDER.PERM, FOLDER.FID ";
+    $folders['FIDS'] = array();
+    $folders['TITLES'] = array();
+
+    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "WHERE FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL ";
     $sql.= "ORDER BY FOLDER.FID";
 
-    return form_dropdown_sql($field_name.$suffix, $sql, $default_fid, $custom_html);
+    $result = db_query($sql, $db_folder_draw_dropdown);
+
+    if (db_num_rows($result) > 0) {
+
+        while($row = db_fetch_array($result, MYSQL_ASSOC)) {
+
+            if (perm_check_folder_permissions($row['FID'], $access_allowed)) {
+
+                $folders['FIDS'][] = $row['FID'];
+                $folders['TITLES'][] = $row['TITLE'];
+            }
+        }
+
+        if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
+
+            return form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid, $custom_html);
+        }
+    }
+
+    return false;
 }
 
 function folder_get_title($fid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.1 2005-03-10 21:17:53 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.2 2005-03-14 21:16:35 decoyduck Exp $ */
 
 function db_connect ()
 {
@@ -31,21 +31,13 @@ function db_connect ()
 
     if (!$connection_id) {
 
-        if (@$connection_id = mysql_connect($db_server, $db_username, $db_password)) {
+        if ($connection_id = mysql_connect($db_server, $db_username, $db_password)) {
 
-            if (@mysql_select_db($db_database, $connection_id)) {
+            if (mysql_select_db($db_database, $connection_id)) {
 
                 db_enable_big_selects($connection_id);
                 return $connection_id;
-
-            }else {
-
-                trigger_error(DB_ER_NO_SUCH_DBASE, E_USER_ERROR);
             }
-
-        }else {
-
-            trigger_error(DB_ER_NO_SUCH_HOST, E_USER_ERROR);
         }
     }
 
@@ -67,30 +59,14 @@ function db_enable_big_selects($connection_id)
 
 function db_query ($sql, $connection_id)
 {
-    if ($result = mysql_query($sql, $connection_id)) {
-
-        return $result;
-
-    }else {
-
-        $mysql_error = mysql_error($connection_id);
-        trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", E_USER_ERROR);
-    }
+    return mysql_query($sql, $connection_id);
 }
 
 function db_unbuffered_query ($sql, $connection_id)
 {
     if (function_exists("mysql_unbuffered_query")) {
 
-        if ($result = mysql_unbuffered_query($sql, $connection_id)) {
-
-            return $result;
-
-        }else {
-
-            $mysql_error = mysql_error($connection_id);
-            trigger_error("<p>SQL: $sql</p><p>MySQL Said: $mysql_error</p>", E_USER_ERROR);
-        }
+        return mysql_unbuffered_query($sql, $connection_id)) {
 
     }else {
 
@@ -98,7 +74,7 @@ function db_unbuffered_query ($sql, $connection_id)
     }
 }
 
-function db_num_rows ($result)
+function db_num_rows($result)
 {
     return mysql_num_rows($result);
 }
@@ -108,7 +84,7 @@ function db_affected_rows($connection_id)
     return mysql_affected_rows($connection_id);
 }
 
-function db_fetch_array ($result, $result_type = DB_RESULT_BOTH)
+function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
 {
     return mysql_fetch_array($result, $result_type);
 }
@@ -137,12 +113,12 @@ function db_fetch_mysql_version()
         $db_fetch_mysql_version = db_connect();
 
         $sql = "SELECT VERSION() AS version";
-        $result = @db_query($sql, $db_fetch_mysql_version);
+        $result = db_query($sql, $db_fetch_mysql_version);
 
         if (!$row = db_fetch_array($result)) {
 
             $sql = "SHOW VARIABLES LIKE 'version'";
-            $result = @db_query($sql, $db_fetch_mysql_version);
+            $result = db_query($sql, $db_fetch_mysql_version);
 
             $row = db_fetch_array($result);
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.34 2004-04-08 13:17:20 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.35 2004-04-11 22:19:21 decoyduck Exp $ */
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
@@ -333,7 +333,7 @@ function links_vote($lid, $vote, $uid)
 
     $result = db_query($sql, $db_links_vote);
 
-    if (!db_affected_rows($db_links_vote)) {
+    if (db_affected_rows($db_links_vote) < 1) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_VOTE (LID, UID, RATING, TSTAMP) ";
         $sql.= "VALUES ($lid, $uid, $vote, NOW())";

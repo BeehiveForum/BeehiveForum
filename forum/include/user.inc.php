@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.157 2004-04-11 15:27:07 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.158 2004-04-11 22:19:22 decoyduck Exp $ */
 
 function user_count()
 {
@@ -145,7 +145,7 @@ function user_update_status($uid, $status)
 
     $result = db_query($sql, $db_user_update_status);
 
-    if (!db_affected_rows($db_user_update_status)) {
+    if (db_affected_rows($db_user_update_status) < 1) {
     
         $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) ";
         $sql.= "VALUES ('$uid', '{$table_data['FID']}', '$status')";
@@ -426,7 +426,7 @@ function user_update_sig($uid, $content, $html)
 
     $result = db_query($sql, $db_user_update_sig);
 
-    if (!db_affected_rows($db_user_update_sig)) {
+    if (db_affected_rows($db_user_update_sig) < 1) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
         $sql.= "VALUES ('$uid', '$content', '$html')";

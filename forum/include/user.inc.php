@@ -51,7 +51,7 @@ function user_create($logon,$password,$nickname,$email)
       $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
     }    
 
-    $sql = "INSERT INTO " . forum_table("USER") . " (LOGON, PASSWRD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
+    $sql = "INSERT INTO " . forum_table("USER") . " (LOGON, PASSWD, NICKNAME, EMAIL, LAST_LOGON, LOGON_FROM) ";
     $sql .= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$ipaddress')";
 
     $db_user_create = db_connect();

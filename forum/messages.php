@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.97 2003-10-28 15:53:13 decoyduck Exp $ */
+/* $Id: messages.php,v 1.98 2003-10-29 13:35:35 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -142,10 +142,13 @@ if (!$threaddata = thread_get($tid)) {
    exit;
 }
 
-if ($threaddata['STICKY'] == "Y" && $threaddata['STICKY_UNTIL'] != 0 && time() > $threaddata['STICKY_UNTIL']) {
-   // thread needs un-stickyfing
-   thread_set_sticky($tid, false);
-   $threaddata['STICKY'] == "N";
+if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
+
+    if ($threaddata['STICKY'] == "Y" && $threaddata['STICKY_UNTIL'] != 0 && time() > $threaddata['STICKY_UNTIL']) {
+
+        thread_set_sticky($tid, false);
+        $threaddata['STICKY'] == "N";
+    }
 }
 
 $closed = isset($threaddata['CLOSED']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.75 2004-04-14 15:26:32 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.76 2004-04-23 12:51:44 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -38,7 +38,7 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
     if (!is_numeric($reply_pid)) return -1;
     if (!is_numeric($fuid)) return -1;
     if (!is_numeric($tuid)) return -1;
-    
+
     if (!$table_data = get_table_prefix()) return -1;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
@@ -83,7 +83,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     if (!is_md5($aid)) return false;
 
     $db_post_save_attachment_id = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT TID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
@@ -92,7 +92,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     $result = db_query($sql, $db_post_save_attachment_id);
 
     if (db_num_rows($result) > 0) {
-    
+
         $sql = "UPDATE {$table_data['PREFIX']}POST_ATTACHMENT_IDS SET AID = '$aid' ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
@@ -116,7 +116,7 @@ function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = 
     $closed = $closed ? "NOW()" : "NULL";
 
     $db_post_create_thread = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return -1;
 
     $sql = "insert into {$table_data['PREFIX']}THREAD" ;
@@ -141,7 +141,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
-    if (isset($default_uid) && $default_uid != 0){ 
+    if (isset($default_uid) && $default_uid != 0){
 
         $top_sql = "SELECT LOGON, NICKNAME FROM USER where UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
@@ -163,7 +163,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')) ";
     $sql.= "AND USER.UID <> '$default_uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 20";    
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
@@ -197,7 +197,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 {
     $html = "<select name=\"t_to_uid_recent\" style=\"width: 190px\" onClick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return "";
 
     if (!is_numeric($default_uid)) $default_uid = 0;
@@ -224,7 +224,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')) ";
     $sql.= "AND USER.UID <> '$default_uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 20";    
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
@@ -261,11 +261,11 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($default_uid)) $default_uid = 0;
-    
+
     if (!$table_data = get_table_prefix()) return "";
 
     if (isset($default_uid) && $default_uid != 0) {
-        
+
         $top_sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$default_uid'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
 
@@ -329,7 +329,7 @@ function get_user_posts($uid)
     $db_get_user_posts = db_connect();
 
     if (!is_numeric($uid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST WHERE FROM_UID = '$uid'";
@@ -350,7 +350,7 @@ function check_ddkey($ddkey)
 {
     $db_check_ddkey = db_connect();
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DDKEY FROM {$table_data['PREFIX']}DEDUPE WHERE UID = '$uid'";
@@ -405,6 +405,7 @@ class MessageText {
 	}
 
 	function setContent ($text) {
+
 		$text = _stripslashes($text);
 
 		$this->original_text = $text;

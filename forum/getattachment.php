@@ -21,10 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.67 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.68 2004-04-23 12:51:43 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum settings
+$forum_settings = get_forum_settings();
 
 // Enable the error handler
 include_once("./include/errorhandler.inc.php");
@@ -42,9 +45,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -62,7 +65,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -123,7 +126,7 @@ if (isset($hash) && is_md5($hash)) {
 
             $length = filesize($filepath);
 
-            // Are we viewing or downloading the attachment?           
+            // Are we viewing or downloading the attachment?
 
             if (isset($_GET['download']) || strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
                 header("Content-Type: application/x-ms-download", true);

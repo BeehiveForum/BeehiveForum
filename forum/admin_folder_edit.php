@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.21 2004-11-29 22:09:41 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.22 2004-11-29 22:31:51 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -247,26 +247,31 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['moveposts']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\" class=\"posthead\">{$lang['movepoststofolder']}:</td>\n";
-echo "                  <td>", folder_draw_dropdown($folder_data['FID'], "move"), "&nbsp;", form_checkbox("move_confirm", "Y", $lang['confirm']), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "        <br />\n";
+
+if ($folder_dropdown = folder_draw_dropdown($folder_data['FID'], "move")) {
+
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['moveposts']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"200\" class=\"posthead\">{$lang['movepoststofolder']}:</td>\n";
+    echo "                  <td>", $folder_dropdown, "&nbsp;", form_checkbox("move_confirm", "Y", $lang['confirm']), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "        <br />\n";
+}
+
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";

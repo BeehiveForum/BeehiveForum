@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.134 2004-11-28 22:57:03 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.135 2004-11-29 22:31:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -555,6 +555,21 @@ if ($valid && isset($_POST['submit'])) {
     header_redirect($uri);
 }
 
+if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+    $t_fid = $_GET['fid'];
+}else {
+    $t_fid = 1;
+}
+
+if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_POLL_THREAD)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['cannotcreatenewthreads']}</h2>";
+    html_draw_bottom();
+    exit;
+}
+
 html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "openprofile.js", "post.js", "dictionary.js", "htmltools.js");
 
 echo "<h1>{$lang['createpoll']}</h1>\n";
@@ -683,20 +698,12 @@ if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
-if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-    $t_fid = $_GET['fid'];
-}elseif (isset($t_fid) && is_numeric($t_fid)) {
-    $t_fid = $t_fid;
-}else {
-    $t_fid = 1;
-}
-
 echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td><h2>{$lang['selectfolder']}</h2></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>", folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_POLL_THREAD), "</td>\n";
+echo "      <td>", $folder_dropdown, "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td><h2>{$lang['pollquestion']}</h2></td>\n";

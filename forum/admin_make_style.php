@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.19 2003-09-21 12:57:57 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.20 2003-09-24 13:45:01 decoyduck Exp $ */
 
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
@@ -32,6 +32,15 @@ require_once("./include/errorhandler.inc.php");
 // Compress the output
 require_once("./include/gzipenc.inc.php");
 
+//Check logged in status
+require_once("./include/session.inc.php");
+require_once("./include/header.inc.php");
+
+if (!bh_session_check()) {
+    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    header_redirect($uri);
+}
+
 require_once("./include/make_style.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/form.inc.php");
@@ -40,6 +49,14 @@ require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/lang.inc.php");
+
+if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
+    html_draw_top();
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_bottom();
+    exit;
+}
 
 // Start Here
 

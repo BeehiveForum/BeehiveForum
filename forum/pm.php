@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.18 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: pm.php,v 1.19 2003-09-24 13:45:01 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -131,20 +131,18 @@ echo "}\n";
 echo "//-->\n";
 echo "</script>\n";
 
-echo "<h1>{$lang['privatemessages']}: ";
+$pm_folders = array(0 => $lang['pminbox'],
+                    1 => $lang['pmsentitems'],
+                    2 => $lang['pmoutbox'],
+                    3 => $lang['pmsaveditems']);
 
-if ($folder == 0) {
-    echo $lang['pminbox'];
-}elseif ($folder == 1) {
-    echo $lang['pmsentitems'];
-}elseif ($folder == 2) {
-    echo $lang['pmoutbox'];
-}elseif ($folder == 3) {
-    echo $lang['pmsaveditems'];
-}
-
-echo "</h1>\n";
-echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a></div><br />\n";
+echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"posthead\">&nbsp;<b>{$lang['privatemessages']}: {$pm_folders[$folder]}</b></td>\n";
+echo "    <td class=\"posthead\" align=\"right\"><a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+echo "<p>&nbsp;</p>\n";
 
 if (isset($HTTP_GET_VARS['mid'])) {
 
@@ -271,10 +269,10 @@ if (sizeof($listmessages_array) == 0) {
 echo "    <tr>\n";
 echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td class=\"postbody\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" colspan=\"4\"><img src=\"", style_image("post.png"), "\">&nbsp;<a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></td>\n";
-echo "    </tr>\n";
+//echo "    <tr>\n";
+//echo "      <td class=\"postbody\">&nbsp;</td>\n";
+//echo "      <td class=\"postbody\" colspan=\"4\"><img src=\"", style_image("post.png"), "\">&nbsp;<a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></td>\n";
+//echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 

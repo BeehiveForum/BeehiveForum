@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.137 2004-05-22 17:58:14 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.138 2004-05-23 12:33:55 decoyduck Exp $ */
 
 // International English language file
 
@@ -372,6 +372,9 @@ $lang['addremoveusers'] = "Add/Remove Users";
 $lang['addtogroup'] = "Add to group";
 $lang['nousersingroup'] = "There are no users in this group";
 $lang['deletegroups'] = "Delete Groups";
+$lang['useringroups'] = "This user is a member of the following groups";
+$lang['usernotinanygroups'] = "This user is not in any user groups";
+$lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.5 2004-05-22 17:58:13 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.6 2004-05-23 12:33:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -173,7 +173,7 @@ if ($user_groups_array = perm_get_user_groups()) {
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td colspan=\"2\">&nbsp;{$lang['nousergroups']}</td>\n";
+    echo "                  <td colspan=\"4\">&nbsp;{$lang['nousergroups']}</td>\n";
     echo "                </tr>\n";
 }
 

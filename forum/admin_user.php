@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.98 2004-05-20 16:14:08 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.99 2004-05-23 12:33:54 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -119,6 +119,12 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (isset($_POST['cancel'])) {
     header_redirect($ret);
+}
+
+if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
+
+    list($gid) = array_keys($_POST['edit_users']);
+    header_redirect("./admin_user_groups_edit_users.php?gid=$gid");
 }
 
 html_draw_top('admin.js');
@@ -514,7 +520,19 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                  </td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table width=\"95%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>{$lang['usergroupwarning']}</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -526,6 +544,88 @@ if (isset($_POST['t_delete_posts'])) {
         echo "  <br />\n";
     }
 
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['usergroups']}:</td>\n";
+    echo "                </tr>\n";
+
+    if ($user_groups_array = perm_user_get_groups($uid)) {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td>{$lang['useringroups']}:</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+	echo "                        <td>&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>\n";
+        echo "                          <table class=\"box\" width=\"100%\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td class=\"posthead\">\n";
+        echo "                                <table class=\"posthead\" width=\"100%\">\n";
+        echo "                                  <tr>\n";
+        echo "                                    <td class=\"subhead\">&nbsp;{$lang['groups']}</td>\n";
+        echo "                                    <td class=\"subhead\">&nbsp;{$lang['description']}</td>\n";
+        echo "                                    <td class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
+        echo "                                    <td class=\"subhead\">&nbsp;</td>\n";
+        echo "                                  </tr>\n";
+
+        foreach ($user_groups_array as $user_group) {
+
+            echo "                                  <tr>\n";
+            echo "                                    <td>&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+            echo "                                    <td>&nbsp;{$user_group['GROUP_DESC']}</td>\n";
+            echo "                                    <td>&nbsp;{$user_group['USER_COUNT']}</td>\n";
+            echo "                                    <td align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
+            echo "                                  </tr>\n";
+        }
+
+        echo "                                </table>\n";
+        echo "                              </td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;{$lang['usernotinanygroups']}</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+    }
+
+    echo "                      <tr>\n";
+    echo "                        <td>&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -586,7 +686,13 @@ if (isset($_POST['t_delete_posts'])) {
     }else {
 
         echo "                <tr>\n";
-        echo "                  <td>{$lang['nomatches']}</td>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td>{$lang['nomatches']}</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
         echo "                </tr>\n";
     }
 

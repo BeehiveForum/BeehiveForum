@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.195 2004-05-17 15:57:00 decoyduck Exp $ */
+/* $Id: post.php,v 1.196 2004-05-23 12:33:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -335,11 +335,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE)) {
 
-        html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
-        html_draw_bottom();
-        exit;
+        $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
+        $valid = false;
     }
 }
 

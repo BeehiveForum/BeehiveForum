@@ -52,18 +52,9 @@ H2		{
 A		{
 		background-color: transparent;
 		color: #000000;
-		text-decoration: none;
-		font-weight: bold;
-		list-style-image: url('../images/bullet.png');
+		text-decoration: underline;
 		}
 		
-A.visited	{
-		background-color: transparent;
-		color: #000000;
-		text-decoration: none;
-		font-weight: bold;
-		}
-
 .thread_list_folder{
 		background-color:#CCCCCC;
 		border-style:solid;
@@ -95,7 +86,7 @@ A.visited	{
 		vertical-align:middle;
 		}
 
-.threadname {
+.threads {
           font-style: normal;
           font-size: 10pt;
           background-color: #CCD0E3;
@@ -127,9 +118,19 @@ A.visited	{
           float: right;
 }
 
-.folderxnewofy {
+.threadname {
+          font-size: 10pt;
+          padding-left: 4px;
+}
+
+.threadtime {
           font-size: 8pt;
-          padding-left: 8px;
+          padding-left: 4px;
+}
+
+.threadxnewofy {
+          font-size: 8pt;
+          padding-left: 4px;
 }
 
 .foldername {

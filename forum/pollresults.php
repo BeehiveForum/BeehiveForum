@@ -67,8 +67,8 @@ if ($HTTP_POST_VARS['submit'] == 'Close') {
 
 }
 
-$polldata     = poll_get($HTTP_GET_VARS['tid']);
-$pollresults  = poll_get_votes($HTTP_GET_VARS['tid']);
+$polldata     = poll_get($tid);
+$pollresults  = poll_get_votes($tid);
 
 $totalvotes   = 0;
 
@@ -103,7 +103,7 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table width=\"95%\" align=\"center\">\n";
 echo "        <tr>\n";
-echo "          <td><h2>". thread_get_title($HTTP_GET_VARS['tid']). "</h2></td>\n";
+echo "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
 echo "        </tr>\n";
 
 if ($polldata['SHOWRESULTS'] == 1) {

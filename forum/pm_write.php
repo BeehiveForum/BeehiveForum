@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.13 2003-07-31 22:08:38 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.14 2003-08-06 21:46:36 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -181,27 +181,30 @@ if ($valid) {
 
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
-    $t_subject = _htmlentities($t_subject);
+    if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
 
-    if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-        $t_content = make_html($t_content);
-    }
+        $t_subject = _htmlentities($t_subject);
 
-    if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
-        if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
-            pm_save_attachment_id($new_mid, $HTTP_POST_VARS['aid']);
+        if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
+            $t_content = make_html($t_content);
         }
-        email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
-        if (isset($mid)){
-            $uri = "./pm.php?mid=$mid";
+
+        if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+            if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
+                pm_save_attachment_id($new_mid, $HTTP_POST_VARS['aid']);
+            }
+            email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
         }else {
-            $uri = "./pm.php";
+            $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
+            $valid = false;
         }
-        header_redirect($uri);
-    }else {
-        $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
-        $valid = false;
     }
+    if (isset($mid)){
+        $uri = "./pm.php?mid=$mid";
+    }else {
+        $uri = "./pm.php";
+    }
+    header_redirect($uri);
 }
 
 html_draw_top_script();
@@ -315,14 +318,18 @@ if ($attachments_enabled && $pm_allow_attachments) {
 }
 
 echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("convert_html", $lang['converttoHTML']);
+
+if (isset($HTTP_POST_VARS['t_dedupe'])) {
+    echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
+}else{
+    echo form_input_hidden("t_dedupe",date("YmdHis"));
+}
+
 echo "</form>\n";
 
-
 if (isset($mid)) {
-
     echo "<p>in reply to:</p>";
     draw_pm_message($pm_elements_array);
-
 }
 
 html_draw_bottom ();

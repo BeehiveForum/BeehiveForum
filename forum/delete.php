@@ -67,6 +67,10 @@ if(isset($HTTP_POST_VARS['submit'])){
         $ema = messages_get($msg_bits[0],$msg_bits[1],1);
         if(count($ema) > 0){
             $preview_message = $ema[0];
+            if($HTTP_COOKIE_VARS['bh_sess_uid'] != $preview_message['FROM_UID'] && !perm_is_moderator()){
+                edit_refuse();
+                exit;
+            }
             $to_uid = $preview_message['TO_UID'];
             $from_uid = $preview_message['FROM_UID'];
         } else {

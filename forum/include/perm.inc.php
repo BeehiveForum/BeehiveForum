@@ -21,70 +21,97 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.47 2004-08-16 22:12:51 tribalonline Exp $ */
+/* $Id: perm.inc.php,v 1.48 2004-10-29 19:54:17 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
-    $db_perm_is_moderator = db_connect();
+    static $user_status = false;
+    static $folder_fid = false;
 
-    if (!$table_data = get_table_prefix()) return 0;
+    if (!$folder_fid || !$user_status || $folder_fid != $fid) {
 
-    $uid = bh_session_get_value('UID');
+        $db_perm_is_moderator = db_connect();
 
-    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_USERS.UID = $uid AND GROUP_PERMS.FID = '$fid' ";
-    $sql.= "ORDER BY GROUP_PERMS.PERM DESC";
+        if (!$table_data = get_table_prefix()) return 0;
 
-    $result = db_query($sql, $db_perm_is_moderator);
+        $uid = bh_session_get_value('UID');
 
-    $row = db_fetch_array($result);
+        $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+        $sql.= "WHERE GROUP_USERS.UID = $uid AND GROUP_PERMS.FID = '$fid' ";
+        $sql.= "ORDER BY GROUP_PERMS.PERM DESC";
 
-    if (($row['STATUS'] & USER_PERM_FOLDER_MODERATE) > 0) return true;
-    if (($row['STATUS'] & USER_PERM_ADMIN_TOOLS) > 0) return true;
-    if (($row['STATUS'] & USER_PERM_FORUM_TOOLS) > 0) return true;
+        $result = db_query($sql, $db_perm_is_moderator);
+
+        $row = db_fetch_array($result);
+
+        $folder_fid = $fid;
+        $user_status = $row['STATUS'];
+    }
+
+    if (($user_status & USER_PERM_FOLDER_MODERATE) > 0) return true;
+    if (($user_status & USER_PERM_ADMIN_TOOLS) > 0)     return true;
+    if (($user_status & USER_PERM_FORUM_TOOLS) > 0)     return true;
 
     return false;
 }
 
 function perm_has_admin_access()
 {
-    $db_perm_has_admin_access = db_connect();
-
-    if (!$table_data = get_table_prefix()) return 0;
+    static $user_uid = false;
+    static $user_status = false;
 
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
-    $sql.= "ORDER BY GROUP_PERMS.GID DESC";
+    if (!$user_uid || !$user_status || $user_uid != $uid) {
 
-    $result = db_query($sql, $db_perm_has_admin_access);
+        $db_perm_has_admin_access = db_connect();
 
-    $row = db_fetch_array($result);
+        if (!$table_data = get_table_prefix()) return 0;
 
-    return ($row['STATUS'] & USER_PERM_ADMIN_TOOLS) > 0;
+        $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+        $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
+        $sql.= "ORDER BY GROUP_PERMS.GID DESC";
+
+        $result = db_query($sql, $db_perm_has_admin_access);
+
+        $row = db_fetch_array($result);
+
+        $user_uid = $uid;
+        $user_status = $row['STATUS'];
+    }
+
+    return ($user_status & USER_PERM_ADMIN_TOOLS) > 0;
 }
 
 function perm_has_forumtools_access()
 {
-    $db_perm_has_forumtools_access = db_connect();
+    static $user_uid = false;
+    static $user_status = false;
 
-    if (!$table_data = get_table_prefix()) return 0;
+    if (!$user_uid || !$user_status || $user_uid != $uid) {
 
-    $uid = bh_session_get_value('UID');
+        $db_perm_has_forumtools_access = db_connect();
 
-    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
-    $sql.= "ORDER BY GROUP_PERMS.GID DESC";
+        if (!$table_data = get_table_prefix()) return 0;
 
-    $result = db_query($sql, $db_perm_has_forumtools_access);
+        $uid = bh_session_get_value('UID');
 
-    $row = db_fetch_array($result);
+        $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+        $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
+        $sql.= "ORDER BY GROUP_PERMS.GID DESC";
 
-    return ($row['STATUS'] & USER_PERM_FORUM_TOOLS) > 0;
+        $result = db_query($sql, $db_perm_has_forumtools_access);
+
+        $row = db_fetch_array($result);
+
+        $user_uid = $uid;
+        $user_status = $row['STATUS'];
+    }
+
+    return ($user_status & USER_PERM_FORUM_TOOLS) > 0;
 }
 
 function perm_check_folder_permissions($fid, $access_level)

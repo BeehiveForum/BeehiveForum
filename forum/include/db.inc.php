@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.56 2004-10-28 19:31:32 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.57 2004-10-29 19:54:16 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -241,6 +241,21 @@ function db_insert_id($resource_id)
     }
 
     trigger_error("Could not fetch AUTO_INCREMENT ID. Please check that the PHP MySQL or MySQLi extension is correctly installed", FATAL);
+}
+
+function db_error($resource_id)
+{
+    if (@extension_loaded('mysql')) {
+
+        return mysql_error($resource_id);
+    }
+
+    if (@extension_loaded('mysqli')) {
+
+        return mysqli_error($resource_id);
+    }
+
+    return "Error unknown";
 }
 
 // Return the MySQL Server Version.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.86 2004-04-29 14:02:53 decoyduck Exp $ */
+/* $Id: index.php,v 1.87 2004-04-29 14:12:46 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,9 +41,44 @@ include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 
-// Fetch the user session
+if (!$user_sess = bh_session_check()) {
 
-$user_sess = bh_session_check();
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+
+        if (perform_logon(false)) {
+
+            $lang = load_language_file();
+            $webtag = get_webtag();
+
+            html_draw_top();
+
+            echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
+            echo "<div align=\"center\">\n";
+            echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+
+            $request_uri = get_request_uri();
+
+            echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+            echo form_input_hidden('webtag', $webtag);
+
+            foreach($_POST as $key => $value) {
+                echo form_input_hidden($key, _htmlentities(_stripslashes($value)));
+            }
+
+            echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
+            echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
+            echo "</form>\n";
+
+            html_draw_bottom();
+            exit;
+        }
+    }
+
+    html_draw_top();
+    draw_logon_form(false);
+    html_draw_bottom();
+    exit;
+}
 
 // Does the forum allow auto logon of guests?
 

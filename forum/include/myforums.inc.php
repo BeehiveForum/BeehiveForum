@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.20 2004-04-12 13:56:39 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.21 2004-04-12 19:44:43 decoyduck Exp $ */
 
 require_once("./include/html.inc.php");
 require_once("./include/threads.inc.php");
@@ -233,20 +233,23 @@ function user_set_forum_interest($fid, $interest)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($interest)) return false;
 
-    $sql = "UPDATE USER_FORUM SET INTEREST = '$interest' ";
+    $sql = "SELECT UID FROM USER_FORUM ";
     $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
 
     $result = db_query($sql, $db_user_set_forum_interest);
 
-    if (db_affected_rows($db_user_set_forum_interest) < 1) {
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE USER_FORUM SET INTEREST = '$interest' ";
+        $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
+    
+    }else {
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
 	$sql.= "VALUES ('$uid', '$fid', 1)";
-
-	$result = db_query($sql, $db_user_set_forum_interest);
     }
 
-    return $result;
+    return db_query($sql, $db_user_set_forum_interest);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.50 2004-04-12 13:56:39 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.51 2004-04-12 19:44:43 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -168,18 +168,23 @@ function save_forum_settings($forum_settings_array)
         $sname = addslashes($sname);
         $svalue = addslashes($svalue);
 
-	$sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' ";
-	$sql.= "WHERE SNAME = '$sname' AND FID = '{$table_data['FID']}'";
+	$sql = "SELECT FID FROM FORUM_SETTINGS WHERE ";
+	$sql.= "SNAME = '$sname' AND FID = '{$table_data['FID']}'";
 
 	$result = db_query($sql, $db_save_forum_settings);
 
-	if (db_affected_rows($db_save_forum_settings) < 1) {
+	if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$svalue' ";
+	    $sql.= "WHERE SNAME = '$sname' AND FID = '{$table_data['FID']}'";
+
+	}else {
         
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ('{$table_data['FID']}', '$sname', '$svalue')";
-        
-            $result = db_query($sql, $db_save_forum_settings);
 	}
+	
+	$result = db_query($sql, $db_save_forum_settings);
     }
 }
 
@@ -265,20 +270,21 @@ function save_start_page($content)
     
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE START_MAIN SET HTML = '$content' ";
-    $sql.= "WHERE FID = '{$table_data['FID']}'";
-    
+    $sql = "SELECT HTML FROM START_MAIN WHERE FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_save_start_page);
 
-    if (db_affected_rows($db_save_start_page) < 1) {
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE START_MAIN SET HTML = '$content' ";
+        $sql.= "WHERE FID = '{$table_data['FID']}'";
+        
+    }else {
     
         $sql = "INSERT INTO START_MAIN (FID, HTML) ";
         $sql.= "VALUES('{$table_data['FID']}', '$content')";
-
-	$result = db_query($sql, $db_save_start_page);
     }
-    
-    return $result;
+
+    return db_query($sql, $db_save_start_page);
 }
 
 function forum_create($webtag, $forum_name, $access)

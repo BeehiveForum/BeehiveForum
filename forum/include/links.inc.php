@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.35 2004-04-11 22:19:21 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.36 2004-04-12 19:44:43 decoyduck Exp $ */
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
 {
@@ -328,20 +328,23 @@ function links_vote($lid, $vote, $uid)
     
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}LINKS_VOTE SET RATING = '$vote', TSTAMP = NOW() ";
+    $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS_VOTE ";
     $sql.= "WHERE UID = '$uid' AND LID = '$lid'";
 
     $result = db_query($sql, $db_links_vote);
 
-    if (db_affected_rows($db_links_vote) < 1) {
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}LINKS_VOTE SET RATING = '$vote', TSTAMP = NOW() ";
+        $sql.= "WHERE UID = '$uid' AND LID = '$lid'";
+
+    }else {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_VOTE (LID, UID, RATING, TSTAMP) ";
         $sql.= "VALUES ($lid, $uid, $vote, NOW())";
-
-	$result = db_query($sql, $db_links_vote);
     }
 
-    return $result;
+    return db_query($sql, $db_links_vote);
 }
 
 function links_add_comment($lid, $uid, $comment)

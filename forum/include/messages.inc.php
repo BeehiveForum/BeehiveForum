@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.325 2005-02-09 21:56:52 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.326 2005-02-14 19:17:48 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -168,7 +168,17 @@ function message_apply_wikilinks($content)
         if (strlen($wiki_location) > 0) {
 
             $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
-            $content = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\">\\1</a>", $content);
+
+            if (preg_match("/<div class=\"sig\">/", $content)) {
+
+                $content_array = preg_split("/<div class=\"sig\">/", $content);
+                $content = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\">\\1</a>", $content_array[0]);
+                $content.= "<div class=\"sig\">{$content_array[1]}";
+
+            }else {
+
+                $content = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\">\\1</a>", $content);
+            }
         }
     }
 
@@ -315,12 +325,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if ((($first_msg + bh_session_get_value('POSTS_PER_PAGE')) - 1) == $message['PID']) {
 
-                $down_arrow = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1). "target=\"_self\">";
+                $down_arrow = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1). "\" target=\"_self\">";
                 $down_arrow.= "<img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
 
             }else {
 
-                $down_arrow = "<a href=\"#a{$tid}_". ($message['PID'] + 1). "target=\"_self\">";
+                $down_arrow = "<a href=\"#a{$tid}_". ($message['PID'] + 1). "\" target=\"_self\">";
                 $down_arrow.= "<img src=\"". style_image("message_down.png"). "\" width=\"10\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
             }
         }

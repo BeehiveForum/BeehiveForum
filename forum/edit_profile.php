@@ -40,6 +40,7 @@ if(!bh_session_check()){
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/forum.inc.php");
+require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/user_profile.inc.php");
 require_once("./include/constants.inc.php");

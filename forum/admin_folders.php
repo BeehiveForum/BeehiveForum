@@ -131,7 +131,7 @@ echo "<tr><td colspan=\"5\" align=\"right\">\n";
 echo form_input_hidden("t_count",$result_count);
 echo form_submit();
 echo "</td></tr></table>\n";
-echo "</form>\n";
+echo "</form>";
 echo "</td></tr></table>\n";
 echo "</div>\n";
 

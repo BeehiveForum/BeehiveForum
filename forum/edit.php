@@ -31,7 +31,7 @@ if(!bh_session_check()){
     $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
     $uri.= "/logon.php?final_uri=";
     $uri.= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
-    
+
     header_redirect($uri);
 }
 
@@ -107,6 +107,8 @@ if(isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])){
 
 html_draw_top();
 
+echo "<h1>Edit message</h1>";
+
 /* echo "<table border=\"1\">";
 foreach ($HTTP_POST_VARS as $var => $value) {
     echo "<tr><td>$var</td><td>$value</td></tr>";
@@ -164,12 +166,12 @@ echo form_input_hidden("t_msg",$edit_msg);
 echo form_input_hidden("t_to_uid",$to_uid);
 echo form_input_hidden("t_from_uid",$from_uid);
 
-echo "<table class=\"box\"><tr><td>\n";
-echo "<table>\n";
-echo "<tr><td class=\"posthead\">Edit message</td></tr>\n";
-echo "<tr><td>\n";
+echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
+echo "<table width=\"100%\" border=\"0\" class=\"posthead\">\n";
+echo "<tr><td>Edit message</td></tr></table>\n";
+echo "<table border=\"0\" bgcolor=\"#DCE0F3\"><tr><td>\n";
 
-echo form_textarea("t_content",$t_content,10,60);
+echo form_textarea("t_content",$t_content,14,80);
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
 echo form_submit("submit","Apply");

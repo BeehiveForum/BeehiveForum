@@ -1,144 +1,190 @@
-# Main user table
-CREATE TABLE USER (
-UID MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-LOGON CHAR(32),
-PASSWD CHAR(32),
-NICKNAME CHAR(32),
-EMAIL VARCHAR(80),
-STATUS TINYINT         # 0 = User, 1 = Admin1, 2 = Admin2 etc
-);
+# beehiveforum database schema
+# version 0.1
+# requires MySQL version 3.23.5 or greater
+#-----------------------------------------
 
-#Sig held in separate table to keep BLOB value isolated
-CREATE TABLE USER_SIG (
-UID MEDIUMINT UNSIGNED REFERENCES user,
-CONTENT TEXT,
-HTML CHAR(1)
-);
+#
+# Table structure for table `FOLDER`
+#
 
-#Folder lookup
 CREATE TABLE FOLDER (
-FID MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-TITLE VARCHAR(32)
-);
+  FID mediumint(8) unsigned NOT NULL auto_increment,
+  TITLE varchar(32) default NULL,
+  PRIMARY KEY  (FID)
+) TYPE=MyISAM;
+# --------------------------------------------------------
 
-#Thread table
-CREATE TABLE THREAD (
-TID MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-FID MEDIUMINT UNSIGNED REFERENCES folder,
-TITLE VARCHAR(64),
-LENGTH MEDIUMINT UNSIGNED,
-POLL_FLAG CHAR(1),
-MODIFIED DATETIME,
-CLOSED DATETIME
-);
+#
+# Table structure for table `POLL`
+#
 
-#Poll table, 1-1 with thread where POLL_FLAG = Y
 CREATE TABLE POLL (
-TID MEDIUMINT UNSIGNED,
-O1 VARCHAR(255),
-O1_VOTES MEDIUMINT UNSIGNED,
-O2 VARCHAR(255),
-O2_VOTES MEDIUMINT UNSIGNED,
-O3 VARCHAR(255),
-O3_VOTES MEDIUMINT UNSIGNED,
-O4 VARCHAR(255),
-O4_VOTES MEDIUMINT UNSIGNED,
-O5 VARCHAR(255),
-O6_VOTES MEDIUMINT UNSIGNED,
-CLOSES DATETIME
-);
+  TID mediumint(8) unsigned default NULL,
+  O1 varchar(255) default NULL,
+  O1_VOTES mediumint(8) unsigned default NULL,
+  O2 varchar(255) default NULL,
+  O2_VOTES mediumint(8) unsigned default NULL,
+  O3 varchar(255) default NULL,
+  O3_VOTES mediumint(8) unsigned default NULL,
+  O4 varchar(255) default NULL,
+  O4_VOTES mediumint(8) unsigned default NULL,
+  O5 varchar(255) default NULL,
+  O6_VOTES mediumint(8) unsigned default NULL,
+  CLOSES datetime default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
 
-#Post table
+#
+# Table structure for table `POST`
+#
+
 CREATE TABLE POST (
-  TID mediumint(8) unsigned NOT NULL,
+  TID mediumint(8) unsigned NOT NULL default '0',
   PID mediumint(8) unsigned NOT NULL auto_increment,
   REPLY_TO_PID mediumint(8) unsigned default NULL,
   FROM_UID mediumint(8) unsigned default NULL,
   TO_UID mediumint(8) unsigned default NULL,
+  VIEWED datetime default NULL,
   CREATED timestamp(14) NOT NULL,
   CONTENT text,
   PRIMARY KEY  (TID,PID)
 ) TYPE=MyISAM;
+# --------------------------------------------------------
 
-#Attachments detail table
+#
+# Table structure for table `POST_ATTACHMENT`
+#
+
 CREATE TABLE POST_ATTACHMENT (
-PID MEDIUMINT UNSIGNED REFERENCES post,
-FILE VARCHAR(255)
-);
+  PID mediumint(8) unsigned default NULL,
+  FILE varchar(255) default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
 
-#User thread management, holds most recently read post and level of interest
-CREATE TABLE USER_THREAD (
-UID MEDIUMINT UNSIGNED REFERENCES user,
-TID MEDIUMINT UNSIGNED REFERENCES thread,
-LAST_READ MEDIUMINT UNSIGNED,     #No reference but links to POST_NUM
-INTEREST TINYINT     # 0 = Normal, 1 = High Interest, 2 = Ignore
-);
+#
+# Table structure for table `PROFILE_ITEM`
+#
 
-#Friends and ignores
-CREATE TABLE USER_PEER (
-UID MEDIUMINT UNSIGNED REFERENCES user,
-PEER_UID MEDIUMINT UNSIGNED REFERENCES user,
-RELATIONSHIP TINYINT # 1 = Friend, 2 = Ignore, (3 = Bozo)
-);
-
-# Allows user to set precedence of folders in Thread frame
-CREATE TABLE USER_FOLDER ( 
-UID MEDIUMINT UNSIGNED REFERENCES user, 
-FID MEDIUMINT UNSIGNED REFERENCES folder,
-INTEREST TINYINT      # 0 = Normal, 1 = High Interest, 2 = Low Interest
-);
-
-#Basic preferences for forum use
-CREATE TABLE USER_PREFS (
-UID MEDIUMINT UNSIGNED REFERENCES user,
-FIRSTNAME VARCHAR(32),
-LASTNAME VARCHAR(32),
-HOMEPAGE_URL VARCHAR(255),
-PIC_URL VARCHAR(255),
-EMAIL_NOTIFY CHAR(1),
-TIMEZONE TINYINT,    # -11 to 11
-DL_SAVING CHAR(1),
-MARK_AS_OF_INT CHAR(1),
-POSTS_PER_PAGE TINYINT UNSIGNED);
-
-#Profile sections lookup
-CREATE TABLE PROFILE_SECTION (
-PSID MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-NAME VARCHAR(64));
-
-#Profile items lookup
 CREATE TABLE PROFILE_ITEM (
-PIID MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-PSID MEDIUMINT UNSIGNED REFERENCES profile_section,
-NAME VARCHAR(64));
+  PIID mediumint(8) unsigned NOT NULL auto_increment,
+  PSID mediumint(8) unsigned default NULL,
+  NAME varchar(64) default NULL,
+  PRIMARY KEY  (PIID)
+) TYPE=MyISAM;
+# --------------------------------------------------------
 
-#User profile entries
+#
+# Table structure for table `PROFILE_SECTION`
+#
+
+CREATE TABLE PROFILE_SECTION (
+  PSID mediumint(8) unsigned NOT NULL auto_increment,
+  NAME varchar(64) default NULL,
+  PRIMARY KEY  (PSID)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `THREAD`
+#
+
+CREATE TABLE THREAD (
+  TID mediumint(8) unsigned NOT NULL auto_increment,
+  FID mediumint(8) unsigned default NULL,
+  TITLE varchar(64) default NULL,
+  LENGTH mediumint(8) unsigned default NULL,
+  POLL_FLAG char(1) default NULL,
+  MODIFIED datetime default NULL,
+  CLOSED datetime default NULL,
+  PRIMARY KEY  (TID)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `USER`
+#
+
+CREATE TABLE USER (
+  UID mediumint(8) unsigned NOT NULL auto_increment,
+  LOGON varchar(32) default NULL,
+  PASSWD varchar(32) default NULL,
+  NICKNAME varchar(32) default NULL,
+  EMAIL varchar(80) default NULL,
+  STATUS int(16) default NULL,
+  PRIMARY KEY  (UID)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `USER_FOLDER`
+#
+
+CREATE TABLE USER_FOLDER (
+  UID mediumint(8) unsigned default NULL,
+  FID mediumint(8) unsigned default NULL,
+  INTEREST tinyint(4) default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `USER_PEER`
+#
+
+CREATE TABLE USER_PEER (
+  UID mediumint(8) unsigned default NULL,
+  PEER_UID mediumint(8) unsigned default NULL,
+  RELATIONSHIP tinyint(4) default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `USER_PREFS`
+#
+
+CREATE TABLE USER_PREFS (
+  UID mediumint(8) unsigned default NULL,
+  FIRSTNAME varchar(32) default NULL,
+  LASTNAME varchar(32) default NULL,
+  HOMEPAGE_URL varchar(255) default NULL,
+  PIC_URL varchar(255) default NULL,
+  EMAIL_NOTIFY char(1) default NULL,
+  TIMEZONE tinyint(4) default NULL,
+  DL_SAVING char(1) default NULL,
+  MARK_AS_OF_INT char(1) default NULL,
+  POSTS_PER_PAGE tinyint(3) unsigned default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `USER_PROFILE`
+#
+
 CREATE TABLE USER_PROFILE (
-UID MEDIUMINT UNSIGNED REFERENCES user,
-PIID MEDIUMINT UNSIGNED REFERENCES profile_item,
-ENTRY VARCHAR(255));
+  UID mediumint(8) unsigned default NULL,
+  PIID mediumint(8) unsigned default NULL,
+  ENTRY varchar(255) default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
 
-#Inserting dummy information for testing purposes
-INSERT INTO USER (UID, LOGON, PASSWD, NICKNAME, EMAIL, STATUS) VALUES (1, 'USER1', '', 'The First User', 'nobody@invalid.com', 0);
-INSERT INTO USER (UID, LOGON, PASSWD, NICKNAME, EMAIL, STATUS) VALUES (2, 'USER2', '', 'The Second User', 'noone@invalid.com', 0);
-INSERT INTO USER (UID, LOGON, PASSWD, NICKNAME, EMAIL, STATUS) VALUES (3, 'MODERATOR', '', 'A Moderator User', 'nowt@invalid.com', 1);
-INSERT INTO USER (UID, LOGON, PASSWD, NICKNAME, EMAIL, STATUS) VALUES (4, 'ADMIN', '', 'The Forum Administrator', 'nothing@invalid.com', 2);
+#
+# Table structure for table `USER_SIG`
+#
 
-INSERT INTO FOLDER (FID, TITLE) VALUES (1, 'The First Folder');
-INSERT INTO FOLDER (FID, TITLE) VALUES (2, 'The Second Folder');
+CREATE TABLE USER_SIG (
+  UID mediumint(8) unsigned default NULL,
+  CONTENT text,
+  HTML char(1) default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
 
-INSERT INTO THREAD (TID, FID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED) VALUES (1, 1, 'The First Thread', 2, 'N', 20020412200000, NULL);
-INSERT INTO THREAD (TID, FID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED) VALUES (2, 2, 'The Second Thread', 1,'N', 20020413210000, NULL);
-INSERT INTO THREAD (TID, FID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED) VALUES (3, 1, 'The Third Thread', 1, 'N', 20020416170000, NULL);
+#
+# Table structure for table `USER_THREAD`
+#
 
-INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, CONTENT) VALUES (1, NULL, 0, 1, 0, 20020411150342, 'First Post!!');
-INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, CONTENT) VALUES (1, NULL, 1, 1, 0, 20020411150408, 'Second Post!!');
-INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, CONTENT) VALUES (2, NULL, 0, 2, 0, 20020411150440, 'Wibble.');
-INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, CONTENT) VALUES (3, NULL, 0, 3, 4, 20020411150634, 'Another post!!111!!');
+CREATE TABLE USER_THREAD (
+  UID mediumint(8) unsigned default NULL,
+  TID mediumint(8) unsigned default NULL,
+  LAST_READ mediumint(8) unsigned default NULL,
+  INTEREST tinyint(4) default NULL
+) TYPE=MyISAM;
 
-INSERT INTO USER_PREFS (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE) VALUES (1, 'First', 'User', 'http://www.myhomepage.com/', NULL, 'Y', 0, 'Y', 'Y', 20);
-INSERT INTO USER_PREFS (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE) VALUES (2, 'Second', 'User', 'http://www.anotherhomepage.com/', NULL, 'N', 2, 'N', 'N', 10);
-INSERT INTO USER_PREFS (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE) VALUES (3, 'Mr', 'Moderator', NULL, NULL, 'Y', 0, 'Y', 'Y', 25);
-INSERT INTO USER_PREFS (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE) VALUES (4, 'All-Powerful', 'Administator', NULL, NULL, 'Y', 0, 'N', 'Y', 20);
-
-INSERT INTO USER_THREAD (UID, TID, LAST_READ, INTEREST) VALUES (1,1,1,1);

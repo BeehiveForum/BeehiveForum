@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.42 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: format.inc.php,v 1.43 2003-07-28 12:57:05 hodcroftcj Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -222,7 +222,7 @@ function format_age($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
     $birthday = explode("-", $dob);
 
     $age = $todays_year - $birthday[0];
-    if (($todays_month < $birthday[1]) && ($todays_date < $birthday[2])) $age--;
+    if (($todays_month < $birthday[1]) || (($todays_month == $birthday[1]) && ($todays_date < $birthday[2])) ) $age -= 1;
     
     return $age;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.73 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: edit.php,v 1.74 2003-11-27 19:36:06 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -76,7 +76,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
 	html_draw_top();
 
-	echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+	echo "<h1 style=\"width: 99%\">{$lang['editmessage']}</h1>\n";
 	echo "<br />\n";
 
 	echo "<table class=\"posthead\" width=\"720\">\n";
@@ -87,7 +87,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 	echo "</td></tr>\n";
 
 	echo "<tr><td align=\"center\">\n";
-	echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+	echo form_quick_button("discussion.php", $lang['back']);
 	echo "</td></tr>\n";
 	echo "</table>\n";
 

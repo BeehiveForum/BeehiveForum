@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.24 2003-11-27 12:00:31 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.25 2003-11-27 19:36:06 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -288,13 +288,13 @@ if (sizeof($admin_log_array) == 20) {
     if ($start < 20) {
         echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
     }elseif ($start >= 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;";
         echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
         echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
     }
 }else {
     if ($start >= 20) {
-        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+        echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php\" target=\"_self\">{$lang['recententries']}</a>&nbsp;&nbsp;";
         echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?page=", ($start / 20) - 1, "\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.32 2003-11-17 16:01:43 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.33 2003-11-27 19:36:06 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -58,7 +58,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['submit'] == $lang['clos
 
 }
 
-if (isset($HTTP_GET_VARS['tid']) && is_numeric($HTTP_GET_VARS['tid']))) {
+if (isset($HTTP_GET_VARS['tid']) && is_numeric($HTTP_GET_VARS['tid'])) {
 
   $tid = $HTTP_GET_VARS['tid'];
 

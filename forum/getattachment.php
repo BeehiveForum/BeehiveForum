@@ -24,9 +24,6 @@ USA
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
 
-// Compress the output
-require_once("./include/gzipenc.inc.php");
-
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
 
@@ -55,7 +52,7 @@ if (isset($HTTP_GET_VARS['hash'])) {
   $db = db_connect();
 
   $hash = $HTTP_GET_VARS['hash'];
-  $sql = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
+  $sql  = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
   $result = db_query($sql, $db);
 
   $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash' limit 0,1";

@@ -58,7 +58,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
         srand((double)microtime()*1000000);
 
-        ob_end_clean();
+        while(@ob_end_flush());
         ob_start("bh_gzhandler");
 
         if (defined("BEEHIVEMODE_LIGHT")) {

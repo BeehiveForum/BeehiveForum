@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.42 2004-04-17 18:41:00 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.43 2004-04-20 11:22:04 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,6 +41,7 @@ include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
+include_once("./include/htmltools.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/perm.inc.php");
@@ -100,7 +101,7 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 
 }
 
-html_draw_top();
+html_draw_top("htmltools.js");
 
 if (isset($_POST['submit'])) {
 
@@ -124,8 +125,10 @@ echo "<p>{$lang['mustusebh401startmain']}</p>";
 
 if (isset($status_text)) echo $status_text;
 
+$tools = new TextAreaHTML("startpage");
+
 echo "<form name=\"startpage\" method=\"post\" action=\"admin_startpage.php?webtag=$webtag\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -133,7 +136,10 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td>", form_textarea('content', _htmlentities($content), 20, 90, 'off', 'style="font-family: monospace"'), "</td>\n";
+echo "                  <td>", $tools->toolbar(), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", $tools->textarea('content', _htmlentities($content), 20, 80, 'off', 'style="font-family: monospace"'), "</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -149,6 +155,8 @@ echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
+
+echo $tools->js();
 
 html_draw_bottom();
 

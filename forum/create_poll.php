@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.49 2003-09-03 17:20:26 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.50 2003-09-03 18:00:17 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -153,7 +153,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
 if ($valid) {
 
-    if($t_message_html == "Y") {
+    if (isset($t_message_html) && $t_message_html == "Y") {
         $t_message_text = fix_html($t_message_text);
     }
 
@@ -393,8 +393,9 @@ if(!isset($t_sig) || !$t_sig) {
     $has_sig = true;
 }
 
-if($t_message_html != "Y") $t_message_text = isset($t_message_text) ? _stripslashes($t_message_text) : "";
-//if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
+if (isset($t_message_html) && $t_message_html != "Y") {
+    $t_message_text = isset($t_message_text) ? _stripslashes($t_message_text) : "";
+}
 
 if (isset($HTTP_GET_VARS['fid'])) {
     $t_fid = $HTTP_GET_VARS['fid'];
@@ -583,7 +584,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
             <td><?php echo $lang['polladditionalmessageexp']; ?></td>
           </tr>
           <tr>
-            <td><?php echo form_textarea("t_message_text", _htmlentities($t_message_text), 15, 75); ?></td>
+            <td><?php echo form_textarea("t_message_text", (isset($t_message_html)) ? _htmlentities($t_message_text) : "", 15, 75); ?></td>
           </tr>
           <tr>
             <td><?php echo $lang['signature']; ?>:<br /><?php echo form_textarea("t_sig", _htmlentities($t_sig), 5, 75), form_input_hidden("t_sig_html", $t_sig_html); ?></td>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.17 2003-08-31 17:17:49 hodcroftcj Exp $ */
+/* $Id: display.php,v 1.18 2003-09-03 18:00:17 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -39,6 +39,7 @@ require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/poll.inc.php");
 
 if (!bh_session_check()) {
 
@@ -78,8 +79,10 @@ html_draw_top("basetarget=_blank", "openprofile.js");
 
 $message = messages_get($tid,$pid,1);
 $threaddata = thread_get($tid);
+
 $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
+
 if($closed) $foldertitle .= " (closed)";
 
 echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
@@ -87,10 +90,29 @@ messages_top($foldertitle,_stripslashes($threaddata['TITLE']));
 echo "</td></tr></table></div>\n";
 
 if ($message) {
-        $first_msg = $message['PID'];
-        $message['CONTENT'] = message_get_content($tid, $message['PID']);
+
+    $first_msg = $message['PID'];
+
+    if($threaddata['POLL_FLAG'] == 'Y') {
+
+        if ($message['PID'] == 1) {
+
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, false, true, $show_sigs, true);
+            $last_pid = $message['PID'];
+
+        }else {
+
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, false, false, $show_sigs, true);
+            $last_pid = $message['PID'];
+
+        }
+
+    }else {
+
         message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, false, false, $show_sigs, true);
         $last_pid = $message['PID'];
+
+    }
 }
 
 messages_end_panel();
@@ -102,6 +124,7 @@ echo "&nbsp;";
 echo form_button("print", $lang['print'], "onclick=\"window.print()\"");
 echo "</form>\n";
 echo "</td></tr></table>\n";
+
 html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.45 2004-08-07 17:45:50 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.46 2004-08-08 00:39:47 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -457,10 +457,35 @@ function perm_get_user_permissions($uid)
 
     if (db_num_rows($result) > 0) {
 
-        return db_fetch_array($result);
+        $row = db_fetch_array($result);
+        return $row['STATUS'];
     }
 
-    return array('STATUS' => 0);
+    return 0;
+}
+
+function perm_get_user_gid($uid)
+{
+    $db_perm_get_user_gid = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT GROUPS.GID FROM {$table_data['PREFIX']}GROUPS GROUPS ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID) ";
+    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUPS.AUTO_GROUP = 1";
+
+    $result = db_query($sql, $db_perm_get_user_gid);
+
+    if (db_num_rows($result) > 0) {
+
+        $row = db_fetch_array($result);
+        return $row['GID'];
+    }
+
+    return false;
 }
 
 function perm_get_user_folder_perms($uid, $fid)

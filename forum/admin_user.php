@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.110 2004-08-07 22:39:40 tribalonline Exp $ */
+/* $Id: admin_user.php,v 1.111 2004-08-08 00:39:47 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -198,23 +198,23 @@ if (isset($_POST['del'])) {
         if (perm_has_forumtools_access()) {
 
             $new_user_perms = (double)$new_user_perms | $t_admintools;
-            $new_user_perms = (double)$new_user_perms | ($user_perms['STATUS'] & USER_PERM_FORUM_TOOLS);
+            $new_user_perms = (double)$new_user_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
 
         }else {
 
-            $new_user_perms = (double)$new_user_perms | ($user_perms['STATUS'] & USER_PERM_ADMIN_TOOLS);
-            $new_user_perms = (double)$new_user_perms | ($user_perms['STATUS'] & USER_PERM_FORUM_TOOLS);
+            $new_user_perms = (double)$new_user_perms | ($user_perms & USER_PERM_ADMIN_TOOLS);
+            $new_user_perms = (double)$new_user_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
         }
 
-        if (isset($user_perms['GID']) && is_numeric($user_perms['GID'])) {
-            perm_update_user_permissions($uid, $user_perms['GID'], $new_user_perms);
+        if ($user_gid = perm_get_user_gid($uid)) {
+            perm_update_user_permissions($uid, $user_gid, $new_user_perms);
         }else {
-            $user_perms['GID'] = perm_add_user_permissions($uid, $new_user_perms);
+            $user_gid = perm_add_user_permissions($uid, $new_user_perms);
         }
 
-        $user_perms['STATUS'] = $new_user_perms;
+        $user_perms = $new_user_perms;
 
-        if (isset($user_perms['GID']) && is_numeric($user_perms['GID'])) {
+        if (isset($user_gid) && is_numeric($user_gid)) {
 
             if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
 
@@ -229,15 +229,15 @@ if (isset($_POST['del'])) {
                     $t_post_delete   = (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
                     $t_post_attach   = (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
                     $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-					$t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-					$t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                    $t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                    $t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
 
                     $new_folder_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
                     $new_folder_perms = (double)$new_folder_perms | $t_post_edit | $t_post_delete;
                     $new_folder_perms = (double)$new_folder_perms | $t_moderator | $t_post_attach;
                     $new_folder_perms = (double)$new_folder_perms | $t_post_html | $t_post_sig;
 
-                    perm_update_user_folder_perms($uid, $user_perms['GID'], $fid, $new_folder_perms);
+                    perm_update_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
                 }
             }
 
@@ -254,15 +254,15 @@ if (isset($_POST['del'])) {
                     $t_post_delete   = (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
                     $t_post_attach   = (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
                     $t_moderator     = (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-					$t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-					$t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                    $t_post_html     = (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                    $t_post_sig      = (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
 
                     $new_folder_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
                     $new_folder_perms = (double)$new_folder_perms | $t_post_edit | $t_post_delete;
                     $new_folder_perms = (double)$new_folder_perms | $t_moderator | $t_post_attach;
                     $new_folder_perms = (double)$new_folder_perms | $t_post_html | $t_post_sig;
 
-                    perm_add_user_folder_perms($uid, $user_perms['GID'], $fid, $new_folder_perms);
+                    perm_add_user_folder_perms($uid, $user_gid, $fid, $new_folder_perms);
                 }
             }
         }
@@ -403,18 +403,18 @@ if (isset($_POST['t_delete_posts'])) {
     if (perm_has_forumtools_access()) {
 
         echo "                      <tr>\n";
-        echo "                        <td>", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintools'], $user_perms['STATUS'] & USER_PERM_ADMIN_TOOLS), "</td>\n";
+        echo "                        <td>", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintools'], $user_perms & USER_PERM_ADMIN_TOOLS), "</td>\n";
         echo "                      </tr>\n";
     }
 
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_banned", USER_PERM_BANNED, $lang['userisbanned'], $user_perms['STATUS'] & USER_PERM_BANNED), "</td>\n";
+    echo "                        <td>", form_checkbox("t_banned", USER_PERM_BANNED, $lang['userisbanned'], $user_perms & USER_PERM_BANNED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms['STATUS'] & USER_PERM_WORMED), "</td>\n";
+    echo "                        <td>", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms & USER_PERM_WORMED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['userisglobalmod'], $user_perms['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
+    echo "                        <td>", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['userisglobalmod'], $user_perms & USER_PERM_FOLDER_MODERATE), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>&nbsp;</td>\n";

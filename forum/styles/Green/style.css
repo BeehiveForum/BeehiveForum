@@ -467,12 +467,32 @@ A		{
 }
 
 .pmbar_container {
-		height: 18px;
+		height: 13px;
 		width: 100%;
-		border: 1px solid #000000;
+		border: 1px solid #686868;
+		background-color: #FFFFFF;
 }
 
 .pmbar {
-		height: 16px;
-		background-color: #86D85F;
+		height: 11px;
+		background-color: transparent;
+		background-image: url('../../images/pbar.png');
+		background-repeat: repeat-x;
+}
+
+.pagenum_text {
+                font-size: 8pt;
+}
+
+.pagenum_text a {
+                text-decoration: none;
+}
+
+.admin_folder_perms {
+		overflow: auto;
+		padding: 2px;
+}
+
+.admin_settings_text {
+                font-size: 8pt;
 }

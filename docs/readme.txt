@@ -49,7 +49,7 @@ You need web hosting which provides:
 
 To set up the database, use something like phpMyAdmin (get it from
 https://sourceforge.net/projects/phpmyadmin/), or direct MySQL if you
-have the skillz, to run the beehiveforum.sql file from the download.
+have the skillz, to run the schema.sql file from the download.
 
 (Beehive would prefer its very own database, but if you can't provide that, it
 should work in an existing one.)

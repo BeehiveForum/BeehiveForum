@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.47 2003-10-31 19:48:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.48 2003-11-01 19:11:06 decoyduck Exp $ */
 
 // International English language file
 
@@ -103,6 +103,7 @@ $lang['passwd'] = "Password";
 $lang['ignored'] = "Ignored";
 $lang['guest'] = "Guest";
 $lang['next'] = "Next";
+$lang['prev'] = "Prev";
 $lang['others'] = "Others";
 $lang['nickname'] = "Nickname";
 $lang['emailaddress'] = "Email address";
@@ -430,7 +431,7 @@ $lang['1subfolder'] = "1 subfolder in this category";
 $lang['subfoldersinthiscategory'] = "subfolders in this category";
 $lang['linksdelexp'] = "Entries in a deleted folder will be moved to the parent folder. Only folders which do not contain subfolders may be deleted.";
 $lang['listview'] = "List View";
-$lang['listviewcannotaddfolders'] = "Cannot add folders in this view. Showing maximum 30 entries.";
+$lang['listviewcannotaddfolders'] = "Cannot add folders in this view. Showing 20 entries at a time.";
 $lang['rating'] = "Rating";
 $lang['commentsslashvote'] = "Comments / Vote";
 $lang['nolinksinfolder'] = "No links in this folder.";

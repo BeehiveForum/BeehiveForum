@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.16 2003-07-27 12:42:05 hodcroftcj Exp $ */
+/* $Id: links.inc.php,v 1.17 2003-11-01 19:11:06 decoyduck Exp $ */
 
 // Functions for the links database
 
@@ -198,7 +198,7 @@ function links_get_single($lid)
     }
 }
 
-function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC")
+function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC", $offset = 0)
 {
     $links = array();
 
@@ -215,7 +215,7 @@ function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC"
     if (!$invisible) $sql .= "WHERE LINKS.VISIBLE = 'Y' ";
     $sql .= "GROUP BY LINKS.LID ";
     $sql .= "ORDER BY $sort_by $sort_dir ";
-    $sql .= "LIMIT 0, 30";
+    $sql .= "LIMIT $offset, 20";
 
     $result_id = db_query($sql, $db_links_get_in_folder);
 

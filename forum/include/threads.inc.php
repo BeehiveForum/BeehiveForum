@@ -379,6 +379,7 @@ function threads_mark_all_read()
       
         $sql = "INSERT INTO ".forum_table("USER_THREAD")." (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "VALUES (". $HTTP_COOKIE_VARS['bh_sess_uid']. ", ". $thread['TID']. ", ". $thread['LENGTH'] .", NOW(), ". $thread['INTEREST']. ")";
+        db_query($sql, $db_threads_mark_all_read);
         
       }elseif ($thread['LENGTH'] > $thread['LAST_READ']) {
       
@@ -386,10 +387,9 @@ function threads_mark_all_read()
 	$sql.= " SET LAST_READ = ". $thread['LENGTH']. ", ";
 	$sql.= "LAST_READ_AT = NOW() ";
         $sql.= "WHERE TID = ". $thread['TID']." and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+        db_query($sql, $db_threads_mark_all_read);
         
       }
-      
-      db_query($sql, $db_threads_mark_all_read);
       
     }
         

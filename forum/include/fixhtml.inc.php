@@ -20,11 +20,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.89 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.90 2004-12-12 12:40:08 decoyduck Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
 include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
 
 $fix_html_code_text = 'code:';
 $fix_html_quote_text = 'quote:';

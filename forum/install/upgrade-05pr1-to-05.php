@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.9 2004-12-11 14:37:29 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.10 2004-12-12 12:40:28 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -38,34 +38,21 @@ if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
+include_once("./include/install.inc.php");
 
 set_time_limit(0);
-
-$forum_webtag_array = array();
 
 // This script upgrades all forums it finds regardless of the
 // WEBTAG entered in the install form. This is imperative that
 // this happens because otherwise if you later try to upgrade
 // a second forum you will run into problems
 
-$sql = "SHOW TABLES LIKE 'FORUMS'";
+if (install_table_exists('FORUMS')) {
 
-if (!$result = db_query($sql, $db_install)) {
+    if (!$forum_webtag_array = install_get_webtags()) {
 
-    $valid = false;
-    return;
-}
-
-if (db_num_rows($result) > 0) {
-
-    $sql = "SELECT FID, WEBTAG FROM FORUMS";
-
-    if ($result = db_query($sql, $db_install)) {
-
-        while ($row = db_fetch_array($result)) {
-
-            $forum_webtag_array[$row['FID']] = $row['WEBTAG'];
-        }
+        $valid = false;
+        return;
     }
 }
 
@@ -74,143 +61,118 @@ if (db_num_rows($result) > 0) {
 // so user's don't end up with multiple
 // inboxes that are hard to keep track of.
 
-$sql = "DROP TABLE IF EXISTS PM";
+if (!install_table_exists('PM')) {
 
-if (!$result = db_query($sql, $db_install)) {
+    $sql = "CREATE TABLE PM (";
+    $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '',";
+    $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+    $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY (MID),";
+    $sql.= "  KEY TO_UID (TO_UID)";
+    $sql.= ") TYPE=MyISAM";
 
-    $valid = false;
-    return;
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
-$sql = "CREATE TABLE PM (";
-$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  SUBJECT VARCHAR(64) NOT NULL DEFAULT '',";
-$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-$sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY (MID),";
-$sql.= "  KEY TO_UID (TO_UID)";
-$sql.= ")";
+if (!install_table_exists('PM_ATTACHMENT_IDS')) {
 
-if (!$result = db_query($sql, $db_install)) {
+    $sql = "CREATE TABLE PM_ATTACHMENT_IDS (";
+    $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  PRIMARY KEY  (MID),";
+    $sql.= "  KEY AID (AID)";
+    $sql.= ") TYPE=MyISAM";
 
-    $valid = false;
-    return;
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
-$sql = "DROP TABLE IF EXISTS PM_ATTACHMENT_IDS";
+if (!install_table_exists('PM_CONTENT')) {
 
-if (!$result = db_query($sql, $db_install)) {
+    $sql = "CREATE TABLE PM_CONTENT (";
+    $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  CONTENT TEXT,";
+    $sql.= "  PRIMARY KEY  (MID),";
+    $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+    $sql.= ") TYPE=MyISAM";
 
-    $valid = false;
-    return;
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
-$sql = "CREATE TABLE PM_ATTACHMENT_IDS (";
-$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (MID),";
-$sql.= "  KEY AID (AID)";
-$sql.= ")";
+// Recreate the old 0.4 Attachment tables.
 
-if (!$result = db_query($sql, $db_install)) {
+if (!install_table_exists('POST_ATTACHMENT_IDS')) {
 
-    $valid = false;
-    return;
+    $sql = "CREATE TABLE POST_ATTACHMENT_IDS (";
+    $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  PRIMARY KEY  (FID, TID, PID),";
+    $sql.= "  KEY AID (AID)";
+    $sql.= ") TYPE=MyISAM";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
-$sql = "DROP TABLE IF EXISTS PM_CONTENT";
+if (!install_table_exists('POST_ATTACHMENT_FILES')) {
 
-if (!$result = db_query($sql, $db_install)) {
+    $sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
+    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY  (ID),";
+    $sql.= "  KEY AID (AID),";
+    $sql.= "  KEY HASH (HASH)";
+    $sql.= ") TYPE=MyISAM";
 
-    $valid = false;
-    return;
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
-$sql = "CREATE TABLE PM_CONTENT (";
-$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  CONTENT TEXT,";
-$sql.= "  PRIMARY KEY  (MID),";
-$sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-$sql.= ")";
+// DEDUPE has been globalised so we can drop the per-forum
+// table
 
-if (!$result = db_query($sql, $db_install)) {
+if (!install_table_exists('DEDUPE')) {
 
-    $valid = false;
-    return;
-}
+    $sql = "CREATE TABLE DEDUPE (";
+    $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
+    $sql.= "  DDKEY char(32) default NULL,";
+    $sql.= "  PRIMARY KEY  (UID)";
+    $sql.= ") TYPE=MyISAM";
 
-$sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_IDS";
+    if (!$result = db_query($sql, $db_install)) {
 
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE POST_ATTACHMENT_IDS (";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (FID, TID, PID),";
-$sql.= "  KEY AID (AID)";
-$sql.= ")";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_FILES";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
-$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (ID),";
-$sql.= "  KEY AID (AID),";
-$sql.= "  KEY HASH (HASH)";
-$sql.= ")";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS DEDUPE";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE DEDUPE (";
-$sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
-$sql.= "  DDKEY char(32) default NULL,";
-$sql.= "  PRIMARY KEY  (UID)";
-$sql.= ")";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
+        $valid = false;
+        return;
+    }
 }
 
 // Bug in the SESSIONS table that prevents guests having
@@ -233,7 +195,7 @@ $sql.= "  IPADDRESS varchar(15) NOT NULL default '',";
 $sql.= "  TIME datetime NOT NULL default '0000-00-00 00:00:00',";
 $sql.= "  FID mediumint(8) unsigned NOT NULL default '0',";
 $sql.= "  PRIMARY KEY  (HASH, UID, IPADDRESS)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -295,7 +257,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  KEY BY_UID (BY_UID),";
     $sql.= "  KEY FID (FID),";
     $sql.= "  FULLTEXT KEY TITLE (TITLE)";
-    $sql.= ")";
+    $sql.= ") TYPE=MyISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -324,7 +286,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // DROP the old THREAD table
 
-    $sql = "DROP TABLE {$forum_webtag}_THREAD";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_THREAD";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -356,7 +318,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
     $sql.= "  LAST_LOGON datetime DEFAULT NULL,";
     $sql.= "  PRIMARY KEY  (UID)";
-    $sql.= ")";
+    $sql.= ") TYPE=MyISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -394,15 +356,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // email notification links, but this is better than
     // loosing people's PMs entirely!
 
-    $sql = "SHOW TABLES LIKE '{$forum_webtag}_PM'";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    if (db_num_rows($result) > 0) {
+    if (install_table_exists("{$forum_webtag}_PM")) {
 
         $sql = "SELECT * FROM {$forum_webtag}_PM";
 
@@ -422,24 +376,30 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
                 $pm_mid = db_insert_id($db_install);
 
-                $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
-                $sql.= "SELECT MID, AID FROM {$forum_webtag}_PM_ATTACHMENT_IDS ";
-                $sql.= "WHERE MID = $pm_mid";
+                if (install_table_exists("{$forum_webtag}_PM_ATTACHMENT_IDS")) {
 
-                if (!$result = db_query($sql, $db_install)) {
+                    $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
+                    $sql.= "SELECT MID, AID FROM {$forum_webtag}_PM_ATTACHMENT_IDS ";
+                    $sql.= "WHERE MID = $pm_mid";
 
-                    $valid = false;
-                    return;
+                    if (!$result = db_query($sql, $db_install)) {
+
+                        $valid = false;
+                        return;
+                    }
                 }
 
-                $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-                $sql.= "SELECT MID, CONTENT FROM {$forum_webtag}_PM_CONTENT ";
-                $sql.= "WHERE MID = $pm_mid";
+                if (install_table_exists("{$forum_webtag}_PM_CONTENT")) {
 
-                if (!$result = db_query($sql, $db_install)) {
+                    $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
+                    $sql.= "SELECT MID, CONTENT FROM {$forum_webtag}_PM_CONTENT ";
+                    $sql.= "WHERE MID = $pm_mid";
 
-                    $valid = false;
-                    return;
+                    if (!$result = db_query($sql, $db_install)) {
+
+                        $valid = false;
+                        return;
+                    }
                 }
 
             }else {
@@ -513,7 +473,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
     $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
     $sql.= "  PRIMARY KEY  (UID)";
-    $sql.= ")";
+    $sql.= ") TYPE=MyISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -563,13 +523,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // from one set of tables rather than per forum. Allows better user
     // tracking of attachments and PM attachments to work correctly.
 
-    $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
-    $sql.= "SELECT $forum_fid, TID, PID, AID FROM {$forum_webtag}_POST_ATTACHMENT_IDS";
+    if (install_table_exists("{$forum_webtag}_POST_ATTACHMENT_IDS")) {
 
-    if (!$result = db_query($sql, $db_install)) {
+        $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
+        $sql.= "SELECT $forum_fid, TID, PID, AID FROM {$forum_webtag}_POST_ATTACHMENT_IDS";
 
-        $valid = false;
-        return;
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_POST_ATTACHMENT_IDS";
@@ -580,15 +543,18 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "INSERT INTO POST_ATTACHMENT_FILES (AID, UID, FILENAME, ";
-    $sql.= "MIMETYPE, HASH, DOWNLOADS, DELETED) SELECT AID, UID, ";
-    $sql.= "FILENAME, MIMETYPE, HASH, DOWNLOADS, DELETED FROM ";
-    $sql.= "{$forum_webtag}_POST_ATTACHMENT_FILES";
+    if (install_table_exists("{$forum_webtag}_POST_ATTACHMENT_FILES")) {
 
-    if (!$result = db_query($sql, $db_install)) {
+        $sql = "INSERT INTO POST_ATTACHMENT_FILES (AID, UID, FILENAME, ";
+        $sql.= "MIMETYPE, HASH, DOWNLOADS, DELETED) SELECT AID, UID, ";
+        $sql.= "FILENAME, MIMETYPE, HASH, DOWNLOADS, DELETED FROM ";
+        $sql.= "{$forum_webtag}_POST_ATTACHMENT_FILES";
 
-        $valid = false;
-        return;
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_POST_ATTACHMENT_FILES";
@@ -617,7 +583,7 @@ $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
 $sql.= "  KEY SOUND (SOUND),";
 $sql.= "  KEY UID (UID),";
 $sql.= "  KEY WORD (WORD)";
-$sql.= ")";
+$sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
 

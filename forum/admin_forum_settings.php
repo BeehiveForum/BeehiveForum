@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.48 2004-12-11 14:37:28 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.49 2004-12-12 12:40:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -248,6 +248,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['auto_logon'] = "Y";
     }else {
         $new_forum_settings['auto_logon'] = "N";
+    }
+
+    if (isset($_POST['allow_search_spidering']) && $_POST['allow_search_spidering'] == "Y") {
+        $new_forum_settings['allow_search_spidering'] = "Y";
+    }else {
+        $new_forum_settings['allow_search_spidering'] = "N";
     }
 
     if ($valid) {
@@ -562,6 +568,43 @@ echo "                <tr>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                  <td class=\"smalltext\">\n";
 echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_16']}</p>\n";
+echo "                  </td>\n";
+echo "                  <td width=\"20\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['searchenginespidering']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("allow_search_spidering", "Y", $lang['allowsearchenginespidering'], forum_get_setting('allow_search_spidering', 'Y', false)), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"20\">&nbsp;</td>\n";
+echo "                  <td class=\"smalltext\">\n";
+echo "                    <p class=\"smalltext\">{$lang['forum_settings_help_27']}</p>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"20\">&nbsp;</td>\n";
 echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.140 2004-12-10 16:52:16 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.141 2004-12-12 12:40:08 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -311,7 +311,12 @@ function html_draw_top()
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$forum_description\" />\n";
 
-    if ($robots) {
+    if (forum_get_setting('allow_search_spidering', 'N', false)) {
+
+        echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
+
+    }elseif ($robots) {
+
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
 

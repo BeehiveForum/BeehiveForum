@@ -28,10 +28,10 @@ function email_sendnotification($tuid, $msg, $fuid)
 
     // This function sends the email notification.
     // There is no return value, like.
-
+    
     $db = db_connect();
 
-    // Lets fetch the Receipient's notification status, nickname and email address
+    // Fetch the Receipient's notification status, nickname and email address
 
     $sql = "select PREFS.EMAIL_NOTIFY, PROFILE.NICKNAME, PROFILE.EMAIL from ";
     $sql.= forum_table("USER_PREFS") . " PREFS, ";
@@ -40,7 +40,7 @@ function email_sendnotification($tuid, $msg, $fuid)
     $sql.= "and PROFILE.UID = PREFS.UID";
 
     $result = db_query($sql, $db);
-
+    
     if(db_num_rows($result)){
 
         $mailto = db_fetch_array($result);
@@ -52,22 +52,35 @@ function email_sendnotification($tuid, $msg, $fuid)
     	    // Retrieve the Sender's LOGON details. (Can this be done another way, session details perhaps?)
 
     	    $sql = "select LOGON from ". forum_table("USER") . " where UID = $fuid";
-                $resultfrom = db_query($sql, $db);
+            $resultfrom = db_query($sql, $db);
 
     	    if(db_num_rows($resultfrom)){
 
     	        $mailfrom = db_fetch_array($resultfrom);
 
-        		// Construct the notification body. Half-inched from Delphi's own notifications.
-        		// Will need amendments later on to use the Forum's name rather than 'Beehiveforum'.
-
-        		$message = $mailfrom['LOGON'] . ' posted a message to you on Beehive Forum\n\n';
-        		$message.= 'To read that message and others in the same discussion, go to:\n';
-        		$message.= 'http://beehive.sourceforge.net/forum/messages.php?msg=' . $msg;
-
-        		// Send teh email, with a few additional headers for From, Reply-To and X-Mailer headers
-
-        		mail('"'. $mailto['NICKNAME']. '" <' . $mailto['EMAIL'] . '>', 'Message Notification from Beehive Forum', $message, 'From: "Beehive Forums" <webmaster@beehiveforums.com>\nReply-To: "Beehive Forums" <webmaster@beehiveforums.com>\nX-Mailer: PHP/' . phpversion()) or die ('could not send mail notification');
+        	// Construct the notification body and headers. These are half-inched from Delphi's
+       		// own notifications. Will need amendments later on to use the Forum's name rather
+       		// than 'Beehiveforum'.
+        		
+       		$message = strtoupper($mailfrom['LOGON']). " posted a message to you on Beehive Forum\n\n";
+       		$message.= "To read that message and others in the same discussion, go to:\n";
+       		$message.= "http://beehiveforum.sourceforge.net/forum/messages.php?msg=$msg\n\n";
+       		$message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
+       		$message.= "Note: If you do not wish to receive email notifications of Forum messages\n";
+       		$message.= "posted to you, go to http://beehiveforum.sourceforge.net/forum/, click\n";
+       		$message.= "on Preferences, unselect the Email Notification checkbox and press Submit.\n";
+       		
+       		$header = "From: \"Beehive Forums\" <webmaster@beehiveforums.com>\n";
+       		$header.= "Reply-To: \"Beehive Forums\" <webmaster@beehiveforums.com>\n";
+       		$header.= "X-Mailer: PHP/". phpversion();        		
+        		
+       		// Construct a well formatted Recepient (doesn't work on PHP Win32)
+       		
+       		$recepient = $mailto['NICKNAME']. ' <'. $mailto['EMAIL']. '>';
+       		
+       		// Send the email
+        		
+       		@mail($mailto['EMAIL'], "Message Notification from Beehive Forums", $message, $header);
     	    }
     	}
     }

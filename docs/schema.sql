@@ -1,5 +1,5 @@
 # Beehive Forum Database Creation
-# version 0.2-dev
+# version 0.4-dev
 # http://beehiveforum.sourceforge.net/
 #
 # Schema generated using phpMyAdmin
@@ -186,7 +186,7 @@ CREATE TABLE POST (
 # Dumping data for table `POST`
 #
 
-INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS) VALUES (1, 1, 0, 1, 0, NULL, '2003-01-19 23:28:05', 0);
+INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS) VALUES (1, 1, 0, 1, 0, NULL, NOW(), 0);
 # --------------------------------------------------------
 
 #

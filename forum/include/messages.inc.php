@@ -48,6 +48,23 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 	// Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
 	// for threads with unread messages, so the UID needs to be passed to the function
 	$sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
+	$sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
+	$sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
+	$sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
+	$sql .= "from " . forum_table("POST") . " POST ";
+	$sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
+	$sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
+	$sql .= "left join " . forum_table("USER_PEER") . " USER_PEER ";
+	$sql .= "on (USER_PEER.uid = '$uid' and USER_PEER.PEER_UID = POST.FROM_UID) ";
+	$sql .= "where POST.TID = '$tid' ";
+	$sql .= "and POST.PID >= '$pid' ";
+	$sql .= "order by POST.PID ";
+	$sql .= "limit 0, " . $limit;
+
+    /* OLD SQL - the CONTENT has been removed from the main select for memory efficiency
+                 and to improve the MySQL performance by keeping the TEXT field separate
+                 =======================================================================
+    $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
 	$sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, POST_CONTENT.CONTENT, ";
 	$sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
 	$sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
@@ -55,44 +72,64 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
 	$sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
 	$sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
 	$sql .= "left join " . forum_table("USER_PEER") . " USER_PEER ";
-	$sql .= "on (USER_PEER.uid = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";
-	$sql .= "where POST.TID = $tid ";
-	$sql .= "and POST.PID >= $pid ";
+	$sql .= "on (USER_PEER.uid = '$uid' and USER_PEER.PEER_UID = POST.FROM_UID) ";
+	$sql .= "where POST.TID = '$tid' ";
+	$sql .= "and POST.PID >= '$pid' ";
 	$sql .= "and POST_CONTENT.TID = POST.TID and POST_CONTENT.PID = POST.PID ";
 	$sql .= "order by POST.PID ";
 	$sql .= "limit 0, " . $limit;
+	*/
 
 	$resource_id = db_unbuffered_query($sql, $db_message_get);
 
 	// Loop through the results and construct an array to return
-//	for ($i = 0; $i < db_num_rows($resource_id); $i++) {
 
-//		$message = db_fetch_array($resource_id);
-
-	for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
-
-		$messages[$i]['PID'] = $message['PID'];
-		$messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
-		//echo "<p>" . $message['REPLY_TO_PID'] . "</p>";
-		$messages[$i]['FROM_UID'] = $message['FROM_UID'];
-		$messages[$i]['TO_UID'] = $message['TO_UID'];
-		$messages[$i]['CREATED'] = $message['CREATED'];
-		$messages[$i]['VIEWED'] = @$message['VIEWED'];
-		//$messages[$i]['CONTENT'] = stripslashes($message['CONTENT']);
-		$messages[$i]['CONTENT'] = @$message['CONTENT'];
-		$messages[$i]['RELATIONSHIP'] = @$message['RELATIONSHIP'];
-		$messages[$i]['FNICK'] = $message['FNICK'];
-		$messages[$i]['FLOGON'] = $message['FLOGON'];
-		if(isset($message['TNICK'])){
-           	$messages[$i]['TNICK'] = $message['TNICK'];
-           	$messages[$i]['TLOGON'] = $message['TLOGON'];
-        } else {
-            $messages[$i]['TNICK'] = "ALL";
-           	$messages[$i]['TLOGON'] = "ALL";
+    if($limit > 1){
+    	for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
+    		$messages[$i]['PID'] = $message['PID'];
+    		$messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
+    		$messages[$i]['FROM_UID'] = $message['FROM_UID'];
+    		$messages[$i]['TO_UID'] = $message['TO_UID'];
+    		$messages[$i]['CREATED'] = $message['CREATED'];
+    		$messages[$i]['VIEWED'] = @$message['VIEWED'];
+    		$messages[$i]['CONTENT'] = '';
+    		$messages[$i]['RELATIONSHIP'] = isset($message['RELATIONSHIP']) ? $message['RELATIONSHIP'] : 0;
+    		$messages[$i]['FNICK'] = $message['FNICK'];
+    		$messages[$i]['FLOGON'] = $message['FLOGON'];
+    		if(isset($message['TNICK'])){
+               	$messages[$i]['TNICK'] = $message['TNICK'];
+               	$messages[$i]['TLOGON'] = $message['TLOGON'];
+            } else {
+                $messages[$i]['TNICK'] = "ALL";
+               	$messages[$i]['TLOGON'] = "ALL";
+            }
+    	}
+    } else {
+        $messages = db_fetch_array($resource_id);
+        if(!isset($messages['VIEWED'])){
+            $messages['VIEWED'] = '';
         }
-	}
+        if(!isset($messages['RELATIONSHIP'])){
+            $messages['RELATIONSHIP'] = 0;
+        }
+		if(!isset($messages['TNICK'])){
+            $messages['TNICK'] = 'ALL';
+           	$messages['TLOGON'] = 'ALL';
+        }
+    }
 
 	return $messages;
+}
+
+function message_get_content($tid,$pid)
+{
+   	$db_mgc = db_connect();
+   	$sql = "select CONTENT from " . forum_table('POST_CONTENT') . " where TID = '$tid' and PID = '$pid'";
+   	$result = db_query($sql,$db_mgc);
+   	$fa = db_fetch_array($result);
+   	//echo @$fa['CONTENT'];
+   	return isset($fa['CONTENT']) ? $fa['CONTENT'] : "";
+   	db_disconnect($db_mgc);
 }
 
 function messages_top($foldertitle, $threadtitle, $interest_level = 0)
@@ -321,7 +358,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
     if($length <= $ppp){
         $html .= " <a href=\"messages.php?msg=$tid.1\" target=\"_self\">All</a>\n";
     }
-    
+
     for($i=0;$i<=$max;$i++){
         // Only display first, last and those within 3 of the current section
         //echo "$i : $max\n";
@@ -331,6 +368,8 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $html .= "\n&nbsp;...";
         }
     }
+    
+    unset($navbits);
 
     echo "<p align=\"center\" class=\"smalltext\">" . $html . "</p>\n";
 }
@@ -373,7 +412,7 @@ function messages_admin_form($tid,$pid,$title,$closed = false)
     echo form_input_hidden("t_tid",$tid);
     echo form_input_hidden("t_pid",$pid);
     echo "</form>\n";
-    echo "</p>\n";    
+    echo "</p>\n";
 }
 
 function mess_nav_range($from,$to)

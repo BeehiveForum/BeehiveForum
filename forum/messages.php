@@ -53,7 +53,8 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
                       $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'], $userprefs['EMAIL_NOTIFY'],
                       $userprefs['TIMEZONE'], $userprefs['DL_SAVING'], $userprefs['MARK_AS_OF_INT'],
                       $userprefs['POST_PER_PAGE'], $HTTP_GET_VARS['fontsize']);
-                      
+    unset($userprefs);
+
     bh_session_init($HTTP_COOKIE_VARS['bh_sess_uid']);
     header_redirect($HTTP_SERVER_VARS['PHP_SELF']. "?msg=$msg");
     
@@ -86,10 +87,17 @@ echo "</td></tr></table></div>\n";
 if($msg_count>0){
     $first_msg = $messages[0]['PID'];
     foreach($messages as $message) {
+        if($message['RELATIONSHIP'] >= 0){ // if we're not ignoring this user
+            $message['CONTENT'] = message_get_content($tid, $message['PID']);
+        } else {
+            $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
+        }
         message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed, true);
         $last_pid = $message['PID'];
     }
 }
+
+unset($messages, $message);
 
 if($last_pid < $threaddata['LENGTH']){
     $npid = $last_pid + 1;

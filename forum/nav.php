@@ -36,14 +36,14 @@ header_no_cache();
 		<link rel="stylesheet" href="./styles/style.css" type="text/css">
 	</head>
     <body style="font-size: 10px; font-weight: bold; margin: 4px 1px 1px 4px; background-color: #D7D7D7">
-        <a href="start.php" target="main">Start</a>&nbsp;
-        <a href="discussion.php" target="main">Messages</a>&nbsp;
-        <a href="preferences.php" target="main">Preferences</a>&nbsp;
-        <a href="profile.php" target="main">Profile</a>&nbsp;
+        <a href="start.php" target="main">Start</a>&nbsp|&nbsp;
+        <a href="discussion.php" target="main">Messages</a>&nbsp|&nbsp;
+        <a href="preferences.php" target="main">Preferences</a>&nbsp|&nbsp;
+        <a href="profile.php" target="main">Profile</a>&nbsp|&nbsp;
 <?
 if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) & USER_PERM_SOLDIER){
 ?>
-        <a href="admin.php" target="main">Admin</a>&nbsp;
+        <a href="admin.php" target="main">Admin</a>&nbsp|&nbsp;
 <?
 }
 ?>

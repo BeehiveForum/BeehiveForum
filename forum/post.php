@@ -132,7 +132,7 @@ if(isset($HTTP_POST_VARS['t_newthread'])) {
 
         $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
         $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
-        
+
     }else{
         $valid = false;
     }
@@ -267,13 +267,15 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
       $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
       $preview_message['TLOGON'] = $preview_tuser['LOGON'];
       $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-      
+      $preview_message['TO_UID'] = $preview_tuser['UID'];
+
     }
 
     $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
-        
+    $preview_message['FROM_UID'] = $preview_tuser['UID'];
+
     if($t_post_html != "Y") {
     
       $preview_message['CONTENT'] = make_html($t_content);
@@ -437,7 +439,8 @@ if(!$newthread) {
 
     echo "<p>In reply to:</p>\n";
     $reply_message = messages_get($reply_to_tid,$reply_to_pid);
-    message_display(0,$reply_message[0],0,0,false,false,false);
+    $reply_message['CONTENT'] = message_get_content($reply_to_tid,$reply_to_pid);
+    message_display(0,$reply_message,0,0,false,false,false);
     echo "<p>&nbsp;&nbsp;</p>\n";
     
 }

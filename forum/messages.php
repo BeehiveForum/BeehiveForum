@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.109 2004-02-13 01:14:11 decoyduck Exp $ */
+/* $Id: messages.php,v 1.110 2004-02-13 11:07:21 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -230,12 +230,12 @@ if($msg_count > 0) {
 
           if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, false, true, true, false, $highlight);
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, true, true, false, $highlight);
             $last_pid = $message['PID'];
 
           }else {
 
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, true, $show_sigs, false, $highlight);
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, true, $show_sigs, false, $highlight);
             $last_pid = $message['PID'];
 
           }

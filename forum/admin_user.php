@@ -74,10 +74,7 @@ if(isset($HTTP_GET_VARS['uid'])){
 
 $db = db_connect();
 
-$sql = "select LOGON, NICKNAME, STATUS ";
-$sql.= "from " . forum_table("USER");
-$sql.= " where UID = $uid";
-
+$sql = "select LOGON, NICKNAME, STATUS, LOGON_FROM from ". forum_table("USER"). " where UID = $uid";
 $result = db_query($sql,$db);
 
 $user = db_fetch_array($result);
@@ -132,16 +129,31 @@ $sql = "select F.FID, F.TITLE, UF.ALLOWED from ".forum_table("FOLDER")." F ";
 $sql.= "left join ".forum_table("USER_FOLDER")." UF on (UF.UID = $uid and UF.FID = F.FID) ";
 $sql.= "where F.ACCESS_LEVEL = 1"; // Restricted folders
 
-$db = db_connect();
 $result = db_query($sql,$db);
 
-for($i=0;$row = db_fetch_array($result);$i++){
+if (db_num_rows($result)) {
+
+  while($row = db_fetch_array($result)) {
     echo "<tr><td>".form_checkbox("t_fallow_$i",1,$row['TITLE'],($row['ALLOWED'] > 0));
     echo form_input_hidden("t_fid_$i",$row['FID'])."</td></tr>\n";
+  }
+
+}else {
+  echo "<tr><td>No restricted folders</td></tr>\n";
 }
 
-if($i==0){
-    echo "<tr><td>No restricted folders</td></tr>\n";
+echo "<tr><td>&nbsp;</td></tr>\n";
+echo "<tr><td class=\"subhead\">Possible Aliases:</td></tr>\n";
+
+$sql = "select UID, LOGON from ". forum_table("USER"). " where LOGON_FROM = '". $user['LOGON_FROM']. "' and LOGON <> '". $user['LOGON']. "'";
+$result = db_query($sql, $db);
+
+if (db_num_rows($result)) {
+
+  while($row = db_fetch_array($result)) {
+    echo "<tr><td><a href=\"admin_user.php?uid=", $row['UID'], "\">", $row['LOGON'], "</a></td></tr>\n";
+  }
+
 }
 
 echo "</table>\n";
@@ -158,6 +170,8 @@ echo "<p><b>Workers</b> can edit or delete any post.</p>\n";
 echo "<p><b>Worms</b> can read messages and post as normal, but their messages will appear deleted to all other users.</p>\n";
 echo "<p><b>Wasps</b> can read messages, but cannot reply or post new messages.</p>";
 echo "<p><b>Splats</b> cannot access the forum. Use this to ban persistent idiots.</p>";
+echo "<p>&nbsp;</p>";
+echo "<p><b>Possible Aliases</b> a list of users who's last recorded IP address match this user.</td></tr>\n";
 echo "</td></tr></table>\n";
 
 echo "</div>\n";

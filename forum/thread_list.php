@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.155 2003-12-09 23:04:31 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.156 2003-12-16 21:12:51 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -79,14 +79,13 @@ if (bh_session_get_value('UID') == 0) {
 
     if (isset($HTTP_GET_VARS['markread'])) {
 
-      if ($HTTP_GET_VARS['markread'] == 2) {
-        threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
-      }elseif ($HTTP_GET_VARS['markread'] == 0) {
-        threads_mark_all_read();
-      }elseif ($HTTP_GET_VARS['markread'] == 1) {
-        threads_mark_50_read();
-      }
-
+        if ($HTTP_GET_VARS['markread'] == 2 && isset($HTTP_GET_VARS['tids']) && is_array($HTTP_GET_VARS['tids'])) {
+            threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
+        }elseif ($HTTP_GET_VARS['markread'] == 0) {
+            threads_mark_all_read();
+        }elseif ($HTTP_GET_VARS['markread'] == 1) {
+            threads_mark_50_read();
+        }
     }
 
     if (!isset($HTTP_GET_VARS['mode'])) {
@@ -97,21 +96,25 @@ if (bh_session_get_value('UID') == 0) {
                 $mode = 0;
             }
         }else {
-            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+            $mode = (is_numeric($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
         }
     } else {
-        $mode = $HTTP_GET_VARS['mode'];
+        $mode = (is_numeric($HTTP_GET_VARS['mode'])) ? $HTTP_GET_VARS['mode'] : 0;
     }
 }
 
-if (isset($HTTP_GET_VARS['folder'])) {
+if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
     $folder = $HTTP_GET_VARS['folder'];
     $mode = 0;
 }
 
 bh_setcookie('bh_thread_mode', $mode);
 
-if(!isset($HTTP_GET_VARS['start_from'])) { $start_from = 0; } else { $start_from = $HTTP_GET_VARS['start_from']; }
+if (isset($HTTP_GET_VARS['start_from']) && is_numeric($HTTP_GET_VARS['start_form'])) {
+    $start_from = $HTTP_GET_VARS['start_from'];
+}else {
+    $start_from = 0;
+}
 
 // Output XHTML header
 html_draw_top();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.89 2003-08-17 17:59:10 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.90 2003-09-02 23:21:10 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -566,7 +566,7 @@ function threads_get_most_recent()
     $fidlist = folder_get_available();
     $uid = bh_session_get_value('UID');
 
-    $sql  = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, UT.LAST_READ, UT.INTEREST, U.NICKNAME, U.LOGON ";
+    $sql = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, UT.LAST_READ, UT.INTEREST, U.NICKNAME, U.LOGON ";
     $sql.= "FROM ". forum_table("THREAD"). " T ";
     $sql.= "LEFT JOIN ". forum_table("USER_THREAD"). " UT ";
     $sql.= "ON (T.TID = UT.TID and UT.UID = $uid) ";
@@ -578,7 +578,7 @@ function threads_get_most_recent()
     $sql.= "AND U.UID = P.FROM_UID ";
     $sql.= "AND P.TID = T.TID ";
     $sql.= "AND P.PID = 1 ";
-    $sql .= "AND NOT ((UT.INTEREST <=> -1) OR (UF.INTEREST <=> -1)) ";
+    $sql.= "AND NOT ((UT.INTEREST <=> -1) OR (UF.INTEREST <=> -1)) ";
     $sql.= "ORDER BY T.MODIFIED desc ";
     $sql.= "LIMIT 0, 10";
 

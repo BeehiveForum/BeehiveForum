@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.64 2003-09-02 22:14:47 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.65 2003-09-02 23:21:10 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -998,6 +998,8 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
     $totalvotes  = array();
     $max_value   = array();
 
+    $bgcolor = 0;
+
     $pollresults = poll_get_votes($tid);
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
@@ -1020,17 +1022,22 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
     $user_votes = poll_get_user_votes($tid);
     $user_count = user_count();
 
-    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"box\">\n";
     $polldisplay.= "              <tr>\n";
-
-    $bar_color = 1;
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
+      if (!isset($poll_previous_group)) $poll_previous_group = $pollresults['GROUP_ID'][$i];
+
       if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
+        if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+          $polldisplay.= "            </table><br />\n";
+          $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"box\">\n";
+        }
+
         $polldisplay.= "              <tr>\n";
-        $polldisplay.= "                <td width=\"150\" class=\"postbody\" style=\"border-bottom: 1px solid\"><h2>". $pollresults['OPTION_NAME'][$i]. "</h2></td>\n";
+        $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\" style=\"border-bottom: 1px solid\"><h2>". $pollresults['OPTION_NAME'][$i]. "</h2></td>\n";
 
         if ($pollresults['VOTES'][$i] > 0) {
 
@@ -1040,7 +1047,7 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
               $vote_percent = 0;
           }
 
-          $polldisplay.= "                <td class=\"postbody\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
+          $polldisplay.= "                <td  class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\" style=\"border-bottom: 1px solid\">". $pollresults['VOTES'][$i]. " {$lang['votes']} (". $vote_percent. "%)</td>\n";
           $polldisplay.= "              </tr>\n";
 
           for($j = 0; $j < sizeof($user_votes); $j++) {
@@ -1052,8 +1059,8 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
                 $user = user_get($k);
 
                 $polldisplay.= "              <tr>\n";
-                $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-                $polldisplay.= "                <td width=\"150\" class=\"postbody\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$k})\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
+                $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$k})\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
                 $polldisplay.= "              </tr>\n";
 
               }
@@ -1061,28 +1068,26 @@ function poll_public_ballot($tid, $bar_width, $totalvotes)
           }
 
           $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
           $polldisplay.= "              </tr>\n";
 
         }else {
 
-          $polldisplay.= "                <td class=\"postbody\" style=\"border-bottom: 1px solid\">0 {$lang['votes']} (0%)</td>\n";
+          $polldisplay.= "                <td  class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\" style=\"border-bottom: 1px solid\">0 {$lang['votes']} (0%)</td>\n";
           $polldisplay.= "              </tr>\n";
           $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"". (($bgcolor == 0) ? "highlight" : "postbody"). "\">&nbsp;</td>\n";
           $polldisplay.= "              </tr>\n";
 
         }
       }
 
-      $bar_color++;
-      if ($bar_color > 5) $bar_color = 1;
-
+      $poll_previous_group = $pollresults['GROUP_ID'][$i];
     }
 
-    $polldisplay.= "            </table>\n";
+    $polldisplay.= "            </table><br />\n";
 
     return $polldisplay;
 }

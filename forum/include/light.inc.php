@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.43 2004-04-26 11:21:12 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.44 2004-04-28 16:16:47 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -143,6 +143,8 @@ function light_form_radio($name, $value, $text, $checked = false)
 
 function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
+    $webtag = get_webtag();
+
     $lang = load_language_file();
 
     $uid = bh_session_get_value('UID');

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.44 2004-04-28 14:28:53 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.45 2004-04-28 16:16:59 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -74,8 +74,8 @@ if (!$webtag = get_webtag($webtag_search)) {
 }
 
 if (bh_session_get_value('UID') == 0) {
-        light_html_guest_error();
-        exit;
+    light_html_guest_error();
+    exit;
 }
 
 // Check that there are some available folders for this thread type
@@ -104,34 +104,12 @@ $valid = true;
 
 $newthread = false;
 
-if (isset($_POST['t_post_html'])) {
-    $t_post_html = $_POST['t_post_html'];
-}
-
-if (isset($_POST['t_to_uid']) && substr($_POST['t_to_uid'], 0, 2) == "U:") {
-
-  $u_login = substr($_POST['t_to_uid'], 2);
-
-  if ($touser = user_get($u_login)) {
-
-    $_POST['t_to_uid'] = $touser['UID'];
-    $t_to_uid = $touser['UID'];
-
-  }else {
-
-    $error_html = "<h2>{$lang['invalidusername']}</h2>";
-    $valid = false;
-
-  }
-
-}
-
 if (isset($_POST['t_newthread'])) {
 
     $newthread = true;
 
-    if (isset($_POST['t_threadtitle']) && trim($_POST['t_threadtitle']) != "") {
-        $t_threadtitle = trim($_POST['t_threadtitle']);
+    if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
+        $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
     }else {
         $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
         $valid = false;
@@ -140,43 +118,72 @@ if (isset($_POST['t_newthread'])) {
     if (isset($_POST['t_fid'])) {
         if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
             $t_fid = $_POST['t_fid'];
-        } else {
+        }else {
             $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
             $valid = false;
         }
-    } else if ($valid) {
+    }else if ($valid) {
         $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
         $valid = false;
     }
 
-    if (isset($_POST['t_content'])) {
-        $t_content = $_POST['t_content'];
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+        $t_content = _stripslashes($_POST['t_content']);
     }else {
         $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
         $valid = false;
     }
 
-    $t_sig = (isset($_POST['t_sig'])) ? $_POST['t_sig'] : "";
-    $t_sig_html = (isset($_POST['t_sig_html'])) ? $_POST['t_sig_html'] : "";
+    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y") {
+        $t_post_html = "Y";
+    }else {
+        $t_post_html = "N";
+    }
+
+    if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+        $t_sig = _stripslashes($_POST['t_sig']);
+    }else {
+        $t_sig = "";
+    }
+
+    if (isset($_POST['t_sig_html']) && $_POST['t_sig_html'] == "Y") {
+        $t_sig_html = "Y";
+    }else {
+        $t_sig_html = "N";
+    }
 
 }else {
 
     if (isset($_POST['t_tid'])) {
 
         if (isset($_POST['t_content']) && strlen($_POST['t_content']) > 0) {
-            $t_content = $_POST['t_content'];
+            $t_content = _stripslashes($_POST['t_content']);
         }else {
             $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
             $valid = false;
         }
 
-        $t_sig = (isset($_POST['t_sig'])) ? $_POST['t_sig'] : "";
-        $t_sig_html = (isset($_POST['t_sig_html'])) ? $_POST['t_sig_html'] : "N";
+        if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y") {
+	    $t_post_html = "Y";
+	}else {
+	    $t_post_html = "N";
+        }
+
+        if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+            $t_sig = _stripslashes($_POST['t_sig']);
+        }else {
+            $t_sig = "";
+        }
+
+        if (isset($_POST['t_sig_html']) && $_POST['t_sig_html'] == "Y") {
+            $t_sig_html = "Y";
+        }else {
+            $t_sig_html = "N";
+        }
 
     }else {
 
         $valid = false;
-
     }
 }
 
@@ -348,13 +355,6 @@ if ($valid && isset($_POST['preview'])) {
 
 }
 
-if ($valid && isset($_POST['convert_html'])) {
-
-   $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
-   $t_post_html = "Y";
-
-}
-
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     $replyto = $_GET['replyto'];
@@ -395,7 +395,7 @@ if (!$newthread) {
 }
 
 if (!isset($t_sig) || !$t_sig) {
-    $has_sig = user_get_sig(bh_session_get_value('UID'),$t_sig,$t_sig_html);
+    $has_sig = user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
 }else {
     $has_sig = true;
 }
@@ -405,6 +405,7 @@ if ($newthread) {
 }else {
     echo "<h2>{$lang['postreply']}</h2>\n";
 }
+
 if (isset($error_html)) {
     echo $error_html . "\n";
 }
@@ -422,7 +423,7 @@ if ($newthread) {
     echo "<p>{$lang['threadtitle']}: ";
     echo light_form_input_text("t_threadtitle", _htmlentities(_stripslashes($t_threadtitle)), 30, 64);
     echo "</p>\n";
-    echo form_input_hidden("t_newthread","Y");
+    echo form_input_hidden("t_newthread", "Y");
 
 }else {
 
@@ -439,30 +440,19 @@ if ($newthread) {
     }else {
 
       echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
-      echo form_input_hidden("t_tid",$reply_to_tid);
-      echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
-
+      echo form_input_hidden("t_tid", $reply_to_tid);
+      echo form_input_hidden("t_rpid", $reply_to_pid)."</td></tr>\n";
     }
-
-}
-
-if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
-    $t_content = isset($t_content) ? _stripslashes($t_content) : "";
 }
 
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
-echo "<p>{$lang['to']}: ". post_draw_to_dropdown($t_to_uid) . form_submit("submit",$lang['post']) ."</p>\n";
-echo "<p>".light_form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</p>\n";
-
-echo "<p>{$lang['signature']}:<br />".light_form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
-echo "<p>".light_form_checkbox("t_post_html", "Y", "{$lang['messagecontainsHTML']} {$lang['notincludingsignature']}", (isset($t_post_html) && $t_post_html == "Y"))."</p>\n";
-echo "<p>".light_form_submit("submit",$lang['post']);
-echo "&nbsp;".light_form_submit("preview",$lang['preview']);
-echo "&nbsp;".light_form_submit("cancel", $lang['cancel']);
+echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "&nbsp;", light_form_submit("submit",$lang['post']), "</p>\n";
+echo "<p>", light_form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 60), "</p>\n";
+echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", _htmlentities($t_sig), 5, 60), form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
+echo "<p>", light_form_checkbox("t_post_html", "Y", "{$lang['messagecontainsHTML']} {$lang['notincludingsignature']}", (isset($t_post_html) && $t_post_html == "Y")), "</p>\n";
+echo "<p>", light_form_submit("submit",$lang['post']), "&nbsp;", light_form_submit("preview",$lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);
 echo "</p>";
-
-echo "&nbsp;".light_form_submit("convert_html", $lang['converttoHTML']);
 
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",$_POST['t_dedupe']);
@@ -478,14 +468,12 @@ if (!$newthread) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-      light_poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, $show_sigs, true);
+        light_poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, $show_sigs, true);
 
     }else {
 
-      light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
-
+        light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
     }
-
 }
 
 light_html_draw_bottom();

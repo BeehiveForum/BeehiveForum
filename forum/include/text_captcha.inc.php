@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.2 2005-04-04 00:59:28 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.3 2005-04-04 11:54:36 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "gd_lib.inc.php");
 
 class captcha {
 
@@ -155,77 +156,85 @@ class captcha {
             return false;
         }
 
-        $image = imagecreate($this->image_x, $this->image_y);
-        $this->allocate_colours($image);
+        if ($text_captcha_gd_info = get_gd_info()) {
 
-        $this->random_color(224, 255);
-        $color = imagecolorallocate($image, $this->color_red, $this->color_green, $this->color_blue);
-        imagefilledrectangle($image, 0, 0, $this->image_x, $this->image_y, $color);
+            if ($text_captcha_gd_info['GD Version'] !== false) {
 
-        for ($i = 0; $i < $this->noise_level; $i++) {
+                $image = imagecreate($this->image_x, $this->image_y);
+                $this->allocate_colours($image);
 
-            srand((double)microtime() * 1000000);
-            $noise_size = intval(rand((int)($this->min_char_size / 2.3), (int)($this->max_char_size / 1.7)));
+                $this->random_color(224, 255);
+                $color = imagecolorallocate($image, $this->color_red, $this->color_green, $this->color_blue);
+                imagefilledrectangle($image, 0, 0, $this->image_x, $this->image_y, $color);
 
-            srand((double)microtime() * 1000000);
-            $noise_angle  = intval(rand(0, 360));
+                for ($i = 0; $i < $this->noise_level; $i++) {
 
-            srand((double)microtime() * 1000000);
-            $noise_x = intval(rand(0, $this->image_x));
+                    srand((double)microtime() * 1000000);
+                    $noise_size = intval(rand((int)($this->min_char_size / 2.3), (int)($this->max_char_size / 1.7)));
 
-            srand((double)microtime() * 1000000);
-            $noise_y = intval(rand(0, (int)($this->image_y - ($noise_size / 5))));
+                    srand((double)microtime() * 1000000);
+                    $noise_angle  = intval(rand(0, 360));
 
-            $this->random_color(160, 224);
-            $noise_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
+                    srand((double)microtime() * 1000000);
+                    $noise_x = intval(rand(0, $this->image_x));
 
-            srand((double)microtime() * 1000000);
-            $noise_text = chr(intval(rand(45, 250)));
+                    srand((double)microtime() * 1000000);
+                    $noise_y = intval(rand(0, (int)($this->image_y - ($noise_size / 5))));
 
-            imagettftext($image, $noise_size, $noise_angle, $noise_x, $noise_y, $noise_color, $this->random_font(), $noise_text);
+                    $this->random_color(160, 224);
+                    $noise_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
+
+                    srand((double)microtime() * 1000000);
+                    $noise_text = chr(intval(rand(45, 250)));
+
+                    imagettftext($image, $noise_size, $noise_angle, $noise_x, $noise_y, $noise_color, $this->random_font(), $noise_text);
+                }
+
+                for($i = 0; $i < $this->image_x; $i+= (int)($this->min_char_size / 1.5)) {
+
+                    $this->random_color(160, 224);
+                    $line_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
+                    imageline($image, $i, 0, $i, $this->image_y, $line_color);
+                }
+
+                for($i = 0; $i < $this->image_y; $i+= (int)($this->min_char_size / 1.8)) {
+
+                    $this->random_color(160, 224);
+                    $line_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
+                    imageline($image, 0, $i, $this->image_x, $i, $line_color);
+                }
+
+                for($i = 0, $text_x = intval(rand($this->min_char_size,$this->max_char_size)); $i < $this->num_chars; $i++) {
+
+                    $text = strtoupper(substr($this->private_key, $i, 1));
+
+                    srand((double)microtime() * 1000000);
+                    $text_angle = intval(rand(($this->max_rotation * -1), $this->max_rotation));
+
+                    srand((double)microtime() * 1000000);
+                    $text_size = intval(rand($this->min_char_size, $this->max_char_size));
+
+                    srand((double)microtime() * 1000000);
+                    $text_y = intval(rand((int)($text_size * 1.5), (int)($this->image_y - ($text_size / 7))));
+
+                    $this->random_color(0, 127);
+                    $color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
+
+                    $this->random_color(0, 127);
+                    $shadow = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
+
+                    imagettftext($image, $text_size, $text_angle, $text_x + (int)($text_size / 15), $text_y, $shadow, $this->random_font(), $text);
+                    imagettftext($image, $text_size, $text_angle, $text_x, $text_y - (int)($text_size / 15), $color, $this->get_current_font(), $text);
+
+                    $text_x += (int)($text_size + ($this->min_char_size / 5));
+                }
+
+                @imagejpeg($image, $this->get_image_filename());
+                return @file_exists($this->get_image_filename());
+            }
         }
 
-        for($i = 0; $i < $this->image_x; $i+= (int)($this->min_char_size / 1.5)) {
-
-            $this->random_color(160, 224);
-            $line_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
-            imageline($image, $i, 0, $i, $this->image_y, $line_color);
-        }
-
-        for($i = 0; $i < $this->image_y; $i+= (int)($this->min_char_size / 1.8)) {
-
-            $this->random_color(160, 224);
-            $line_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
-            imageline($image, 0, $i, $this->image_x, $i, $line_color);
-        }
-
-        for($i = 0, $text_x = intval(rand($this->min_char_size,$this->max_char_size)); $i < $this->num_chars; $i++) {
-
-            $text = strtoupper(substr($this->private_key, $i, 1));
-
-            srand((double)microtime() * 1000000);
-            $text_angle = intval(rand(($this->max_rotation * -1), $this->max_rotation));
-
-            srand((double)microtime() * 1000000);
-            $text_size = intval(rand($this->min_char_size, $this->max_char_size));
-
-            srand((double)microtime() * 1000000);
-            $text_y = intval(rand((int)($text_size * 1.5), (int)($this->image_y - ($text_size / 7))));
-
-            $this->random_color(0, 127);
-            $color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
-
-            $this->random_color(0, 127);
-            $shadow = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
-
-            imagettftext($image, $text_size, $text_angle, $text_x + (int)($text_size / 15), $text_y, $shadow, $this->random_font(), $text);
-            imagettftext($image, $text_size, $text_angle, $text_x, $text_y - (int)($text_size / 15), $color, $this->get_current_font(), $text);
-
-            $text_x += (int)($text_size + ($this->min_char_size / 5));
-        }
-
-        @imagejpeg($image, $this->get_image_filename());
-        return @file_exists($this->get_image_filename());
+        return false;
     }
 
     // PRIVATE //

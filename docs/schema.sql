@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.50 2003-09-21 14:22:47 decoyduck Exp $
+# $Id: schema.sql,v 1.51 2003-09-22 18:45:36 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -367,14 +367,16 @@ CREATE TABLE SESSIONS (
 
 CREATE TABLE STATS (
   MOST_USERS_DATE datetime NOT NULL default '0000-00-00 00:00:00',
-  MOST_USERS_COUNT mediumint(8) unsigned NOT NULL default '0'
+  MOST_USERS_COUNT mediumint(8) unsigned NOT NULL default '0',
+  MOST_POSTS_DATE datetime NOT NULL default '0000-00-00 00:00:00',
+  MOST_POSTS_COUNT mediumint(8) unsigned NOT NULL default '0'
 ) TYPE=MyISAM;
 
 #
 # Dumping data for table `STATS`
 #
 
-INSERT INTO STATS (MOST_USERS_DATE, MOST_USERS_COUNT) VALUES ('0000-00-00 00:00:00', '0');
+INSERT INTO STATS (MOST_USERS_DATE, MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) VALUES ('0000-00-00 00:00:00', '0', '0000-00-00 00:00:00', '0');
 # --------------------------------------------------------
 
 #

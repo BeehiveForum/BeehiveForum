@@ -115,12 +115,16 @@ function get_active_users()
 
             $stats['AUSERS']++;
 
-        }elseif (sizeof($stats['USERS']) < 8) {
+        }else {
 
             $stats['NUSERS']++;
-            $stats['USERS'][] = array('UID'      => $row['UID'],
-                                      'LOGON'    => $row['LOGON'],
-                                      'NICKNAME' => $row['NICKNAME']);
+
+            if (sizeof($stats['USERS']) < 8) {
+
+                $stats['USERS'][] = array('UID'      => $row['UID'],
+                                          'LOGON'    => $row['LOGON'],
+                                          'NICKNAME' => $row['NICKNAME']);
+            }
         }
     }
 

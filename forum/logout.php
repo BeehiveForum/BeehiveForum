@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.59 2004-05-04 17:10:19 decoyduck Exp $ */
+/* $Id: logout.php,v 1.60 2004-05-06 14:40:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -109,23 +109,29 @@ html_draw_top();
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"_top\">\n";
-echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
-echo "        <table class=\"subhead\" width=\"100%\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\">{$lang['logout']}:</td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "        <table class=\"posthead\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['currentlyloggedinas']} ", user_get_logon(bh_session_get_value('UID')), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"center\">", form_submit("submit", $lang['logout']), "</td>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"subhead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\">{$lang['logout']}:</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;{$lang['currentlyloggedinas']} ", user_get_logon(bh_session_get_value('UID')), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">", form_submit("submit", $lang['logout']), "</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.9 2004-05-05 22:08:41 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.10 2004-05-06 14:40:19 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -604,8 +604,6 @@ $lang['addressurluri'] = "Addrizess (URL/URI)";
 $lang['addnewfolder'] = "Add a nizew fizolder, yo";
 $lang['addnewfolderunder'] = "Word, adding yo new folder under";
 $lang['mustchooserating'] = "Choose a rating, homie!";
-
-
 $lang['commentadded'] = "Yo comment was added.";
 $lang['musttypecomment'] = "Yo gotta type a comment!";
 $lang['mustprovidelinkID'] = "I needs yo link ID!";
@@ -629,6 +627,8 @@ $lang['editname'] = "Change yo tag";
 $lang['editaddress'] = "Where's yo crib?";
 $lang['editdescription'] = "Change yo description";
 $lang['moveto'] = "Haul ass";
+$lang['linkdetails'] = "Link Details";
+$lang['addcomment'] = "Add Comment";
 
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 

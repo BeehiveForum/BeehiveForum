@@ -19,21 +19,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.js,v 1.1 2004-03-27 19:50:55 decoyduck Exp $ */
+/* $Id: logon.js,v 1.2 2004-05-06 14:40:19 decoyduck Exp $ */
 
 function changepassword() {
 
     var i = document.logonform.logonarray.selectedIndex;
-    var password = eval("document.logonform.password"+ i +".value");
-    var passhash = eval("document.logonform.passhash"+ i +".value");
-    document.logonform.logon.value = document.logonform.logonarray.options[i].value;
+
+    var password = eval("document.logonform.user_password"+ i +".value");
+    var passhash = eval("document.logonform.user_passhash"+ i +".value");
+    
+    document.logonform.user_logon.value = document.logonform.logonarray.options[i].value;
+    
     if (/^[A-Fa-f0-9]{32}$/.test(passhash) == true) {
-        document.logonform.password.value = password;
-        document.logonform.passhash.value = passhash;
+        document.logonform.user_password.value = password;
+        document.logonform.user_passhash.value = passhash;
         document.logonform.remember_user.checked = true;
     }else {
-        document.logonform.password.value = '';
-        document.logonform.passhash.value = '';
+        document.logonform.user_password.value = '';
+        document.logonform.user_passhash.value = '';
         document.logonform.remember_user.checked = false;
     }
 }

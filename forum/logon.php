@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.139 2004-05-04 17:10:19 decoyduck Exp $ */
+/* $Id: logon.php,v 1.140 2004-05-06 14:40:20 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -237,30 +237,22 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
         echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
 
-        if ($logon_main) {
-
-            if (isset($final_uri)) {
-                form_quick_button("./index.php", $lang['back'], "final_uri", rawurlencode($final_uri), "_top");
-            }else {
-                form_quick_button("./index.php", $lang['back'], false, false, "_top");
-            }
-
-            echo "<hr width=\"350\" />\n";
-            echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-
-            if (isset($final_uri)) {
-                $final_uri = rawurlencode($final_uri);
-                echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-                echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
-            }else {
-                echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-                echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
-            }
-
+        if (isset($final_uri)) {
+            form_quick_button("./index.php", $lang['back'], "final_uri", rawurlencode($final_uri), "_top");
         }else {
+            form_quick_button("./index.php", $lang['back'], false, false, "_top");
+        }
 
-            echo "</div>\n";
-            draw_logon_form();
+        echo "<hr width=\"350\" />\n";
+        echo "<h2>{$lang['problemsloggingon']}</h2>\n";
+
+        if (isset($final_uri)) {
+            $final_uri = rawurlencode($final_uri);
+            echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+            echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+        }else {
+            echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+            echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
         }
 
         html_draw_bottom();

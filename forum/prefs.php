@@ -94,15 +94,19 @@ if(isset($HTTP_POST_VARS['submit'])){
         $valid = false;
     }
 
-    if($valid){
+    if ($valid) {
+
         if(@$HTTP_POST_VARS['sig_html'] == "Y"){
             $HTTP_POST_VARS['sig_content'] = fix_html($HTTP_POST_VARS['sig_content']);
         }else {
             $HTTP_POST_VARS['sig_content'] = _stripslashes($HTTP_POST_VARS['sig_content']);
         }
-    }
 
-    if($valid){
+        // ALTER TABLE USER_PREFS ADD DOB DATE NOT NULL AFTER LASTNAME
+
+        $user_dob = str_pad(trim($HTTP_POST_VARS['dob_year']),  4, '0', STR_PAD_LEFT). '-';
+        $user_dob.= str_pad(trim($HTTP_POST_VARS['dob_month']), 2, '0', STR_PAD_LEFT). '-';
+        $user_dob.= str_pad(trim($HTTP_POST_VARS['dob_day']),   2, '0', STR_PAD_LEFT);
 
         // Update basic settings in USER table
 
@@ -113,14 +117,11 @@ if(isset($HTTP_POST_VARS['submit'])){
 
         // Update USER_PREFS
 
-        user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'],
-                          $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
-                          $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
-                          @$HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
-                          @$HTTP_POST_VARS['dl_saving'], @$HTTP_POST_VARS['mark_as_of_int'],
-                          $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size'],
-                          $HTTP_POST_VARS['style'], @$HTTP_POST_VARS['view_sigs'],
-                          $HTTP_POST_VARS['start_page']);
+        user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'], $user_dob,
+                          $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'], @$HTTP_POST_VARS['email_notify'],
+                          $HTTP_POST_VARS['timezone'], @$HTTP_POST_VARS['dl_saving'], @$HTTP_POST_VARS['mark_as_of_int'],
+                          $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size'], $HTTP_POST_VARS['style'],
+                          @$HTTP_POST_VARS['view_sigs'], $HTTP_POST_VARS['start_page']);
 
         // Update USER_SIG
 
@@ -142,7 +143,21 @@ $user = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
 $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
 user_get_sig($HTTP_COOKIE_VARS['bh_sess_uid'], $user_sig['CONTENT'], $user_sig['HTML']);
 
+// Arrys for Birthday
+
+$birthday_days   = array(' ', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31');
+$birthday_months = array(' ', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+$birthday_years  = array_merge(array(' '), range(1900 + (date('Y', mktime()) - 2000), date('Y', mktime())));
+
+// Split the DOB into usable variables.
+
+list($dob_year, $dob_month, $dob_day) = explode('-', $user_prefs['DOB']);
+
+// Start output here
+
 html_draw_top();
+
+echo $user_prefs['DOB'];
 
 echo "<h1>User Preferences</h1>\n";
 
@@ -205,6 +220,10 @@ if(!empty($error_html)) {
       <tr>
         <td>Last name</td>
         <td>: <?php echo form_field("lastname", $user_prefs['LASTNAME'], 37, 32); ?></td>
+      </tr>
+      <tr>
+        <td>Date of Birth</td>
+        <td>: <?php echo form_dropdown_array("dob_day", range (0, 31), $birthday_days, $dob_day); ?>&nbsp;<?php echo form_dropdown_array("dob_month", range (0, 12), $birthday_months, $dob_month); ?>&nbsp;<?php echo form_dropdown_array("dob_year", $birthday_years, $birthday_years, $dob_year); ?></td>
       </tr>
       <tr>
         <td>Homepage URL</td>

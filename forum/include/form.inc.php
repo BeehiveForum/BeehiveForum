@@ -99,11 +99,11 @@ function form_dropdown_array($name, $value, $label, $default = "", $custom_html 
 {
     $html = "<select name=\"$name\" class=\"bhselect\" $custom_html>";
 
-    for($i=0;$i<count($value);$i++){
+    for ($i = 0; $i < count($value); $i++) {
         $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
-        if($label[$i]){
+        if (isset($label[$i])) {
             $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>";
-        } else {
+        }else {
             $html.= "<option$sel>".$value[$i]."</option>";
         }
     }

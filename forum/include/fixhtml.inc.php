@@ -592,7 +592,7 @@ function tidy_html ($html, $linebreaks = true) {
 
 
 	// make <code>..</code> tag, and html_entity_decode 
-	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>[^\"]+\"code\">([^<]*)<\/pre>/ie",
+	$html = preg_replace("/<div class=\"quotetext\"><b>code:<\/b><\/div>\s*<pre class=\"code\">([^<]*)<\/pre>/ie",
 						"'<code>'.html_entity_decode('$1').'</code>'", $html);
 
 	return $html;

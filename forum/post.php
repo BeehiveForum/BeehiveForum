@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.224 2004-10-21 13:42:15 decoyduck Exp $ */
+/* $Id: post.php,v 1.225 2004-10-24 13:25:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -155,6 +155,10 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 $page_prefs = bh_session_get_post_page_prefs();
 
+// Get the user's UID
+
+$uid = bh_session_get_value('UID');
+
 // Assume everything is A-OK!
 
 $valid = true;
@@ -284,7 +288,7 @@ if (isset($_POST['t_sig_html'])) {
 
 } else {
         // Fetch the current user's sig
-        user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+        user_get_sig($uid, $t_sig, $t_sig_html);
 
         if ($t_sig_html != "N") {
                 $sig_html = 2;
@@ -358,7 +362,7 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
                 $page_prefs ^= POST_SIGNATURE_DISPLAY;
         }
 
-        user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+        user_update_prefs($uid, array('POST_PAGE' => $page_prefs));
 
         $fix_html = false;
 }
@@ -521,7 +525,7 @@ if ($valid && isset($_POST['submit'])) {
                 $t_sticky = "N";
             }
 
-            $t_tid = post_create_thread($t_fid, ($t_threadtitle), "N", $t_sticky, $t_closed);
+            $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, "N", $t_sticky, $t_closed);
             $t_rpid = 0;
 
         }else{
@@ -578,13 +582,13 @@ if ($valid && isset($_POST['submit'])) {
 
             }
 
-            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $_POST['t_to_uid'], $t_content);
+            $new_pid = post_create($t_tid, $t_rpid, $uid, $_POST['t_to_uid'], $t_content);
 
             if ($high_interest) thread_set_interest($t_tid, 1, $newthread);
 
-            if (!(user_get_status(bh_session_get_value('UID')) & USER_PERM_WORMED)) {
-                email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
-                email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
+            if (!(user_get_status($uid) & USER_PERM_WORMED)) {
+                email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+                email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
             }
 
             if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
@@ -693,7 +697,7 @@ if ($valid && isset($_POST['preview'])) {
 
     }
 
-    $preview_tuser = user_get(bh_session_get_value('UID'));
+    $preview_tuser = user_get($uid);
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];

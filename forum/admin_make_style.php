@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.61 2004-09-14 08:28:58 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.62 2004-10-24 13:25:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -142,7 +142,7 @@ if (isset($_POST['submit'])) {
 
         // Read in the master style sheet.
 
-        $stylesheet = implode('', file("./styles/make_style.css"));
+        $stylesheet = implode("", file("./styles/make_style.css"));
 
         // Modify it with the colours specified by the post data.
 

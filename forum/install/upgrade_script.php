@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.27 2004-10-19 19:31:42 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.28 2004-10-24 13:25:58 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -249,7 +249,53 @@ foreach($forum_webtag_array as $forum_webtag) {
         $valid = false;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD FULLTEXT (TITLE)";
+    $sql = "CREATE TABLE DEFAULT_THREAD_NEW (";
+    $sql.= "  TID mediumint(8) unsigned NOT NULL default '0',";
+    $sql.= "  FID mediumint(8) unsigned default NULL,";
+    $sql.= "  BY_UID mediumint(8) default NULL,";
+    $sql.= "  TITLE varchar(64) default NULL,";
+    $sql.= "  LENGTH mediumint(8) unsigned default NULL,";
+    $sql.= "  POLL_FLAG char(1) default NULL,";
+    $sql.= "  MODIFIED datetime default NULL,";
+    $sql.= "  CLOSED datetime default NULL,";
+    $sql.= "  STICKY char(1) default NULL,";
+    $sql.= "  STICKY_UNTIL datetime default NULL,";
+    $sql.= "  ADMIN_LOCK datetime default NULL,";
+    $sql.= "  PRIMARY KEY  (TID),";
+    $sql.= "  KEY FID (FID),";
+    $sql.= "  KEY BY_UID (BY_UID),";
+    $sql.= "  FULLTEXT KEY TITLE (TITLE)";
+    $sql.= ")";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        $valid = false;
+    }
+
+    $sql = "INSERT INTO DEFAULT_THREAD_NEW (TID, FID, BY_UID, TITLE, LENGTH, ";
+    $sql.= "POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
+    $sql.= "SELECT THREAD.TID, THREAD.FID, POST.FROM_UID, THREAD.TITLE, ";
+    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.MODIFIED, THREAD.CLOSED, ";
+    $sql.= "THREAD.STICKY, THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK ";
+    $sql.= "FROM DEFAULT_THREAD THREAD LEFT JOIN DEFAULT_POST POST ";
+    $sql.= "ON (POST.TID = THREAD.TID AND POST.PID = 1)";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        $valid = false;
+    }
+
+    $sql = "ALTER TABLE DEFAULT_THREAD RENAME DEFAULT_THREAD_OLD";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        $valid = false;
+    }
+
+    $sql = "ALTER TABLE DEFAULT_THREAD_NEW RENAME DEFAULT_THREAD";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        $valid = false;
+    }
+
+    $sql = "ALTER TABLE DEFAULT_THREAD CHANGE TID TID MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL AUTO_INCREMENT";
 
     if (!$result = mysql_query($sql, $db_install)) {
         $valid = false;

@@ -21,11 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.85 2005-02-04 00:21:55 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.86 2005-02-14 13:21:58 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
 include_once("./include/forum.inc.php");
+include_once("./include/lang.inc.php");
 include_once("./include/perm.inc.php");
 
 function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachments)

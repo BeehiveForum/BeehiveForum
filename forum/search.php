@@ -47,6 +47,7 @@ require_once("./include/messages.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/constants.inc.php");
 
 // Check that required variables are set
 if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
@@ -99,9 +100,13 @@ html_draw_top();
 if (isset($HTTP_POST_VARS['submit'])) {
   if (isset($HTTP_POST_VARS['search_string']) && strlen(trim($HTTP_POST_VARS['search_string'])) > 0) {
     $search_string = trim($HTTP_POST_VARS['search_string']);
-    if (!search_construct_query($HTTP_POST_VARS, $searchsql, $urlquery)) {
+    if (!search_construct_query($HTTP_POST_VARS, $searchsql, $urlquery, $error)) {
       echo "<h1>Search Results</h1>";
-      echo "<h2>You did not specify any words to search for or the words were under 3 characters long.</h2>\n";
+      if ($error = SEARCH_USER_NOT_FOUND) {
+        echo "<h2>The username you specified in the to or from field was not found.</h2>\n";
+      }elseif ($error = SEARCH_NO_KEYWORDS) {
+        echo "<h2>You did not specify any words to search for or the words were under 3 characters long.</h2>\n";
+      }
       html_draw_bottom();
       exit;
     }
@@ -114,9 +119,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }elseif (isset($HTTP_GET_VARS['sstart'])) {
   if (isset($HTTP_GET_VARS['search_string']) && strlen(trim($HTTP_GET_VARS['search_string'])) > 0) {
     $search_string = trim($HTTP_POST_VARS['search_string']);
-    if (!search_construct_query($HTTP_GET_VARS, $searchsql, $urlquery)) {
+    if (!search_construct_query($HTTP_GET_VARS, $searchsql, $urlquery, $error)) {
       echo "<h1>Search Results</h1>";
-      echo "<h2>You did not specify any words to search for or the words were under 3 characters long.</h2>\n";
+      if ($error = SEARCH_USER_NOT_FOUND) {
+        echo "<h2>The username you specified in the to or from field was not found.</h2>\n";
+      }elseif ($error = SEARCH_NO_KEYWORDS) {
+        echo "<h2>You did not specify any words to search for or the words were under 3 characters long.</h2>\n";
+      }
       html_draw_bottom();
       exit;
     }

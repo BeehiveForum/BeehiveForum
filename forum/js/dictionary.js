@@ -19,24 +19,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-function changeword(obj) {
-
-    var i = obj.options[obj.selectedIndex].value;
-    
-    // IE doesn't like .value when <object>value</value> is used instead
-    // of <object value="value">value</object> so we use innerText
-
-    if (i.length == 0) i = obj.options[obj.selectedIndex].innerText;
-
-    document.dictionary.change_to.value = i;
-
-}
-
-function updateFormObj(obj_id, content) {
+function getFormObj(obj_id) {
 
     var form_obj;
-    
-    content = unescape(content);
 
     if (document.getElementById) {
         form_obj = eval("document.getElementById('" + obj_id + "')");
@@ -47,6 +32,47 @@ function updateFormObj(obj_id, content) {
     }else {
         return false;
     }
+
+    return form_obj;
+}
+
+function initialise_dictionary(obj_id) {
+
+    var dictObj = getFormObj('dictionary');
+    var contObj = getFormObj('content');
+  
+    if (window.opener.getFormObj) {
+
+        contObj.value = window.opener.readContent(obj_id);
+        dictObj.submit();
+    }
+}
+
+function changeword(obj) {
+
+    var change_to = getFormObj('change_to'); 
+    var i = obj.options[obj.selectedIndex].value;
+    
+    // IE doesn't like .value when <object>value</value> is used instead
+    // of <object value="value">value</object> so we use innerText
+
+    if (i.length == 0) i = obj.options[obj.selectedIndex].innerText;
+
+    change_to.value = i;
+
+}
+
+function readContent(obj_id) {
+
+    var form_obj = getFormObj(obj_id);
+    return form_obj.value;
+}
+
+function updateContent(obj_id, content) {
+
+    var form_obj = getFormObj(obj_id);
+    
+    content = unescape(content);
 
     form_obj.value = content;
 }

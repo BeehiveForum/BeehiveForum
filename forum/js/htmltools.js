@@ -658,7 +658,7 @@ function openSpellCheck(webtag) {
     
     if (active_field.value.length > 0) {
     
-        window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + active_field.id + '&content=' + _escape(active_field.value), 'spellcheck','width=450, height=550, scrollbars=1');
+        dictionarywin = window.open('dictionary.php?webtag=' + webtag + '&obj_id=' + active_field.id, 'spellcheck','width=450, height=550, scrollbars=1');
     }
 }
 

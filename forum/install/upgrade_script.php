@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.35 2004-11-16 21:09:44 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.36 2004-11-18 22:50:20 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -1695,7 +1695,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    $dictionary_words = file('english.dic');
+    $dictionary_words = file('./install/english.dic');
 
     foreach($dictionary_words as $word) {
 

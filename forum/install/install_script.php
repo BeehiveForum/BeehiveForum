@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.34 2004-11-16 21:09:43 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.35 2004-11-18 22:50:20 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -1170,7 +1170,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$dictionary_words = file('english.dic');
+$dictionary_words = file('./install/english.dic');
 
 foreach($dictionary_words as $word) {
 

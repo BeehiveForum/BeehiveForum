@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.52 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.53 2004-03-22 12:51:02 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
@@ -74,7 +74,7 @@ function email_sendnotification($tuid, $msg, $fuid)
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/?msg=$msg\n\n";
+            $message.= "/?webtag={$webtag['WEBTAG']}&msg=$msg\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['msgnotificationemail_4']}\n";
             $message.= "{$lang['msgnotificationemail_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['msgnotificationemail_6']}\n";
@@ -151,7 +151,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
           $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
         }
 
-        $message.= "/?msg=$msg\n\n";
+        $message.= "/?webtag={$webtag['WEBTAG']}&msg=$msg\n\n";
         $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
         $message.= "{$lang['subnotification_5']}\n";
         $message.= "{$lang['subnotification_6']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";
@@ -222,7 +222,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
               $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/?pmid=$mid\n\n";
+            $message.= "/?webtag={$webtag['WEBTAG']}&pmid=$mid\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['pmnotification_4']}\n";
             $message.= "{$lang['pmnotification_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['pmnotification_6']}\n";
@@ -342,12 +342,10 @@ function server_os_mswin()
 
 function check_mail_variables()
 {
-    if (defined('PHP_OS')) {
-        if (stristr(PHP_OS, 'WIN') && !stristr(PHP_OS, 'DARWIN')) {
-            if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
-        }else {
-            if (!(bool)ini_get('sendmail_path')) return false;
-        }
+    if (server_os_mswin()) {
+        if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
+    }else {
+        if (!(bool)ini_get('sendmail_path')) return false;
     }
     
     return true;

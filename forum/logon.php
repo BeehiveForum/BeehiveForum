@@ -104,18 +104,17 @@ if(!$valid){
     }
     echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
     echo "<form name=\"logon\" action=\"" . $HTTP_SERVER_VARS['REQUEST_URI'] . "\" method=\"POST\">\n";
-    echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
-    echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
-    echo "Logon:\n";
-    echo "</td></tr></table>\n";
+    echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
+    echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
+    echo "</tr>\n</table>\n";
     echo "<table class=\"posthead\" width=\"100%\">\n";
-    echo "<tr><td align=\"right\">User Name:</td>\n";
-    echo "<td>".form_input_text("logon",$logon)."</td\n";
+    echo "<tr>\n<td align=\"right\">User Name:</td>\n";
+    echo "<td>".form_input_text("logon",$logon)."</td>\n";
     echo "</tr><tr><td align=\"right\">Password</td>\n";
     echo "<td>".form_input_password("password",$password)."</td>\n";
-    echo "<tr><td>&nbsp;</td><td align=\"right\">\n";
+    echo "</tr><tr><td>&nbsp;</td><td align=\"right\">\n";
     echo form_checkbox("remember_user","Y","Remember me",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || $HTTP_POST_VARS['remember_user'] == "Y"));
-    echo "</tr></td>\n";
+    echo "</td></tr>\n";
     echo "</table>\n";
     echo "<table class=\"posthead\" width=\"100%\">\n";
     echo "<tr><td align=\"center\">";

@@ -194,7 +194,7 @@ function message_display_deleted($tid,$pid)
 function messages_start_panel()
 {
     echo "<p>&nbsp;</p>\n";
-    echo "<div align=\"center\"><table width=\"96%\" class=\"messagefoot\"><tr><td>";
+    echo "<div align=\"center\"><table width=\"96%\" class=\"messagefoot\"><tr><td align=\"center\">";
 }
 
 function messages_end_panel()
@@ -292,7 +292,7 @@ function messages_admin_form($tid,$pid,$title,$closed = false)
     echo "<form name=\"thread_admin\" action=\"./thread_admin.php?ret=";
     echo urlencode($HTTP_SERVER_VARS['PHP_SELF'])."?msg=$tid.$pid";
     echo "\" method=\"POST\">\n";
-    echo "Rename thread:".form_input_text("t_name",$title,64,64)."&nbsp;";
+    echo "Rename thread:".form_input_text("t_name",stripslashes($title),64,64)."&nbsp;";
     echo form_submit("rename","Apply");
     echo "<br />Move thread:" . folder_draw_dropdown(0,"t_move");
     echo "&nbsp;".form_submit("move","Move");
@@ -303,8 +303,8 @@ function messages_admin_form($tid,$pid,$title,$closed = false)
     }
     echo form_input_hidden("t_tid",$tid);
     echo form_input_hidden("t_pid",$pid);
-    echo "</p>\n";
     echo "</form>\n";
+    echo "</p>\n";    
 }
 
 function mess_nav_range($from,$to)

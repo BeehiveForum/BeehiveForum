@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.55 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.56 2003-10-29 19:48:55 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -206,12 +206,12 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 
-    $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y', 'N');
-    $pid = post_create($tid, 0, bh_session_get_value('UID'), 0, '');
+    $t_tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y', 'N');
+    $t_pid = post_create($t_tid, 0, bh_session_get_value('UID'), 0, '');
 
-    poll_create($tid, $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
+    poll_create($t_tid, $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
 
-    if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
+    if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $pid, $HTTP_POST_VARS['aid']);
 
     if (strlen($t_message_text) > 0) {
 
@@ -224,15 +224,23 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
       }
 
-      post_create($tid, 1, bh_session_get_value('UID'), 0, $t_message_text);
+      post_create($t_tid, 1, bh_session_get_value('UID'), 0, $t_message_text);
 
     }
 
-    if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($tid, 1, true);
+    if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, true);
 
   }
 
-  $uri = "./discussion.php?msg=$tid.1";
+  if ($t_tid > 0) {
+
+    $uri = "./discussion.php?msg=$tid.1";
+
+  }else {
+
+    $uri = "./discussion.php";
+  }
+
   header_redirect($uri);
 
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.36 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.37 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -104,7 +104,8 @@ if (isset($HTTP_GET_VARS['start_from']) && is_numeric($HTTP_GET_VARS['start_form
 // Output XHTML header
 light_html_draw_top();
 
-echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php?webtag={$webtag['WEBTAG']}\">\n        ";
+echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
+echo "  ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 
 if (bh_session_get_value('UID') == 0) {
 
@@ -386,7 +387,8 @@ if ($mode == 0 && !isset($folder)) {
 if (bh_session_get_value('UID') != 0) {
 
     echo "  <h5>{$lang['markasread']}:</h5>\n";
-    echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php?webtag={$webtag['WEBTAG']}\">\n";
+    echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";
+    echo "      ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
 

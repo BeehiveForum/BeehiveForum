@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.37 2004-03-17 22:21:20 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.38 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -324,7 +324,8 @@ echo "                  <td class=\"posthead\" align=\"left\">{$lang['enterhexco
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    <form action=\"admin_make_style.php?webtag={$webtag['WEBTAG']}\" method=\"get\">\n";
+echo "                    <form action=\"admin_make_style.php\" method=\"get\">\n";
+echo "                      ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 echo "                      ", form_input_text("seed", strtoupper($seed), 15, 6), "&nbsp;", form_submit('submit', $lang['go']), "\n";
 echo "                    </form>\n";
 echo "                  </td>\n";
@@ -403,7 +404,7 @@ echo "                <td colspan=\"2\">&nbsp;</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td colspan=\"2\" align=\"left\">\n";
-echo "                  <form name=\"f_mode\" method=\"get\" action=\"\">\n";
+echo "                  <form name=\"f_mode\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
 echo "                    <select name=\"mode\" class=\"bhselect\">\n";
 echo "                      <option value=\"0\" selected=\"selected\">{$lang['alldiscussions']}</option>\n";
 echo "                      <option value=\"1\">{$lang['unreaddiscussions']}</option>\n";
@@ -471,7 +472,7 @@ echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td>&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
-echo "                  <form name=\"f_mark\" method=\"get\" action=\"\">\n";
+echo "                  <form name=\"f_mark\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
 echo "                    <input type=\"hidden\" name=\"tids\" class=\"bhinputtext\" value=\"1\" />\n";
 echo "                    <select name=\"markread\" class=\"bhselect\">\n";
 echo "                      <option value=\"0\" selected=\"selected\">{$lang['alldiscussions']}</option>\n";
@@ -490,7 +491,7 @@ echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td>&nbsp;</td>\n";
 echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
-echo "                  <form name=\"f_nav\" method=\"get\" action=\"\">\n";
+echo "                  <form name=\"f_nav\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
 echo "                    <input type=\"text\" name=\"msg\" class=\"bhinputtext\" value=\"1.1\" size=\"10\" />\n";
 echo "                    <input type=\"submit\" name=\"go\" value=\"{$lang['goexcmark']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
 echo "                  </form>\n";

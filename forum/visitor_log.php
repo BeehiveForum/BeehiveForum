@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.30 2004-03-18 23:42:31 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.31 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -143,7 +143,8 @@ echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinl
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"posthead\" align=\"left\">\n";
-echo "            <form method=\"get\" action=\"visitor_log.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">\n";
+echo "            <form method=\"get\" action=\"visitor_log.php\" target=\"_self\">\n";
+echo "              ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
 echo "            </form>\n";
 echo "          </td>\n";

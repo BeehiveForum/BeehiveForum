@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.64 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: search.php,v 1.65 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -165,7 +165,8 @@ echo "    <td colspan=\"2\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td colspan=\"2\">\n";
-echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php?webtag={$webtag['WEBTAG']}\">\n";
+echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
+echo "        ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 
 if (bh_session_get_value('UID') == 0) {
 
@@ -286,7 +287,8 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "    <td class=\"smalltext\">\n";
-echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php?webtag={$webtag['WEBTAG']}\" target=\"right\">\n";
+echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+echo "        ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 echo "        ", form_input_text('msg', '1.1', 10). "\n";
 echo "        ", form_submit("go",$lang['goexcmark']). "\n";
 echo "      </form>\n";

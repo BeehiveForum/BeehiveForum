@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.62 2004-03-18 23:42:31 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.63 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -225,7 +225,8 @@ echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "        <tr>\n";
 echo "          <td>\n";
-echo "            <form name=\"f_nav\" method=\"get\" action=\"discussion.php?webtag={$webtag['WEBTAG']}\" target=\"main\">\n";
+echo "            <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
+echo "              ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 echo "              ", form_input_text('msg', '1.1', 10). "\n";
 echo "              ", form_submit("go",$lang['goexcmark']). "\n";
 echo "            </form>\n";

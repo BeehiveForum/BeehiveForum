@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.41 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: logout.php,v 1.42 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -108,6 +108,7 @@ html_draw_top();
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"_top\">\n";
+echo "  ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
 echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

@@ -421,6 +421,7 @@ a {
     padding: 0px;
     height: 20px;
 }
+
 .postbody {
     font-size: 10pt;
     padding-top: 2px;
@@ -470,29 +471,6 @@ a {
     border-width: 0px;
 }
 
-.notifier {
-    background-color: #E2E2E2;
-    border: #000000;
-    border-style: double;
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    width: 200px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 10pt;
-    font-weight: bold;
-    color: #009900;
-    float: right;
-    text-align: right;
-    vertical-align: middle;
-    padding-top: 3px;
-    padding-right: 3px;
-    padding-bottom: 3px;
-    padding-left: 3px; top: 20px;
-    clip:   rect(   )
-}
-
 .button {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 9pt;
@@ -532,7 +510,8 @@ a {
     border-left-width: 0px
 }
 
-.bhinputtext, .bhtextarea, .bhselect {
+.bhinputtext, .bhtextarea, .bhselect, .logon_dropdown,
+.search_dropdown, .banned_dropdown, .links_dropdown {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -583,6 +562,7 @@ a {
     margin-right: 10px;
     padding: 3px;
 }
+
 .code {
     font-family: monospace;
     border: 1px solid #CCCCCC;
@@ -594,6 +574,7 @@ a {
     padding: 3px;
     overflow: auto;
 }
+
 .quote {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     border: 1px solid #CCCCCC;
@@ -604,6 +585,7 @@ a {
     margin-right: 10px;
     padding: 3px;
 }
+
 .spoiler {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     border: 1px solid #CCCCCC;
@@ -747,16 +729,6 @@ a {
 }
 
 .links_dropdown {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 9pt;
-    color: #000000;
-    background-color: #FFFFFF;
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    padding-left: 2px;
-    border-style: inset;
     width: 290px;
 }
 
@@ -796,16 +768,6 @@ a {
 }
 
 .post_to_others {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 9pt;
-    color: #000000;
-    background-color: #FFFFFF;
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    padding-left: 2px;
-    border-style: inset;
     width: 190px;
 }
 
@@ -853,3 +815,4 @@ a {
     border-left-width: 0px;
     border-style: dashed;
 }
+

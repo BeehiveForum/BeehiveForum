@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.62 2004-12-05 22:10:16 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.63 2005-02-17 22:58:12 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -41,27 +41,21 @@ function db_connect ()
 
         if (!$connection_id) {
 
-            if ($connection_id = mysql_connect($db_server, $db_username, $db_password)) {
+            if (@$connection_id = mysql_connect($db_server, $db_username, $db_password)) {
 
-                if (mysql_select_db($db_database, $connection_id)) {
+                if (@mysql_select_db($db_database, $connection_id)) {
 
-                    if (isset($mysql_big_selects) && $mysql_big_selects == true) {
-
-                        $sql = "SET OPTION SQL_BIG_SELECTS = 1";
-                        db_query($sql, $connection_id);
-                    }
-
+                    db_enable_big_selects($connection_id);
                     return $connection_id;
+
+                }else {
+
+                    trigger_error(DB_ER_NO_SUCH_DBASE, E_USER_ERROR);
                 }
-            }
-
-            if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
-
-                 trigger_error(BH_DB_CONNECT_ERROR, E_USER_ERROR);
 
             }else {
 
-                trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);
+                trigger_error(DB_ER_NO_SUCH_HOST, E_USER_ERROR);
             }
         }
 
@@ -72,31 +66,41 @@ function db_connect ()
 
         if (!$connection_id) {
 
-            if ($connection_id = mysqli_connect($db_server, $db_username, $db_password, $db_database)) {
+            if (@$connection_id = mysqli_connect($db_server, $db_username, $db_password)) {
 
-                if (isset($mysql_big_selects) && $mysql_big_selects == true) {
+                if (@mysqli_select_db($connection_id, $db_database)) {
 
-                    $sql = "SET OPTION SQL_BIG_SELECTS = 1";
-                    db_query($sql, $connection_id);
+                    db_enable_big_selects($connection_id);
+                    return $connection_id;
+
+                }else {
+
+                    trigger_error(DB_ER_NO_SUCH_DBASE, E_USER_ERROR);
                 }
-
-                return $connection_id;
-            }
-
-            if (isset($show_friendly_errors) && is_bool($show_friendly_errors) && $show_friendly_errors == true) {
-
-                 trigger_error(BH_DB_CONNECT_ERROR, E_USER_ERROR);
 
             }else {
 
-                trigger_error("Could not connect to database. Please check the details in config.inc.php.", E_USER_ERROR);
+                 trigger_error(DB_ER_NO_SUCH_HOST, E_USER_ERROR);
             }
         }
 
         return $connection_id;
     }
 
-    trigger_error("Could not connect to the database. Please check that the PHP MySQL or MySQLi extension is correctly installed!", E_USER_ERROR);
+    trigger_error(DB_ER_NO_EXTENSION, E_USER_ERROR);
+}
+
+function db_enable_big_selects($connection_id)
+{
+    global $mysql_big_selects;
+
+    if (isset($mysql_big_selects) && $mysql_big_selects === true) {
+
+        $sql = "SET OPTION SQL_BIG_SELECTS = 1";
+        return db_query($sql, $connection_id);
+    }
+
+    return false;
 }
 
 // Executes a query on the database and returns a resource ID
@@ -129,7 +133,7 @@ function db_query ($sql, $connection_id)
         }
     }
 
-    trigger_error("Could not perform query. Please check that the PHP MySQL or MySQLi extension is correctly installed!", E_USER_ERROR);
+    trigger_error(DB_ER_NO_EXTENSION, E_USER_ERROR);
 }
 
 // Executes a query on the database and returns a resource ID
@@ -163,7 +167,7 @@ function db_unbuffered_query ($sql, $connection_id)
         return $result;
     }
 
-    trigger_error("Could not perform query. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
+    trigger_error(DB_ER_NO_EXTENSION, E_USER_ERROR);
 }
 
 // Returns the number of rows affected by a SELECT query when passed the resource ID
@@ -181,7 +185,7 @@ function db_num_rows ($result)
         return $num_rows;
     }
 
-    trigger_error("Could not obtain row count. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
+    trigger_error(DB_ER_NO_EXTENSION, E_USER_ERROR);
 }
 
 // Returns the number of rows affected by a query when passed the connection ID
@@ -199,7 +203,7 @@ function db_affected_rows($connection_id)
         return $results;
     }
 
-    trigger_error("Could not obtain affected row count. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
+    trigger_error(DB_ER_NO_EXTENSION, E_USER_ERROR);
 }
 
 function db_fetch_array ($result, $result_type = DB_RESULT_BOTH)
@@ -216,7 +220,7 @@ function db_fetch_array ($result, $result_type = DB_RESULT_BOTH)
        return $results;
     }
 
-    trigger_error("Could not retrieve row. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
+    trigger_error(DB_ER_NO_EXTENSION, E_USER_ERROR);
 }
 
 // Seeks to the specified row in a SELECT query (0 based)
@@ -234,7 +238,7 @@ function db_data_seek ($result, $row_number)
         return $seek_result;
     }
 
-    trigger_error("Could not perform row seek. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
+    trigger_error(DB_ER_NO_EXTENSION, E_USER_ERROR);
 }
 
 // Returns the AUTO_INCREMENT ID from the last insert statement
@@ -252,7 +256,7 @@ function db_insert_id($result)
         return $insert_id;
     }
 
-    trigger_error("Could not fetch AUTO_INCREMENT ID. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
+    trigger_error(DB_ER_NO_EXTENSION, E_USER_ERROR);
 }
 
 function db_error($result)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.62 2005-02-09 21:45:34 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.63 2005-02-17 22:58:12 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -47,6 +47,8 @@ error_reporting(E_ALL);
 
 function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
+    global $show_friendly_errors;
+
     // Bad Coding Practises Alert!!
     // We're going to ignore any E_STRICT error messages
     // which are caused by PHP/5.x because otherwise we'd
@@ -59,10 +61,38 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
     if (error_reporting()) {
 
-        srand((double)microtime()*1000000);
+        if ($show_friendly_errors === false) {
+
+            switch ($errstr) {
+
+                case DB_ER_NO_EXTENSION:
+
+                    trigger_error("No extensions found. Please check that the MySQL or MySQLi extension is installed and working correctly.", $errno);
+                    break;
+
+                case DB_ER_NO_SUCH_HOST:
+
+                    trigger_error("Cannot connect to database. Please check settings in config.inc.php", $errno);
+                    break;
+
+                case DB_ER_NO_SUCH_DBASE:
+
+                    trigger_error("Unknown Database. Please check that the database exists and that the settings in config.inc.php are correct", $errno);
+                    break;
+
+                case DB_ER_NO_SUCH_TABLE:
+
+                    trigger_error("Unknown Table. Please check that your BeehiveForum is install correctly and that the settings in config.inc.php are correct", $errno);
+                    break;
+            }
+
+            exit;
+        }
 
         @ob_end_clean();
         ob_start("bh_gzhandler");
+
+        srand((double)microtime() * 1000000);
 
         if (defined("BEEHIVEMODE_LIGHT")) {
 
@@ -99,24 +129,56 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
             echo "<h2>Error Message for server admins and developers:</h2>\n";
 
-            switch ($errno) {
+            switch ($errstr) {
 
-                case E_USER_ERROR:
-                    echo "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                    echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
+                case DB_ER_NO_EXTENSION:
+
+                    echo "<p>No extensions found. Please check that the MySQL or MySQLi extension is installed and working correctly.</p>\n";
                     break;
-                case E_USER_WARNING:
-                    echo "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                    echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
+
+                case DB_ER_NO_SUCH_HOST:
+
+                    echo "<p>Cannot connect to database. Please check settings in config.inc.php</p>\n";
                     break;
-                case E_USER_NOTICE:
-                    echo "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                    echo "<p>Warning in line $errline of file ", basename($errfile), "</p>\n";
+
+                case DB_ER_NO_SUCH_DBASE:
+
+                    echo "<p>Unknown Database. Please check that the database exists and that the settings in config.inc.php are correct</p>\n";
                     break;
+
+                case DB_ER_NO_SUCH_TABLE:
+
+                    echo "<p>Unknown Table. Please check that your BeehiveForum is install correctly and that the settings in config.inc.php are correct</p>\n";
+                    break;
+
                 default:
-                    echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                    echo "<p>Unknown error in line $errline of file ", basename($errfile), "</p>\n";
-                    break;
+
+                    switch ($errno) {
+
+                        case E_USER_ERROR:
+
+                            echo "<p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
+                            echo "<p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
+                            break;
+
+                        case E_USER_WARNING:
+
+                            echo "<p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
+                            echo "<p>Error in line $errline of file ", basename($errfile), "</p>\n";
+                            break;
+
+                        case E_USER_NOTICE:
+
+                            echo "<p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
+                            echo "<p>Warning in line $errline of file ", basename($errfile), "</p>\n";
+                            break;
+
+                        default:
+
+                            echo "<p><b>Unknown error</b> [$errno] $errstr</p>\n";
+                            echo "<p>Unknown error in line $errline of file ", basename($errfile), "</p>\n";
+                            break;
+                    }
             }
 
             echo "<p>PHP/", PHP_VERSION, " (", PHP_OS, ")</p>\n";
@@ -127,10 +189,6 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             die;
 
         }else {
-
-            $db_error_handler = db_connect();
-
-            if (db_errno($db_error_handler) == DB_ER_NO_SUCH_TABLE) install_incomplete();
 
             echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -155,6 +213,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td>\n";
 
             foreach ($_POST as $key => $value) {
+
                 echo "<input type=\"hidden\" name=\"{$key}\" value=\"", _htmlentities($value), "\">\n";
             }
 
@@ -195,7 +254,6 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                     echo "        </tr>\n";
 
                 }
-
             }
 
             echo "        <tr>\n";
@@ -210,35 +268,56 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "        <tr>\n";
             echo "          <td class=\"postbody\">\n";
 
-            if ($errstr == BH_DB_CONNECT_ERROR) {
+            switch ($errstr) {
 
-                echo "            <p><b>E_USER_ERROR</b> [$errno]</p>\n";
-                echo "            <p>An error has occured while connecting to the database.</p>\n";
-                echo "            <p>If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:</p>\n";
-                echo "            <pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre>\n";
-                echo "            <p>They should be set to the database details given to you by your hosting provider.</p>\n";
+                case DB_ER_NO_EXTENSION:
 
-            }else {
+                    echo "<p>No extensions found. Please check that the MySQL or MySQLi extension is installed and working correctly.</p>\n";
+                    break;
 
-                switch ($errno) {
+                case DB_ER_NO_SUCH_HOST:
 
-                    case E_USER_ERROR:
-                        echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                        echo "            <p>Fatal error in line $errline of file $errfile</p>\n";
-                        break;
-                    case E_USER_WARNING:
-                        echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                        echo "            <p>Error in line $errline of file $errfile</p>\n";
-                        break;
-                    case E_USER_NOTICE:
-                        echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                        echo "            <p>Warning in line $errline of file $errfile</p>\n";
-                        break;
-                    default:
-                        echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                        echo "            <p>Unknown error in line $errline of file $errfile</p>\n";
-                        break;
-                }
+                    echo "<p>Cannot connect to database. Please check the settings in config.inc.php</p>\n";
+                    break;
+
+                case DB_ER_NO_SUCH_DBASE:
+
+                    echo "<p>Unknown Database. Please check that the database exists and that the settings in config.inc.php are correct</p>\n";
+                    break;
+
+                case DB_ER_NO_SUCH_TABLE:
+
+                    echo "<p>Unknown Table. Please check that your BeehiveForum is install correctly and that the settings in config.inc.php are correct</p>\n";
+                    break;
+
+                default:
+
+                    switch ($errno) {
+
+                        case E_USER_ERROR:
+
+                            echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
+                            echo "            <p>Fatal error in line $errline of file $errfile</p>\n";
+                            break;
+
+                        case E_USER_WARNING:
+
+                            echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
+                            echo "            <p>Error in line $errline of file $errfile</p>\n";
+                            break;
+
+                        case E_USER_NOTICE:
+
+                            echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
+                            echo "            <p>Warning in line $errline of file $errfile</p>\n";
+                            break;
+
+                        default:
+
+                            echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
+                            echo "            <p>Unknown error in line $errline of file $errfile</p>\n";
+                            break;
+                    }
             }
 
             echo "            <p>Beehive Forum ", BEEHIVE_VERSION, " on PHP/", phpversion(), " ", PHP_OS, " ", strtoupper(php_sapi_name()), " MySQL/", db_fetch_mysql_version(), "</p>\n";

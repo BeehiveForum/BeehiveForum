@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.149 2005-02-06 21:35:24 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.150 2005-02-17 22:58:12 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -471,11 +471,6 @@ function href_remove_query_keys($uri, $remove_keys)
     $uri_array = parse_url($uri);
 
     if (isset($uri_array['query'])) {
-
-        $uri_array['query'] = preg_replace("/&$/", "", $uri_array['query']);
-        $uri_array['query'] = preg_replace("/&amp;$/", "", $uri_array['query']);
-        $uri_array['query'] = preg_replace("/&+/", "", $uri_array['query']);
-        $uri_array['query'] = preg_replace("/[&amp;]+$/", "", $uri_array['query']);
 
         parse_str($uri_array['query'], $uri_query_array);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.110 2005-02-13 16:46:42 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.111 2005-02-17 22:58:12 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -884,30 +884,30 @@ function forum_create($webtag, $forum_name, $access)
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        // Create default group
+        // Create folder permissions
+
+        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (0, 0, 14588);";
+
+        if (!$result = db_query($sql, $db_forum_create)) return false;
+
+        // Create user permissions (current user)
 
         $sql = "INSERT INTO {$webtag}_GROUPS (GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-        $sql.= "VALUES ('Queen', NULL, 0);";
+        $sql.= "VALUES (NULL, NULL, 1);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        // Create default group permissions
+        $new_gid = db_insert_id($db_forum_create);
 
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES ($uid, 0, 1792);";
-
-        if (!$result = db_query($sql, $db_forum_create)) return false;
-
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES ($uid, 1, 6652);";
+        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES ($new_gid, 0, 1792);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES (0, 1, 6396);";
+        $sql = "INSERT INTO {$webtag}_GROUP_USERS VALUES ($new_gid, $uid);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
-        // Create default user permissions
-
-        $sql = "INSERT INTO {$webtag}_GROUP_USERS VALUES (1, 1);";
+        $sql = "INSERT INTO {$webtag}_GROUP_PERMS VALUES ($new_gid, 1, 6652);";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -930,6 +930,10 @@ function forum_create($webtag, $forum_name, $access)
         // Store Forum Name
 
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$new_fid', 'forum_name', '$forum_name')";
+
+        if (!$result = db_query($sql, $db_forum_create)) return false;
+
+        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES($uid, $new_fid, 1)";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 

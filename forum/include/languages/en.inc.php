@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.229 2005-02-17 10:19:38 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.230 2005-02-17 22:58:13 decoyduck Exp $ */
 
 // International English language file
 
@@ -551,7 +551,7 @@ $lang['personalmessages'] = "Personal Messages";
 $lang['enablepersonalmessages'] = "Enable Personal Messages";
 $lang['pmusermessages'] = "PM messages per user";
 $lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachments";
-$lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every:";
+$lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['autologinguests'] = "Automatically Login Guests";
@@ -559,7 +559,7 @@ $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
 $lang['showdeletedattachments'] = "Show Deleted Attachments in messages";
-$lang['allowembeddingofattachments'] = "Allow embedding of attachments in messages / signatures";
+$lang['allowembeddingofattachments'] = "Allow embedding of attachments";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
 

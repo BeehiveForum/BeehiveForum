@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.135 2004-05-20 22:17:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.136 2004-05-21 23:25:57 decoyduck Exp $ */
 
 // International English language file
 
@@ -368,6 +368,9 @@ $lang['suppliedgidisnotausergroup'] = "Supplied GID is not a user group";
 $lang['manageusergroups'] = "Manage User Groups";
 $lang['groupstatus'] = "Group Status";
 $lang['addusergroup'] = "Add Group";
+$lang['addremoveusers'] = "Add/Remove Users";
+$lang['addtogroup'] = "Add to group";
+$lang['nousersingroup'] = "There are no users in this group";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

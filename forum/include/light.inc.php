@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.53 2004-08-22 17:30:29 rowan_hill Exp $ */
+/* $Id: light.inc.php,v 1.54 2004-08-26 16:53:52 rowan_hill Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -412,7 +412,8 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 
-    echo "<p><b>{$lang['from']}: " . format_user_name($message['FLOGON'], $message['FNICK'])."</b><br />";
+
+    echo "<p><b>{$lang['from']}: " . format_user_name($message['FLOGON'], $message['FNICK'])."</b> [#{$message['PID']}]";
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
@@ -425,14 +426,17 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || isset($temp_ignore)) {
         echo "&nbsp;({$lang['ignoreduser']}) ";
     }
-
+    
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
         echo "<b>{$lang['ignoredmsg']}</b>";
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
-            if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
+            
+            //This is commented out because as far as I know, all sigs are ignored in Light. Correct me if I'm wrong. - Rowan
+            //if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
+            
             echo "&nbsp;".format_time($message['CREATED'], 1)."<br />";
         }
     }
@@ -440,6 +444,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     if(($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
 
         echo "<b>{$lang['to']}: " . format_user_name($message['TLOGON'], $message['TNICK'])."</b>";
+        if ($message['REPLY_TO_PID'] > 0) echo " [#{$message['REPLY_TO_PID']}]";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
             echo "&nbsp;({$lang['friend']})";

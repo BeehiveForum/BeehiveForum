@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -76,28 +76,46 @@ if (isset($HTTP_GET_VARS['setrel']) && ($uid != $your_uid)) { // user has chosen
     user_rel_update($your_uid,$uid,$relationship);
 }
 
-echo "<h2>" . format_user_name($user['LOGON'], $user['NICKNAME']);
+echo "<div align=\"center\">\n";
+echo "  <table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "          <tr>\n";
+echo "            <td><h2>&nbsp;" . format_user_name($user['LOGON'], $user['NICKNAME']);
+
 if ($relationship & USER_FRIEND) echo "&nbsp;&nbsp;<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"Friend\" />";
 if ($relationship & USER_IGNORED) echo "&nbsp;&nbsp;<img src=\"" . style_image('enemy.png') . "\" height=\"15\" alt=\"Ignored user\" />";
-echo "</h2>\n";
 
-echo "<table width=\"100%\" class=\"subhead\" border=\"0\"><tr>\n";
-echo "<tr><td colspan=\"2\" align=\"right\">Last logon time:</td><td colspan=\"2\" align=\"right\"><b>" . format_time(user_get_last_logon_time($uid), 1) . "</b></td></tr>\n";
-echo "<tr><td colspan=\"2\" align=\"right\">Total number of posts:</td><td colspan=\"2\" align=\"right\"><b>" . user_get_post_count($uid). "</td></tr>\n";
-echo "</table>\n";
+echo "</h2></td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">Last Visit: " . format_time(user_get_last_logon_time($uid), 1) . "&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>&nbsp;</td>\n";
+echo "            <td align=\"right\" class=\"smalltext\">Posts: " . user_get_post_count($uid). "&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
 
-echo "<table width=\"100%\" class=\"subhead\" border=\"0\"><tr>\n";
+echo "        <table width=\"100%\" class=\"subhead\" border=\"0\">\n";
+echo "          <tr>\n";
 
 for ($i = 0; $i < $row_count; $i++) {
+
     $row = db_fetch_array($result);
+
     if ($i == 0) {
+
         if(!$psid) {
             $psid = $row['PSID'];
         }
+
     } else if(!($i % 4)){ // Start new row every 4 sections
-        echo "</tr><tr>";
+        echo "          </tr>\n";
+        echo "          <tr>\n";
     }
-    echo "<td width=\"25%\">";
+
+    echo "    <td width=\"25%\" align=\"center\">";
+
     if($row['PSID'] != $psid){
         echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&psid=" . $row['PSID'] . "\">";
         echo _stripslashes($row['NAME']) . "</a></td>\n";
@@ -107,14 +125,16 @@ for ($i = 0; $i < $row_count; $i++) {
 }
 
 for(;$i % 4; $i++){
-    echo "<td width=\"25%\">&nbsp;</td>";
+    echo "            <td width=\"25%\">&nbsp;</td>\n";
 }
 
-echo "</tr></table>";
+echo "          </tr>\n";
+echo "        </table>\n";
 
-echo "<table width=\"100%\" class=\"posthead\"><tr><td width=\"75%\" valign=\"top\">\n";
-
-echo "<table width=\"100%\">";
+echo "        <table width=\"100%\" class=\"posthead\">\n";
+echo "          <tr>\n";
+echo "            <td width=\"75%\" valign=\"top\">\n";
+echo "              <table width=\"100%\">\n";
 
 $sql = "select PI.NAME, UP.ENTRY from " . forum_table("PROFILE_ITEM") . " PI ";
 $sql.= "left join " . forum_table("USER_PROFILE") . " UP on (UP.PIID = PI.PIID and UP.UID = $uid) ";
@@ -123,14 +143,26 @@ $sql.= "where PI.PSID = $psid order by PI.PIID";
 $result = db_query($sql,$db);
 
 while($row = db_fetch_array($result)){
-    echo "<tr><td class=\"subhead\" width=\"33%\">" . $row['NAME'] . "</td>";
-    echo "<td width=\"67%\" class=\"posthead\">" . _stripslashes($row['ENTRY']) . "</td></tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $row['NAME'] . "</td>\n";
+    echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">" . _stripslashes($row['ENTRY']) . "</td>\n";
+    echo "                </tr>\n";
 }
 
-echo "</table></td>\n";
+$sql = "select PIC_URL from ". forum_table("USER_PREFS"). " where UID = $uid";
+$result = db_query($sql, $db);
+$row = db_fetch_array($result);
 
-echo "<td valign=\"top\"><table width=\"100%\" class=\"subhead\">";
-echo "<tr><td><a href=\"email.php?uid=$uid\">Send email</a></td></tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "            <td valign=\"top\">\n";
+echo "              <table width=\"100%\" class=\"subhead\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">", (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) ? "<img src=\"". $row['PIC_URL']. "\" width=\"110\" height=\"110\" />" : "&nbsp;", "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><a href=\"email.php?uid=$uid\">Send email</a></td>\n";
+echo "                </tr>\n";
 
 if ($uid != $your_uid) {
     if ($relationship & USER_FRIEND) {
@@ -140,9 +172,11 @@ if ($uid != $your_uid) {
         $setrel = USER_FRIEND;
         $text = "Add to friends";
     }
-    
-    echo "<tr><td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td></tr>";
-    
+
+    echo "                <tr>\n";
+    echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td>\n";
+    echo "                </tr>\n";
+
     if ($relationship & USER_IGNORED) {
         $setrel = 0;
         $text = "Stop ignoring user";
@@ -150,11 +184,22 @@ if ($uid != $your_uid) {
         $setrel = USER_IGNORED;
         $text = "Ignore this user";
     }
-    
-    echo "<tr><td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td></tr>";
+
+    echo "                <tr>\n";
+    echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td>\n";
+    echo "                </tr>\n";
+
 }
 
-echo "</table>";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</div>\n";
+
 html_draw_bottom();
 
 ?>

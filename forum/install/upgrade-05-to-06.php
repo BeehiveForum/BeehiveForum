@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.43 2005-04-01 13:17:14 rowan_hill Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.44 2005-04-03 22:28:24 rowan_hill Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -949,6 +949,14 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
     
     $sql = "ALTER TABLE {$forum_webtag}_USER_PROFILE ADD PRIVACY TINYINT(3) UNSIGNED NOT NULL DEFAULT '0';";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+    
+    $sql = "ALTER TABLE {$forum_webtag}_POLL ADD QUESTION VARCHAR(64) DEFAULT NULL;";
 
     if (!$result = db_query($sql, $db_install)) {
 

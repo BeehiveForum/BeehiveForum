@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.9 2004-05-17 15:56:59 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.10 2004-05-17 17:22:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -127,11 +127,7 @@ if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
     exit;
 }
 
-if (isset($_POST['permissions'])) {
-    header_redirect("./admin_folder_access.php?webtag=$webtag&fid=$fid");
-}
-
-if (!$folder_data = folder_get($fid)) {
+if (!folder_is_valid($fid)) {
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<h2>{$lang['invalidfolderid']}</h2>\n";
     html_draw_bottom();
@@ -152,6 +148,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['name']) && strlen(trim($_POST['name'])) > 0) {
         $folder_data['TITLE'] = trim(_stripslashes($_POST['name']));
+    }else {
+        $error_html = "<h2>{$lang['mustenterfoldername']}</h2>\n";
+        $valid = false;
     }
 
     if (isset($_POST['description']) && strlen(trim($_POST['description'])) > 0) {
@@ -162,17 +161,35 @@ if (isset($_POST['submit'])) {
         $folder_data['ALLOWED_TYPES'] = $_POST['allowed_types'];
     }
 
-    folder_update($fid, $folder_data);
-    admin_addlog(0, $fid, 0, 0, 0, 0, 7);
+    $t_post_read     = (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
+    $t_post_create   = (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
+    $t_thread_create = (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
+    $t_post_edit     = (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
+    $t_post_delete   = (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
+    $t_post_attach   = (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
 
-    if (isset($_POST['move']) && is_numeric($_POST['move'])) {
+    // We need a double / float here because we're storing a high bit value
 
-        if ($fid != $_POST['move']) {
-            folder_move_threads($fid, $_POST['move']);
-            admin_addlog(0, $_POST['t_fid'][$fid], 0, 0, 0, 0, 8);
+    $folder_data['PERMS'] = (double)$t_post_read | $t_post_create | $t_thread_create;
+    $folder_data['PERMS'] = (double)$folder_data['PERMS'] | $t_post_edit | $t_post_delete | $t_post_attach;
+
+    if ($valid) {
+
+        folder_update($fid, $folder_data);
+        admin_addlog(0, $fid, 0, 0, 0, 0, 7);
+
+        if (isset($_POST['move']) && is_numeric($_POST['move']) && isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
+
+            if ($fid != $_POST['move']) {
+                folder_move_threads($fid, $_POST['move']);
+                admin_addlog(0, $_POST['t_fid'][$fid], 0, 0, 0, 0, 8);
+            }
         }
     }
 }
+
+$folder_data = folder_get($fid);
+$folder_permissions = folder_get_permissions($fid);
 
 // Make the arrays for the allow post types dropdown
 
@@ -180,7 +197,13 @@ $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lan
 $allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
 
 echo "<h1>{$lang['admin']} : {$lang['managefolders']} : {$folder_data['TITLE']}</h1>\n";
-echo "<br />\n";
+
+if (isset($error_html) && strlen($error_html) > 0) {
+    echo $error_html;
+}else {
+    echo "<br />\n";
+}
+
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('fid', $fid), "\n";
@@ -220,7 +243,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['moveposts']}
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['movepoststofolder']}:</td>\n";
-echo "                  <td>", folder_draw_dropdown($folder_data['FID'], "move", "", FOLDER_ALLOW_ALL_THREAD, "", USER_PERM_THREAD_CREATE), "</td>\n";
+echo "                  <td>", folder_draw_dropdown($folder_data['FID'], "move", "", FOLDER_ALLOW_ALL_THREAD, "", USER_PERM_THREAD_CREATE), "&nbsp;", form_checkbox("move_confirm", "Y", $lang['confirm']), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -236,10 +259,27 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['permissions']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>\n";
+echo "                    <table class=\"posthead\" width=\"80%\">\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_post_read", USER_PERM_POST_READ, "Read Posts", $folder_permissions & USER_PERM_POST_READ), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_create", USER_PERM_POST_CREATE, "Reply to threads", $folder_permissions & USER_PERM_POST_CREATE), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, "Create new threads", $folder_permissions & USER_PERM_THREAD_CREATE), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, "Edit Posts", $folder_permissions & USER_PERM_POST_EDIT), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, "Delete Posts", $folder_permissions & USER_PERM_POST_DELETE), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, "Upload Attachments", $folder_permissions & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.55 2004-04-28 14:28:51 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.56 2004-04-29 11:59:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -362,22 +362,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ";
-
-$page_count = ceil($admin_log_array['admin_log_count'] / 10);
-
-if ($page_count > 1) {
-
-    for ($page = 1; $page <= $page_count; $page++) {
-        echo "<a href=\"admin_viewlog.php?webtag=$webtag&amp;page=$page\" target=\"_self\">$page</a> ";
-    }
-
-}else {
-
-    echo "<a href=\"admin_viewlog.php?webtag=$webtag&amp;page=1\" target=\"_self\">1</a> ";
-}
-
-echo "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $admin_log_array['admin_log_count'], 10), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";

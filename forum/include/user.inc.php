@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.165 2004-04-24 18:42:46 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.166 2004-04-29 11:59:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -745,34 +745,46 @@ function user_get_aliases($uid)
     return $user_get_aliases_array;
 }
 
-function users_get_recent()
+function users_get_recent($offset, $limit)
 {
-    $db_users_get_recent = db_connect();
+    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($limit)) $limit = 20;
 
     $users_get_recent_array = array();
+    $users_get_recent_count = 0;
 
-    if ($table_data = get_table_prefix()) {
+    $db_users_get_recent = db_connect();
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-        $sql.= "FROM USER USER ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
-        $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
-        $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-        $sql.= "LIMIT 0, 10";
+    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
+                                                        'user_array' => array());
 
-        $result = db_query($sql, $db_users_get_recent);
+    $sql = "SELECT USER.UID FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+    $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
 
-        if (db_num_rows($result)) {
-	    while ($row = db_fetch_array($result)) {
-	        if (!isset($users_get_recent_array[$row['UID']])) {
-	            $users_get_recent_array[$row['UID']] = $row;
-    	        }
-	    }
+    $result = db_query($sql, $db_users_get_recent);
+    $users_get_recent_count = db_num_rows($result);
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FID = '{$table_data['FID']}') ";
+    $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "LIMIT $offset, $limit";
+
+    $result = db_query($sql, $db_users_get_recent);
+
+    if (db_num_rows($result)) {
+        while ($row = db_fetch_array($result)) {
+            if (!isset($users_get_recent_array[$row['UID']])) {
+                $users_get_recent_array[$row['UID']] = $row;
+            }
         }
     }
 
-    return array('user_count' => sizeof($users_get_recent_array),
+    return array('user_count' => $users_get_recent_count,
                  'user_array' => $users_get_recent_array);
 
 }
@@ -783,6 +795,7 @@ function users_search_recent($usersearch, $offset)
     $usersearch = addslashes($usersearch);
 
     $user_search_array = array();
+    $user_search_count = 0;
 
     $db_users_search_recent = db_connect();
 
@@ -805,7 +818,7 @@ function users_search_recent($usersearch, $offset)
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT $offset, 10";
+    $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_users_search_recent);
 

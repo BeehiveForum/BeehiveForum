@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.51 2004-04-28 14:28:54 decoyduck Exp $ */
+/* $Id: pm.php,v 1.52 2004-04-29 11:59:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -344,21 +344,7 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>";
-    echo "            <td class=\"postbody\" align=\"center\">{$lang['pages']}: ";
-
-    $page_count = ceil($pm_messages_array['message_count'] / 10);
-
-    if ($page_count > 1) {
-
-        for ($page = 1; $page <= $page_count; $page++) {
-            echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;page=$page\" target=\"_self\">$page</a> ";
-        }
-
-    }else {
-
-        echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;page=1\" target=\"_self\">1</a> ";
-    }
-
+    echo "            <td class=\"postbody\" align=\"center\">{$lang['pages']}: ", page_links(get_request_uri(), $start, $pm_messages_array['message_count'], 10), "</td>\n";
     echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";

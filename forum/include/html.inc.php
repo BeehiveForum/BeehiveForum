@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.109 2004-04-28 20:38:57 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.110 2004-04-29 11:59:54 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -371,6 +371,68 @@ function bh_setcookie($name, $value, $expires = 0)
     }
 
     return setcookie($name, $value, $expires);
+}
+
+function page_links($uri, $offset, $total_rows, $rows_per_page)
+{
+    $page_count   = ceil($total_rows / $rows_per_page);
+    $current_page = floor($offset / $rows_per_page) + 1;
+
+    if ($page_count > 1) {
+
+        if ($current_page == 1) {
+
+            $end_page = (($current_page + 4) <= $page_count) ? ($current_page + 4) : $page_count;
+            $start_page = $current_page;
+
+        }elseif ($current_page == $page_count) {
+
+            $start_page = (($current_page - 4) > 0) ? ($current_page - 4) : 1;
+            $end_page = $page_count;
+
+        }else {
+
+            $start_page = (($current_page - 2) > 0) ? ($current_page - 2) : 1;
+            $end_page   = (($current_page + 2) <= $page_count) ? ($current_page + 2) : $page_count;
+
+            if (($end_page - $start_page) < 4) {
+
+                if (($start_page - 4) < 1) {
+
+                    $end_page = (($start_page + 4) <= $page_count) ? ($start_page + 4) : $page_count;
+
+                }elseif (($end_page + 3) > $page_count) {
+
+                    $start_page = (($end_page - 4) > 0) ? ($end_page - 4) : 1;
+                }
+            }
+        }
+
+        if ($current_page > 1) {
+
+            $prev_page = (($current_page - 1) > 0) ? ($current_page - 1) : 1;
+            echo "<a href=\"{$uri}&amp;page={$prev_page}\" target=\"_self\">&lt;&lt;</a> ";
+        }
+
+        for ($page = $start_page; $page <= $end_page; $page++) {
+
+            if ($page == $current_page) {
+                echo "<b>$page</b> ";
+            }else {
+                echo "<a href=\"{$uri}&amp;page={$page}\" target=\"_self\">{$page}</a> ";
+            }
+        }
+
+        if ($current_page < $page_count) {
+
+            $next_page = (($current_page + 1) <= $page_count) ? ($current_page + 1) : $page_count;
+            echo "<a href=\"{$uri}&amp;page={$next_page}\" target=\"_self\">&gt;&gt;</a> ";
+        }
+
+    }else {
+
+        echo "<a href=\"{$uir}&amp;page=1\" target=\"_self\">1</a> ";
+    }
 }
 
 ?>

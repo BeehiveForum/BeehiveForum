@@ -96,7 +96,7 @@ if ($poll['SHOWRESULTS'] == 1) {
 
     echo "        <tr>\n";
     echo "          <td>\n";
-    echo poll_horizontal_graph($pollresults, $horizontal_bar_width);
+    echo poll_horizontal_graph($pollresults, $horizontal_bar_width, $totalvotes);
     echo "          </td>\n";
     echo "        </tr>\n";
     
@@ -104,7 +104,7 @@ if ($poll['SHOWRESULTS'] == 1) {
   
     echo "        <tr>\n";
     echo "          <td>\n";
-    echo poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width);
+    echo poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width, $totalvotes);
     echo "          </td>\n";
     echo "        </tr>\n";
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.2 2004-02-26 21:04:58 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.3 2004-03-02 00:27:04 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -57,6 +57,8 @@ require_once("./include/user_rel.inc.php");
 
 html_draw_top("openprofile.js", "basetarget=_blank");
 
+echo "<h1>{$lang['userrelationships']}</h1>\n";
+
 $uid = bh_session_get_value('UID');
 
 if (isset($HTTP_POST_VARS['submit'])) {
@@ -71,10 +73,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }
 
 if (isset($HTTP_POST_VARS['add'])) {
-    if (isset($HTTP_POST_VARS['add_user']) && is_array($HTTP_POST_VARS['add_user'])) {
-        foreach ($HTTP_POST_VARS['add_user'] as $peer_uid) {
+    if (isset($HTTP_POST_VARS['add_relationship']) && is_array($HTTP_POST_VARS['add_relationship'])) {
+        foreach ($HTTP_POST_VARS['add_relationship'] as $peer_uid => $peer_rel) {
+            if (isset($HTTP_POST_VARS['add_signature'][$peer_uid])) {
+                $peer_rel = $peer_rel | $HTTP_POST_VARS['add_signature'][$peer_uid];
+            }
             if ($peer_uid != $uid) {
-                user_rel_update($uid, $peer_uid, 0);
+                user_rel_update($uid, $peer_uid, $peer_rel);
             }
         }
     }
@@ -85,8 +90,6 @@ if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
 }else {
     $start = 0;
 }
-
-echo "<h1>{$lang['userrelationships']}</h1>\n";
 
 // Any error messages to display?
 
@@ -182,6 +185,7 @@ if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersea
     
     echo "<div class=\"postbody\">\n";
     echo "  <form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
+    echo "    ", form_input_hidden("usersearch", $usersearch), "\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "      <tr>\n";
     echo "        <td class=\"posthead\">\n";
@@ -190,16 +194,30 @@ if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersea
     echo "              <td class=\"posthead\">\n";
     echo "                <table class=\"posthead\" width=\"100%\">\n";
     echo "                  <tr>\n";
-    echo "                    <td class=\"subhead\" align=\"left\">{$lang['searchresults']}:</td>\n";
-    echo "                  </tr>\n";    
+    echo "                    <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+    echo "                    <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
+    echo "                    <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";    
+    echo "                  </tr>\n";
     
     if ($user_search_array = user_search($usersearch)) {
     
         foreach ($user_search_array as $user) {
         
-            echo "                  <tr>\n";
-            echo "                    <td>", form_checkbox("add_user[]", $user['UID'], ""), "&nbsp;", format_user_name($user['LOGON'], $user['NICKNAME']), "</td>\n";
-            echo "                  </tr>\n";
+            if ($user['UID'] != $uid) {
+        
+                echo "                  <tr>\n";
+                echo "                    <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']})\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+                echo "                    <td>\n";
+                echo "                      &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", false), "<img src=\"", style_image("friend.png"), "\" alt=\"\" title=\"Friend\" />\n";
+                echo "                      &nbsp;", form_radio("add_relationship[{$user['UID']}]", 0, "", true), "{$lang['normal']}\n";
+                echo "                      &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED, "", false), "<img src=\"", style_image("enemy.png"), "\" alt=\"\" title=\"Ignored\" />\n";
+                echo "                    </td>\n";
+                echo "                    <td>\n";
+                echo "                      &nbsp;", form_radio("add_signature[{$user['UID']}]", 0, "", true), "{$lang['display']}\n";
+                echo "                      &nbsp;", form_radio("add_signature[{$user['UID']}]", USER_IGNORED_SIG, "", false), "{$lang['ignore']}\n";        
+                echo "                    </td>\n";            
+                echo "                  </tr>\n";
+            }
         }
 
     }else {

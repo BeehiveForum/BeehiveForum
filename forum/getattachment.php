@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.45 2004-01-15 19:20:29 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.46 2004-02-22 14:29:24 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -39,6 +39,7 @@ require_once("./include/attachments.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/lang.inc.php");
 
 if (!$attachments_enabled) {
     html_draw_top();
@@ -127,10 +128,8 @@ if (isset($attachment_data[1])) {
     }
 }
 
-require_once("./include/lang.inc.php");
-
 html_draw_top();
-echo "<h2>{$lang['attachmentproblem']}</h2>\n";
+echo "<h1>{$lang['attachmentproblem']}</h1>\n";
 html_draw_bottom();
 
 ?>

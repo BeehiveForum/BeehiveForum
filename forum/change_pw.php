@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.40 2004-06-15 20:49:30 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.41 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -166,36 +166,45 @@ if (isset($error_html)) {
 
 echo "<div align=\"center\">\n";
 echo "  <p class=\"smalltext\">{$lang['enternewpasswdforuser']} $logon</p>\n";
-echo "  <form name=\"forgot_pw\" action=\"change_pw.php\" method=\"POST\">\n";
+echo "  <form name=\"forgot_pw\" action=\"change_pw.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("uid", $uid), "\n";
 echo "  ", form_input_hidden("key", $key), "\n";
-echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"subhead\" width=\"100%\">\n";
-echo "            <tr>\n";
-echo "              <td>{$lang['forgotpasswd']}</td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "          <table class=\"posthead\" width=\"100%\">\n";
-echo "            <tr>\n";
-echo "              <td align=\"right\">{$lang['newpasswd']}:</td>\n";
-echo "              <td>", form_input_password("pw", ""), "</td>\n";
-echo "            </tr>\n";
-echo "            <tr>\n";
-echo "              <td align=\"right\">{$lang['confirmpasswd']}:</td>\n";
-echo "              <td>", form_input_password("cpw", ""), "</td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "          <table class=\"posthead\" width=\"100%\">\n";
-echo "            <tr>\n";
-echo "              <td align=\"center\">", form_submit(), "</td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"300\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"300\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['forgotpasswd']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"right\">{$lang['newpasswd']}:</td>\n";
+echo "                  <td>", form_input_password("pw", ""), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"right\">{$lang['confirmpasswd']}:</td>\n";
+echo "                  <td>", form_input_password("cpw", ""), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "  </form>\n";
 echo "</div>\n";
 

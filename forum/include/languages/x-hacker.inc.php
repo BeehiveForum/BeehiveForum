@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.139 2004-10-08 19:53:08 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.140 2004-11-05 18:50:05 decoyduck Exp $ */
 
 // International English language file
 
@@ -879,13 +879,13 @@ $lang['userexp_1'] = "uS3 The meNU 0n tHe lEf+ To M4Na9e y0ur 53+T1ngS.";
 $lang['userexp_2'] = "<b>U\$eR Det4ils</b> 4LLoW5 j00 To CH4n93 y0Ur N@m3, 3m4Il 4DDr3\$S anD pASsWORD.";
 $lang['userexp_3'] = "<b>u\$3r PR0f1lE</b> @LLow5 J00 +0 3D1T Y0Ur uSer pROF1lE.";
 $lang['userexp_4'] = "<b>ch@N93 P@\$\$WOrd</b> @lL0wS j00 +0 ch4Ng3 YouR p4S\$WOrD";
-$lang['userexp_5'] = "<b>3M4iL & PR1v4cY</b> l3T\$ j00 Ch@NG3 h0W J00 c4n 83 con+@cT3D ON 4nd 0Phph teH fORuM.";
+$lang['userexp_5'] = "<b>3M4iL &amp; PR1v4cY</b> l3T\$ j00 Ch@NG3 h0W J00 c4n 83 con+@cT3D ON 4nd 0Phph teH fORuM.";
 $lang['userexp_6'] = "<b>ph0RUm 0p+IOn\$</b> l3+\$ j00 cH4ng3 hOw t3h fOrUM LOok\$ 4nD w0RK\$.";
 $lang['userexp_7'] = "<b>4tTAchM3n+\$</b> @llOws j00 To Edi+/DeL3+3 Y0UR 4++@CHM3Nt\$.";
 $lang['userexp_8'] = "<b>edIT sIgn4tUr3</b> lE+s J00 eD1t yOUr siGnaTuRe.";
 $lang['userdetails'] = "Us3r D3+4ILs";
 $lang['userprofile'] = "uS3R prOphIl3";
-$lang['emailandprivacy'] = "em4Il & PRIv@Cy";
+$lang['emailandprivacy'] = "em4Il &amp; PRIv@Cy";
 $lang['editsignature'] = "ED1+ sI9n4TuRe";
 $lang['newrelationship'] = "n3w R3l@Ti0N5hIP";
 $lang['editrelationships'] = "3d1+ r3l@ti0nSh1pS";

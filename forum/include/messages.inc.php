@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.303 2004-11-03 23:31:54 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.304 2004-11-05 18:50:02 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -62,59 +62,76 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     // Loop through the results and construct an array to return
 
-    if ($limit > 1) {
+    if (db_num_rows($resource_id)) {
 
-        for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
+        if ($limit > 1) {
 
-            $messages[$i]['FID'] = $message['FID'];
-            $messages[$i]['PID'] = $message['PID'];
-            $messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
-            $messages[$i]['FROM_UID'] = $message['FROM_UID'];
-            $messages[$i]['TO_UID'] = $message['TO_UID'];
-            $messages[$i]['CREATED'] = $message['CREATED'];
-            $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
-            $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
-            $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
-            $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
-            $messages[$i]['CONTENT'] = '';
-            $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
-            $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
+            $messages = array();
 
-            if (isset($message['FNICK'])) {
-                $messages[$i]['FNICK'] = $message['FNICK'];
-                $messages[$i]['FLOGON'] = $message['FLOGON'];
-            }else {
-                $messages[$i]['FNICK'] = "Unknown User";
-                $messages[$i]['FLOGON'] = "Unknown User";
-                $messages[$i]['FROM_UID'] = -1;
+            for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
+
+                $messages[$i]['FID'] = $message['FID'];
+                $messages[$i]['PID'] = $message['PID'];
+                $messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
+                $messages[$i]['FROM_UID'] = $message['FROM_UID'];
+                $messages[$i]['TO_UID'] = $message['TO_UID'];
+                $messages[$i]['CREATED'] = $message['CREATED'];
+                $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
+                $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
+                $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
+                $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
+                $messages[$i]['CONTENT'] = '';
+                $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
+                $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
+
+                if (isset($message['FNICK'])) {
+
+                    $messages[$i]['FNICK'] = $message['FNICK'];
+                    $messages[$i]['FLOGON'] = $message['FLOGON'];
+
+                }else {
+
+                    $messages[$i]['FNICK'] = "Unknown User";
+                    $messages[$i]['FLOGON'] = "Unknown User";
+                    $messages[$i]['FROM_UID'] = -1;
+                }
+
+                if (isset($message['TNICK'])) {
+
+                    $messages[$i]['TNICK'] = $message['TNICK'];
+                    $messages[$i]['TLOGON'] = $message['TLOGON'];
+
+                }else {
+
+                    $messages[$i]['TNICK'] = "ALL";
+                    $messages[$i]['TLOGON'] = "ALL";
+                }
             }
 
-            if (isset($message['TNICK'])) {
-                $messages[$i]['TNICK'] = $message['TNICK'];
-                $messages[$i]['TLOGON'] = $message['TLOGON'];
-            }else {
-                $messages[$i]['TNICK'] = "ALL";
-                $messages[$i]['TLOGON'] = "ALL";
+        }else {
+
+            $messages = db_fetch_array($resource_id);
+
+            if (!isset($messages['VIEWED'])) {
+
+                $messages['VIEWED'] = '';
             }
-        }
-    } else {
 
-        $messages = db_fetch_array($resource_id);
+            if (!isset($messages['FROM_RELATIONSHIP'])) {
 
-        if (!isset($messages['VIEWED'])) {
-            $messages['VIEWED'] = '';
-        }
+                $messages['FROM_RELATIONSHIP'] = 0;
+            }
 
-        if(!isset($messages['FROM_RELATIONSHIP'])){
-            $messages['FROM_RELATIONSHIP'] = 0;
-        }
-        if(!isset($messages['TO_RELATIONSHIP'])){
-            $messages['TO_RELATIONSHIP'] = 0;
-        }
+            if (!isset($messages['TO_RELATIONSHIP'])){
 
-        if(!isset($messages['TNICK'])){
-            $messages['TNICK'] = 'ALL';
-            $messages['TLOGON'] = 'ALL';
+                $messages['TO_RELATIONSHIP'] = 0;
+            }
+
+            if(!isset($messages['TNICK'])){
+
+                $messages['TNICK'] = 'ALL';
+                $messages['TLOGON'] = 'ALL';
+            }
         }
     }
 
@@ -348,7 +365,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.". $message['PID']. "\" target=\"_self\">{$lang['viewmessage']}</a>";
     }else if($in_list && $msg_count > 0) {
         if ($is_poll) {
-          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\"></a> {$lang['poll']} ";
+          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> {$lang['poll']} ";
         }
         echo $message['PID'] . " {$lang['of']} " . $msg_count;
     }

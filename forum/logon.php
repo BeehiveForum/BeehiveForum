@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.143 2004-08-18 10:07:18 tribalonline Exp $ */
+/* $Id: logon.php,v 1.144 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -272,7 +272,7 @@ draw_logon_form(true);
 
 if (user_guest_enabled()) {
 
-    echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";
+    echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\">\n";
     echo "    <p class=\"smalltext\">{$lang['enterasa']} ". form_input_hidden("user_logon", "guest"). form_input_hidden("user_password", "guest"). form_input_hidden("user_passhash", md5("guest")). form_submit(md5(uniqid(rand())), $lang['guest']). "</p>\n";
     echo "  </form>\n";
 }

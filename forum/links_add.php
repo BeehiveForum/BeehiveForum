@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.57 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.58 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -201,7 +201,7 @@ if ($mode == "link") {
 
     if ($error) echo "<h2>$error</h2>\n";
 
-    echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"POST\" target=\"_self\">\n";
+    echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("fid", $fid) . "\n";
     echo "  ", form_input_hidden("mode", "link") . "\n";
@@ -257,7 +257,7 @@ if ($mode == "link") {
 
     if ($error) echo "<h2>$error</h2>\n";
 
-    echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"POST\" target=\"_self\">\n";
+    echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("fid", $fid) . "\n";
     echo "  ", form_input_hidden("mode", "folder") . "\n";

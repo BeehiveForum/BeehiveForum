@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.113 2004-10-29 20:42:48 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.114 2004-11-05 18:50:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -632,12 +632,6 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                </tr>\n";
     }
 
-    echo "                      <tr>\n";
-    echo "                        <td>&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
     echo "          </tr>\n";

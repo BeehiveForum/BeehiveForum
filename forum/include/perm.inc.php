@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.50 2004-11-04 17:57:10 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.51 2004-11-05 18:50:03 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -90,13 +90,13 @@ function perm_has_forumtools_access()
     static $user_uid = false;
     static $user_status = false;
 
+    $uid = bh_session_get_value('UID');
+
     if (!$user_uid || !$user_status || $user_uid != $uid) {
 
         $db_perm_has_forumtools_access = db_connect();
 
         if (!$table_data = get_table_prefix()) return 0;
-
-        $uid = bh_session_get_value('UID');
 
         $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";

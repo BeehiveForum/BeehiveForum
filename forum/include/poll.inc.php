@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.133 2004-11-03 23:31:55 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.134 2004-11-05 18:50:04 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -350,7 +350,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $totalvotes  = 0;
     $optioncount = 0;
 
-    $polldata['CONTENT'] = "<br  / >\n";
+    $polldata['CONTENT'] = "<br />\n";
     $polldata['CONTENT'].= "<div align=\"center\">\n";
     $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
     $polldata['CONTENT'].= "  <tr>\n";
@@ -937,7 +937,7 @@ function poll_preview_graph_vert($pollresults)
                 $polldisplay.= "                                <td style=\"width: 2px; border - left: 1px solid #000000\"></td>\n";
             }
 
-            $polldisplay.= "                                <td class=\"postbody\" align=\"center\" valign=\"top\">". $pollresults['OPTION_NAME'][$i]. "<br  / >". $pollresults['VOTES'][$i]. " {$lang['votes']}<br  / >(". $vote_percent. "%)</td>\n";
+            $polldisplay.= "                                <td class=\"postbody\" align=\"center\" valign=\"top\">". $pollresults['OPTION_NAME'][$i]. "<br />". $pollresults['VOTES'][$i]. " {$lang['votes']}<br />(". $vote_percent. "%)</td>\n";
             $poll_previous_group = $pollresults['GROUP_ID'][$i];
         }
     }
@@ -1295,7 +1295,7 @@ function poll_vertical_graph($tid)
                 $vote_percent = 0;
             }
 
-            $polldisplay.= "                                <td class=\"postbody\" align=\"center\" valign=\"top\">". $pollresults['OPTION_NAME'][$i]. "<br  / >". $pollresults['VOTES'][$i]. " {$lang['votes']}<br  / >(". $vote_percent. "%)</td>\n";
+            $polldisplay.= "                                <td class=\"postbody\" align=\"center\" valign=\"top\">". $pollresults['OPTION_NAME'][$i]. "<br />". $pollresults['VOTES'][$i]. " {$lang['votes']}<br />(". $vote_percent. "%)</td>\n";
             $poll_previous_group = $pollresults['GROUP_ID'][$i];
         }
     }
@@ -1574,7 +1574,7 @@ function poll_public_ballot($tid, $viewstyle)
             if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
                 if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-                    $polldisplay.= "                        </table><br  / >\n";
+                    $polldisplay.= "                        </table><br />\n";
                     $polldisplay.= "                        <table width=\"460\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
                 }
 
@@ -1625,7 +1625,7 @@ function poll_public_ballot($tid, $viewstyle)
             $poll_previous_group = $pollresults['GROUP_ID'][$i];
         }
 
-        $polldisplay.= "                        </table><br  / >\n";
+        $polldisplay.= "                        </table><br />\n";
         $polldisplay.= "                        </div>\n";
 
     }else {
@@ -1651,7 +1651,7 @@ function poll_public_ballot($tid, $viewstyle)
 
                 }
 
-                $polldisplay.= "                        </table><br  / >\n";
+                $polldisplay.= "                        </table><br />\n";
                 $polldisplay.= "                        </div>\n";
             }
         }
@@ -1699,7 +1699,7 @@ function poll_confirm_close($tid)
 
     poll_display($tid, $threaddata['LENGTH'], 1, false, false, false, true, $show_sigs, true);
 
-    echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_self\">";
+    echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">";
     echo form_input_hidden("webtag", $webtag);
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");

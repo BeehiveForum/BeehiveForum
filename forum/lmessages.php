@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.45 2004-10-21 10:19:41 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.46 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -196,7 +196,7 @@ if ($last_pid < $threaddata['LENGTH']) {
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
-echo "<p><a href=\"lpost.php?webtag=$webtag&replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p>\n";
+echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p>\n";
 
 echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a></h4>";
 

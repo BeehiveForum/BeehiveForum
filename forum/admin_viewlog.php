@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.67 2004-11-01 23:58:42 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.68 2004-11-05 18:50:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -386,7 +386,7 @@ echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">\n";
-echo "        <form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+echo "        <form name=\"f_post\" action=\"admin_viewlog.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "          ", form_submit('clear',$lang['clearlog']), "\n";
 echo "        </form>\n";
 echo "      </td>";

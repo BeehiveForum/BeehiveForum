@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.36 2004-10-27 22:33:17 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.37 2004-11-05 18:50:02 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -147,7 +147,7 @@ if (isset($_POST['submit'])) {
 
             light_html_draw_top();
             echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-            form_quick_button("./index.php", $lang['back'], false, false, "_top");
+            form_quick_button("./llogon.php", $lang['back'], false, false, "_top");
             light_html_draw_bottom();
             exit;
         }
@@ -163,7 +163,7 @@ light_html_draw_top();
 if (isset($error_html)) echo $error_html;
 
 echo "<p>{$lang['welcometolight']}</p>\n";
-echo "<form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"POST\">\n";
+echo "<form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"post\">\n";
 
 echo "<p>{$lang['username']}: ";
 echo light_form_input_text("logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";

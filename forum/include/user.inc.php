@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.206 2004-11-04 18:43:37 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.207 2004-11-05 18:50:04 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -843,7 +843,7 @@ function user_get_aliases($uid)
     $sql = "SELECT USER.UID, USER.LOGON, POST.IPADDRESS FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
     $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
-    $sql.= "GROUP BY USER.UID, ORDER BY POST.TID DESC LIMIT 0, 10";
+    $sql.= "GROUP BY USER.UID ORDER BY POST.TID DESC LIMIT 0, 10";
 
     $result = db_query($sql, $db_user_get_aliases);
 

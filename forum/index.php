@@ -1,5 +1,10 @@
 <?php
 // Main page
+// Disable caching when showing logon page
+require_once("./include/header.inc.php");
+if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+    header_no_cache();
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">

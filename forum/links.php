@@ -61,8 +61,15 @@ if (isset($HTTP_GET_VARS['action'])) {
 
 $folders = links_folders_get(perm_is_moderator());
 
+// if the LINKS_FOLDERS database is empty, add a 'Top Level' folder
+
+if (!is_array($folders)) {
+  links_add_folder(1, 'Top Level', true);
+  $folders = links_folders_get(perm_is_moderator());
+}
+
 if ($HTTP_GET_VARS['fid'] && !isset($fid)) { // default to top level folder if no other valid folder specified
-    if (array_key_exists($HTTP_GET_VARS['fid'], $folders)) {
+    if (is_array($folders) && array_key_exists($HTTP_GET_VARS['fid'], $folders)) {
         $fid = $HTTP_GET_VARS['fid'];
     } else {
         $fid = 1;
@@ -122,9 +129,9 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
 $links = links_get_in_folder($fid, perm_is_moderator(), $sort_by, $sort_dir);
 
 echo "<table width=\"95%\" align=\"center\">\n";
-echo "<tr class=\"posthead\">";
+echo "<tr>";
 
-echo "<td>";
+echo "<td class=\"posthead\">";
 if ($sort_by == "TITLE" && $sort_dir == "ASC") {
     echo "<a href=\"links.php?fid=$fid&sort_by=TITLE&sort_dir=DESC\">Name</a>";
 } else {
@@ -132,7 +139,7 @@ if ($sort_by == "TITLE" && $sort_dir == "ASC") {
 }
 echo "</td>\n";
 
-echo "<td>";
+echo "<td class=\"posthead\">";
 if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
     echo "<a href=\"links.php?fid=$fid&sort_by=DESCRIPTION&sort_dir=DESC\">Description</a>";
 } else {
@@ -140,7 +147,7 @@ if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
 }
 echo "</td>\n";
 
-echo "<td>";
+echo "<td class=\"posthead\">";
 if ($sort_by == "NICKNAME" && $sort_dir == "ASC") {
     echo "<a href=\"links.php?fid=$fid&sort_by=NICKNAME&sort_dir=DESC\">Submitted by</a>";
 } else {
@@ -148,7 +155,7 @@ if ($sort_by == "NICKNAME" && $sort_dir == "ASC") {
 }
 echo "</td>\n";
 
-echo "<td>";
+echo "<td class=\"posthead\">";
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
     echo "<a href=\"links.php?fid=$fid&sort_by=CREATED&sort_dir=DESC\">Date</a>";
 } else {
@@ -156,7 +163,7 @@ if ($sort_by == "CREATED" && $sort_dir == "ASC") {
 }
 echo "</td>\n";
 
-echo "<td>";
+echo "<td class=\"posthead\">";
 if ($sort_by == "CLICKS" && $sort_dir == "DESC") {
     echo "<a href=\"links.php?fid=$fid&sort_by=CLICKS&sort_dir=ASC\">Clicks</a>";
 } else {
@@ -164,7 +171,7 @@ if ($sort_by == "CLICKS" && $sort_dir == "DESC") {
 }
 echo "</td>\n";
 
-echo "<td>";
+echo "<td class=\"posthead\">";
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
     echo "<a href=\"links.php?fid=$fid&sort_by=RATING&sort_dir=ASC\">Rating</a>";
 } else {
@@ -172,18 +179,18 @@ if ($sort_by == "RATING" && $sort_dir == "DESC") {
 }
 echo "</td>\n";
 
-if (perm_is_moderator()) echo "<td>Moderation</td>";
-echo "<td>Comments / Vote</td>\n";
+if (perm_is_moderator()) echo "<td class=\"posthead\">Moderation</td>";
+echo "<td class=\"posthead\">Comments / Vote</td>\n";
 echo "</tr>\n";
 
 if (sizeof($links) > 0 ) {
       while (list($key, $link) = each($links)) {
       echo "<tr" ; if ($link['VISIBLE'] == "N") echo " style=\"color: gray\""; echo ">";
-      echo "<td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] ."?lid=$key&action=go\" target=\"_blank\""; if ($link['VISIBLE'] == "N") echo " style=\"color: gray\""; echo ">". _stripslashes($link['TITLE']) . "</a></td>";
-      echo "<td>" . _stripslashes($link['DESCRIPTION']) . "</td>";
-      echo "<td>" . format_user_name($link['LOGON'], $link['NICKNAME']) . "</td>";
-      echo "<td>" . format_time($link['CREATED']) . "</td>";
-      echo "<td>{$link['CLICKS']}</td>";
+      echo "<td class=\"postbody\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?lid=$key&action=go\" target=\"_blank\""; if ($link['VISIBLE'] == "N") echo " style=\"color: gray\""; echo ">". _stripslashes($link['TITLE']) . "</a></td>";
+      echo "<td class=\"postbody\">", _stripslashes($link['DESCRIPTION']), "</td>";
+      echo "<td class=\"postbody\">", format_user_name($link['LOGON'], $link['NICKNAME']), "</td>";
+      echo "<td class=\"postbody\">", format_time($link['CREATED']), "</td>";
+      echo "<td class=\"postbody\">", $link['CLICKS'], "</td>";
       echo "<td>";
       if ($link['RATING'] != "") echo round($link['RATING'], 1);
       echo "</td>";
@@ -192,14 +199,14 @@ if (sizeof($links) > 0 ) {
           if ($link['VISIBLE'] == "Y") { echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$fid&action=hide&lid=$key\">[hide]</a>"; } else { echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?fid=$fid&action=show&lid=$key\">[unhide]</a>"; }
           echo "</td>";
       }
-      echo "<td><a href=\"links_detail.php?lid=$key\" class=\"threadtime\">[view]</a></td>";
+      echo "<td class=\"postbody\"><a href=\"links_detail.php?lid=$key\" class=\"threadtime\">[view]</a></td>";
       echo "</tr>\n";
       }
 } else {
-      echo "<tr><td colspan=\"5\">No links in this folder.</td></tr>\n";
+      echo "<tr><td colspan=\"5\" class=\"postbody\">No links in this folder.</td></tr>\n";
 }
 
-echo $HTTP_COOKIE_VARS['bh_sess_uid'] ? "<tr><td>&nbsp;</td></tr><tr><td><a href=\"links_add.php?mode=link&fid=$fid\"><b>Add link here</b></a></td></tr>\n" : "";
+echo $HTTP_COOKIE_VARS['bh_sess_uid'] ? "<tr><td class=\"postbody\">&nbsp;</td></tr><tr><td class=\"postbody\"><a href=\"links_add.php?mode=link&fid=$fid\"><b>Add link here</b></a></td></tr>\n" : "";
 echo "</table>\n";
 html_draw_bottom();
 ?>

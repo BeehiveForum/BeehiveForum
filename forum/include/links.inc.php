@@ -124,10 +124,14 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
 
 function links_get_subfolders($fid, $folders)
 {
-	$subfolders = array();
-    while (list($key, $val) = each($folders)) {
-          if ($val['PARENT_FID'] == $fid && $key != 1) $subfolders[] = $key;
+    $subfolders = array();
+
+    if (is_array($folders)) {
+        while (list($key, $val) = each($folders)) {
+            if ($val['PARENT_FID'] == $fid && $key != 1) $subfolders[] = $key;
+        }
     }
+      
     return $subfolders;
 }
 

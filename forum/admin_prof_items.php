@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.23 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: admin_prof_items.php,v 1.24 2003-07-28 17:09:22 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -92,16 +92,16 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         foreach($HTTP_POST_VARS['t_piid'] as $piid => $value) {
 
-            if (($HTTP_POST_VARS['t_name'][$piid] != $HTTP_POST_VARS['t_old_name'][$piid]) || ($HTTP_POST_VARS['t_move'][$piid] != $psid) || ($HTTP_POST_VARS['t_position'][$piid] != $HTTP_POST_VARS['t_old_position'][$piid])) {
+            if (($HTTP_POST_VARS['t_name'][$piid] != $HTTP_POST_VARS['t_old_name'][$piid]) || ($HTTP_POST_VARS['t_move'][$piid] != $psid) || ($HTTP_POST_VARS['t_position'][$piid] != $HTTP_POST_VARS['t_old_position'][$piid]) || ($HTTP_POST_VARS['t_type'][$piid] != $HTTP_POST_VARS['t_old_type'][$piid])) {
                 $new_name = (trim($HTTP_POST_VARS['t_name'][$piid]) != "") ? trim($HTTP_POST_VARS['t_name'][$piid]) : $HTTP_POST_VARS['t_old_name'][$piid];
-                profile_item_update($HTTP_POST_VARS['t_piid'][$piid], $HTTP_POST_VARS['t_move'][$piid], $HTTP_POST_VARS['t_position'][$piid], $new_name);
+                profile_item_update($HTTP_POST_VARS['t_piid'][$piid], $HTTP_POST_VARS['t_move'][$piid], $HTTP_POST_VARS['t_position'][$piid], $HTTP_POST_VARS['t_type'][$piid], $new_name);
                 admin_addlog(0, 0, 0, 0, $psid, $HTTP_POST_VARS['t_piid'][$piid], 13);
             }
         }
     }
 
     if (trim($HTTP_POST_VARS['t_name_new']) != "" && trim($HTTP_POST_VARS['t_name_new']) != $lang['newitem']) {
-        $new_piid = profile_item_create($psid, trim($HTTP_POST_VARS['t_name_new']), (isset($HTTP_POST_VARS['t_piid']) ? sizeof($HTTP_POST_VARS['t_piid']) : 1));
+        $new_piid = profile_item_create($psid, trim($HTTP_POST_VARS['t_name_new']), (isset($HTTP_POST_VARS['t_piid']) ? sizeof($HTTP_POST_VARS['t_piid']) : 1), $HTTP_POST_VARS['t_type_new']);
         admin_addlog(0, 0, 0, 0, $psid, $new_piid, 14);
     }
 
@@ -126,6 +126,7 @@ echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['position']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['itemname']}</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['type']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['moveto']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deleteitem']}</td>\n";
 echo "          </tr>\n";
@@ -137,6 +138,7 @@ if ($profile_items = profile_items_get($psid)) {
         echo "          <tr>\n";
         echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_items[$i]['PIID']}]", range(1, sizeof($profile_items) + 1), range(1, sizeof($profile_items) + 1), $i + 1), form_input_hidden("t_old_position[{$profile_items[$i]['PIID']}]", $i), form_input_hidden("t_piid[{$profile_items[$i]['PIID']}]", $profile_items[$i]['PIID']), "</td>\n";
         echo "            <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_items[$i]['PIID']}]", $profile_items[$i]['NAME'], 64, 64), form_input_hidden("t_old_name[{$profile_items[$i]['PIID']}]", $profile_items[$i]['NAME']), "</td>\n";
+        echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type[{$profile_items[$i]['PIID']}]", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown']), $profile_items[$i]['TYPE']), form_input_hidden("t_old_type[{$profile_items[$i]['PIID']}]", $profile_items[$i]['TYPE']), "</td>\n";
         echo "            <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid, "t_move[{$profile_items[$i]['PIID']}]"), "</td>\n";
         echo "            <td valign=\"top\" align=\"left\" width=\"100\">", form_submit("t_delete[{$profile_items[$i]['PIID']}]", $lang['delete']), "</td>\n";
         echo "          </tr>\n";
@@ -147,6 +149,7 @@ if ($profile_items = profile_items_get($psid)) {
 echo "          <tr>\n";
 echo "            <td align=\"left\">{$lang['new_caps']}</td>\n";
 echo "            <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 64, 64), "</td>";
+echo "            <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type_new", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown'])), "</td>\n";
 echo "            <td align=\"center\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "            <td align=\"center\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
@@ -158,6 +161,8 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <p>", form_input_hidden("t_psid", $psid), form_submit('submit', 'Save'), "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit("cancel", $lang['back']), "</p>\n";
+echo "  <p>{$lang['fieldtypeexample1']}</p>\n";
+echo "  <p>{$lang['fieldtypeexample2']}</p>\n";
 echo "</form>\n";
 echo "</div>\n";
 

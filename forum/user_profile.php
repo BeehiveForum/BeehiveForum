@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.26 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: user_profile.php,v 1.27 2003-07-28 17:09:23 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -162,17 +162,28 @@ echo "          <tr>\n";
 echo "            <td width=\"75%\" valign=\"top\">\n";
 echo "              <table width=\"100%\">\n";
 
-$sql = "SELECT PI.NAME, UP.ENTRY FROM " . forum_table("PROFILE_ITEM") . " PI ";
+$sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM " . forum_table("PROFILE_ITEM") . " PI ";
 $sql.= "LEFT JOIN " . forum_table("USER_PROFILE") . " UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
 $sql.= "WHERE PI.PSID = $psid ORDER BY PI.POSITION, PI.PIID";
 
 $result = db_query($sql,$db);
 
-while($row = db_fetch_array($result)){
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $row['NAME'] . "</td>\n";
-    echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($row['ENTRY']) ? _stripslashes($row['ENTRY']) : "", "</td>\n";
-    echo "                </tr>\n";
+while ($row = db_fetch_array($result)) {
+    if (($row['TYPE'] == PROFILE_ITEM_RADIO) || ($row['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+
+        list($field_name, $field_values) = explode(':', $row['NAME']);
+        $field_values = explode(';', $field_values);
+
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">", $field_name, "</td>\n";
+        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($field_values[$row['ENTRY']]) ? $field_values[$row['ENTRY']] : "", "</td>\n";
+        echo "                </tr>\n";
+    }else {
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $row['NAME'] . "</td>\n";
+        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($row['ENTRY']) ? nl2br(_stripslashes($row['ENTRY'])) : "", "</td>\n";
+        echo "                </tr>\n";
+    }
 }
 
 $sql = "select PIC_URL from ". forum_table("USER_PREFS"). " where UID = $uid";

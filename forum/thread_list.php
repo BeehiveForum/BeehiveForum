@@ -158,7 +158,7 @@ echo form_submit("go","Go!"). "\n";
 // The tricky bit - displaying the right threads for whatever mode is selected
 
 if(isset($folder)){
-    list($thread_info, $folder_order) = threads_get_folder($user,$folder,$start_from);
+    list($thread_info, $folder_order) = threads_get_folder($user, $folder, $start_from);
 } else {
     switch ($mode) {
         case 0: // All discussions
@@ -260,8 +260,8 @@ if (isset($HTTP_GET_VARS['msg'])) {
     $selectedfolder = 0;
 }
 
-while (list($fid, $folder) = each($folder_info)) {
-  if (!$folder['INTEREST'] || ($selectedfolder == $fid)) {
+while (list($fid, $folder_data) = each($folder_info)) {
+  if (!$folder_data['INTEREST'] || ($selectedfolder == $fid)) {
     if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
   }else {
     $ignored_folders[] = $fid;
@@ -400,9 +400,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     echo "</td></tr>\n";
                 }
             }
-
+            
             if (isset($folder) && $folder_number == $folder) {
-
+            
                 $more_threads = $folder_msgs[$folder] - $start_from - 50;
 
                 if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"3\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&folder=$folder&start_from=".($start_from + 50)."\" class=\"folderinfo\">Next $more_threads threads</a></td></tr>\n";

@@ -25,7 +25,7 @@ function closeAttachWin () {
     }
 }
 
-function launchAttachWin (aid) {
+function launchAttachEditWin (aid) {
     attachwin = window.open('edit_attachments.php?aid='+ aid, 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
 }
 

@@ -23,22 +23,35 @@ USA
 
 // THREAD LIST DISPLAY
 
-// NOTE: The way this works at the moment, it's insecure. Anyone could see
-// anyone else's unread messages etc. by changing the UID in the query string.
-
 // Require functions
 require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
 
 // Check that required variables are set
-// default to display all discussions if no other mode specified
 if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
     $user = 0; // default to UID 0 if no other UID specified
-    if (!isset($HTTP_GET_VARS['mode'])) { $mode = 0; } else { $mode = $HTTP_GET_VARS['mode']; }
+    if (!isset($HTTP_GET_VARS['mode'])) { 
+        $mode = 0;
+    } else {
+        // non-logged in users can only display "All" threads or those in the past x days, since the other options would be impossible
+        if ($HTTP_GET_VARS['mode'] == 0 || $HTTP_GET_VARS['mode'] == 3 || $HTTP_GET_VARS['mode'] == 4 || $HTTP_GET_VARS['mode'] == 5) {
+            $mode = $HTTP_GET_VARS['mode'];
+        } else {
+            $mode = 0;
+        }
+    }
 } else {
     $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    if (!isset($HTTP_GET_VARS['mode'])) { $mode = 1; } else { $mode = $HTTP_GET_VARS['mode']; }
+    if (!isset($HTTP_GET_VARS['mode'])) { 
+        if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
+            $mode = 1;
+        } else {
+            $mode = 0;
+        }
+    } else { 
+        $mode = $HTTP_GET_VARS['mode'];
+    }
 }
 
 if(isset($HTTP_GET_VARS['folder'])){
@@ -68,7 +81,7 @@ function change_current_thread (thread_id) {
 	<tr>
 		<td>
 			<?
-			// Calls the desired mode
+			// Calls the desired mode (and hides non-available modes from guest users)
 			echo "<form method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
 			echo "<select name=\"mode\" class=\"thread_list_mode\" onChange=\"submit();\">\n";
 
@@ -76,13 +89,15 @@ function change_current_thread (thread_id) {
 			if ($mode == 0) echo "selected ";
 			echo "value=\"0\">All Discussions</option>\n";
 
-			echo "<option ";
-			if ($mode == 1) echo "selected ";
-			echo "value=\"1\">Unread Discussions</option>\n";
+            if ($user) {
+                echo "<option ";
+			    if ($mode == 1) echo "selected ";
+			    echo "value=\"1\">Unread Discussions</option>\n";
 
-            echo "<option ";
-			if ($mode == 2) echo "selected ";
-			echo "value=\"2\">Unread \"To: Me\"</option>\n";
+                echo "<option ";
+			    if ($mode == 2) echo "selected ";
+			    echo "value=\"2\">Unread \"To: Me\"</option>\n";
+            }
 
 			echo "<option ";
 			if ($mode == 3) echo "selected ";
@@ -96,25 +111,27 @@ function change_current_thread (thread_id) {
 			if ($mode == 5) echo "selected ";
 			echo "value=\"5\">7 Days Back</option>\n";
 
-			echo "<option ";
-			if ($mode == 6) echo "selected ";
-			echo "value=\"6\">High Interest</option>\n";
-
-            echo "<option ";
-			if ($mode == 7) echo "selected ";
-			echo "value=\"7\">Unread High Interest</option>\n";
-
-			echo "<option ";
-			if ($mode == 8) echo "selected ";
-			echo "value=\"8\">I've Recently Seen</option>\n";
-
-			echo "<option ";
-			if ($mode == 9) echo "selected ";
-			echo "value=\"9\">I've Ignored</option>\n";
-
-			echo "<option ";
-			if ($mode == 10) echo "selected ";
-			echo "value=\"10\">I've Subscribed To</option>\n";
+            if ($user) {
+    			echo "<option ";
+    			if ($mode == 6) echo "selected ";
+    			echo "value=\"6\">High Interest</option>\n";
+    
+                echo "<option ";
+    			if ($mode == 7) echo "selected ";
+    			echo "value=\"7\">Unread High Interest</option>\n";
+    
+    			echo "<option ";
+    			if ($mode == 8) echo "selected ";
+    			echo "value=\"8\">I've Recently Seen</option>\n";
+    
+    			echo "<option ";
+    			if ($mode == 9) echo "selected ";
+    			echo "value=\"9\">I've Ignored</option>\n";
+    
+    			echo "<option ";
+    			if ($mode == 10) echo "selected ";
+    			echo "value=\"10\">I've Subscribed To</option>\n";
+            } 
 
 			?>
 			</select><input type="submit" value="Go!" class="thread_list_mode" />
@@ -210,19 +227,6 @@ while (list($key1, $folder) = each($folder_order)) {
 		echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 		while (list($key2, $thread) = each($thread_info)) {
 			if ($thread['fid'] == $folder) {
-				// work out the number of new posts and format something in square brackets accordingly
-				/*if ($thread['length'] == $thread['last_read']) {
-					$number = "[".$thread['length']."]";
-					$latest_post = 1;
-				} elseif ($thread['last_read'] == 0) {
-					$number = "[".$thread['length']." new]";
-					$latest_post = 1;
-				} else {
-					$new_posts = $thread['length'] - $thread['last_read'];
-					$number = "[".$new_posts." new of ".$thread['length']."]";
-					$latest_post = $thread['last_read'] + 1;
-				}*/
-
 				echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
 				
                                 if ($thread['last_read'] == 0) {
@@ -267,12 +271,6 @@ while (list($key1, $folder) = each($folder_order)) {
 				echo "</td><td valign=\"top\" nowrap=\"nowrap\">";
 				echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";
 				echo "</td></tr>\n";
-
-
-				/*echo "<p>\n";
-				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\">".$thread['title']."</a><br />";
-				echo "<span class=\"threadtime\">".$thread_time."</span><span class=\"threadxnewofy\">$number</span>\n";
-				echo "</p>\n";*/
 			}
 		}
 		echo "</table>\n";

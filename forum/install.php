@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.31 2005-03-27 13:02:39 decoyduck Exp $ */
+/* $Id: install.php,v 1.32 2005-03-31 19:23:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -39,7 +39,13 @@ if (@file_exists("./include/config.inc.php")) {
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 
-if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
+if (isset($_GET['force_install']) && $_GET['force_install'] == 'yes') {
+    $force_install = true;
+}else {
+    $force_install = false;
+}
+
+if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_install)) {
 
     $valid = true;
     $config_saved = false;
@@ -538,11 +544,13 @@ echo "}\n\n";
 echo "//-->\n";
 echo "</script>\n";
 echo "</head>\n";
+echo "<body>\n";
+echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
+echo "<input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
 
-echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
+if (!defined('BEEHIVE_INSTALLED') || $force_install) {
 
-if (!defined('BEEHIVE_INSTALLED')) {
-
+    echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
@@ -558,7 +566,6 @@ if (!defined('BEEHIVE_INSTALLED')) {
         echo "<br />\n";
     }
 
-    echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td width=\"500\">\n";
@@ -708,7 +715,6 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"disable_button(this); install_form.submit()\" /></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "</form>\n";
     echo "</div>\n";
 
 }else {
@@ -739,8 +745,10 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
-    echo "</body>\n";
-    echo "</html>\n";
 }
+
+echo "</form>\n";
+echo "</body>\n";
+echo "</html>\n";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.69 2005-03-29 10:47:33 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.70 2005-03-31 19:23:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
@@ -93,6 +93,8 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         while (@ob_end_clean());
         ob_start("bh_gzhandler");
         ob_implicit_flush(0);
+
+        if ($errno == ER_NO_SUCH_TABLE) install_incomplete();
 
         srand((double)microtime() * 1000000);
 

@@ -83,7 +83,7 @@ CREATE TABLE POST (
   FROM_UID mediumint(8) unsigned default NULL,
   TO_UID mediumint(8) unsigned default NULL,
   VIEWED datetime default NULL,
-  CREATED timestamp(14) NOT NULL,
+  CREATED datetime default NULL,
   STATUS tinyint(4) default '0',
   PRIMARY KEY  (TID,PID),
   KEY TO_UID (TO_UID)

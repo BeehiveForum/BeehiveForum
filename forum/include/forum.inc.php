@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.66 2004-04-28 21:33:19 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.67 2004-05-15 14:43:42 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -272,7 +272,7 @@ function forum_create($webtag, $forum_name, $access)
 
     // Only the queen can create forums!!
 
-    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+    if (perm_has_forumtools_access()) {
 
         $uid = bh_session_get_value('UID');
 
@@ -746,11 +746,6 @@ function forum_create($webtag, $forum_name, $access)
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$new_fid', 'forum_name', '$forum_name')";
         $result = db_query($sql, $db_forum_create);
 
-        // Make sure the current user is a Queen on their forum
-
-        $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) VALUES ('$uid', '$new_fid', 56)";
-        $result = db_query($sql, $db_forum_create);
-
         return $new_fid;
     }
 
@@ -761,7 +756,7 @@ function forum_delete($fid)
 {
     // Only the queen can create forums!!
 
-    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+    if (perm_has_forumtools_access()) {
 
         $db_forum_delete = db_connect();
 
@@ -809,7 +804,7 @@ function forum_update_access($fid, $access)
 
     // Only the queen can change a forums status!!
 
-    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+    if (perm_has_forumtools_access()) {
 
         $db_forum_update_access = db_connect();
 
@@ -833,7 +828,7 @@ function forum_get($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+    if (perm_has_forumtools_access()) {
 
         $db_forum_get = db_connect();
 
@@ -863,7 +858,7 @@ function forum_get_permissions($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+    if (perm_has_forumtools_access()) {
 
         $db_forum_get_permissions = db_connect();
 
@@ -892,7 +887,7 @@ function forum_update_default($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
+    if (perm_has_forumtools_access()) {
 
         $db_forum_get_permissions = db_connect();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.62 2004-05-09 00:57:46 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.63 2004-05-15 14:43:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -103,7 +103,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
+if (!(perm_has_admin_access())) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -357,7 +357,6 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
     echo "                  <tr>\n";
     echo "                    <td class=\"posthead\" colspan=\"3\" align=\"left\">{$lang['adminlogempty']}</td>\n";
     echo "                  </tr>\n";
-
 }
 
 echo "              </table>\n";
@@ -376,17 +375,13 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-
-if (bh_session_get_value('STATUS')&USER_PERM_QUEEN && $admin_log_array) {
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">\n";
-    echo "        <form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-    echo "          ", form_submit('clear',$lang['clearlog']), "\n";
-    echo "        </form>\n";
-    echo "      </td>";
-    echo "    </tr>\n";
-}
-
+echo "    <tr>\n";
+echo "      <td align=\"center\">\n";
+echo "        <form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+echo "          ", form_submit('clear',$lang['clearlog']), "\n";
+echo "        </form>\n";
+echo "      </td>";
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "</div>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.172 2004-05-11 16:49:15 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.173 2004-05-15 14:43:42 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -109,7 +109,7 @@ function user_change_pw($uid, $password, $hash)
 
         return db_query($sql, $db_user_change_pw);
 
-    }elseif (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
+    }elseif (perm_is_moderator()) {
 
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid'";
@@ -120,14 +120,13 @@ function user_change_pw($uid, $password, $hash)
     return false;
 }
 
-function user_get_status($uid)
+function user_get_status($uid, $fid = 0)
 {
     if (!is_numeric($uid)) return 0;
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT STATUS FROM USER_STATUS WHERE UID = $uid ";
-    $sql.= "AND FID = '{$table_data['FID']}'";
+    return 0;
 
     $db_user_get_status = db_connect();
 
@@ -241,14 +240,24 @@ function user_logon($logon, $password, $md5hash = false)
 
     $logon = addslashes($logon);
 
-    $table_data = get_table_prefix();
-
-    $sql = "SELECT USER.UID, USER_STATUS.STATUS FROM USER ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON ";
-    $sql.= "(USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
-    $sql.= "WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
-
     $db_user_logon = db_connect();
+
+    if ($table_data = get_table_prefix()) {
+
+        $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM USER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+        $sql.= "ON (GROUP_USERS.GID = USER.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+        $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
+        $sql.= "WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
+        $sql.= "GROUP BY USER.UID";
+
+    }else {
+
+        $sql = "SELECT USER.UID, 0 AS STATUS FROM USER ";
+        $sql.= "WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
+    }
+
     $result = db_query($sql, $db_user_logon);
 
     if (!db_num_rows($result)) {
@@ -258,7 +267,7 @@ function user_logon($logon, $password, $md5hash = false)
         $fa = db_fetch_array($result);
         $uid = $fa['UID'];
 
-        if (isset($fa['STATUS']) && $fa['STATUS'] & USER_PERM_SPLAT) { // User is banned
+        if (isset($fa['STATUS']) && $fa['STATUS'] & USER_PERM_BANNED) { // User is banned
             $uid = -2;
         }
 
@@ -278,9 +287,7 @@ function user_get($uid, $hash = false)
 
     $table_data = get_table_prefix();
 
-    $sql = "SELECT USER.*, USER_STATUS.STATUS FROM USER USER ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID) ";
-    $sql.= "WHERE USER.UID = $uid ";
+    $sql = "SELECT * FROM USER USER WHERE USER.UID = $uid ";
 
     if ($hash) {
         $hash = addslashes($hash);

@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.73 2004-04-29 19:08:24 decoyduck Exp $
+# $Id: schema.sql,v 1.74 2004-05-15 14:43:40 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -175,7 +175,63 @@ INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM) VALUES ('DEFAULT', 1);
 # --------------------------------------------------------
 
 #
-# Table structure for table `links`
+# Table structure for table `DEFAULT_GROUP_PERMS`
+#
+
+CREATE TABLE DEFAULT_GROUP_PERMS (
+  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (GID,FID)
+) TYPE=MYISAM;
+
+#
+# Dumping data for table `DEFAULT_GROUP_PERMS`
+#
+
+INSERT INTO DEFAULT_GROUP_PERMS (GID, FID, PERM) VALUES (1, 0, 1536);
+INSERT INTO DEFAULT_GROUP_PERMS (GID, FID, PERM) VALUES (1, 1, 252);
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `DEFAULT_GROUP_USERS`
+#
+
+CREATE TABLE DEFAULT_GROUP_USERS (
+  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (GID,UID)
+) TYPE=MYISAM;
+
+#
+# Dumping data for table `DEFAULT_GROUP_USERS`
+#
+
+INSERT INTO DEFAULT_GROUP_USERS (GID, UID) VALUES (1, 1);
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `DEFAULT_GROUPS`
+#
+
+CREATE TABLE DEFAULT_GROUPS (
+  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  GROUP_NAME CHAR(32) NOT NULL DEFAULT '',
+  PRIMARY KEY  (GID)
+) TYPE=MYISAM;
+
+#
+# Dumping data for table `DEFAULT_GROUPS`
+#
+
+INSERT INTO DEFAULT_GROUPS (GID, GROUP_NAME) VALUES (1, 'Queen');
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `LINKS`
 #
 
 CREATE TABLE DEFAULT_LINKS (

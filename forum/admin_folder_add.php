@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.4 2004-05-10 09:39:42 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.5 2004-05-15 14:43:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -105,7 +105,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
+if (!perm_has_admin_access()) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();

@@ -21,29 +21,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.61 2004-05-05 22:07:08 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.62 2004-05-15 14:43:42 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
 
 function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "")
 {
-    $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
 
     if (!$table_data = get_table_prefix()) return "";
 
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
 
-    if ($ustatus & PERM_CHECK_WORKER) {
-        $sql = "SELECT FID, TITLE FROM {$table_data['PREFIX']}FOLDER WHERE ";
-        $sql.= "ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL";
-    } else {
-        $sql = "SELECT DISTINCT F.FID, F.TITLE FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
-        $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-        $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR ((F.ACCESS_LEVEL = 1 OR F.ACCESS_LEVEL = 2) ";
-        $sql.= "AND UF.ALLOWED <=> 1)) AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
-    }
+    $access_allowed = USER_PERM_POST_READ;
+
+    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
+    $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.GID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = FOLDER.FID) ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 OR GROUP_PERMS.PERM IS NULL) ";
+    $sql.= "AND (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
+    $sql.= "ORDER BY FOLDER.FID ";
 
     return form_dropdown_sql($field_name.$suffix, $sql, $default_fid, $custom_html);
 }
@@ -167,11 +168,16 @@ function folder_get_available()
     if (!$table_data = get_table_prefix()) return '0';
     if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-    $sql = "SELECT DISTINCT F.FID FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
-    $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
-    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 OR ";
-    $sql.= "(F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
-    $sql.= "ORDER BY F.POSITION";
+    $access_allowed = USER_PERM_POST_READ;
+
+    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
+    $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.GID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = FOLDER.FID) ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 OR GROUP_PERMS.PERM IS NULL) ";
+    $sql.= "ORDER BY FOLDER.FID ";
 
     $result = db_query($sql, $db_folder_get_available);
 
@@ -235,32 +241,6 @@ function folder_get($fid)
     }
 }
 
-function folder_get_permissions($fid)
-{
-    $db_folder_get_permissions = db_connect();
-
-    if (!is_numeric($fid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM ";
-    $sql.= "USER USER, {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER UF ON (UF.UID = USER.UID AND UF.FID = FOLDER.FID) ";
-    $sql.= "WHERE FOLDER.FID = '$fid' AND UF.ALLOWED = 1";
-
-    $result = db_query($sql, $db_folder_get_permissions);
-
-    if (db_num_rows($result)) {
-        $users = array();
-        while($row = db_fetch_array($result)) {
-            $users[] = $row;
-        }
-        return $users;
-    }else {
-        return false;
-    }
-}
-
 // Checks that a $fid is a valid folder (i.e. it actually exists).
 
 function folder_is_valid($fid)
@@ -272,31 +252,6 @@ function folder_is_valid($fid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DISTINCT FID FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
-    $result = db_query($sql, $db_folder_get_available);
-
-    if (db_num_rows($result)) {
-        return true;
-    }
-
-    return false;
-}
-
-// Same as above, but also checks that the folder is accessible by the current user
-
-function folder_is_accessible($fid)
-{
-    $uid = bh_session_get_value('UID');
-    $db_folder_get_available = db_connect();
-
-    if (!is_numeric($fid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT DISTINCT F.FID FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
-    $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID and UF.UID = $uid) ";
-    $sql.= "where (F.ACCESS_LEVEL = 0 or ((F.ACCESS_LEVEL = 1 OR F.ACCESS_LEVEL = 2) ";
-    $sql.= "AND UF.ALLOWED <=> 1)) and F.FID = '$fid'";
-
     $result = db_query($sql, $db_folder_get_available);
 
     if (db_num_rows($result)) {
@@ -336,31 +291,6 @@ function user_set_folder_interest($fid, $interest)
     return db_query($sql, $db_user_set_folder_interest);
 }
 
-function user_get_restricted_folders($uid)
-{
-    $db_user_get_restricted_folders = db_connect();
-
-    if (!is_numeric($uid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT F.FID, F.TITLE, UF.ALLOWED FROM {$table_data['PREFIX']}FOLDER F ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER UF ON (UF.UID = $uid AND UF.FID = F.FID) ";
-    $sql.= "WHERE F.ACCESS_LEVEL = 1";
-
-    $result = db_query($sql, $db_user_get_restricted_folders);
-
-    if (db_num_rows($result)) {
-        $user_restricted_folders_array = array();
-	while ($row = db_fetch_array($result)) {
-	    $user_restricted_folders_array[] = $row;
-	}
-	return $user_restricted_folders_array;
-    }else {
-        return false;
-    }
-}
-
 function folder_thread_type_allowed($fid, $type) // for types see constants.inc.php
 {
     $db_folder_thread_type_allowed = db_connect();
@@ -389,17 +319,14 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $db_folder_get_by_type_allowed = db_connect();
 
-    $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
 
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT DISTINCT F.FID FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
-    $sql.= "{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-    $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL > 0 AND UF.ALLOWED <=> 1)) ";
-    $sql.= "AND (F.ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL)";
+    $sql = "SELECT DISTINCT FOLDER.FID FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL)";
 
     $result = db_query($sql, $db_folder_get_by_type_allowed);
 

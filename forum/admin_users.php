@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.84 2004-05-09 00:57:46 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.85 2004-05-15 14:43:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -103,7 +103,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS')&USER_PERM_SOLDIER)) {
+if (!(perm_has_admin_access())) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -212,16 +212,6 @@ if ($sort_by == 'USER.LOGON' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }
 
-if ($sort_by == 'USER.STATUS' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['status']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
-}elseif ($sort_by == 'USER.STATUS' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['status']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
-}elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['status']}</a></td>\n";
-}else {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['status']}</a></td>\n";
-}
-
 if ($sort_by == 'USER.LAST_LOGON' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['lastlogon']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" width=\"11\" border=\"0\" alt=\"\" /></a></td>\n";
 }elseif ($sort_by == 'USER.LAST_LOGON' && $sort_dir == 'DESC') {
@@ -270,22 +260,6 @@ if (sizeof($admin_user_array['user_array']) > 0) {
         echo "                 <tr>\n";
         echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", $user['UID'], "</td>\n";
         echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
-        echo "                   <td class=\"posthead\" align=\"left\">&nbsp;";
-
-        if (isset($user['STATUS']) && $user['STATUS'] > 0) {
-
-            if ($user['STATUS']&USER_PERM_QUEEN)   echo "{$lang['queen']} ";
-            if ($user['STATUS']&USER_PERM_SOLDIER) echo "{$lang['soldier']} ";
-            if ($user['STATUS']&USER_PERM_WORKER)  echo "{$lang['worker']} ";
-            if ($user['STATUS']&USER_PERM_WORM)    echo "{$lang['worm']} ";
-            if ($user['STATUS']&USER_PERM_WASP)    echo "{$lang['wasp']} ";
-            if ($user['STATUS']&USER_PERM_SPLAT)   echo "{$lang['splat']}";
-
-        }else {
-            echo "&nbsp;";
-        }
-
-        echo "</td>\n";
 
         if (!isset($user['LAST_LOGON']) || is_null($user['LAST_LOGON'])) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
@@ -309,7 +283,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
     if (isset($usersearch) && strlen($usersearch) > 0) {
 
         echo "                 <tr>\n";
-        echo "                   <td class=\"posthead\" colspan=\"7\" align=\"left\">{$lang['nomatches']}</td>\n";
+        echo "                   <td class=\"posthead\" colspan=\"5\" align=\"left\">{$lang['nomatches']}</td>\n";
         echo "                 </tr>\n";
 
     }else {
@@ -317,7 +291,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
         // Shouldn't happen ever, after all how did you get here if there are no user accounts?
 
         echo "                 <tr>\n";
-        echo "                   <td class=\"posthead\" colspan=\"7\" align=\"left\">{$lang['nouseraccounts']}</td>\n";
+        echo "                   <td class=\"posthead\" colspan=\"5\" align=\"left\">{$lang['nouseraccounts']}</td>\n";
         echo "                 </tr>\n";
 
     }
@@ -325,7 +299,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 }
 
 echo "                 <tr>\n";
-echo "                   <td colspan=\"6\">&nbsp;</td>\n";
+echo "                   <td colspan=\"5\">&nbsp;</td>\n";
 echo "                 </tr>\n";
 echo "               </table>\n";
 echo "             </td>\n";

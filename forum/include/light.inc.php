@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.45 2004-04-28 20:38:57 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.46 2004-05-15 14:43:42 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -518,10 +518,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
         if ($in_list && $limit_text != false) {
 
-            if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
+            if (!$closed) {
 
                 echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";
-
             }
         }
 
@@ -622,18 +621,21 @@ function light_html_guest_error ()
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
-    $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
 
     if (!is_numeric($default_fid))
 
-    if (bh_session_get_value('STATUS') & PERM_CHECK_WORKER) {
-        $sql = "SELECT FID, TITLE FROM {$table_data['PREFIX']}FOLDER";
-    } else {
-        $sql = "SELECT DISTINCT F.FID, F.TITLE FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
-        $sql."{$table_data['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
-        $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
-    }
+    $access_allowed = USER_PERM_POST_READ;
+
+    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
+    $sql.= "FOLDER.ALLOWED_TYPES FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.GID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = FOLDER.FID) ";
+    $sql.= "WHERE (GROUP_PERMS.PERM & $access_allowed > 0 OR GROUP_PERMS.PERM IS NULL) ";
+    $sql.= "AND (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
+    $sql.= "ORDER BY FOLDER.FID ";
 
     return form_dropdown_sql($field_name.$suffix, $sql, $default_fid);
 }

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.193 2004-05-11 15:51:40 decoyduck Exp $ */
+/* $Id: post.php,v 1.194 2004-05-15 14:43:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -280,12 +280,32 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     $replyto = $_GET['replyto'];
     list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
+
+    if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
     $newthread = false;
 
-}elseif (isset($_POST['t_tid'])) {
+}elseif (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) {
 
     $reply_to_tid = $_POST['t_tid'];
     $reply_to_pid = $_POST['t_rpid'];
+
+    if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
     $newthread = false;
 
 }else{
@@ -309,7 +329,7 @@ if (!$newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if (((user_get_status($reply_message['FROM_UID'])&USER_PERM_WORM) && !perm_is_moderator()) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
+    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator()) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
 
         $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         $valid = false;
@@ -349,7 +369,7 @@ if ($valid && isset($_POST['submit'])) {
             if (isset($_POST['t_sticky'])) $t_sticky = $_POST['t_sticky'];
             if (isset($_POST['old_t_sticky'])) $old_t_sticky = $_POST['old_t_sticky'];
 
-            if (bh_session_get_value("STATUS")&PERM_CHECK_WORKER) {
+            if (perm_is_moderator($t_fid)) {
                 $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
                 $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
             } else {
@@ -365,7 +385,7 @@ if ($valid && isset($_POST['submit'])) {
             $t_tid = $_POST['t_tid'];
             $t_rpid = $_POST['t_rpid'];
 
-            if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!(bh_session_get_value('STATUS')&PERM_CHECK_WORKER))) {
+            if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!perm_is_moderator($t_fid))) {
 
                 html_draw_top();
 
@@ -387,7 +407,7 @@ if ($valid && isset($_POST['submit'])) {
                 exit;
             }
 
-            if (bh_session_get_value("STATUS")&PERM_CHECK_WORKER) {
+            if (perm_is_moderator($t_fid)) {
 
                 if (isset($_POST['t_closed'])) $t_closed = $_POST['t_closed'];
                 if (isset($_POST['old_t_closed'])) $old_t_closed = $_POST['old_t_closed'];
@@ -418,7 +438,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 
-            if (!(user_get_status(bh_session_get_value('UID'))&USER_PERM_WORM)) {
+            if (!(user_get_status(bh_session_get_value('UID')) & USER_PERM_WORM)) {
                 email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
                 email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
             }
@@ -487,7 +507,7 @@ if (!$newthread) {
         echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
         echo "<tr><td>\n";
 
-        if (bh_session_get_value('STATUS')&PERM_CHECK_WORKER) {
+        if (perm_is_moderator($t_fid)) {
             echo "<h2>".$lang['moderatorthreadclosed']."</h2>\n";
             echo "</td></tr>\n";
 
@@ -632,7 +652,7 @@ if ($emot_prev != "") {
     echo $emot_prev."<br />\n";
 }
 
-if (bh_session_get_value("STATUS")&PERM_CHECK_WORKER) {
+if (perm_is_moderator($t_fid)) {
 
     echo "<h2>".$lang['admin'].":</h2>\n";
     echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);

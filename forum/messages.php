@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.146 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: messages.php,v 1.147 2004-05-15 14:43:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -119,11 +119,12 @@ if (!isset($tid) || !is_numeric($tid)) $tid = 1;
 if (!isset($pid) || !is_numeric($pid)) $pid = 1;
 
 if (!thread_can_view($tid, bh_session_get_value('UID'))) {
-        html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-        html_draw_bottom();
-        exit;
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+    html_draw_bottom();
+    exit;
 }
 
 // Poll stuff
@@ -264,15 +265,16 @@ echo "</div>\n";
 if ($msg_count > 0) {
 
     $first_msg = $messages[0]['PID'];
+
     foreach($messages as $message) {
 
         if (isset($message['RELATIONSHIP'])) {
 
-          if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
-            $message['CONTENT'] = message_get_content($tid, $message['PID']);
-          }else {
-            $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
-          }
+            if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
+                $message['CONTENT'] = message_get_content($tid, $message['PID']);
+            }else {
+                $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
+            }
 
         }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.20 2004-05-09 00:57:43 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.21 2004-05-15 14:43:41 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -103,7 +103,7 @@ $webtag = get_webtag($webtag_search);
 
 html_draw_top();
 
-if (!(bh_session_get_value('STATUS')&USER_PERM_QUEEN)) {
+if (!perm_has_forumtools_access()) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.30 2004-08-07 22:39:47 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.31 2004-08-14 15:11:45 hodcroftcj Exp $ */
 
 // Gangsta language file
 
@@ -925,6 +925,8 @@ $lang['privacysettings'] = "Privacy Settings";
 $lang['includeadminfilter'] = "Include admin word filter in my list.";
 $lang['allowpersonalmessages'] = "Allow other users to send me personal messages";
 $lang['allowemails'] = "Allow other users to send me emails via my profile";
+$lang['setforallforums'] = "Set for all forums?";
+$lang['containsinvalidchars'] = "contained invalid characters!";
 $lang['postpage'] = "Post Page";
 $lang['displayhtmltoolbar'] = "Display HTML toolbar";
 $lang['displayemoticonspanel'] = "Display emoticons panel";

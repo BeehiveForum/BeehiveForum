@@ -21,9 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.16 2004-04-24 18:42:30 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.17 2004-08-14 15:11:45 hodcroftcj Exp $ */
 
 include_once("./include/lang.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/form.inc.php");
 
 function header_no_cache()
 {
@@ -39,10 +41,37 @@ function header_no_cache()
 
 function header_redirect($uri)
 {
-    header("Request-URI: $uri");
-    header("Content-Location: $uri");
-    header("Location: $uri");
-    exit;
+ 	header("Request-URI: $uri");
+	header("Content-Location: $uri");
+	header("Location: $uri");
+	exit;
+}
+
+function header_redirect_cookie($uri)
+{
+    // Microsoft-IIS bug prevents redirect at same time as setting cookies.
+
+	if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+	   	header_redirect($uri);
+	} else {
+        html_draw_top();
+
+        // Try a Javascript redirect
+        echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+        echo "<!--\n";
+        echo "document.location.href = '$uri';\n";
+        echo "//-->\n";
+        echo "</script>";
+
+        // If they're still here, Javascript's not working. Give up, give a link.
+        echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
+        echo "<p>{$lang['preferencesupdated']}</p>";
+
+        form_quick_button($uri, $lang['continue'], false, false, "_top");
+
+        html_draw_bottom();
+        exit;
+    }
 }
 
 ?>

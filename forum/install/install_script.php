@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.14 2004-08-09 21:26:37 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.15 2004-08-14 15:12:02 hodcroftcj Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -511,33 +511,27 @@ if(!$result = mysql_query($sql, $db_install)) {
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_PREFS (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FIRSTNAME VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  LASTNAME VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  DOB DATE NOT NULL DEFAULT '0000-00-00',";
 $sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  TIMEZONE DECIMAL(2,1) NOT NULL DEFAULT '0.0',";
-$sql.= "  DL_SAVING CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  POSTS_PER_PAGE TINYINT(3) UNSIGNED NOT NULL DEFAULT '20',";
-$sql.= "  FONT_SIZE TINYINT(3) UNSIGNED NOT NULL DEFAULT '10',";
+$sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20',";
+$sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
 $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT '',";
-$sql.= "  START_PAGE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  DOB_DISPLAY TINYINT(3) UNSIGNED NOT NULL DEFAULT '2',";
-$sql.= "  ANON_LOGON TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  SHOW_STATS TINYINT(3) UNSIGNED NOT NULL DEFAULT '1',";
+$sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
+$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
 $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  POST_PAGE INT(32) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ")";
 
@@ -813,6 +807,42 @@ $sql.= ")";
 
 if(!$result = mysql_query($sql, $db_install)) {
     $valid = false;
+}
+
+$sql = "CREATE TABLE USER_PREFS (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FIRSTNAME VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  LASTNAME VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  DOB DATE NOT NULL DEFAULT '0000-00-00',";
+$sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  TIMEZONE DECIMAL(2,1) NOT NULL DEFAULT 0,";
+$sql.= "  DL_SAVING CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20',";
+$sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
+$sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  START_PAGE TINYINT(1) NOT NULL DEFAULT '0',";
+$sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
+$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+$sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  POST_PAGE CHAR(3) DEFAULT '0',";
+$sql.= "  PRIMARY KEY (UID)";
+$sql.= "  ) TYPE=MYISAM;";
+
+if(!$result = mysql_query($sql, $db_install)) {
+    die($sql. "<br />\n". mysql_error());
 }
 
 $sql = "CREATE TABLE VISITOR_LOG (";

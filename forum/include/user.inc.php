@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.187 2004-08-08 12:18:50 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.188 2004-08-14 15:11:45 hodcroftcj Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -308,76 +308,218 @@ function user_get_sig($uid, &$content, &$html)
 
 function user_get_prefs($uid)
 {
-    $db_user_get_prefs = db_connect();
+    // See user_update_prefs() below for an explanation of the prefs system.
+	$db_user_get_prefs = db_connect();
 
     if (!is_numeric($uid)) return false;
 
-    $prefs_array = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
-                         'PIC_URL' => '', 'EMAIL_NOTIFY' => 'Y', 'TIMEZONE' => '0', 'DL_SAVING' => 'N',
-                         'MARK_AS_OF_INT' => 'Y', 'POSTS_PER_PAGE' => '20', 'FONT_SIZE' => '10',
-                         'STYLE' => '', 'VIEW_SIGS' => 'Y', 'START_PAGE' => '0', 'LANGUAGE' => '',
-                         'PM_NOTIFY' => 'Y', 'PM_NOTIFY_EMAIL' => 'Y', 'DOB_DISPLAY' => 'Y', 'ANON_LOGON' => 'N',
-                         'SHOW_STATS' => 'Y',  'IMAGES_TO_LINKS' => 'N', 'USE_WORD_FILTER' => 'N',
-                         'USE_ADMIN_FILTER' => 'N', 'EMOTICONS' => '', 'ALLOW_EMAIL' => 'Y', 'ALLOW_PM' => 'Y',
-                                                 'POST_PAGE' => '0');
+	// There are three sources of preferences:
+	// 1. The defaults, set here:
+    $default_prefs = array('FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
+                           'PIC_URL' => '', 'EMAIL_NOTIFY' => 'Y', 'TIMEZONE' => '0', 'DL_SAVING' => 'N',
+                           'MARK_AS_OF_INT' => 'Y', 'POSTS_PER_PAGE' => '20', 'FONT_SIZE' => '10',
+                           'STYLE' => '', 'VIEW_SIGS' => 'Y', 'START_PAGE' => '0', 'LANGUAGE' => '',
+                           'PM_NOTIFY' => 'Y', 'PM_NOTIFY_EMAIL' => 'Y', 'DOB_DISPLAY' => 'Y', 'ANON_LOGON' => 'N',
+                           'SHOW_STATS' => 'Y',  'IMAGES_TO_LINKS' => 'N', 'USE_WORD_FILTER' => 'N',
+                           'USE_ADMIN_FILTER' => 'N', 'EMOTICONS' => '', 'ALLOW_EMAIL' => 'Y', 'ALLOW_PM' => 'Y', 'POST_PAGE' => '0');
 
-    if (!$table_data = get_table_prefix()) return $prefs_array;
+    // 2. The user's global prefs, in USER_PREFS:
+	$sql  = "SELECT FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, ";
+	$sql .= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, ";
+	$sql .= "PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
+	$sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, POST_PAGE FROM USER_PREFS WHERE UID = $uid";
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_prefs);
+    $global_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, MYSQL_ASSOC) : array();
 
-    if (db_num_rows($result) > 0) {
-        $prefs_array = array_merge($prefs_array, db_fetch_array($result, MYSQL_ASSOC));
-    }
+	// 3. The user's per-forum prefs, in {webtag}_USER_PREFS (not all prefs are set here e.g. name):
+	if ($table_data = get_table_prefix()) {
+	   	$sql  = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, ";
+		$sql .= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, ";
+		$sql .= "PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
+		$sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+       	$result = db_query($sql, $db_user_get_prefs);
+       	$forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, MYSQL_ASSOC) : array();
+ 	}
+    
+	// Prune empty values from the arrays (to stop them overwriting valid values) using strlen() as a callback function.
+	$global_prefs = array_filter($global_prefs, "strlen");
+	$forum_prefs = array_filter($forum_prefs, "strlen");
 
+	// Add keys to indicate whether the preference is set globally or not
+	foreach ($default_prefs as $key => $value) {
+	    $default_prefs[$key.'_GLOBAL'] = true;
+	}
+	foreach ($forum_prefs as $key => $value) {
+		$forum_prefs[$key.'_GLOBAL'] = false;
+	}
+	foreach ($global_prefs as $key => $value) {
+	    $global_prefs[$key.'_GLOBAL'] = true;
+	}
+
+	// Merge them all together, with forum prefs overriding global prefs overriding default prefs
+	$prefs_array = array_merge($default_prefs, $global_prefs, $forum_prefs);
     return $prefs_array;
 }
 
-function user_update_prefs($uid, $prefs_array)
+function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = false)
 {
-    if (!is_numeric($uid)) return false;
+    /* Attempt at explaining the new prefs system:
+
+	   $prefs_array contains the preference settings to be altered. Its keys are the names of the preference
+       settings (same as the names of the corresponding database fields). $prefs_global_setting_array
+	   also has keys which are the names of the preference settings to be changed but contain Boolean values
+	   that when true set the appropriate preference globally and when false only set it for the current forum.
+	   The default behaviour is to set a preference globally if it is not specified otherwise.
+	   
+	   e.g.    $prefs_array			   	 $prefs_global_setting_array	  Result
+	   		   'STYLE' => 'default'      'STYLE' => true                  Sets STYLE to 'default' globally
+	   		   'VIEW_SIGS' => 'N'        'VIEW_SIGS' => false			  Sets VIEW_SIGS to 'N' for current forum only
+			   'FONT_SIZE' => 11		 'FONT_SIZE' not set			  Sets FONT_SIZE to 11 globally
+
+       FIRSTNAME, LASTNAME, DOB, TIMEZONE, DL_SAVING and POST_PAGE can only be set globally - there's no sense
+       in changing them on a per-forum basis.
+    */
+
+	if (!is_numeric($uid)) return false;
     if (!is_array($prefs_array)) return false;
+    if (!$prefs_global_setting_array) $prefs_global_setting_array = array();
+    if (!is_array($prefs_global_setting_array)) return false;
+    
+    // names of preferences that can be set globally
+	$global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL',
+                         	   'PIC_URL', 'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
+                         	   'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
+                         	   'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
+                         	   'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'DOB_DISPLAY', 'ANON_LOGON',
+                         	   'SHOW_STATS',  'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
+                         	   'USE_ADMIN_FILTER', 'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM', 'POST_PAGE');
+    
+    // names of preferences that can be set on a per-forum basis
+	$forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'EMAIL_NOTIFY',
+                         	   'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
+                         	   'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
+                         	   'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'DOB_DISPLAY', 'ANON_LOGON',
+                         	   'SHOW_STATS',  'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
+                         	   'USE_ADMIN_FILTER', 'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM');
+                         	   
+    foreach ($prefs_array as $pref_name => $pref_setting) {
+	    if (user_check_pref($pref_name, $pref_setting)) {
+			if (!isset($prefs_global_setting_array[$pref_name]) || $prefs_global_setting_array[$pref_name] == true) {
+				// preference is to be set globally
+				if(in_array($pref_name, $global_pref_names)) $global_prefs[$pref_name] = $pref_setting; // check this pref name is allowed to be set globally
+			} else {
+			    // preference is to be set for current forum only
+			    if(in_array($pref_name, $forum_pref_names)) $forum_prefs[$pref_name] = $pref_setting; // check this pref name is allowed to be set on a per-forum basis
+			}
+		}
+	}
 
     $db_user_update_prefs = db_connect();
 
-    if (!$table_data = get_table_prefix()) return false;
+	if (isset($global_prefs)) {
+		// Is there an entry in USER_PREFS already for this user?
+		$sql = "SELECT * FROM USER_PREFS WHERE UID = $uid";
+		$result = db_query($sql, $db_user_update_prefs);
 
-    $forum_settings = get_forum_settings();
+		if (db_num_rows($result) == 0) {
+			// no previous entry, construct an INSERT query
+			$sql  = "INSERT INTO USER_PREFS (UID,";
+			$sql .= implode(",",$global_pref_names);
+			$sql .= ") VALUES ('$uid'";
+			foreach ($global_pref_names as $pref_name) {
+			    if (isset($global_prefs[$pref_name])) {
+			        $sql .= ", '{$global_prefs[$pref_name]}'";
+			    } else {
+			        $sql .= ", ''";
+		  		}
+		  	}
+			$sql .= ")";
+   		} else {
+            // previous entry which we will UPDATE
+			$values = array();
+			foreach($global_prefs as $pref_name => $pref_setting) {
+				$values[] = "$pref_name = '$pref_setting'";
+			}
+			$sql  = "UPDATE USER_PREFS SET ";
+			$sql .= implode(",",$values);
+			$sql .= " WHERE UID = $uid";
+		}
+		$result_global = db_query($sql, $db_user_update_prefs);
 
-    // Get the current prefs and merge them with the new ones.
+        // If a pref is set globally, we need to remove it from all the [webtag]_USER_PREFS tables too.
+        // MySQL doesn't mind if a record for this user doesn't exist in a particular table.
+        $values = array();
+		foreach($global_prefs as $pref_name => $pref_setting) {
+			if (in_array($pref_name, $forum_pref_names)) {
+				$values[] = "$pref_name = ''";
+			}
+		}
+		if (count($values) > 0) {
+			$values = implode(",",$values);
+			$webtags = forum_get_all_webtags();
+			foreach($webtags as $webtag) {
+			    $sql = "UPDATE {$webtag}_USER_PREFS SET $values WHERE UID = $uid";
+			    $result = db_query($sql, $db_user_update_prefs);
+			}
+		}
+	} else {
+	    $result_global = true;
+	}
 
-    $prefs_array = array_merge(user_get_prefs($uid), $prefs_array);
+	if (isset($forum_prefs) && $table_data = get_table_prefix()) {
+	   	$sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+		$result = db_query($sql, $db_user_update_prefs);
+        
+		if (db_num_rows($result) == 0) {
+			// no previous entry, construct an INSERT query
+			$sql  = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID,";
+			$sql .= implode(",", $forum_pref_names);
+			$sql .= ") VALUES ('$uid'";
+			foreach ($forum_pref_names as $pref_name) {
+			    if (isset($forum_prefs[$pref_name])) {
+			        $sql .= ", '{$forum_prefs[$pref_name]}'";
+			    } else {
+			        $sql .= ", ''";
+		  		}
+		  	}
+			$sql .= ")";
+		 } else {
+            // previous entry which we will UPDATE
+			$values = array();
+			foreach($forum_prefs as $pref_name => $pref_setting) {
+				$values[] = "$pref_name = '$pref_setting'";
+			}
+			$values = implode(",", $values);
+			$sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = $uid";
+		 }
+		$result_forum = db_query($sql, $db_user_update_prefs);
+	} else {
+	    $result_forum = true;
+	}
 
-    // Now delete the old preferences
+    return ($result_global && $result_forum);
+}
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
-    $result = db_query($sql, $db_user_update_prefs);
-
-    if (empty($prefs_array['TIMEZONE']))       $prefs_array['TIMEZONE']       = 0;
-    if (empty($prefs_array['POSTS_PER_PAGE'])) $prefs_array['POSTS_PER_PAGE'] = 20;
-    if (empty($prefs_array['FONT_SIZE']))      $prefs_array['FONT_SIZE']      = 10;
-        if (empty($prefs_array['POST_PAGE']))      $prefs_array['POST_PAGE']      = 0;
-
-    if (!ereg("([[:alnum:]]+)", $prefs_array['STYLE'])) $prefs_array['STYLE'] = forum_get_setting('default_style');
-    if (!ereg("([[:alnum:]]+)", $prefs_array['EMOTICONS'])) $prefs_array['EMOTICONS'] = forum_get_setting('default_emoticons');
-
-    $sql = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
-    $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
-    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, ";
-    $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ALLOW_PM, POST_PAGE) ";
-    $sql.= "VALUES ($uid, '{$prefs_array['FIRSTNAME']}', '{$prefs_array['LASTNAME']}', '{$prefs_array['DOB']}', ";
-    $sql.= "'{$prefs_array['HOMEPAGE_URL']}', '{$prefs_array['PIC_URL']}', '{$prefs_array['EMAIL_NOTIFY']}', ";
-    $sql.= "'{$prefs_array['TIMEZONE']}', '{$prefs_array['DL_SAVING']}', '{$prefs_array['MARK_AS_OF_INT']}', ";
-    $sql.= "'{$prefs_array['POSTS_PER_PAGE']}', '{$prefs_array['FONT_SIZE']}', '{$prefs_array['STYLE']}', ";
-    $sql.= "'{$prefs_array['VIEW_SIGS']}', '{$prefs_array['START_PAGE']}', '{$prefs_array['LANGUAGE']}', ";
-    $sql.= "'{$prefs_array['PM_NOTIFY']}', '{$prefs_array['PM_NOTIFY_EMAIL']}', '{$prefs_array['DOB_DISPLAY']}', ";
-    $sql.= "'{$prefs_array['ANON_LOGON']}', '{$prefs_array['SHOW_STATS']}', '{$prefs_array['IMAGES_TO_LINKS']}', ";
-    $sql.= "'{$prefs_array['USE_WORD_FILTER']}', '{$prefs_array['USE_ADMIN_FILTER']}', '{$prefs_array['EMOTICONS']}', ";
-    $sql.= "'{$prefs_array['ALLOW_EMAIL']}', '{$prefs_array['ALLOW_PM']}', '{$prefs_array['POST_PAGE']}')";
-
-    $result = db_query($sql, $db_user_update_prefs);
-
-    return $result;
+function user_check_pref($name, $value)
+{
+ 	// Checks to ensure that a preference setting contains valid data
+ 	if ($name == "FIRSTNAME" || $name == "LASTNAME") {
+ 		return preg_match("/^[a-z0-9 ]*$/i", $value);
+ 	} elseif ($name == "STYLE" || $name == "EMOTICONS" || $name == "LANGUAGE") {
+	  	// NB: this does not check that the files/folders for STYLE, EMOTICONS, and LANGUAGE actually exist
+		return preg_match("/^[a-z0-9]*$/i", $value);
+	} elseif ($name ==  "DOB") {
+	    return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
+	} elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL") {
+	    return preg_match("/^(http:\/\/[a-z0-9\/.-]+|)$/i", $value);
+	} elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "IMAGES_TO_LINKS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM") {
+		return ($value == "Y" || $value == "N") ? true : false;
+	} elseif ($name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "ANON_LOGON" || $name == "SHOW_STATS" || $name == "POST_PAGE") {
+	  	return is_numeric($value);
+	} else {
+	    return false;
+	}
 }
 
 function user_update_sig($uid, $content, $html)
@@ -535,7 +677,7 @@ function user_get_forthcoming_birthdays()
     if (!$table_data = get_table_prefix()) return false;
 
     $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, DAYOFMONTH(UP.DOB) AS BDAY, MONTH(UP.DOB) AS BMONTH ";
-    $sql .= "FROM USER U, {$table_data['PREFIX']}USER_PREFS UP ";
+    $sql .= "FROM USER U, USER_PREFS UP ";
     $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 AND UP.DOB_DISPLAY = 2 ";
     $sql .= "AND ((MONTH(UP.DOB) = MONTH(NOW()) AND DAYOFMONTH(UP.DOB) >= DAYOFMONTH(NOW())) ";
     $sql .= "OR MONTH(UP.DOB) > MONTH(NOW())) ";

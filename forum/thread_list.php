@@ -34,6 +34,10 @@ require_once("./include/format.inc.php"); // Formatting functions
 // Check that required variables are set
 // default to display all discussions if no other mode specified
 if (!isset($HTTP_GET_VARS['mode'])) { $mode = 0; } else { $mode = $HTTP_GET_VARS['mode']; }
+if(isset($HTTP_GET_VARS['folder'])){
+    $folder = $HTTP_GET_VARS['folder'];
+    $mode = 0;
+}
 
 // default to UID 0 (nobody) if no other UID is specified
 if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) { $user = 0; } else { $user = $HTTP_COOKIE_VARS['bh_sess_uid']; }
@@ -63,7 +67,7 @@ function change_current_thread (thread_id) {
 			// Calls the desired mode
 			echo "<form method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
 			echo "<select name=\"mode\" class=\"thread_list_mode\" onChange=\"submit();\">\n";
-			
+
 			echo "<option ";
 			if ($mode == 0) echo "selected ";
 			echo "value=\"0\">All Discussions</option>\n";
@@ -74,7 +78,7 @@ function change_current_thread (thread_id) {
 
             echo "<option ";
 			if ($mode == 2) echo "selected ";
-			echo "value=\"2\">Unread Discussions To: Me</option>\n";
+			echo "value=\"2\">Unread \"To: Me\"</option>\n";
 
 			echo "<option ";
 			if ($mode == 3) echo "selected ";
@@ -94,7 +98,7 @@ function change_current_thread (thread_id) {
 
             echo "<option ";
 			if ($mode == 7) echo "selected ";
-			echo "value=\"7\">Unread and High Interest</option>\n";
+			echo "value=\"7\">Unread High Interest</option>\n";
 
 			echo "<option ";
 			if ($mode == 8) echo "selected ";
@@ -103,11 +107,11 @@ function change_current_thread (thread_id) {
 			echo "<option ";
 			if ($mode == 9) echo "selected ";
 			echo "value=\"9\">I've Ignored</option>\n";
-			
+
 			echo "<option ";
 			if ($mode == 10) echo "selected ";
 			echo "value=\"10\">I've Subscribed To</option>\n";
-			
+
 			?>
 			</select><input type="submit" value="Go!" class="thread_list_mode" />
 			</form>
@@ -117,40 +121,44 @@ function change_current_thread (thread_id) {
 
 // The tricky bit - displaying the right threads for whatever mode is selected
 
-switch ($mode) {
-	case 0: // All discussions
-		list($thread_info, $folder_order) = threads_get_all($user);
-		break;
-	case 1; // Unread discussions
-		list($thread_info, $folder_order) = threads_get_unread($user);
-		break;
-	case 2; // Unread discussions To: Me
-		list($thread_info, $folder_order) = threads_get_unread_to_me($user);
-		break;
-    case 3; // Today's discussions
-		list($thread_info, $folder_order) = threads_get_by_days($user, 1);
-		break;
-    case 4; // 2 days back
-		list($thread_info, $folder_order) = threads_get_by_days($user, 2);
-		break;
-    case 5; // 7 days back
-		list($thread_info, $folder_order) = threads_get_by_days($user, 7);
-		break;
-    case 6; // High interest
-		list($thread_info, $folder_order) = threads_get_by_interest($user, 1);
-		break;
-    case 7; // Unread high interest
-		list($thread_info, $folder_order) = threads_get_unread_by_interest($user, 1);
-		break;
-    case 8; // Recently seen
-		list($thread_info, $folder_order) = threads_get_recently_viewed($user);
-		break;
-    case 9; // Ignored
-		list($thread_info, $folder_order) = threads_get_by_interest($user, -1);
-		break;
-    case 10; // Subscribed to
-		list($thread_info, $folder_order) = threads_get_by_interest($user, 2);
-		break;
+if($folder){
+	list($thread_info, $folder_order) = threads_get_folder($user,$folder);
+} else {
+    switch ($mode) {
+    	case 0: // All discussions
+    		list($thread_info, $folder_order) = threads_get_all($user);
+    		break;
+    	case 1; // Unread discussions
+    		list($thread_info, $folder_order) = threads_get_unread($user);
+    		break;
+    	case 2; // Unread discussions To: Me
+    		list($thread_info, $folder_order) = threads_get_unread_to_me($user);
+    		break;
+        case 3; // Today's discussions
+    		list($thread_info, $folder_order) = threads_get_by_days($user, 1);
+    		break;
+        case 4; // 2 days back
+    		list($thread_info, $folder_order) = threads_get_by_days($user, 2);
+    		break;
+        case 5; // 7 days back
+    		list($thread_info, $folder_order) = threads_get_by_days($user, 7);
+    		break;
+        case 6; // High interest
+    		list($thread_info, $folder_order) = threads_get_by_interest($user, 1);
+    		break;
+        case 7; // Unread high interest
+    		list($thread_info, $folder_order) = threads_get_unread_by_interest($user, 1);
+    		break;
+        case 8; // Recently seen
+    		list($thread_info, $folder_order) = threads_get_recently_viewed($user);
+    		break;
+        case 9; // Ignored
+    		list($thread_info, $folder_order) = threads_get_by_interest($user, -1);
+    		break;
+        case 10; // Subscribed to
+    		list($thread_info, $folder_order) = threads_get_by_interest($user, 2);
+    		break;
+    }
 }
 
 // Now, the actual bit that displays the threads...

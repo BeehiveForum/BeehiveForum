@@ -250,6 +250,30 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
 }
 
+function threads_get_folder($uid,$fid) // get messages recently seem by $uid
+{
+//  $folders = threads_get_available_folders();
+	$db = db_connect();
+
+	// Formulate query
+
+	$sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, USER_THREAD.last_read, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
+	$sql .= "FROM " . forum_table("THREAD") . " THREAD, ";
+	$sql .= forum_table("USER_THREAD") . " USER_THREAD ";
+	$sql .= "WHERE THREAD.fid = $fid ";
+	$sql .= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
+//	$sql .= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
+	$sql .= "AND USER_THREAD.INTEREST != -1 ";
+	$sql .= "ORDER BY THREAD.modified DESC ";
+	$sql .= "LIMIT 0, 50";
+
+	$resource_id = db_query($sql, $db);
+	list($threads, $folder_order) = threads_process_list($resource_id);
+	return array($threads, $folder_order);
+	db_disconnect($db);
+
+}
+
 function threads_process_list($resource_id) // Arrange the results of a query into the right order for display
 {
     if (db_num_rows($resource_id)) { // check that the set of threads returned is not empty

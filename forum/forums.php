@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.27 2004-06-19 11:30:33 decoyduck Exp $ */
+/* $Id: forums.php,v 1.28 2004-08-17 11:03:21 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -125,6 +125,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "<br>\n";
         echo "<div align=\"center\">\n";
         echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+		echo "  ", form_input_hidden('webtag', $webtag), " \n";
 
         if (sizeof($forums_array['FAV_FORUMS']) > 0) {
 
@@ -388,6 +389,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
     echo "<div align=\"center\">\n";
     echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+	echo "  ", form_input_hidden('webtag', $webtag), " \n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -455,6 +457,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
 
 echo "<div align=\"center\">\n";
 echo "<form action=\"forums.php\" method=\"get\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), " \n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.9 2004-10-29 19:54:16 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.10 2004-10-29 19:56:39 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -35,7 +35,7 @@ function check_install()
         header_redirect("./install.php");
     }
 
-    if (file_exists('install') && !defined("BEEHIVE_INSTALL_NOWARN")) {
+    if ((file_exists('install') || file_exists('install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -60,7 +60,7 @@ function check_install()
         echo "                  <td colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>Your BeehiveForum would appear to be already installed, but you have not removed the install folder. You must delete the 'install' directory before your Beehive Forum can be used.</td>\n";
+        echo "                  <td>Your BeehiveForum would appear to be already installed, but you have not removed the installation files. You must delete both the 'install' directory and install.php before your Beehive Forum can be used.</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td>&nbsp;</td>\n";

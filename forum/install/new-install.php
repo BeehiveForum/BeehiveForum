@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.47 2005-03-29 21:48:59 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.48 2005-03-31 19:23:40 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -489,9 +489,9 @@ $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY (TID, PID),";
 $sql.= "  KEY TID (TID),";
 $sql.= "  KEY TO_UID (TO_UID),";
+$sql.= "  KEY FROM_UID (FROM_UID),";
 $sql.= "  KEY IPADDRESS (IPADDRESS),";
-$sql.= "  KEY CREATED (CREATED),";
-$sql.= "  KEY FROM_UID (FROM_UID)";
+$sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -758,8 +758,8 @@ $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
 $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
@@ -823,7 +823,8 @@ $sql = "CREATE TABLE FORUM_SETTINGS (";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  SNAME VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  SVALUE VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY (FID, SNAME)";
+$sql.= "  PRIMARY KEY (FID, SNAME),";
+$sql.= "  KEY SVALUE (SVALUE)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -882,7 +883,8 @@ $sql.= "  WEBTAG VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  DEFAULT_FORUM TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  ACCESS_LEVEL TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY (FID)";
+$sql.= "  PRIMARY KEY (FID),";
+$sql.= "  KEY WEBTAG (WEBTAG)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -1024,10 +1026,10 @@ $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  PM_AUTO_PRUNE CHAR(3) NOT NULL DEFAULT 'N',";
+$sql.= "  PM_AUTO_PRUNE CHAR(3) NOT NULL DEFAULT '-60',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
-$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
 $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";

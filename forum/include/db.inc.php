@@ -21,13 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.67 2005-03-15 21:29:45 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.68 2005-03-31 19:23:40 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 if (isset($db_extension)) {

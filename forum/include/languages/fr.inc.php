@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.97 2004-08-02 13:40:49 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.98 2004-08-07 15:23:05 rowan_hill Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -1199,6 +1199,11 @@ $lang['blue'] = "Bleu";
 $lang['indigo'] = "Indigo";
 $lang['violet'] = "Violet";
 $lang['white'] = "Blanc";
+$lang['black'] = "Noir";
+$lang['grey'] = "Gris";
+$lang['pink'] = "Rose";
+$lang['lightgreen'] = "Vert-clair";
+$lang['lightblue'] = "Bleu-clair";
 
 // Missing Entries:
 

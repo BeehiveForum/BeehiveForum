@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.154 2004-08-02 13:40:49 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.155 2004-08-07 15:23:05 rowan_hill Exp $ */
 
 // International English language file
 
@@ -1210,6 +1210,11 @@ $lang['blue'] = "Blue";
 $lang['indigo'] = "Indigo";
 $lang['violet'] = "Violet";
 $lang['white'] = "White";
+$lang['black'] = "Black";
+$lang['grey'] = "Grey";
+$lang['pink'] = "Pink";
+$lang['lightgreen'] = "Light green";
+$lang['lightblue'] = "Light blue";
 
 // Forum Stats (messages.inc.php - messages_forum_stats()) -------------
 

@@ -216,6 +216,9 @@ echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 
 html_draw_bottom();

@@ -67,6 +67,9 @@ if (isset($HTTP_GET_VARS['msg'])) {
 $polldata    = poll_get($tid);
 $pollresults = poll_get_votes($tid);
 
+// Check if the user is viewing signatures.
+$show_sigs = !($HTTP_COOKIE_VARS['bh_sess_sig'] == 1);
+
 $valid = true;
 
 if (isset($HTTP_POST_VARS['cancel'])) {
@@ -504,9 +507,11 @@ echo "<h2>Edit Poll: ", thread_get_title($tid), "</h2>\n";
 
   echo "</form>\n";
 
+  $threaddata = thread_get($tid);
+
   if ($valid) {
     echo "<h2>Message Preview:</h2>";
-    message_display(0, $polldata, 0, 0, false, false, false);
+    message_display($tid, $polldata, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
   }
 
   html_draw_bottom();

@@ -100,21 +100,21 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" width=\"100\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=DESC\">Date/Time</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=DESC\">Date/Time</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" width=\"100\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=ASC\">Date/Time</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOG_TIME&amp;sort_dir=ASC\">Date/Time</a></td>\n";
 }
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" width=\"200\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=DESC\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=DESC\">Logon</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" width=\"200\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=ASC\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ADMIN_UID&amp;sort_dir=ASC\">Logon</a></td>\n";
 }
 
 if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=DESC\">Action</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=DESC\">Action</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=ASC\">Action</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=ACTION&amp;sort_dir=ASC\">Action</a></td>\n";
 }
 
 echo "        </tr>\n";
@@ -139,8 +139,8 @@ if (db_num_rows($result)) {
     while ($row = db_fetch_array($result)) {
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\">", format_time($row['LOG_TIME']), "</td>\n";
-        echo "          <td class=\"posthead\"><a href=\"./admin_user.php?uid=", $row['ADMIN_UID'], "\">", format_user_name($row['ALOGON'], $row['ANICKNAME']), "</a></td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">", format_time($row['LOG_TIME']), "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $row['ADMIN_UID'], "\">", format_user_name($row['ALOGON'], $row['ANICKNAME']), "</a></td>\n";
 
         if (!empty($row['LOGON']) && !empty($row['NICKNAME'])) {
             $user = "<a href=\"./admin_user.php?uid=". $row['UID']. "\">";
@@ -262,7 +262,7 @@ if (db_num_rows($result)) {
 
         unset($user, $title, $tid, $pid, $title, $ps_name, $pi_name);
 
-        echo "          <td class=\"posthead\">", $action_text, "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">", $action_text, "</td>\n";
         echo "        </tr>\n";
 
     }
@@ -270,7 +270,7 @@ if (db_num_rows($result)) {
 }else {
 
     echo "        <tr>\n";
-    echo "          <td class=\"posthead\" colspan=\"3\">Admin Log is empty</td>\n";
+    echo "          <td class=\"posthead\" colspan=\"3\" align=\"left\">Admin Log is empty</td>\n";
     echo "        </tr>\n";
 
 }

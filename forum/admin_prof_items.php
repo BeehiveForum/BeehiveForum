@@ -118,10 +118,10 @@ echo "    <td class=\"posthead\">\n";
 echo "      <form name=\"f_items\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\">ID</td>\n";
-echo "            <td class=\"subhead\">Item Name</td>\n";
-echo "            <td class=\"subhead\">Move to</td>\n";
-echo "            <td class=\"subhead\">Delete Item</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">ID</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">Item Name</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">Move to</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">Delete Item</td>\n";
 echo "          </tr>\n";
 
 $sql = "select PROFILE_ITEM.PIID, PROFILE_ITEM.NAME ";
@@ -138,18 +138,18 @@ for($i=0;$i<$result_count;$i++){
     $row = db_fetch_array($result);
 
     echo "          <tr>\n";
-    echo "            <td valign=\"top\">", $row['PIID'], form_input_hidden("t_piid_$i",$row['PIID']), "</td>\n";
-    echo "            <td valign=\"top\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i", $row['NAME']), "</td>\n";
-    echo "            <td valign=\"top\">", profile_section_dropdown($psid,"t_move","_$i"), "</td>\n";
-    echo "            <td valign=\"top\">", form_input_hidden("t_psid", $psid), form_input_hidden("piid", $row['PIID']). form_submit("submit", "Delete"), "</td>\n";
+    echo "            <td valign=\"top\" align=\"left\">", $row['PIID'], form_input_hidden("t_piid_$i",$row['PIID']), "</td>\n";
+    echo "            <td valign=\"top\" align=\"left\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i", $row['NAME']), "</td>\n";
+    echo "            <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid,"t_move","_$i"), "</td>\n";
+    echo "            <td valign=\"top\" align=\"left\" width=\"100\">", form_input_hidden("t_psid", $psid), form_input_hidden("piid", $row['PIID']). form_submit("submit", "Delete"), "</td>\n";
     echo "          </tr>\n";
 
 }
 
 // Draw a row for a new section to be created
 echo "          <tr>\n";
-echo "            <td>NEW</td>\n";
-echo "            <td>", form_field("t_name_new","New Item",64,64), "</td>";
+echo "            <td align=\"left\">NEW</td>\n";
+echo "            <td align=\"left\">", form_field("t_name_new","New Item",64,64), "</td>";
 echo "            <td align=\"center\">&nbsp;</td>\n";
 echo "            <td align=\"center\">&nbsp;</td>\n";
 echo "          </tr>\n";

@@ -312,12 +312,12 @@ if (isset($HTTP_GET_VARS['other'])) {
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
-echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";
 echo "          <table class=\"subhead\" width=\"100%\">\n";
 echo "            <tr>\n";
-echo "              <td>Logon:</td>\n";
+echo "              <td class=\"subhead\" align=\"left\">Logon</td>\n";
 echo "            </tr>\n";
 echo "          </table>\n";
 echo "          <table class=\"posthead\" width=\"100%\">\n";

@@ -104,33 +104,33 @@ echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch\">UID</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=DESC&amp;usersearch=$usersearch\">UID</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch\">UID</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&amp;sort_dir=ASC&amp;usersearch=$usersearch\">UID</a></td>\n";
 }
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Logon</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Logon</a></td>\n";
 }
 
 if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Status</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Status</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Status</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Status</a></td>\n";
 }
 
 if ($sort_by == 'LAST_LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Last Logon</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Last Logon</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Last Logon</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Last Logon</a></td>\n";
 }
 
 if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Logon From</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch\">Logon From</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Logon From</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch\">Logon From</a></td>\n";
 }
 
 echo "        </tr>\n";
@@ -157,9 +157,9 @@ if (db_num_rows($result)) {
     while ($row = db_fetch_array($result)) {
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\">", $row['UID'], "</td>\n";
-        echo "          <td class=\"posthead\"><a href=\"./admin_user.php?uid=", $row['UID'], "\">", $row['LOGON'], "</a></td>\n";
-        echo "          <td class=\"posthead\">";
+        echo "          <td class=\"posthead\" align=\"left\">", $row['UID'], "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\"><a href=\"./admin_user.php?uid=", $row['UID'], "\">", $row['LOGON'], "</a></td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">";
 
         if (isset($row['STATUS']) && $row['STATUS'] > 0) {
 
@@ -176,8 +176,8 @@ if (db_num_rows($result)) {
           echo "&nbsp;</td>\n";
         }
 
-        echo "          <td class=\"posthead\">", format_time($row['LAST_LOGON'], 1), "</td>\n";
-        echo "          <td class=\"posthead\">", $row['LOGON_FROM'], "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">", format_time($row['LAST_LOGON'], 1), "</td>\n";
+        echo "          <td class=\"posthead\" align=\"left\">", $row['LOGON_FROM'], "</td>\n";
         echo "        </tr>\n";
 
     }
@@ -187,7 +187,7 @@ if (db_num_rows($result)) {
     if (isset($usersearch) && strlen($usersearch) > 0) {
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\" colspan=\"6\">No matches found.</td>\n";
+        echo "          <td class=\"posthead\" colspan=\"6\" align=\"left\">No matches found.</td>\n";
         echo "        </tr>\n";
 
     }else {
@@ -195,7 +195,7 @@ if (db_num_rows($result)) {
         // Shouldn't happen ever, after all how did you get here if there are no user accounts?
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\" colspan=\"6\">No user accounts in database.</td>\n";
+        echo "          <td class=\"posthead\" colspan=\"6\" align=\"left\">No user accounts in database.</td>\n";
         echo "        </tr>\n";
 
     }
@@ -215,10 +215,10 @@ echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"subhead\">Search for a user not in list:</td>\n";
+echo "          <td class=\"subhead\" align=\"left\">Search for a user not in list:</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td class=\"posthead\">\n";
+echo "          <td class=\"posthead\" align=\"left\">\n";
 echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
 echo "              Username: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', 'Search'), " ", form_submit('submit', 'Clear'), "\n";
 echo "              ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";

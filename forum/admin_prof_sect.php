@@ -104,10 +104,10 @@ echo "    <td class=\"posthead\">\n";
 echo "      <form name=\"f_sections\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
 echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"subhead\">ID</td>\n";
-echo "            <td class=\"subhead\">Section Name</td>\n";
-echo "            <td class=\"subhead\">&nbsp;</td>\n";
-echo "            <td class=\"subhead\">&nbsp;</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">ID</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">Section Name</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
+echo "            <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
 echo "          </tr>\n";
 
 $sql = "select PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
@@ -123,9 +123,9 @@ for($i = 0; $i < $result_count; $i++){
     $row = db_fetch_array($result);
 
     echo "          <tr>\n";
-    echo "            <td valign=\"top\">", $row['PSID'], form_input_hidden("t_psid_$i",$row['PSID']), "</td>\n";
-    echo "            <td valign=\"top\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i",$row['NAME']), "</td>\n";
-    echo "            <td valign=\"top\"><a href=\"./admin_prof_items.php?psid=".$row['PSID']."\">Items...</a></td>\n";
+    echo "            <td valign=\"top\" align=\"left\">", $row['PSID'], form_input_hidden("t_psid_$i",$row['PSID']), "</td>\n";
+    echo "            <td valign=\"top\" align=\"left\">", form_field("t_name_$i",$row['NAME'],64,64), form_input_hidden("t_old_name_$i",$row['NAME']), "</td>\n";
+    echo "            <td valign=\"top\" align=\"left\"><a href=\"./admin_prof_items.php?psid=".$row['PSID']."\">Items...</a></td>\n";
     echo "            <td>";
 
     $psid_sql = "select * from ". forum_table("PROFILE_ITEM"). " where PSID = ". $row['PSID'];
@@ -147,8 +147,8 @@ for($i = 0; $i < $result_count; $i++){
 
 // Draw a row for a new section to be created
 echo "          <tr>\n";
-echo "            <td>NEW</td>\n";
-echo "            <td>", form_field("t_name_new","New Section",64,64), "</td>\n";
+echo "            <td align=\"left\">NEW</td>\n";
+echo "            <td align=\"left\">", form_field("t_name_new","New Section",64,64), "</td>\n";
 echo "            <td align=\"center\" colspan=\"2\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";

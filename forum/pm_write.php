@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.58 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.59 2004-04-12 13:56:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -142,17 +142,19 @@ $valid = true;
 
 if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 
+    $error_html = "";
+    
     if (isset($HTTP_POST_VARS['t_subject']) && trim($HTTP_POST_VARS['t_subject']) != "") {
         $t_subject = _htmlentities(trim($HTTP_POST_VARS['t_subject']));
     }else {
-        $error_html = "<h2>{$lang['entersubjectformessage']}</h2>\n";
+        $error_html.= "<h2>{$lang['entersubjectformessage']}</h2>\n";
         $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
         $t_content = $HTTP_POST_VARS['t_content'];
     }elseif ($valid) {
-        $error_html = "<h2>{$lang['entercontentformessage']}</h2>\n";
+        $error_html.= "<h2>{$lang['entercontentformessage']}</h2>\n";
         $valid = false;
     }
 
@@ -171,15 +173,22 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
                 $to_logon = trim($t_recipient);
 
                 if ($to_user = user_get_uid($to_logon)) {
+                    
                     if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
                         $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
                         $t_new_recipient_array['LOGON'][]  = $to_user['LOGON'];
                         $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                     }
 
+		    if (pm_get_free_space($to_user['UID']) < (strlen(trim($t_subject)) + strlen(trim($t_content)))) {
+
+		        $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
+			$valid = false;
+		    }
+
                 }elseif ($valid) {
 
-                    $error_html = "<h2>{$lang['usernotfound1']} $to_logon {$lang['usernotfound2']}</h2>\n";
+                    $error_html.= "<h2>{$lang['usernotfound1']} $to_logon {$lang['usernotfound2']}</h2>\n";
                     $valid = false;
                 }
             }
@@ -192,17 +201,17 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
         }
 
         if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
-            $error_html = "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
+            $error_html.= "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
             $valid = false;
         }
 
         if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
-            $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+            $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
             $valid = false;
         }
 
     }elseif ($valid) {
-        $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+        $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
     }
 
@@ -245,7 +254,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                 }
                 email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
             }else {
-                $error_html = "<h2>{$lang['errorcreatingpm']}</h2>\n";
+                $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                 $valid = false;
             }
         }
@@ -328,7 +337,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
 
-if (!$valid && isset($error_html)) {
+if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
     echo $error_html;
 }
 

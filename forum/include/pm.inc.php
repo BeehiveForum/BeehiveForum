@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.61 2004-04-11 21:13:16 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.62 2004-04-12 13:56:39 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -302,6 +302,37 @@ function pm_get_saveditems($offset)
 
     return array('message_count' => $message_count,
 	         'message_array' => $pm_get_saveditems_array);
+}
+
+function pm_get_free_space($uid = false)
+{
+    $db_pm_get_free_space = db_connect();
+
+    if (!$uid) $uid = bh_session_get_value('UID');
+
+    $pm_used_space = 0;
+
+    $max_pm_space = forum_get_setting('pm_max_user_space', false, 102400);
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT DISTINCT PM.SUBJECT, PM_CONTENT.CONTENT FROM {$table_data['PREFIX']}PM PM ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PM_CONTENT PM_CONTENT ";
+    $sql.= "ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "WHERE (PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
+    $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_OUTBOX_ITEMS. " AND PM.FROM_UID = '$uid') ";
+    $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
+    $sql.= "OR (PM.TYPE = ". PM_SAVED_OUT. " AND PM.FROM_UID = '$uid') ";
+    $sql.= "OR (PM.TYPE = ". PM_SAVED_IN. " AND PM.TO_UID = '$uid')";
+
+    $result = db_query($sql, $db_pm_get_free_space);
+    
+    while($result_array = db_fetch_array($result)) {
+        $pm_used_space+= (strlen(trim($result_array['SUBJECT'])) + strlen(trim($result_array['CONTENT'])));
+    }
+
+    if ($pm_used_space > $max_pm_space) return 0;    
+    return $max_pm_space - $pm_used_space;
 }
 
 function pm_get_user($mid)

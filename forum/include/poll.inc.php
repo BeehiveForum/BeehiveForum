@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.109 2004-04-10 12:50:20 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.110 2004-04-12 13:56:39 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -923,7 +923,7 @@ function poll_horizontal_graph($tid)
 
     $polldisplay = "            <table width=\"100%\" align=\"center\">\n";
 
-	if (sizeof($pollresults['OPTION_ID']) > 0) {
+    if (sizeof($pollresults['OPTION_ID']) > 0) {
 
       for ($i = 0; $i <= sizeof($pollresults['OPTION_ID']); $i++) {
 

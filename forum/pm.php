@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.44 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: pm.php,v 1.45 2004-04-12 13:56:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -308,10 +308,41 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
     echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" colspan=\"5\">\n";
+    echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+
+    // Fetch the free PM space and calculate it as a percentage.
+    
+    $pm_free_space = pm_get_free_space();
+    $max_pm_space = forum_get_setting('pm_max_user_space', false, 102400);
+
+    $pm_free_percent = ceil((100 / $max_pm_space) * ($max_pm_space - $pm_free_space));
+
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "      <td class=\"postbody\" colspan=\"4\">\n";
     echo "        <table width=\"100%\" align=\"center\" border=\"0\">\n";
     echo "          <tr>\n";
-    echo "            <td colspan=\"2\" width=\"25%\">&nbsp;</td>";
+    echo "            <td colspan=\"2\" width=\"25%\">\n";
+    echo "              <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">Free PM Space:</td>\n";
+    echo "                  <td width=\"65%\">\n";
+    echo "                    <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar_container\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td title=\"{$pm_free_percent}% Used\">\n";
+    echo "                          <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar\" style=\"width: {$pm_free_percent}%\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td></td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>";
     echo "            <td align=\"center\">Pages: ";
 
     $page_count = ceil($pm_messages_array['message_count'] / 10);

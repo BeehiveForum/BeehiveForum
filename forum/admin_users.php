@@ -92,7 +92,7 @@ if (isset($HTTP_GET_VARS['offset'])) {
     $start = 0;
 }
 
-if (isset($HTTP_GET_VARS['usersearch']) && isset($HTTP_GET_VARS['submit']) && $HTTP_GET_VARS['submit'] == 'Search') {
+if (isset($HTTP_GET_VARS['usersearch']) && strlen($HTTP_GET_VARS['usersearch']) > 0) {
     $usersearch = $HTTP_GET_VARS['usersearch'];
 }else {
     $usersearch = '';
@@ -226,6 +226,8 @@ if (db_num_rows($result) == 20) {
 }else {
   if ($start >= 20) {
     echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
+  }else {
+    echo "<p>&nbsp;</p>\n";
   }
 }
 

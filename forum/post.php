@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.167 2004-03-23 03:49:57 tribalonline Exp $ */
+/* $Id: post.php,v 1.168 2004-03-27 19:47:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -59,8 +59,38 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". rawurlencode(get_request_uri());
-    header_redirect($uri);
+    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+        
+        if (perform_logon(false)) {
+	    
+	    html_draw_top();
+
+            echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
+            echo "<div align=\"center\">\n";
+	    echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+
+            $request_uri = get_request_uri();
+
+            echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+
+            foreach($HTTP_POST_VARS as $key => $value) {
+	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
+            }
+
+	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
+            echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
+	    echo "</form>\n";
+	    
+	    html_draw_bottom();
+	    exit;
+	}
+
+    }else {
+        html_draw_top();
+        draw_logon_form(false);
+	html_draw_bottom();
+	exit;
+    }
 }
 
 // Load the wordfilter for the current user

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.5 2003-08-31 16:21:05 hodcroftcj Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.6 2004-03-27 19:46:59 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -37,6 +37,12 @@ function rn($r) {
 function translate($string) {
 
     $string_parts = preg_split('/([<|>])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+    // Initialize the variables we need.
+
+    $str_translated = "";
+    $str_new = "";
+    $str_out = "";
 
     // Process Specific Words
 
@@ -99,7 +105,7 @@ function translate($string) {
                 if ($char == "n" && rn(10) > 10) $char = "|\|";
                 if ($char == "o" && rn(10) > 5) $char = "0";
 
-                if ($char == "q" && $string_parts[$i + 1] == "u") {
+                if ($char == "q" && isset($string_parts[$i + 1]) && $string_parts[$i + 1] == "u") {
                     $char = "kw";
                     $i++;
                 }
@@ -111,18 +117,18 @@ function translate($string) {
                 if ($char == "w" && rn(10) > 10) $char = "\/\/";
                 if ($char == "x" && rn(10) > 10) $char = "&gt;&lt;";
 
-                $string_new = $string_new. $char;
+                $str_new = $str_new. $char;
             }
 
         }else {
 
-            $string_new = $string_new. $string_parts[$i];
+            $str_new = $str_new. $string_parts[$i];
         }
     }
 
     // Randomize case
 
-    $string_parts = preg_split('/([<|>])/', $string_new, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $string_parts = preg_split('/([<|>])/', $str_new, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     for ($i = 0; $i < sizeof($string_parts); $i++) {
 

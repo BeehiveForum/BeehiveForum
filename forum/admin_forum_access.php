@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.16 2004-08-01 13:31:23 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.17 2004-11-05 21:14:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -172,98 +172,175 @@ if ($forum_array = forum_get($fid)) {
     echo "<div align=\"center\">\n";
     echo "<form name=\"f_user\" action=\"admin_forum_access.php\" method=\"post\">\n";
     echo form_input_hidden('fid', $fid), "\n";
-    echo "<table width=\"50%\">\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"box\">\n";
-    echo "      <table class=\"posthead\" width=\"100%\">\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['existingpermissions']}</td>\n";
-    echo "        </tr>\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['existingpermissions']}</td>\n";
+    echo "                </tr>\n";
 
     if ($user_array = forum_get_permissions($fid)) {
 
         foreach ($user_array as $user_permission) {
-            echo "        <tr>\n";
-            echo "          <td align=\"left\">", form_checkbox("user_remove[]", $user_permission['UID'], ''), "&nbsp;", format_user_name($user_permission['LOGON'], $user_permission['NICKNAME']), "</td>\n";
-            echo "        </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">", form_checkbox("user_remove[]", $user_permission['UID'], ''), "&nbsp;", format_user_name($user_permission['LOGON'], $user_permission['NICKNAME']), "</td>\n";
+            echo "                </tr>\n";
         }
 
-        echo "        <tr>\n";
-        echo "          <td align=\"left\">&nbsp;</td>\n";
-        echo "        </tr>\n";
-        echo "        <tr>\n";
-        echo "          <td align=\"center\">", form_submit('remove_user', $lang['remove']), "</td>\n";
-        echo "        </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </tr>\n";
+        echo "      <tr>\n";
+        echo "        <td>&nbsp;</td>\n";
+        echo "      </tr>\n";
+        echo "      <tr>\n";
+        echo "        <td align=\"center\">", form_submit('remove_user', $lang['remove']), "</td>\n";
+        echo "      </tr>\n";
+        echo "    </td>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
 
     }else {
 
-        echo "        <tr>\n";
-        echo "          <td align=\"left\">{$lang['nousers']}</td>\n";
-        echo "        </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">{$lang['nousers']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </tr>\n";
+        echo "    </td>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
     }
-
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">&nbsp;</td>\n";
-    echo "        </tr>\n";
 
     if (strlen($usersearch) > 0) {
 
-        echo "        <tr>\n";
-        echo "          <td class=\"subhead\" align=\"left\">{$lang['searchresults']}</td>\n";
-        echo "        </tr>\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchresults']}</td>\n";
+        echo "                </tr>\n";
 
         $user_search_array = admin_user_search($usersearch);
 
         if (sizeof($user_search_array['user_array']) > 0) {
 
             foreach ($user_search_array['user_array'] as $user_search) {
-                echo "        <tr>\n";
-                echo "          <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</td>\n";
-                echo "        </tr>\n";
+
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</td>\n";
+                echo "                </tr>\n";
             }
 
-            echo "        <tr>\n";
-            echo "          <td align=\"left\">&nbsp;</td>\n";
-            echo "        </tr>\n";
-            echo "        <tr>\n";
-            echo "          <td align=\"left\">", form_submit('add_searched_user', $lang['add']), "</td>\n";
-            echo "        </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </tr>\n";
+            echo "      <tr>\n";
+            echo "        <td>&nbsp;</td>\n";
+            echo "      </tr>\n";
+            echo "      <tr>\n";
+            echo "        <td align=\"center\">", form_submit('add_searched_user', $lang['add']), "</td>\n";
+            echo "      </tr>\n";
+            echo "    </td>\n";
+            echo "  </table>\n";
+            echo "  <br />\n";
 
         }else {
 
-            echo "        <tr>\n";
-            echo "          <td align=\"left\">{$lang['nomatches']}</td>\n";
-            echo "        </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">{$lang['nomatches']}</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </tr>\n";
+            echo "    </td>\n";
+            echo "  </table>\n";
+            echo "  <br />\n";
         }
 
     }else {
 
-        echo "        <tr>\n";
-        echo "          <td class=\"subhead\" align=\"left\">{$lang['addnewuser']}</td>\n";
-        echo "        </tr>\n";
-        echo "        <tr>\n";
-        echo "          <td>{$lang['adduser']}: ", post_draw_to_dropdown(false, false), "&nbsp;", form_submit('add_recent_user', $lang['add']), "</td>\n";
-        echo "        </tr>\n";
-
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['addnewuser']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>{$lang['adduser']}: ", post_draw_to_dropdown(false, false), "&nbsp;", form_submit('add_recent_user', $lang['add']), "</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </tr>\n";
+        echo "    </td>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
     }
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforuser']}</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">{$lang['search']}: ", form_input_text('usersearch', $usersearch), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"50%\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforuser']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">{$lang['search']}: ", form_input_text('usersearch', $usersearch), "&nbsp;", form_submit('search', $lang['search']), "&nbsp;", form_submit('clear', $lang['clear']), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td>&nbsp;</td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"center\">", form_button("back", "Back", "onclick=\"document.location.href='admin_forums.php'\""), "</td>\n";
+    echo "      </tr>\n";
     echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<p>", form_button("back", "Back", "onclick=\"document.location.href='admin_forums.php'\""), "</p>\n";
+    echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
 }

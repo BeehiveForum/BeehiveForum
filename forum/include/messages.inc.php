@@ -96,6 +96,80 @@ function message_display($tid, $message)
     echo "</td></tr></table></div>\n";
 }
 
+function messages_nav_strip($tid,$pid,$length)
+{
+    // Less than 20 messages, no nav needed
+    if($pid == 1 && $length < 20){
+        return;
+    }
+
+    // Modulus to get base for links, e.g. pid = 28, base = 8
+    $spid = $pid % 20;
+
+    // The first section, 1-x
+    if($spid > 1){
+        if($pid > 1){
+            $navbits[0] = "<a href=\"messages.php?msg=$tid.1\">" . mess_nav_range(1,$spid) . "</a>";
+        } else {
+            $c = 0;
+            $navbits[0] = mess_nav_range(1,$spid); // Don't add <a> tag for current section
+        }
+    }
+
+    // The middle section(s)
+    $i = 0;
+    while($spid + 19 <= $length){
+        $i++;
+        if($spid == $pid){
+            $c = $i;
+            $navbits[$i] = mess_nav_range($spid,$spid+19); // Don't add <a> tag for current section
+        } else {
+            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\">" . mess_nav_range($spid,$spid+19) . "</a>";
+        }
+        $spid += 20;
+    }
+
+    // The final section, x-n
+    if($spid <= $length){
+        $i++;
+        if($spid == $pid){
+            $c = $i;
+            $navbits[$i] = mess_nav_range($spid,$length); // Don't add <a> tag for current section
+        } else {
+            $navbits[$i] = "<a href=\"messages.php?msg=$tid.$spid\">" . mess_nav_range($spid,$length) . "</a>";
+        }
+    }
+    $max = $i;
+
+    $html = "Show messages:";
+
+    if($length <= 20){
+        $html .= " <a href=\"messages.php?msg=$tid.1\">All</a>";
+    }
+    $i=0;
+    foreach($navbits as $bit){
+        // Only display first, last and those within 3 of the current section
+        if((abs($c - $i) < 4) || $i == 0 || $i == $max){
+            $html .= " " . $bit;
+        } else if(abs($c - $i) == 4){
+            $html .= "...";
+        }
+        $i++;
+    }
+
+    echo "<table width=\"96%\"><tr><td align=\"center\">" . $html . "</td></tr></table>";
+}
+
+function mess_nav_range($from,$to)
+{
+    if($from == $to){
+        $range = sprintf("%d", $from);
+    } else {
+        $range = sprintf("%d-%d", $from, $to);
+    }
+    return $range;
+}
+
 function message_get_user($tid,$pid)
 {
     $db = db_connect();

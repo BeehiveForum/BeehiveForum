@@ -185,6 +185,20 @@ function thread_get_title($tid)
    return $threadtitle;
 }
 
+function thread_get($tid)
+{
+   $db = db_connect();
+   $sql = "SELECT * FROM THREAD WHERE tid = $tid";
+   $resource_id = db_query($sql,$db);
+   if(!db_num_rows($resource_id)){
+     $threaddata = false;
+   } else {
+     $threaddata = db_fetch_array($resource_id);
+   }
+   db_disconnect($db);
+   return $threaddata;
+}
+
 function threads_get_folder_msgs()
 {
 	$db = db_connect();

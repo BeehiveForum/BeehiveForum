@@ -45,18 +45,28 @@ if (!isset($HTTP_GET_VARS['msg'])) {
    $pid = $tidpid[1];
 }
 
-$messages = messages_get($tid,$pid,20);
-$threadtitle = thread_get_title($tid);
-
 // Output XHTML header
 html_draw_top();
 
-messages_top($threadtitle);
+$messages = messages_get($tid,$pid,20);
+$threaddata = thread_get($tid);
+if(!$threaddata){
+    echo "<h1>Fuck up</h1>";
+} else {
+    foreach ($threaddata as $var => $value) {
+        echo "<p>$var : $value</p>";
+    }
+}
+
+
+messages_top($threaddata['TITLE']);
 
 foreach($messages as $message) {
     message_display($tid,$message);
 }
 
+messages_nav_strip($tid,$pid,$threaddata['LENGTH']);
 messages_bottom();
+html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.40 2004-03-19 15:27:31 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.41 2004-03-19 15:38:32 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -315,6 +315,9 @@ $lang['matchedtext'] = "Texte Assorti";
 $lang['replacementtext'] = "Texte De rechange";
 $lang['preg'] = "PREG";
 $lang['wholeword'] = "Whole Word";
+$lang['word_filter_help_1'] = "<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument.";
+$lang['word_filter_help_2'] = "<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument.";
+$lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expressions to match text.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

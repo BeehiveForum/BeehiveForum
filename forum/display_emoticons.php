@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.24 2004-05-20 10:34:27 tribalonline Exp $ */
+/* $Id: display_emoticons.php,v 1.25 2004-06-21 13:59:03 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -172,7 +172,7 @@ if (in_array($pack, $emot_sets_keys)) {
 $fp = fopen("$path/style.css", "r");
 $style = fread($fp, filesize("$path/style.css"));
 
-preg_match_all("/\.e_([\w_]+) \{[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
+preg_match_all("/\.e_([\w_]+) \{.*\n[^\}]*background-image\s*:\s*url\s*\([\"\']([^\"\']*)[\"\']\)[^\}]*\}/i", $style, $matches);
 
 for ($i=0; $i<count($matches[1]); $i++) {
 	if (isset($emoticon_text[$matches[1][$i]])) {

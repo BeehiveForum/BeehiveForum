@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.35 2004-11-18 22:50:20 decoyduck Exp $ */
+/* $Id: install_script.php,v 1.36 2004-11-24 18:27:23 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -49,7 +49,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -61,7 +60,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -74,7 +72,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -90,7 +87,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -106,7 +102,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -116,7 +111,6 @@ $sql.= "VALUES ('General', NULL, NULL, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -131,7 +125,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -141,7 +134,6 @@ $sql.= "VALUES (1, 'Forum Links:', NULL)";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -151,7 +143,6 @@ $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -161,7 +152,6 @@ $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -175,7 +165,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -184,7 +173,6 @@ $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 0, 1792);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -193,7 +181,6 @@ $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (1, 1, 6652);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -202,7 +189,6 @@ $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS VALUES (0, 1, 6396);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -215,7 +201,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -224,7 +209,6 @@ $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS VALUES (1, 1);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -239,7 +223,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -249,7 +232,6 @@ $sql.= "VALUES ('Queen', NULL, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -270,7 +252,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -287,7 +268,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -302,7 +282,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -312,7 +291,6 @@ $sql.= "VALUES (NULL, 'Top Level', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -327,7 +305,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -346,7 +323,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -360,7 +336,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -374,7 +349,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -392,7 +366,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -407,7 +380,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -431,7 +403,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -442,7 +413,6 @@ $sql.= "VALUES (1, 0, 1, 0, NULL, NOW(), 0, NULL, 0, '');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -463,7 +433,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -478,7 +447,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -493,7 +461,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -502,7 +469,6 @@ $sql = "INSERT INTO {$forum_webtag}_POST_CONTENT VALUES (1, 1, 'Welcome to your 
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -518,7 +484,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -528,7 +493,6 @@ $sql.= "VALUES (1, 'Location', 0, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -537,7 +501,6 @@ $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (2, 1, 'Age', 0, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -546,7 +509,6 @@ $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (3, 1, 'Gender', 0, 0);"
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -555,7 +517,6 @@ $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (4, 1, 'Quote', 0, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -564,7 +525,6 @@ $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM VALUES (5, 1, 'Occupation', 0, 
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -578,7 +538,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -588,7 +547,6 @@ $sql.= "VALUES ('Personal', 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -604,7 +562,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -629,7 +586,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -640,7 +596,6 @@ $sql.= "VALUES (1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, NULL);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -654,7 +609,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -668,7 +622,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -685,7 +638,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -722,7 +674,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -736,7 +687,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -750,7 +700,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -766,7 +715,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -780,7 +728,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -790,7 +737,6 @@ $sql.= "VALUES (1, 'forum_name', 'A Beehive Forum');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -800,7 +746,6 @@ $sql.= "VALUES (1, 'forum_email', 'admin@abeehiveforum.net');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -810,7 +755,6 @@ $sql.= "VALUES (1, 'default_style', 'default');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -820,7 +764,6 @@ $sql.= "VALUES (1, 'default_emoticon', 'default');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -830,7 +773,6 @@ $sql.= "VALUES (1, 'default_language', 'en');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -840,7 +782,6 @@ $sql.= "VALUES (1, 'show_stats', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -850,7 +791,6 @@ $sql.= "VALUES (1, 'show_links', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -860,7 +800,6 @@ $sql.= "VALUES (1, 'auto_logon', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -870,7 +809,6 @@ $sql.= "VALUES (1, 'show_pms', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -880,7 +818,6 @@ $sql.= "VALUES (1, 'pm_max_user_messages', '100');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -890,7 +827,6 @@ $sql.= "VALUES (1, 'pm_allow_attachments', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -900,7 +836,6 @@ $sql.= "VALUES (1, 'maximum_post_length', '6226');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -910,7 +845,6 @@ $sql.= "VALUES (1, 'allow_post_editing', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -920,7 +854,6 @@ $sql.= "VALUES (1, 'post_edit_time', '0');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -930,7 +863,6 @@ $sql.= "VALUES (1, 'allow_polls', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -940,7 +872,6 @@ $sql.= "VALUES (1, 'search_min_word_length', '3');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -950,7 +881,6 @@ $sql.= "VALUES (1, 'attachments_enabled', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -960,7 +890,6 @@ $sql.= "VALUES (1, 'attachments_dir', 'attachments');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -970,7 +899,6 @@ $sql.= "VALUES (1, 'attachments_allow_embed', 'N');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -980,7 +908,6 @@ $sql.= "VALUES (1, 'attachments_use_old_method', 'N');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -990,7 +917,6 @@ $sql.= "VALUES (1, 'guest_account_active', 'Y');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1000,7 +926,6 @@ $sql.= "VALUES (1, 'session_cutoff', '86400');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1010,7 +935,6 @@ $sql.= "VALUES (1, 'active_session_cutoff', '900');";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1026,7 +950,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1036,7 +959,6 @@ $sql.= "VALUES ('{$forum_webtag}', 1, 0);";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1052,7 +974,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1068,7 +989,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1078,7 +998,6 @@ $sql.= "VALUES ('$admin_username', MD5('$admin_password'), '$admin_username', '$
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1093,7 +1012,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1136,7 +1054,6 @@ $sql.= "  ) TYPE=MYISAM;";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1149,7 +1066,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1165,7 +1081,6 @@ $sql.= ")";
 
 if (!$result = db_query($sql, $db_install)) {
 
-    $error_html.= db_error($db_install);
     $valid = false;
     return;
 }
@@ -1181,7 +1096,6 @@ foreach($dictionary_words as $word) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }

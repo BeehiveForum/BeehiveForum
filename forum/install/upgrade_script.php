@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.36 2004-11-18 22:50:20 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.37 2004-11-24 18:27:23 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -43,7 +43,6 @@ if (isset($forum_webtag) && strlen(trim($forum_webtag)) > 0) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -65,7 +64,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -74,7 +72,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -83,7 +80,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -92,7 +88,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -101,7 +96,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -110,7 +104,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -119,7 +112,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -128,7 +120,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -137,7 +128,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -146,7 +136,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -155,7 +144,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -164,7 +152,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -173,7 +160,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -182,7 +168,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -191,7 +176,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -200,7 +184,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -209,7 +192,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -218,7 +200,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -227,7 +208,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -236,7 +216,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -245,7 +224,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -254,7 +232,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -263,7 +240,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -272,7 +248,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -281,7 +256,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -290,7 +264,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -299,7 +272,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -308,7 +280,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -320,7 +291,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -330,7 +300,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -339,7 +308,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -348,7 +316,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -373,7 +340,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -388,7 +354,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -397,7 +362,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -406,7 +370,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -416,7 +379,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -431,7 +393,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -441,7 +402,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -450,7 +410,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -459,7 +418,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -474,7 +432,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -484,7 +441,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -493,7 +449,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -502,7 +457,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -518,7 +472,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -529,7 +482,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -538,7 +490,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -547,7 +498,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -562,7 +512,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -573,7 +522,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -582,7 +530,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -591,7 +538,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -605,7 +551,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -616,7 +561,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -625,7 +569,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -635,7 +578,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -678,7 +620,8 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "INSERT INTO USER_PREFS_NEW (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL,";
@@ -691,91 +634,102 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET EMAIL_NOTIFY = 'N' WHERE EMAIL_NOTIFY != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET MARK_AS_OF_INT = 'N' WHERE MARK_AS_OF_INT != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET VIEW_SIGS = 'N' WHERE VIEW_SIGS != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET PM_NOTIFY = 'N' WHERE PM_NOTIFY != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET PM_NOTIFY_EMAIL = 'N' WHERE PM_NOTIFY_EMAIL != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET PM_SAVE_SENT_ITEM = 'Y' WHERE 1";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET PM_INCLUDE_REPLY = 'N' WHERE 1";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET PM_AUTO_PRUNE = 'N' WHERE 1";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET PM_AUTO_PRUNE_LENGTH = '60' WHERE 1";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET IMAGES_TO_LINKS = 'N' WHERE IMAGES_TO_LINKS != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET USE_WORD_FILTER = 'N' WHERE USE_WORD_FILTER != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET USE_ADMIN_FILTER = 'N' WHERE USE_ADMIN_FILTER != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -784,14 +738,14 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "UPDATE USER_PREFS_NEW SET ALLOW_PM = 'N' WHERE ALLOW_PM != 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -800,7 +754,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -809,7 +762,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -846,7 +798,8 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        return db_error();
+        $valid = false;
+        return;
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_USER_PROFILE_NEW (";
@@ -858,7 +811,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -869,7 +821,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -878,7 +829,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -887,7 +837,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -901,7 +850,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -912,7 +860,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -921,7 +868,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -930,7 +876,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -946,7 +891,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -957,7 +901,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -966,7 +909,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -975,7 +917,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -984,7 +925,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -993,7 +933,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1002,7 +941,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1011,7 +949,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1027,7 +964,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1037,7 +973,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1046,7 +981,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1055,7 +989,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1064,7 +997,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1080,7 +1012,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1096,7 +1027,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1105,7 +1035,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1119,7 +1048,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1128,7 +1056,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1137,7 +1064,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1146,7 +1072,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1155,7 +1080,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1164,7 +1088,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1173,7 +1096,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1182,7 +1104,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1191,7 +1112,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1200,7 +1120,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1209,7 +1128,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1218,7 +1136,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1227,7 +1144,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1236,7 +1152,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1245,7 +1160,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1254,7 +1168,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1263,7 +1176,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1272,7 +1184,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1281,7 +1192,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1290,7 +1200,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1299,7 +1208,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1308,7 +1216,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1317,7 +1224,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1330,7 +1236,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1339,7 +1244,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1348,7 +1252,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1357,7 +1260,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1366,7 +1268,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1381,7 +1282,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if(!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1391,7 +1291,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if(!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1401,7 +1300,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if(!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1411,7 +1309,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if(!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1426,7 +1323,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1435,7 +1331,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1450,7 +1345,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1464,7 +1358,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1477,7 +1370,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1488,7 +1380,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1501,8 +1392,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (!$result_gid = db_query($sql, $db_install)) {
 
-            $error_html.= db_error($db_install);
-        $valid = false;
+            $valid = false;
         return;
         }
 
@@ -1513,8 +1403,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (!$result_uid = db_query($sql, $db_install)) {
 
-            $error_html.= db_error($db_install);
-            $valid = false;
+                $valid = false;
             return;
         }
 
@@ -1528,8 +1417,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (!$result_perm = db_query($sql, $db_install)) {
 
-            $error_html.= db_error($db_install);
-            $valid = false;
+                $valid = false;
             return;
         }
 
@@ -1541,8 +1429,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
             if (!$result_fid = db_query($sql, $db_install)) {
 
-                $error_html.= db_error($db_install);
-                $valid = false;
+                        $valid = false;
                 return;
             }
         }
@@ -1556,7 +1443,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1567,7 +1453,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1578,7 +1463,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1589,8 +1473,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (!$result_gid = db_query($sql, $db_install)) {
 
-            $error_html.= db_error($db_install);
-            $valid = false;
+                $valid = false;
             return;
         }
 
@@ -1603,8 +1486,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
             if (!$result_perm = db_query($sql, $db_install)) {
 
-                $error_html.= db_error($db_install);
-                $valid = false;
+                        $valid = false;
                 return;
             }
 
@@ -1614,8 +1496,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
             if (!$result_gid = db_query($sql, $db_install)) {
 
-                $error_html.= db_error($db_install);
-                $valid = false;
+                        $valid = false;
                 return;
             }
 
@@ -1626,8 +1507,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
             if (!$result_uid = db_query($sql, $db_install)) {
 
-                $error_html.= db_error($db_install);
-                $valid = false;
+                        $valid = false;
                 return;
             }
 
@@ -1636,8 +1516,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
             if (!$result_perm = db_query($sql, $db_install)) {
 
-                $error_html.= db_error($db_install);
-                $valid = false;
+                        $valid = false;
                 return;
             }
         }
@@ -1647,7 +1526,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1656,7 +1534,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1665,7 +1542,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1674,7 +1550,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1690,7 +1565,6 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     if (!$result = db_query($sql, $db_install)) {
 
-        $error_html.= db_error($db_install);
         $valid = false;
         return;
     }
@@ -1706,8 +1580,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
         if (!$result = db_query($sql, $db_install)) {
 
-            $error_html.= db_error($db_install);
-            $valid = false;
+                $valid = false;
             return;
         }
     }

@@ -21,7 +21,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.11 2004-11-21 14:08:09 decoyduck Exp $ */
+/* $Id: install.php,v 1.12 2004-11-24 18:27:23 decoyduck Exp $ */
+
+// Compress the output
+include_once("./include/gzipenc.inc.php");
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
+
+// Installation checking functions
+include_once("./include/install.inc.php");
+
+// Multiple forum support
+include_once("./include/forum.inc.php");
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -29,9 +41,8 @@ if (@file_exists("./include/config.inc.php")) {
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
-include_once("./include/install.inc.php");
 
-if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
+if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
     $valid = true;
     $config_saved = false;
@@ -226,7 +237,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                     echo "      <td width=\"250\">&nbsp;</td>\n";
                     echo "    </tr>\n";
                     echo "    <tr>\n";
-                    echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Continue\" autocomplete=\"off\" class=\"button\" /></td>\n";
+                    echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Continue\" class=\"button\" /></td>\n";
                     echo "    </tr>\n";
                     echo "  </table>\n";
                     echo "</form>\n";
@@ -273,12 +284,12 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
                     echo "              <input type=\"hidden\" name=\"db_username\" value=\"$db_username\">\n";
                     echo "              <input type=\"hidden\" name=\"db_password\" value=\"$db_password\">\n";
                     echo "              <input type=\"hidden\" name=\"db_database\" value=\"$db_database\">\n";
-                    echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" autocomplete=\"off\" class=\"button\" />&nbsp;\n";
+                    echo "              <input type=\"submit\" name=\"download_config\" value=\"Download Config\" class=\"button\" />&nbsp;\n";
                     echo "            </form>\n";
                     echo "          </td>\n";
                     echo "          <td width=\"45%\">\n";
                     echo "            <form method=\"get\" action=\"./index.php\">\n";
-                    echo "              <input type=\"submit\" name=\"submit\" value=\"Continue\" autocomplete=\"off\" class=\"button\" />\n";
+                    echo "              <input type=\"submit\" name=\"submit\" value=\"Continue\" class=\"button\" />\n";
                     echo "            </form>\n";
                     echo "          </td>\n";
                     echo "        </tr>\n";
@@ -427,7 +438,7 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         echo "      <td width=\"500\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Continue\" autocomplete=\"off\" class=\"button\" /></td>\n";
+        echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Continue\" class=\"button\" /></td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
@@ -446,6 +457,17 @@ echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\">\n";
 echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n\n";
+echo "function disable_button (button) {\n";
+echo "    if (document.all || document.getElementById) {\n";
+echo "        button.disabled = true;\n";
+echo "    } else if (button) {\n";
+echo "        button.onclick = null;\n";
+echo "    }\n";
+echo "}\n\n";
+echo "//-->\n";
+echo "</script>\n";
 echo "</head>\n";
 
 echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h2>\n";
@@ -474,11 +496,11 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Choose Installation Method:</td>\n";
-    echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" autocomplete=\"off\" dir=\"ltr\"><option value=\"install\" selected=\"selected\">New Install</option><option value=\"upgrade\">Upgrade</option></select></td>\n";
+    echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" dir=\"ltr\"><option value=\"install\" selected=\"selected\">New Install</option><option value=\"upgrade\">Upgrade</option></select></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\" valign=\"top\">Default Forum Webtag:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">&nbsp;</td>\n";
@@ -507,23 +529,23 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Hostname:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" autocomplete=\"off\" value=\"", (isset($db_server) ? $db_server : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Database Name:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" autocomplete=\"off\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Username:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" autocomplete=\"off\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Password:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Confirm Password:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td colspan=\"2\">&nbsp;</td>\n";
@@ -548,19 +570,19 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Admin Username:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" autocomplete=\"off\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Admin Email Address:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" autocomplete=\"off\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Admin Password:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Confirm Password:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" autocomplete=\"off\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td colspan=\"2\">&nbsp;</td>\n";
@@ -578,7 +600,10 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "      <td width=\"250\">The installation process may take several minutes to complete. Please click the Install button once and once only. Clicking it multiple times may cause your installation to become corrupted.</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" autocomplete=\"off\" class=\"button\" onclick=\"this.enabled = false;\" /></td>\n";
+    echo "      <td width=\"250\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" class=\"button\" onclick=\"disable_button(this);\" /></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

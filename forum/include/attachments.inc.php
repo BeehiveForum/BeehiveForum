@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.91 2005-03-18 23:58:39 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.92 2005-03-21 15:36:05 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "edit.inc.php");
@@ -488,7 +488,9 @@ function get_num_attachments($aid)
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT COUNT(*) FROM POST_ATTACHMENT_FILES WHERE AID = '$aid'";
+    $sql = "SELECT COUNT(*) AS ATTACHMENT_COUNT ";
+    $sql.= "FROM POST_ATTACHMENT_FILES WHERE AID = '$aid'";
+
     $result = db_query($sql, $db_get_num_attachments);
 
     list($attachment_count) = db_fetch_array($result, DB_RESULT_NUM);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.68 2005-03-18 23:58:40 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.69 2005-03-21 15:36:06 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -250,7 +250,7 @@ function thread_can_view($tid = 0, $uid = 0)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($uid)) return false;
 
-    $sql = "SELECT COUNT(*) FROM {$table_data['PREFIX']}THREAD ";
+    $sql = "SELECT COUNT(*) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD ";
     $sql.= "WHERE TID = '$tid' AND FID IN ($fidlist)";
 
     $result = db_query($sql,$db_thread_can_view);

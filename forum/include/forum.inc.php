@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.124 2005-03-21 10:43:18 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.125 2005-03-21 15:36:06 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -1000,10 +1000,13 @@ function forum_update_access($fid, $access, $passwd = false)
 
         $db_forum_update_access = db_connect();
 
-        $sql = "SELECT COUNT(*) FROM FORUMS WHERE FID = '$fid'";
-        $result = db_query($sql, $db_forum_update_access);
+        $sql = "SELECT COUNT(*) AS FORUM_COUNT ";
+        $sql.= "FROM FORUMS WHERE FID = '$fid'";
 
-        if (db_num_rows($result) > 0) {
+        $result = db_query($sql, $db_forum_update_access);
+        list($forum_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+        if ($forum_count > 0) {
 
             if ($passwd) {
 

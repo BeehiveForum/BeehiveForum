@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.25 2004-01-26 19:40:26 decoyduck Exp $ */
+/* $Id: display.php,v 1.26 2004-02-13 11:07:20 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -79,10 +79,7 @@ html_draw_top("basetarget=_blank", "openprofile.js");
 $message = messages_get($tid, $pid, 1);
 $threaddata = thread_get($tid);
 
-$closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
-
-if ($closed) $foldertitle.= " (closed)";
 
 echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
 messages_top($foldertitle,_stripslashes($threaddata['TITLE']));
@@ -97,19 +94,19 @@ if ($message) {
 
         if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, false, true, $show_sigs, true);
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, true, $show_sigs, true);
             $last_pid = $message['PID'];
 
         }else {
 
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, false, false, $show_sigs, true);
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, false, $show_sigs, true);
             $last_pid = $message['PID'];
 
         }
 
     }else {
 
-        message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, false, false, $show_sigs, true);
+        message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, false, $show_sigs, true);
         $last_pid = $message['PID'];
 
     }

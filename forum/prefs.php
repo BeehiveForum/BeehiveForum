@@ -129,6 +129,14 @@ html_draw_top();
         <td>: <?php echo form_field("cpw", "", 37, 0, "password"); ?></td>
       </tr>
       <tr>
+        <td>&nbsp;</td>
+        <td align="center"><span style="font-size: 10px">(Leave blank to retain current password)</span></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>      
+      <tr>
         <td>Nickname</td>
         <td>: <?php echo form_field("nickname", $user['NICKNAME'], 37, 32); ?></td>
       </tr>

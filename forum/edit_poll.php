@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.33 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.34 2004-01-03 20:54:30 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -418,22 +418,14 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                 </tr>
                 <?php
 
+                  $t_post_html = false;
+                  
                   if (isset($HTTP_POST_VARS['t_post_html'])) {
                     if ($HTTP_POST_VARS['t_post_html'] == "Y") {
                       $t_post_html = true;
                     }else {
                       $t_post_html = false;
                     }
-                  }else {
-		    if (isset($pollresults['OPTION_NAME'][0])) {
-                      if (strip_tags($pollresults['OPTION_NAME'][0]) != $pollresults['OPTION_NAME'][0]) {
-                        $t_post_html = true;
-                      }else {
-                        $t_post_html = false;
-                      }
-		    }else {
-                      $t_post_html = false;
-		    }
                   }
 
                   for ($i = 0; $i < $answercount; $i++) {
@@ -446,7 +438,8 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                       echo form_input_text("answers[$i]", _htmlentities(_stripslashes($HTTP_POST_VARS['answers'][$i])), 40, 255);
                     }else {
                       if (isset($pollresults['OPTION_NAME'][$i])) {
-                        if ($t_post_html) {
+                        if (strip_tags($pollresults['OPTION_NAME'][$i]) != $pollresults['OPTION_NAME'][$i]) {
+                          if (!isset($HTTP_POST_VARS['t_post_html'])) $t_post_html = true;
                           echo form_input_text("answers[$i]", _htmlentities(_stripslashes($pollresults['OPTION_NAME'][$i])), 40, 255);
                         }else {
                           echo form_input_text("answers[$i]", _stripslashes($pollresults['OPTION_NAME'][$i]), 40, 255);

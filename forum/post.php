@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.142 2004-01-03 18:55:25 decoyduck Exp $ */
+/* $Id: post.php,v 1.143 2004-01-03 20:54:30 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -380,10 +380,6 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
                     thread_set_sticky($t_tid, false);
                 }
             }
-            
-            if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
-                post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);            
-            }
         }
 
         if ($t_tid > 0) {
@@ -404,16 +400,16 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 
             if (!(user_get_status(bh_session_get_value('UID')) & USER_PERM_WORM)) {
-
-              email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
-              email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
-
+                email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
+                email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
             }
-        }
+            
+            if (isset($HTTP_POST_VARS['aid']) && isset($new_pid) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
+                post_save_attachment_id($t_tid, $new_pid, $HTTP_POST_VARS['aid']);            
+            }             
+        }      
 
     }else {
-
-        $new_pid = 0;
 
         if ($newthread) {
 

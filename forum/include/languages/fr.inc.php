@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.5 2003-11-02 16:18:33 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.6 2003-11-09 13:56:15 decoyduck Exp $ */
 
 // French language file Ver 0.2
 // By Kriv
@@ -139,7 +139,9 @@ $lang['disabled'] = "Rendu infirme";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 
-$lang['db_connect_error'] = "<p>An error has occured while connecting to the database.</p>\n<p>If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:</p><pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre><p>They should be set to the database details given to you by your hosting provider.</p>\n";
+$lang['db_connect_error_1'] = "An error has occured while connecting to the database.";
+$lang['db_connect_error_2'] = "If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:";
+$lang['db_connect_error_3'] = "They should be set to the database details given to you by your hosting provider.";
 
 // Admin interface (admin*.php) ----------------------------------------
 

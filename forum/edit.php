@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.69 2003-09-21 12:57:58 decoyduck Exp $ */
+/* $Id: edit.php,v 1.70 2003-11-09 13:56:15 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -356,9 +356,12 @@ if (isset($HTTP_POST_VARS['preview'])) {
         }
 
         $t_content.= "<div class=\"sig\">$t_sig</div>";
+
+        /*
         $t_content.= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". date("d/m/y H:i T");
         $t_content.= " {$lang['by']} ". user_get_logon(bh_session_get_value('UID'));
         $t_content.= "</p>";
+	*/
 
         $updated = post_update($tid, $pid, $t_content);
 

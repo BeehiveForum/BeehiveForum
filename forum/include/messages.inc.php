@@ -316,7 +316,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
     }else if($in_list && $msg_count > 0) {
         if ($is_poll) {
-          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"This is a poll. Click to view results.\" align=\"middle\"></a> Poll ";
+          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"This is a poll. Click to view results.\" align=\"middle\"></a> Poll ";
         }
         echo $message['PID'] . " of " . $msg_count;
     }
@@ -429,11 +429,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                 if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) || $post_edit_time == 0) && $allow_post_editing)) {
                     if ($is_poll && $message['PID'] == 1) {
-		        if (!poll_is_closed($tid) || perm_is_moderator()) {
+                        if (!poll_is_closed($tid) || perm_is_moderator()) {
 
                             echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit Poll\" />";
                             echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
-		        }
+                        }
                     }else {
 
                       echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit\" />";
@@ -683,7 +683,7 @@ function messages_get_most_recent($uid, $fid = false)
 
     if ($fid) {
         $fidlist = $fid;
-    }else {    
+    }else {
         $fidlist = folder_get_available();
     }
 

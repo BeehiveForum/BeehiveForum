@@ -424,7 +424,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"");
 
           }
 
@@ -455,7 +455,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
           if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"");
 
           }
 

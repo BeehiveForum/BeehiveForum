@@ -50,12 +50,12 @@ if(!isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
     echo "<frameset cols=\"250,*\" border=\"1\">\n";
     echo "<frame src=\"./thread_list.php";
     if($HTTP_GET_VARS['msg']){
-        echo "?msg=$msg";
+        echo "?msg=".$HTTP_GET_VARS['msg'];
     }
     echo "\" name=\"left\" border=\"1\">\n";
     echo "<frame src=\"./messages.php";
     if($HTTP_GET_VARS['msg']){
-        echo "?msg=$msg";
+        echo "?msg=".$HTTP_GET_VARS['msg'];
     }
     echo "\" name=\"right\" border=\"1\">\n";
     echo "</frameset>\n";

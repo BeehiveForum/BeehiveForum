@@ -359,7 +359,8 @@ function threads_get_folder_msgs()
 function thread_get_author($tid)
 {
 	$db = db_connect();
-	$sql = "SELECT * FROM USER, POST WHERE USER.UID = POST.FROM_UID AND POST.TID = $tid";
+	$sql = "SELECT U.LOGON, U.NICKNAME FROM ".forum_table("USER")." U, ".forum_table("POST")." P ";
+	$sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
 	$resource_id = db_query($sql, $db);
 	$author = db_fetch_array($resource_id);
 	db_disconnect($db);
@@ -392,6 +393,55 @@ function thread_set_interest($tid,$interest,$new = false)
 	db_query($sql, $db);
 	db_disconnect($db);
 
+}
+
+function threads_any_unread()
+{
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    
+    $sql = "select * from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
+    $sql.= "on (T.TID = UT.TID and UT.UID = $uid) ";
+    $sql.= "where T.LENGTH > UT.LAST_READ ";
+    $sql.= "limit 0,1";
+    
+    $db = db_connect();
+    $result = db_query($sql,$db);
+    $return = (db_num_rows($result) > 0);
+    db_disconnect($db);
+    
+    return $return;
+}
+
+function threads_mark_all_read()
+{
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+    
+    $sql = "select T.TID, T.LENGTH, UT.LAST_READ ";
+    $sql.= "from ".forum_table("THREAD")." T left join ".forum_table("USER_THREAD")." UT ";
+    $sql.= "on (UT.TID = T.TID and UT.UID = $uid) ";
+    $sql.= "where T.LENGTH > UT.LAST_READ";
+
+    $db = db_connect();
+    $result = db_query($sql,$db);
+
+    for($i=0;$row[$i] = db_fetch_array($result);$i++);
+
+    for($j=0;$j<$i;$j++){
+        if($row[$j]['LAST_READ']){
+            $sql = "insert into ".forum_table("USER_THREAD")." (UID,TID,LAST_READ,LAST_READ_AT,INTEREST) ";
+            $sql.= "values ($uid, ".$row[$j]['TID'].", ".$row[$j]['LENGTH'].",NOW(),0)";
+        } else {
+            $sql = "update  ".forum_table("USER_THREAD");
+            $sql.= " set LAST_READ = ".$row[$j]['LENGTH'].", ";
+            $sql.= "LAST_READ_AT = NOW() ";
+            $sql.= "where TID = ".$row[$j]['TID']." and UID = $uid";
+        }
+        db_query($sql,$db);
+    }
+    
+    db_disconnect($db);
 }
 
 ?>

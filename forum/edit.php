@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.151 2004-09-13 13:17:34 rowan_hill Exp $ */
+/* $Id: edit.php,v 1.152 2004-10-08 19:53:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -255,7 +255,7 @@ if (isset($_POST['t_post_emots'])) {
                 $emots_enabled = true;
         }
 } else {
-	$emots_enabled = true;
+        $emots_enabled = true;
 }
 if (isset($_POST['t_post_links'])) {
         if ($_POST['t_post_links'] == "enabled") {
@@ -264,7 +264,7 @@ if (isset($_POST['t_post_links'])) {
                 $links_enabled = false;
         }
 } else {
-	$links_enabled = false;
+        $links_enabled = false;
 }
 
 $post_html = 0;
@@ -281,16 +281,16 @@ if (isset($_POST['t_post_html'])) {
     }
 
 } else {
-	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-		$post_html = 1;
-	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-		$post_html = 2;
-	} else {
-		$post_html = 0;
-	}
+        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+                $post_html = 1;
+        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+                $post_html = 2;
+        } else {
+                $post_html = 0;
+        }
 
-	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-	$links_enabled = $page_prefs & POST_AUTO_LINKS;
+        $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+        $links_enabled = $page_prefs & POST_AUTO_LINKS;
 }
 
 if (isset($_POST['t_sig_html'])) {
@@ -315,19 +315,19 @@ $allow_html = true;
 $allow_sig = true;
 
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
-	$allow_html = false;
+        $allow_html = false;
 }
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
-	$allow_sig = false;
+        $allow_sig = false;
 }
 
 if ($allow_html == false) {
-	if ($post->getHTML() > 0) {
-		$post->setHTML(false);
-	}
-	if ($sig->getHTML() > 0) {
-		$sig->setHTML(false);
-	}
+        if ($post->getHTML() > 0) {
+                $post->setHTML(false);
+        }
+        if ($sig->getHTML() > 0) {
+                $sig->setHTML(false);
+        }
 }
 
 if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
@@ -397,9 +397,9 @@ if (isset($_POST['preview'])) {
 
         $preview_message['CONTENT'] = $t_content;
 
-		if ($allow_sig == true) {
-	        $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
-		}
+                if ($allow_sig == true) {
+                $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
+                }
 
         if ($to_uid == 0) {
 
@@ -474,11 +474,11 @@ if (isset($_POST['preview'])) {
 
     if ($valid) {
 
-		if ($allow_sig == true) {
-	            $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
-		} else {
-		    $t_content_tmp = $t_content;
-		}
+                if ($allow_sig == true) {
+                    $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
+                } else {
+                    $t_content_tmp = $t_content;
+                }
 
         $updated = post_update($tid, $pid, $t_content_tmp);
 
@@ -490,9 +490,9 @@ if (isset($_POST['preview'])) {
                 if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
             }
 
-			if ($preview_message['FROM_UID'] != bh_session_get_value('UID')) {
-	            admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
-			}
+                        if ($preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+                    admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
+                        }
 
             echo "<script language=\"Javascript\">\n";
             echo "  <!--\n";
@@ -527,17 +527,17 @@ if (isset($_POST['preview'])) {
 
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
-	if (isset($_POST['t_content'])) {
-		$t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
+        if (isset($_POST['t_content'])) {
+                $t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
         $post->setContent($t_content);
         $t_content = $post->getContent();
-	}
+        }
 
-	if (isset($_POST['t_sig'])) {
-		$t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
+        if (isset($_POST['t_sig'])) {
+                $t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
         $sig->setContent($t_sig);
         $t_sig = $sig->getContent();
-	}
+        }
 
     $preview_message = messages_get($tid, $pid, 1);
 
@@ -555,15 +555,15 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-	if (isset($_POST['emots_toggle_x'])) {
-		$page_prefs ^= POST_EMOTICONS_DISPLAY;
-	} else {
-		$page_prefs ^= POST_SIGNATURE_DISPLAY;
-	}
+        if (isset($_POST['emots_toggle_x'])) {
+                $page_prefs ^= POST_EMOTICONS_DISPLAY;
+        } else {
+                $page_prefs ^= POST_SIGNATURE_DISPLAY;
+        }
 
-	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+        user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
 
-	$fix_html = false;
+        $fix_html = false;
 
 } else {
 
@@ -571,55 +571,125 @@ if (isset($_POST['preview'])) {
 
     if (count($editmessage) > 0) {
 
-        $editmessage['CONTENT'] = message_get_content($tid, $pid);
+        if ($editmessage['CONTENT'] = message_get_content($tid, $pid)) {
 
-        if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator($t_fid)) {
+            if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator($t_fid)) {
 
-            echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
-            echo "<br />\n";
+                echo "<h1 style=\"width: 99%\">{$lang['editmessage']} $tid.$pid</h1>\n";
+                echo "<br />\n";
 
-            echo "<table class=\"posthead\" width=\"720\">\n";
-            echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
-            echo "<tr><td>\n";
+                echo "<table class=\"posthead\" width=\"720\">\n";
+                echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+                echo "<tr><td>\n";
 
-            echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
-            echo "</td></tr>\n";
+                echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
+                echo "</td></tr>\n";
 
-            echo "<tr><td align=\"center\">\n";
-            echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
-            echo "</td></tr>\n";
-            echo "</table>\n";
+                echo "<tr><td align=\"center\">\n";
+                echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+                echo "</td></tr>\n";
+                echo "</table>\n";
 
-            html_draw_bottom();
-            exit;
+                html_draw_bottom();
+                exit;
+            }
+
+            $preview_message = $editmessage;
+
+            $to_uid = $editmessage['TO_UID'];
+            $from_uid = $editmessage['FROM_UID'];
+
+            $parsed_message = new MessageTextParse($editmessage['CONTENT'], $emots_enabled);
+
+            $emots_enabled = $parsed_message->getEmoticons();
+            $links_enabled = $parsed_message->getLinks();
+            $t_content = $parsed_message->getMessage();
+            $post_html = $parsed_message->getMessageHTML();
+            $t_sig = $parsed_message->getSig();
+
+            $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled, $links_enabled);
+            $sig = new MessageText($allow_html ? $sig_html : false, $t_sig, true, false);
+
+            $post->diff = false;
+            $sig->diff = false;
+
+            $t_content = $post->getContent();
+            $t_sig = $sig->getContent();
+
+        }else {
+
+           echo "<table class=\"posthead\" width=\"720\">\n";
+           echo "  <tr>\n";
+           echo "    <td class=\"subhead\">{$lang['error']}</td>\n";
+           echo "  </tr>";
+           echo "  <tr>\n";
+           echo "    <td><h2>{$lang['message']} {$_GET['msg']} {$lang['wasnotfound']}</h2></td>\n";
+           echo "  </tr>\n";
+           echo "  <tr>\n";
+           echo "    <td align=\"center\">\n";
+
+           $thread_length = thread_get_length($tid);
+
+           if ($thread_length < 1) {
+
+               if (threads_any_unread() && $msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
+
+                   form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
+
+               }else {
+
+                   bh_setcookie('bh_thread_mode', 0);
+                   $msg = messages_get_most_recent(bh_session_get_value('UID'));
+                   form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
+               }
+
+           }else {
+
+               form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
+           }
+
+           echo "</table>\n";
+
+           html_draw_bottom();
+           exit;
         }
-
-        $preview_message = $editmessage;
-
-        $to_uid = $editmessage['TO_UID'];
-        $from_uid = $editmessage['FROM_UID'];
-
-        $parsed_message = new MessageTextParse($editmessage['CONTENT'], $emots_enabled);
-
-		$emots_enabled = $parsed_message->getEmoticons();
-		$links_enabled = $parsed_message->getLinks();
-		$t_content = $parsed_message->getMessage();
-		$post_html = $parsed_message->getMessageHTML();
-		$t_sig = $parsed_message->getSig();
-
-        $post = new MessageText($allow_html ? $post_html : false, $t_content, $emots_enabled, $links_enabled);
-        $sig = new MessageText($allow_html ? $sig_html : false, $t_sig, true, false);
-
-		$post->diff = false;
-		$sig->diff = false;
-
-        $t_content = $post->getContent();
-        $t_sig = $sig->getContent();
 
     }else{
 
-        $valid = false;
-        $error_html = "<h2>{$lang['message']} ". $_GET['msg']. " {$lang['wasnotfound']}</h2>";
+           echo "<table class=\"posthead\" width=\"720\">\n";
+           echo "  <tr>\n";
+           echo "    <td class=\"subhead\">{$lang['error']}</td>\n";
+           echo "  </tr>";
+           echo "  <tr>\n";
+           echo "    <td><h2>{$lang['message']} {$_GET['msg']} {$lang['wasnotfound']}</h2></td>\n";
+           echo "  </tr>\n";
+           echo "  <tr>\n";
+           echo "    <td align=\"center\">\n";
+
+           $thread_length = thread_get_length($tid);
+
+           if ($thread_length < 1) {
+
+               if (threads_any_unread() && $msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
+
+                   form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
+
+               }else {
+
+                   bh_setcookie('bh_thread_mode', 0);
+                   $msg = messages_get_most_recent(bh_session_get_value('UID'));
+                   form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
+               }
+
+           }else {
+
+               form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
+           }
+
+           echo "</table>\n";
+
+           html_draw_bottom();
+           exit;
     }
 
     unset($editmessage);
@@ -680,11 +750,11 @@ echo form_input_hidden("t_from_uid", $from_uid);
 
 echo "<h2>".$lang['to'].":</h2>\n";
 if ($preview_message['TLOGON'] != "ALL") {
-	echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\" target=\"_self\">";
-	echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
-	echo "</a><br /><br />\n";
+        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\" target=\"_self\">";
+        echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
+        echo "</a><br /><br />\n";
 } else {
-	echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
+        echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
 }
 
 echo "<h2>". $lang['messageoptions'] .":</h2>\n";
@@ -738,7 +808,7 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+        echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
@@ -751,20 +821,20 @@ if ($post->isDiff() && $fix_html) {
 }
 
 if ($allow_html == true) {
-	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-	$tph_radio = $post->getHTML();
+        $tph_radio = $post->getHTML();
 
-	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-	if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-		echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-	}
+        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+                echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        }
 
 } else {
-	echo form_input_hidden("t_post_html", "disabled");
+        echo form_input_hidden("t_post_html", "disabled");
 }
 
 echo "<br /><br />\n";
@@ -787,37 +857,37 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_pe
 // ---- SIGNATURE ----
 if ($allow_sig == true) {
 
-	echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-	echo "  <tr>\n";
-	echo "    <td class=\"subhead\">\n";
-	echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
+        echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"subhead\">\n";
+        echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
 
-	$t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
-	if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-		echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
-		echo "    </td>\n";
-		echo "  </tr>\n";
+        if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
+                echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
+                echo "    </td>\n";
+                echo "  </tr>\n";
 
-		echo "  <tr>\n";
-		echo "    <td colspan=\"2\">\n";
+                echo "  <tr>\n";
+                echo "    <td colspan=\"2\">\n";
 
-		echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+                echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
-		echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+                echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-		if ($sig->isDiff() && $fix_html && !$fetched_sig) {
-			echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-		}
+                if ($sig->isDiff() && $fix_html && !$fetched_sig) {
+                        echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+                }
 
-	} else {
-		echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
-		echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
-	}
+        } else {
+                echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
+                echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
+        }
 
-	echo "    </td>\n";
-	echo "  </tr>\n";
-	echo "</table>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
 
 }
 

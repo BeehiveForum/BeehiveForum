@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.81 2004-08-17 23:46:32 tribalonline Exp $ */
+/* $Id: delete.php,v 1.82 2004-10-08 19:53:07 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -219,8 +219,17 @@ if ($valid) {
 
             admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 22);
 
-            echo "<div align=\"center\">";
-            echo "<p>{$lang['postdelsuccessfully']}</p>";
+            echo "<h1 style=\"width: 99%\">{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
+            echo "<br />\n";
+            echo "<table class=\"posthead\" width=\"720\">\n";
+            echo "  <tr>\n";
+            echo "    <td class=\"subhead\">{$lang['deletemessage']}</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td><h2>{$lang['postdelsuccessfully']}</h2></td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td align=\"center\">\n";
 
             $thread_length = thread_get_length($tid);
 
@@ -236,7 +245,15 @@ if ($valid) {
                     $msg = messages_get_most_recent(bh_session_get_value('UID'));
                     form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
                 }
+
+            }else {
+
+                form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
             }
+
+            echo "    </td>\n";
+            echo "  </tr>\n";
+            echo "</table>\n";
 
             echo "</div>";
             html_draw_bottom();

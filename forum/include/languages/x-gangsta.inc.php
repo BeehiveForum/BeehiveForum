@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.47 2004-09-25 16:31:06 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.48 2004-10-08 19:53:08 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -540,6 +540,7 @@ $lang['enternewpasswdforuser'] = "Entizer a new cracka-ass password fo' user";
 // Deleting messages (delete.php) --------------------------------------
 
 $lang['nomessagespecifiedfordel'] = "No motherfuckin' mizessage specified fo' deletion, motherfucka";
+$lang['deletemessage'] = "Delete Message";
 $lang['postdelsuccessfully'] = "Iced that mofucker good";
 $lang['errordelpost'] = "Error deleting dat shizit";
 $lang['delthismessage'] = "Delete this piece of shit";

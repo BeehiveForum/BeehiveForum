@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Jul 24, 2003 at 21:37 PM
 #
-# $Id: schema.sql,v 1.41 2003-08-08 23:25:16 decoyduck Exp $
+# $Id: schema.sql,v 1.42 2003-08-08 23:49:51 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -74,6 +74,7 @@ CREATE TABLE FOLDER (
   ACCESS_LEVEL tinyint(4) default '0',
   DESCRIPTION varchar(255) default NULL,
   ALLOWED_TYPES tinyint(3) default NULL,
+  POSITION mediumint(8) unsigned default 0,
   PRIMARY KEY  (FID)
 ) TYPE=MyISAM;
 

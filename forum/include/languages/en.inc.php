@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.48 2003-11-01 19:11:06 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.49 2003-11-02 11:11:48 decoyduck Exp $ */
 
 // International English language file
 
 // Language character set and text direction options -------------------
 
-$lang['_charset'] = "UTF-8";
+$lang['_charset'] = "utf-8";
 $lang['_textdir'] = "ltr";  // ltr or rtl; left to right or vice versa
 
 
@@ -65,6 +65,7 @@ $lang['worker'] = "Worker";
 $lang['worm'] = "Worm";
 $lang['wasp'] = "Wasp";
 $lang['splat'] = "Splat";
+$lang['with'] = "with";
 $lang['attachment'] = "Attachment";
 $lang['attachments'] = "Attachments";
 $lang['filename'] = "Filename";
@@ -894,5 +895,25 @@ $lang['blue'] = "Blue";
 $lang['indigo'] = "Indigo";
 $lang['violet'] = "Violet";
 $lang['white'] = "White";
+
+// Forum Stats (messages.inc.php - messages_forum_stats()) -------------
+
+$lang['forumstats'] = "Forum Stats";
+$lang['guests'] = "guests";
+$lang['members'] = "members";
+$lang['anonymousmembers'] = "anonymous members";
+$lang['viewcompletelist'] = "View Complete List";
+$lang['ourmembershavemadeatotalof'] = "Our members have made a total of";
+$lang['threadsand'] = "threads and";
+$lang['postslowercase'] = "posts";
+$lang['longestthreadis'] = "Longest thread is";
+$lang['therehavebeen'] = "There have been";
+$lang['postsmadeinthelastsixtyminutes'] = "posts made in the last 60 minutes";
+$lang['mostpostsevermadeinasinglesixtyminuteperiodis'] = "Most posts ever made in a single 60 minute period is";
+$lang['wehave'] = "We have";
+$lang['registeredmembers'] = "registered members";
+$lang['thenewestmemberis'] = "The newest member is";
+$lang['mostuserseveronlinewas'] = "Most users ever online was";
+
 
 ?>

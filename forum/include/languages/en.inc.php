@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.134 2004-05-19 21:12:59 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.135 2004-05-20 22:17:49 decoyduck Exp $ */
 
 // International English language file
 
@@ -349,6 +349,7 @@ $lang['defaultforum'] = "Default Forum";
 $lang['successfullycreatedforum'] = "Successfully created forum";
 $lang['failedtocreateforum_1'] = "Failed to create forum";
 $lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
+$lang['nameanddesc'] = "Name and Description";
 $lang['moveposts'] = "Move Posts";
 $lang['movepoststofolder'] = "Move posts to folder";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
@@ -366,6 +367,7 @@ $lang['nousergroups'] = "No User Groups have been set up";
 $lang['suppliedgidisnotausergroup'] = "Supplied GID is not a user group";
 $lang['manageusergroups'] = "Manage User Groups";
 $lang['groupstatus'] = "Group Status";
+$lang['addusergroup'] = "Add Group";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 

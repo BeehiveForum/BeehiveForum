@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.66 2004-05-20 16:14:08 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.67 2004-05-20 22:17:49 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/constants.inc.php");
@@ -69,23 +69,6 @@ function folder_get_title($fid)
     }
 
     return $foldertitle;
-}
-
-function folder_get_permissions($fid)
-{
-    $db_folder_get_permissions = db_connect();
-
-    if (!is_numeric($fid)) return 0;
-
-    if (!$table_data = get_table_prefix()) return 0;
-
-    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM DEFAULT_GROUP_PERMS GROUP_PERMS ";
-    $sql.= "WHERE GROUP_PERMS.FID = $fid AND GROUP_PERMS.GID = 0";
-
-    $result = db_query($sql, $db_folder_get_permissions);
-    $row = db_fetch_array($result);
-
-    return $row['STATUS'];
 }
 
 function folder_create($title, $description = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $permissions = 0)

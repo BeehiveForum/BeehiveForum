@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.7 2004-05-17 17:22:32 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.8 2004-05-20 22:17:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -184,7 +184,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['name']} / {$lang['description']}</td>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['nameanddesc']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";

@@ -42,11 +42,11 @@ if(isset($HTTP_GET_VARS['final_uri'])){
 }
 
 if (isset($HTTP_GET_VARS['msg'])) {
-    $msg = $HTTP_GET_VARS['msg'];
+    $final_uri = "./discussion.php?msg=". $HTTP_GET_VARS['msg'];
 }
 
 if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
-    $final_uri = './discussion.php';
+    unset($final_uri);
 }
 
 if (bh_session_check()) {
@@ -54,7 +54,13 @@ if (bh_session_check()) {
     html_draw_top();
     echo "<div align=\"center\">\n";
     echo "<p>User ID ", $HTTP_COOKIE_VARS['bh_sess_uid'], " already logged in.</p>\n";
-    echo form_quick_button("./index.php", "Continue", "final_uri", isset($final_uri) ? urlencode($final_uri) : "", "_top");
+
+    if (isset($final_uri)) {
+        form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri), "_top");
+    }else {
+        form_quick_button("./index.php", "Continue", "", "", "_top");
+    }
+
     echo "</div>\n";
     html_draw_bottom();
     exit;
@@ -102,14 +108,19 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
     // Try a Javascript redirect
     echo "<script language=\"javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";
-    echo "document.location.href = './index.php?final_uri=". urlencode($final_uri). "';\n";
+    echo "document.location.href = './index.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "';\n";
     echo "//-->\n";
     echo "</script>";
 
     // If they're still here, Javascript's not working. Give up, give a link.
     echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
     echo "<p>You logged in successfully.</p>";
-    echo form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri));
+
+    if (isset($final_uri)) {
+        form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri), "_top");
+    }else {
+        form_quick_button("./index.php", "Continue", "", "", "_top");
+    }
 
     html_draw_bottom();
     exit;
@@ -220,15 +231,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         $user_prefs = user_get_prefs($luid);
 
-        if ((!isset($final_uri) && !isset($msg)) || (isset($final_uri) && !strstr($final_uri, 'discussion.php'))) {
-          if ($user_prefs['START_PAGE'] == 1) {
+	if (!isset($final_uri)) {
+	  if (isset($user_prefs['START_PAGE']) && $user_prefs['START_PAGE'] == 1) {
             $final_uri = "./discussion.php";
           }else {
             $final_uri = "./start.php";
           }
-        }elseif (isset($msg)) {
-          $final_uri = "./discussion.php?msg=$msg";
-        }
+	}
 
       }
 
@@ -243,14 +252,19 @@ if (isset($HTTP_POST_VARS['submit'])) {
           // Try a Javascript redirect
           echo "<script language=\"javascript\" type=\"text/javascript\">\n";
           echo "<!--\n";
-          echo "document.location.href = './index.php?final_uri=". urlencode($final_uri). "';\n";
+          echo "document.location.href = './index.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "';\n";
           echo "//-->\n";
           echo "</script>";
 
           // If they're still here, Javascript's not working. Give up, give a link.
           echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
           echo "<p>You logged in successfully.</p>";
-          echo form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri));
+
+          if (isset($final_uri)) {
+              form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri), "_top");
+          }else {
+              form_quick_button("./index.php", "Continue", "", "", "_top");
+          }
 
           html_draw_bottom();
           exit;

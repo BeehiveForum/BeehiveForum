@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.37 2004-08-17 20:13:49 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.38 2004-09-03 19:59:52 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -849,6 +849,7 @@ $lang['pmnotificationpopup'] = "Yo has a new PM. Would yo like to go to yo inbiz
 $lang['pmusermessages'] = "PM messages per user";
 $lang['oldermessages'] = "Older Messages";
 $lang['newermessages'] = "Newer Messages";
+$lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 
@@ -944,6 +945,8 @@ $lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-linebreaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
+$lang['privatemessageoptions'] = "Private Message Options";
+$lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

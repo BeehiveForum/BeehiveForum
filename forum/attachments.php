@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.45 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.46 2003-12-01 19:17:48 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -77,49 +77,50 @@ html_draw_top();
 $users_free_space = get_free_attachment_space(bh_session_get_value('UID'));
 $total_attachment_size = 0;
 
+// Check that $attachment_dir does not have a slash on the end of it.
+
+if (substr($attachment_dir, -1) == '/') $attachment_dir = substr($attachment_dir, 0, -1);
+
 // Make sure the attachments directory exists
-if (!is_dir('attachments')) {
-  mkdir('attachments', 0755);
-  chmod('attachments', 0777);
+
+if (!is_dir($attachment_dir)) {
+  mkdir($attachment_dir, 0755);
+  chmod($attachment_dir, 0777);
 }
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($HTTP_POST_VARS['upload'])) {
 
-  if ($HTTP_POST_VARS['submit'] == $lang['del']) {
+    if (isset($HTTP_POST_FILES['userfile']) && $HTTP_POST_FILES['userfile']['size'] > 0) {
 
-    delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
+        if ($users_free_space < $HTTP_POST_FILES['userfile']['size']) {
 
-  }elseif ($HTTP_POST_VARS['submit'] == $lang['upload'] || $HTTP_POST_VARS['submit'] == $lang['waitdotdot']) {
-
-    if ($HTTP_POST_FILES['userfile']['size'] > 0) {
-
-      if ($users_free_space < $HTTP_POST_FILES['userfile']['size']) {
-
-        echo "<p>{$lang['attachmentnospace']}</p>";
-        unlink($HTTP_POST_FILES['userfile']['tmp_name']);
-
-      }else {
-
-        if (move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($HTTP_GET_VARS['aid']. _stripslashes($HTTP_POST_FILES['userfile']['name'])))) {
-
-          add_attachment(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'])), $HTTP_POST_FILES['userfile']['type']);
-          echo "<p>{$lang['successfullyuploaded']}: ". _stripslashes($HTTP_POST_FILES['userfile']['name']). "</p>\n";
+            echo "<p>{$lang['attachmentnospace']}</p>";
+            unlink($HTTP_POST_FILES['userfile']['tmp_name']);
 
         }else {
 
-          unlink($HTTP_POST_FILES['userfile']['tmp_name']);
-          echo "<p>{$lang['uploadfailed']}.</p>";
+            if (@move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($HTTP_GET_VARS['aid']. _stripslashes($HTTP_POST_FILES['userfile']['name'])))) {
 
+                add_attachment(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'])), $HTTP_POST_FILES['userfile']['type']);
+                echo "<p>{$lang['successfullyuploaded']}: ". _stripslashes($HTTP_POST_FILES['userfile']['name']). "</p>\n";
+
+            }else {
+
+                unlink($HTTP_POST_FILES['userfile']['tmp_name']);
+                echo "<p>{$lang['uploadfailed']}.</p>";
+
+            }
         }
-      }
+    }
+  
+}elseif (isset($HTTP_POST_VARS['del'])) {
 
-    }else {
+    if (isset($HTTP_POST_VARS['aid']) && isset($HTTP_POST_VARS['userfile'])) {
 
-      echo "<p>{$lang['errorfilesizeis0']}.</p>";
-
+        delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
     }
 
-  }elseif ($HTTP_POST_VARS['submit'] == $lang['complete']) {
+}elseif (isset($HTTP_POST_VARS['complete'])) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -127,8 +128,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     html_draw_bottom();
     exit;
-
-  }
 }
 
 ?>
@@ -144,7 +143,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
-    <td class="postbody">2. <?php echo $lang['nowpress'], "&nbsp;", form_submit('submit', $lang['upload'], "onclick=\"this.value='{$lang["waitdotdot"]}'\""); ?></td>
+    <td class="postbody">2. <?php echo $lang['nowpress'], "&nbsp;", form_submit('upload', $lang['upload'], "onclick=\"this.value='{$lang['waitdotdot']}'\""); ?></td>
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
@@ -152,7 +151,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
-    <td class="postbody" colspan="2">3. <?php echo $lang['ifdoneattachingfiles']."&nbsp;".form_submit('submit', $lang['complete']); ?></td>
+    <td class="postbody" colspan="2">3. <?php echo $lang['ifdoneattachingfiles']."&nbsp;".form_submit('complete', $lang['complete']); ?></td>
   </tr>
 </table>
 </form>
@@ -202,7 +201,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "        ". form_submit('submit', $lang['del']). "\n";
+      echo "        ". form_submit('del', $lang['del']). "\n";
       echo "      </form>\n";
       echo "    </td>\n";
       echo "  </tr>\n";
@@ -291,7 +290,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "        ". form_submit('submit', $lang['del']). "\n";
+      echo "        ". form_submit('del', $lang['del']). "\n";
       echo "      </form>\n";
       echo "    </td>\n";
       echo "  </tr>\n";

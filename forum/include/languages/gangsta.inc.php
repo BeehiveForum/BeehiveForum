@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.12 2003-12-02 22:16:24 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.13 2003-12-03 20:17:16 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -487,7 +487,7 @@ $lang['moveto'] = "Haul ass";
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
 $lang['userID'] = "Yo tag, foo'";
-$lang['alreadyloggedin'] = "Yo already logged in.";
+$lang['alreadyloggedin'] = "already logged in.";
 $lang['loggedinsuccessfully'] = "Yo in, bro!";
 $lang['usernameorpasswdnotvalid'] = "Yo username or password is wack";
 $lang['usernameandpasswdrequired'] = "Yo needs to enter a username and password, homie";

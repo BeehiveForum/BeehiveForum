@@ -21,18 +21,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.1 2004-05-08 23:56:37 decoyduck Exp $ */
+/* $Id: install.php,v 1.2 2004-05-09 00:57:49 decoyduck Exp $ */
 
 include_once("../include/constants.inc.php");
 
 if (isset($_POST['submit'])) {
 
     $valid = true;
+    $config_saved = false;
+
     $error_html = "";
 
-    if (isset($_POST['install_method']) && is_numeric($_POST['install_method'])) {
-        if ($_POST['install_method'] == 0 || $_POST['install_method'] == 1) {
-            $install_method = $_POST['install_method'];
+    if (isset($_POST['install_method']) && strlen(trim($_POST['forum_webtag'])) > 0) {
+        if (trim($_POST['install_method']) == 'install') {
+            $install_method = 0;
+        }else if (trim($_POST['install_method']) == 'upgrade') {
+            $install_method = 1;
         }else {
             $error_html.= "<h2>You must choose an installation method.</h2>\n";
             $valid = false;
@@ -45,7 +49,6 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['forum_webtag']) && strlen(trim($_POST['forum_webtag'])) > 0) {
 
         $forum_webtag = strtoupper(trim($_POST['forum_webtag']));
-        $forum_webtag.= "_";
 
         if (!preg_match("/^[A-Z0-9_-]+$/", $forum_webtag)) {
             $error_html.= "<h2>The forum webtag can only conatin uppercase A-Z, 0-9 and hyphen (-) and underscore (_) characters</h2>\n";
@@ -90,7 +93,7 @@ if (isset($_POST['submit'])) {
         $db_cpassword = "";
     }
 
-    if ($valid && $install_method == 1) {
+    if ($valid && $install_method == 0) {
 
         if (isset($_POST['admin_username']) && strlen(trim($_POST['admin_username'])) > 0) {
             $admin_username = trim($_POST['admin_username']);
@@ -144,6 +147,18 @@ if (isset($_POST['submit'])) {
                     $schema_file = "upgrade.sql";
                 }
 
+                echo "<pre>\n";
+                echo "$db_server\n";
+                echo "$db_username\n";
+                echo "$db_password\n";
+                echo "$db_cpassword\n";
+                echo "$db_database\n\n";
+                echo "$admin_username\n";
+                echo "$admin_password\n";
+                echo "$admin_cpassword\n";
+                echo "$admin_email\n";
+                echo "</pre>\n";
+
                 if (file_exists($schema_file)) {
 
                     $schema_array = file($schema_file);
@@ -151,39 +166,72 @@ if (isset($_POST['submit'])) {
                     foreach ($schema_array as $key => $schema_entry) {
                         if (substr($schema_entry, 0, 1) == "#") {
                             unset($schema_array[$key]);
-                        }else {
-                            $schema_entry = str_replace('{$forum_webtag}',   $forum_webtag,   $schema_entry);
-                            $schema_entry = str_replace('{$admin_username}', $admin_username, $schema_entry);
-                            $schema_entry = str_replace('{$admin_password}', $admin_password, $schema_entry);
-                            $schema_entry = str_replace('{$admin_email}',    $admin_email,    $schema_entry);
-                            $schema_array[$key] = $schema_entry;
                         }
                     }
 
                     $schema_array = explode(";", implode("", $schema_array));
 
+                    echo "<pre>\n";
+
                     foreach ($schema_array as $key => $schema_entry) {
+
                         if ($valid) {
-                            if (!mysql_query(trim($schema_entry), $db_install)) {
-                                $valid = false;
+
+                            $schema_entry = str_replace('{forum_webtag}',   $forum_webtag,   $schema_entry);
+                            $schema_entry = str_replace('{admin_username}', $admin_username, $schema_entry);
+                            $schema_entry = str_replace('{admin_password}', $admin_password, $schema_entry);
+                            $schema_entry = str_replace('{admin_email}',    $admin_email,    $schema_entry);
+
+                            echo "$schema_entry\n";
+
+                            if (strlen(trim($schema_entry)) > 0) {
+
+                                if (!mysql_query(trim($schema_entry), $db_install)) {
+
+                                    $valid = false;
+                                }
                             }
                         }
                     }
 
+                    echo "</pre>\n";
+
                     if ($valid) {
+
+                        $config_file = implode("", file("config.inc.php"));
+
+                        // Database details
+
+                        $config_file = str_replace('{db_server}',   $db_server,   $config_file);
+                        $config_file = str_replace('{db_username}', $db_username, $config_file);
+                        $config_file = str_replace('{db_password}', $db_password, $config_file);
+                        $config_file = str_replace('{db_database}', $db_database, $config_file);
+
+                        // Constant that says we're installed.
+
+                        $config_file = str_replace('// {BEEHIVE_INSTALLED=1}', "define('BEEHIVE_INSTALLED', 1);", $config_file);
+
+                        if ($fp = fopen("../include/config.inc.php", "w")) {
+
+                            fwrite($fp, $config_file);
+                            fclose($fp);
+
+                            $config_saved = true;
+                        }
 
                         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 		        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 		        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
 		        echo "<head>\n";
-		        echo "<title>BeehiveForum Installation</title>\n";
+		        echo "<title>BeehiveForum ", BEEHIVE_VERSION, " Installation</title>\n";
 		        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-		        echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-		        echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+		        echo "<link rel=\"icon\" href=\"../images/favicon.ico\" type=\"image/ico\">\n";
+		        echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
                         echo "</head>\n";
-                        echo "<h1>BeehiveForum Installation</h2>\n";
+                        echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h2>\n";
+                        echo "<br />\n";
                         echo "<div align=\"center\">\n";
-                        echo "<form method=\"post\" action=\"index.php\">\n";
+                        echo "<form method=\"post\" action=\"../index.php\">\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td width=\"250\">\n";
@@ -249,7 +297,7 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
 echo "<head>\n";
-echo "<title>BeehiveForum", BEEHIVE_VERSION, " - Installation</title>\n";
+echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"icon\" href=\"../images/favicon.ico\" type=\"image/ico\">\n";
 echo "<link rel=\"stylesheet\" href=\"../styles/style.css\" type=\"text/css\" />\n";
@@ -278,7 +326,7 @@ echo "                  <td class=\"subhead\" colspan=\"2\">Basic Configuration<
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\">Choose Installation Method:</td>\n";
-echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" autocomplete=\"off\" dir=\"ltr\"><option value=\"0\" selected=\"selected\">New Install</option><option value=\"1\">Upgrade</option></select></td>\n";
+echo "                  <td width=\"250\"><select name=\"install_method\" class=\"bhselect\" autocomplete=\"off\" dir=\"ltr\"><option value=\"install\" selected=\"selected\">New Install</option><option value=\"upgrade\">Upgrade</option></select></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"250\" valign=\"top\">Default Forum Webtag:</td>\n";

@@ -27,6 +27,7 @@ USA
 require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
+require_once("./include/form.inc.php"); // Form functions
 
 // Check that required variables are set
 if (!isset($HTTP_COOKIE_VARS['bh_sess_uid'])) {
@@ -86,9 +87,9 @@ function change_current_thread (thread_id) {
 			                "2 Days Back","7 Days Back","High Interest","Unread High Interest",
 			                "I've recently seen","I've ignored","I've subscribed to");
 
-			echo "<form method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
-            form_dropdown_array("mode",range(0,10),$labels,$mode,"onChange=\"submit();\"");
-            form_submit("submit","Go");
+			echo "<form name=\"f_mode\" method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
+            echo form_dropdown_array("mode",range(0,10),$labels,$mode,"onchange=\"submit()\"");
+            echo form_submit("go","Go");
 
 			/*Old code
 			echo "<select name=\"mode\" class=\"thread_list_mode\" onChange=\"submit();\">\n";

@@ -96,10 +96,12 @@ function get_users_attachments($uid) {
 
     $db = db_connect();
 
-    $sql = "SELECT PAI.TID, PAI.PID, PAF.AID, PAF.FILENAME, PAF.MIMETYPE, PAF.HASH, PAF.DOWNLOADS ";
-    $sql.= "FROM ". forum_table("POST_ATTACHMENT_IDS"). " PAI ";
-    $sql.= "LEFT JOIN ". forum_table("POST_ATTACHMENT_FILES"). " PAF ON ";
-    $sql.= "(PAF.AID = PAI.AID) WHERE PAF.UID = $uid";
+    $sql = "SELECT PAI.TID, PAI.PID, PAF.AID, PAF.FILENAME, PAF.MIMETYPE, ";
+    $sql.= "PAF.HASH, PAF.DOWNLOADS, PMI.MID, PMI.AID FROM ";
+    $sql.= forum_table("POST_ATTACHMENT_FILES"). " PAF ";
+    $sql.= "LEFT JOIN ". forum_table("POST_ATTACHMENT_IDS"). " PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "LEFT JOIN ". forum_table("PM_ATTACHMENT_IDS"). " PMI ON (PMI.AID = PAF.AID) ";
+    $sql.= "WHERE PAF.UID = $uid";
 
     $result = db_query($sql, $db);
 
@@ -141,6 +143,8 @@ function add_attachment($uid, $aid, $filename, $mimetype) {
 
 function delete_attachment($uid, $aid, $filename) {
 
+    global $attachment_dir;
+
     $db = db_connect();
 
     $sql = "delete from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = $uid ";
@@ -150,9 +154,16 @@ function delete_attachment($uid, $aid, $filename) {
     $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where AID = '$aid'";
     $result = db_query($sql, $db);
 
+    if (file_exists($attachment_dir. '/'. md5($aid. rawurldecode($filename)))) {
+      unlink($attachment_dir. '/'. md5($aid. rawurldecode($filename)));
+    }
+
     if (db_num_rows($result) == 0) {
 
       $sql = "delete from ". forum_table("POST_ATTACHMENT_IDS"). " where AID = '$aid'";
+      $result = db_query($sql, $db);
+
+      $sql = "delete from ". forum_table("PM_ATTACHMENT_IDS"). " where AID = '$aid'";
       $result = db_query($sql, $db);
 
     }
@@ -204,23 +215,33 @@ function get_attachment_id($tid, $pid) {
 
 }
 
-function get_message_tidpid($aid) {
+function get_message_link($aid) {
 
     $db = db_connect();
 
-    $sql = "select * from ". forum_table("POST_ATTACHMENT_IDS"). " where AID = '$aid'";
+    $sql = "SELECT TID, PID FROM ". forum_table("POST_ATTACHMENT_IDS"). " WHERE AID = '$aid'";
     $result = db_query($sql, $db);
 
     if (db_num_rows($result) > 0) {
 
       $tidpid = db_fetch_array($result);
-      return $tidpid['TID']. ".". $tidpid['PID'];
+      return "./messages.php?msg=". $tidpid['TID']. ".". $tidpid['PID'];
 
     }else{
 
-      return "";
+      $sql = "SELECT MID FROM ". forum_table("PM_ATTACHMENT_IDS"). " WHERE AID = '$aid'";
+      $result = db_query($sql, $db);
+
+      if (db_num_rows($result) > 0) {
+
+        $mid = db_fetch_array($result);
+        return "./pm.php?mid=". $mid['MID'];
+
+      }
 
     }
+
+    return "";
 
 }
 

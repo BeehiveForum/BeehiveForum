@@ -409,9 +409,18 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
         echo $attachments[$i]['filename']. "</a></td>\n";
       }
 
-      echo "                <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+      if ($messagelink = get_message_link($attachments[$i]['aid'])) {
+        if (strstr($messagelink, 'messages.php')) {
+          echo "                <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"", $messagelink, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+        }else {
+          echo "                <td valign=\"top\" width=\"100\" class=\"postbody\">{$lang['messageunavailable']}</td>\n";
+        }
+      }else {
+        echo "                <td valign=\"top\" width=\"100\" class=\"postbody\">{$lang['messageunavailable']}</td>\n";
+      }
+
       echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
-      echo "                <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
+      echo "                <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
       echo "                  ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "                  ". form_input_hidden('aid', $attachments[$i]['aid']);
       echo "                  ". form_submit('submit', $lang['del']). "\n";

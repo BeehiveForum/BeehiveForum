@@ -25,25 +25,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: set_relation.php,v 1.25 2004-03-10 18:43:17 decoyduck Exp $ */
+/* $Id: set_relation.php,v 1.26 2004-03-11 22:34:37 decoyduck Exp $ */
 
 //Multiple forum support
-require_once("./include/forum.inc.php");
+include_once("./include/forum.inc.php");
 
 // Compress the output
-require_once("./include/gzipenc.inc.php");
+include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
-require_once("./include/errorhandler.inc.php");
+include_once("./include/errorhandler.inc.php");
 
 // Alter user's interest in a thread
 // DOES NOT DISPLAY ANYTHING
 
-require_once("./include/html.inc.php");
-require_once("./include/user_rel.inc.php");
-require_once("./include/constants.inc.php");
-require_once("./include/session.inc.php");
-require_once("./include/messages.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/user_rel.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/messages.inc.php");
 
 if (!bh_session_check()) {
 
@@ -62,8 +62,8 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-require_once("./include/db.inc.php");
-require_once("./include/header.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/header.inc.php");
 
 if(isset($HTTP_GET_VARS['uid']) && isset($HTTP_GET_VARS['rel']) && is_numeric($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['rel'])) {
 

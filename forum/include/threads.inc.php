@@ -21,17 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.102 2004-03-10 21:42:48 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.103 2004-03-11 22:34:40 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
-require_once("./include/db.inc.php");
-require_once("./include/forum.inc.php");
-require_once("./include/format.inc.php"); // Formatting functions
-require_once("./include/thread.inc.php");
-require_once("./include/folder.inc.php");
-require_once("./include/messages.inc.php");
-require_once("./include/constants.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/forum.inc.php");
+include_once("./include/format.inc.php"); // Formatting functions
+include_once("./include/thread.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/constants.inc.php");
 
 function threads_get_available_folders()
 {

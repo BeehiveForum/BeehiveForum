@@ -21,21 +21,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.41 2004-03-10 18:43:17 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.42 2004-03-11 22:34:36 decoyduck Exp $ */
 
 //Multiple forum support
-require_once("./include/forum.inc.php");
+include_once("./include/forum.inc.php");
 
 // Compress the output
-require_once("./include/gzipenc.inc.php");
+include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
-require_once("./include/errorhandler.inc.php");
+include_once("./include/errorhandler.inc.php");
 
 //Check logged in status
 
-require_once("./include/session.inc.php");
-require_once("./include/header.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
@@ -44,12 +44,12 @@ if(!bh_session_check()){
 
 }
 
-require_once("./include/html.inc.php");
-require_once("./include/messages.inc.php");
-require_once("./include/poll.inc.php");
-require_once("./include/post.inc.php");
-require_once("./include/edit.inc.php");
-require_once("./include/lang.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/messages.inc.php");
+include_once("./include/poll.inc.php");
+include_once("./include/post.inc.php");
+include_once("./include/edit.inc.php");
+include_once("./include/lang.inc.php");
 
 if (isset($allow_polls) && !$allow_polls) {
     html_draw_top();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.41 2003-12-02 22:02:23 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.42 2004-03-11 22:34:37 decoyduck Exp $ */
 
 // PROVIDES BASIC DATABASE FUNCTIONALITY
 // This is desgined to be be referenced in an include() or require() statement
@@ -30,8 +30,8 @@ USA
 
 // Connects to the database and returns the connection ID
 
-require_once("./include/lang.inc.php");
-require_once("./include/constants.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/constants.inc.php");
 
 if (!isset($bh_query_count)) $bh_query_count = 0;
 

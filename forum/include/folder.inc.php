@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.48 2004-03-10 21:42:47 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.49 2004-03-11 22:34:37 decoyduck Exp $ */
 
-require_once("./include/forum.inc.php");
-require_once("./include/db.inc.php");
-require_once("./include/form.inc.php");
-require_once("./include/constants.inc.php");
-require_once("./include/format.inc.php");
+include_once("./include/forum.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/format.inc.php");
 
 function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $custom_html = "")
 {

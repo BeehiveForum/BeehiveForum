@@ -21,14 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.91 2004-03-10 21:42:47 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.92 2004-03-11 22:34:40 decoyduck Exp $ */
 
 // Author: Matt Beale
 
-require_once('./include/messages.inc.php');
-require_once('./include/thread.inc.php');
-require_once('./include/user_rel.inc.php');
-require_once("./include/lang.inc.php");
+include_once('./include/messages.inc.php');
+include_once('./include/thread.inc.php');
+include_once('./include/user_rel.inc.php');
+include_once("./include/lang.inc.php");
 
 function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type)
 {

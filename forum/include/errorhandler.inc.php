@@ -21,15 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.34 2004-02-22 15:24:34 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.35 2004-03-11 22:34:37 decoyduck Exp $ */
 
 // Error Handler
 
-require_once("./include/config.inc.php");
-require_once("./include/html.inc.php");
-require_once("./include/form.inc.php");
-require_once("./include/lang.inc.php");
-require_once("./include/session.inc.php");
+include_once("./include/config.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/session.inc.php");
 
 // Redefine the user error constants
 define("FATAL", E_USER_ERROR);

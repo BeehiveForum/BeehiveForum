@@ -1,4 +1,4 @@
-<?php require_once("./include/gzipenc.inc.php"); ?>
+<?php include_once("./include/gzipenc.inc.php"); ?>
 <!doctype HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>

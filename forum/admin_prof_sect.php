@@ -21,20 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.32 2004-03-10 18:43:16 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.33 2004-03-11 22:34:34 decoyduck Exp $ */
 
 //Multiple forum support
-require_once("./include/forum.inc.php");
+include_once("./include/forum.inc.php");
 
 // Compress the output
-require_once("./include/gzipenc.inc.php");
+include_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
-require_once("./include/errorhandler.inc.php");
+include_once("./include/errorhandler.inc.php");
 
 //Check logged in status
-require_once("./include/session.inc.php");
-require_once("./include/header.inc.php");
+include_once("./include/session.inc.php");
+include_once("./include/header.inc.php");
 
 if(!bh_session_check()){
 
@@ -43,14 +43,14 @@ if(!bh_session_check()){
 
 }
 
-require_once("./include/perm.inc.php");
-require_once("./include/html.inc.php");
-require_once("./include/db.inc.php");
-require_once("./include/profile.inc.php");
-require_once("./include/constants.inc.php");
-require_once("./include/form.inc.php");
-require_once("./include/admin.inc.php");
-require_once("./include/lang.inc.php");
+include_once("./include/perm.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/profile.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/admin.inc.php");
+include_once("./include/lang.inc.php");
 
 html_draw_top();
 

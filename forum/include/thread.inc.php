@@ -21,14 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.43 2004-03-10 21:42:48 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.44 2004-03-11 22:34:40 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
-require_once("./include/db.inc.php");
-require_once("./include/forum.inc.php");
-require_once("./include/format.inc.php"); // Formatting functions
-require_once("./include/folder.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/forum.inc.php");
+include_once("./include/format.inc.php"); // Formatting functions
+include_once("./include/folder.inc.php");
 
 function thread_get_title($tid)
 {

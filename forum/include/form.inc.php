@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.40 2004-01-13 16:41:40 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.41 2004-03-11 22:34:38 decoyduck Exp $ */
 
 // form.inc.php : form item functions
 
-require_once("./include/db.inc.php");
-require_once("./include/lang.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/lang.inc.php");
 
 // Create a form field
 

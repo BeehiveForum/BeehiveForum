@@ -21,16 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.8 2004-03-10 21:42:47 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.9 2004-03-11 22:34:38 decoyduck Exp $ */
 
 // Forum-handling functions
 
 // Fetches the webtag from the GET/POST var, checks for it in the
 // database and returns a value.
 
-require_once("./include/db.inc.php");
-require_once("./include/lang.inc.php");
-require_once("./include/form.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/form.inc.php");
 
 function get_webtag($prefix = false)
 {
@@ -60,7 +60,7 @@ function get_webtag($prefix = false)
         html_draw_top();
         echo "<div align=\"center\">\n";
         echo "<h2>Unknown Forum Tag.</h2>\n";
-        //form_quick_button("./index.php", $lang['continue']);
+        form_quick_button("./index.php", $lang['continue']);
         echo "</div>\n";
         html_draw_bottom();
         exit;

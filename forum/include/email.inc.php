@@ -75,7 +75,7 @@ function email_sendnotification($tuid, $msg, $fuid)
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
-            @mail($mailto['EMAIL'], "Message Notification from $forum_name", $message, $header);
+            mail($mailto['EMAIL'], "Message Notification from $forum_name", $message); //, $header);
 
         }
     }
@@ -132,7 +132,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "X-Mailer: PHP/". phpversion();
 
-        @mail($mailto['EMAIL'], "Subscription Notification from $forum_name", $message, $header);
+        mail($mailto['EMAIL'], "Subscription Notification from $forum_name", $message); //, $header);
 
     }
 

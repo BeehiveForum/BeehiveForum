@@ -64,10 +64,19 @@ function folder_get_title($fid)
 function folder_create($title,$access)
 {
     $db_folder_create = db_connect();
+
     $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL) ";
     $sql.= "values (\"$title\",$access)";
+
     $result = db_query($sql, $db_folder_create);
-    return $result;
+
+    if ($result) {
+        $new_fid = db_insert_id($db_folder_create);
+    }else {
+        $new_fid = 0;
+    }
+
+    return $new_fid;
 }
 
 function folder_update($fid,$title,$access)

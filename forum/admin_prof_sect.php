@@ -44,6 +44,7 @@ require_once("./include/db.inc.php");
 require_once("./include/profile.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/admin.inc.php");
 
 html_draw_top();
 
@@ -66,14 +67,16 @@ if(isset($HTTP_POST_VARS['submit'])){
         if($HTTP_POST_VARS['t_name_'.$i] != $HTTP_POST_VARS['t_old_name_'.$i]){
 
             $new_name = (trim($HTTP_POST_VARS['t_name_'.$i]) != "") ? $HTTP_POST_VARS['t_name_'.$i] : $HTTP_POST_VARS['t_old_name_'.$i];
-            profile_section_update($HTTP_POST_VARS['t_psid_'.$i],$new_name);
+            profile_section_update($HTTP_POST_VARS['t_psid_'.$i], $new_name);
+            admin_addlog(0, 0, 0, 0, $HTTP_POST_VARS['t_psid_'.$i], 0, 10);
 
         }
     }
 
     if(trim($HTTP_POST_VARS['t_name_new']) != "" && $HTTP_POST_VARS['t_name_new'] != "New Section"){
 
-        profile_section_create($HTTP_POST_VARS['t_name_new']);
+        $new_psid = profile_section_create($HTTP_POST_VARS['t_name_new']);
+        admin_addlog(0, 0, 0, 0, $new_psid, 0, 11);
 
     }
 
@@ -81,6 +84,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
     $sql = "delete from ". forum_table("PROFILE_SECTION"). " where PSID = ". $HTTP_POST_VARS['psid'];
     $result = db_query($sql, $db);
+    admin_addlog(0, 0, 0, 0, $HTTP_POST_VARS['psid'], 0, 12);
 
   }
 

@@ -41,6 +41,7 @@ require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/admin.inc.php");
 
 if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
 
@@ -59,7 +60,7 @@ if (isset($HTTP_POST_VARS['save'])) {
     $content = _stripslashes($HTTP_POST_VARS['content']);
     $content = str_replace(chr(13), '', $content);
 
-    if (substr($content, 0, 58) != "<?php require_once(\"./include/gzipenc.inc.php\"); ?>") {
+    if (substr($content, 0, 51) != "<?php require_once(\"./include/gzipenc.inc.php\"); ?>") {
       $content = "<?php require_once(\"./include/gzipenc.inc.php\"); ?>\n". $content;
     }
 
@@ -68,6 +69,8 @@ if (isset($HTTP_POST_VARS['save'])) {
     fclose($fp);
 
     $status_text = "<p><b>Start page updated</b> <a href=\"./start_main.php\" target=\"_blank\">View Updated Start Page</a></p>";
+
+    admin_addlog(0, 0, 0, 0, 0, 0, 16);
 
 }else{
 

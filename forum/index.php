@@ -51,40 +51,40 @@ if (!file_exists($top_html)) {
 
 if(bh_session_check()) {
 
-    echo "<frameset rows=\"60,20,*\" border=\"0\">\n";
-    echo "<frame src=\"". $top_html. "\" name=\"ftop\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
-    echo "<frame src=\"./nav.php\" name=\"fnav\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+    echo "<frameset rows=\"60,20,*\" frameborder=\"0\" framespacing=\"0\">\n";
+    echo "<frame src=\"". $top_html. "\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+    echo "<frame src=\"./nav.php\" name=\"fnav\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
     if (isset($HTTP_GET_VARS['final_uri'])) {
 
-      echo "<frame src=\"". urldecode($HTTP_GET_VARS['final_uri']). "\" name=\"main\" border=\"0\" />\n";
+      echo "<frame src=\"". urldecode($HTTP_GET_VARS['final_uri']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }else if (isset($HTTP_GET_VARS['msg'])) {
 
-      echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" border=\"0\" />\n";
+      echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }else {
 
-      echo "<frame src=\"./start.php\" name=\"main\" border=\"0\" />\n";
+      echo "<frame src=\"./start.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }
 
 } else {
 
-    echo "<frameset rows=\"60,*\" border=\"0\">\n";
-    echo "<frame src=\"". $top_html. "\" name=\"top\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
+    echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
+    echo "<frame src=\"". $top_html. "\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
     if (isset($HTTP_GET_VARS['final_uri'])) {
 
-        echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" border=\"0\" />\n";
+        echo "<frame src=\"./logon.php?final_uri=". $HTTP_GET_VARS['final_uri']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }elseif(isset($HTTP_GET_VARS['msg'])) {
 
-        echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" border=\"0\" />\n";
+        echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }else {
 
-        echo "<frame src=\"./logon.php\" name=\"main\" border=\"0\" />\n";
+        echo "<frame src=\"./logon.php\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }
 

@@ -1,0 +1,73 @@
+---      admin_user.php     ---
+
+1 - Change User Status
+2 - Change User Folder Access Privs
+3 - Mass Delete Users Posts
+4 - Ban User's IP Address
+5 - Unban User's IP Address
+6 - Deleted a User's attachment
+
+
+
+
+---    admin_folders.php     ---
+
+7 - Changed Folder Title / Access
+8 - Moved Threads
+9 - Created New Folder
+
+
+
+
+---  admin_profile_sect.php  ---
+
+10 - Changed Profile Section Title
+11 - Added New Profile Section
+12 - Deleted Profile Section
+
+
+
+
+---  admin_profile_items.php ---
+
+13 - Changed Profile Item Title
+14 - Added New Profile Item
+15 - Delete Profile Item
+
+
+
+
+---   admin_startpage.php    ---
+
+16 - Edited Start Page
+
+
+
+
+---   admin_make_style.php   ---
+
+17 - Saved New Style
+
+
+
+
+---     thread_admin.php     ---
+
+18 - Moved Thread
+19 - Closed Thread
+20 - Opened Thread
+21 - Renamed Thread
+
+
+
+
+---        delete.php        ---
+
+22 - Delete Post
+
+
+
+
+---         edit.php         ---
+
+23 - Edit Post

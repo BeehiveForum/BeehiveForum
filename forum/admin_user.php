@@ -48,6 +48,7 @@ require_once("./include/poll.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/edit.inc.php");
 require_once("./include/ip.inc.php");
+require_once("./include/admin.inc.php");
 
 if(isset($HTTP_POST_VARS['cancel'])){
         header_redirect($HTTP_POST_VARS['ret']);
@@ -93,6 +94,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
     unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
     delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
+    admin_addlog($uid, 0, 0, 0, 0, 0, 6);
 
   }else {
 
@@ -111,6 +113,10 @@ if(isset($HTTP_POST_VARS['submit'])) {
     if ($new_status & USER_PERM_SOLDIER) $new_status |= USER_PERM_WORKER;
 
     user_update_status($uid, $new_status);
+
+    // Add Log entry.
+    admin_addlog($uid, 0, 0, 0, 0, 0, 1);
+
     $user['STATUS'] = $new_status;
 
     // Private folder permissions
@@ -136,6 +142,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
       if (isset($uf)) {
 
         user_update_folders($uid, $uf);
+        admin_addlog($uid, 0, 0, 0, 0, 0, 2);
 
       }
 
@@ -147,20 +154,22 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $result = db_query($sql, $db);
 
       while (list($tid, $pid) = db_fetch_array($result)) {
-
         post_delete($tid, $pid);
-
       }
+
+      admin_addlog($uid, 0, 0, 0, 0, 0, 3);
 
     }
 
     if (isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
 
       ban_ip($HTTP_POST_VARS['t_ip_address']);
+      admin_addlog($uid, 0, 0, 0, 4);
 
     }elseif (isset($HTTP_POST_VARS['t_ip_banned']) && !isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
 
       unban_ip($HTTP_POST_VARS['t_ip_address']);
+      admin_addlog($uid, 0, 0, 0, 0, 0, 5);
 
     }
   }

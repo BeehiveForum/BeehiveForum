@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.78 2004-06-13 20:02:10 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.79 2004-06-18 10:39:45 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -311,6 +311,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
                 if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
+		email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
             }else {
                 $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                 $valid = false;
@@ -322,6 +323,7 @@ if ($valid && isset($_POST['submit'])) {
 
                 if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
                     if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
+		    email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
                 }else {
                     $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                     $valid = false;
@@ -412,6 +414,7 @@ if ($valid && isset($_POST['preview'])) {
 }
 
 if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
+
     echo "<table class=\"posthead\" width=\"720\">\n";
     echo "  <tr>\n";
     echo "    <td class=\"subhead\">{$lang['error']}</td>\n";

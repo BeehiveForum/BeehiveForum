@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.34 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: delete.php,v 1.35 2003-08-31 18:15:10 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -33,25 +33,16 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 
-if(!bh_session_check()){
-
+if (!bh_session_check()) {
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
-}
-
-if(isset($HTTP_POST_VARS['cancel'])) {
-
-    $uri = "./discussion.php?msg=". $HTTP_POST_VARS['t_back'];
-    header_redirect($uri);
-
 }
 
 require_once("./include/html.inc.php");
 
-if(bh_session_get_value('UID') == 0) {
-        html_guest_error();
-        exit;
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 require_once("./include/user.inc.php");
@@ -71,59 +62,58 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
-if(isset($HTTP_POST_VARS['submit'])) {
+if (isset($HTTP_POST_VARS['msg'])) {
 
-    $delete_msg = $HTTP_POST_VARS['t_msg'];
-    list($tid, $pid) = explode(".", $delete_msg);
+    $msg = $HTTP_POST_VARS['msg'];
+    list($tid, $pid) = explode(".", $msg);
+
+}elseif (isset($HTTP_GET_VARS['msg'])) {
+
+    $msg = $HTTP_GET_VARS['msg'];
+    list($tid, $pid) = explode(".", $msg);
 
 }else {
 
-    if(isset($HTTP_GET_VARS['msg'])) {
+    html_draw_top();
+    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h2{$lang['nomessagespecifiedfordel']}</h2>";
+    html_draw_bottom();
+    exit;
+}
 
-        $delete_msg = $HTTP_GET_VARS['msg'];
-        list($tid, $pid) = explode(".",$delete_msg);
-        $back = $HTTP_GET_VARS['back'];
+if (isset($HTTP_POST_VARS['cancel'])) {
+    $uri = "./discussion.php?msg=". $msg;
+    header_redirect($uri);
+}
+
+if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
+
+    $preview_message = messages_get($tid, $pid, 1);
+
+    if (count($preview_message) > 0) {
+
+        $preview_message['CONTENT'] = message_get_content($tid, $pid);
+
+        if (bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
+            edit_refuse();
+            exit;
+        }
+
+        $to_uid = $preview_message['TO_UID'];
+        $from_uid = $preview_message['FROM_UID'];
 
     }else {
 
-        html_draw_top();
-        echo "<h1>{$lang['invalidop']}</h1>\n";
-        echo "<h2{$lang['nomessagespecifiedfordel']}</h2>";
-        html_draw_bottom();
-        exit;
-
-    }
-
-    if(isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
-
-        $preview_message = messages_get($tid, $pid, 1);
-
-        if(count($preview_message) > 0) {
-
-            $preview_message['CONTENT'] = message_get_content($tid, $pid);
-
-            if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
-                edit_refuse();
-                exit;
-            }
-
-            $to_uid = $preview_message['TO_UID'];
-            $from_uid = $preview_message['FROM_UID'];
-
-        }else {
-
-            $valid = false;
-            $error_html = "<h2>{$lang['message']} " . $HTTP_GET_VARS['msg'] . " {$lang['wasnotfound']}</h2>";
-
-        }
+        $valid = false;
+        $error_html = "<h2>{$lang['message']} " . $HTTP_GET_VARS['msg'] . " {$lang['wasnotfound']}</h2>";
     }
 }
 
-html_draw_top("openprofile.js");
+html_draw_top("openprofile.js", "basetarget=_blank");
 
 if ($valid) {
 
-    if(isset($HTTP_POST_VARS['submit']) && is_numeric($tid) && is_numeric($pid)) {
+    if (isset($HTTP_POST_VARS['submit']) && is_numeric($tid) && is_numeric($pid)) {
 
         if (post_delete($tid, $pid)) {
 
@@ -131,7 +121,7 @@ if ($valid) {
 
             echo "<div align=\"center\">";
             echo "<p>{$lang['postdelsuccessfully']}</p>";
-            echo form_quick_button("discussion.php", $lang['back'], "msg", $HTTP_POST_VARS['t_back']);
+            echo form_quick_button("discussion.php", $lang['back'], "msg", $HTTP_POST_VARS['msg']);
             echo "</div>";
             html_draw_bottom();
             exit;
@@ -141,12 +131,13 @@ if ($valid) {
             $error_html = "<h2>{$lang['errordelpost']}</h2>";
 
         }
+
     }
 
     echo "<h1>{$lang['delthismessage']}</h1>";
     echo "<h2>" . thread_get_title($tid) . "</h2>";
 
-    if($to_uid == 0) {
+    if ($to_uid == 0) {
 
         $preview_message['TLOGON'] = "ALL";
         $preview_message['TNICK'] = "ALL";
@@ -167,24 +158,23 @@ if ($valid) {
 
     if (thread_is_poll($tid) && $pid == 1) {
 
-      poll_display($tid, $threaddata['LENGTH'], $pid, false, false, false, true, true, true);
+        poll_display($tid, $threaddata['LENGTH'], $pid, false, false, false, true, true, true);
 
     }else {
 
-      message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
+        message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
 
     }
 }
 
 if(isset($error_html)) echo $error_html;
 
-echo "<form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\" target=\"_self\">";
-echo form_input_hidden("t_msg",$delete_msg);
-echo form_input_hidden("t_back",$back);
-echo form_submit("submit",$lang['delete']);
-echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("cancel",$lang['cancel']);
-echo "</form>\n";
-echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
+echo "<div align=\"center\">\n";
+echo "  <form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\" target=\"_self\">\n";
+echo "    ", form_input_hidden("msg", $msg), "\n";
+echo "    <p>", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
+echo "  </form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.18 2003-08-26 18:40:22 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.19 2003-08-31 18:15:11 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -207,7 +207,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     header_redirect($uri);
 }
 
-html_draw_top("openprofile.js");
+html_draw_top("openprofile.js", "basetarget=_blank");
 draw_header_pm();
 
 // Attachment Unique ID

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.164 2003-08-31 16:21:07 hodcroftcj Exp $ */
+/* $Id: messages.inc.php,v 1.165 2003-08-31 18:15:12 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -439,7 +439,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
             if(bh_session_get_value('UID') == $message['FROM_UID'] || perm_is_moderator()){
                 echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
-                echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&amp;back=$tid.$first_msg\" target=\"_parent\">{$lang['delete']}</a>";
+                echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['delete']}</a>";
 
                 if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) || $post_edit_time == 0) && $allow_post_editing)) {
                     if ($is_poll && $message['PID'] == 1) {
@@ -631,7 +631,7 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     } else {
         echo "&nbsp;".form_submit("close",$lang['closeforposting']);
     }
-    
+
     echo "</p>\n";
 
     echo "<p>";

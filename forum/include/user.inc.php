@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.182 2004-06-17 16:03:29 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.183 2004-06-19 11:41:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -208,7 +208,7 @@ function user_logon($logon, $password, $md5hash = false)
 
         // Check to see if the user is banned.
 
-        if ($fa['USER_PERM_COUNT'] > 0) {
+        if (isset($fa['USER_PERM_COUNT']) && $fa['USER_PERM_COUNT'] > 0) {
             if (isset($fa['USER_PERMS']) && $fa['USER_PERMS'] & USER_PERM_BANNED) {
                 $uid = -2;
             }
@@ -532,11 +532,11 @@ function user_get_forthcoming_birthdays()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, ";
-    $sql .= "DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) AS  DAYS_TO_BIRTHDAY ";
+    $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) ";
+    $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
     $sql .= "FROM USER U, {$table_data['PREFIX']}USER_PREFS UP ";
     $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 AND UP.DOB_DISPLAY = 2 ";
-    $sql .= "AND DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) > 0 ";
+    $sql .= "AND MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW())+ 365, 365) > 0 ";
     $sql .= "ORDER BY DAYS_TO_BIRTHDAY ASC ";
     $sql .= "LIMIT 0, 5";
 

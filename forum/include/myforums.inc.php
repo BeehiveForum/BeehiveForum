@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.19 2004-04-11 22:16:03 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.20 2004-04-12 13:56:39 decoyduck Exp $ */
 
 require_once("./include/html.inc.php");
 require_once("./include/threads.inc.php");
@@ -238,7 +238,7 @@ function user_set_forum_interest($fid, $interest)
 
     $result = db_query($sql, $db_user_set_forum_interest);
 
-    if (db_affected_rows($db_user_set_forum_interest) < 0) {
+    if (db_affected_rows($db_user_set_forum_interest) < 1) {
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
 	$sql.= "VALUES ('$uid', '$fid', 1)";

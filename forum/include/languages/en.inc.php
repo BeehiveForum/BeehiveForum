@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.106 2004-04-12 03:11:36 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.107 2004-04-12 13:56:49 decoyduck Exp $ */
 
 // International English language file
 
@@ -389,6 +389,7 @@ $lang['stats'] = "stats";
 $lang['enablestatsdisplay'] = "Enable Stats Display at bottom of message pane";
 $lang['personalmessages'] = "Personal Messages";
 $lang['enablepersonalmessages'] = "Enable Personal Messages";
+$lang['pmuserspace'] = "PM space per user";
 $lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachments";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
@@ -760,6 +761,7 @@ $lang['nouserspecified'] = "No user specified.";
 $lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your Inbox now?";
 $lang['oldermessages'] = "Older Messages";
 $lang['newermessages'] = "Newer Messages";
+$lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

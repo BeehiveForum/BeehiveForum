@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.23 2004-04-11 21:13:12 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.24 2004-04-12 13:56:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -257,6 +257,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $new_forum_settings['show_pms'] = "Y";
     }else {
         $new_forum_settings['show_pms'] = "N";
+    }
+
+    if (isset($HTTP_POST_VARS['pm_max_user_space']) && is_numeric($HTTP_POST_VARS['pm_max_user_space'])) {
+        $new_forum_settings['pm_max_user_space'] = ($HTTP_POST_VARS['pm_max_user_space'] * 1024);
+    }else {
+        $new_forum_settings['pm_max_user_space'] = 102400;
     }
     
     if (isset($HTTP_POST_VARS['pm_allow_attachments']) && $HTTP_POST_VARS['pm_allow_attachments'] == "Y") {
@@ -793,19 +799,24 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['personalmessages']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"3\">\n";
-echo "                    <table class=\"posthead\" width=\"100%\">\n";
-echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("show_pms", "Y", $lang['enablepersonalmessages'], forum_get_setting('show_pms', 'Y', false)), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], forum_get_setting('pm_allow_attachments', 'Y', false)), "&nbsp;</td>\n";
+echo "                        <td>\n";
+echo "                          <fieldset>\n";
+echo "                            <legend>", form_checkbox("show_pms", "Y", $lang['enablepersonalmessages'], forum_get_setting('show_pms', 'Y', false)), "</legend>\n";
+echo "                            <table class=\"posthead\" width=\"100%\">\n";
+echo "                              <tr>\n";
+echo "                                <td>&nbsp;{$lang['pmuserspace']}:</td>\n";
+echo "                                <td>", form_input_text("pm_max_user_space", (forum_get_setting('pm_max_user_space', false, 102400) / 1024), 10, 32), "&nbsp;(KB)&nbsp;</td>\n";
+echo "                              </tr>\n";
+echo "                              <tr>\n";
+echo "                                <td>", form_checkbox("pm_allow_attachments", "Y", $lang['allowpmstohaveattachments'], forum_get_setting('pm_allow_attachments', 'Y', false)), "&nbsp;</td>\n";
+echo "                              </tr>\n";
+echo "                            </table>\n";
+echo "                          </fieldset>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.302 2004-11-01 23:58:43 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.303 2004-11-03 23:31:54 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -1039,6 +1039,16 @@ function messages_forum_stats($tid, $pid)
 
                 if (sizeof($user_stats['USERS']) > 0) {
 
+                    $active_users_array = array();
+
+                    foreach ($user_stats['USERS'] as $user) {
+
+                        $active_user = "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
+                        $active_user.= str_replace(" ", "&nbsp;", format_user_name($user['LOGON'], $user['NICKNAME'])). "</a>";
+
+                        $active_users_array[] = $active_user;
+                    }
+
                     echo "          <tr>\n";
                     echo "            <td width=\"35\">&nbsp;</td>\n";
                     echo "            <td>&nbsp;</td>\n";
@@ -1047,14 +1057,7 @@ function messages_forum_stats($tid, $pid)
                     echo "          <tr>";
                     echo "            <td>&nbsp;</td>\n";
                     echo "            <td class=\"activeusers\">\n";
-
-                    for ($i = 0; $i < sizeof($user_stats['USERS']); $i++) {
-
-                        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']}, '$webtag')\" target=\"_self\">";
-                        echo str_replace(" ", "&nbsp;", format_user_name($user_stats['USERS'][$i]['LOGON'], $user_stats['USERS'][$i]['NICKNAME'])), "</a>";
-                        if ($i < (sizeof($user_stats['USERS']) - 1)) echo ", ";
-                    }
-
+                    echo "              ", implode(", ", $active_users_array), "\n";
                     echo "            </td>\n";
                     echo "            <td width=\"35\">&nbsp;</td>\n";
                     echo "          </tr>\n";

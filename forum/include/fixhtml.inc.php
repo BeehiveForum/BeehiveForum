@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.90 2004-12-12 12:40:08 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.91 2005-03-02 00:45:29 tribalonline Exp $ */
 
 include_once("./include/beautifier.inc.php");
 include_once("./include/emoticons.inc.php");
@@ -1090,77 +1090,81 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
             preg_match("/^<(\w+)(\b[^<>]*)>/i", $html_a[$i], $tag);
 
-            if (!is_bool($tags_nest[$tag[1]][0])) {
+            if (isset($tag[1]) && isset($tags_nest[$tag[1]])) {
 
-                $nest = $tags_nest[$tag[1]];
+                if (!is_bool($tags_nest[$tag[1]][0])) {
 
-                for ($j = 0; $j < count($nest); $j++) {
+                    $nest = $tags_nest[$tag[1]];
 
-                    $offset = 0;
+                    for ($j = 0; $j < count($nest); $j++) {
 
-                    while (is_integer(strpos($html_a[$i], "<". $nest[$j], $offset))) {
+                        $offset = 0;
 
-                        $cur_pos = strpos($html_a[$i], "<".$nest[$j], $offset);
-                        $cur_pos = strpos($html_a[$i], ">", $cur_pos)+1;
+                        while (is_integer(strpos($html_a[$i], "<". $nest[$j], $offset))) {
 
-                        $k = $cur_pos;
+                            $cur_pos = strpos($html_a[$i], "<".$nest[$j], $offset);
+                            $cur_pos = strpos($html_a[$i], ">", $cur_pos)+1;
 
-                        $open_num = 0;
+                            $k = $cur_pos;
 
-                        while (1 != 2) {
+                            $open_num = 0;
 
-                            $open = strpos($html_a[$i], "<".$nest[$j], $k);
-                            $close = strpos($html_a[$i], "</".$nest[$j], $k);
+                            while (1 != 2) {
 
-                            if (!is_integer($open)) {
-                                $open = $close+1;
+                                $open = strpos($html_a[$i], "<".$nest[$j], $k);
+                                $close = strpos($html_a[$i], "</".$nest[$j], $k);
+
+                                if (!is_integer($open)) {
+                                    $open = $close+1;
+                                }
+
+                                if ($close < $open && $open_num == 0) {
+
+                                    break;
+
+                                }else if ($close < $open) {
+
+                                    $open_num--;
+                                    $open = $close;
+
+                                }else {
+
+                                    $open_num++;
+                                }
+
+                                $k = $open+1;
                             }
 
-                            if ($close < $open && $open_num == 0) {
+                            $tmp = array();
 
-                                break;
+                            $tmp[0] = substr($html_a[$i], 0, $cur_pos);
+                            $tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
+                            $tmp[2] = substr($html_a[$i], $close);
 
-                            }else if ($close < $open) {
+                            $tmp[1] = add_paragraphs($tmp[1], false, true);
 
-                                $open_num--;
-                                $open = $close;
+                            $offset = strlen($tmp[0].$tmp[1]);
 
-                            }else {
-
-                                $open_num++;
-                            }
-
-                            $k = $open+1;
+                            $html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
                         }
-
-                        $tmp = array();
-
-                        $tmp[0] = substr($html_a[$i], 0, $cur_pos);
-                        $tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
-                        $tmp[2] = substr($html_a[$i], $close);
-
-                        $tmp[1] = add_paragraphs($tmp[1], false, true);
-
-                        $offset = strlen($tmp[0].$tmp[1]);
-
-                        $html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
                     }
+
+                }else if ($tags_nest[$tag[1]][0] == true) {
+
+                    $cur_pos = strpos($html_a[$i], ">") + 1;
+                    $close = strrpos($html_a[$i], "<");
+
+                    $tmp = array();
+
+                    $tmp[0] = substr($html_a[$i], 0, $cur_pos);
+                    $tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
+                    $tmp[2] = substr($html_a[$i], $close);
+
+                    $tmp[1] = add_paragraphs($tmp[1], false, true);
+
+                    $html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
                 }
 
-            }else if ($tags_nest[$tag[1]][0] == true) {
-
-                $cur_pos = strpos($html_a[$i], ">") + 1;
-                $close = strrpos($html_a[$i], "<");
-
-                $tmp = array();
-
-                $tmp[0] = substr($html_a[$i], 0, $cur_pos);
-                $tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
-                $tmp[2] = substr($html_a[$i], $close);
-
-                $tmp[1] = add_paragraphs($tmp[1], false, true);
-
-                $html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
             }
 
             if (isset($tags_nest[$tag[1]][1]) && $tags_nest[$tag[1]][1] != true) {

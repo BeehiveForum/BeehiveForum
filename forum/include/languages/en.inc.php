@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.212 2005-01-26 22:42:23 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.213 2005-01-27 22:58:15 decoyduck Exp $ */
 
 // International English language file
 
@@ -883,6 +883,8 @@ $lang['makesticky'] = "Make sticky";
 $lang['makenonsticky'] = "Make non-sticky";
 $lang['until'] = "Until 00:00 UTC";
 $lang['stickyuntil'] = "Sticky until";
+$lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
+$lang['approvepost'] = "Approve post for display";
 
 // Navigation strip (nav.php) ------------------------------------------
 

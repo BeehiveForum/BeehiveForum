@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.316 2005-01-26 21:33:24 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.317 2005-01-27 22:58:15 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -43,6 +43,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
     $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
+    $sql .= "UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, APPROVED_USER.LOGON AS APPROVED_LOGON, ";
     $sql .= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql .= "THREAD.FID FROM {$table_data['PREFIX']}POST POST ";
@@ -53,6 +54,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
     $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql .= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";
+    $sql .= "LEFT JOIN USER APPROVED_USER ON (POST.EDITED_BY = APPROVED_USER.UID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
     $sql .= "WHERE POST.TID = '$tid' ";
     $sql .= "AND POST.PID >= '$pid' ";
@@ -76,6 +78,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
             $messages[$i]['TO_UID'] = $message['TO_UID'];
             $messages[$i]['CREATED'] = $message['CREATED'];
             $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
+            $messages[$i]['APPROVED'] = isset($message['APPROVED']) ? $message['APPROVED'] : 0;
+            $messages[$i]['APPROVED_LOGON'] = isset($message['APPROVED_LOGON']) ? $message['APPROVED_LOGON'] : 0;
             $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
             $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
             $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
@@ -297,6 +301,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     }
                     $down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" alt=\"{$lang['next']}\" title=\"{$lang['next']}\" /></a>";
             }
+    }
+
+    if ((isset($message['APPROVED']) && $message['APPROVED'] == 0) && !perm_is_moderator($message['FID'])) {
+
+        message_display_approval_req($tid, $message['PID']);
+        return;
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
@@ -586,6 +596,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a>&nbsp;";
                 }
 
+                echo "<a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"{$lang['approvepost']}\"><img src=\"".style_image('approved.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a>&nbsp;";
+
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
                     if (ip_is_banned($message['IPADDRESS'])) {
@@ -643,6 +655,18 @@ function message_display_deleted($tid, $pid, $message)
         echo "</td></tr></table>\n";
         echo "</td></tr></table></div>\n";
     }
+}
+
+function message_display_approval_req($tid, $pid)
+{
+    $lang = load_language_file();
+
+    echo "<br /><div align=\"center\">";
+    echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
+    echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
+    echo "{$lang['message']} ${tid}.${pid} {$lang['awaitingapprovalbymoderator']}\n";
+    echo "</td></tr></table>\n";
+    echo "</td></tr></table></div>\n";
 }
 
 function messages_start_panel()

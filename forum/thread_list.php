@@ -204,7 +204,9 @@ if (isset($HTTP_GET_VARS['msg'])) {
     $threadvisible = false;
 
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
-    list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'], $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);
+    
+    list($thread['tid'], $thread['fid'], $thread['title'], $thread['length'], $thread['poll_flag'],
+         $thread['modified'], $thread['closed'], $thread['interest'], $thread['last_read'])  = thread_get($tid);
     
     $thread['title'] = stripslashes($thread['title']);
     

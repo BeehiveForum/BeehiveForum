@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.12 2005-03-13 20:15:51 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.13 2005-03-14 13:11:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -92,7 +92,7 @@ echo "<description>{$forum_name} - {$forum_location}</description>\n";
 echo "<lastBuildDate>{$build_data} UT</lastBuildDate>\n";
 echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
-// Get the recent threads (20 of them)
+// Get the 20 most recent threads
 
 if ($threads_array = threads_get_most_recent(20)) {
 

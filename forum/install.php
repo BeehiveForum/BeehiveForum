@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.27 2005-03-07 00:04:40 decoyduck Exp $ */
+/* $Id: install.php,v 1.28 2005-03-14 13:11:21 decoyduck Exp $ */
 
 // Installation checking functions
 include_once("./include/install.inc.php");
@@ -68,7 +68,7 @@ if (isset($_POST['install_method']) && !defined('BEEHIVE_INSTALLED')) {
 
         if (!preg_match("/^[A-Z0-9_-]+$/", $forum_webtag)) {
 
-            $error_html.= "<h2>The forum webtag can only conatin uppercase A-Z, 0-9 and hyphen (-) and underscore (_) characters</h2>\n";
+            $error_html.= "<h2>The forum webtag can only conatin uppercase A-Z, 0-9 and hyphen and underscore characters</h2>\n";
             $valid = false;
         }
 

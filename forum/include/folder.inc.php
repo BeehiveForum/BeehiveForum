@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.90 2005-03-09 23:26:52 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.91 2005-03-14 13:11:22 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -378,6 +378,56 @@ function folder_is_valid($fid)
     $result = db_query($sql, $db_folder_get_available);
 
     return (db_num_rows($result) > 0);
+}
+
+function folder_is_accessible($fid)
+{
+    $db_folder_is_available = db_connect();
+
+    if (!is_numeric($fid)) return false;
+    if (!$uid = bh_session_get_value('UID')) $uid = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $access_allowed = USER_PERM_POST_READ;
+
+    $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "WHERE FOLDER.FID = '$fid' ";
+    $sql.= "GROUP BY FOLDER.FID ";
+    $sql.= "ORDER BY FOLDER.FID";
+
+    $result = db_query($sql, $db_folder_is_available);
+
+    if (db_num_rows($result) > 0) {
+
+        $row = db_fetch_array($result);
+
+        if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
+
+            return true;
+
+        }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
+
+            return true;
+
+        }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function user_set_folder_interest($fid, $interest)

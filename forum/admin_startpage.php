@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.62 2005-03-13 20:15:21 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.63 2005-03-14 13:11:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -129,7 +129,7 @@ if (isset($_POST['submit'])) {
 
             if (@move_uploaded_file($_FILES['userfile']['tmp_name'], "forums/$webtag/start_main.php")) {
 
-                $content = load_start_page();
+                $content = forum_load_start_page();
 
                 $status_text = "<p><b>{$lang['startpageupdated']}</b> ";
                 $status_text.= "<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.240 2005-03-13 22:42:42 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.241 2005-03-14 13:11:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -621,6 +621,12 @@ $lang['forum_settings_help_29'] = "If you don't want any new user signups you ca
 $lang['forum_settings_help_30'] = "<b>Enable WikiWiki Integration</b> provides WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your choosen Wiki.";
 $lang['forum_settings_help_31'] = "<b>Enable WikiWiki Quick Links</b> enables the use of msg:1.1 and User:Logon style extended Wiki links which create hyperlinks to the specified message / user profile of the specified user.";
 $lang['forum_settings_help_32'] = "<b>WikiWiki Location</b> is used to specify the URI of your WikiWiki. When entering the URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
+$lang['forum_settings_help_33'] = "<b>Forum Access Status</b> controls how users may access your forum.";
+$lang['forum_settings_help_34'] = "<b>Open</b> will allow all users and guests access to your forum without restriction.";
+$lang['forum_settings_help_35'] = "<b>Closed</b> prevents access for all users, with the exception of Admins who may still access the admin panel.";
+$lang['forum_settings_help_36'] = "<b>Restrict</b> allows to set a list of users who are allowed access to your forum.";
+$lang['forum_settings_help_37'] = "<b>Password Protected</b> allows you to set a password to give out to users so they can access your forum.";
+$lang['forum_settings_help_38'] = "Where setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

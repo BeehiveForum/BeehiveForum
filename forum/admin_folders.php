@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.85 2004-11-21 17:34:52 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.86 2004-12-05 20:34:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -174,6 +174,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['position']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['foldername']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['threadcount']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
 
 if ($folder_array = folder_get_all()) {
@@ -194,6 +195,16 @@ if ($folder_array = folder_get_all()) {
 
         echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
         echo "                  <td align=\"left\">{$folder['THREAD_COUNT']}</td>\n";
+
+        if ($folder['FOLDER_PERM_COUNT'] > 0) {
+
+            echo "                  <td align=\"left\">", perm_display_list($folder['FOLDER_PERMS']), "</td>\n";
+
+        }else {
+
+            echo "                  <td align=\"left\">{$lang['none']}</td>\n";
+        }
+
         echo "                </tr>\n";
     }
 }
@@ -213,8 +224,71 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("addnew", $lang['addnewfolder']), "</td>\n";
 echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;Permissions Key</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>R</b></td>\n";
+echo "                  <td>{$lang['postreadingallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>W</b></td>\n";
+echo "                  <td>{$lang['postcreationallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>T</b></td>\n";
+echo "                  <td>{$lang['threadcreationallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>E</b></td>\n";
+echo "                  <td>{$lang['posteditingallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>D</b></td>\n";
+echo "                  <td>{$lang['postdeletionallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>A</b></td>\n";
+echo "                  <td>{$lang['attachmentsallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>H</b></td>\n";
+echo "                  <td>{$lang['htmlpostingallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>S</b></td>\n";
+echo "                  <td>{$lang['signatureallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td><b>G</b></td>\n";
+echo "                  <td>{$lang['guestaccessallowed']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"8\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
-echo "</form>\n";;
+echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

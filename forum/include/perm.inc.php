@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.52 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.53 2004-12-05 20:34:59 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -758,6 +758,35 @@ function perm_group_get_users($gid, $offset = 0)
     }
 
     return false;
+}
+
+function perm_display_list($perms)
+{
+    $perms_array = array();
+
+    if ($perms & USER_PERM_BANNED)           $perms_array[] = "B";
+    if ($perms & USER_PERM_WORMED)           $perms_array[] = "W";
+    if ($perms & USER_PERM_POST_READ)        $perms_array[] = "R";
+    if ($perms & USER_PERM_POST_CREATE)      $perms_array[] = "W";
+    if ($perms & USER_PERM_THREAD_CREATE)    $perms_array[] = "T";
+    if ($perms & USER_PERM_POST_EDIT)        $perms_array[] = "E";
+    if ($perms & USER_PERM_POST_DELETE)      $perms_array[] = "D";
+    if ($perms & USER_PERM_POST_ATTACHMENTS) $perms_array[] = "A";
+    if ($perms & USER_PERM_FOLDER_MODERATE)  $perms_array[] = "M";
+    if ($perms & USER_PERM_ADMIN_TOOLS)      $perms_array[] = "A";
+    if ($perms & USER_PERM_FORUM_TOOLS)      $perms_array[] = "F";
+    if ($perms & USER_PERM_HTML_POSTING)     $perms_array[] = "H";
+    if ($perms & USER_PERM_SIGNATURE)        $perms_array[] = "S";
+    if ($perms & USER_PERM_GUEST_ACCESS)     $perms_array[] = "G";
+
+    if (sizeof($perms_array) > 0) {
+
+        echo implode("", $perms_array);
+
+    }else {
+
+        echo "[none]";
+    }
 }
 
 ?>

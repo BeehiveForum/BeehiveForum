@@ -8,15 +8,11 @@
 6 - Deleted a User's attachment
 
 
-
-
 ---    admin_folders.php     ---
 
 7 - Changed Folder Title / Access
 8 - Moved Threads
 9 - Created New Folder
-
-
 
 
 ---  admin_profile_sect.php  ---
@@ -26,8 +22,6 @@
 12 - Deleted Profile Section
 
 
-
-
 ---  admin_profile_items.php ---
 
 13 - Changed Profile Item Title
@@ -35,20 +29,14 @@
 15 - Delete Profile Item
 
 
-
-
 ---   admin_startpage.php    ---
 
 16 - Edited Start Page
 
 
-
-
 ---   admin_make_style.php   ---
 
 17 - Saved New Style
-
-
 
 
 ---     thread_admin.php     ---
@@ -59,13 +47,9 @@
 21 - Renamed Thread
 
 
-
-
 ---        delete.php        ---
 
 22 - Delete Post
-
-
 
 
 ---         edit.php         ---

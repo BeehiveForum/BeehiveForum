@@ -69,6 +69,9 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\"><a href=\"./admin_make_style.php\" target=\"right\">Forum Style</a></td>\n";
 echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"postbody\"><a href=\"./admin_viewlog.php\" target=\"right\">View Log</a></td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 
 html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.129 2004-09-14 18:59:45 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.130 2004-09-14 20:18:12 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -317,7 +317,7 @@ function html_draw_top()
         echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
     }
 
-    echo "<link rel=\"alternate\" type=\"application/xml\" title=\"RSS\" href=\"./threads_rss.php\">\n";
+    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} RSS Feed\" href=\"threads_rss.php\">\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 
     $stylesheet = html_get_style_sheet();

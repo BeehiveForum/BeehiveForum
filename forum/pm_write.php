@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.22 2003-09-04 12:46:23 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.23 2003-09-04 12:56:57 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -120,8 +120,6 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
         $valid = false;
     }
 
-    echo "<p>{$HTTP_POST_VARS['t_to_uid']}</p>\n";
-
     if (isset($HTTP_POST_VARS['t_to_uid'])) {
         if (substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
             $t_to_logon = substr($HTTP_POST_VARS['t_to_uid'], 2);
@@ -139,8 +137,6 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
         $error_html = "<h2>{$lang['nouserspecified']}</h2>\n";
         $valid = false;
     }
-
-    echo "<p>$t_to_uid</p>\n";
 
     if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
         $t_post_html = "Y";

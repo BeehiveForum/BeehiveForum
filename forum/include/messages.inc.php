@@ -263,6 +263,7 @@ function messages_end_panel()
 
 function messages_nav_strip($tid,$pid,$length,$ppp)
 {
+
     // Less than 20 messages, no nav needed
     if($pid == 1 && $length < $ppp){
         return;

@@ -33,10 +33,9 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 // Default settings ----------------------------------------------------
 
 // IMPORTANT: As of BeehiveForum 0.4.1 the additional settings in config.inc.php have
-//            been moved to a database table. If you are upgrading to 0.4.1 any
-//            settings you have in your config.inc.php file will be ignored and you
-//            will need to log into your forum and visit the Admin section to restore
-//            them to their old values.
+//            been moved to a database table. The default settings below are only used
+//            if the customised ones cannot be retrieved from the database. Under 
+//            normal operation these settings will be ignored.
 
 $forum_settings = array('forum_name'                => "A Beehive Forum",
                         'forum_email'               => "admin@abeehiveforum.net",

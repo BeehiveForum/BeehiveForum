@@ -23,12 +23,12 @@ USA
 
 // Included functions for displaying threads in the left frameset.
 
-include("db.inc.php");
+include("include/db.inc.php");
 
 function threads_get_folders()
 {
 	$db = db_connect();
-	$query = "SELECT DISTINCT FID, TITLE FROM folder ORDER BY FID";
+	$query = "SELECT DISTINCT FID, TITLE FROM FOLDER ORDER BY FID";
 	$result = db_query($query, $db);
 
 	if (!db_num_rows($result)) {
@@ -47,7 +47,7 @@ function threads_get_folders()
 function threads_get_all($fid)
 {
 	$db = db_connect();
-	$query = "SELECT TID, FID, TITLE, LENGTH, POLL_FLAG FROM thread WHERE FID = '$fid'";
+	$query = "SELECT TID, FID, TITLE, LENGTH, POLL_FLAG FROM THREAD WHERE FID = '$fid'";
 	$result = db_query($query, $db);
 
 	if (!db_num_rows($result)) {
@@ -72,7 +72,7 @@ function threads_check_read($user, $check)
 {
 	$db = db_connect();
 
-	$query = "SELECT DISTINCT UID, TID, LAST_READ FROM user_thread WHERE UID = '$user' AND TID = '$check'";
+	$query = "SELECT DISTINCT UID, TID, LAST_READ FROM USER_THREAD WHERE UID = '$user' AND TID = '$check'";
 	$result = db_query($query, $db);
 
 	if (!db_num_rows($result)) {

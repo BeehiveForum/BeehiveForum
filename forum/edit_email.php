@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.22 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.23 2004-04-12 15:34:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -98,6 +98,18 @@ if (bh_session_get_value('UID') == 0) {
 }
 
 if (isset($HTTP_POST_VARS['submit'])) {
+
+    if (isset($HTTP_POST_VARS['allow_email']) && $HTTP_POST_VARS['allow_email'] == "Y") {
+        $user_prefs['ALLOW_EMAIL'] = "Y";
+    }else {
+        $user_prefs['ALLOW_EMAIL'] = "";
+    }
+
+    if (isset($HTTP_POST_VARS['allow_pm']) && $HTTP_POST_VARS['allow_pm'] == "Y") {
+        $user_prefs['ALLOW_PM'] = "Y";
+    }else {
+        $user_prefs['ALLOW_PM'] = "";
+    }
 
     if (isset($HTTP_POST_VARS['email_notify']) && $HTTP_POST_VARS['email_notify'] == "Y") {
         $user_prefs['EMAIL_NOTIFY'] = "Y";
@@ -233,7 +245,13 @@ if (isset($user_prefs['DOB_DISPLAY'])) {
 
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) ? true : false), "</td>\n";
+echo "                  <td colspan=\"2\">", form_checkbox("allow_email", "Y", $lang['allowemails'], (isset($user_prefs['ALLOW_EMAIL']) && $user_prefs['ALLOW_EMAIL'] == "Y") ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">", form_checkbox("allow_pm", "Y", $lang['allowpersonalmessages'], (isset($user_prefs['ALLOW_PM']) && $user_prefs['ALLOW_PM'] == "Y") ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

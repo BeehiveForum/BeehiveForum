@@ -41,6 +41,14 @@ $default_language = "en"; // default language for the forum
 
 // ---------------------------------------------------------------------
 
+// Error Handler -------------------------------------------------------
+
+$show_friendly_errors = true; // Should Beehive replace PHP's default
+                              // error handler? If you have problems
+                              // with blank pages, etc, you should try
+                              // turning this option off to see if it
+                              // goes away.
+
 // Cookie options ------------------------------------------------------
 
 $cookie_domain = ""; // Specifies the domain name that the cookies set

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.66 2003-09-03 15:28:36 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.67 2003-09-03 15:45:49 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -1015,14 +1015,15 @@ function poll_public_ballot($tid)
       }
     }
 
-    $row_class = (sizeof($max_values) > 1) ? "highlight" : "postbody";
+    $row_class   = (sizeof($max_values) > 1) ? "highlight" : "postbody";
+    $table_class = (sizeof($max_values) > 1) ? "box" : "";
 
     array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
     $user_votes = poll_get_user_votes($tid);
     $user_count = user_count();
 
-    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"box\">\n";
+    $polldisplay = "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
     $polldisplay.= "              <tr>\n";
 
     for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
@@ -1033,7 +1034,7 @@ function poll_public_ballot($tid)
 
         if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
           $polldisplay.= "            </table><br />\n";
-          $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"box\">\n";
+          $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
         }
 
         $polldisplay.= "              <tr>\n";

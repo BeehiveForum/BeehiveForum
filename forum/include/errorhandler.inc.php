@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.22 2003-08-18 13:44:07 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.23 2003-09-03 15:45:49 decoyduck Exp $ */
 
 // Error Handler
 
@@ -42,7 +42,6 @@ error_reporting(E_ALL);
 
 function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
-
     if (error_reporting()) {
 
         global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS, $lang;
@@ -61,7 +60,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
         srand((double)microtime()*1000000);
 
-        while(@ob_end_flush());
+        @ob_end_clean();
         ob_start("bh_gzhandler");
 
         if (defined("BEEHIVEMODE_LIGHT")) {
@@ -229,6 +228,6 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 }
 
 // set to the user defined error handler
-set_error_handler("bh_error_handler");
+if ($show_friendly_errors) set_error_handler("bh_error_handler");
 
 ?>

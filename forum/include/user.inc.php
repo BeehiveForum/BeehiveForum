@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.121 2004-02-27 22:00:32 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.122 2004-03-01 22:58:03 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -380,14 +380,16 @@ function user_update_prefs($uid, $prefs_array)
 
     $sql = "INSERT INTO " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
     $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
-    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS) ";
+    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, ";
+    $sql.= "IMAGES_TO_LINKS, USE_ADMIN_FILTER) ";
     $sql.= "VALUES ($uid, '{$prefs_array['FIRSTNAME']}', '{$prefs_array['LASTNAME']}', '{$prefs_array['DOB']}', ";
     $sql.= "'{$prefs_array['HOMEPAGE_URL']}', '{$prefs_array['PIC_URL']}', '{$prefs_array['EMAIL_NOTIFY']}', ";
     $sql.= "'{$prefs_array['TIMEZONE']}', '{$prefs_array['DL_SAVING']}', '{$prefs_array['MARK_AS_OF_INT']}', ";
     $sql.= "'{$prefs_array['POSTS_PER_PAGE']}', '{$prefs_array['FONT_SIZE']}', '{$prefs_array['STYLE']}', ";
     $sql.= "'{$prefs_array['VIEW_SIGS']}', '{$prefs_array['START_PAGE']}', '{$prefs_array['LANGUAGE']}', ";
     $sql.= "'{$prefs_array['PM_NOTIFY']}', '{$prefs_array['PM_NOTIFY_EMAIL']}', '{$prefs_array['DOB_DISPLAY']}', ";
-    $sql.= "'{$prefs_array['ANON_LOGON']}', '{$prefs_array['SHOW_STATS']}', '{$prefs_array['IMAGES_TO_LINKS']}')";
+    $sql.= "'{$prefs_array['ANON_LOGON']}', '{$prefs_array['SHOW_STATS']}', '{$prefs_array['IMAGES_TO_LINKS']}', ";
+    $sql.= "'{$prefs_array['USE_ADMIN_FILTER']}')";
     
     $result = db_query($sql, $db_user_update_prefs);
 
@@ -801,6 +803,49 @@ function user_get_relationships($uid, $offset = 0)
     }else {
         return false;
     }
-}    
+}
+
+function user_get_word_filter($incadminfilter = false)
+{
+    $db_user_get_word_filter = db_connect();
+    
+    $uid = bh_session_get_value('UID');    
+
+    $sql = "SELECT * FROM ". forum_table("FILTER_LIST"). " WHERE UID = '$uid'";
+    if ($incadminfilter) $sql.= " OR UID = 0 ORDER BY UID DESC";
+    $result = db_query($sql, $db_user_get_word_filter);
+
+    $filter_array = array();
+
+    while($row = db_fetch_array($result)) {
+        $filter_array[] = $row;
+    }
+
+    return $filter_array;
+}
+
+function user_clear_word_filter()
+{
+    $db_user_clear_word_filter = db_connect();
+    
+    $uid = bh_session_get_value('UID');
+
+    $sql = "DELETE FROM ". forum_table("FILTER_LIST"). " WHERE UID = '$uid'";
+    return db_query($sql, $db_user_clear_word_filter);
+}
+
+function user_add_word_filter($match, $replace)
+{
+    $match = addslashes($match);
+    $replace = addslashes($replace);
+
+    $db_user_save_word_filter = db_connect();
+    $uid = bh_session_get_value('UID');    
+
+    $sql = "INSERT INTO ". forum_table("FILTER_LIST"). " (UID, MATCH_TEXT, REPLACE_TEXT) ";
+    $sql.= "VALUES ('$uid', '$match', '$replace')";
+
+    $result = db_query($sql, $db_user_save_word_filter);
+}
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_menu.php,v 1.5 2004-02-23 21:31:27 decoyduck Exp $ */
+/* $Id: user_menu.php,v 1.6 2004-03-01 22:58:03 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -76,13 +76,16 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\"><a href=\"forum_options.php\" target=\"right\">{$lang['forumoptions']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"edit_attachments.php\" target=\"right\">{$lang['attachments']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_attachments.php\" target=\"right\">{$lang['editattachments']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\"><a href=\"edit_signature.php\" target=\"right\">{$lang['editsignature']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\"><a href=\"edit_relations.php\" target=\"right\">{$lang['editrelationships']}</a></td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td class=\"postbody\"><a href=\"edit_wordfilter.php\" target=\"right\">{$lang['editwordfilter']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

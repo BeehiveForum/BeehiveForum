@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.29 2004-02-27 22:00:13 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.30 2004-03-01 22:58:04 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -67,6 +67,7 @@ $lang['subscribe'] = "S'abonne";
 $lang['apply'] = "S'appliquer";
 $lang['submit'] = "Soumettre";
 $lang['save'] = "Epargner";
+$lang['update'] = "Mise à jour";
 $lang['cancel'] = "Annuler";
 $lang['continue'] = "Continuer";
 $lang['queen'] = "Reine";
@@ -119,6 +120,7 @@ $lang['emailaddress'] = "Adresse mél";
 $lang['confirm'] = "Confirmer";
 $lang['email'] = "Email";
 $lang['new'] = "nouveau";
+$lang['newcaps'] = "NOUVEAU";
 $lang['poll'] = "Sondage";
 $lang['friend'] = "Ami";
 $lang['error'] = "Erreur";
@@ -285,6 +287,7 @@ $lang['wordfilterupdated'] = "Le Filtre de mot a mis à jour";
 $lang['editwordfilter'] = "Editer le Filtre de Mot";
 $lang['wordfilterexp_1'] = "Utiliser cette page pour éditer le Filtre de Mot pour votre forum. Placer chaque mot être filtré sur une nouvelle ligne.";
 $lang['wordfilterexp_2'] = "Perl-les expressions régulières compatibles peuvent être utilisées aussi pour égaler des mots si vous savez.";
+$lang['wordfilterexp_3'] = "Utiliser cette page pour éditer votre filtre personnel de mot. Placer chaque mot être filtré sur une nouvelle ligne.";
 $lang['allow'] = "Permettre";
 $lang['normalthreadsonly'] = "Les fils normaux seulement";
 $lang['pollthreadsonly'] = "Le sondage enfile seulement";
@@ -635,6 +638,7 @@ $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
 $lang['newrelationship'] = "New Relationship";
 $lang['editrelationships'] = "Edit Relationships";
+$lang['editattachments'] = "Edit Attachments";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
 $lang['newpasswd'] = "Nouveau Mot de passe";
@@ -687,6 +691,7 @@ $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";
 $lang['privacysettings'] = "Privacy Settings";
+$lang['includeadminfilter'] = "Include admin word filter in my list.";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

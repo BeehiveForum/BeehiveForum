@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.28 2004-02-27 22:00:13 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.29 2004-03-01 22:58:04 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -65,6 +65,7 @@ $lang['subscribe'] = "Down wit that shit";
 $lang['apply'] = "Aight";
 $lang['submit'] = "Aight";
 $lang['save'] = "Aight";
+$lang['update'] = "Aight";
 $lang['cancel'] = "Nah man";
 $lang['continue'] = "Yeeahh";
 $lang['queen'] = "Mack Daddy";
@@ -118,6 +119,7 @@ $lang['emailaddress'] = "Email addrizess";
 $lang['confirm'] = "Confizirm";
 $lang['email'] = "Emizail";
 $lang['new'] = "nizew";
+$lang['newcaps'] = "NIZEW";
 $lang['poll'] = "Pizoll";
 $lang['friend'] = "Homie";
 $lang['error'] = "Izerror";
@@ -292,6 +294,7 @@ $lang['wordfilterupdated'] = "Wizord Fizilter updizated";
 $lang['editwordfilter'] = "Fuck wit tha Wizord Fizilter";
 $lang['wordfilterexp_1'] = "Use thizis shot to fuck wit tha Wizord Fizilter fo' yo forum. Each word to fuckin' be fuckin' filtered goez on a new-ass line.";
 $lang['wordfilterexp_2'] = "If yo a geek-ass, yo should know that Pizerl-compizatible regular fuckin' expressions can go dizown like a mothafucka.";
+$lang['wordfilterexp_3'] = "Use thizis shot to fuck wit yo Wizord Fizilter. Place each word to be filtered on a new line.";
 $lang['allow'] = "Word to that shit";
 $lang['normalthreadsonly'] = "Nizormal shit only";
 $lang['pollthreadsonly'] = "Polla shit only";
@@ -647,6 +650,7 @@ $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
 $lang['newrelationship'] = "New Relationship";
 $lang['editrelationships'] = "Edit Relationships";
+$lang['editattachments'] = "Edit Attachments";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
 $lang['searchagain'] = "Search Again";
@@ -700,6 +704,7 @@ $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
 $lang['emailsettings'] = "Email Settings";
 $lang['privacysettings'] = "Privacy Settings";
+$lang['includeadminfilter'] = "Include admin word filter in my list.";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

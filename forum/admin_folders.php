@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.45 2004-02-01 17:44:21 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.46 2004-03-01 22:58:02 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -159,7 +159,7 @@ if ($folder_array = folder_get_all()) {
 
 // Draw a row for a new folder to be created
 echo "          <tr>\n";
-echo "            <td align=\"left\">NEW</td>\n";
+echo "            <td align=\"left\">{$lang['newcaps']}</td>\n";
 echo "            <td align=\"left\">". form_field("t_title_new", $lang['newfolder'], 25, 32). "</td>\n";
 echo "            <td align=\"left\">". form_field("t_desc_new", "", 32, 255). "</td>\n";
 echo "            <td align=\"left\">". form_dropdown_array("t_access_new", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked'])). "</td>\n";
@@ -175,7 +175,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "  <p>", form_input_hidden("t_count", sizeof($folder_array)), form_submit('submit', 'Save'), "</p>\n";
+echo "  <p>", form_submit('submit', 'Save'), "</p>\n";
 echo "</form>";
 echo "</div>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.13 2004-02-26 21:04:58 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.14 2004-03-01 22:58:03 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -94,13 +94,13 @@ function admin_get_word_filter()
 {
     $db_admin_get_word_filter = db_connect();
 
-    $sql = "SELECT FILTER FROM ". forum_table("FILTER_LIST");
+    $sql = "SELECT * FROM ". forum_table("FILTER_LIST"). " WHERE UID = 0";
     $result = db_query($sql, $db_admin_get_word_filter);
 
     $filter_array = array();
 
     while($row = db_fetch_array($result)) {
-        $filter_array[] = $row['FILTER'];
+        $filter_array[] = $row;
     }
 
     return $filter_array;
@@ -110,29 +110,22 @@ function admin_clear_word_filter()
 {
     $db_admin_clear_word_filter = db_connect();
 
-    $sql = "DELETE FROM ". forum_table("FILTER_LIST");
+    $sql = "DELETE FROM ". forum_table("FILTER_LIST"). " WHERE UID = 0";
     return db_query($sql, $db_admin_clear_word_filter);
 }
 
-function admin_save_word_filter($filter)
+function admin_add_word_filter($match, $replace)
 {
-    admin_clear_word_filter();
+    $match = addslashes($match);
+    $replace = addslashes($replace);
 
-    $db_admin_save_word_filter = db_connect();
+    $db_admin_add_word_filter = db_connect();
+    $uid = bh_session_get_value('UID');    
 
-    $filter_array = explode("\n", $filter);
+    $sql = "INSERT INTO ". forum_table("FILTER_LIST"). " (MATCH_TEXT, REPLACE_TEXT) ";
+    $sql.= "VALUES ('$match', '$replace')";
 
-    for ($i = 0; $i < sizeof($filter_array); $i++) {
-
-       if (substr($filter_array[$i], 0, 1) == '/' && substr($filter_array[$i], -1) == '/') {
-           $filter_array[$i] = substr($filter_array[$i], 1, -1);
-       }
-
-       $sql = "INSERT INTO ". forum_table("FILTER_LIST"). " (FILTER) ";
-       $sql.= "VALUES ('". addslashes($filter_array[$i]). "')";
-
-       $result = db_query($sql, $db_admin_save_word_filter);
-    }
+    $result = db_query($sql, $db_admin_add_word_filter);
 }
 
 function admin_user_search($usersearch, $sort_by = "USER.LAST_LOGON", $sort_dir = "DESC", $offset = 0)

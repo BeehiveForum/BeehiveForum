@@ -42,13 +42,26 @@ html_draw_top();
 
 // Drop out of PHP to start the HTML table
 ?>
-<table width="100%" border="0" cellpadding=\0" cellspacing="0">
+
+<script language="JavaScript">
+// Func to change the little icon next to each discussion title
+function changeTid (newTidIdx) {
+	if (TidIdx > 0){
+		document["t" + TidIdx].src = "./images/bullet.png";
+		document["t" + newTidIdx].src = "./images/poll.png";
+	}
+	TidIdx = newTidIdx;
+}
+// -->
+</script>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td>
 			<?
 			// Calls the desired mode
 			echo "<form method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
-			echo "<select name=\"mode\" class=\"thread_list_mode\">\n";
+			echo "<select name=\"mode\" class=\"thread_list_mode\" onChange=\"submit();\">\n";
 			
 			echo "<option ";
 			if ($mode == 0) echo "selected ";
@@ -107,6 +120,7 @@ while (list($key1, $folder) = each($folder_order)) {
 		echo "<a href=\"post.php?fid=".$folder."\" target=\"main\" class=\"folderpostnew\">Post New</a>\n";
 		echo "</td></tr>\n";
 		echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
+		echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 		while (list($key2, $thread) = each($thread_info)) {
 			if ($thread['fid'] == $folder) {
 				// work out the number of new posts and format something in square brackets accordingly
@@ -138,12 +152,28 @@ while (list($key1, $folder) = each($folder_order)) {
 				} else {
 					$thread_time = date("j M", $thread['modified']);
 				}
-				echo "<p>\n";
+
+				echo "<tr><td>\n";
+				if(isset($first_thread)){
+					$first_thread = $thread['tid'];
+					echo "<img src=\"./images/poll.png\" name=\"t".$thread['tid']."\" />\n";
+				} else {
+					echo "<img src=\"./images/folder.png\" name=\"t".$thread['tid']."\" />\n";
+				}
+				echo "</td><td>\n";
+				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"changeTid('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ".format_user_name($thread['authorlogon'], $thread['authornick']);."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a>";
+				echo "</td><td>\n";
+				echo "<span class=\"threadtime\">".$thread_time."</span><span class=\"threadxnewofy\">$number</span>\n";
+				echo "</td></tr>";
+
+
+				/*echo "<p>\n";
 				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\">".$thread['title']."</a><br />";
 				echo "<span class=\"threadtime\">".$thread_time."</span><span class=\"threadxnewofy\">$number</span>\n";
-				echo "</p>\n";
+				echo "</p>\n";*/
 			}
 		}
+		echo "</table>\n";
 		
 	}else{
 		echo "<tr>\n";
@@ -157,8 +187,14 @@ while (list($key1, $folder) = each($folder_order)) {
 	$thread_info = "";
 }
 
-echo "</table>";
+echo "</table>\n";
+echo "<script language=\"JavaScript\">\n";
+echo "<!--\n";
+echo "TidIdx = ".$first_thread."\n";
+echo "// -->";
+echo "</script>\n";
 
 html_draw_bottom();
 
 ?>
+

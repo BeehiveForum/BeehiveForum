@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.24 2003-08-18 13:44:06 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.25 2003-08-30 16:46:03 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -280,7 +280,7 @@ function get_num_attachments($aid) {
 function get_attachment_by_hash($hash)
 {
     $db_get_attachment_by_hash = db_connect();
-    $hash = _addslashes($hash);
+    $hash = addslashes($hash);
 
     $sql = "SELECT * FROM ". forum_table("POST_ATTACHMENT_FILES"). " WHERE HASH = '$hash' LIMIT 0, 1";
     $result = db_query($sql, $db_get_attachment_by_hash);
@@ -295,7 +295,7 @@ function get_attachment_by_hash($hash)
 function attachment_inc_dload_count($hash)
 {
     $db_attachment_inc_dload_count = db_connect();
-    $hash = _addslashes($hash);
+    $hash = addslashes($hash);
 
     $sql = "UPDATE LOW_PRIORITY ". forum_table("POST_ATTACHMENT_FILES"). " ";
     $sql.= "SET DOWNLOADS = DOWNLOADS + 1 WHERE HASH = '$hash'";

@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.50 2003-08-30 14:46:10 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.51 2003-08-30 16:46:03 decoyduck Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -94,7 +94,7 @@ function format_time($time, $verbose = 0)
     if ((gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) || (gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {
         // time not today
         if ($verbose) {
-            if (gmdate("Y", $local_time) != gmdate("Y", $local_time_now) {
+            if (gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) {
                 $fmt = gmdate("j M Y H:i", $local_time); // display day, date, year, hours, and minutes
             }else {
                 $fmt = gmdate("j M H:i", $local_time); // display day, date, hours, and minutes
@@ -177,17 +177,6 @@ function _stripslashes($string)
 {
     if (get_magic_quotes_gpc()) {
         return stripslashes($string);
-    }else {
-        return $string;
-    }
-}
-
-// Checks for Magic Quotes and perform _addslashes if nessecary
-
-function _addslashes($string)
-{
-    if (get_magic_quotes_gpc()) {
-        return addslashes($string);
     }else {
         return $string;
     }

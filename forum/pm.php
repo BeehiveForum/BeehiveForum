@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.12 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: pm.php,v 1.13 2003-08-30 16:46:01 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -273,7 +273,7 @@ echo "      <td class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td class=\"postbody\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" colspan=\"4\"><a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></td>\n";
+echo "      <td class=\"postbody\" colspan=\"4\"><img src=\"", style_image("post.png"), "\">&nbsp;<a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

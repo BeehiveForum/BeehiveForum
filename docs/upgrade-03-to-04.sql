@@ -4,7 +4,7 @@
 #
 # Generation Time: Nov 09, 2003 at 03:58 PM
 #
-# $Id: upgrade-03-to-04.sql,v 1.30 2003-11-09 20:34:07 decoyduck Exp $
+# $Id: upgrade-03-to-04.sql,v 1.31 2003-11-20 22:14:31 decoyduck Exp $
 #
 # --------------------------------------------------------#
 
@@ -90,6 +90,7 @@ CREATE TABLE PM_CONTENT (
 
 CREATE TABLE SESSIONS (
   SESSID mediumint(8) unsigned NOT NULL auto_increment,
+  HASH varchar(32) NOT NULL default '',
   UID mediumint(8) unsigned NOT NULL default '0',
   IPADDRESS varchar(15) NOT NULL default '',
   TIME datetime NOT NULL default '0000-00-00 00:00:00',

@@ -67,6 +67,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 							if ($j%2) {
 								if (substr($html_parts[$j], 0, 5) == "/code") {
 									$html_parts[$j] = "/pre";
+									$tmpcode = preg_replace("/([^\n]{80})/", "$1\n", $tmpcode);
 									array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
 									$tmpcode = "<closed>";
 									break;
@@ -111,10 +112,43 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						} else {
 							$source_name = "";
 						}
-								
-						$html_parts[$i] = "div class=\"quote\"";
-						array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", $source_name, "/div", ""));
-						$i += 8;
+
+						$url_name = stristr($html_parts[$i], " url=");
+						$url_name = substr($url_name, 5);
+						if (strlen($url_name) > 0) {
+							$qu = substr($url_name, 0, 1);
+							if ($qu == "\"" || $qu == "'") {
+								$url_pos = 1;
+							} else {
+								$url_pos = 0;
+								$qu = false;
+							}
+							for ($j=$url_pos; $j<=strlen($url_name); $j++) {
+								$ctmp = substr($url_name, $j, 1);
+								if (($qu != false && $ctmp == $qu) || ($qu == false && $ctmp == " ")) {
+									if ($ctmp != " ") {
+										$j--;
+									}
+									break;
+								}
+							}
+							$url_name = substr($url_name, $url_pos, $j);
+						} else {
+							$url_name = "";
+						}
+
+						if ($url_name != "") {
+							if ($source_name == "") {
+								$source_name = $url_name;
+							}
+							$html_parts[$i] = "div class=\"quote\"";
+							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", "", "a href=\"$url_name\"", $source_name, "/a", "", "/div", ""));
+							$i += 12;
+						} else {
+							$html_parts[$i] = "div class=\"quote\"";
+							array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", $source_name, "/div", ""));
+							$i += 8;
+						}
 					}
 				} else {
 					$html_parts[$i-1].= "&lt;".$html_parts[$i]."&gt;";
@@ -370,8 +404,10 @@ function clean_attributes($tag)
 
 	$valid["a"] = array("href", "title");
 	$valid["hr"] = array("size", "width", "noshade");
+	$valid["br"] = array("clear");
 	$valid["font"] = array("size", "color", "face");
 	$valid["blockquote"] = array("cite");
+	$valid["pre"] = array("width");
 	$valid["del"] = array("cite", "datetime");
 	$valid["ins"] = $valid["del"];
 

@@ -265,21 +265,21 @@ function add_tag (tag, a, v, enclose) {
 
 	str = extra_left + str + extra_right;
 
-	var re = new RegExp("^(<[^<>]+>)*(<" + tag + "( )?[^<>]*>)", "i");
+	var re = new RegExp("^(<[^<>]+>)*(<" + tag + "( [^<>]*)?>)", "i");
 	var open = re.exec(str);
 
-	var re = new RegExp("<\/" + tag + "( )?[^<>]*>(<[^<>]+>)*$", "i");
+	var re = new RegExp("<\/" + tag + "( [^<>]*)?>(<[^<>]+>)*$", "i");
 	var close = re.exec(str);
 
 	if (open != null && close != null && enclose != true) {
 		if (a != null) {
 			var newstr = change_attribute(open[2], a, v);
-			re = new RegExp("<" + tag + "( )?[^<>]*>", "i");
+			re = new RegExp("<" + tag + "( [^<>]*)?>", "i");
 			str = str.replace(re, newstr);
 		} else {
-			re = new RegExp("<" + tag + "( )?[^<>]*>", "i");
+			re = new RegExp("<" + tag + "( [^<>]*)?>", "i");
 			str = str.replace(re, "");
-			re = new RegExp("<\/" + tag + "( )?[^<>]*>((.|\n)*)$", "i");
+			re = new RegExp("<\/" + tag + "( [^<>]*)?>((.|\n)*)$", "i");
 			str = str.replace(re, "$2");
 		}
 
@@ -343,7 +343,10 @@ function add_tag (tag, a, v, enclose) {
 				var open_tag = "";
 				var close_tag = "";
 
-				str_mid = parse_list(str_mid);
+				str_mid = parse_list(str_mid, a);
+			} else if (tag == "quote") {
+				var open_tag = "<quote source=\"\" url=\"\">";
+				var close_tag = "</quote>";
 			} else if (!single_tags[tag]) {
 				var open_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\">" : ">");
 				var close_tag = "</" + tag + ">";
@@ -368,10 +371,13 @@ function add_tag (tag, a, v, enclose) {
 				var close_tag = "";
 
 				if (/^<[^<>]+>$/.test(str_enclose) == false) {
-					str_enclose = parse_list(str_enclose);
+					str_enclose = parse_list(str_enclose, a);
 				} else {
-					str_enclose += parse_list("");
+					str_enclose += parse_list("", a);
 				}
+			} else if (tag == "quote") {
+				var open_tag = "<quote source=\"\" url=\"\">";
+				var close_tag = "</quote>";
 			} else if (!single_tags[tag]) {
 				var open_tag = "<" + tag + (a != null  ? " " + a + "=\"" + v + "\">" : ">");
 				var close_tag = "</" + tag + ">";
@@ -476,7 +482,7 @@ function add_image () {
 }
 
 // Used in auto-list-thing
-function parse_list (a) {
+function parse_list (a, num) {
 	var nl = a.split(/[\n\r]+/);
 	var ab = "abcdefghijklmnopqrstuvwxyz";
 	var funcs = ["parseInt", "alpha", "roman"];
@@ -518,8 +524,6 @@ function parse_list (a) {
 			}
 		}
 	}
-	var open_tag = "<ul>";
-	var close_tag = "</ul>";
 
 	if (type < 3) {
 		var types = ["1", "a", "A", "i", "I"];
@@ -544,12 +548,16 @@ function parse_list (a) {
 		}
 		str += "</ol>";
 	} else {
-		var str = "<ul>\n";
+		var tag = "ol";
+		if (num == null) {
+			tag = "ul";
+		}
+		var str = "<"+tag+">\n";
 		for (i=0; i<nl.length; i++) {
 			nl[i] = "<li>" + nl[i] + "</li>\n";
 			str += nl[i];
 		}
-		str += "</ul>";
+		str += "</"+tag+">";
 	}
 
 	return str;

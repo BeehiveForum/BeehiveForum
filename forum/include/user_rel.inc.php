@@ -24,7 +24,8 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
 
-function user_rel_update($uid,$peer_uid,$value){
+function user_rel_update($uid,$peer_uid,$value)
+{
 
     $db_user_rel_update = db_connect();
 
@@ -34,15 +35,13 @@ function user_rel_update($uid,$peer_uid,$value){
     $sql = "insert into " . forum_table("USER_PEER") . " (UID, PEER_UID, RELATIONSHIP)";
     $sql .= " values ($uid, $peer_uid, $value)";
 
-//      $sql = "update " . forum_table("USER_PREFS") . " set ";
-//      $sql .= "VIEW_SIGS = $value where UID = $uid";
-
     $result = db_query($sql, $db_user_rel_update);
 
     return $result;
 }
 
-function user_rel_get($uid, $peer_uid){
+function user_rel_get($uid, $peer_uid)
+{
 
     $db_user_rel_get = db_connect();
 

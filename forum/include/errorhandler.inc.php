@@ -43,7 +43,7 @@ function error_handler($errno, $errstr, $errfile, $errline)
 
     ob_end_clean();
 
-    if ($gzip_compress_output && (phpversion() >= '4.2')) {
+    if ($gzip_compress_output) { // && (phpversion() >= '4.2')) {
         if (isset($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING']) && strstr($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip')) {
             ob_start("ob_gzhandler");
         }else{
@@ -219,7 +219,9 @@ define("FATAL", E_USER_ERROR);
 define("ERROR", E_USER_WARNING);
 define("WARNING", E_USER_NOTICE);
 
-error_reporting(FATAL | ERROR | WARNING);
-set_error_handler('error_handler');
+error_reporting(E_ALL);
+
+//error_reporting(FATAL | ERROR | WARNING);
+//set_error_handler('error_handler');
 
 ?>

@@ -139,6 +139,10 @@ function poll_get($tid)
         $polldata['TLOGON'] = "ALL";
     }
 
+    if (!isset($polldata['CLOSES'])) {
+        $polldata['CLOSES'] = 0;
+    }
+
     return $polldata;
 
 }

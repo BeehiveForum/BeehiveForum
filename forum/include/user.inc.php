@@ -336,8 +336,8 @@ function user_update_global_sig($uid,$value){
 
     $db_user_update_global_sig = db_connect();
 
-        $sql = "update " . forum_table("USER_PREFS") . " set ";
-        $sql .= "VIEW_SIGS = '$value' where UID = $uid";
+    $sql = "update " . forum_table("USER_PREFS") . " set ";
+    $sql .= "VIEW_SIGS = '$value' where UID = $uid";
 
     $result = db_query($sql, $db_user_update_global_sig);
 

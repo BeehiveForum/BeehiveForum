@@ -12,10 +12,11 @@ function set_focus() {
 // Functions to retrieve the current selection
 // -------------------------------------------
 function active_text (t) {
-	active_field = t;
 	if (t.createTextRange) {	
     	t.caretPos = document.selection.createRange().duplicate();	
+		active_field.t = "";
 	}
+	active_field = t;
 }
 function active_page_text () { 
 	selected_text = (document.all) ? document.selection.createRange().text : window.getSelection();

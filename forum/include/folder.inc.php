@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.40 2003-09-10 17:03:50 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.41 2003-11-16 22:11:50 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -134,7 +134,7 @@ function folder_get_all()
     $db_folder_get_all = db_connect();
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, COUNT(*) AS THREAD_COUNT ";
+    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, COUNT(THREAD.FID) AS THREAD_COUNT ";
     $sql.= "FROM " . forum_table("FOLDER") . " FOLDER LEFT JOIN " . forum_table("THREAD") . " THREAD ";
     $sql.= "ON (THREAD.FID = FOLDER.FID) ";
     $sql.= "GROUP BY FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL ";

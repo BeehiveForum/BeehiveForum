@@ -23,16 +23,6 @@ USA
 
 // Error Handler
 
-// redefine the user error constants
-
-define("FATAL", E_USER_ERROR);
-define("ERROR", E_USER_WARNING);
-define("WARNING", E_USER_NOTICE);
-
-// set the error reporting level
-
-error_reporting(FATAL | ERROR | WARNING);
-
 // Required include files.
 
 require_once("./include/config.inc.php");
@@ -56,8 +46,8 @@ function error_handler($errno, $errstr, $errfile, $errline)
 
     srand((double)microtime()*1000000);
 
-    ob_end_clean();
-    ob_start("bh_gzhandler");
+    //ob_end_clean();
+    //ob_start("bh_gzhandler");
 
     if (defined("BEEHIVEMODE_LIGHT")) {
 
@@ -220,6 +210,16 @@ function error_handler($errno, $errstr, $errfile, $errline)
     }
 
 }
+
+// redefine the user error constants
+
+define("FATAL", E_USER_ERROR);
+define("ERROR", E_USER_WARNING);
+define("WARNING", E_USER_NOTICE);
+
+// set the error reporting level
+
+error_reporting(FATAL | ERROR | WARNING);
 
 // set to the user defined error handler
 

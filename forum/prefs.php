@@ -307,7 +307,10 @@ if(!empty($error_html)) {
           <?php
 
             if (isset($HTTP_COOKIE_VARS['bh_sess_style'])) {
-              $selected_style = $HTTP_COOKIE_VARS['bh_sess_style'];
+                $selected_style = $HTTP_COOKIE_VARS['bh_sess_style'];
+                if (!in_array($selected_style, $available_styles)) {
+                    $selected_style = $default_style;
+                }
             }else {
               $selected_style = $default_style;
             }

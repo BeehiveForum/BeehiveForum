@@ -34,6 +34,9 @@ require_once("./include/make_style.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/db.inc.php");
+require_once("./include/forum.inc.php");
+require_once("./include/admin.inc.php");
 
 // Start Here
 
@@ -66,6 +69,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                     fclose($fp);
 
                     $stylesheet = implode('', file("./styles/make_style.css"));
+
                     $fp = fopen("./styles/$stylename/style.css", "w");
 
                     foreach ($HTTP_POST_VARS['elements'] as $key => $value) {
@@ -329,7 +333,7 @@ reset($elements);
     <td>
       <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="background-color: #<?php echo $elements['body']; ?>; color: #<?php echo contrastFont($elements['body']); ?>">
         <tr>
-          <td colspan="3" class="navpage" height="20" style="background-color: #<?php echo $elements['navpage']; ?>; color: #<?php echo contrastFont($elements['navpage']); ?>">&nbsp;&nbsp;
+          <td colspan="3" height="20" style="background-color: #<?php echo $elements['navpage']; ?>; color: #<?php echo contrastFont($elements['navpage']); ?>; font-size: 10px; font-weight: bold; text-decoration: none">&nbsp;&nbsp;
             <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Start</a>&nbsp;|&nbsp;
             <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Messages</a>&nbsp;|&nbsp;
             <a href="#" style="color: #<?php echo contrastFont($elements['navpage']); ?>">Links</a>&nbsp;|&nbsp;

@@ -25,6 +25,7 @@ require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/pm.inc.php");
 
 function html_guest_error ()
 {
@@ -79,13 +80,19 @@ function _html_draw_top1($title = false)
 
 }
 
-function _html_draw_top2($body_class = false)
+function _html_draw_top2($body_class = false, $pm_popup = false)
 {
     echo "</head>\n\n";
     echo "<body";
+
     if ($body_class) {
         echo " class=\"$body_class\"";
     }
+
+    if ($pm_popup) {
+        echo " onload=\"pm_notification();\"";
+    }
+
     echo ">\n";
 }
 
@@ -101,6 +108,30 @@ function _html_draw_top_script()
     echo "<base target=\"_blank\" />\n";
 }
 
+function _html_draw_pm_script()
+{
+    echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+    echo "<!--\n";
+    echo "function pm_notification() {\n";
+
+    if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check(bh_session_get_value('UID')))) {
+        echo "    if (window.confirm('You have a new PM. Read it now?')) {\n";
+        echo "        top.frames['main'].location.replace('pm.php');\n";
+        echo "    }\n";
+    }
+
+    echo "    return true;\n";
+    echo "}\n";
+    echo "//-->\n";
+    echo "</script>\n";
+}
+
+function _html_draw_pm_top2()
+{
+    echo "</head>\n";
+    echo "<body onload=\"pm_notification();\">\n";
+}
+
 function _html_draw_post_top2()
 {
     echo "</head>\n";
@@ -108,10 +139,10 @@ function _html_draw_post_top2()
 }
 
 
-function html_draw_top($title = false, $body_class = false)
+function html_draw_top($title = false, $body_class = false, $pm_popup = false)
 {
     _html_draw_top1($title);
-    _html_draw_top2($body_class);
+    _html_draw_top2($body_class, $pm_popup);
 }
 
 function html_draw_top_script($title = false)
@@ -127,6 +158,14 @@ function html_draw_top_post_script($title = false)
     _html_draw_top_script();
     _html_draw_post_top2();
 }
+
+function html_draw_pm_script($title = false)
+{
+    _html_draw_top1($title);
+    _html_draw_pm_script();
+    _html_draw_pm_top2();
+}
+
 
 function html_draw_bottom ()
 {

@@ -4,7 +4,7 @@
 #
 # Schema generated using phpMyAdmin
 # (http://phpmyadmin.sourceforge.net)
-# Generation Time: Jan 19, 2003 at 11:28 PM
+# Generation Time: Jun 15, 2003 at 19:37 PM
 # --------------------------------------------------------
 
 #
@@ -144,6 +144,38 @@ CREATE TABLE LINKS_VOTE (
   RATING smallint(5) unsigned NOT NULL default '0',
   TSTAMP datetime NOT NULL default '0000-00-00 00:00:00',
   KEY LID (LID)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `PM`
+#
+
+CREATE TABLE PM (
+  MID mediumint(8) unsigned NOT NULL auto_increment,
+  FROM_UID mediumint(8) unsigned NOT NULL default '0',
+  TO_UID mediumint(8) unsigned NOT NULL default '0',
+  SUBJECT varchar(64) NOT NULL default '',
+  CREATED datetime NOT NULL default '0000-00-00 00:00:00',
+  VIEWED datetime default NULL,
+  DELETED tinyint(4) NOT NULL default '0',
+  NOTIFIED tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (MID),
+  KEY TO_UID (TO_UID)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `PM_CONENT`
+#
+
+CREATE TABLE PM_CONTENT (
+  MID mediumint(8) unsigned NOT NULL default '0',
+  CONTENT text,
+  PRIMARY KEY  (MID),
+  FULLTEXT KEY CONTENT (CONTENT)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -405,6 +437,8 @@ CREATE TABLE USER_PREFS (
   VIEW_SIGS char(1) default NULL,
   START_PAGE tinyint(3) unsigned default NULL,
   LANGUAGE varchar(32) default NULL,
+  PM_NOTIFY char(1) default NULL,
+  PM_NOTIFY_EMAIL char(1) default NULL,
   KEY STYLE (STYLE),
   KEY UID (UID)
 ) TYPE=MyISAM;

@@ -51,7 +51,7 @@ if ($show_links) {
 if (bh_session_get_value('UID') > 0) {
 
     if ($show_pms) {
-        echo "<a href=\"pm.php\" target=\"main\">PM's</a>&nbsp;|&nbsp;\n";
+        echo "<a href=\"pm.php\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
     }
 
     echo "<a href=\"prefs.php\" target=\"main\">{$lang['preferences']}</a>&nbsp;|&nbsp;\n";

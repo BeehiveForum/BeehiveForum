@@ -281,7 +281,8 @@ function user_get_prefs($uid)
         $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
                     'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
                     'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
-                    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '');
+                    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '',
+                    'PM_NOTIFY' => '', 'PM_NOTIFY_EMAIL' => '');
     } else {
         $fa = db_fetch_array($result);
     }
@@ -291,7 +292,8 @@ function user_get_prefs($uid)
 
 function user_update_prefs($uid,$firstname,$lastname,$dob,$homepage_url,$pic_url,
                            $email_notify,$timezone,$dl_saving,$mark_as_of_int,
-                           $posts_per_page, $font_size, $style, $view_sigs, $start_page = 0, $language = "")
+                           $posts_per_page, $font_size, $style, $view_sigs,
+                           $start_page = 0, $language = "", $pm_notify, $pm_notify_email)
 {
 
     $db_user_update_prefs = db_connect();
@@ -304,12 +306,13 @@ function user_update_prefs($uid,$firstname,$lastname,$dob,$homepage_url,$pic_url
     if (empty($font_size)) $font_size = 0;
         if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
 
-    $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL,";
-    $sql.= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE)";
-    $sql.= " values ($uid, '". _htmlentities($firstname). "', '". _htmlentities($lastname). "', '$dob', ";
-    $sql.= " '". _htmlentities($homepage_url). "', '". _htmlentities($pic_url). "',";
-    $sql.= " '". _htmlentities($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int',";
-    $sql.= " $posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language')";
+    $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, ";
+    $sql.= "PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
+    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL) ";
+    $sql.= "values ($uid, '". _htmlentities($firstname). "', '". _htmlentities($lastname). "', '$dob', ";
+    $sql.= "'". _htmlentities($homepage_url). "', '". _htmlentities($pic_url). "', ";
+    $sql.= "'". _htmlentities($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int', ";
+    $sql.= "$posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language', '$pm_notify', '$pm_notify_email')";
 
     $result = db_query($sql, $db_user_update_prefs);
 

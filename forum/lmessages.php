@@ -68,7 +68,9 @@ if (isset($HTTP_GET_VARS['fontsize'])) {
                       $userprefs['DOB'], $userprefs['HOMEPAGE_URL'], $userprefs['PIC_URL'],
                       $userprefs['EMAIL_NOTIFY'], $userprefs['TIMEZONE'], $userprefs['DL_SAVING'],
                       $userprefs['MARK_AS_OF_INT'], $userprefs['POST_PER_PAGE'],
-                      $HTTP_GET_VARS['fontsize'], $userprefs['STYLE']);
+                      $HTTP_GET_VARS['fontsize'], $userprefs['STYLE'], $userprefs['VIEW_SIGS'],
+                      $userprefs['START_PAGE'], $userprefs['LANGUAGE'], $userprefs['PM_NOTIFY'],
+                      $userprefs['PM_NOTIFY_EMAIL']);
 
     unset($userprefs);
 

@@ -21,9 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.10 2004-09-27 11:21:27 decoyduck Exp $ */
-
-header('Content-type: text/xml');
+/* $Id: threads_rss.php,v 1.11 2005-02-05 19:44:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,6 +43,7 @@ $forum_settings = get_forum_settings();
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
+include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/threads.inc.php");
@@ -64,7 +63,25 @@ $forum_location = "{$_SERVER['HTTP_HOST']}{$forum_location}";
 $forum_name = forum_get_setting('forum_name');
 $build_data = gmdate("D, d M Y H:i:s");
 
+// Check to see if we can login a user
+
+if (isset($_COOKIE['bh_remember_username'][0]) && isset($_COOKIE['bh_remember_passhash'][0])) {
+
+    $username = strtoupper($_COOKIE['bh_remember_username'][0]);
+    $passhash = $_COOKIE['bh_remember_passhash'][0];
+
+    $uid = user_logon($username, $passhash, true);
+
+    if (isset($uid) && $uid > -1) {
+
+        bh_session_init($uid);
+        $user_sess = bh_session_check();
+    }
+}
+
 // echo out the rss feed
+
+header('Content-type: text/xml');
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 echo "<rss version=\"2.0\">\n";
@@ -75,9 +92,9 @@ echo "<description>{$forum_name} - {$forum_location}</description>\n";
 echo "<lastBuildDate>{$build_data} UT</lastBuildDate>\n";
 echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
-// Get the recent threads (10 of them)
+// Get the recent threads (20 of them)
 
-if ($threads_array = threads_get_most_recent()) {
+if ($threads_array = threads_get_most_recent(20)) {
 
     foreach ($threads_array as $thread) {
 

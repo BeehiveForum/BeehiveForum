@@ -52,6 +52,7 @@ require_once("./include/config.inc.php");
 require_once("./include/edit.inc.php");
 require_once("./include/ip.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_POST_VARS['cancel'])) {
     header_redirect($HTTP_POST_VARS['ret']);
@@ -68,8 +69,8 @@ if (isset($HTTP_GET_VARS['ret'])) {
 html_draw_top();
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -79,8 +80,8 @@ if(isset($HTTP_GET_VARS['uid'])){
 } else if(isset($HTTP_POST_VARS['uid'])){
     $uid = $HTTP_POST_VARS['uid'];
 } else {
-    echo "<h1>Invalid Operation</h1>\n";
-    echo "<p>No user specified for editing.</p>\n";
+    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<p>{$lang['nouserspecified']}</p>\n";
     html_draw_bottom();
     exit;
 }
@@ -183,7 +184,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 }
 
 // Draw the form
-echo "<h1>Manage User</h1>\n";
+echo "<h1>{$lang['manageuser']}</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 
@@ -195,23 +196,23 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "    <td class=\"box\">\n";
   echo "      <table class=\"posthead\" width=\"100%\">\n";
   echo "        <tr>\n";
-  echo "          <td class=\"subhead\">User Status: ", $user['LOGON'], "</td>\n";
+  echo "          <td class=\"subhead\">{$lang['userstatus']}: ", $user['LOGON'], "</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td><h2>WARNING</h2></td>\n";
+  echo "          <td><h2>{$lang['warning_caps']}</h2></td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td>Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.</td>\n";
+  echo "          <td>{$lang['userdeleteallpostswarning']}</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td>", form_checkbox("t_confirm_delete_posts", 1, "Confirm", false), "</td>\n";
+  echo "          <td>", form_checkbox("t_confirm_delete_posts", 1, $lang['confirm'], false), "</td>\n";
   echo "        </tr>\n";
   echo "      </table>\n";
   echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", "admin_user.php?uid=$uid"), "\n";
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
-  echo "<p>", form_submit("submit", "Submit"), "&nbsp;", form_submit("cancel", "Cancel"), "</p>\n";
+  echo "<p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
   echo "</form>\n";
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
@@ -222,17 +223,17 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "    <td class=\"box\">\n";
   echo "      <table class=\"posthead\" width=\"100%\">\n";
   echo "        <tr>\n";
-  echo "          <td class=\"subhead\">User Status: ", $user['LOGON'], "</td>\n";
+  echo "          <td class=\"subhead\">{$lang['userstatus']}: ", $user['LOGON'], "</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td>Posts were successfully deleted.</td>\n";
+  echo "          <td>{$lang['postssuccessfullydeleted']}</td>\n";
   echo "        </tr>\n";
   echo "      </table>\n";
   echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", $ret), "\n";
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
-  echo "<p>", form_submit("submit", "Continue"), "</p>\n";
+  echo "<p>", form_submit("submit", $lang['continue']), "</p>\n";
   echo "</form>\n";
 
 }else {
@@ -243,32 +244,32 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "    <td class=\"box\">\n";
   echo "      <table class=\"posthead\" width=\"100%\">\n";
   echo "        <tr>\n";
-  echo "          <td class=\"subhead\" align=\"left\">User Status: ", $user['LOGON'], "</td>\n";
+  echo "          <td class=\"subhead\" align=\"left\">{$lang['userstatus']}: ", $user['LOGON'], "</td>\n";
   echo "        </tr>\n";
 
   if (bh_session_get_value('STATUS') & USER_PERM_QUEEN) {
     echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_checkbox("t_soldier", USER_PERM_SOLDIER, "Soldier", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False), "</td>\n";
+    echo "          <td align=\"left\">", form_checkbox("t_soldier", USER_PERM_SOLDIER, $lang['soldier'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False), "</td>\n";
     echo "        </tr>\n";
   }
 
   echo "        <tr>\n";
-  echo "          <td align=\"left\">", form_checkbox("t_worker", USER_PERM_WORKER, "Worker", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORKER) : False), "</td>\n";
+  echo "          <td align=\"left\">", form_checkbox("t_worker", USER_PERM_WORKER, $lang['worker'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORKER) : False), "</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td align=\"left\">", form_checkbox("t_worm", USER_PERM_WORM, "Worm", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORM) : False), "</td>\n";
+  echo "          <td align=\"left\">", form_checkbox("t_worm", USER_PERM_WORM, $lang['worm'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORM) : False), "</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td align=\"left\">", form_checkbox("t_wasp", USER_PERM_WASP, "Wasp", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WASP) : False), "</td>\n";
+  echo "          <td align=\"left\">", form_checkbox("t_wasp", USER_PERM_WASP, $lang['wasp'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WASP) : False), "</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td align=\"left\">", form_checkbox("t_splat", USER_PERM_SPLAT, "Splat", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE), "</td>\n";
+  echo "          <td align=\"left\">", form_checkbox("t_splat", USER_PERM_SPLAT, $lang['splat'], isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE), "</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
   echo "          <td>&nbsp;</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td class=\"subhead\" align=\"left\">Folder Access:</td>\n";
+  echo "          <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}:</td>\n";
   echo "        </tr>\n";
 
   // Restricted folders
@@ -291,7 +292,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
   }else {
     echo "        <tr>\n";
-    echo "          <td align=\"left\">No restricted folders</td>\n";
+    echo "          <td align=\"left\">{$lang['norestrictedfolders']}</td>\n";
     echo "        </tr>\n";
   }
 
@@ -299,7 +300,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "          <td align=\"left\">", form_input_hidden("t_fcount", db_num_rows($result)), "&nbsp;</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td class=\"subhead\" align=\"left\">Possible Aliases";
+  echo "          <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}";
 
   if (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
     echo "(IP: ", $user['LOGON_FROM'], ") ";
@@ -321,7 +322,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
   }else {
     echo "        <tr>\n";
-    echo "          <td align=\"left\">No matches</td>\n";
+    echo "          <td align=\"left\">{$lang['nomatches']}</td>\n";
     echo "        </tr>\n";
   }
 
@@ -332,13 +333,13 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   if ($user['STATUS'] & PERM_CHECK_SOLDIER) {
 
     echo "        <tr>\n";
-    echo "          <td class=\"smalltext\" align=\"left\">You cannot IP ban other Soldiers. Lower their Status first.</td>\n";
+    echo "          <td class=\"smalltext\" align=\"left\">{$lang['cannotipbansoldiers']}</td>\n";
     echo "        </tr>\n";
 
   }elseif (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
 
     echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_checkbox("t_ban_ipaddress", 1, "Ban this IP address", ip_is_banned($user['LOGON_FROM'])), form_input_hidden("t_ip_address", $user['LOGON_FROM']);
+    echo "          <td align=\"left\">", form_checkbox("t_ban_ipaddress", 1, $lang['banthisipaddress'], ip_is_banned($user['LOGON_FROM'])), form_input_hidden("t_ip_address", $user['LOGON_FROM']);
 
     if (ip_is_banned($user['LOGON_FROM'])) {
       echo form_input_hidden("t_ip_banned", 1);
@@ -350,7 +351,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   }else {
 
     echo "        <tr>\n";
-    echo "          <td class=\"smalltext\" align=\"left\">There is no IP address record for this account or. User cannot be banned by IP.</td>\n";
+    echo "          <td class=\"smalltext\" align=\"left\">{$lang['noipaddress']}</td>\n";
     echo "        </tr>\n";
 
   }
@@ -359,16 +360,16 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "          <td>&nbsp;</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td class=\"subhead\" align=\"left\">Delete Posts:</td>\n";
+  echo "          <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}:</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td align=\"left\">", form_checkbox("t_delete_posts", 1, "Delete all of this user's posts", false), "</td>\n";
+  echo "          <td align=\"left\">", form_checkbox("t_delete_posts", 1, $lang['deleteallusersposts'], false), "</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
   echo "          <td>&nbsp;</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
-  echo "          <td class=\"subhead\" align=\"left\">Attachments:</td>\n";
+  echo "          <td class=\"subhead\" align=\"left\">{$lang['attachments']}:</td>\n";
   echo "        </tr>\n";
   echo "        <tr>\n";
   echo "          <td align=\"left\">\n";
@@ -384,20 +385,20 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
       echo "                <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" title=\"";
 
       if (strlen($attachments[$i]['filename']) > 16) {
-        echo "Filename: ". $attachments[$i]['filename']. ", ";
+        echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
       }
 
       if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
       }
 
-      echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
-      echo "Downloaded: ". $attachments[$i]['downloads'];
+      echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+      echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
 
       if ($attachments[$i]['downloads'] == 1) {
-        echo " time";
+        echo " {$lang['time']}";
       }else {
-        echo " times";
+        echo " {$lang['times']}";
       }
 
       echo "\">";
@@ -408,12 +409,12 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
         echo $attachments[$i]['filename']. "</a></td>\n";
       }
 
-      echo "                <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">View Message</a></td>\n";
+      echo "                <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
       echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "                <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
       echo "                  ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "                  ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "                  ". form_submit('submit', 'Del'). "\n";
+      echo "                  ". form_submit('submit', $lang['del']). "\n";
       echo "                </td>\n";
       echo "              </tr>\n";
 
@@ -424,7 +425,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   }else {
 
     echo "              <tr>\n";
-    echo "                <td valign=\"top\" width=\"300\" class=\"postbody\">No attachments for this user</td>\n";
+    echo "                <td valign=\"top\" width=\"300\" class=\"postbody\">{$lang['noattachmentsforuser']}</td>\n";
     echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
     echo "                <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
     echo "              </tr>\n";
@@ -444,7 +445,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
-  echo "<p>", form_submit("submit", "Submit"), "&nbsp;", form_submit("cancel", "Cancel"), "</p>\n";
+  echo "<p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
   echo "</form>\n";
 
 }
@@ -455,13 +456,13 @@ if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confi
   echo "<table width=\"50%\" border=\"0\">\n";
   echo "  <tr>\n";
   echo "    <td align=\"left\">\n";
-  echo "      <p><b>Soldiers</b> can access all moderation tools, but cannot create or remove other Soldiers.</p>\n";
-  echo "      <p><b>Workers</b> can edit or delete any post.</p>\n";
-  echo "      <p><b>Worms</b> can read messages and post as normal, but their messages will appear deleted to all other users.</p>\n";
-  echo "      <p><b>Wasps</b> can read messages, but cannot reply or post new messages.</p>";
-  echo "      <p><b>Splats</b> cannot access the forum. Use this to ban persistent idiots.</p>";
+  echo "      <p>{$lang['soldierdesc']}</p>\n";
+  echo "      <p>{$lang['workerdesc']}</p>\n";
+  echo "      <p>{$lang['wormdesc']}</p>\n";
+  echo "      <p>{$lang['waspdesc']}</p>";
+  echo "      <p>{$lang['splatdesc']}</p>";
   echo "      <p>&nbsp;</p>";
-  echo "      <p><b>Possible Aliases</b> a list of users who's last recorded IP address match this user.</p>\n";
+  echo "      <p>{$lang['aliasdesc']}</p>\n";
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "</table>\n";

@@ -33,6 +33,7 @@ require_once("./include/form.inc.php");
 require_once("./include/beehive.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/light.inc.php");
+require_once("./include/lang.inc.php");
 
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
@@ -43,8 +44,8 @@ if(isset($HTTP_GET_VARS['final_uri'])){
 if(bh_session_check()) {
 
     light_html_draw_top();
-    echo "<p>User ID ", bh_session_get_value('UID'), " already logged in.</p>\n";
-    echo form_quick_button("./lthread_list.php", "Continue", 0, 0, "_top");
+    echo "<p>{$lang['userID']} ", bh_session_get_value('UID'), " {$lang['alreadyloggedin']}.</p>\n";
+    echo form_quick_button("./lthread_list.php", $lang['continue'], 0, 0, "_top");
     light_html_draw_bottom();
     exit;
 
@@ -78,8 +79,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
           light_html_draw_top();
 
-          echo "<p>You logged in successfully.</p>";
-          echo form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri));
+          echo "<p>{$lang['loggedinsuccessfully']}</p>";
+          echo form_quick_button("./index.php", $lang['continue'], "final_uri", urlencode($final_uri));
 
           light_html_draw_bottom();
           exit;
@@ -94,8 +95,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }else {
 
       light_html_draw_top();
-      echo "<h2>The username or password you supplied is not valid.</h2>\n";
-      echo form_quick_button("./index.php", "Back", 0, 0, "_top");
+      echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+      echo form_quick_button("./index.php", $lang['back'], 0, 0, "_top");
       light_html_draw_bottom();
       exit;
 
@@ -103,7 +104,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
   }else {
 
-    $error_html = "<h2>A username and password is required</h2>";
+    $error_html = "<h2>{$lang['usernameandpasswdrequired']}</h2>";
   }
 
 }
@@ -112,16 +113,16 @@ light_html_draw_top();
 
 if (isset($error_html)) echo $error_html;
 
-echo "<p>Welcome to Diet Beehive!</p>\n";
+echo "<p>{$lang['welcometolight']}</p>\n";
 echo "  <form name=\"logonform\" action=\"". get_request_uri() ."\" method=\"POST\">\n";
 
-echo "<p>User Name: ";
+echo "<p>{$lang['username']}: ";
 echo light_form_input_text("logon"). "</p>\n";
 
-echo "<p>Password: ";
+echo "<p>{$lang['passwd']}: ";
 echo light_form_input_password("password"). "</p>\n";
 
-echo "<p>".form_submit('submit', 'Logon')."</p>\n";
+echo "<p>".form_submit('submit', $lang['logon'])."</p>\n";
 
 echo "  </form>\n";
 

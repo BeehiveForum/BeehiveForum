@@ -33,6 +33,7 @@ require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
@@ -48,8 +49,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             if(isset($fa['UID']) && isset($fa['EMAIL'])) {
 
-                $msg = "You requested this e-mail from $forum_name because you have forgotten your password.\n\n";
-                $msg.= "Click the link below (or copy and paste it into your browser) to reset your password:\n\n";
+                $msg = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
+                $msg.= "{$lang['forgotpwemail_3']}:\n\n";
                 $msg.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
 
                 if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
@@ -62,14 +63,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
                 $header.= "X-Mailer: PHP/". phpversion();
 
-                @mail($fa['EMAIL'], "Your password reset request - $forum_name", $msg, $header);
+                @mail($fa['EMAIL'], "{$lang['passwdresetrequest']} - $forum_name", $msg, $header);
 
                 html_draw_top();
 
-                echo "<h1>Password reset e-mail sent</h1>";
+                echo "<h1>{$lang['passwdresetemailsent']}</h1>";
                 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-                echo "<p class=\"smalltext\">You should receive an e-mail containing<br />\n";
-                echo "a link to reset your password shortly.</p>\n";
+                echo "<p class=\"smalltext\">{$lang['passwdresetexp_1']}<br />\n";
+                echo "{$lang['passwdresetexp_2']}</p>\n";
 
                 html_draw_bottom();
                 exit;
@@ -77,28 +78,28 @@ if (isset($HTTP_POST_VARS['submit'])) {
         }
     }
 
-    $error_html = "<h2>A valid username is required</h2>";
+    $error_html = "<h2>{$lang['validusernamerequired']}</h2>";
 }
 
 if (!isset($logon)) $logon = "";
 
 html_draw_top();
 
-echo "<h1>Forgot password</h1>";
+echo "<h1>{$lang['forgotpasswd']}</h1>";
 
 if (isset($error_html)) echo $error_html;
 
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<p class=\"smalltext\">Enter your logon name below and an e-mail<br />\n";
-echo "will be sent to the registered address for<br />\n";
-echo "that account containing a link allowing you<br />\n";
-echo "to change your password.</p>\n";
+echo "<p class=\"smalltext\">{$lang['forgotpasswdexp_1']}<br />\n";
+echo "{$lang['forgotpasswdexp_2']}<br />\n";
+echo "{$lang['forgotpasswdexp_3']}<br />\n";
+echo "{$lang['forgotpasswdexp_4']}</p>\n";
 echo "<form name=\"forgot_pw\" action=\"". $HTTP_SERVER_VARS['PHP_SELF'] ."\" method=\"POST\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
-echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Forgot Password</td>\n";
+echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>{$lang['forgotpasswd']}</td>\n";
 echo "</tr>\n</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
-echo "<tr>\n<td align=\"right\">User Name:</td>\n";
+echo "<tr>\n<td align=\"right\">{$lang['username']}:</td>\n";
 echo "<td>".form_input_text("logon", $logon)."</td></tr>\n";
 echo "</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";

@@ -281,7 +281,7 @@ function user_get_prefs($uid)
         $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'DOB' => '', 'HOMEPAGE_URL' => '',
                     'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
                     'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
-                    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '');
+                    'STYLE' => '', 'VIEW_SIGS' => '', 'START_PAGE' => '', 'LANGUAGE' => '');
     } else {
         $fa = db_fetch_array($result);
     }
@@ -291,7 +291,7 @@ function user_get_prefs($uid)
 
 function user_update_prefs($uid,$firstname,$lastname,$dob,$homepage_url,$pic_url,
                            $email_notify,$timezone,$dl_saving,$mark_as_of_int,
-                           $posts_per_page, $font_size, $style, $view_sigs, $start_page = 0)
+                           $posts_per_page, $font_size, $style, $view_sigs, $start_page = 0, $language = "")
 {
 
     $db_user_update_prefs = db_connect();
@@ -305,11 +305,11 @@ function user_update_prefs($uid,$firstname,$lastname,$dob,$homepage_url,$pic_url
         if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL,";
-    $sql.= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE)";
+    $sql.= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE)";
     $sql.= " values ($uid, '". _htmlentities($firstname). "', '". _htmlentities($lastname). "', '$dob', ";
     $sql.= " '". _htmlentities($homepage_url). "', '". _htmlentities($pic_url). "',";
     $sql.= " '". _htmlentities($email_notify). "', $timezone, '$dl_saving', '$mark_as_of_int',";
-    $sql.= " $posts_per_page, $font_size, '$style', '$view_sigs', '$start_page')";
+    $sql.= " $posts_per_page, $font_size, '$style', '$view_sigs', '$start_page', '$language')";
 
     $result = db_query($sql, $db_user_update_prefs);
 

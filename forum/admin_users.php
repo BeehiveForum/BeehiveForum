@@ -46,12 +46,13 @@ require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 html_draw_top();
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -71,6 +72,8 @@ if (isset($HTTP_GET_VARS['sort_by'])) {
         $sort_by = "LAST_LOGON";
     } elseif ($HTTP_GET_VARS['sort_by'] == "LOGON_FROM") {
         $sort_by = "LOGON_FROM";
+    } else {
+        $sort_by = "LAST_LOGON";
     }
 } else {
     $sort_by = "LAST_LOGON";
@@ -99,9 +102,9 @@ if (isset($HTTP_GET_VARS['usersearch']) && strlen($HTTP_GET_VARS['usersearch']) 
 }
 
 // Draw the form
-echo "<h1>Manage Users</h1>\n";
-echo "<p>This list shows a selection of users who have logged on to your forum, sorted by $sort_by. To alter a user's permissions click their name.</p>\n";
-echo "<p>To see the last few users to logon, sort the list by LAST_LOGON.</p>\n";
+echo "<h1>{$lang['manageusers']}</h1>\n";
+echo "<p>{$lang['manageusersexp_1']}</p>\n";
+echo "<p>{$lang['manageusersexp_2']}</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
@@ -116,27 +119,27 @@ if ($sort_by == 'UID' && $sort_dir == 'ASC') {
 }
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">Logon</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logon']}</a></td>\n";
 }
 
 if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">Status</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">Status</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['status']}</a></td>\n";
 }
 
 if ($sort_by == 'LAST_LOGON' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">Last Logon</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">Last Logon</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['lastlogon']}</a></td>\n";
 }
 
 if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">Logon From</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
 }else {
-  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">Logon From</a></td>\n";
+  echo "          <td class=\"subhead\" align=\"left\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;start=$start\">{$lang['logonfrom']}</a></td>\n";
 }
 
 echo "        </tr>\n";
@@ -169,12 +172,12 @@ if (db_num_rows($result)) {
 
         if (isset($row['STATUS']) && $row['STATUS'] > 0) {
 
-            if ($row['STATUS'] & USER_PERM_QUEEN)   echo "Queen ";
-            if ($row['STATUS'] & USER_PERM_SOLDIER) echo "Soldier ";
-            if ($row['STATUS'] & USER_PERM_WORKER)  echo "Worker ";
-            if ($row['STATUS'] & USER_PERM_WORM)    echo "Worm ";
-            if ($row['STATUS'] & USER_PERM_WASP)    echo "Wasp ";
-            if ($row['STATUS'] & USER_PERM_SPLAT)   echo "Splat";
+            if ($row['STATUS'] & USER_PERM_QUEEN)   echo "{$lang['queen']} ";
+            if ($row['STATUS'] & USER_PERM_SOLDIER) echo "{$lang['soldier']} ";
+            if ($row['STATUS'] & USER_PERM_WORKER)  echo "{$lang['worker']} ";
+            if ($row['STATUS'] & USER_PERM_WORM)    echo "{$lang['worm']} ";
+            if ($row['STATUS'] & USER_PERM_WASP)    echo "{$lang['wasp']} ";
+            if ($row['STATUS'] & USER_PERM_SPLAT)   echo "{$lang['splat']}";
 
             echo " (", $row['STATUS'], ")</td>\n";
 
@@ -193,7 +196,7 @@ if (db_num_rows($result)) {
     if (isset($usersearch) && strlen($usersearch) > 0) {
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\" colspan=\"6\" align=\"left\">No matches found.</td>\n";
+        echo "          <td class=\"posthead\" colspan=\"6\" align=\"left\">{$lang['nomatches']}</td>\n";
         echo "        </tr>\n";
 
     }else {
@@ -201,7 +204,7 @@ if (db_num_rows($result)) {
         // Shouldn't happen ever, after all how did you get here if there are no user accounts?
 
         echo "        <tr>\n";
-        echo "          <td class=\"posthead\" colspan=\"6\" align=\"left\">No user accounts in database.</td>\n";
+        echo "          <td class=\"posthead\" colspan=\"6\" align=\"left\">{$lang['nouseraccounts']}</td>\n";
         echo "        </tr>\n";
 
     }
@@ -218,14 +221,14 @@ echo "</table>\n";
 
 if (db_num_rows($result) == 20) {
   if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?offset=", $start + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"admin_users.php?sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"_self\">{$lang['recentvisitors']}<s</a>&nbsp;&nbsp;";
   }else {
     echo "<p>&nbsp;</p>\n";
   }
@@ -236,12 +239,12 @@ echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"subhead\" align=\"left\">Search for a user not in list:</td>\n";
+echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"posthead\" align=\"left\">\n";
 echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
-echo "              Username: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', 'Search'), " ", form_submit('submit', 'Clear'), "\n";
+echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('submit', $lang['clear']), "\n";
 echo "              ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";
 echo "            </form>\n";
 echo "          </td>\n";

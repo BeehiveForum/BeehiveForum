@@ -31,6 +31,7 @@ require_once("./include/gzipenc.inc.php");
 
 //Check logged in status
 require_once("./include/session.inc.php");
+
 require_once("./include/header.inc.php");
 
 if(!bh_session_check()){
@@ -43,11 +44,12 @@ if(!bh_session_check()){
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
     html_draw_top();
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }

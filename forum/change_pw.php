@@ -33,6 +33,7 @@ require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
@@ -51,30 +52,30 @@ if (isset($HTTP_POST_VARS['submit'])) {
             if ($success) {
                 html_draw_top();
 
-                echo "<h1>Password changed</h1>";
+                echo "<h1>{$lang['passwdchanged']}</h1>";
                 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-                echo "<p>Your password has been changed.</p>\n";
-                echo "<p><a href=\"logon.php\">Go to logon screen</a></p></div>";
+                echo "<p>{$lang['passwdchangedexp']}</p>\n";
+                echo "<p><a href=\"logon.php\">{$lang['gotologin']}</a></p></div>";
 
                 html_draw_bottom();
                 exit;
             } else {
-                $error_html = "<h2>Update failed.</h2>";
+                $error_html = "<h2>{$lang['updatefailed']}.</h2>";
             }
             $uid = $HTTP_POST_VARS['uid'];
             $key = $HTTP_POST_VARS['key'];
         } else {
-            $error_html = "<h2>Passwords do not match</h2>";
+            $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
         }
     } else {
-        $error_html = "<h2>All fields a required</h2>";
+        $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
     }
 
 } else if(!isset($HTTP_GET_VARS['u']) || !isset($HTTP_GET_VARS['h'])){
     html_draw_top();
-    echo "<h1>Invalid Access</h1>\n";
+    echo "<h1>{$lang['invalidaccess']}</h1>\n";
     echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-    echo "<h2>ERROR: required information not found</h2></div>\n";
+    echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
     html_draw_bottom();
     exit;
 } else {
@@ -87,9 +88,9 @@ $sql = "select LOGON from ". forum_table("USER") ." where UID = '$uid' and PASSW
 $result = db_query($sql,$conn);
 if(!$fa = db_fetch_array($result)){
     html_draw_top();
-    echo "<h1>Invalid Access</h1>\n";
+    echo "<h1>{$lang['invalidaccess']}</h1>\n";
     echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-    echo "<h2>ERROR: required information not found</h2></div>\n";
+    echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
     html_draw_bottom();
     exit;
 }
@@ -98,20 +99,20 @@ $logon = strtoupper($fa['LOGON']);
 
 html_draw_top();
 
-echo "<h1>Forgot password</h1>";
+echo "<h1>{$lang['forgotpasswd']}</h1>";
 
 if (isset($error_html)) echo $error_html;
 
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<p class=\"smalltext\">Enter a new password for user $logon</p>\n";
+echo "<p class=\"smalltext\">{$lang['enternewpasswdforuser']} $logon</p>\n";
 echo "<form name=\"forgot_pw\" action=\"". $HTTP_SERVER_VARS['PHP_SELF'] ."\" method=\"POST\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
-echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Forgot Password</td>\n";
+echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>{$lang['forgotpasswd']}</td>\n";
 echo "</tr>\n</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
-echo "<tr>\n<td align=\"right\">New Password:</td>\n";
+echo "<tr>\n<td align=\"right\">{$lang['newpasswd']}:</td>\n";
 echo "<td>".form_input_text("pw","")."</td></tr>\n";
-echo "<tr>\n<td align=\"right\">Confirm Password:</td>\n";
+echo "<tr>\n<td align=\"right\">{$lang['confirmpasswd']}:</td>\n";
 echo "<td>".form_input_text("cpw","")."</td></tr>\n";
 echo "</table>\n";
 echo form_input_hidden("uid",$uid);

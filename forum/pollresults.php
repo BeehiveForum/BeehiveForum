@@ -41,10 +41,11 @@ if(!bh_session_check()){
 
 require_once('./include/poll.inc.php');
 require_once('./include/html.inc.php');
+require_once("./include/lang.inc.php");
 
 html_draw_top();
 
-if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['submit'] == 'Close') {
+if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['submit'] == $lang['close']) {
 
   echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
   echo "  window.close();\n";
@@ -62,9 +63,9 @@ if (isset($HTTP_GET_VARS['tid'])) {
 }else {
 
   echo "<div align=\"center\">";
-  echo "<p>You must specify a poll to view.</p>";
+  echo "<p>{$lang['mustspecifypolltoview']}</p>";
   echo "<form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\">\n";
-  echo "  ". form_submit('submit', 'Close'). "\n";
+  echo "  ". form_submit('submit', $lang['close']). "\n";
   echo "</form>\n";
   echo "</div>";
 
@@ -161,7 +162,7 @@ echo "</table>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\">\n";
-echo "    ". form_submit('submit', 'Close'). "\n";
+echo "    ". form_submit('submit', $lang['close']). "\n";
 echo "  </form>\n";
 echo "</div>\n";
 

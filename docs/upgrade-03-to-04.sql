@@ -6,6 +6,7 @@
 # --------------------------------------------------------#
 
 ALTER TABLE USER_PREFS ADD DOB date default '0000-00-00' NULL AFTER LASTNAME;
+ALTER TABLE USER_PREFS ADD LANGUAGE varchar(32) default NULL AFTER START_PAGE;
 
 CREATE TABLE ADMIN_LOG (
   LOG_ID mediumint(8) unsigned NOT NULL auto_increment,

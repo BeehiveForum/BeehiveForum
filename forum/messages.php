@@ -41,6 +41,7 @@ require_once("./include/header.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/perm.inc.php");
 require_once("./include/poll.inc.php");
+require_once("./include/lang.inc.php");
 
 if (!bh_session_check()) {
 
@@ -73,7 +74,7 @@ if (!isset($pid)) $pid = 1;
 
 if(!thread_can_view($tid, bh_session_get_value('UID'))) {
         html_draw_top();
-        echo "<h2>The requested thread could not be found. It has either been deleted or access was denied.</h2>";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         html_draw_bottom();
         exit;
 }
@@ -90,7 +91,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
   }else {
 
     html_draw_top();
-    echo "<h2>You must select an option to vote for.</h2>";
+    echo "<h2>{$lang['mustselectpolloption']}</h2>";
     html_draw_bottom();
     exit;
 
@@ -131,20 +132,20 @@ if (bh_session_get_value('POSTS_PER_PAGE')) {
 $messages = messages_get($tid, $pid, $ppp);
 
 if (!$messages) {
-   echo "<h2>That post does not exist in this thread!</h2>\n";
+   echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
    html_draw_bottom();
    exit;
 }
 
 if (!$threaddata = thread_get($tid)) {
-   echo "<h2>That post does not exist in this thread!</h2>\n";
+   echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
    html_draw_bottom();
    exit;
 }
 
 $closed = isset($threaddata['CLOSED']);
 $foldertitle = folder_get_title($threaddata['FID']);
-if($closed) $foldertitle .= " (closed)";
+if($closed) $foldertitle .= " ({$lang['closed']})";
 
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
@@ -181,10 +182,10 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
   if ($userpollvote = poll_get_user_vote($tid)) {
     if ($userpollvote ^ POLL_MULTIVOTE) {
-      echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to change vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You voted for option #", $userpollvote['OPTION_ID'], "</td>\n";
+      echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoption']} #", $userpollvote['OPTION_ID'], "</td>\n";
     }
   }else {
-    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You have not voted</td>\n";
+    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youhavenotvoted']}</td>\n";
   }
 
 }
@@ -203,7 +204,7 @@ if($msg_count > 0) {
           if($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
             $message['CONTENT'] = message_get_content($tid, $message['PID']);
           }else {
-            $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
+            $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
           }
 
         }else {
@@ -240,7 +241,7 @@ unset($messages, $message);
 if($last_pid < $threaddata['LENGTH']){
     $npid = $last_pid + 1;
     echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"right\">\n";
-    echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "Keep reading >>", "msg", "$tid.$npid");
+    echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "{$lang['keepreading']} >>", "msg", "$tid.$npid");
     echo "</td></tr></table>\n";
 }else {
     echo "<p>&nbsp;</p>\n";
@@ -250,7 +251,7 @@ messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
 if($threaddata['POLL_FLAG'] == 'Y') {
-    echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\">View Results</a>\n";
+    echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\">{$lang['viewresults']}</a>\n";
 }
 
 if (bh_session_get_value('UID') != 0) {

@@ -35,6 +35,7 @@ require_once("./include/fixhtml.inc.php");
 require_once("./include/attachments.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {
@@ -149,9 +150,10 @@ function message_get_content($tid,$pid)
 
 function messages_top($foldertitle, $threadtitle, $interest_level = 0)
 {
-    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"folder\" />&nbsp;$foldertitle: $threadtitle";
-    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"High Interest\" align=\"middle\" />";
-    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"Subscribed\" align=\"middle\" />";
+    global $lang;
+    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;$foldertitle: $threadtitle";
+    if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\" align=\"middle\" />";
+    if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\" align=\"middle\" />";
     echo "</p>";
     // To be expanded later
 
@@ -194,7 +196,7 @@ function message_filter($content)
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
 
-    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing;
+    global $HTTP_SERVER_VARS, $maximum_post_length, $attachment_dir, $post_edit_time, $allow_post_editing, $lang;
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
@@ -218,7 +220,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     if((strlen($message['CONTENT']) > $maximum_post_length) && $limit_text) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, $maximum_post_length));
-        $message['CONTENT'].= "...[Message Truncated]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">View full message.</a>";
+        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"./display.php?msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if($in_list && isset($message['PID'])){
@@ -248,7 +250,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "<br /><div align=\"center\">\n";
     echo "<table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\"><tr><td>\n";
     echo "<table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\"><tr>\n";
-    echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;From:&nbsp;</span></td>\n";
+    echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
     echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
@@ -263,27 +265,27 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
-        echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
+        echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
     } else if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
-        echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
+        echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
     }
 
     echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
     if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && bh_session_get_value('UID') != 0) {
-        echo "<b>Ignored message</b>";
+        echo "<b>{$lang['ignoredmsg']}</b>";
     } else {
         if($in_list) {
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
-            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>Wormed User</b> ";
-            if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>Ignored signature</b> ";
+            if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>{$lang['wormeduser']}</b> ";
+            if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
             echo format_time($message['CREATED'], 1);
         }
     }
 
     echo "&nbsp;</span></td>\n";
     echo "</tr><tr>\n";
-    echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;To:&nbsp;</span></td>\n";
+    echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
     echo "<td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
     if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
@@ -291,34 +293,34 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
 
         if($message['TO_RELATIONSHIP'] & USER_FRIEND) {
-            echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"{$lang['friend']}\" />";
         } else if($message['TO_RELATIONSHIP'] & USER_IGNORED) {
-            echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"Ignored user\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" alt=\"{$lang['ignoreduser']}\" />";
         }
 
         if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
             echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">".format_time($message['VIEWED'], 1)."</span>";
         }else {
             if ($is_preview == false) {
-                echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">unread</span>";
+                echo "&nbsp;&nbsp;&nbsp;<span class=\"smalltext\">{$lang['unread']}</span>";
             }
         }
 
     }else {
-        echo "ALL</span>";
+        echo "{$lang['all_caps']}</span>";
     }
 
     echo "</td>\n";
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
 
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && bh_session_get_value('UID') != 0) {
-        echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
-        echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
+        echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['stopignoringthisuser']}</a>&nbsp;&nbsp;&nbsp;";
+        echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">{$lang['viewmessage']}</a>";
     }else if($in_list && $msg_count > 0) {
         if ($is_poll) {
-          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"This is a poll. Click to view results.\" align=\"middle\"></a> Poll ";
+          echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" align=\"middle\"></a> {$lang['poll']} ";
         }
-        echo $message['PID'] . " of " . $msg_count;
+        echo $message['PID'] . " {$lang['of']} " . $msg_count;
     }
 
     echo "&nbsp;</span></td></tr>\n";
@@ -336,7 +338,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if($message['PID'] > 1) {
 
-                echo " in reply to ";
+                echo " {$lang['inreplyto']} ";
 
                 if(intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
                     echo "<a href=\"#a" . $tid . "_" . $message['REPLY_TO_PID'] . "\" target=\"_self\">";
@@ -377,11 +379,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                 echo "<tr><td>&nbsp;</td></tr>\n";
                 echo "<tr><td class=\"postbody\" align=\"left\">\n";
-                echo "<b>Attachments:</b><br />\n";
+                echo "<b>{$lang['attachments']}:</b><br />\n";
 
                 for ($i = 0; $i < sizeof($attachments); $i++) {
 
-                    echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"attachment\" />";
+                    echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
                     echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\"";
 
                     if (basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
@@ -393,16 +395,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo " title=\"";
 
                     if ($imageinfo = @getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-                        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+                        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                     }
 
-                    echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
-                    echo "Downloaded: ". $attachments[$i]['downloads'];
+                    echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+                    echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
 
                     if ($attachments[$i]['downloads'] == 1) {
-                        echo " time";
+                        echo " {$lang['time']}";
                     }else {
-                        echo " times";
+                        echo " {$lang['times']}";
                     }
 
                     echo "\">". $attachments[$i]['filename']. "</a><br />";
@@ -419,38 +421,38 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
-                echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"Reply\" />";
-                echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
+                echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
+                echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">{$lang['reply']}</a>";
 
             }
             if(bh_session_get_value('UID') == $message['FROM_UID'] || perm_is_moderator()){
-                echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"Delete\" />";
-                echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&amp;back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" />";
+                echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&amp;back=$tid.$first_msg\" target=\"_parent\">{$lang['delete']}</a>";
 
                 if (perm_is_moderator() || ((((time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) || $post_edit_time == 0) && $allow_post_editing)) {
                     if ($is_poll && $message['PID'] == 1) {
                         if (!poll_is_closed($tid) || perm_is_moderator()) {
 
-                            echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit Poll\" />";
-                            echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit Poll</a>";
+                            echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['editpoll']}\" />";
+                            echo "&nbsp;<a href=\"edit_poll.php?msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['editpoll']}</a>";
                         }
                     }else {
 
-                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"Edit\" />";
-                      echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
+                      echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" />";
+                      echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">{$lang['edit']}</a>";
 
                     }
                 }
             }
 
             if(bh_session_get_value('UID') != $message['FROM_UID']) {
-                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"Relationship\" />";
-                echo "&nbsp;<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\">Relationship</a>";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" />";
+                echo "&nbsp;<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['relationship']}</a>";
             }
 
             if(perm_is_soldier()){
-                echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"Privileges\" />";
-                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\">Privileges</a>";
+                echo "&nbsp;&nbsp;<img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" />";
+                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."&amp;ret=", urlencode(basename($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.". $message['PID']), "\" target=\"_self\">{$lang['privileges']}</a>";
             }
 
             echo "</span></td></tr>";
@@ -463,10 +465,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
 function message_display_deleted($tid,$pid)
 {
+    global $lang;
     echo "<br /><div align=\"center\">";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
     echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
-    echo "Message ${tid}.${pid} was deleted\n";
+    echo "{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}\n";
     echo "</td></tr></table>\n";
     echo "</td></tr></table></div>\n";
 }
@@ -484,6 +487,8 @@ function messages_end_panel()
 
 function messages_nav_strip($tid,$pid,$length,$ppp)
 {
+
+    global $lang;
 
     // Less than 20 messages, no nav needed
     if($pid == 1 && $length < $ppp){
@@ -533,10 +538,10 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
 
     $max = $i;
 
-    $html = "Show messages:";
+    $html = "{$lang['showmessages']}:";
 
     if ($length <= $ppp) {
-        $html .= " <a href=\"messages.php?msg=$tid.1\" target=\"_self\">All</a>\n";
+        $html .= " <a href=\"messages.php?msg=$tid.1\" target=\"_self\">{$lang['all']}</a>\n";
     }
 
     for ($i = 0; $i <= $max; $i++) {
@@ -575,16 +580,16 @@ function messages_interest_form($tid,$pid)
     $interest = thread_get_interest($tid);
     $chk = array("","","","");
     $chk[$interest+1] = " checked";
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $lang;
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"rate_interest\" target=\"_self\" action=\"./interest.php?ret=";
     echo urlencode(basename($HTTP_SERVER_VARS['PHP_SELF'])). "?msg=$tid.$pid";
     echo "\" method=\"post\">\n";
-    echo "<p>Rate my interest: \n";
-    echo form_radio_array("interest",array(-1,0,1,2),array("Ignore ","Normal ","Interested ","Subscribe "),$interest);
+    echo "<p>{$lang['ratemyinterest']}: \n";
+    echo form_radio_array("interest",array(-1,0,1,2),array("{$lang['ignore']} ","{$lang['normal']} ","{$lang['interested']} ","{$lang['subscribe']} "),$interest);
     echo form_input_hidden("tid",$tid);
-    echo form_submit("submit", "Apply");
+    echo form_submit("submit", $lang['apply']);
     echo "</p>\n";
     echo "</form>\n";
     echo "</div>\n";
@@ -592,7 +597,7 @@ function messages_interest_form($tid,$pid)
 
 function messages_admin_form($fid, $tid, $pid, $title, $closed = false)
 {
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $lang;
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=";
@@ -600,17 +605,17 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false)
     echo "\" method=\"post\">\n";
 
     if (thread_is_poll($tid)) {
-        echo "<p>Rename thread: <a href=\"edit_poll.php?msg=$tid.$pid\" target=\"_parent\">Edit the poll</a> to rename this thread.</p>\n";
+        echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
     }else {
-        echo "<p>Rename thread: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", "Apply"). "</p>\n";
+        echo "<p>{$lang['renamethread']}: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", $lang['apply']). "</p>\n";
     }
 
-    echo "<p>Move thread: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", "Move");
+    echo "<p>{$lang['movethread']}: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", $lang['move']);
 
     if ($closed) {
-        echo "&nbsp;".form_submit("reopen","Reopen for posting"). "</p>\n";
+        echo "&nbsp;".form_submit("reopen",$lang['reopenforposting']). "</p>\n";
     } else {
-        echo "&nbsp;".form_submit("close","Close for posting"). "</p>\n";
+        echo "&nbsp;".form_submit("close",$lang['closeforposting']). "</p>\n";
     }
 
     echo form_input_hidden("t_tid",$tid);
@@ -723,7 +728,8 @@ function messages_get_most_recent($uid, $fid = false)
 function messages_fontsize_form($tid, $pid)
 {
 
-    $fontstrip = "<p>Adjust text size: ";
+    global $lang;
+    $fontstrip = "<p>{$lang['adjtextsize']}: ";
 
     if ((bh_session_get_value('FONT_SIZE') > 1) && (bh_session_get_value('FONT_SIZE') < 15)) {
 
@@ -733,16 +739,16 @@ function messages_fontsize_form($tid, $pid)
       if ($fontsmaller < 1) $fontsmaller = 1;
       if ($fontlarger > 15) $fontlarger = 15;
 
-      $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ";
-      $fontstrip.= bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">Larger</a></p>\n";
+      $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">{$lang['smaller']}</a> ";
+      $fontstrip.= bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">{$lang['larger']}</a></p>\n";
 
     }elseif (bh_session_get_value('FONT_SIZE') == 1) {
 
-      $fontstrip.= bh_session_get_value('FONT_SIZE'). "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=2\" target=\"_self\">Larger</a></p>\n";
+      $fontstrip.= bh_session_get_value('FONT_SIZE'). "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=2\" target=\"_self\">{$lang['larger']}</a></p>\n";
 
     }elseif (bh_session_get_value('FONT_SIZE') == 15) {
 
-      $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">Smaller</a> ". bh_session_get_value('FONT_SIZE'). "</p>\n";
+      $fontstrip.= "<a href=\"user_font.php?msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">{$lang['smaller']}</a> ". bh_session_get_value('FONT_SIZE'). "</p>\n";
 
     }
 

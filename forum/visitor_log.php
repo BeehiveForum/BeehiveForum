@@ -31,6 +31,7 @@ require_once("./include/gzipenc.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once('./include/db.inc.php');
+require_once("./include/lang.inc.php");
 
 if (!bh_session_check()) {
 
@@ -53,7 +54,7 @@ if (isset($HTTP_GET_VARS['usersearch']) && isset($HTTP_GET_VARS['submit']) && $H
 
 html_draw_top_script();
 
-echo "<h1>Recent Visitors</h1><br />\n";
+echo "<h1>{$lang['recentvisitors']}</h1><br />\n";
 
 $db = db_connect();
 
@@ -78,8 +79,8 @@ echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"subhead\" align=\"left\">Member</td>\n";
-echo "          <td class=\"subhead\" align=\"right\" width=\"200\">Last Visit</td>\n";
+echo "          <td class=\"subhead\" align=\"left\">{$lang['member']}</td>\n";
+echo "          <td class=\"subhead\" align=\"right\" width=\"200\">{$lang['lastvisit']}</td>\n";
 echo "        </tr>\n";
 
 while ($row = db_fetch_array($result)) {
@@ -98,14 +99,14 @@ echo "</table>\n";
 
 if (db_num_rows($result) == 20) {
   if ($start < 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\" target=\"_self\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
-    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\" target=\"_self\">More</a></p>\n";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
+    echo "<img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php?offset=", $start + 20, "\" target=\"_self\">{$lang['more']}</a></p>\n";
   }
 }else {
   if ($start >= 20) {
-    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">Recent Visitors</a>&nbsp;&nbsp;";
+    echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"_self\">{$lang['recentvisitors']}</a>&nbsp;&nbsp;";
   }
 }
 
@@ -115,12 +116,12 @@ echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"subhead\" align=\"left\">Search for a user not in list:</td>\n";
+echo "          <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"posthead\" align=\"left\">\n";
 echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" target=\"_self\">\n";
-echo "              Username: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', 'Search'), " ", form_submit('submit', 'Clear'), "\n";
+echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('submit', $lang['clear']), "\n";
 echo "            </form>\n";
 echo "          </td>\n";
 echo "        </tr>\n";

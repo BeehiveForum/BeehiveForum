@@ -36,6 +36,7 @@ require_once("./include/form.inc.php");
 require_once("./include/beehive.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/lang.inc.php");
 
 if(isset($HTTP_GET_VARS['final_uri'])){
     $final_uri = urldecode($HTTP_GET_VARS['final_uri']);
@@ -53,12 +54,12 @@ if (bh_session_check()) {
 
     html_draw_top();
     echo "<div align=\"center\">\n";
-    echo "<p>User ID ", bh_session_get_value('UID'), " already logged in.</p>\n";
+    echo "<p>{$lang['userID']} ", bh_session_get_value('UID'), " {$lang['alreadyloggedin']}.</p>\n";
 
     if (isset($final_uri)) {
-        form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri), "_top");
+        form_quick_button("./index.php", $lang['continue'], "final_uri", urlencode($final_uri), "_top");
     }else {
-        form_quick_button("./index.php", "Continue", "", "", "_top");
+        form_quick_button("./index.php", $lang['continue'], "", "", "_top");
     }
 
     echo "</div>\n";
@@ -131,12 +132,12 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
     // If they're still here, Javascript's not working. Give up, give a link.
     echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-    echo "<p>You logged in successfully.</p>";
+    echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
     if (isset($final_uri)) {
-        form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri), "_top");
+        form_quick_button("./index.php", $lang['continue'], "final_uri", urlencode($final_uri), "_top");
     }else {
-        form_quick_button("./index.php", "Continue", "", "", "_top");
+        form_quick_button("./index.php", $lang['continue'], "", "", "_top");
     }
 
     html_draw_bottom();
@@ -270,12 +271,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
           // If they're still here, Javascript's not working. Give up, give a link.
           echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-          echo "<p>You logged in successfully.</p>";
+          echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
           if (isset($final_uri)) {
-              form_quick_button("./index.php", "Continue", "final_uri", urlencode($final_uri), "_top");
+              form_quick_button("./index.php", $lang['continue'], "final_uri", urlencode($final_uri), "_top");
           }else {
-              form_quick_button("./index.php", "Continue", "", "", "_top");
+              form_quick_button("./index.php", $lang['continue'], "", "", "_top");
           }
 
           html_draw_bottom();
@@ -292,9 +293,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
       html_draw_top();
       echo "<div align=\"center\">\n";
-      echo "<h2>The username or password you supplied is not valid.</h2>\n";
-      echo "<h2>Please reenter your password and try again.</h2>\n";
-      echo form_quick_button("./index.php", "Back", 0, 0, "_top");
+      echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+      echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
+      echo form_quick_button("./index.php", $lang['back'], 0, 0, "_top");
       html_draw_bottom();
       exit;
 
@@ -302,7 +303,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
   }else {
 
-    $error_html = "<h2>A username and password is required</h2>";
+    $error_html = "<h2>{$lang['usernameandpasswdrequired']}</h2>";
   }
 
 }
@@ -354,7 +355,7 @@ echo "          <table class=\"posthead\" width=\"100%\">\n";
 if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
   echo "          <tr>\n";
-  echo "            <td align=\"right\">User Name:</td>\n";
+  echo "            <td align=\"right\">{$lang['username']}:</td>\n";
   echo "            <td>";
 
   foreach ($username_array as $key => $value) {
@@ -401,7 +402,7 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td align=\"right\">Password:</td>\n";
+  echo "            <td align=\"right\">{$lang['password']}:</td>\n";
   echo "            <td>";
 
   if (isset($password_array[0]) && isset($passhash_array[0])) {
@@ -429,11 +430,11 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 }else {
 
   echo "          <tr>\n";
-  echo "            <td align=\"right\">User Name:</td>\n";
+  echo "            <td align=\"right\">{$lang['username']}:</td>\n";
   echo "            <td>", form_input_text('logon', isset($username_array[0]) && $otherlogon == false ? _stripslashes($username_array[0]) : ''), "</td>\n";
   echo "          </tr>\n";
   echo "          <tr>\n";
-  echo "            <td align=\"right\">Password:</td>\n";
+  echo "            <td align=\"right\">{$lang['passwd']}:</td>\n";
   echo "            <td>";
 
   if (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false) {
@@ -464,7 +465,7 @@ echo "            <tr>\n";
 echo "              <td>&nbsp;</td>\n";
 echo "              <td>";
 
-echo form_checkbox("remember_user", "Y", "Remember passwords", (isset($password_array[0]) && $password_array[0] != str_repeat(chr(255), 4)) && strlen($password_array[0]) > 0 && $otherlogon == false);
+echo form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && $password_array[0] != str_repeat(chr(255), 4)) && strlen($password_array[0]) > 0 && $otherlogon == false);
 
 echo "</td>\n";
 echo "            </tr>\n";
@@ -473,7 +474,7 @@ echo "          <table class=\"posthead\" width=\"100%\">\n";
 echo "            <tr>\n";
 echo "              <td align=\"center\">";
 
-echo form_submit('submit', 'Logon', 'onclick="has_clicked = true"');
+echo form_submit('submit', $lang['logon'], 'onclick="has_clicked = true"');
 
 echo "</td>\n";
 echo "            </tr>\n";
@@ -486,19 +487,19 @@ echo "  </form>\n";
 if (user_guest_enabled() && $guest_account_enabled) {
 
   echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";
-  echo "    <p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
+  echo "    <p class=\"smalltext\">{$lang['enterasa']} ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", $lang['guest']). "</p>\n";
   echo "  </form>\n";
 
 }
 
-echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Register now.</a></p>\n";
+echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Register now.</a></p>\n";
 echo "  <hr width=\"350\" />\n";
-echo "  <h2>Problems logging on?</h2>\n";
-echo "  <p class=\"smalltext\"><a href=\"logon.php?deletecookie=yes", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_top\">Delete Cookies</a></p>\n";
-echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">Forgotten your password?</a></p>\n";
+echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
+echo "  <p class=\"smalltext\"><a href=\"logon.php?deletecookie=yes", (isset($final_uri) ? '&final_uri='. urlencode($final_uri) : ''), "\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php", (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''), "\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
 echo "  <hr width=\"350\" />\n";
-echo "  <h2>Using a PDA?</h2>\n";
-echo "  <p class=\"smalltext\"><a href=\"llogon.php\" target=\"_top\">Light HTML version</a></p>\n";
+echo "  <h2>{$lang['usingaPDA']}</h2>\n";
+echo "  <p class=\"smalltext\"><a href=\"llogon.php\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
 echo "</div>\n";
 
 html_draw_bottom();

@@ -50,12 +50,13 @@ require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/thread.inc.php");
 require_once("./include/folder.inc.php");
+require_once("./include/lang.inc.php");
 
 html_draw_top_script();
 
 echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\">Recent threads</td>\n";
+echo "    <td class=\"subhead\">{$lang['recentthreads']}</td>\n";
 echo "  </tr>\n";
 
 // Get available folders
@@ -101,19 +102,19 @@ while($row = db_fetch_array($result)){
     echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
 
     if (!isset($row['LAST_READ'])) {
-        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Unread Thread\" />";
+        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"{$lang['unreadthread']}\" />";
     }else if ($row['LAST_READ'] == 0 || $row['LAST_READ'] < $row['LENGTH']) {
-        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Unread Messages\" />";
+        echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"{$lang['unreadmessages']}\" />";
     }else if ($row['LAST_READ'] == $row['LENGTH']) {
-        echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"Read Thread\" />";
+        echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$row['TID']."\" align=\"middle\" alt=\"{$lang['readthread']}\" />";
     }
 
     echo "&nbsp;</td>\n";
     echo "          <td><a href=\"discussion.php?msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($row['LOGON'], $row['NICKNAME']) . "\">";
     echo _stripslashes($row['TITLE'])."</a>&nbsp;";
 
-    if (isset($row['INTEREST']) && $row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"High Interest\" align=\"middle\" />";
-    if (isset($row['INTEREST']) && $row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"Subscribed\" align=\"middle\" />";
+    if (isset($row['INTEREST']) && $row['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" align=\"middle\" />";
+    if (isset($row['INTEREST']) && $row['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" align=\"middle\" />";
 
     echo "          </td>\n";
     echo "        </tr>\n";
@@ -132,7 +133,7 @@ echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">", form_quick_button("discussion.php","Start reading >>", 0, 0, "main"), "</td>\n";
+echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">", form_quick_button("discussion.php","{$lang['startreading']} >>", 0, 0, "main"), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
@@ -141,16 +142,16 @@ echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\">Thread Options</td>\n";
+echo "    <td class=\"subhead\">{$lang['threadoptions']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">New Discussion</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">Create Poll</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a></td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
@@ -159,7 +160,7 @@ echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\">Recent visitors</td>\n";
+echo "    <td class=\"subhead\">{$lang['recentvisitors']}</td>\n";
 echo "  </tr>\n";
 
 // Get recent visitors
@@ -191,13 +192,13 @@ echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"right\">Show More Visitors</a>&nbsp;</td>\n";
+echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"visitor_log.php\" target=\"right\">{$lang['showmorevisitors']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\" colspan=\"2\">Navigate</td>\n";
+echo "    <td class=\"subhead\" colspan=\"2\">{$lang['navigate']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
@@ -209,7 +210,7 @@ echo "        <tr>\n";
 echo "          <td>\n";
 echo "            <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
 echo "              ", form_input_text('msg', '1.1', 10). "\n";
-echo "              ", form_submit("go","Go!"). "\n";
+echo "              ", form_submit("go",$lang['goexcmark']). "\n";
 echo "            </form>\n";
 echo "          </td>\n";
 echo "        </tr>\n";

@@ -40,6 +40,7 @@ if(!bh_session_check()){
 
 require_once("./include/config.inc.php");
 require_once("./include/html.inc.php");
+require_once("./include/lang.inc.php");
 
 // If attachments are disabled, generate a 404 error and stop.
 
@@ -50,8 +51,8 @@ if (!$attachments_enabled) {
 
 if (!isset($HTTP_GET_VARS['aid'])) {
   html_draw_top();
-  echo "<h1>Invalid Operation</h1>\n";
-  echo "<h2>AID not specified. To use the attachments a unique AID must be specified in the URL Query by the referring page.</h2>\n";
+  echo "<h1>{$lang['invalidop']}</h1>\n";
+  echo "<h2>{$lang['aidnotspecified']}</h2>\n";
   html_draw_bottom();
   exit;
 }
@@ -79,18 +80,18 @@ if (!is_dir('attachments')) {
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-  if ($HTTP_POST_VARS['submit'] == 'Del') {
+  if ($HTTP_POST_VARS['submit'] == $lang['del']) {
 
     @unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
     delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
 
-  }elseif ($HTTP_POST_VARS['submit'] == 'Upload' || $HTTP_POST_VARS['submit'] == 'Please Wait..') {
+  }elseif ($HTTP_POST_VARS['submit'] == $lang['upload'] || $HTTP_POST_VARS['submit'] == $lang['waitdotdot']) {
 
     if ($HTTP_POST_FILES['userfile']['size'] > 0) {
 
       if ($users_free_space < $HTTP_POST_FILES['userfile']['size']) {
 
-        echo "<p>Sorry, you do not have enough free attachment space. Please free some space and try again.</p>";
+        echo "<p>{$lang['attachmentnospace']}</p>";
         unlink($HTTP_POST_FILES['userfile']['tmp_name']);
 
       }else {
@@ -98,23 +99,23 @@ if (isset($HTTP_POST_VARS['submit'])) {
         if (move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($HTTP_GET_VARS['aid']. _stripslashes($HTTP_POST_FILES['userfile']['name'])))) {
 
           add_attachment(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'])), $HTTP_POST_FILES['userfile']['type']);
-          echo "<p>Successfully Uploaded: ". _stripslashes($HTTP_POST_FILES['userfile']['name']). "</p>\n";
+          echo "<p>{$lang['successfullyuploaded']}: ". _stripslashes($HTTP_POST_FILES['userfile']['name']). "</p>\n";
 
         }else {
 
           unlink($HTTP_POST_FILES['userfile']['tmp_name']);
-          echo "<p>Upload Failed.</p>";
+          echo "<p>{$lang['uploadfailed']}.</p>";
 
         }
       }
 
     }else {
 
-      echo "<p>Error: Filesize must be greater than 0 bytes.</p>";
+      echo "<p>{$lang['errorfilesizeis0']}.</p>";
 
     }
 
-  }elseif ($HTTP_POST_VARS['submit'] == 'Complete') {
+  }elseif ($HTTP_POST_VARS['submit'] == $lang['complete']) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -127,11 +128,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }
 
 ?>
-<h1>Upload a file for attachment to the message</h1>
+<h1><?php echo $lang['uploadattachment']; ?></h1>
 <form name="f_attach" enctype="multipart/form-data" method="post" action="attachments.php?aid=<?php echo $HTTP_GET_VARS['aid']; ?>">
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
-    <td width="200" class="postbody" valign="top">1. Enter filename to upload :</td>
+    <td width="200" class="postbody" valign="top">1. <?php echo $lang['enterfilenametoupload']; ?> :</td>
     <td class="postbody"><?php echo form_field('userfile', '', 45, 0, 'file'); ?></td>
   </tr>
   <tr>
@@ -139,7 +140,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
-    <td class="postbody">2. Now press <?php echo form_submit('submit', 'Upload', 'onclick="this.value = \'Please Wait..\'"'); ?></td>
+    <td class="postbody">2. <?php echo $lang['nowpress']."&nbsp;".form_submit('submit', $lang['upload'], 'onclick="this.value = \'{$lang["waitdotdot"]}\'"'); ?></td>
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
@@ -147,11 +148,11 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td class="postbody">&nbsp;</td>
   </tr>
   <tr>
-    <td class="postbody" colspan="2">3. If you are done attaching file(s), press <?php echo form_submit('submit', 'Complete'); ?></td>
+    <td class="postbody" colspan="2">3. <?php echo $lang['ifdoneattachingfiles']."&nbsp;".form_submit('submit', $lang['complete']); ?></td>
   </tr>
 </table>
 </form>
-<h1>Attachments for this message</h1>
+<h1><?php echo $lang['attachmentsforthismessage']; ?></h1>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
     <td width="300" class="postbody">&nbsp;</td>
@@ -168,20 +169,20 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "&download=1\" title=\"";
 
       if (strlen($attachments[$i]['filename']) > 16) {
-        echo "Filename: ". $attachments[$i]['filename']. ", ";
+        echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
       }
 
       if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
       }
 
-      echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
-      echo "Downloaded: ". $attachments[$i]['downloads'];
+      echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+      echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
 
       if ($attachments[$i]['downloads'] == 1) {
-        echo " time";
+        echo " {$lang['time']}";
       }else {
-        echo " times";
+        echo " {$lang['times']}";
       }
 
       echo "\">";
@@ -197,7 +198,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "        ". form_submit('submit', 'Del'). "\n";
+      echo "        ". form_submit('submit', $lang['del']). "\n";
       echo "      </form>\n";
       echo "    </td>\n";
       echo "  </tr>\n";
@@ -209,7 +210,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   }else {
 
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">(none)</td>\n";
+    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">({$lang['none']})</td>\n";
     echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
     echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
@@ -239,7 +240,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td width="100" class="postbody">&nbsp;</td>
   </tr>
 </table>
-<h1>All Attachments (excluding current)</h1>
+<h1><?php echo $lang['allattachmentsexcludingcurrent']; ?></h1>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
     <td width="300" class="postbody">&nbsp;</td>
@@ -256,20 +257,20 @@ if (isset($HTTP_POST_VARS['submit'])) {
       echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "&download=1\" title=\"";
 
       if (strlen($attachments[$i]['filename']) > 16) {
-        echo "Filename: ". $attachments[$i]['filename']. ", ";
+        echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
       }
 
       if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+        echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
       }
 
-      echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
-      echo "Downloaded: ". $attachments[$i]['downloads'];
+      echo "{$lang['size']}: ". format_file_size($attachments[$i]['filesize']). ", ";
+      echo "{$lang['downloaded']}: ". $attachments[$i]['downloads'];
 
       if ($attachments[$i]['downloads'] == 1) {
-        echo " time";
+        echo " {$lang['time']}";
       }else {
-        echo " times";
+        echo " {$lang['times']}";
       }
 
       echo "\">";
@@ -280,13 +281,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
         echo $attachments[$i]['filename']. "</a></td>\n";
       }
 
-      echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">View Message</a></td>\n";
+      echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
       echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $HTTP_GET_VARS['aid']. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
       echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "        ". form_submit('submit', 'Del'). "\n";
+      echo "        ". form_submit('submit', $lang['del']). "\n";
       echo "      </form>\n";
       echo "    </td>\n";
       echo "  </tr>\n";
@@ -298,7 +299,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   }else {
 
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">(none)</td>\n";
+    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">({$lang['none']})</td>\n";
     echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
     echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
     echo "  </tr>\n";
@@ -316,12 +317,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td width="500" colspan="3"><hr width="500"/></td>
   </tr>
   <tr>
-    <td valign="top" width="300" class="postbody">Total Size:</td>
+    <td valign="top" width="300" class="postbody"><?php echo $lang['totalsize']; ?>:</td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size($total_attachment_size); ?></td>
     <td width="100" class="postbody">&nbsp;</td>
   </tr>
   <tr>
-    <td valign="top" width="300" class="postbody">Free space:</td>
+    <td valign="top" width="300" class="postbody"><?php echo $lang['freespace']; ?>:</td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space(bh_session_get_value('UID'))); ?></td>
     <td width="100" class="postbody">&nbsp;</td>
   </tr>

@@ -24,18 +24,21 @@ USA
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/lang.inc.php");
 
 function html_guest_error ()
 {
+     global $lang;
      html_draw_top();
-     echo "<h1>Sorry, you need to be logged in to use this feature.</h1>";
+     echo "<h1>{$lang['guesterror']}</h1>";
      html_draw_bottom();
 }
 
 function html_poll_edit_error ()
 {
+    global $lang;
     html_draw_top();
-    echo "<h1>You cannot edit polls</h1>";
+    echo "<h1>{$lang['pollediterror']}</h1>";
     html_draw_bottom();
 }
 

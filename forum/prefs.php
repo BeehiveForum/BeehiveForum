@@ -50,6 +50,7 @@ require_once("./include/post.inc.php");
 require_once("./include/fixhtml.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/lang.inc.php");
 
 $error_html = "";
 
@@ -76,24 +77,26 @@ if ($dir = @opendir('styles')) {
 
 array_multisort($style_names, $available_styles);
 
+$available_langs = lang_get_available(); // get list of available languages
+
 if(isset($HTTP_POST_VARS['submit'])){
 
     $valid = true;
 
     if(isset($HTTP_POST_VARS['pw'])){
         if($HTTP_POST_VARS['pw'] != $HTTP_POST_VARS['cpw']){
-            $error_html = "<h2>Passwords do not match</h2>";
+            $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
             $valid = false;
         }
     }
 
     if(empty($HTTP_POST_VARS['nickname'])){
-        $error_html .= "<h2>Nickname is required</h2>";
+        $error_html .= "<h2>{$lang['nicknamerequired']}</h2>";
         $valid = false;
     }
 
     if(empty($HTTP_POST_VARS['email'])){
-        $error_html .= "<h2>Email address is required</h2>";
+        $error_html .= "<h2>{$lang['emailaddressrequired']}</h2>";
         $valid = false;
     }
 
@@ -143,7 +146,8 @@ if(isset($HTTP_POST_VARS['submit'])){
                           $HTTP_POST_VARS['timezone'], $HTTP_POST_VARS['dl_saving'],
                           $HTTP_POST_VARS['mark_as_of_int'], $HTTP_POST_VARS['posts_per_page'],
                           $HTTP_POST_VARS['font_size'], $HTTP_POST_VARS['style'],
-                          $HTTP_POST_VARS['view_sigs'], $HTTP_POST_VARS['start_page']);
+                          $HTTP_POST_VARS['view_sigs'], $HTTP_POST_VARS['start_page'],
+                          $HTTP_POST_VARS['language']);
 
         // Update USER_SIG
 
@@ -172,7 +176,7 @@ user_get_sig(bh_session_get_value('UID'), $user_sig['CONTENT'], $user_sig['HTML'
 // Arrays for Birthday
 
 $birthday_days   = array(' ', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31');
-$birthday_months = array(' ', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+$birthday_months = array(' ', $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'], $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'], $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
 $birthday_years  = array_merge(array(' '), range(1900, date('Y', mktime())));
 
 // Split the DOB into usable variables.
@@ -189,13 +193,13 @@ if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_pref
 
 html_draw_top();
 
-echo "<h1>User Preferences</h1>\n";
+echo "<h1>{$lang['userpreferences']}</h1>\n";
 
 if(!empty($error_html)) {
     echo $error_html;
 }elseif (isset($HTTP_GET_VARS['updated'])) {
 
-    echo "<h2>Preferences were successfully updated.</h2>\n";
+    echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 
         $top_html = "./styles/".(bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style) . "/top.html";
         if (!file_exists($top_html)) {
@@ -216,27 +220,27 @@ if(!empty($error_html)) {
         <td class="subhead" colspan="2">User Details</td>
       </tr>
       <tr>
-        <td>New Password</td>
+        <td><?php echo $lang['newpasswd']; ?></td>
         <td>: <?php echo form_field("pw", "", 37, 0, "password"); ?></td>
       </tr>
       <tr>
-        <td>Confirm Password</td>
+        <td><?php echo $lang['confirmpasswd']; ?></td>
         <td>: <?php echo form_field("cpw", "", 37, 0, "password"); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td align="center"><span style="font-size: 10px">(Leave blank to retain current password)</span></td>
+        <td align="center"><span style="font-size: 10px">(<?php echo $lang['leaveblanktoretaincurrentpasswd']; ?>)</span></td>
       </tr>
       <tr>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
       </tr>
       <tr>
-        <td>Nickname</td>
+        <td><?php echo $lang['nickname']; ?></td>
         <td>: <?php echo form_field("nickname", $user['NICKNAME'], 37, 32); ?></td>
       </tr>
       <tr>
-        <td>Email Address</td>
+        <td><?php echo $lang['emailaddress']; ?></td>
         <td>: <?php echo form_field("email", $user['EMAIL'], 37, 80); ?></td>
       </tr>
       <tr>
@@ -244,23 +248,23 @@ if(!empty($error_html)) {
         <td>&nbsp;</td>
       </tr>
       <tr>
-        <td>First name</td>
+        <td><?php echo $lang['firstname']; ?></td>
         <td>: <?php echo form_field("firstname", $user_prefs['FIRSTNAME'], 37, 32); ?></td>
       </tr>
       <tr>
-        <td>Last name</td>
+        <td><?php echo $lang['lastname']; ?></td>
         <td>: <?php echo form_field("lastname", $user_prefs['LASTNAME'], 37, 32); ?></td>
       </tr>
       <tr>
-        <td>Date of Birth</td>
+        <td><?php echo $lang['dateofbirth']; ?></td>
         <td>: <?php echo form_dropdown_array("dob_day", range (0, 31), $birthday_days, $dob_day); ?>&nbsp;<?php echo form_dropdown_array("dob_month", range (0, 12), $birthday_months, $dob_month); ?>&nbsp;<?php echo form_dropdown_array("dob_year", $birthday_years, $birthday_years, $dob_year); ?></td>
       </tr>
       <tr>
-        <td>Homepage URL</td>
+        <td><?php echo $lang['homepageURL']; ?></td>
         <td>: <?php echo form_field("homepage_url", $user_prefs['HOMEPAGE_URL'], 37, 255); ?></td>
       </tr>
       <tr>
-        <td>Picture URL</td>
+        <td><?php echo $lang['pictureURL']; ?></td>
         <td>: <?php echo form_field("pic_url", $user_prefs['PIC_URL'], 37, 255); ?></td>
       </tr>
       <tr>
@@ -270,19 +274,19 @@ if(!empty($error_html)) {
     </table>
     <table class="posthead" width="400">
       <tr>
-        <td class="subhead">Forum Options</td>
+        <td class="subhead"><?php echo $lang['forumoptions']; ?></td>
       </tr>
       <tr>
-        <td><?php echo form_checkbox("email_notify", "Y", "Notify by email of posts to me", ($user_prefs['EMAIL_NOTIFY'] == "Y")); ?></td>
+        <td><?php echo form_checkbox("email_notify", "Y", $lang['notifybyemail'], ($user_prefs['EMAIL_NOTIFY'] == "Y")); ?></td>
       </tr>
       <tr>
-        <td><?php echo form_checkbox("dl_saving", "Y", "Adjust for daylight saving", ($user_prefs['DL_SAVING'] == "Y")); ?></td>
+        <td><?php echo form_checkbox("dl_saving", "Y", $lang['daylightsaving'], ($user_prefs['DL_SAVING'] == "Y")); ?></td>
       </tr>
       <tr>
-        <td><?php echo form_checkbox("mark_as_of_int", "Y", "Automatically mark threads I post in as High Interest", ($user_prefs['MARK_AS_OF_INT'] == "Y")); ?></td>
+        <td><?php echo form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], ($user_prefs['MARK_AS_OF_INT'] == "Y")); ?></td>
       </tr>
       <tr>
-        <td><?php echo form_checkbox("view_sigs", "Y", "Globally ignore user signatures", ($user_prefs['VIEW_SIGS'] == "Y")); ?></td>
+        <td><?php echo form_checkbox("view_sigs", "Y", $lang['globallyignoresigs'], ($user_prefs['VIEW_SIGS'] == "Y")); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>
@@ -290,15 +294,15 @@ if(!empty($error_html)) {
     </table>
     <table class="posthead" width="400">
       <tr>
-        <td width="150">Timezone (from GMT)</td>
+        <td width="150"><?php echo $lang['timezonefromGMT']; ?></td>
         <td><?php echo form_dropdown_array("timezone", range(-11,11), range(-11,11), $user_prefs['TIMEZONE']); ?></td>
       </tr>
       <tr>
-        <td>Posts per page</td>
+        <td><?php echo $lang['postsperpage']; ?></td>
         <td><?php echo form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), isset($user_prefs['POSTS_PER_PAGE']) ? $user_prefs['POSTS_PER_PAGE'] : 10); ?></td>
       </tr>
       <tr>
-        <td>Font size</td>
+        <td><?php echo $lang['fontsize']; ?></td>
         <td>
           <?php
 
@@ -316,7 +320,7 @@ if(!empty($error_html)) {
         </td>
       </tr>
       <tr>
-        <td>Forum Style</td>
+        <td><?php echo $lang['forumstyle']; ?></td>
         <td>
           <?php
 
@@ -347,8 +351,12 @@ if(!empty($error_html)) {
         </td>
       </tr>
       <tr>
-        <td>Start Page</td>
-        <td><?php echo form_dropdown_array("start_page", array(0, 1), array('Start', 'Messages'), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
+        <td><?php echo $lang['preferredlang']; ?></td>
+        <td><?php echo form_dropdown_array("language", $available_langs, NULL, bh_session_get_value("LANGUAGE")); ?></td>
+      </tr>
+      <tr>
+        <td><?php echo $lang['startpage']; ?></td>
+        <td><?php echo form_dropdown_array("start_page", array(0, 1), array($lang['start'], $lang['messages']), isset($user_prefs['START_PAGE']) ? $user_prefs['START_PAGE'] : 0); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>
@@ -357,17 +365,17 @@ if(!empty($error_html)) {
     </table>
     <table class="posthead" width="400">
       <tr>
-        <td class="subhead" colspan="2">Signature</td>
+        <td class="subhead" colspan="2"><?php echo $lang['signature']; ?></td>
       </tr>
       <tr>
         <td colspan="2"><?php echo form_textarea("sig_content", _htmlentities(_stripslashes($user_sig['CONTENT'])), 4, 60); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>
-        <td align="right"><?php echo form_checkbox("sig_html", "Y", "Contains HTML", ($user_sig['HTML'] == "Y")); ?></td>
+        <td align="right"><?php echo form_checkbox("sig_html", "Y", $lang['containsHTML'], ($user_sig['HTML'] == "Y")); ?></td>
       </tr>
     </table>
-    <?php echo form_submit("submit", "Submit"); ?>
+    <?php echo form_submit("submit", $lang['submit']); ?>
   </form>
 </div>
 <?php html_draw_bottom(); ?>

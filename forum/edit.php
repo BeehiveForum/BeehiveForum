@@ -57,6 +57,7 @@ require_once("./include/poll.inc.php");
 require_once("./include/attachments.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_GET_VARS['msg'])) {
 
@@ -71,8 +72,8 @@ if (isset($HTTP_GET_VARS['msg'])) {
 }else {
 
   html_draw_top();
-  echo "<h1>Invalid Operation</h1>\n";
-  echo "<h2>No message specified for editing</h2>";
+  echo "<h1>{$lang['invalidop']}</h1>\n";
+  echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
   html_draw_bottom();
   exit;
 
@@ -152,7 +153,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $preview_message['FROM_UID'] = $from_uid;
 
     }else{
-        $error_html = "<h2>You must enter some content for the post</h2>";
+        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
         $valid = false;
     }
 
@@ -176,8 +177,8 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         $t_content.= "<div class=\"sig\">".fix_html($HTTP_POST_VARS['t_sig'])."</div>";
 
-        $t_content.= "<p style=\"font-size: 10px\">EDITED: ". date("d/m/y H:i T");
-        $t_content.= " by ". user_get_logon(bh_session_get_value('UID'));
+        $t_content.= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". date("d/m/y H:i T");
+        $t_content.= " {$lang['by']} ". user_get_logon(bh_session_get_value('UID'));
         $t_content.= "</p>";
 
         $updated = post_update($tid, $pid, $t_content);
@@ -189,18 +190,18 @@ if (isset($HTTP_POST_VARS['preview'])) {
 	    }
 
             echo "<div align=\"center\">";
-            echo "<p>Edit Applied to Message $tid.$pid</p>";
-            echo form_quick_button("discussion.php", "Continue", "msg", "$tid.$pid");
+            echo "<p>{$lang['editappliedtomessage']} $tid.$pid</p>";
+            echo form_quick_button("discussion.php", $lang['continue'], "msg", "$tid.$pid");
             echo "</div>";
 
             html_draw_bottom();
             exit;
 
         }else{
-            $error_html = "<h2>Error updating post</h2>";
+            $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
         }
     }else{
-        $error_html = "<h2>You must enter some content for the post</h2>";
+        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
         $valid = false;
     }
 
@@ -267,7 +268,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         }else{
             $valid = false;
-            $error_html = "<h2>Message ". $HTTP_GET_VARS['msg']. " was not found</h2>";
+            $error_html = "<h2>{$lang['message']} ". $HTTP_GET_VARS['msg']. " {$lang['wasnotfound']}</h2>";
         }
         unset($editmessage);
     }
@@ -275,12 +276,12 @@ if (isset($HTTP_POST_VARS['preview'])) {
     $edit_html = isset($HTTP_POST_VARS['b_edit_html']);
 }
 
-echo "<h1>Edit message $tid.$pid</h1>";
+echo "<h1>{$lang['editmessage']} $tid.$pid</h1>";
 
 if (isset($error_html)) echo $error_html;
 
 echo "<form name=\"f_edit\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" method=\"post\" target=\"_self\">\n";
-echo "<h2>Subject: ". thread_get_title($tid). "</h2>\n";
+echo "<h2>{$lang['subject']}: ". thread_get_title($tid). "</h2>\n";
 echo form_input_hidden("t_msg", $edit_msg);
 echo form_input_hidden("t_to_uid", $to_uid);
 echo form_input_hidden("t_from_uid", $from_uid);
@@ -289,7 +290,7 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table width=\"100%\" border=\"0\" class=\"posthead\">\n";
 echo "        <tr>\n";
-echo "          <td>Edit message</td>\n";
+echo "          <td>{$lang['editmessage']}</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\">\n";
@@ -297,27 +298,27 @@ echo "        <tr>\n";
 echo "          <td>". form_textarea("t_content", $t_content, 15, 85). "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td>Signature:<br />". form_textarea("t_sig", _htmlentities($t_sig), 5, 85). "</td>\n";
+echo "          <td>{$lang['signature']}:<br />". form_textarea("t_sig", _htmlentities($t_sig), 5, 85). "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('submit', 'Apply', 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
-echo "&nbsp;". form_submit("preview", "Preview");
-echo "&nbsp;". form_submit("cancel",  "Cancel");
+echo form_submit('submit', $lang['apply'], 'onclick="if (typeof attachwin == \'object\' && !attachwin.closed) attachwin.close();"');
+echo "&nbsp;". form_submit("preview", $lang['preview']);
+echo "&nbsp;". form_submit("cancel",  $lang['cancel']);
 
 if ($edit_html) {
-    echo "&nbsp;".form_submit("b_edit_text", "Edit text");
+    echo "&nbsp;".form_submit("b_edit_text", $lang['edittext']);
     echo form_input_hidden("t_post_html", "Y");
 
 } else {
-    echo "&nbsp;".form_submit("b_edit_html", "Edit HTML");
+    echo "&nbsp;".form_submit("b_edit_html", $lang['editHTML']);
     echo form_input_hidden("t_post_html", "N");
 }
 
 if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('edit_attachments.php?aid=". $aid. "&uid=". $from_uid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
 }
 
 echo "</form>";
@@ -325,7 +326,7 @@ echo "</form>";
 $threaddata = thread_get($tid);
 
 if ($valid) {
-    echo "<h2>Message Preview:</h2>";
+    echo "<h2>{$lang['messagepreview']}:</h2>";
     message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
 }
 

@@ -62,6 +62,7 @@ require_once("./include/fixhtml.inc.php");
 require_once("./include/edit.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 // Check if the user is viewing signatures.
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
@@ -84,8 +85,8 @@ if(isset($HTTP_POST_VARS['submit'])) {
     }else {
 
         html_draw_top();
-        echo "<h1>Invalid Operation</h1>\n";
-        echo "<h2>No message specified for deleting</h2>";
+        echo "<h1>{$lang['invalidop']}</h1>\n";
+        echo "<h2{$lang['nomessagespecifiedfordel']}</h2>";
         html_draw_bottom();
         exit;
 
@@ -110,7 +111,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
         }else {
 
             $valid = false;
-            $error_html = "<h2>Message " . $HTTP_GET_VARS['msg'] . " was not found</h2>";
+            $error_html = "<h2>{$lang['message']} " . $HTTP_GET_VARS['msg'] . " {$lang['wasnotfound']}</h2>";
 
         }
     }
@@ -127,20 +128,20 @@ if ($valid) {
             if (perm_is_moderator()) admin_addlog(0, 0, $tid, $pid, 0, 0, 22);
 
             echo "<div align=\"center\">";
-            echo "<p>Post deleted successfully</p>";
-            echo form_quick_button("discussion.php", "Back", "msg", $HTTP_POST_VARS['t_back']);
+            echo "<p>{$lang['postdelsuccessfully']}</p>";
+            echo form_quick_button("discussion.php", $lang['back'], "msg", $HTTP_POST_VARS['t_back']);
             echo "</div>";
             html_draw_bottom();
             exit;
 
         }else {
 
-            $error_html = "<h2>Error deleting post</h2>";
+            $error_html = "<h2>{$lang['errordelpost']}</h2>";
 
         }
     }
 
-    echo "<h1>Delete this message</h1>";
+    echo "<h1>{$lang['delthismessage']}</h1>";
     echo "<h2>" . thread_get_title($tid) . "</h2>";
 
     if($to_uid == 0) {
@@ -178,8 +179,8 @@ if(isset($error_html)) echo $error_html;
 echo "<form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\" target=\"_self\">";
 echo form_input_hidden("t_msg",$delete_msg);
 echo form_input_hidden("t_back",$back);
-echo form_submit("submit","Delete");
-echo "&nbsp;".form_submit("cancel","Cancel");
+echo form_submit("submit",$lang['delete']);
+echo "&nbsp;".form_submit("cancel",$lang['cancel']);
 echo "</form>\n";
 echo "<p>&nbsp;</p>\n";
 

@@ -59,6 +59,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/poll.inc.php");
 require_once("./include/light.inc.php");
+require_once("./include/lang.inc.php");
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
@@ -93,7 +94,7 @@ if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0,
 
   }else {
 
-    $error_html = "<h2>Invalid username</h2>";
+    $error_html = "<h2>{$lang['invalidusername']}</h2>";
     $valid = false;
 
   }
@@ -107,21 +108,21 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
     if (isset($HTTP_POST_VARS['t_threadtitle']) && trim($HTTP_POST_VARS['t_threadtitle']) != "") {
         $t_threadtitle = trim($HTTP_POST_VARS['t_threadtitle']);
     }else {
-        $error_html = "<h2>You must enter a title for the thread</h2>";
+        $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
         $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['t_fid'])) {
         $t_fid = $HTTP_POST_VARS['t_fid'];
     } else if ($valid) {
-        $error_html = "<h2>Please select a folder</h2>";
+        $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
         $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['t_content'])) {
         $t_content = $HTTP_POST_VARS['t_content'];
     }else {
-        $error_html = "<h2>You must enter some content for the post</h2>";
+        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
         $valid = false;
     }
 
@@ -135,7 +136,7 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
         if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
             $t_content = $HTTP_POST_VARS['t_content'];
         }else {
-            $error_html = "<h2>You must enter some content for the post</h2>";
+            $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
             $valid = false;
         }
 
@@ -266,7 +267,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     }else {
 
-        $error_html = "<h2>Error creating post</h2>";
+        $error_html = "<h2>{$lang['errorcreatingpost']}</h2>";
 
     }
 
@@ -282,7 +283,7 @@ if (!isset($HTTP_POST_VARS['aid'])) {
 
 if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
-    echo "<h2>Message Preview:</h2>";
+    echo "<h2>{$lang['messagepreview']}:</h2>";
 
     if ($HTTP_POST_VARS['t_to_uid'] == 0) {
 
@@ -387,9 +388,9 @@ if (!isset($t_sig) || !$t_sig) {
 }
 
 if ($newthread) {
-    echo "<h1>Create new thread</h1>\n";
+    echo "<h1>{$lang['createnewthread']}</h1>\n";
 }else {
-    echo "<h1>Post reply</h1>\n";
+    echo "<h1>{$lang['postreply']}</h1>\n";
 }
 if (isset($error_html)) {
     echo $error_html . "\n";
@@ -403,9 +404,9 @@ if (!isset($t_threadtitle)) {
 
 if ($newthread) {
 
-    echo "<p>Select folder: ";
+    echo "<p>{$lang['selectfolder']}: ";
     echo folder_draw_dropdown($t_fid) . "</p>\n";
-    echo "<p>Thread title: ";
+    echo "<p>{$lang['threadtitle']}: ";
     echo light_form_input_text("t_threadtitle", _htmlentities(_stripslashes($t_threadtitle)), 30, 64);
     echo "</p>\n";
     echo form_input_hidden("t_newthread","Y");
@@ -418,7 +419,7 @@ if ($newthread) {
 
     if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') {
 
-      echo "<h2>Message has been deleted.</h2>\n";
+      echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
       html_draw_bottom();
       exit;
 
@@ -438,17 +439,17 @@ if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
 
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
-echo "<p>To: ". post_draw_to_dropdown($t_to_uid) . form_submit("submit","Post") ."</p>\n";
+echo "<p>{$lang['to']}: ". post_draw_to_dropdown($t_to_uid) . form_submit("submit",$lang['post']) ."</p>\n";
 echo "<p>".light_form_textarea("t_content", isset($t_content) ? _htmlentities($t_content) : "", 15, 85). "</p>\n";
 
-echo "<p>Signature:<br />".light_form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
-echo "<p>".light_form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", (isset($t_post_html) && $t_post_html == "Y"))."</p>\n";
-echo "<p>".light_form_submit("submit","Post");
-echo "&nbsp;".light_form_submit("preview","Preview");
-echo "&nbsp;".light_form_submit("cancel", "Cancel");
+echo "<p>{$lang['signature']}:<br />".light_form_textarea("t_sig", _htmlentities($t_sig), 5, 85). form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
+echo "<p>".light_form_checkbox("t_post_html", "Y", $lang['messagecontainsHTML'], (isset($t_post_html) && $t_post_html == "Y"))."</p>\n";
+echo "<p>".light_form_submit("submit",$lang['post']);
+echo "&nbsp;".light_form_submit("preview",$lang['preview']);
+echo "&nbsp;".light_form_submit("cancel", $lang['cancel']);
 echo "</p>";
 
-echo "&nbsp;".light_form_submit("convert_html", "Convert to HTML");
+echo "&nbsp;".light_form_submit("convert_html", $lang['converttoHTML']);
 
 if (isset($HTTP_POST_VARS['t_dedupe'])) {
     echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
@@ -460,7 +461,7 @@ echo "</form>\n";
 
 if (!$newthread) {
 
-    echo "<p>In reply to:</p>\n";
+    echo "<p>{$lang['inreplyto']}:</p>\n";
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 

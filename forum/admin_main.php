@@ -43,20 +43,26 @@ if(!bh_session_check()){
 require_once("./include/perm.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/lang.inc.php");
 
 html_draw_top();
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
 
-echo "<h1>Forum Admin</h1>\n";
-echo "<p>Use the menu on the left to manage things in your forum</p>\n";
-echo "<p><b>Users</b> allows you to set user permissions, including appointing Editors and gagging people</p>\n";
-echo "<p>Use <b>Folders</b> to add new folders or change the names of existing ones</p>\n";
+echo "<h1>{$lang['forumadmin']}</h1>\n";
+echo "<p>{$lang['adminexp_1']}</p>\n";
+echo "<p>{$lang['adminexp_2']}</p>\n";
+echo "<p>{$lang['adminexp_3']}</p>\n";
+echo "<p>{$lang['adminexp_4']}</p>\n";
+echo "<p>{$lang['adminexp_5']}</p>\n";
+echo "<p>{$lang['adminexp_6']}</p>\n";
+echo "<p>{$lang['adminexp_7']}</p>\n";
+echo "<p>{$lang['adminexp_8']}</p>\n";
 
 html_draw_bottom();
 

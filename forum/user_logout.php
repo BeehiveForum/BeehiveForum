@@ -32,6 +32,7 @@ require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/lang.inc.php");
 
 $logged_off = false;
 
@@ -48,16 +49,16 @@ echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
 echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"POST\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
 echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
-echo "Log out:\n";
+echo "{$lang['logout']}:\n";
 echo "</td></tr></table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
 if($logged_off){
-    echo "<tr><td>You have logged out.</td></tr>\n";
+    echo "<tr><td>{$lang['youhaveloggedout']}.</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>";
 } else {
-    echo "<tr><td>You are currently logged in as ". user_get_logon(bh_session_get_value('UID')). "</td></tr>\n";
+    echo "<tr><td>{$lang['currentlyloggedinas']} ". user_get_logon(bh_session_get_value('UID')). "</td></tr>\n";
     echo "<tr><td>&nbsp;</td></tr>";
-    echo "<tr><td align=\"center\">".form_submit("submit","Log out");
+    echo "<tr><td align=\"center\">".form_submit("submit",$lang['logout']);
 }
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";

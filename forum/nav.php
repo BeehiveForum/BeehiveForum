@@ -34,31 +34,32 @@ require_once("./include/header.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/lang.inc.php");
 
 header_no_cache();
 
 html_draw_top('Nav', 'navpage');
 
-echo "<a href=\"start.php\" target=\"main\">Start</a>&nbsp;|&nbsp;\n";
-echo "<a href=\"discussion.php\" target=\"main\">Messages</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"start.php\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"discussion.php\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
 
 if ($show_links) {
-    echo "<a href=\"links.php\" target=\"main\">Links</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"links.php\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
 }
 
 if (bh_session_get_value('UID') > 0) {
-    echo "<a href=\"prefs.php\" target=\"main\">Preferences</a>&nbsp;|&nbsp;\n";
-    echo "<a href=\"profile.php\" target=\"main\">Profile</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"prefs.php\" target=\"main\">{$lang['preferences']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"profile.php\" target=\"main\">{$lang['profile']}</a>&nbsp;|&nbsp;\n";
 }
 
 if (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
-    echo "<a href=\"admin.php\" target=\"main\">Admin</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"admin.php\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
 }
 
 if (bh_session_get_value('UID') == 0) {
-    echo "<a href=\"logout.php\" target=\"_top\">Login</a>\n";
+    echo "<a href=\"logout.php\" target=\"_top\">{$lang['login']}</a>\n";
 }else {
-    echo "<a href=\"logout.php\" target=\"main\">Logout</a>\n";
+    echo "<a href=\"logout.php\" target=\"main\">{$lang['logout']}</a>\n";
 }
 
 html_draw_bottom();

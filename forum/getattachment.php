@@ -110,8 +110,9 @@ if (isset($HTTP_GET_VARS['hash'])) {
     }
 }
 
+require_once("./include/lang.inc.php");
 html_draw_top();
-echo "<h2>There was a problem downloading this attachment. Please try again later.</h2>\n";
+echo "<h2>{$lang['attachmentproblem']}</h2>\n";
 html_draw_bottom();
 
 ?>

@@ -45,12 +45,13 @@ require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 
     html_draw_top();
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 
@@ -79,7 +80,7 @@ if (isset($HTTP_POST_VARS['save'])) {
         }
     }
 
-    $status_text = "<p><b>Word Filter updated</b></p>";
+    $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
     admin_addlog(0, 0, 0, 0, 0, 0, 24);
 
 }else{
@@ -98,12 +99,12 @@ if (isset($HTTP_POST_VARS['save'])) {
 $wordlist = implode("\n", $filter_array);
 
 echo "<form name=\"startpage\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
-echo "<h1>Edit Word Filter</h1>\n";
+echo "<h1>{$lang['editwordfilter']}</h1>\n";
 
 if (isset($status_text)) echo $status_text;
 
-echo "<p>Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line.</p>\n";
-echo "<p>PCRE Regular Expressions can also be used to match words if you know how</p>\n";
+echo "<p>{$lang['wordfilterexp_1']}</p>\n";
+echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
@@ -115,7 +116,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit('save', 'Save'), "&nbsp;", form_reset(), "\n";
+echo form_submit('save', $lang['save']), "&nbsp;", form_reset(), "\n";
 echo "</form>\n";
 
 html_draw_bottom();

@@ -48,12 +48,13 @@ require_once("./include/folder.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/admin.inc.php");
+require_once("./include/lang.inc.php");
 
 html_draw_top();
 
 if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
-    echo "<h1>Access Denied</h1>\n";
-    echo "<p>You do not have permission to use this section.</p>";
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
@@ -78,18 +79,18 @@ if (isset($HTTP_POST_VARS['submit'])) {
 }
 
 // Draw the form
-echo "<h1>Manage Folders</h1>\n";
+echo "<h1>{$lang['managefolders']}</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\"><tr><td class=\"posthead\">";
 
 echo "<form name=\"f_folders\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
 echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
-echo "<td class=\"subhead\" align=\"left\">ID</td>\n";
-echo "<td class=\"subhead\" align=\"left\">Folder Name</td>\n";
-echo "<td class=\"subhead\" align=\"left\">Access Level</td>\n";
-echo "<td class=\"subhead\" align=\"left\">Threads</td>\n";
-echo "<td class=\"subhead\" align=\"left\">Move</td>\n";
+echo "<td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
+echo "<td class=\"subhead\" align=\"left\">{$lang['foldername']}</td>\n";
+echo "<td class=\"subhead\" align=\"left\">{$lang['accesslevel']}</td>\n";
+echo "<td class=\"subhead\" align=\"left\">{$lang['threads']}</td>\n";
+echo "<td class=\"subhead\" align=\"left\">{$lang['move']}</td>\n";
 echo "</tr>\n";
 
 $folder_array = folder_get_all();
@@ -104,7 +105,7 @@ foreach ($folder_array as $key => $folder) {
     echo "  <td align=\"left\">". form_field("t_title_$key", $folder['TITLE'], 32, 32). form_input_hidden("t_old_title_$key", $folder['TITLE']). "</td>\n";
 
     // Draw the ACCESS_LEVEL dropdown
-    echo "  <td align=\"left\">".form_dropdown_array("t_access_$key", array(-1, 0, 1), array("Closed", "Open", "Restricted"), $folder['ACCESS_LEVEL']);
+    echo "  <td align=\"left\">".form_dropdown_array("t_access_$key", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $folder['ACCESS_LEVEL']);
     echo form_input_hidden("t_old_access_$key", $folder['ACCESS_LEVEL']). "</td>\n";
 
     echo "  <td align=\"left\">". $folder['THREAD_COUNT']. "</td>\n";
@@ -115,8 +116,8 @@ foreach ($folder_array as $key => $folder) {
 // Draw a row for a new folder to be created
 echo "<tr>\n";
 echo "  <td align=\"left\">NEW</td>\n";
-echo "  <td align=\"left\">". form_field("t_title_new", "New Folder", 32, 32). "</td>\n";
-echo "  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array("Closed", "Open", "Restricted")). "</td>\n";
+echo "  <td align=\"left\">". form_field("t_title_new", $lang['newfolder'], 32, 32). "</td>\n";
+echo "  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array($lang['closed'], $lang['open'], $lang['restricted'])). "</td>\n";
 echo "  <td align=\"left\">-</td>\n";
 echo "  <td align=\"left\">&nbsp;</td>\n";
 echo "</tr>\n";

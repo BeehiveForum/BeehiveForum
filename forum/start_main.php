@@ -38,7 +38,7 @@ a            { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11
     </td>
   </tr>
   <tr>
-    <td height="1" class="title">&nbsp;</td>
+    <td height="1" class="title"> </td>
   </tr>
 </table>
 </body>

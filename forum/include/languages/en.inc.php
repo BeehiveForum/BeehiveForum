@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.250 2005-03-28 19:43:36 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.251 2005-03-28 23:11:06 decoyduck Exp $ */
 
 // International English language file
 
@@ -314,6 +314,7 @@ $lang['forgottenpassworddesc'] = "If this user has forgotten their password you 
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
 $lang['manageusersexp_3'] = "To see the last few users to logon, sort the list by LAST_LOGON.";
+$lang['manageallusersexp'] = "This list shows all registered user accounts sorted by";
 $lang['lastlogon'] = "Last Logon";
 $lang['logonfrom'] = "Logon From";
 $lang['nouseraccounts'] = "No user accounts in database.";
@@ -405,10 +406,11 @@ $lang['usergroupwarning'] = "Note: This user may be inheriting additional permis
 $lang['successfullyaddedgroup'] = "Successfully added group";
 $lang['successfullydeletedgroup'] = "Successfully deleted group";
 
-$lang['usercanaccessforumtools'] = "User can access forum tools";
+$lang['usercanaccessforumtools'] = "User can access forum tools and can create, delete and edit forums";
 
 $lang['userhasglobalaccesstoadmintools'] = "User has global access to admin tools";
 $lang['usercanaccessadmintools'] = "User has access to forum admin tools";
+$lang['usercanaccessadmintoolsonallforums'] = "User has access to admin tools <b>on all forums</b>";
 $lang['usercanmoderateallfolders'] = "User can moderate all folders";
 $lang['usercanmoderatelinkssection'] = "User can moderate Links section";
 
@@ -560,12 +562,8 @@ $lang['warningnoforums'] = "WARNING: You have no forums set up.";
 
 // Admin Global User Permissions
 
-$lang['userpermissions'] = "User Permissions";
-$lang['admintools'] = "Admin Tools";
-$lang['forumtools'] = "Forum Tools";
-
 $lang['globaluserpermissions'] = "Global user permissions";
-$lang['globalusershelptext'] = "Use this section to specify which users can access the Admin tools and / or Forum tools on <b>All</b> Forums. If you want to specify per-forum user access to Admin tools please visit that forum and apply the permissions to the user via Admin -&gt; Users";
+$lang['globalusershelptext'] = "These permissions permit the user access to the Admin tools and / or Forum tools on <b>All</b> Forums.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

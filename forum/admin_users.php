@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.100 2005-03-21 14:33:03 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.101 2005-03-28 23:11:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -231,9 +231,20 @@ if (sizeof($admin_user_array['user_array']) > 0) {
         }
 
         if (user_is_active($user['UID'])) {
-            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<b>{$lang['yes']}</b></td>\n";
-            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", form_submit("t_kick[{$user['UID']}]", $lang['kick']), "</td>\n";
+
+            if (perm_has_forumtools_access()) {
+
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<b>{$lang['yes']}</b></td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", form_submit("t_kick[{$user['UID']}]", $lang['kick']), "</td>\n";
+
+            }else {
+
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<b>{$lang['yes']}</b></td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;</td>\n";
+            }
+
         }else {
+
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['no']}</td>\n";
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;</td>\n";
         }

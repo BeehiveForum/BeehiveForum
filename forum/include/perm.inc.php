@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.67 2005-03-25 21:37:54 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.68 2005-03-28 23:11:07 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -444,9 +444,11 @@ function perm_user_in_group($uid, $gid)
     return ($user_count > 0);
 }
 
-function perm_get_global_permissions()
+function perm_get_global_user_permissions($uid)
 {
     $db_perm_get_global_permissions = db_connect();
+
+    if (!is_numeric($uid)) return 0;
 
     $user_search_array = array();
     $user_search_count = 0;
@@ -454,27 +456,16 @@ function perm_get_global_permissions()
     if (!$table_data = get_table_prefix()) return array('user_count' => 0,
                                                         'user_array' => array());
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "GROUPS.GID, GROUP_PERMS.PERM FROM GROUPS ";
+    $sql = "SELECT GROUP_PERMS.PERM FROM GROUPS ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 1 AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM = 0 AND (GROUP_PERMS.PERM & 1024 > 0 ";
-    $sql.= "OR GROUP_PERMS.PERM & 512 > 0) ";
+    $sql.= "AND GROUP_PERMS.FORUM = 0 AND GROUP_USERS.UID = $uid ";
 
     $result = db_query($sql, $db_perm_get_global_permissions);
+    list($global_user_perm) = db_fetch_array($result, DB_RESULT_NUM);
 
-    while($row = db_fetch_array($result)) {
-
-        if (!isset($user_search_array[$row['UID']])) {
-
-            $user_search_array[$row['UID']] = $row;
-        }
-    }
-
-    return array('user_count' => sizeof($user_search_array),
-                 'user_array' => $user_search_array);
+    return $global_user_perm;
 }
 
 function perm_get_global_permissions_count()

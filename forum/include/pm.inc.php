@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.19 2003-09-03 18:56:22 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.20 2003-09-04 15:53:43 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -163,17 +163,20 @@ function pm_get_user($mid)
 {
     $db_pm_get_user = db_connect();
 
-    $sql = "SELECT FROM_UID FROM " . forum_table("PM") . " WHERE MID = $mid";
+    $sql = "SELECT LOGON FROM ". forum_table("USER"). " USER ";
+    $sql.= "LEFT JOIN ". forum_table("PM"). " PM ON (PM.FROM_UID = USER.UID) ";
+    $sql.= "WHERE PM.MID = '$mid'";
+
     $result = db_query($sql, $db_pm_get_user);
 
     if ($result) {
         $fa = db_fetch_array($result);
-        $uid = $fa['FROM_UID'];
+        $logon = $fa['LOGON'];
     } else {
-        $uid = "";
+        $logon = "";
     }
 
-    return $uid;
+    return $logon;
 }
 
 function pm_draw_to_dropdown($default_uid)
@@ -281,8 +284,17 @@ function draw_pm_message($pm_elements_array)
     }else {
         echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
         echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['TO_UID'] . ")\" target=\"_self\">";
-        echo format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']), "</a>";
+
+        if (is_array($pm_elements_array['TO_UID'])) {
+            for ($i = 0; $i < sizeof($pm_elements_array['TO_UID']); $i++) {
+                echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['TO_UID'][$i] . ")\" target=\"_self\">";
+                echo format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]), "</a>&nbsp;";
+            }
+        }else {
+            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $pm_elements_array['TO_UID'] . ")\" target=\"_self\">";
+            echo format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']), "</a>";
+        }
+
         echo "</span></td>\n";
     }
 
@@ -369,12 +381,16 @@ function draw_header_pm()
 
     echo "<script language=\"javascript\" type=\"text/javascript\">\n";
     echo "<!--\n";
-    echo "function launchOthers() {\n\n";
-    echo "  newUser = prompt(\"{$lang['pleaseentermembername']}\",document.f_post.t_to_uid.options[0].text);\n";
+    echo "function addRecipient() {\n\n";
+    echo "  newUser = prompt(\"{$lang['pleaseentermembername']}\", \"\");\n";
     echo "  if (newUser != null) {\n";
-    echo "    if (newUser != document.f_post.t_to_uid.options[0].text) {\n";
-    echo "      document.f_post.t_to_uid.options[0] = new Option(newUser, \"U:\" + newUser, true, true);\n";
-    echo "    }\n  }\n}\n";
+    echo "    if (document.f_post.t_recipient_list.value.length == 0) {\n";
+    echo "      document.f_post.t_recipient_list.value = newUser;\n";
+    echo "    }else {\n";
+    echo "      document.f_post.t_recipient_list.value+= '; ' + newUser;\n";
+    echo "    }\n";
+    echo "  }\n";
+    echo "}\n";
     echo "//-->\n";
     echo "</script>\n";
 }

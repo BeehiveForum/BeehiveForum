@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.37 2003-09-03 17:20:30 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.38 2003-09-04 15:53:43 decoyduck Exp $ */
 
 // International English language file
 
@@ -577,6 +577,9 @@ $lang['logout'] = "Logout";
 
 // PM System (pm.php, pm_write.php, pm.inc.php) ------------------------
 $lang['privatemessages'] = "Private Messages";
+$lang['addrecipient'] = "Add Recipient";
+$lang['recipienttiptext'] = "Seperate recipients by semi-colon or comma";
+$lang['maximumtenrecipientspermessage'] = "There is a maximum of 10 recipients per message. Please ammend your recipient list.";
 $lang['sendnewpm'] = "Send New PM";
 $lang['savemessage'] = "Save Message";
 $lang['sentby'] = "Sent By";

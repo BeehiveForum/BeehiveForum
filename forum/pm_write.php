@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.23 2003-09-04 12:56:57 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.24 2003-09-04 15:53:41 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -70,19 +70,10 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     header_redirect($uri);
 }
 
-// Get the To UID
-
-if (isset($HTTP_GET_VARS['uid'])) {
-    $t_to_uid = $HTTP_GET_VARS['uid'];
-}elseif (isset($mid)) {
-    $t_to_uid = pm_get_user($mid);
-}else {
-    $t_to_uid = 0;
-}
-
 // Check the MID to see if it is valid and accessible.
 
 if (isset($mid)) {
+    $t_recipient_list = ucfirst(strtolower(pm_get_user($mid)));
     if ($pm_data = pm_single_get($mid, PM_FOLDER_INBOX)) {
         if (!isset($HTTP_POST_VARS['t_subject']) || trim($HTTP_POST_VARS['t_subject']) == "") {
             $t_subject = $pm_data['SUBJECT'];
@@ -120,22 +111,33 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_to_uid'])) {
-        if (substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
-            $t_to_logon = substr($HTTP_POST_VARS['t_to_uid'], 2);
-            if (!($t_to_uid = user_get_uid($t_to_logon))) {
-                $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
-                $valid = false;
+    if (isset($HTTP_POST_VARS['t_recipient_list']) && trim($HTTP_POST_VARS['t_recipient_list']) != "") {
+
+        $t_recipient_array = preg_split("/[;|,]/", trim($HTTP_POST_VARS['t_recipient_list']));
+
+        $t_new_recipient_array['TO_UID'] = array();
+        $t_new_recipient_array['LOGON']  = array();
+        $t_new_recipient_array['NICK']   = array();
+
+        foreach ($t_recipient_array as $key => $t_recipient) {
+
+            $to_logon = trim($t_recipient);
+
+            if ($to_user = user_get_uid($to_logon)) {
+                if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
+                    $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
+                    $t_new_recipient_array['LOGON'][]  = ucfirst(strtolower($to_user['LOGON']));
+                    $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
+                }
             }
-        }elseif ($HTTP_POST_VARS['t_to_uid'] <> 0) {
-            $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
-        }else {
-            $error_html = "<h2>{$lang['nouserspecified']}</h2>\n";
+        }
+
+        $t_recipient_list = implode('; ', $t_new_recipient_array['LOGON']);
+
+        if (sizeof($t_new_recipient_array['TO_UID']) > 10) {
+            $error_html = "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
             $valid = false;
         }
-    }else {
-        $error_html = "<h2>{$lang['nouserspecified']}</h2>\n";
-        $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
@@ -172,14 +174,16 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
             $t_content = make_html($t_content);
         }
 
-        if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
-            if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
-                pm_save_attachment_id($new_mid, $HTTP_POST_VARS['aid']);
+        foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
+            if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
+                if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
+                    pm_save_attachment_id($new_mid, $HTTP_POST_VARS['aid']);
+                }
+                email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
+            }else {
+                $error_html = "<h2>{$lang['errorcreatingpm']}</h2>\n";
+                $valid = false;
             }
-            email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
-        }else {
-            $error_html = "<h2>{$lang['errorcreatingpm']}</h2>\n";
-            $valid = false;
         }
     }
     if (isset($mid)){
@@ -217,21 +221,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     echo "<h1>{$lang['privatemessages']}: {$lang['messagepreview']}</h1>\n";
     echo "<br />\n";
 
-    if ($t_to_uid == 0) {
-
-        $pm_preview_array['TLOGON'] = "ALL";
-        $pm_preview_array['TNICK']  = "ALL";
-        $pm_preview_array['TO_UID'] = 0;
-
-    }else{
-
-        $preview_tuser = user_get($t_to_uid);
-
-        $pm_preview_array['TLOGON'] = $preview_tuser['LOGON'];
-        $pm_preview_array['TNICK']  = $preview_tuser['NICKNAME'];
-        $pm_preview_array['TO_UID'] = $preview_tuser['UID'];
-
-    }
+    $pm_preview_array['TLOGON'] = $t_new_recipient_array['LOGON'];
+    $pm_preview_array['TNICK']  = $t_new_recipient_array['NICK'];
+    $pm_preview_array['TO_UID'] = $t_new_recipient_array['TO_UID'];
 
     $preview_fuser = user_get(bh_session_get_value('UID'));
 
@@ -274,11 +266,11 @@ echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
 echo "          <td align=\"right\" width=\"30\">{$lang['subject']}:</td>\n";
-echo "          <td>", form_field("t_subject", isset($t_subject) ? _htmlentities(_stripslashes($t_subject)) : "", 32), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
+echo "          <td>", form_input_text("t_subject", isset($t_subject) ? _htmlentities(_stripslashes($t_subject)) : "", 42), "&nbsp;", form_submit("submit", $lang['post']), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td align=\"right\">{$lang['to']}: </td>\n";
-echo "          <td>", pm_draw_to_dropdown($t_to_uid), "&nbsp;", form_button("others", $lang['others'], "onclick=\"javascript:launchOthers()\""), "</td>\n";
+echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 42, false, "title=\"{$lang['recipienttiptext']}\""), "&nbsp;", form_button("add", $lang['addrecipient'], "onclick=\"javascript:addRecipient()\""), "</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";

@@ -45,7 +45,7 @@ require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
-require_once("./include/threads.inc.php");
+require_once("./include/thread.inc.php");
 
 html_draw_top_script();
 

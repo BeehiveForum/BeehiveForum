@@ -24,7 +24,7 @@ USA
 // Included functions for displaying messages in the main frameset.
 
 require_once("./include/db.inc.php"); // Database functions
-require_once("./include/threads.inc.php"); // Thread processing functions
+require_once("./include/thread.inc.php"); // Thread processing functions
 require_once("./include/format.inc.php"); // Formatting functions
 require_once("./include/perm.inc.php"); // Permissions functions
 require_once("./include/forum.inc.php"); // Forum functions

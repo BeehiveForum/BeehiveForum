@@ -114,11 +114,11 @@ if(isset($HTTP_POST_VARS['submit'])) {
     $new_status = $t_worker | $t_worm | $t_wasp | $t_splat;
 
     if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN) {
-        $new_status = $new_status | $t_soldier;
+      $new_status = $new_status | $t_soldier;
+    }else {
+      $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
+      $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
     }
-
-    $new_status = $new_status | ($user['STATUS'] & USER_PERM_SOLDIER);
-    $new_status = $new_status | ($user['STATUS'] & USER_PERM_QUEEN);
 
     // Add lower ranks automatically
     if ($new_status & USER_PERM_QUEEN) $new_status |= USER_PERM_SOLDIER;
@@ -135,65 +135,42 @@ if(isset($HTTP_POST_VARS['submit'])) {
     // Private folder permissions
 
     if (isset($HTTP_POST_VARS['t_fcount'])) {
-
       for($i = 0; $i < $HTTP_POST_VARS['t_fcount']; $i++){
-
         $uf[$i]['fid'] = $HTTP_POST_VARS['t_fid_'.$i];
-
         if (isset($HTTP_POST_VARS['t_fallow_'. $i])) {
-
           $uf[$i]['allowed'] = $HTTP_POST_VARS['t_fallow_'.$i];
-
         }else {
-
           $uf[$i]['allowed'] = 0;
-
         }
-
       }
-
       if (isset($uf)) {
-
         user_update_folders($uid, $uf);
         admin_addlog($uid, 0, 0, 0, 0, 0, 2);
-
       }
-
     }
 
     if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
-
       $sql = "SELECT TID, PID FROM ". forum_table("POST"). " WHERE FROM_UID = '$uid'";
       $result = db_query($sql, $db);
-
       while (list($tid, $pid) = db_fetch_array($result)) {
         post_delete($tid, $pid);
       }
-
       admin_addlog($uid, 0, 0, 0, 0, 0, 3);
-
     }
 
     if (isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
-
       if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
         $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
       }else {
         $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
       }
-
-      if ($HTTP_POST_VARS['t_ip_address'] != $ipaddress) {
-
+      if (($HTTP_POST_VARS['t_ip_address'] != $ipaddress) && !($user['STATUS'] & PERM_CHECK_SOLDIER)) {
         ban_ip($HTTP_POST_VARS['t_ip_address']);
         admin_addlog($uid, 0, 0, 0, 0, 0, 4);
-
       }
-
     }elseif (isset($HTTP_POST_VARS['t_ip_banned']) && !isset($HTTP_POST_VARS['t_ban_ipaddress'])) {
-
       unban_ip($HTTP_POST_VARS['t_ip_address']);
       admin_addlog($uid, 0, 0, 0, 0, 0, 5);
-
     }
   }
 }
@@ -203,48 +180,82 @@ echo "<h1>Manage User</h1>\n";
 echo "<p>&nbsp;</p>\n";
 echo "<div align=\"center\">\n";
 
-echo "<form name=\"f_user\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"post\">\n";
-echo "<table width=\"50%\"><tr><td class=\"box\">";
-echo "<table class=\"posthead\" width=\"100%\"><tr>\n";
+echo "<form name=\"f_user\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\" method=\"post\">\n";
+echo "<table width=\"50%\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"box\">\n";
+echo "      <table class=\"posthead\" width=\"100%\">\n";
 
 if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
-  echo "<td class=\"subhead\">User Status: ".$user['LOGON']."</td></tr>\n";
-  echo "<tr><td><h2>WARNING</h2></td></tr>\n";
-  echo "<tr><td>Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.</td></tr>\n";
-  echo "<tr><td>", form_checkbox("t_confirm_delete_posts", 1, "Confirm", false), "</td></tr>\n";
+  echo "        <tr>\n";
+  echo "          <td class=\"subhead\">User Status: ", $user['LOGON'], "</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td><h2>WARNING</h2></td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>", form_checkbox("t_confirm_delete_posts", 1, "Confirm", false), "</td>\n";
+  echo "        </tr>\n";
+  echo "      </table>\n";
+  echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", $ret), "\n";
+  echo "    </td>\n";
+  echo "  </tr>\n";
   echo "</table>\n";
-  echo form_input_hidden("uid", $uid);
-  echo form_input_hidden("ret", $ret);
-  echo "</td></tr></table>\n";
 
 }else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
-  echo "<td class=\"subhead\">User Status: ".$user['LOGON']."</td></tr>\n";
-  echo "<tr><td>Posts were successfully deleted.</td></tr>\n";
+  echo "        <tr>\n";
+  echo "          <td class=\"subhead\">User Status: ", $user['LOGON'], "</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>Posts were successfully deleted.</td>\n";
+  echo "        </tr>\n";
+  echo "      </table>\n";
+  echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", $ret), "\n";
+  echo "    </td>\n";
+  echo "  </tr>\n";
   echo "</table>\n";
-  echo form_input_hidden("uid", $uid);
-  echo form_input_hidden("ret", $ret);
-  echo "</td></tr></table>\n";
 
 }else {
 
-  echo "<td class=\"subhead\">User Status: ".$user['LOGON']."</td></tr>\n";
+  echo "        <tr>\n";
+  echo "          <td class=\"subhead\">User Status: ", $user['LOGON'], "</td>\n";
+  echo "        </tr>\n";
 
-  if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN){
-    echo "<tr><td>".form_checkbox("t_soldier", USER_PERM_SOLDIER, "Soldier", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False)."</td></tr>\n";
+  if ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_QUEEN) {
+    echo "        <tr>\n";
+    echo "          <td>", form_checkbox("t_soldier", USER_PERM_SOLDIER, "Soldier", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SOLDIER) : False), "</td>\n";
+    echo "        </tr>\n";
   }
 
-  echo "<tr><td>".form_checkbox("t_worker", USER_PERM_WORKER, "Worker", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORKER) : False). "</td></tr>\n";
-  echo "<tr><td>".form_checkbox("t_worm", USER_PERM_WORM, "Worm", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORM) : False). "</td></tr>\n";
-  echo "<tr><td>".form_checkbox("t_wasp", USER_PERM_WASP, "Wasp", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WASP) : False). "</td></tr>\n";
-  echo "<tr><td>".form_checkbox("t_splat", USER_PERM_SPLAT, "Splat", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE). "</td></tr>\n";
-  echo "<tr><td>&nbsp;</td></tr>\n";
-  echo "<tr><td class=\"subhead\">Folder Access:</td></tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>", form_checkbox("t_worker", USER_PERM_WORKER, "Worker", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORKER) : False), "</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>", form_checkbox("t_worm", USER_PERM_WORM, "Worm", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WORM) : False), "</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>", form_checkbox("t_wasp", USER_PERM_WASP, "Wasp", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_WASP) : False), "</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>", form_checkbox("t_splat", USER_PERM_SPLAT, "Splat", isset($user['STATUS']) ? ($user['STATUS'] & USER_PERM_SPLAT) : FALSE), "</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>&nbsp;</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td class=\"subhead\">Folder Access:</td>\n";
+  echo "        </tr>\n";
 
-  $sql = "select F.FID, F.TITLE, UF.ALLOWED from ".forum_table("FOLDER")." F ";
-  $sql.= "left join ".forum_table("USER_FOLDER")." UF on (UF.UID = $uid and UF.FID = F.FID) ";
-  $sql.= "where F.ACCESS_LEVEL = 1"; // Restricted folders
+  // Restricted folders
+
+  $sql = "select F.FID, F.TITLE, UF.ALLOWED from ". forum_table("FOLDER"). " F ";
+  $sql.= "left join ". forum_table("USER_FOLDER"). " UF on (UF.UID = $uid and UF.FID = F.FID) ";
+  $sql.= "where F.ACCESS_LEVEL = 1";
 
   $result = db_query($sql,$db);
   $count  = 0;
@@ -252,25 +263,30 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   if (db_num_rows($result)) {
 
     while($row = db_fetch_array($result)) {
-      echo "<tr><td>".form_checkbox("t_fallow_$count", 1, $row['TITLE'], (isset($row['ALLOWED']) && $row['ALLOWED'] > 0));
-      echo form_input_hidden("t_fid_$count", $row['FID']). "</td></tr>\n";
+      echo "        <tr>\n";
+      echo "          <td>", form_checkbox("t_fallow_$count", 1, $row['TITLE'], (isset($row['ALLOWED']) && $row['ALLOWED'] > 0)), form_input_hidden("t_fid_$count", $row['FID']), "</td>\n";
+      echo "        </tr>\n";
       $count++;
     }
 
-    echo form_input_hidden("t_fcount", db_num_rows($result));
-
   }else {
-    echo "<tr><td>No restricted folders</td></tr>\n";
+    echo "        <tr>\n";
+    echo "          <td>No restricted folders</td>\n";
+    echo "        </tr>\n";
   }
 
-  echo "<tr><td>&nbsp;</td></tr>\n";
-  echo "<tr><td class=\"subhead\">Possible Aliases";
+  echo "        <tr>\n";
+  echo "          <td>", form_input_hidden("t_fcount", db_num_rows($result)), "&nbsp;</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td class=\"subhead\">Possible Aliases";
 
   if (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
     echo "(IP: ", $user['LOGON_FROM'], ") ";
   }
 
-  echo ":</td></tr>\n";
+  echo ":</td>\n";
+  echo "        </tr>\n";
 
   $sql = "select UID, LOGON from ". forum_table("USER"). " where LOGON_FROM <> '' and LOGON_FROM = '". $user['LOGON_FROM']. "' and LOGON <> '". $user['LOGON']. "'";
   $result = db_query($sql, $db);
@@ -278,40 +294,65 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   if (db_num_rows($result)) {
 
     while($row = db_fetch_array($result)) {
-      echo "<tr><td><a href=\"admin_user.php?uid=", $row['UID'], "\">", $row['LOGON'], "</a></td></tr>\n";
+      echo "        <tr>\n";
+      echo "          <td><a href=\"admin_user.php?uid=", $row['UID'], "\">", $row['LOGON'], "</a></td>\n";
+      echo "        </tr>\n";
     }
 
   }else {
-    echo "<tr><td>No matches</td></tr>\n";
+    echo "        <tr>\n";
+    echo "          <td>No matches</td>\n";
+    echo "        </tr>\n";
   }
 
-  echo "<tr><td>&nbsp;</td></tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>&nbsp;</td>\n";
+  echo "        </tr>\n";
 
-  if (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
+  if ($user['STATUS'] & PERM_CHECK_SOLDIER) {
 
-    echo "<tr><td>";
-    echo form_checkbox("t_ban_ipaddress", 1, "Ban this IP address", ip_is_banned($user['LOGON_FROM']));
-    echo form_input_hidden("t_ip_address", $user['LOGON_FROM']);
+    echo "        <tr>\n";
+    echo "          <td class=\"smalltext\">You cannot IP ban other Soldiers. Lower their Status first.</td>\n";
+    echo "        </tr>\n";
+
+  }elseif (isset($user['LOGON_FROM']) && strlen($user['LOGON_FROM']) > 0) {
+
+    echo "        <tr>\n";
+    echo "          <td>", form_checkbox("t_ban_ipaddress", 1, "Ban this IP address", ip_is_banned($user['LOGON_FROM'])), form_input_hidden("t_ip_address", $user['LOGON_FROM']);
 
     if (ip_is_banned($user['LOGON_FROM'])) {
       echo form_input_hidden("t_ip_banned", 1);
     }
 
-    echo "</td></tr>\n";
+    echo "</td>\n";
+    echo "        </tr>\n";
 
   }else {
 
-    echo "<tr><td class=\"smalltext\">There is no IP address record for this account. User cannot be banned by IP.</td></tr>\n";
+    echo "        <tr>\n";
+    echo "          <td class=\"smalltext\">There is no IP address record for this account or. User cannot be banned by IP.</td>\n";
+    echo "        </tr>\n";
 
   }
 
-  echo "<tr><td>&nbsp;</td></tr>\n";
-  echo "<tr><td class=\"subhead\">Delete Posts:</td></tr>\n";
-  echo "<tr><td>", form_checkbox("t_delete_posts", 1, "Delete all of this user's posts", false), "</td></tr>\n";
-  echo "<tr><td>&nbsp;</td></tr>\n";
-  echo "<tr><td class=\"subhead\">Attachments:</td></tr>\n";
-  echo "<tr><td>\n";
-  echo "<table class=\"posthead\" width=\"100%\">\n";
+  echo "        <tr>\n";
+  echo "          <td>&nbsp;</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td class=\"subhead\">Delete Posts:</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>", form_checkbox("t_delete_posts", 1, "Delete all of this user's posts", false), "</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>&nbsp;</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td class=\"subhead\">Attachments:</td>\n";
+  echo "        </tr>\n";
+  echo "        <tr>\n";
+  echo "          <td>\n";
+  echo "            <table class=\"posthead\" width=\"100%\">\n";
 
   $attachments = get_users_attachments($uid);
 
@@ -319,8 +360,8 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
-      echo "  <tr>\n";
-      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" title=\"";
+      echo "              <tr>\n";
+      echo "                <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" title=\"";
 
       if (strlen($attachments[$i]['filename']) > 16) {
         echo "Filename: ". $attachments[$i]['filename']. ", ";
@@ -347,14 +388,14 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
         echo $attachments[$i]['filename']. "</a></td>\n";
       }
 
-      echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">View Message</a></td>\n";
-      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
-      echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
-      echo "      ". form_input_hidden('userfile', $attachments[$i]['filename']);
-      echo "      ". form_input_hidden('aid', $attachments[$i]['aid']);
-      echo "      ". form_submit('submit', 'Del'). "\n";
-      echo "    </td>\n";
-      echo "  </tr>\n";
+      echo "                <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">View Message</a></td>\n";
+      echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
+      echo "                <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
+      echo "                  ". form_input_hidden('userfile', $attachments[$i]['filename']);
+      echo "                  ". form_input_hidden('aid', $attachments[$i]['aid']);
+      echo "                  ". form_submit('submit', 'Del'). "\n";
+      echo "                </td>\n";
+      echo "              </tr>\n";
 
       $total_attachment_size += $attachments[$i]['filesize'];
 
@@ -362,24 +403,27 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
 
   }else {
 
-    echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">No attachments for this user</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td width=\"300\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
-    echo "  </tr>\n";
+    echo "              <tr>\n";
+    echo "                <td valign=\"top\" width=\"300\" class=\"postbody\">No attachments for this user</td>\n";
+    echo "                <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+    echo "                <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "              </tr>\n";
+    echo "              <tr>\n";
+    echo "                <td width=\"300\" class=\"postbody\">&nbsp;</td>\n";
+    echo "                <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+    echo "                <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "              </tr>\n";
 
   }
 
-  echo "</table></td></tr>\n";
+  echo "            </table>\n";
+  echo "          </td>\n";
+  echo "        </tr>\n";
+  echo "      </table>\n";
+  echo "      ", form_input_hidden("uid", $uid), form_input_hidden("ret", $ret), "\n";
+  echo "    </td>\n";
+  echo "  </tr>\n";
   echo "</table>\n";
-  echo form_input_hidden("uid", $uid);
-  echo form_input_hidden("ret", $ret);
-  echo "</td></tr></table>\n";
 
 }
 
@@ -388,16 +432,20 @@ echo "</form>\n";
 
 if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
 
-  echo "<p>&nbsp;</p>";
-  echo "<table width=\"50%\" border=\"0\"><tr><td>";
-  echo "<p><b>Soldiers</b> can access all moderation tools, but cannot create or remove other Soldiers.</p>\n";
-  echo "<p><b>Workers</b> can edit or delete any post.</p>\n";
-  echo "<p><b>Worms</b> can read messages and post as normal, but their messages will appear deleted to all other users.</p>\n";
-  echo "<p><b>Wasps</b> can read messages, but cannot reply or post new messages.</p>";
-  echo "<p><b>Splats</b> cannot access the forum. Use this to ban persistent idiots.</p>";
-  echo "<p>&nbsp;</p>";
-  echo "<p><b>Possible Aliases</b> a list of users who's last recorded IP address match this user.</p>\n";
-  echo "</td></tr></table>\n";
+  echo "<p>&nbsp;</p>\n";
+  echo "<table width=\"50%\" border=\"0\">\n";
+  echo "  <tr>\n";
+  echo "    <td>\n";
+  echo "      <p><b>Soldiers</b> can access all moderation tools, but cannot create or remove other Soldiers.</p>\n";
+  echo "      <p><b>Workers</b> can edit or delete any post.</p>\n";
+  echo "      <p><b>Worms</b> can read messages and post as normal, but their messages will appear deleted to all other users.</p>\n";
+  echo "      <p><b>Wasps</b> can read messages, but cannot reply or post new messages.</p>";
+  echo "      <p><b>Splats</b> cannot access the forum. Use this to ban persistent idiots.</p>";
+  echo "      <p>&nbsp;</p>";
+  echo "      <p><b>Possible Aliases</b> a list of users who's last recorded IP address match this user.</p>\n";
+  echo "    </td>\n";
+  echo "  </tr>\n";
+  echo "</table>\n";
 
 }
 

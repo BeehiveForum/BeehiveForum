@@ -171,21 +171,17 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 html_draw_top();
 
-if (sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) {
-
-  echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-  echo "<!--\n\n";
-  echo "function changepassword() {\n\n";
-  echo "  i = document.logonform.logonarray.selectedIndex;\n";
-  echo "  p = eval(\"document.logonform.password\"+ i +\".value\");\n";
-  echo "  document.logonform.password.value = p;\n";
-  echo "  document.logonform.logon.value = document.logonform.logonarray.options[i].value;\n";
-  echo "}\n\n";
-  echo "//-->\n";
-  echo "</script>\n";
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n\n";
+echo "function changepassword() {\n\n";
+echo "  i = document.logonform.logonarray.selectedIndex;\n";
+echo "  p = eval(\"document.logonform.password\"+ i +\".value\");\n";
+echo "  document.logonform.password.value = p;\n";
+echo "  document.logonform.logon.value = document.logonform.logonarray.options[i].value;\n";
+echo "}\n\n";
+echo "//-->\n";
+echo "</script>\n";
   
-}
-
 if (isset($error_html)) echo $error_html;
 
 if (isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
@@ -202,80 +198,103 @@ if (isset($HTTP_GET_VARS['other'])) {
   $otherlogon = false;  
 }
    
-echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
-echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
-echo "</tr>\n</table>\n";
-echo "<table class=\"posthead\" width=\"100%\">\n";
+echo "<p>&nbsp;</p>\n";
+echo "<div align=\"center\">\n";
+echo "  <form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
+echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "      <tr>\n";
+echo "        <td>\n";
+echo "          <table class=\"subhead\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td>Logon:</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "          <table class=\"posthead\" width=\"100%\">\n";
 
 if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
 
-  echo "<tr>\n";
-  echo "  <td align=\"right\">User Name:</td>\n";
-  echo "  <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user']). "</td>\n";
-  echo "</tr>\n";
-  echo "<tr>\n";
-  echo "  <td align=\"right\">Password:</td>\n";
-  echo "  <td>". form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password']). "</td>\n";
-  echo "</tr>\n";
+  echo "            <tr>\n";
+  echo "              <td align=\"right\">User Name:</td>\n";
+  echo "              <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user']). "</td>\n";
+  echo "            </tr>\n";
+  echo "            <tr>\n";
+  echo "              <td align=\"right\">Password:</td>\n";
+  echo "              <td>". form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password']). "</td>\n";
+  echo "            </tr>\n";
   
 }else {
 
   if ((sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) && $otherlogon == false) {
 
-    echo "<tr>\n";
-    echo "<td align=\"right\">User Name:</td>\n";
-    echo "<td>";
+    echo "          <tr>\n";
+    echo "            <td align=\"right\">User Name:</td>\n";
+    echo "            <td>";
+    
     echo form_dropdown_array('logonarray', $HTTP_COOKIE_VARS['bh_remember_user'], $HTTP_COOKIE_VARS['bh_remember_user'], "", "onchange='changepassword()'");
     echo form_input_hidden('logon', $HTTP_COOKIE_VARS['bh_remember_user'][0]);
   
-    for ($i = 0; $i < sizeof($HTTP_COOKIE_VARS['bh_remember_password']); $i++) {
-      echo form_input_hidden('password'. $i, $HTTP_COOKIE_VARS['bh_remember_password'][$i]);
+    for ($i = 0; $i < sizeof($HTTP_COOKIE_VARS['bh_remember_user']); $i++) {
+      if (isset($HTTP_COOKIE_VARS['bh_remember_user'][$i])) {
+        echo form_input_hidden('password'. $i, $HTTP_COOKIE_VARS['bh_remember_password'][$i]);
+      }else {
+        echo form_input_hidden('password'. $i, '');
+      }
     }
     
     echo "&nbsp;". form_button("other", "Other", "onclick=\"self.location.href='". get_request_uri(). "&other=true';\""). "</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "<td align=\"right\">Password:</td>\n";
-    echo "<td>".form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0])."</td>\n";
-    echo "</tr>\n";
+    
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"right\">Password:</td>\n";
+    echo "            <td>".form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0])."</td>\n";
+    echo "          </tr>\n";
     
   }else {
   
-    echo "<tr>\n";
-    echo "  <td align=\"right\">User Name:</td>\n";
-    echo "  <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user'][0]). "</td>\n";
-    echo "</tr>\n";
-    echo "<tr>\n";
-    echo "  <td align=\"right\">Password:</td>\n";
-    echo "  <td>". form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0]). "</td>\n";
-    echo "</tr>\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"right\">User Name:</td>\n";
+    echo "            <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user'][0]). "</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"right\">Password:</td>\n";
+    echo "            <td>". form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0]). "</td>\n";
+    echo "          </tr>\n";
     
   }
     
 }
 
-echo "<tr><td>&nbsp;</td><td>\n";
+echo "            <tr>\n";
+echo "              <td>&nbsp;</td>\n";
+echo "              <td>";
+
 echo form_checkbox("remember_user","Y","Remember password",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")));
-echo "</td></tr>\n";
-echo "<tr><td>&nbsp;</td><td>&nbsp;</td></tr>\n";
-echo "</table>\n";
-echo "<table class=\"posthead\" width=\"100%\">\n";
-echo "<tr><td align=\"center\">";
+
+echo "</td>\n";
+echo "            </tr>\n";
+echo "            <tr>\n";
+echo "              <td>&nbsp;</td>\n";
+echo "              <td>&nbsp;</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "          <table class=\"posthead\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td align=\"center\">";
+
 echo form_submit("submit", "Logon");
-echo "</td></tr></table>\n";
-echo "</td></tr></table>\n";
-echo "</form>\n";
-echo "<form name=\"guest\" action=\"". get_request_uri(). "&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
-echo "<p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
-echo "</form></div>\n";
-echo "<div align=\"center\">\n";
-echo "<p class=\"smalltext\">\nDon't have an account? ";
-echo "<a href=\"register.php?final_uri=" . urlencode($final_uri);
-echo "\" target=\"_self\">Register now.</a></p>\n";
-echo "<p class=\"smalltext\">";
-echo "<a href=\"forgot_pw.php\" target=\"_self\">Forgotten your password?</a></p>\n";
+
+echo "</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "        </td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
+echo "  </form>\n";
+echo "  <form name=\"guest\" action=\"". get_request_uri(). "&". md5(uniqid(rand())). "\" method=\"POST\" target=\"_top\">\n";
+echo "    <p class=\"smalltext\">Enter as a ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", "Guest"). "</p>\n";
+echo "  </form>\n";
+echo "  <p class=\"smalltext\">Don't have an account? <a href=\"register.php?final_uri=" . urlencode($final_uri). "\" target=\"_self\">Register now.</a></p>\n";
+echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php\" target=\"_self\">Forgotten your password?</a></p>\n";
 echo "</div>\n";
 
 html_draw_bottom();

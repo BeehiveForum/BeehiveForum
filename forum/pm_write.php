@@ -120,14 +120,14 @@ if (isset($HTTP_POST_VARS['t_to_uid'])) {
 }elseif (isset($mid)) {
     $t_to_uid = pm_get_user($mid);
 }else {
-    $t_to_uid = -1;
+    $t_to_uid = 0;
 }
 
 // 'Other' Button was used to specify a username
 
 if (substr($t_to_uid, 0, 2) == "U:") {
 
-    $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
+    $u_login = substr($t_to_uid, 2);
 
     $db = db_connect();
     $sql = "select UID from ". forum_table("USER"). " where LOGON = '" . $u_login. "'";
@@ -243,7 +243,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     echo "<h1>{$lang['privatemessages']}: {$lang['messagepreview']}</h1>\n";
     echo "<br />\n";
 
-    if ($HTTP_POST_VARS['t_to_uid'] == 0) {
+    if ($t_to_uid == 0) {
 
         $pm_preview_array['TLOGON'] = "ALL";
         $pm_preview_array['TNICK']  = "ALL";
@@ -251,7 +251,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     }else{
 
-        $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
+        $preview_tuser = user_get($t_to_uid);
 
         $pm_preview_array['TLOGON'] = $preview_tuser['LOGON'];
         $pm_preview_array['TNICK']  = $preview_tuser['NICKNAME'];
@@ -261,9 +261,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
     $preview_fuser = user_get(bh_session_get_value('UID'));
 
-    $pm_preview_array['FLOGON'] = $preview_tuser['LOGON'];
-    $pm_preview_array['FNICK']  = $preview_tuser['NICKNAME'];
-    $pm_preview_array['FROM_UID'] = $preview_tuser['UID'];
+    $pm_preview_array['FLOGON'] = $preview_fuser['LOGON'];
+    $pm_preview_array['FNICK']  = $preview_fuser['NICKNAME'];
+    $pm_preview_array['FROM_UID'] = $preview_fuser['UID'];
 
     $pm_preview_array['SUBJECT'] = _htmlentities($t_subject);
     $pm_preview_array['CREATED'] = mktime();

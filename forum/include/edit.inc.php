@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.47 2004-06-25 22:14:06 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.48 2005-01-26 21:33:17 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -84,7 +84,9 @@ function post_delete($tid, $pid)
     $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT SET CONTENT = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    return db_query($sql, $db_post_delete);
+    $result = db_query($sql, $db_post_delete);
+
+    return post_add_edit_text($tid, $pid);
 }
 
 function edit_refuse($tid, $pid)

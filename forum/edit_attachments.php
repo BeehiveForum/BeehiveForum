@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.80 2005-01-22 18:46:37 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.81 2005-01-26 21:33:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -152,7 +152,8 @@ $users_free_space = get_free_attachment_space($uid);
 $total_attachment_size = 0;
 
 // Make sure the attachments directory exists
-if (!is_dir('attachments')) {
+
+if (@!is_dir('attachments')) {
     mkdir('attachments', 0755);
     chmod('attachments', 0777);
 }

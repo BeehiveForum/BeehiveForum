@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.33 2005-01-07 00:49:01 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.34 2005-01-26 21:33:18 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -123,7 +123,7 @@ function emoticons_get_sets()
 
         while (($file = readdir($dir)) !== false) {
 
-            if ($file != '.' && $file != '..' && is_dir("emoticons/$file")) {
+            if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
 
                  if ($file == "none" || $file == "text") {
 
@@ -173,7 +173,7 @@ function emoticons_get_sets()
 
 function emoticons_set_exists($set)
 {
-    return (file_exists("./emoticons/$set/style.css") || $set == "text");
+    return (@file_exists("./emoticons/$set/style.css") || $set == "text");
 }
 
 function emoticons_preview($set, $width=190, $height=100, $num = 35)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.69 2005-01-19 21:49:25 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.70 2005-01-26 21:33:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -112,112 +112,122 @@ if (isset($_POST['submit'])) {
 
         // Read in the master style sheet.
 
-        $stylesheet = implode("", file("./styles/make_style.css"));
+        if (@$fp = fopen("./styles/make_style.css", "r")) {
 
-        // Modify it with the colours specified by the post data.
+            $stylesheet = fread($fp, filesize("./styles/make_style.css"));
 
-        foreach ($_POST['elements'] as $key => $value) {
-            $stylesheet = str_replace("\$elements[$key]", strtoupper($value), $stylesheet);
-            $stylesheet = str_replace("\$text_colour[$key]", strtoupper(contrastFont($value)), $stylesheet);
-        }
+            fclose($fp);
 
-        // Save the style sheet
+            // Modify it with the colours specified by the post data.
 
-        if (!@file_exists("./forums/$webtag/styles/$stylename/style.css")) {
+            foreach ($_POST['elements'] as $key => $value) {
 
-            // Create the directory structure we need
-            // Beehive defaults to setting permissions to 0777
-            // so that the folders are writable via FTP / SSH
-            // if the user later requires them to be.
-
-            if (!is_dir("forums")) {
-
-                @mkdir("forums", 0755);
-                @chmod("forums", 0777);
+                $stylesheet = str_replace("\$elements[$key]", strtoupper($value), $stylesheet);
+                $stylesheet = str_replace("\$text_colour[$key]", strtoupper(contrastFont($value)), $stylesheet);
             }
 
-            if (!is_dir("forums/$webtag")) {
+            // Save the style sheet
 
-                @mkdir("forums/$webtag", 0755);
-                @chmod("forums/$webtag", 0777);
-            }
+            if (!@file_exists("./forums/$webtag/styles/$stylename/style.css")) {
 
-            if (!is_dir("forums/$webtag/styles")) {
+                // Create the directory structure we need
+                // Beehive defaults to setting permissions to 0777
+                // so that the folders are writable via FTP / SSH
+                // if the user later requires them to be.
 
-                @mkdir("forums/$webtag/styles", 0755);
-                @chmod("forums/$webtag/styles", 0777);
-            }
+                if (@!is_dir("forums")) {
 
-            if (!is_dir("forums/$webtag/styles/$stylename")) {
+                    @mkdir("forums", 0755);
+                    @chmod("forums", 0777);
+                }
 
-                @mkdir("forums/$webtag/styles/$stylename", 0755);
-                @chmod("forums/$webtag/styles/$stylename", 0777);
-            }
+                if (@!is_dir("forums/$webtag")) {
 
-            // Save the style desc.txt file
+                    @mkdir("forums/$webtag", 0755);
+                    @chmod("forums/$webtag", 0777);
+                }
 
-            if (@$fp = fopen("./forums/$webtag/styles/$stylename/desc.txt", "w")) {
+                if (@!is_dir("forums/$webtag/styles")) {
 
-                fwrite($fp, $styledesc);
-                fclose($fp);
+                    @mkdir("forums/$webtag/styles", 0755);
+                    @chmod("forums/$webtag/styles", 0777);
+                }
 
-                // Save the style.css file
+                if (@!is_dir("forums/$webtag/styles/$stylename")) {
 
-                if (@$fp = fopen("./forums/$webtag/styles/$stylename/style.css", "w")) {
+                    @mkdir("forums/$webtag/styles/$stylename", 0755);
+                    @chmod("forums/$webtag/styles/$stylename", 0777);
+                }
 
-                    fwrite($fp, $stylesheet);
+                // Save the style desc.txt file
+
+                if (@$fp = fopen("./forums/$webtag/styles/$stylename/desc.txt", "w")) {
+
+                    fwrite($fp, $styledesc);
                     fclose($fp);
 
-                    $success = true;
+                    // Save the style.css file
+
+                    if (@$fp = fopen("./forums/$webtag/styles/$stylename/style.css", "w")) {
+
+                        fwrite($fp, $stylesheet);
+                        fclose($fp);
+
+                        $success = true;
+
+                        admin_addlog(0, 0, 0, 0, 0, 0, 17);
+                        echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
+                    }
+                }
+
+                // We failed to save the style locally, so send it to the user
+                // so they can then upload it to the server via FTP.
+
+                if (!$success) {
 
                     admin_addlog(0, 0, 0, 0, 0, 0, 17);
-                    echo "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
+
+                    $style_download = "/*======================================================================\n";
+                    $style_download.= "Copyright Project BeehiveForum 2002\n\n";
+                    $style_download.= "This file is part of BeehiveForum.\n\n";
+                    $style_download.= "BeehiveForum is free software; you can redistribute it and/or modify\n";
+                    $style_download.= "it under the terms of the GNU General Public License as published by\n";
+                    $style_download.= "the Free Software Foundation; either version 2 of the License, or\n";
+                    $style_download.= "(at your option) any later version.\n\n";
+                    $style_download.= "BeehiveForum is distributed in the hope that it will be useful,\n";
+                    $style_download.= "but WITHOUT ANY WARRANTY; without even the implied warranty of\n";
+                    $style_download.= "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n";
+                    $style_download.= "GNU General Public License for more details.\n\n";
+                    $style_download.= "You should have received a copy of the GNU General Public License\n";
+                    $style_download.= "along with Beehive; if not, write to the Free Software\n";
+                    $style_download.= "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307\n";
+                    $style_download.= "USA\n";
+                    $style_download.= "======================================================================\n\n";
+                    $style_download.= "*** Auto generated by BeehiveForum on ". date('d/m/Y', mktime()). "\n\n";
+                    $style_download.= "*** Beehive was unable to save this style locally to your\n";
+                    $style_download.= "*** server. Please upload this file to your forum styles\n";
+                    $style_download.= "*** folder, creating where neccesary the folder to hold\n";
+                    $style_download.= "*** this style.css file.\n\n";
+                    $style_download.= "======================================================================*/\n\n";
+                    $style_download.= $stylesheet;
+
+                    $length = strlen($style_download);
+
+                    header("Content-Type: application/x-ms-download", true);
+                    header("Content-Length: $length", true);
+                    header("Content-disposition: attachment; filename=\"style.css\"", true);
+                    echo $style_download;
+                    exit;
                 }
-            }
 
-            // We failed to save the style locally, so send it to the user
-            // so they can then upload it to the server via FTP.
+            }else {
 
-            if (!$success) {
-
-                admin_addlog(0, 0, 0, 0, 0, 0, 17);
-
-                $style_download = "/*======================================================================\n";
-                $style_download.= "Copyright Project BeehiveForum 2002\n\n";
-                $style_download.= "This file is part of BeehiveForum.\n\n";
-                $style_download.= "BeehiveForum is free software; you can redistribute it and/or modify\n";
-                $style_download.= "it under the terms of the GNU General Public License as published by\n";
-                $style_download.= "the Free Software Foundation; either version 2 of the License, or\n";
-                $style_download.= "(at your option) any later version.\n\n";
-                $style_download.= "BeehiveForum is distributed in the hope that it will be useful,\n";
-                $style_download.= "but WITHOUT ANY WARRANTY; without even the implied warranty of\n";
-                $style_download.= "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n";
-                $style_download.= "GNU General Public License for more details.\n\n";
-                $style_download.= "You should have received a copy of the GNU General Public License\n";
-                $style_download.= "along with Beehive; if not, write to the Free Software\n";
-                $style_download.= "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307\n";
-                $style_download.= "USA\n";
-                $style_download.= "======================================================================\n\n";
-                $style_download.= "*** Auto generated by BeehiveForum on ". date('d/m/Y', mktime()). "\n\n";
-                $style_download.= "*** Beehive was unable to save this style locally to your\n";
-                $style_download.= "*** server. Please upload this file to your forum styles\n";
-                $style_download.= "*** folder, creating where neccesary the folder to hold\n";
-                $style_download.= "*** this style.css file.\n\n";
-                $style_download.= "======================================================================*/\n\n";
-                $style_download.= $stylesheet;
-
-                $length = strlen($style_download);
-
-                header("Content-Type: application/x-ms-download", true);
-                header("Content-Length: $length", true);
-                header("Content-disposition: attachment; filename=\"style.css\"", true);
-                echo $style_download;
-                exit;
+                echo "<h2>{$lang['stylealreadyexists']}</h2>\n";
             }
 
         }else {
 
-            echo "<h2>{$lang['stylealreadyexists']}</h2>\n";
+            echo "<h2>{$lang['failedtoopenmasterstylesheet']}</h2>\n";
         }
 
     }else {

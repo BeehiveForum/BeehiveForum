@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.20 2004-12-22 19:11:46 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.21 2005-01-26 21:33:24 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -31,7 +31,7 @@ include_once("./include/html.inc.php");
 
 function dir_exists($dir)
 {
-    if (is_dir($dir)) {
+    if (@is_dir($dir)) {
 
         if (filetype($dir) == 'dir') return true;
     }
@@ -45,7 +45,7 @@ function check_install()
         header_redirect("./install.php");
     }
 
-    if ((dir_exists('install') || file_exists('install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {
+    if ((@dir_exists('install') || @file_exists('install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {
 
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";

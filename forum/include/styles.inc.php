@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.7 2005-01-19 17:53:25 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.8 2005-01-26 21:33:25 decoyduck Exp $ */
 
 function style_get_styles()
 {
@@ -29,11 +29,11 @@ function style_get_styles()
 
     $styles = array();
 
-    if ($dir = @opendir("./styles")) {
+    if (@$dir = opendir("./styles")) {
 
         while (($file = readdir($dir)) !== false) {
 
-            if (is_dir("styles/$file") && $file != '.' && $file != '..') {
+            if (@is_dir("styles/$file") && $file != '.' && $file != '..') {
 
                 if (@file_exists("./styles/$file/style.css")) {
 
@@ -55,11 +55,11 @@ function style_get_styles()
         closedir($dir);
     }
 
-    if ($dir = @opendir("./forums/$webtag/styles")) {
+    if (@$dir = opendir("./forums/$webtag/styles")) {
 
         while (($file = readdir($dir)) !== false) {
 
-            if (is_dir("./forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
+            if (@is_dir("./forums/$webtag/styles/$file") && $file != '.' && $file != '..') {
 
                 if (@file_exists("./forums/$webtag/styles/$file/style.css")) {
 

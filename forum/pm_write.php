@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.99 2005-01-19 21:49:29 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.100 2005-01-26 21:33:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -261,6 +261,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
     }
 
     if ($to_radio == 0 && $t_to_uid == 0) {
+
         $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
     }
@@ -289,40 +290,35 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                     if ($to_radio == 1) {
 
-                        if (!user_allow_pm($to_user['UID'])) {
+                        if (user_allow_pm($to_user['UID']) || perm_is_moderator()) {
 
-                            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
-                            $valid = false;
-                        }
+                            $uid = bh_session_get_value('UID');
 
-                        $uid = bh_session_get_value('UID');
-
-                        $user_prefs = user_get_prefs($uid);
-
-                        if ((pm_get_free_space($uid) < 1) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
-
-                            // Prune old messages for the current user
+                            $user_prefs = user_get_prefs($uid);
 
                             pm_user_prune_folders();
-
-                            // Check again to see if we have enough space
 
                             if ((pm_get_free_space($uid) < 1) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
 
                                 $error_html.= "<h2>{$lang['youdonothaveenoughfreespace']}</h2>\n";
                                 $valid = false;
                             }
-                        }
-
-                        if (pm_get_free_space($to_user['UID']) < 1) {
-
-                            pm_user_prune_folders($to_user['UID']);
 
                             if (pm_get_free_space($to_user['UID']) < 1) {
 
-                                $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
-                                $valid = false;
+                                pm_user_prune_folders($to_user['UID']);
+
+                                if (pm_get_free_space($to_user['UID']) < 1) {
+
+                                    $error_html.= "<h2>{$lang['user']} $to_logon {$lang['notenoughfreespace']}.</h2>\n";
+                                    $valid = false;
+                                }
                             }
+
+                        }else {
+
+                            $error_html.= "<h2>{$lang['user']} $to_logon {$lang['hasoptoutpm']}.</h2>\n";
+                            $valid = false;
                         }
                     }
 

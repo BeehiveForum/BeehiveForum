@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.100 2005-01-25 12:51:13 decoyduck Exp $ */
+/* $Id: register.php,v 1.101 2005-01-26 21:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -100,11 +100,11 @@ if (forum_get_setting('allow_new_registrations', 'N', false)) {
 $available_styles = array();
 $style_names = array();
 
-if ($dir = @opendir('styles')) {
+if (@$dir = opendir('styles')) {
 
     while (($file = readdir($dir)) !== false) {
 
-        if (is_dir("styles/$file") && $file != '.' && $file != '..') {
+        if (@is_dir("styles/$file") && $file != '.' && $file != '..') {
 
             if (@file_exists("./styles/$file/desc.txt")) {
 
@@ -134,7 +134,7 @@ if (@$dir = opendir('emoticons')) {
 
     while (($file = readdir($dir)) !== false) {
 
-        if (is_dir("emoticons/$file") && $file != '.' && $file != '..') {
+        if (@is_dir("emoticons/$file") && $file != '.' && $file != '..') {
 
             if (@file_exists("./emoticons/$file/desc.txt")) {
 

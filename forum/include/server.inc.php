@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: server.inc.php,v 1.1 2005-01-06 20:01:13 decoyduck Exp $ */
+/* $Id: server.inc.php,v 1.2 2005-01-26 21:33:25 decoyduck Exp $ */
 
 // Contains functions for server functions, like load average,
 // detection of server OS, etc.
@@ -64,7 +64,7 @@ function server_get_cpu_load()
 
     }else {
 
-        if (file_exists('/proc/loadavg')) {
+        if (@file_exists('/proc/loadavg')) {
 
             $loadavg_data = implode('', file('/proc/loadavg'));
             list($cpu_load) = explode(' ', $loadavg_data);

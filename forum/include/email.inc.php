@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.79 2005-01-06 20:01:13 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.80 2005-01-26 21:33:17 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -326,7 +326,8 @@ function email_get_language($to_uid)
 
     if ($user_prefs = user_get_prefs($to_uid)) {
 
-        if (file_exists("./include/languages/{$user_prefs['LANGUAGE']}.inc.php")) {
+        if (@file_exists("./include/languages/{$user_prefs['LANGUAGE']}.inc.php")) {
+
              require("./include/languages/{$user_prefs['LANGUAGE']}.inc.php");
              return $lang;
         }

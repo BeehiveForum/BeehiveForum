@@ -203,7 +203,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
 }
 
-html_draw_top();
+html_draw_top_script();
 
 if (!isset($HTTP_POST_VARS['aid'])) {
   $aid = md5(uniqid(rand()));

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.26 2004-03-17 22:21:20 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.27 2004-03-22 12:21:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -83,7 +83,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                             echo "<div align=\"center\">\n";
                             echo "<p>{$lang['passedchangedexp']}</p>\n";
 
-                            form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+                            form_quick_button("./index.php", $lang['continue'], false, false, "_top");
 
                             echo "</div>\n";
 

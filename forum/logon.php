@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.123 2004-03-21 20:00:01 decoyduck Exp $ */
+/* $Id: logon.php,v 1.124 2004-03-22 12:21:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -76,9 +76,9 @@ if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
 
     if (isset($final_uri)) {
-        form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
+        form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
     }else {
-        form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+        form_quick_button("./index.php", $lang['continue'], false, false, "_top");
     }
 
     echo "</div>\n";
@@ -128,7 +128,12 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
     if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-        header_redirect("./index.php?webtag={$webtag['WEBTAG']}". (isset($final_uri) ? '&final_uri='. rawurlencode(rawurlencode($final_uri)) : ''));
+        if (isset($final_uri)) {
+            $final_uri = rawurlencode($final_uri);
+            header_redirect("./index.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri");
+        }else {
+            header_redirect("./index.php?webtag={$webtag['WEBTAG']}");
+        }
 
     }else {
 
@@ -137,7 +142,14 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
-        echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}", (isset($final_uri) ? '&final_uri='. rawurlencode(rawurlencode($final_uri)) : ''), "';\n";
+        
+        if (isset($final_uri)) {
+            $final_uri = rawurlencode($final_uri);
+            echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri';\n";
+        }else {
+            echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}';\n";
+        }
+        
         echo "//-->\n";
         echo "</script>";
 
@@ -146,9 +158,9 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
         echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
         if (isset($final_uri)) {
-            form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
+            form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
         }else {
-            form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+            form_quick_button("./index.php", $lang['continue'], false, false, "_top");
         }
 
         html_draw_bottom();
@@ -247,7 +259,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-                header_redirect("./index.php?webtag={$webtag['WEBTAG']}". (isset($final_uri) ? '&final_uri='. rawurlencode(rawurlencode($final_uri)) : ''));
+                if (isset($final_uri)) {
+                    $final_uri = rawurlencode($final_uri);
+                    header_redirect("./index.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri");
+                }else {
+                    header_redirect("./index.php?webtag={$webtag['WEBTAG']}");
+                }
 
             }else {
 
@@ -256,7 +273,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 // Try a Javascript redirect
                 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
                 echo "<!--\n";
-                echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}", (isset($final_uri) ? '&final_uri='.rawurlencode(rawurlencode($final_uri)) : ''), "';\n";
+
+                if (isset($final_uri)) {
+                    $final_uri = rawurlencode($final_uri);
+                    echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri';\n";
+                }else {
+                    echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}';\n";
+                }
+                
                 echo "//-->\n";
                 echo "</script>";
 
@@ -265,9 +289,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 echo "<p>{$lang['loggedinsuccessfully']}</p>\n";
 
                 if (isset($final_uri)) {
-                    form_quick_button("./index.php", $lang['continue'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
+                    form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
                 }else {
-                    form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+                    form_quick_button("./index.php", $lang['continue'], false, false, "_top");
                 }
 
                 echo "</div>\n";
@@ -294,15 +318,22 @@ if (isset($HTTP_POST_VARS['submit'])) {
             echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
 
             if (isset($final_uri)) {
-                form_quick_button("./index.php", $lang['back'], array("final_uri", "webtag"), array(rawurlencode(rawurlencode($final_uri)), $webtag['WEBTAG']), "_top");
+                form_quick_button("./index.php", $lang['back'], "final_uri", rawurlencode($final_uri), "_top");
             }else {
-                form_quick_button("./index.php", $lang['back'], "webtag", $webtag['WEBTAG'], "_top");
+                form_quick_button("./index.php", $lang['back'], false, false, "_top");
             }
             
             echo "<hr width=\"350\" />\n";
             echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes", (isset($final_uri) ? '&final_uri='. rawurlencode($final_uri) : ''), "\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-	    echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}", (isset($final_uri) ? '&final_uri='. rawurlencode($final_uri) : ''), "\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+            
+            if (isset($final_uri)) {
+                $final_uri = rawurlencode($final_uri);
+                echo "<p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes&final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+                echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}&deletecookie=yes&final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+            }else {
+                echo "<p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+                echo "<p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}&deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+            }
 
             html_draw_bottom();
             exit;
@@ -473,11 +504,25 @@ if (user_guest_enabled()) {
     echo "  </form>\n";
 }
 
-echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag={$webtag['WEBTAG']}", (isset($final_uri) ? '&final_uri='. rawurlencode(rawurlencode($final_uri)) : ''), "\" target=\"_self\">Register now.</a></p>\n";
-echo "  <hr width=\"350\" />\n";
-echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
-echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes", (isset($final_uri) ? '&final_uri='. rawurlencode(rawurlencode($final_uri)) : ''), "\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}", (isset($final_uri) ? '&final_uri='. rawurlencode(rawurlencode($final_uri)) : ''), "\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+if (isset($final_uri)) {
+
+    $final_uri = rawurlencode($final_uri);
+    
+    echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri\" target=\"_self\">Register now.</a></p>\n";
+    echo "  <hr width=\"350\" />\n";
+    echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
+    echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes&final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+    
+}else {
+
+    echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">Register now.</a></p>\n";
+    echo "  <hr width=\"350\" />\n";
+    echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
+    echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag={$webtag['WEBTAG']}&deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+}
+    
 echo "  <hr width=\"350\" />\n";
 echo "  <h2>{$lang['usingaPDA']}</h2>\n";
 echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag={$webtag['WEBTAG']}\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";

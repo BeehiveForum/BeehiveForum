@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.98 2004-03-18 23:42:31 decoyduck Exp $ */
+/* $Id: edit.php,v 1.99 2004-03-22 12:21:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -94,7 +94,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     echo "</td></tr>\n";
 
     echo "<tr><td align=\"center\">\n";
-    echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back']);
+    echo form_quick_button("./discussion.php", $lang['back']);
     echo "</td></tr>\n";
     echo "</table>\n";
 
@@ -118,7 +118,7 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
     echo "</td></tr>\n";
 
     echo "<tr><td align=\"center\">\n";
-    echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
+    echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid");
     echo "</td></tr>\n";
     echo "</table>\n";
 
@@ -349,7 +349,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
         echo "</td></tr>\n";
 
         echo "<tr><td align=\"center\">\n";
-        echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
+        echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid");
         echo "</td></tr>\n";
         echo "</table>\n";
 
@@ -378,12 +378,6 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         $t_content.= "<div class=\"sig\">$t_sig</div>";
 
-        /*
-        $t_content.= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". date("d/m/y H:i T");
-        $t_content.= " {$lang['by']} ". user_get_logon(bh_session_get_value('UID'));
-        $t_content.= "</p>";
-    */
-
         $updated = post_update($tid, $pid, $t_content);
 
         if ($updated) {
@@ -409,7 +403,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
             echo "</td></tr>\n";
 
             echo "<tr><td align=\"center\">\n";
-            echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['continue'], "msg", "$tid.$pid");
+            echo form_quick_button("discussion.php", $lang['continue'], "msg", "$tid.$pid");
             echo "</td></tr>\n";
             echo "</table>\n";
 
@@ -442,7 +436,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
             echo "</td></tr>\n";
 
             echo "<tr><td align=\"center\">\n";
-            echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", "$tid.$pid");
+            echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
             echo "</td></tr>\n";
             echo "</table>\n";
 

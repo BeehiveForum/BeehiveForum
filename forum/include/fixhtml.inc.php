@@ -247,7 +247,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 					$firstspace = strpos($html_parts[$i], " ");
 
-					if(is_numericeger($firstspace)){
+					if(is_integer($firstspace)){
 						$html_parts[$i] = clean_attributes($html_parts[$i]);
 
 						$tag = substr($html_parts[$i], 0, $firstspace);
@@ -560,7 +560,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 
 		for ($i=0; $i<count($tags); $i++) {
 			$open = strpos($html_a[$html_p], "<".$tags[$i]);
-			if ($open < $cur_pos && is_numericeger($open)) {
+			if ($open < $cur_pos && is_integer($open)) {
 				$cur_pos = $open;
 				$cur_tag = $tags[$i];
 			}
@@ -574,7 +574,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 		while (1 != 2) {
 			$open = strpos($html_a[$html_p], "<".$cur_tag, $j);
 			$close = strpos($html_a[$html_p], "</".$cur_tag, $j);
-			if (!is_numericeger($open)) {
+			if (!is_integer($open)) {
 				$open = $close+1;
 			}
 			if ($close < $open && $open_num == 0) {
@@ -610,7 +610,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 				$nest = $tags_nest[$tag[1]];
 				for ($j=0; $j<count($nest); $j++) {
 					$offset = 0;
-					while (is_numericeger(strpos($html_a[$i], "<".$nest[$j], $offset))) {
+					while (is_integer(strpos($html_a[$i], "<".$nest[$j], $offset))) {
 						$cur_pos = strpos($html_a[$i], "<".$nest[$j], $offset);
 						$cur_pos = strpos($html_a[$i], ">", $cur_pos)+1;
 						$k = $cur_pos;
@@ -618,7 +618,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 						while (1 != 2) {
 							$open = strpos($html_a[$i], "<".$nest[$j], $k);
 							$close = strpos($html_a[$i], "</".$nest[$j], $k);
-							if (!is_numericeger($open)) {
+							if (!is_integer($open)) {
 								$open = $close+1;
 							}
 							if ($close < $open && $open_num == 0) {

@@ -66,7 +66,7 @@ function timestamp_to_date($timestamp)
     return ($newdate);
 }
 
-function timestamp_amend_bst($timestamp = mktime())
+function timestamp_amend_bst($timestamp)
 {
 
     $year = date("Y", mktime());

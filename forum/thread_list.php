@@ -277,9 +277,10 @@ while (list($key1, $folder) = each($folder_order)) {
 				}
 				// work out how long ago the thread was posted and format the time to display
 				$thread_time = format_time($thread['modified']);
+				$thread_author = thread_get_author($thread['tid']);
 				
 				echo "&nbsp;</td><td valign\"top\">";
-				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". thread_get_author($thread['tid']) ."';return true\" onmouseOut=\"window.status='';return true\">".$thread['title']."</a> <span class=\"threadxnewofy\">".$number."</span>";
+				echo "<a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\" class=\"threadname\" onClick=\"change_current_thread('".$thread['tid']."');\" onmouseOver=\"status='#".$thread['tid']." Started by ". $thread_author ."';return true\" onmouseOut=\"window.status='';return true\" title=\"#".$thread['tid']. " Started by ". $thread_author. "\">".$thread['title']."</a> <span class=\"threadxnewofy\">".$number."</span>";
 				echo "</td><td valign=\"top\" nowrap=\"nowrap\">";
 				echo "<span class=\"threadtime\">".$thread_time."&nbsp;</span>";
 				echo "</td></tr>\n";

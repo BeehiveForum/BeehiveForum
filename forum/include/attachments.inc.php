@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.33 2004-02-13 13:20:26 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.34 2004-02-20 18:36:03 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
@@ -45,15 +45,28 @@ function get_attachments($uid, $aid)
     while($row = db_fetch_array($result)) {
 
         if (!is_array($userattachments)) $userattachments = array();
+        
+        if (@file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
 
-        @$userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                    "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
-                                    "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),                                       
-                                    "aid"       => $row['AID'],
-                                    "hash"      => $row['HASH'],
-                                    "mimetype"  => $row['MIMETYPE'],
-                                    "downloads" => $row['DOWNLOADS'],
-                                    "deleted"   => file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))));
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),                                       
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS'],
+                                       "deleted"   => false);
+        }else {
+        
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => 0,
+                                       "filedate"  => 0,                                       
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS'],
+                                       "deleted"   => true);
+        }
     }
 
     return $userattachments;
@@ -77,14 +90,27 @@ function get_all_attachments($uid, $aid)
 
         if (!is_array($userattachments)) $userattachments = array();
 
-        @$userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                    "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
-                                    "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),                                       
-                                    "aid"       => $row['AID'],
-                                    "hash"      => $row['HASH'],
-                                    "mimetype"  => $row['MIMETYPE'],
-                                    "downloads" => $row['DOWNLOADS'],
-                                    "deleted"   => file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))));
+        if (@file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),                                       
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS'],
+                                       "deleted"   => false);
+        }else {
+        
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => 0,
+                                       "filedate"  => 0,                                       
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS'],
+                                       "deleted"   => true);
+        }
     }
 
     return $userattachments;
@@ -107,14 +133,27 @@ function get_users_attachments($uid)
 
         if (!is_array($userattachments)) $userattachments = array();
 
-        @$userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                    "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
-                                    "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),                                       
-                                    "aid"       => $row['AID'],
-                                    "hash"      => $row['HASH'],
-                                    "mimetype"  => $row['MIMETYPE'],
-                                    "downloads" => $row['DOWNLOADS'],
-                                    "deleted"   => file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))));
+        if (@file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "filedate"  => filemtime($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),                                       
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS'],
+                                       "deleted"   => false);
+        }else {
+        
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => 0,
+                                       "filedate"  => 0,                                       
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS'],
+                                       "deleted"   => true);
+        }
     }
 
     return $userattachments;
@@ -150,7 +189,7 @@ function delete_attachment($uid, $aid, $filename)
     $aid      = addslashes($aid);
     $filename = addslashes($filename);
     
-    if (file_exists($attachment_dir. '/'. md5($aid. rawurldecode($filename)))) {
+    if (@file_exists($attachment_dir. '/'. md5($aid. rawurldecode($filename)))) {
         return unlink($attachment_dir. '/'. md5($aid. rawurldecode($filename)));
     }    
 
@@ -195,7 +234,7 @@ function get_free_attachment_space($uid)
 
     while($row = db_fetch_array($result)) {
 
-        if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+        if (@file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
             $used_attachment_space += filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])));
         }
     }

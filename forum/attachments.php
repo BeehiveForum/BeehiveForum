@@ -20,48 +20,45 @@ along with Beehive; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
-
-//Check logged in status
+//Check logged in status
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
-
-if(!bh_session_check()){
-
-    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+if(!bh_session_check()){
+    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
     $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
     $uri.= "/logon.php?final_uri=";
     $uri.= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
 
     header_redirect($uri);
 }
-
-require_once("./include/config.inc.php");
+require_once("./include/config.inc.php");
 require_once("./include/html.inc.php");
+
+// If attachments are disabled, generate a 404 error and stop.
+
+if (!$attachments_enabled) {
+  header("HTTP/1.0 404 File Not Found");
+  exit;   
+}
 
 if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 	html_guest_error();
 	exit;
 }
-
-require_once("./include/form.inc.php");
+require_once("./include/form.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/attachments.inc.php");
 require_once("./include/format.inc.php");
-
-html_draw_top();
-
-$users_free_space = get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']);
+html_draw_top();
+$users_free_space = get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']);
 $total_attachment_size = 0;
-
-// Make sure the attachments directory exists
+// Make sure the attachments directory exists
 if (!is_dir('attachments')) {
   mkdir('attachments', 0755);
   chmod('attachments', 0777);
 }
-
-if (isset($HTTP_POST_VARS['submit'])) {
-
-  if ($HTTP_POST_VARS['submit'] == 'Del') {
+if (isset($HTTP_POST_VARS['submit'])) {
+  if ($HTTP_POST_VARS['submit'] == 'Del') {
 
     unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. stripslashes($HTTP_POST_VARS['userfile'])));
     delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['aid'], rawurlencode(stripslashes($HTTP_POST_VARS['userfile'])));
@@ -71,8 +68,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     if ($HTTP_POST_FILES['userfile']['size'] > 0) {
     
       if ($users_free_space < $HTTP_POST_FILES['userfile']['size']) {
-
-        echo "<p>Sorry, you do not have enough free attachment space. Please free some space and try again.</p>";
+        echo "<p>Sorry, you do not have enough free attachment space. Please free some space and try again.</p>";
         unlink($HTTP_POST_FILES['userfile']['tmp_name']);
     
       }else {
@@ -91,8 +87,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
       }
 
     }else {
-
-      echo "<p>Error: Filesize must be greater than 0 bytes.</p>";
+      echo "<p>Error: Filesize must be greater than 0 bytes.</p>";
       
     }
 
@@ -107,8 +102,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   
   }
 }
-
-?>
+?>
 <h1>Upload a file for attachment to the message</h1>
 <form enctype="multipart/form-data" method="post" action="attachments.php?aid=<?php echo $HTTP_GET_VARS['aid']; ?>">
 <table border="0" cellpadding="0" cellspacing="0" width="600">

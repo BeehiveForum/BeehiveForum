@@ -40,6 +40,11 @@ require_once("./include/user.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/config.inc.php");
 
+if (!$attachments_enabled) {
+  header("HTTP/1.0 404 File Not Found");
+  exit;    
+}
+
 if (isset($HTTP_GET_VARS['hash'])) {
   
   $db = db_connect();

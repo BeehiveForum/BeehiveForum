@@ -25,7 +25,7 @@ USA
 
 // Database stuff ------------------------------------------------------
 
-$db_server   = "localhost";	// the address of your MySQL server
+$db_server   = "mysql.sourceforge.net";	// the address of your MySQL server
 $db_username = "beehiveforum";	// your MySQL username
 $db_password = "miffle";	// your MySQL password
 $db_database = "beehiveforum";	// the name of your MySQL database

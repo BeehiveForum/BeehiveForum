@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.73 2005-03-06 16:49:32 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.74 2005-03-08 16:52:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -711,8 +711,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
     $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = '$uid' AND GROUP_USERS.FORUM = '$forum_fid') ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ";
     $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
     $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ";

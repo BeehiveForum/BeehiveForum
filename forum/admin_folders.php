@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.89 2005-02-16 23:39:32 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.90 2005-03-08 16:52:49 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -80,9 +80,8 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-html_draw_top();
-
 if (!perm_has_admin_access()) {
+    html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -117,6 +116,8 @@ if (isset($_POST['submit'])) {
         }
     }
 }
+
+html_draw_top();
 
 // Draw the form
 echo "<h1>{$lang['admin']} : {$lang['managefolders']}</h1>\n";

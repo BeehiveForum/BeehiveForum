@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.33 2005-03-07 22:39:54 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.34 2005-03-08 16:52:55 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -910,7 +910,9 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  KEYWORD VARCHAR(64) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (FID,TID,PID,KEYWORD)";
+$sql.= "  KEY FID (FID),";
+$sql.= "  KEY TID (TID,PID),";
+$sql.= "  KEY KEYWORD (KEYWORD)";
 $sql.= ") TYPE=MYISAM";
 
 if (!@$result = db_query($sql, $db_install)) {

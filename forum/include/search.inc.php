@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.91 2005-03-07 22:39:54 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.92 2005-03-08 16:52:55 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -499,7 +499,7 @@ function search_index_post()
     $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
 
     $sql = "SELECT TID, PID, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
-    $sql.= "WHERE INDEXED = 0 ORDER BY TID DESC, PID DESC LIMIT 0, 1";
+    $sql.= "WHERE INDEXED = 0 LIMIT 0, 1";
 
     $result = db_query($sql, $db_search_index_post);
 
@@ -512,27 +512,50 @@ function search_index_post()
 
         $result = db_query($sql, $db_search_index_post);
 
-        $content_array = explode(" ", $content);
+        // Tidy the content up (remove URLs, new lines and HTML)
 
-        foreach ($content_array as $key => $value) {
+        $drop_char_match = array("/\^/", "/\$/", "/&/", "/\(/", "/\)/", "/\</",
+                                 "/\>/", "/`/", "/'/", "/\"/", "/\|/", "/,/",
+                                 "/@/", "/_/", "/\?/", "/%/", "/-/", "/~/",
+                                 "/\+/", "/\./", "/\[/", "/\]/", "/\{/", "/\}/",
+                                 "/\:/", "/\\\/", "/\//", "/\=/", "/#/", "/'/",
+                                 "/;/", "/\!/");
 
-            if (strlen($value) < $search_min_word_length || strlen($value) > 64 || _in_array($value, $mysql_fulltext_stopwords)) {
+        $content = preg_replace("/[\n\r]/is", " ", strip_tags($content));
+        $content = preg_replace("/&[a-z]+;/", " ", $content);
+        $content = preg_replace("/[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/", " ", $content);
+        $content = preg_replace($drop_char_match, " ", $content);
+        $content = preg_replace("/ +/", " ", $content);
 
-                unset($content_array[$key]);
+        $content_array = preg_split("/\b/", trim($content));
 
-            }else {
+        $keyword_array = array();
+        $keyword_query = array();
 
-                $value = addslashes(strtolower($value));
-                $content_array[$key] = "('$forum_fid', '$tid', '$pid', '$value')";
+        foreach ($content_array as $key => $keyword_add) {
+
+            $keyword_add = trim(strtolower($keyword_add));
+            $keyword_sql = addslashes(trim(strtolower($keyword_add)));
+
+            if (strlen($keyword_add) > ($search_min_word_length - 1) && strlen($keyword_add) < 65 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
+
+                if (!_in_array($keyword_array, $keyword_add)) {
+
+                    $keyword_array[] = $keyword_add;
+                    $keyword_query[] = "('$forum_fid', '$tid', '$pid', '$keyword_sql')";
+                }
             }
         }
 
-        $sql_values = implode(",\n", $content_array);
+        if (sizeof($keyword_query) > 0) {
 
-        $sql = "INSERT INTO SEARCH_KEYWORDS ";
-        $sql.= "(FID, TID, PID, KEYWORD) VALUES $sql_values ";
+            $sql_values = implode(",\n", $keyword_query);
 
-        $result = db_query($sql, $db_search_index_post);
+            $sql = "INSERT INTO SEARCH_KEYWORDS ";
+            $sql.= "(FID, TID, PID, KEYWORD) VALUES $sql_values ";
+
+            $result = db_query($sql, $db_search_index_post);
+        }
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.20 2005-03-06 23:36:40 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.21 2005-03-08 16:52:50 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -141,12 +141,13 @@ if (isset($_POST['submit'])) {
         $t_description = "";
     }
 
-    $t_admintools = (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
-    $t_banned     = (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
-    $t_wormed     = (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
-    $t_globalmod  = (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
+    $t_admintools = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
+    $t_banned     = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
+    $t_wormed     = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
+    $t_globalmod  = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
+    $t_linksmod   = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
 
-    $new_group_perms = (double) $t_banned | $t_wormed | $t_globalmod;
+    $new_group_perms = (double) ($t_banned | $t_wormed | $t_globalmod | $t_linksmod);
 
     if (perm_has_forumtools_access()) {
 
@@ -271,13 +272,16 @@ if (perm_has_forumtools_access()) {
 }
 
 echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['usercanmoderateallfolders'], $group_permissions & USER_PERM_FOLDER_MODERATE), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, $lang['usercanmoderatelinkssection'], $group_permissions & USER_PERM_LINKS_MODERATE), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td>", form_checkbox("t_banned", USER_PERM_BANNED, $lang['groupisbanned'], $group_permissions & USER_PERM_BANNED), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td>", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['groupiswormed'], $group_permissions & USER_PERM_WORMED), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['groupisglobalmod'], $group_permissions & USER_PERM_FOLDER_MODERATE), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.php,v 1.26 2004-02-22 15:24:32 decoyduck Exp $ */
+/* $Id: admin.php,v 1.27 2004-02-29 20:29:51 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -35,6 +35,7 @@ require_once("./include/errorhandler.inc.php");
 require_once("./include/session.inc.php");
 
 require_once("./include/header.inc.php");
+require_once("./include/messages.inc.php");
 
 if (!bh_session_check()) {
 
@@ -60,15 +61,16 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 if (!isset($default_style)) $default_style = "default";
 $stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";
 
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
+echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
+echo "<head>\n";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
+echo "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+echo "</head>\n";
+echo "<frameset cols=\"150,*\" border=\"1\">\n";
+echo "  <frame src=\"./admin_menu.php\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+echo "  <frame src=\"./admin_main.php\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+echo "</frameset>\n";
+echo "</html>\n";
+
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="<?php echo $lang['_textdir']; ?>">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $lang['_charset']; ?>">
-<link rel="stylesheet" href="<?php echo $stylesheet; ?>" type="text/css">
-</head>
-<frameset cols="150,*" border="1">
-<frame src="./admin_menu.php" name="left" border="1">
-<frame src="./admin_main.php" name="right" border="1">
-</frameset>
-</html>

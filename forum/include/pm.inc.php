@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.32 2004-02-29 18:59:24 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.33 2004-02-29 20:29:52 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -31,6 +31,7 @@ require_once('./include/form.inc.php');
 require_once('./include/format.inc.php');
 require_once('./include/constants.inc.php');
 require_once('./include/attachments.inc.php');
+require_once('./include/messages.inc.php');
 
 function pm_markasread($mid)
 {
@@ -315,7 +316,7 @@ function draw_pm_message($pm_elements_array)
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
-    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", _stripslashes($pm_elements_array['SUBJECT']), "</span></td>\n";
+    echo "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", message_filter(_stripslashes($pm_elements_array['SUBJECT'])), "</span></td>\n";
     echo "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">", format_time($pm_elements_array['CREATED']), "&nbsp;</span></td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
@@ -328,7 +329,7 @@ function draw_pm_message($pm_elements_array)
     echo "            <td colspan=\"3\"><span class=\"postnumber\"></span></td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td class=\"postbody\" align=\"left\">", $pm_elements_array['CONTENT'], "</td>\n";
+    echo "            <td class=\"postbody\" align=\"left\">", message_filter($pm_elements_array['CONTENT']), "</td>\n";
     echo "          </tr>\n";
 
     if (isset($pm_elements_array['AID'])) {

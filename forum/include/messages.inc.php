@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.230 2004-02-29 19:08:05 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.231 2004-02-29 20:29:52 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -165,7 +165,7 @@ function message_get_content($tid, $pid)
 function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     global $lang;
-    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;$foldertitle: $threadtitle";
+    echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;", message_filter("$foldertitle: $threadtitle");
     if ($closed) echo "&nbsp;<img src=\"". style_image('thread_closed.png'). "\" height=\"15\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" align=\"middle\" />\n";
     if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\"  title=\"{$lang['highinterest']}\" align=\"middle\" />";
     if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\"  title=\"{$lang['subscribed']}\" align=\"middle\" />";
@@ -206,7 +206,6 @@ function message_filter($content)
 
     $content = preg_replace($pattern_array, $replace_array, $content);
     return $content;
-
 }
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())

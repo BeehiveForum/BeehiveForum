@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.66 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: index.php,v 1.67 2004-03-22 13:27:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -71,7 +71,7 @@ if (isset($HTTP_GET_VARS['autologon']) && $HTTP_GET_VARS['autologon'] == 0) {
     $auto_logon = false;
 }
 
-if (bh_session_check()) {
+if ($user_sess = bh_session_check()) {
 
     // User is actually logged in. Show them the relevant frameset.
 

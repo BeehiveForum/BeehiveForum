@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.153 2005-03-15 21:29:47 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.154 2005-03-24 00:23:14 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -492,8 +492,6 @@ function href_remove_query_keys($uri, $remove_keys)
         }
 
         $uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
-        $uri.= (isset($uri_array['user']))     ? "{$uri_array['user']}:"     : '';
-        $uri.= (isset($uri_array['pass']))     ? "{$uri_array['pass']}@"     : '';
         $uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
         $uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
         $uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
@@ -594,6 +592,84 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     }
 
     echo "</span>";
+}
+
+function html_get_path($path_only = false)
+{
+    $uri_array = array();
+
+    if (isset($_SERVER['REQUEST_URI']) && strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
+        $uri_array = parse_url($_SERVER['REQUEST_URI']);
+    }
+
+    if (!isset($uri_array['scheme']) || strlen(trim($uri_array['scheme'])) < 1) {
+
+        if (isset($_SERVER['HTTP_SCHEME']) && strlen(trim($_SERVER['HTTP_SCHEME'])) > 0) {
+
+            $uri_array['scheme'] = $_SERVER['HTTP_SCHEME'];
+
+        }elseif (isset($_SERVER['HTTPS']) && strlen(trim($_SERVER['HTTPS'])) > 0) {
+
+            $uri_array['scheme'] = (strtolower($_SERVER['HTTPS']) != 'off') ? 'https' : 'http';
+
+        }else {
+
+            $uri_array['scheme'] = 'http';
+        }
+
+        if (isset($_SERVER['HTTP_HOST']) && strlen(trim($_SERVER['HTTP_HOST'])) > 0) {
+
+            if (strpos($_SERVER['HTTP_HOST'], ':') > 0) {
+
+                list($uri_array['host'], $uri_array['port']) = explode(':', $_SERVER['HTTP_HOST']);
+
+            }else {
+
+                $uri_array['host'] = $_SERVER['HTTP_HOST'];
+            }
+
+        }else if (isset($_SERVER['SERVER_NAME']) && strlen(trim($_SERVER['SERVER_NAME'])) > 0) {
+
+            $uri_array['host'] = $_SERVER['SERVER_NAME'];
+        }
+
+        if (!isset($uri_array['port']) || strlen(trim($uri_array['port'])) < 1) {
+
+            if (isset($_SERVER['SERVER_PORT']) && strlen(trim($_SERVER['SERVER_PORT'])) > 0) {
+
+                if ($_SERVER['SERVER_PORT'] != '80') {
+
+                    $uri_array['port'] = $_SERVER['SERVER_PORT'];
+                }
+            }
+        }
+
+        if (!isset($uri_array['path']) || strlen(trim($uri_array['path'])) < 1) {
+
+            if (isset($_SERVER['SERVER_PORT']) && strlen(trim($_SERVER['SERVER_PORT'])) > 0) {
+
+                $path = parse_url($_SERVER['PATH_INFO']);
+
+            }else {
+
+                $path = parse_url($_SERVER['PHP_SELF']);
+            }
+        }
+    }
+
+    if ($path_only === true) {
+
+        $uri_array['path'] = dirname($uri_array['path']);
+    }
+
+    $server_uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
+    $server_uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
+    $server_uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
+    $server_uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
+    $server_uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
+    $server_uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
+
+    return $server_uri;
 }
 
 ?>

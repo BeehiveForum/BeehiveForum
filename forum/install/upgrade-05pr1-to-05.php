@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.6 2004-12-10 17:35:12 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.7 2004-12-10 19:51:32 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
-    header("Request-URI: ./install.php");
-    header("Content-Location: ./install.php");
-    header("Location: ./install.php");
+    header("Request-URI: ../install.php");
+    header("Content-Location: ../install.php");
+    header("Location: ../install.php");
     exit;
 
 }else if (!isset($_SERVER['PHP_SELF'])) {

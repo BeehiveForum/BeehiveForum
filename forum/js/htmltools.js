@@ -54,7 +54,8 @@ function get_selection_start () {
 			}
 		}
 		// Remove 'junk' characters before the textfield
-		var re = new RegExp("^" + String.fromCharCode(8706) + "*\r?\n?");
+		// See textarea() in htmltools.inc.php
+		var re = new RegExp("^" + String.fromCharCode(9999) + "*\r?\n?");
 		var u2 = s.text.replace(re, "");
 
 		return (u2.length - u.length);
@@ -474,6 +475,11 @@ function add_image () {
 		add_tag("img", "src", url, true);
 	}
 	return;
+}
+
+// Emoticon preview popup
+function openEmoticons(pack, webtag) {
+	window.open('display_emoticons.php?webtag=' + webtag + '&pack=' + pack, 'emoticons','width=500, height=400, scrollbars=1');
 }
 
 // Used in auto-list-thing

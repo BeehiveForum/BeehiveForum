@@ -106,20 +106,26 @@ for ($i=0; $i<count($e_keys); $i++) {
 }
 
 function emoticons_convert ($content) {
-	$content = _htmlentities_decode($content);
+//	$content = _htmlentities_decode($content);
 
 	global $emoticon, $pattern_array_2, $replace_array_2;
 
 	if (!is_array($emoticon)) return $content;
 
 	foreach ($emoticon as $k => $v) {
-		$k2 = urlencode(_htmlentities($k));
+		$k3 = _htmlentities($k);
+		$k2 = urlencode($k3);
 
 		//$front = ""; //'(?<!<span|title=\")';// "(?<!<span)((>|^)[^<]*?)";
 		//$end = ""; //"(?!<\/span><\/span>)";
 
 		$pattern_array[] = "/". preg_quote($k, "/") ."/i";
 		$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
+
+		if ($k != $k3) {
+			$pattern_array[] = "/". preg_quote($k3, "/") ."/i";
+			$replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span>$k2</span></span>";
+		}
 	}
 
 	if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {

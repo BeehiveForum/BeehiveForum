@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.146 2004-04-01 16:39:05 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.147 2004-04-03 14:12:03 tribalonline Exp $ */
 
 function user_count()
 {
@@ -449,7 +449,7 @@ function user_update_sig($uid, $content, $html)
 
     $result = db_query($sql, $db_user_update_sig);
 
-    if (!db_affacted_rows($db_user_update_sig)) {
+    if (!db_affected_rows($db_user_update_sig)) {
 
         $sql = "INSERT INTO {$webtag['PREFIX']}USER_SIG (UID, CONTENT, HTML) ";
         $sql.= "VALUES ('$uid', '$content', '$html')";

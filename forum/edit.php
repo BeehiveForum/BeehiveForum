@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.105 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: edit.php,v 1.106 2004-04-03 14:12:02 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -640,29 +640,18 @@ echo "<tr><td>\n";
 echo "<h2>". $lang['message'] .":</h2>\n";
 
 if ($edit_type == "html") {
-    tools_html(form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+	$tools = new TextAreaHTML("f_edit");
+
+	echo $tools->toolbar(form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
 
     $t_content = tidy_html($t_content, isset($auto_linebreaks) ? $auto_linebreaks : false);
     $t_content = _htmlentities($t_content);
 
-    echo tools_junk()."\n";
-    echo form_textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\" ".tools_textfield_js())."\n";
-    echo tools_junk()."\n";
-
-    echo "\n\n<script language=\"Javascript\">\n";
-    echo "  <!--\n";
-    echo "    activate_tools();\n";
-    echo "  //-->\n";
-    echo "</script>\n\n";
+    echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 
     if ($content_html_changes == true) {
 
-        echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
-        echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
-        echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
-
-        echo form_input_hidden("old_t_content", _stripslashes(htmlentities($old_t_content)));
-        echo form_input_hidden("current_t_content", "correct");
+		echo $tools->compare_original("t_content", $old_t_content);
 
         echo "<br /><br />\n";
     }
@@ -680,6 +669,9 @@ if ($edit_type == "html") {
     echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 1, "tabindex=\"6\"")." \n";
     echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 2)." \n";
     echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 3)." \n";
+
+	echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+
     echo "<br /><br />\n";
 
 } else {
@@ -713,19 +705,19 @@ if ($aid = get_attachment_id($tid, $pid)) {
 // ---- SIGNATURE ----
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-echo tools_junk()."\n";
 $t_sig = tidy_html($t_sig, false);
-echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\" ".tools_textfield_js())."\n";
-echo tools_junk()."\n";
+
+if ($edit_type == "html") {
+	echo $tools->textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+
+	echo $tools->js();
+} else {
+	echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+}
 
 if ($sig_html_changes == true) {
 
-    echo form_radio("sig_code", "correct", $lang['correctedcode'], true, "onClick=\"showSig('correct');\"")."\n";
-    echo form_radio("sig_code", "submit", $lang['submittedcode'], false, "onClick=\"showSig('submit');\"")."\n";
-    echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
-
-    echo form_input_hidden("old_t_sig", _stripslashes(htmlentities($old_t_sig)));
-    echo form_input_hidden("current_t_sig", "correct");
+	echo $tools->compare_original("t_sig", $old_t_sig);
 }
 
 echo "</td></tr>\n";

@@ -67,14 +67,31 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
         bh_session_init($luid);
         
+        // Multiple usernames
+        
+        $usernames = $HTTP_COOKIE_VARS['bh_remember_user'];
+        $passwords = $HTTP_COOKIE_VARS['bh_remember_password'];
+        
+        if (!is_array($usernames)) $usernames = array();
+        if (!is_array($passwords)) $passwords = array();     
+        
+        if (!in_array($HTTP_POST_VARS['logon'], $usernames)) {
+          $usernames[] = $HTTP_POST_VARS['logon'];
+          $passwords[] = $HTTP_POST_VARS['password'];
+        }
+        
+        for ($i = 0; $i < sizeof($usernames); $i++) {
+          setcookie("bh_remember_user[$i]", $usernames[$i], time() + YEAR_IN_SECONDS, '/');
+        }
+        
         if(@$HTTP_POST_VARS['remember_user'] == "Y") {
         
-          setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
-          setcookie('bh_remember_password', $HTTP_POST_VARS['password'], time() + YEAR_IN_SECONDS, '/');
+          for ($i = 0; $i < sizeof($usernames); $i++) {
+	    setcookie("bh_remember_password[$i]", $passwords[$i], time() + YEAR_IN_SECONDS, '/');
+          }
             
         }else {
         
-          setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
           setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
           
         }         
@@ -125,6 +142,21 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 html_draw_top();
 
+if (sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) {
+
+  echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+  echo "<!--\n\n";
+  echo "function changepassword() {\n\n";
+  echo "  i = document.logonform.logonarray.selectedIndex;\n";
+  echo "  p = eval(\"document.logonform.password\"+ i +\".value\");\n";
+  echo "  document.logonform.password.value = p;\n";
+  echo "  document.logonform.logon.value = document.logonform.logonarray.options[i].value;\n";
+  echo "}\n\n";
+  echo "//-->\n";
+  echo "</script>\n";
+  
+}
+
 if (isset($error_html)) echo $error_html;
 
 if(isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
@@ -134,19 +166,48 @@ if(isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
     $logon = "";
     $password = "";
 }
-    
+   
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logon\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\">\n";
+echo "<form name=\"logonform\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
 echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
 echo "</tr>\n</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
-echo "<tr>\n<td align=\"right\">User Name:</td>\n";
-echo "<td>".form_input_text("logon",$logon)."</td>\n";
-echo "</tr><tr><td align=\"right\">Password</td>\n";
-echo "<td>".form_input_password("password",$password)."</td>\n";
-echo "</tr><tr><td>&nbsp;</td><td align=\"right\">\n";
-echo form_checkbox("remember_user","Y","Remember me",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")));
+
+if (sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) {
+
+  echo "<tr>\n";
+  echo "<td align=\"right\">User Name:</td>\n";
+  echo "<td>";
+  echo form_dropdown_array('logonarray', $HTTP_COOKIE_VARS['bh_remember_user'], $HTTP_COOKIE_VARS['bh_remember_user'], "", "onchange='changepassword()'");
+  echo form_input_hidden('logon', $HTTP_COOKIE_VARS['bh_remember_user'][0]);
+  
+  for ($i = 0; $i < sizeof($HTTP_COOKIE_VARS['bh_remember_password']); $i++) {
+    echo form_input_hidden('password'. $i, $HTTP_COOKIE_VARS['bh_remember_password'][$i]);
+  }
+    
+  echo "</td>\n";
+  echo "</tr>\n";
+  echo "<tr>\n";
+  echo "<td align=\"right\">Password:</td>\n";
+  echo "<td>".form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0])."</td>\n";
+  echo "</tr>\n";
+    
+}else {
+
+  echo "<tr>\n";
+  echo "  <td align=\"right\">User Name:</td>\n";
+  echo "  <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user'][0]). "</td>\n";
+  echo "</tr>\n";
+  echo "<tr>\n";
+  echo "  <td align=\"right\">Password:</td>\n";
+  echo "  <td>". form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0]). "</td>\n";
+  echo "</tr>\n";  
+  
+}
+
+echo "<tr><td>&nbsp;</td><td align=\"right\">\n";
+echo form_checkbox("remember_user","Y","Remember password",(isset($HTTP_COOKIE_VARS['bh_remember_user']) || (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")));
 echo "</td></tr>\n";
 echo "</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";

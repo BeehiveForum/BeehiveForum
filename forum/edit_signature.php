@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.2 2004-01-26 19:40:32 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.3 2004-01-26 20:11:11 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -134,7 +134,7 @@ user_get_sig(bh_session_get_value('UID'), $user_sig['SIG_CONTENT'], $user_sig['S
 
 html_draw_top();
 
-echo "<h1>{$lang['signature']}</h1>\n";
+echo "<h1>{$lang['editsignature']}</h1>\n";
 
 // Any error messages to display?
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.62 2004-01-26 19:41:16 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.63 2004-01-26 20:11:14 decoyduck Exp $ */
 
 // International English language file
 
@@ -625,10 +625,11 @@ $lang['userexp_4'] = "<b>Change Password</b> allows you to change your password"
 $lang['userexp_5'] = "<b>Email & Privacy</b> lets you change how you can be contacted on and off the forum.";
 $lang['userexp_6'] = "<b>Forum Options</b> lets you change how the forum looks and works.";
 $lang['userexp_7'] = "<b>Attachments</b> allows you to edit/delete your attachments.";
-$lang['userexp_8'] = "<b>Signature</b> lets you edit your signature.";
+$lang['userexp_8'] = "<b>Edit Signature</b> lets you edit your signature.";
 $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
 $lang['emailandprivacy'] = "Email & Privacy";
+$lang['editsignature'] = "Edit Signature";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
 $lang['newpasswd'] = "New Password";

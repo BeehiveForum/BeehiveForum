@@ -449,6 +449,7 @@ echo "<p><b>Note</b>: Editing any aspect of a poll will void all the current vot
                 <tr>
                   <td><?php echo form_radio('changevote', '1', 'Yes', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : $polldata['CHANGEVOTE'] == 1); ?></td>
                   <td><?php echo form_radio('changevote', '0', 'No', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : $polldata['CHANGEVOTE'] == 0); ?></td>
+                  <td><?php echo form_radio('changevote', '2', 'Allow Multiple Votes', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 2 : $polldata['CHANGEVOTE'] == 2); ?></td>
                 </tr>
               </table>
             </td>

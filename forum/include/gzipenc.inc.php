@@ -68,7 +68,7 @@ function bh_gzhandler($contents)
     if ($encoding = bh_check_gzip()) {
 
         // for debugging: add a HTML comment to the bottom of the page.
-        $contents.= "<!-- bh_gzhandler: $encoding enabled (level: $gzip_compress_level) //-->\n";
+        $contents = str_replace("[bh_gzhandler]", "bh_gzhandler: $encoding enabled (level: $gzip_compress_level)", $contents);
 
         // do the compression
         if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
@@ -103,7 +103,7 @@ function bh_gzhandler($contents)
 
             // compression failed so add additional
             // debug message and return uncompressed string
-            $contents.= "<!-- bh_gzhander: failed during compression //-->\n";
+            $contents = str_replace("[bh_gzhandler]", "bh_gzhander: failed during compression", $contents);
             return $contents;
 
         }
@@ -111,7 +111,7 @@ function bh_gzhandler($contents)
     }else {
 
         // for debugging: add a HTML comment to the bottom of the page.
-        $contents.= "<!-- bh_gzhandler: compression disabled //-->\n";
+        $contents = str_replace("[bh_gzhandler]", "bh_gzhandler: compression disabled", $contents);
 
         // return the text uncompressed as the client
         // doesn't support it or it has been disabled

@@ -89,6 +89,8 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
   }
 
+  bh_session_end();
+
   if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
     header_redirect("./logon.php". (isset($final_uri) ? '?final_uri='. urlencode($final_uri) : ''));
@@ -337,10 +339,19 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
   for ($i = 0; $i < sizeof($username_array); $i++) {
 
-    if ($password_array[$i] == $passhash_array[$i]) {
+    if (isset($password_array[$i]) && isset($passhash_array[$i])) {
 
-      echo form_input_hidden('password'. $i, '');
-      echo form_input_hidden('savepass'. $i, false);
+      if ($password_array[$i] == $passhash_array[$i]) {
+
+        echo form_input_hidden('password'. $i, '');
+        echo form_input_hidden('savepass'. $i, false);
+
+      }else {
+
+        echo form_input_hidden('password'. $i, $password_array[$i]);
+        echo form_input_hidden('savepass'. $i, true);
+
+      }
 
     }else {
 

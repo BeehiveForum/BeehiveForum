@@ -249,7 +249,7 @@ echo "<h1>User Registration</h1>\n";
 if (isset($error_html)) echo $error_html;
 
 ?>
-
+<p>&nbsp;</p>
 <div align="center">
 <form name="register" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
   <table class="box" cellpadding="0" cellspacing="0" align="center">

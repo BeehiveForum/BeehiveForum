@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.207 2004-07-08 02:28:58 tribalonline Exp $ */
+/* $Id: post.php,v 1.208 2004-07-17 21:53:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -137,7 +137,7 @@ if (isset($_POST['cancel'])) {
 
 // for "REPLY ALL" form button on messages.php
 if (isset($_POST['replyto'])) {
-	$_GET['replyto'] = $_POST['replyto'];
+        $_GET['replyto'] = $_POST['replyto'];
 }
 
 // Check if the user is viewing signatures.
@@ -225,19 +225,19 @@ if (isset($_POST['t_sig_html'])) {
         $sig_html = 2;
     }
 
-	$fetched_sig = false;
+        $fetched_sig = false;
 
 } else {
-	// Fetch the current user's sig
-	user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+        // Fetch the current user's sig
+        user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
 
-	if ($t_sig_html != "N") {
-		$sig_html = 2;
-	}
+        if ($t_sig_html != "N") {
+                $sig_html = 2;
+        }
 
-	$t_sig = tidy_html($t_sig, true);
+        $t_sig = tidy_html($t_sig, true);
 
-	$fetched_sig = true;
+        $fetched_sig = true;
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -288,12 +288,12 @@ $t_content = $post->getContent();
 $t_sig = $sig->getContent();
 
 if (strlen($t_content) >= 65535) {
-	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-	$valid = false;
+        $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+        $valid = false;
 }
 if (strlen($t_sig) >= 65535) {
-	$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-	$valid = false;
+        $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+        $valid = false;
 }
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
@@ -387,7 +387,7 @@ if (!$newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
+    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y') && $reply_to_pid > 0) {
 
         $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         $valid = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.54 2005-01-31 20:29:16 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.55 2005-02-17 22:58:11 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -200,23 +200,16 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
 
     if ($table_data = get_table_prefix()) {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM USER USER ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-        $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
+        $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
+        $sql.= "ON (USER.UID = VISITOR_LOG.UID) WHERE (USER.LOGON LIKE '$usersearch%' ";
+        $sql.= "OR USER.NICKNAME LIKE '$usersearch%') ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     }else {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-        $sql.= "ORDER BY $sort_by $sort_dir ";
-        $sql.= "LIMIT $offset, 20";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
+        $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE ";
+        $sql.= "'$usersearch%') ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
     }
 
     $result = db_query($sql, $db_user_search);
@@ -258,22 +251,14 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     if ($table_data = get_table_prefix()) {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM USER USER ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = USER.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID IN (0)) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
-        $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
+        $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ";
+        $sql.= "ON (USER.UID = VISITOR_LOG.UID) ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     }else {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
-        $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
-        $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
+        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
     }
 
     $result = db_query($sql, $db_user_get_all);

@@ -526,7 +526,6 @@ A {
 .subhead {
       font-family: Verdana, Arial, Helvetica, sans-serif;
       font-size: 10pt;
-      'font-weight: bold;'
       color: #FFFFFF;
       background-color: #7B537B;
       border-top-width: 0px;
@@ -535,7 +534,8 @@ A {
       border-left-width: 0px
 }
 
-.bhinputtext, .bhtextarea, .bhselect {
+.bhinputtext, .bhtextarea, .bhselect, .logon_dropdown,
+.search_dropdown, .banned_dropdown, .links_dropdown {
       font-family: Verdana, Arial, Helvetica, sans-serif;
       font-size: 9pt;
       color: #000000;
@@ -752,16 +752,6 @@ A {
 }
 
 .links_dropdown {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 9pt;
-    color: #000000;
-    background-color: #FFFFFF;
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    padding-left: 2px;
-    border-style: inset;
     width: 290px;
 }
 
@@ -801,16 +791,6 @@ A {
 }
 
 .post_to_others {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 9pt;
-    color: #000000;
-    background-color: #FFFFFF;
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    padding-left: 2px;
-    border-style: inset;
     width: 190px;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.156 2005-02-14 23:34:43 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.157 2005-02-17 22:58:13 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -418,7 +418,11 @@ function get_request_uri($rawurlencode = false)
     $request_uri = "{$_SERVER['PHP_SELF']}?";
 
     foreach ($_GET as $key => $value) {
-        $request_uri.= "{$key}=". rawurlencode($value). "&amp;";
+        $request_uri.= "{$key}=". rawurlencode($value). "&";
+    }
+
+    if (substr($request_uri, -1) == '&') {
+        $request_uri = substr($request_uri, 0, -1);
     }
 
     // Fix the slashes for forum running from sub-domain.

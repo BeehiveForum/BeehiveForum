@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.48 2005-01-28 23:50:30 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.49 2005-02-17 22:58:12 decoyduck Exp $ */
 
 // Beehive Version
 
@@ -38,7 +38,13 @@ define("HOUR_IN_SECONDS", 3600);
 define("DB_RESULT_ASSOC", 1);
 define("DB_RESULT_NUM",   2);
 define("DB_RESULT_BOTH",  3);
-define("DB_ER_NO_SUCH_TABLE", 1146);
+
+// Some custom error codes for database connectivity
+
+define("DB_ER_NO_EXTENSION",  1000);
+define("DB_ER_NO_SUCH_HOST",  1001);
+define("DB_ER_NO_SUCH_DBASE", 1002);
+define("DB_ER_NO_SUCH_TABLE", 1003);
 
 // Constants for user permissions
 

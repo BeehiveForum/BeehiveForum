@@ -90,7 +90,7 @@ if (bh_session_check()) {
 
     // Check to see if the user has visited before and logged in.
 
-    if (!isset($HTTP_COOKIE_VARS['bh_logon']) && $auto_logon) {
+    if (!isset($HTTP_COOKIE_VARS['bh_logon']) && isset($auto_logon)) {
 
         bh_session_init(0); // auto login as guest
 

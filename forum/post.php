@@ -399,15 +399,6 @@ if(!isset($t_threadtitle)){
     $t_threadtitle = "";
 }
 
-$reply_message = messages_get($reply_to_tid, $reply_to_pid);
-$reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
-
-if((!isset($message['CONTENT']) || $message['CONTENT'] == "") && $newthread) {
-    echo "<h2>Message has been deleted.</h2>\n";
-    html_draw_bottom();
-    exit;
-}
-
 if($newthread) {
 
     echo "<table>\n";
@@ -422,9 +413,22 @@ if($newthread) {
     
 }else{
 
-    echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
-    echo form_input_hidden("t_tid",$reply_to_tid);
-    echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
+    $reply_message = messages_get($reply_to_tid, $reply_to_pid);
+    $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
+
+    if (!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") {
+    
+      echo "<h2>Message has been deleted.</h2>\n";
+      html_draw_bottom();
+      exit;
+    
+    }else {
+
+      echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
+      echo form_input_hidden("t_tid",$reply_to_tid);
+      echo form_input_hidden("t_rpid",$reply_to_pid)."</td></tr>\n";
+      
+    }
     
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.29 2003-09-24 13:45:01 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.30 2003-10-10 21:25:00 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -113,31 +113,38 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 
     if (isset($HTTP_POST_VARS['t_recipient_list']) && trim($HTTP_POST_VARS['t_recipient_list']) != "") {
 
-        $t_recipient_array = preg_split("/[;|,]/", trim($HTTP_POST_VARS['t_recipient_list']));
+        if ($valid) {
 
-        $t_new_recipient_array['TO_UID'] = array();
-        $t_new_recipient_array['LOGON']  = array();
-        $t_new_recipient_array['NICK']   = array();
+            $t_recipient_array = preg_split("/[;|,]/", trim($HTTP_POST_VARS['t_recipient_list']));
 
-        foreach ($t_recipient_array as $key => $t_recipient) {
+            $t_new_recipient_array['TO_UID'] = array();
+            $t_new_recipient_array['LOGON']  = array();
+            $t_new_recipient_array['NICK']   = array();
 
-            $to_logon = trim($t_recipient);
+            foreach ($t_recipient_array as $key => $t_recipient) {
 
-            if ($to_user = user_get_uid($to_logon)) {
-                if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
-                    $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
-                    $t_new_recipient_array['LOGON'][]  = ucfirst(strtolower($to_user['LOGON']));
-                    $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
+                $to_logon = trim($t_recipient);
+
+                if ($to_user = user_get_uid($to_logon)) {
+                    if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
+                        $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
+                        $t_new_recipient_array['LOGON'][]  = ucfirst(strtolower($to_user['LOGON']));
+                        $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
+                    }
+
+                }elseif ($valid) {
+
+                    $error_html = "<h2>{$lang['usernotfound1']} $to_logon {$lang['usernotfound2']}</h2>\n";
+                    $valid = false;
                 }
-
-            }elseif ($valid) {
-
-                $error_html = "<h2>{$lang['usernotfound1']} $to_logon {$lang['usernotfound2']}</h2>\n";
-                $valid = false;
             }
-        }
 
-        $t_recipient_list = implode('; ', $t_new_recipient_array['LOGON']);
+            $t_recipient_list = implode('; ', $t_new_recipient_array['LOGON']);
+
+        }else {
+
+            $t_recipient_list = $HTTP_POST_VARS['t_recipient_list'];
+        }
 
         if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
             $error_html = "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
@@ -262,6 +269,14 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 }
 
+// PM link from profile
+
+if (isset($HTTP_GET_VARS['uid'])) {
+
+    $to_user = user_get($HTTP_GET_VARS['uid']);
+    $t_recipient_list = ucfirst(strtolower($to_user['LOGON']));
+}
+
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"posthead\">&nbsp;<b>{$lang['privatemessages']}: {$lang['writepm']}</b></td>\n";
@@ -278,7 +293,7 @@ if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
     $t_content = isset($t_content) ? _stripslashes($t_content) : "";
 }
 
-echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
 echo "<table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.35 2003-09-24 13:21:05 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.36 2003-10-10 21:25:00 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -166,8 +166,15 @@ foreach ($user_profile_array as $profile_entry) {
 
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">", $field_name, "</td>\n";
-        echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">", isset($field_values[$profile_entry['ENTRY']]) ? $field_values[$profile_entry['ENTRY']] : "", "</td>\n";
+
+        if (isset($profile_entry['ENTRY']) && isset($field_values[$profile_entry['ENTRY']])) {
+            echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">{$field_values[$profile_entry['ENTRY']]}</td>\n";
+        }else {
+            echo "                  <td width=\"67%\" class=\"posthead\" valign=\"top\">&nbsp;</td>\n";
+        }
+
         echo "                </tr>\n";
+
     }else {
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" width=\"33%\" valign=\"top\">" . $profile_entry['NAME'] . "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.129 2004-10-07 18:18:42 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.130 2004-10-07 21:55:36 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -162,6 +162,14 @@ function bh_session_check($add_guest_sess = true)
                     $sql.= "AND FID = '$fid'";
 
                     $result = db_query($sql, $db_bh_session_check);
+
+                    if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
+                        update_stats();
+                    }
+
+                    // Perform system-wide PM Prune
+
+                    pm_system_prune_folders();
                 }
 
             }else {
@@ -177,6 +185,14 @@ function bh_session_check($add_guest_sess = true)
                     $sql.= "TIME = NOW() WHERE HASH = '$user_hash'";
 
                     $result = db_query($sql, $db_bh_session_check);
+
+                    if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
+                        update_stats();
+                    }
+
+                    // Perform system-wide PM Prune
+
+                    pm_system_prune_folders();
                 }
             }
 
@@ -186,14 +202,6 @@ function bh_session_check($add_guest_sess = true)
             $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
             db_query($sql, $db_bh_session_check);
-
-            if (forum_get_setting('show_stats', 'Y', false) && $table_data) {
-                update_stats();
-            }
-
-            // Perform system-wide PM Prune
-
-            pm_system_prune_folders();
 
             return $user_sess;
 

@@ -163,7 +163,13 @@ $birthday_years  = array_merge(array(' '), range(1900 + (date('Y', mktime()) - 2
 
 // Split the DOB into usable variables.
 
-@list($dob_year, $dob_month, $dob_day) = explode('-', $user_prefs['DOB']);
+if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_prefs['DOB'])) {
+    list($dob_year, $dob_month, $dob_day) = explode('-', $user_prefs['DOB']);
+}else {
+    $dob_year = 0;
+    $dob_month = 0;
+    $dob_day = 0;
+}
 
 // Start output here
 

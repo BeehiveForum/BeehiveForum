@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.38 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.39 2004-12-20 23:37:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -185,6 +185,14 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
+if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch']))) > 0) {
+    $usersearch = trim(_stripslashes($_GET['usersearch']));
+}else if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
+    $usersearch = trim(_stripslashes($_POST['usersearch']));
+}else {
+    $usersearch = "";
+}
+
 // Any error messages to display?
 
 if (!empty($error_html)) {
@@ -201,11 +209,7 @@ echo "<form name=\"prefs\" action=\"edit_relations.php\" method=\"post\" target=
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
-
-if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
-    echo "  ", form_input_hidden("usersearch", trim(_stripslashes($_POST['usersearch']))), "\n";
-}
-
+echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -262,7 +266,7 @@ if (sizeof($user_peers['user_array']) > 0) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start_main, $user_peers['user_count'], 20, "main_page"), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&search_page=$search_page", $start_main, $user_peers['user_count'], 20, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
@@ -276,9 +280,7 @@ echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
 
-if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch']))) > 0) {
-
-    $usersearch = trim(_stripslashes($_POST['usersearch']));
+if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
     echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
@@ -345,7 +347,7 @@ if (isset($_POST['usersearch']) && strlen(trim(_stripslashes($_POST['usersearch'
         echo "      <td>&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td>&nbsp;</td>\n";
@@ -364,6 +366,7 @@ echo "<form method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
+echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";

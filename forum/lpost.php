@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.64 2005-03-08 22:50:50 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.65 2005-03-12 13:26:54 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -521,7 +521,7 @@ if ($newthread) {
 
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
-echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "&nbsp;", light_form_submit("submit",$lang['post']), "</p>\n";
+echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
@@ -533,9 +533,9 @@ if ($allow_html == true) {
         $tph_radio = $post->getHTML();
 
         echo "<p>{$lang['htmlinmessage']}:<br />\n";
-        echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0)." \n";
-        echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-        echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0), "<br />\n";
+        echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1), "<br />\n";
+        echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2), "<br />\n";
         echo "</p>";
 
 } else {
@@ -567,6 +567,8 @@ if (!$newthread && $reply_to_pid > 0) {
         light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
     }
 }
+
+echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
 
 light_html_draw_bottom();
 

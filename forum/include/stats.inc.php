@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.47 2005-02-09 23:50:25 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.48 2005-02-14 23:34:43 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -78,7 +78,7 @@ function get_num_sessions()
 
     $sessions_array = array();
 
-    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
+    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $sql = "SELECT COUNT(UID) AS USER_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
@@ -104,7 +104,7 @@ function get_active_users()
 
     if (!$table_data = get_table_prefix()) return $stats;
 
-    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
+    $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $uid = bh_session_get_value('UID');
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.327 2005-02-14 23:09:20 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.328 2005-02-14 23:34:43 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -181,6 +181,19 @@ function message_apply_wikilinks($content)
 
                 $content = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\">\\1</a>", $content);
             }
+        }
+    }
+
+    if (forum_get_setting('enable_wiki_quick_links', 'Y', false)) {
+
+        if (preg_match("/<div class=\"sig\">/", $content)) {
+
+            $content_array = preg_split("/<div class=\"sig\">/", $content);
+            $content = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\">\\1</a>", $content_array[0]);
+            $content = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\">\\1</a>", $content);
+            $content.= "<div class=\"sig\">{$content_array[1]}";
+
+        }else {
 
             $content = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\">\\1</a>", $content);
             $content = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\">\\1</a>", $content);

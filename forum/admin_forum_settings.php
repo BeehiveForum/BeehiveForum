@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.56 2005-02-09 21:45:33 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.57 2005-02-14 23:34:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -190,6 +190,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['enable_wiki_integration'] = "Y";
     }else {
         $new_forum_settings['enable_wiki_integration'] = "N";
+    }
+
+    if (isset($_POST['enable_wiki_quick_links']) && $_POST['enable_wiki_quick_links'] == "Y") {
+        $new_forum_settings['enable_wiki_quick_links'] = "Y";
+    }else {
+        $new_forum_settings['enable_wiki_quick_links'] = "N";
     }
 
     if (isset($_POST['wiki_integration_uri']) && strlen(trim(_stripslashes($_POST['wiki_integration_uri']))) > 0) {
@@ -366,11 +372,11 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['requirepostapproval']}</td>\n";
+echo "                        <td width=\"220\">{$lang['requirepostapproval']}:</td>\n";
 echo "                        <td>", form_radio("require_post_approval", "Y", $lang['yes'], (isset($forum_settings['require_post_approval']) && $forum_settings['require_post_approval'] == "Y")), "&nbsp;", form_radio("require_post_approval", "N", $lang['no'], (isset($forum_settings['require_post_approval']) && $forum_settings['require_post_approval'] == "N") || !isset($forum_settings['require_post_approval'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['allowpostoptions']}</td>\n";
+echo "                        <td width=\"220\">{$lang['allowpostoptions']}:</td>\n";
 echo "                        <td>", form_radio("allow_post_editing", "Y", $lang['yes'], (isset($forum_settings['allow_post_editing']) && $forum_settings['allow_post_editing'] == "Y")), "&nbsp;", form_radio("allow_post_editing", "N", $lang['no'], (isset($forum_settings['allow_post_editing']) && $forum_settings['allow_post_editing'] == "N") || !isset($forum_settings['allow_post_editing'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -412,8 +418,12 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['enablewikiintegration']}</td>\n";
+echo "                        <td width=\"220\">{$lang['enablewikiintegration']}:</td>\n";
 echo "                        <td>", form_radio("enable_wiki_integration", "Y", $lang['yes'], (isset($forum_settings['enable_wiki_integration']) && $forum_settings['enable_wiki_integration'] == "Y")), "&nbsp;", form_radio("enable_wiki_integration", "N", $lang['no'], (isset($forum_settings['enable_wiki_integration']) && $forum_settings['enable_wiki_integration'] == "N") || !isset($forum_settings['enable_wiki_integration'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"220\">{$lang['enablewikiquicklinks']}:</td>\n";
+echo "                        <td>", form_radio("enable_wiki_quick_links", "Y", $lang['yes'], (isset($forum_settings['enable_wiki_quick_links']) && $forum_settings['enable_wiki_quick_links'] == "Y")), "&nbsp;", form_radio("enable_wiki_quick_links", "N", $lang['no'], (isset($forum_settings['enable_wiki_quick_links']) && $forum_settings['enable_wiki_quick_links'] == "N") || !isset($forum_settings['enable_wiki_quick_links'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['wikiintegrationuri']}:</td>\n";
@@ -423,6 +433,7 @@ echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_30']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_31']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_32']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -450,7 +461,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['enablelinkssection']}</td>\n";
+echo "                        <td width=\"220\">{$lang['enablelinkssection']}:</td>\n";
 echo "                        <td>", form_radio("show_links", "Y", $lang['yes'], (isset($forum_settings['show_links']) && $forum_settings['show_links'] == "Y")), "&nbsp;", form_radio("show_links", "N", $lang['no'], (isset($forum_settings['show_links']) && $forum_settings['show_links'] == "N") || !isset($forum_settings['show_links'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -483,7 +494,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['allowcreationofpolls']}</td>\n";
+echo "                        <td width=\"220\">{$lang['allowcreationofpolls']}:</td>\n";
 echo "                        <td>", form_radio("allow_polls", "Y", $lang['yes'], (isset($forum_settings['allow_polls']) && $forum_settings['allow_polls'] == "Y")), "&nbsp;", form_radio("allow_polls", "N", $lang['no'], (isset($forum_settings['allow_polls']) && $forum_settings['allow_polls'] == "N") || !isset($forum_settings['allow_polls'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -516,7 +527,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['enablestatsdisplay']}</td>\n";
+echo "                        <td width=\"220\">{$lang['enablestatsdisplay']}:</td>\n";
 echo "                        <td>", form_radio("show_stats", "Y", $lang['yes'], (isset($forum_settings['show_stats']) && $forum_settings['show_stats'] == "Y")), "&nbsp;", form_radio("show_stats", "N", $lang['no'], (isset($forum_settings['show_stats']) && $forum_settings['show_stats'] == "N") || !isset($forum_settings['show_stats'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -549,7 +560,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['allowsearchenginespidering']}</td>\n";
+echo "                        <td width=\"220\">{$lang['allowsearchenginespidering']}:</td>\n";
 echo "                        <td>", form_radio("allow_search_spidering", "Y", $lang['yes'], (isset($forum_settings['allow_search_spidering']) && $forum_settings['allow_search_spidering'] == "Y")), "&nbsp;", form_radio("allow_search_spidering", "N", $lang['no'], (isset($forum_settings['allow_search_spidering']) && $forum_settings['allow_search_spidering'] == "N") || !isset($forum_settings['allow_search_spidering'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -582,11 +593,11 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['enableguestaccount']}</td>\n";
+echo "                        <td width=\"220\">{$lang['enableguestaccount']}:</td>\n";
 echo "                        <td>", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "Y")), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "N") || !isset($forum_settings['guest_account_enabled'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['autologinguests']}</td>\n";
+echo "                        <td width=\"220\">{$lang['autologinguests']}:</td>\n";
 echo "                        <td>", form_radio("auto_logon", "Y", $lang['yes'], (isset($forum_settings['auto_logon']) && $forum_settings['auto_logon'] == "Y")), "&nbsp;", form_radio("auto_logon", "N", $lang['no'], (isset($forum_settings['auto_logon']) && $forum_settings['auto_logon'] == "N") || !isset($forum_settings['auto_logon'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

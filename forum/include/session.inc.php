@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.155 2005-02-09 21:45:34 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.156 2005-02-14 23:34:43 decoyduck Exp $ */
 
 include_once("./include/banned.inc.php");
 include_once("./include/db.inc.php");
@@ -49,7 +49,7 @@ function bh_session_check()
 
     // Session cut off timestamp
 
-    $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
+    $session_stamp = time() - intval(forum_get_setting('session_cutoff', false, 86400));
 
     // Check the current user's session data. This is the main session
     // data that Beehive relies on. If this data does not match what

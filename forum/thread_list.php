@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.150 2003-11-09 19:18:54 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.151 2003-11-12 21:09:51 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -54,7 +54,9 @@ header_no_cache();
 
 // Check that required variables are set
 if (bh_session_get_value('UID') == 0) {
+
     $user = 0; // default to UID 0 if no other UID specified
+
     if (!isset($HTTP_GET_VARS['mode'])) {
         if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
             $mode = 0;
@@ -69,7 +71,9 @@ if (bh_session_get_value('UID') == 0) {
             $mode = 0;
         }
     }
+
 } else {
+
     $user = bh_session_get_value('UID');
 
     if (isset($HTTP_GET_VARS['markread'])) {
@@ -250,10 +254,10 @@ if (!is_array($folder_order)) $folder_order = array();
 if (isset($HTTP_GET_VARS['msg']) && strlen($HTTP_GET_VARS['msg']) > 0) {
 
     $threadvisible = false;
-
+    
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
 
-    if(thread_can_view($tid, bh_session_get_value('UID'))) {
+    if (thread_can_view($tid, bh_session_get_value('UID'))) {
 
         if ($thread = thread_get($tid)) {
 
@@ -275,17 +279,18 @@ if (isset($HTTP_GET_VARS['msg']) && strlen($HTTP_GET_VARS['msg']) > 0) {
 
                 array_unshift($folder_order, $thread['fid']);
 
+		if (!is_array($thread_info)) $thread_info = array();
+
                 for ($i = 0; $i < sizeof($thread_info); $i++) {
 
                     if ($thread_info[$i]['tid'] == $tid) {
                         $thread_info = array_merge(array_splice($thread_info, $i, 1), $thread_info);
-                        $threadvisible = true;
+			$threadvisible = true;
+			break;
                     }
-
                 }
 
-                if (!$threadvisible && is_array($thread_info)) array_unshift($thread_info, $thread);
-
+		if (!$threadvisible) array_unshift($thread_info, $thread);
             }
         }
     }

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.201 2004-06-13 20:02:10 decoyduck Exp $ */
+/* $Id: post.php,v 1.202 2004-06-25 14:33:57 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -377,7 +377,7 @@ if (!$newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator()) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
+    if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
 
         $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         $valid = false;

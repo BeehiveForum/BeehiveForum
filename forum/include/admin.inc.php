@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.39 2004-06-03 08:54:45 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.40 2004-06-25 14:33:57 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -31,7 +31,7 @@ function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
     $db_admin_addlog = db_connect();
     $admin_uid = bh_session_get_value('UID');
 
-    if (perm_is_moderator()) {
+    if (perm_is_moderator($fid)) {
 
         $uid    = addslashes($uid);
         $tid    = addslashes($tid);

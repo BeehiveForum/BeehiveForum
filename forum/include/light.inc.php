@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.50 2004-06-13 11:49:07 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.51 2004-06-25 14:33:57 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -81,7 +81,13 @@ function light_poll_confirm_close($tid)
 {
     $lang = load_language_file();
 
-    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator()) {
+    if (!$t_fid = thread_get_folder($tid, 1)) {
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        return;
+    }
+
+    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator($t_fid)) {
         edit_refuse($tid, 1);
         return;
     }
@@ -371,7 +377,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     }
 
     if (bh_session_get_value('UID') != $message['FROM_UID']) {
-      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator()) {
+      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
         light_message_display_deleted($tid, $message['PID']);
         return;
       }

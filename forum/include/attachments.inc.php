@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.66 2004-04-28 20:38:54 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.67 2004-06-25 14:33:57 decoyduck Exp $ */
 
 include_once("./include/edit.inc.php");
 include_once("./include/forum.inc.php");
@@ -202,56 +202,60 @@ function delete_attachment($hash)
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
 
-    $sql = "SELECT PAF.AID, PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ";
-    $sql.= "ON (PAI.AID = PAF.AID) WHERE PAF.HASH = '$hash' AND PAF.UID = '$uid'";
+    $sql = "SELECT PAF.AID, PAF.UID, PAI.TID, PAI.PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
+    $sql.= "WHERE PAF.HASH = '$hash'";
 
     $result = db_query($sql, $db_delete_attachment);
 
-    if (db_num_rows($result) > 0 || perm_is_moderator()) {
+    if (db_num_rows($result) > 0) {
 
         $row = db_fetch_array($result);
 
-	// Mark the related post as edited
+        if (($row['UID'] == $uid) || perm_is_moderator($row['FID'])) {
 
-	if (isset($row['TID']) && isset($row['PID'])) {
+   	    // Mark the related post as edited
 
-	    post_add_edit_text($row['TID'], $row['PID']);
+  	    if (isset($row['TID']) && isset($row['PID'])) {
 
-	    if (perm_is_moderator()) {
+	        post_add_edit_text($row['TID'], $row['PID']);
 
-	        admin_addlog(0, 0, $row['TID'], $row['TID'], 0, 0, 34);
+	        if (perm_is_moderator($row['FID'])) {
+
+	            admin_addlog(0, 0, $row['TID'], $row['TID'], 0, 0, 34);
+	        }
 	    }
-	}
 
-	// Delete the attachment record from the database
+	    // Delete the attachment record from the database
 
-	$sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-	$sql.= "WHERE HASH = '$hash'";
+	    $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+	    $sql.= "WHERE HASH = '$hash'";
 
-	$result = db_query($sql, $db_delete_attachment);
+	    $result = db_query($sql, $db_delete_attachment);
 
-	// Check to see if there are anymore attachments with the same AID
+	    // Check to see if there are anymore attachments with the same AID
 
-        $sql = "SELECT AID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-	$sql.= "WHERE AID = '{$row['AID']}'";
-
-	$result = db_query($sql, $db_delete_attachment);
-
-	// No more attachments connected to the AID, so we can remove it from
-	// the PAI database.
-
-	if (db_num_rows($result) == 0) {
-
-	    $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
+            $sql = "SELECT AID FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
 	    $sql.= "WHERE AID = '{$row['AID']}'";
 
 	    $result = db_query($sql, $db_delete_attachment);
+
+	    // No more attachments connected to the AID, so we can remove it from
+	    // the PAI database.
+
+	    if (db_num_rows($result) == 0) {
+
+	        $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
+	        $sql.= "WHERE AID = '{$row['AID']}'";
+
+	        $result = db_query($sql, $db_delete_attachment);
+	    }
+
+	    // Finally delete the file
+
+            @unlink("$attachment_dir/$hash");
 	}
-
-	// Finally delete the file
-
-        @unlink("$attachment_dir/$hash");
     }
 }
 
@@ -304,6 +308,30 @@ function get_attachment_id($tid, $pid)
 
         return false;
     }
+}
+
+function get_folder_fid($aid)
+{
+    $db_get_folder_fid = db_connect();
+
+    if (!is_md5($aid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT FOLDER.FID FROM PM_ATTACHMENT_IDS ";
+    $sql.= "LEFT JOIN THREAD THREAD ON (THREAD.TID = PM_ATTACHMENT_IDS.TID) ";
+    $sql.= "LEFT JOIN FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "WHERE PM_ATTCHMENT_IDS.AID = '$aid'";
+
+    $result = db_query($sql, $db_get_folder_fid);
+
+    if (db_num_rows($result) > 0) {
+
+        $folder_array = db_fetch_array($result);
+	return $folder_array['FID'];
+    }
+
+    return false;
 }
 
 function get_pm_attachment_id($mid)

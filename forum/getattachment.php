@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.39 2003-08-30 00:16:21 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.40 2003-09-06 18:18:47 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -29,7 +29,7 @@ require_once("./include/errorhandler.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
 
-if(!bh_session_check()){
+if (!bh_session_check()) {
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
@@ -41,7 +41,9 @@ require_once("./include/db.inc.php");
 require_once("./include/config.inc.php");
 
 if (!$attachments_enabled) {
-    header("HTTP/1.0 404 File Not Found");
+    html_draw_top();
+    echo "<h1>Attachments have been disabled by the forum owner.</h1>\n";
+    html_draw_bottom();
     exit;
 }
 

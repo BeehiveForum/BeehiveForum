@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.9 2003-09-06 18:09:30 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.10 2003-09-06 18:18:48 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -43,7 +43,11 @@ function ip_check()
     $result = db_query($sql, $db_ip_banned);
 
     if (db_num_rows($result) > 0) {
-        header("HTTP/1.0 500 Internal Server Error");
+        if (!strstr(php_sapi_name(), 'cgi')) {
+            header("HTTP/1.0 500 Internal Server Error");
+        }else {
+            echo "<h1>HTTP/1.0 500 Internal Server Error</h1>\n";
+        }
         exit;
     }
 }

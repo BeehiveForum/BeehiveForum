@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.16 2003-08-24 16:39:43 decoyduck Exp $ */
+/* $Id: display.php,v 1.17 2003-08-31 17:17:49 hodcroftcj Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -74,7 +74,7 @@ if (!thread_can_view($tid, bh_session_get_value('UID'))) {
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 // Output XHTML header
-html_draw_top("openprofile.js");
+html_draw_top("basetarget=_blank", "openprofile.js");
 
 $message = messages_get($tid,$pid,1);
 $threaddata = thread_get($tid);

@@ -183,8 +183,6 @@ echo "<table class=\"posthead\" width=\"100%\">\n";
 
 if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
 
-  // Still support the old cookie method
-
   echo "<tr>\n";
   echo "  <td align=\"right\">User Name:</td>\n";
   echo "  <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user']). "</td>\n";

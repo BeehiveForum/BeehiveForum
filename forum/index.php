@@ -92,4 +92,10 @@ if(bh_session_check()) {
 
 ?>
 </frameset>
+<noframes>
+<body>
+<h1>Oops, your browser says it doesn't support frames</h1>
+<p>You need to use the light HTML version of the forum <a href="llogon.php">here</a>.</p>
+</body>
+</noframes>
 </html>

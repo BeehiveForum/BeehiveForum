@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.84 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.85 2004-11-14 17:20:58 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -291,6 +291,14 @@ if (isset($_POST['preview']) || isset($_POST['submit'])) {
     if ($valid && $t_poll_type == 2 && $t_change_vote == 2) {
         $error_html = "<h2>{$lang['nomultivotetabulars']}</h2>";
         $valid = false;
+    }
+
+}else if (isset($_POST['change_count'])) {
+
+    if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
+        $t_answer_count = $_POST['answer_count'];
+    }else {
+        $t_answer_count = 5;
     }
 }
 
@@ -630,7 +638,7 @@ if (isset($t_answer_count)) {
 
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), $answer_selection), "&nbsp;", form_submit('changecount', $lang['change']) , "</td>\n";
+echo "                  <td>{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), $answer_selection), "&nbsp;", form_submit('change_count', $lang['change']) , "</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";

@@ -97,6 +97,11 @@ function fix_html($html, $bad_tags = array("plaintext"))
 		if($i%2){
 			if(substr($html_parts[$i],0,1) == "/"){ // closing tag
 				$tag_bits = explode(" ", strtolower(substr($html_parts[$i],1)));
+
+				if(substr($tag_bits[0], -1) == "/"){
+					$tag_bits[0] = substr($tag_bits[0], 0, -1);
+				}
+
 				$tag = $tag_bits[0];
 
 				// filter 'bad' tags

@@ -21,10 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.46 2004-04-19 02:02:11 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.47 2004-04-19 20:06:01 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
-include_once("./include/lang.inc.php");
 
 define("FATAL", E_USER_ERROR);
 define("ERROR", E_USER_WARNING);
@@ -38,8 +37,6 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
     if (error_reporting()) {
 
-        global $lang;
-
         srand((double)microtime()*1000000);
 
         @ob_end_clean();
@@ -51,34 +48,34 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
-            echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), " - Error Handler</title>\n";
+            echo "<title>Beehive Forum - Error Handler</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
             echo "</head>\n";
             echo "<body>\n";
-            echo "<p>{$lang['errorpleasewaitandretry']}</p>\n";
+            echo "<p>An error has occured. Please wait a few minutes and then click the Retry button below.</p>\n";
             echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
 
             foreach ($_POST as $key => $value) {
                 echo "<input type=\"hidden\" name=\"$key}\" value=\"", _htmlentities($value), "\">\n";
             }
 
-            echo "<input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"{$lang['retry']}\" />\n";
+            echo "<input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"Retry\" />\n";
 
             if (isset($_GET['retryerror']) && basename($_SERVER['PHP_SELF']) == 'post.php') {
 
-                echo "<p>{$lang['multipleerroronpost']}</p>\n";
+                echo "<p>This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</p>\n";
                 echo "<textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea>\n";
 
                 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
-                    echo "<p>{$lang['replymsgnumber']}:</p>\n";
+                    echo "<p>Reply Message Number:</p>\n";
                     echo "<input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\">\n";
 
                 }
 
             }
 
-            echo "<h2>{$lang['errormsgfordevs']}:</h2>\n";
+            echo "<h2>Error Message for server admins and developers:</h2>\n";
 
             switch ($errno) {
 
@@ -113,7 +110,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
-            echo "<title>", forum_get_setting('forum_name', false, 'A Beehive Forum'), " - Error Handler</title>\n";
+            echo "<title>Beehive Forum - Error Handler</title>\n";
             echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
             echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
             echo "<link rel=\"stylesheet\" href=\"styles/default/style.css\" type=\"text/css\" />\n";
@@ -126,7 +123,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "    <td>\n";
             echo "      <table border=\"0\" width=\"100%\">\n";
             echo "        <tr>\n";
-            echo "          <td class=\"postbody\">{$lang['errorpleasewaitandretry']}</td>\n";
+            echo "          <td class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
             echo "          <td>\n";
@@ -138,7 +135,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          </td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"{$lang['retry']}\" /></td>\n";
+            echo "          <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(rand())), "\" value=\"Retry\" /></td>\n";
             echo "        </tr>\n";
 
             if (isset($_GET['retryerror']) && basename($_SERVER['PHP_SELF']) == 'post.php') {
@@ -150,7 +147,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 echo "          <td><hr /></td>\n";
                 echo "        </tr>\n";
                 echo "        <tr>\n";
-                echo "          <td class=\"postbody\">{$lang['multipleerroronpost']}</td>\n";
+                echo "          <td class=\"postbody\">This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
                 echo "        </tr>\n";
                 echo "        <tr>\n";
                 echo "          <td>&nbsp;</td>\n";
@@ -165,7 +162,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                     echo "          <td>&nbsp;</td>\n";
                     echo "        </tr>\n";
                     echo "        <tr>\n";
-                    echo "          <td class=\"postbody\">{$lang['replymsgnumber']}:</td>\n";
+                    echo "          <td class=\"postbody\">Reply Message Number:</td>\n";
                     echo "        </tr>\n";
                     echo "        <tr>\n";
                     echo "          <td><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\"></td>\n";
@@ -182,7 +179,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "          <td><hr /></td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td><h2>{$lang['errormsgfordevs']}:</h2></td>\n";
+            echo "          <td><h2>Error Message for server admins and developers:</h2></td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
             echo "          <td class=\"postbody\">\n";
@@ -190,10 +187,10 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 	    if ($errstr == BH_DB_CONNECT_ERROR) {
 
                 echo "            <p><b>FATAL</b> [$errno]</p>\n";
-                echo "            <p>{$lang['db_connect_error_1']}</p>\n";
-                echo "            <p>{$lang['db_connect_error_2']}</p>\n";
+                echo "            <p>An error has occured while connecting to the database.</p>\n";
+                echo "            <p>If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:</p>\n";
 		echo "            <pre>\$db_server<br />\$db_username<br />\$db_password<br />\$db_database</pre>\n";
-                echo "            <p>{$lang['db_connect_error_3']}</p>\n";
+                echo "            <p>They should be set to the database details given to you by your hosting provider.</p>\n";
 
 	    }else {
 

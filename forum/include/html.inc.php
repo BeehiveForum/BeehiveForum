@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.100 2004-04-17 20:06:59 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.101 2004-04-19 20:06:02 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -29,12 +29,12 @@ include_once("./include/session.inc.php");
 function html_guest_error ()
 {
      global $lang;
-     
+
      html_draw_top();
-     
+
      $webtag = get_webtag();
      $final_uri = rawurlencode(get_request_uri());
-     
+
      echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
      echo "&final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
      html_draw_bottom();
@@ -43,7 +43,7 @@ function html_guest_error ()
 function html_poll_edit_error ()
 {
     global $lang;
-    
+
     html_draw_top();
     echo "<h1>{$lang['pollediterror']}</h1>";
     html_draw_bottom();
@@ -52,7 +52,7 @@ function html_poll_edit_error ()
 function html_message_type_error()
 {
     global $lang;
-    
+
     html_draw_top();
     echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
     html_draw_bottom();
@@ -126,7 +126,7 @@ function html_message_type_error()
 function html_draw_top()
 {
     global $lang;
-    
+
     $onload_array = array();
     $onunload_array = array();
     $arg_array = func_get_args();
@@ -161,7 +161,7 @@ function html_draw_top()
             $onunload_array[] = substr($func_args, 9);
             unset($arg_array[$key]);
         }
-        
+
         if (preg_match("/^refresh=/i", $func_args)) {
             $meta_refresh = substr($func_args, 8);
             unset($arg_array[$key]);
@@ -179,7 +179,7 @@ function html_draw_top()
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
-    
+
     if ($meta_refresh) {
         echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
     }
@@ -214,20 +214,20 @@ function html_draw_top()
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
     $fontsize = bh_session_get_value('FONT_SIZE');
-    
+
     if ($fontsize && $fontsize != '10') {
         echo "<style type=\"text/css\">@import \"fontsize.php?webtag=$webtag\";</style>\n";
     }
-    
+
     if (isset($_GET['fontresize'])) {
-       
+
         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
         echo "<!--\n\n";
         echo "top.document.body.rows='60,' + $fontsize * 2 + ',*';\n";
 	echo "top.frames['main'].frames['left'].location.reload();\n";
 	echo "top.frames['fnav'].location.reload();\n\n";
         echo "//-->\n";
-        echo "</script>\n";	
+        echo "</script>\n";
     }
 
     if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php')) {
@@ -285,20 +285,26 @@ function style_image($img)
 
 function bh_setcookie($name, $value = "", $expires = 0)
 {
-    /*if (isset($_SERVER['HTTP_HOST'])) {
+    global $cookie_domain;
+
+    $hostname = "";
+
+    if (isset($_SERVER['HTTP_HOST']) && strlen(trim($_SERVER['HTTP_HOST'])) > 0) {
 
         $hostname = $_SERVER['HTTP_HOST'];
-        $cookie_domain = forum_get_setting('cookie_domain', false, $hostname);
 
-        if (strstr($cookie_domain, $hostname) && strlen($cookie_domain) > 0) {
-            $hostname = $cookie_domain;
+        if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0) {
+
+            if (strstr($cookie_domain, $hostname)) {
+                $hostname = $cookie_domain;
+            }
         }
-    
+
         if (!strstr($hostname, 'localhost')) {
-            
+
             $hostname = str_replace("www", "", $hostname);
             $hostname = str_replace("http://", "", $hostname);
-            
+
             if (substr($hostname, 0, 1) != ".") {
                 $hostname = ".{$hostname}";
             }
@@ -308,9 +314,7 @@ function bh_setcookie($name, $value = "", $expires = 0)
 	}
     }
 
-    setcookie($name, $value, $expires, '/'); */
-    
-    setcookie($name, $value, $expires);
+    setcookie($name, $value, $expires, '/', $hostname, 0);
 }
 
 ?>

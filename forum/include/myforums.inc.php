@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.23 2004-04-18 15:23:58 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.24 2004-04-19 20:06:02 decoyduck Exp $ */
 
 require_once("./include/html.inc.php");
 require_once("./include/threads.inc.php");
@@ -29,7 +29,7 @@ require_once("./include/threads.inc.php");
 function get_forum_list()
 {
     global $lang;
-    
+
     $db_get_forum_list = db_connect();
     $get_forum_list_array = array();
 
@@ -42,11 +42,11 @@ function get_forum_list()
     $sql.= "AND USER_FORUM.ALLOWED = 1) ";
     $sql.= "ORDER BY FORUMS.FID";
 
-    $result_forums = db_query($sql, $db_get_forum_list); 
+    $result_forums = db_query($sql, $db_get_forum_list);
 
     if (db_num_rows($result_forums)) {
 
-        while ($forum_data = db_fetch_array($result_forums)) {  
+        while ($forum_data = db_fetch_array($result_forums)) {
 
             $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
             $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
@@ -57,27 +57,27 @@ function get_forum_list()
 
 	        $row = db_fetch_array($result_forum_name);
 	        $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
-	
+
 	    }else {
 
 	        $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
 	    }
-        
+
             // Get number of messages on forum
 
             $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
             $result_post_count = db_query($sql, $db_get_forum_list);
-        
+
             if (db_num_rows($result_post_count)) {
-        
+
                 $row = db_fetch_array($result_post_count);
                 $forum_data['MESSAGES'] = $row['POST_COUNT'];
-        
+
             }else {
-        
+
                 $forum_data['MESSAGES'] = 0;
             }
-        
+
             $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
             $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
             $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
@@ -85,12 +85,12 @@ function get_forum_list()
             $result_description = db_query($sql, $db_get_forum_list);
 
             if (db_num_rows($result_description)) {
-            
+
                 $row = db_fetch_array($result_description);
                 $forum_data['DESCRIPTION'] = $row['SVALUE'];
-            
+
             }else{
-            
+
                 $forum_data['DESCRIPTION'] = "";
             }
 
@@ -106,7 +106,7 @@ function get_forum_list()
 function get_my_forums()
 {
     global $lang;
-    
+
     $db_get_my_forums = db_connect();
 
     $get_my_forums_array = array('FAV_FORUMS'    => array(),
@@ -122,11 +122,11 @@ function get_my_forums()
     $sql.= "AND USER_FORUM.ALLOWED = 1) ";
     $sql.= "ORDER BY FORUMS.FID";
 
-    $result_forums = db_query($sql, $db_get_my_forums); 
+    $result_forums = db_query($sql, $db_get_my_forums);
 
     if (db_num_rows($result_forums)) {
 
-        while ($forum_data = db_fetch_array($result_forums)) {  
+        while ($forum_data = db_fetch_array($result_forums)) {
 
             $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
             $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
@@ -137,7 +137,7 @@ function get_my_forums()
 
 	        $row = db_fetch_array($result_forum_name);
 	        $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
-	
+
 	    }else {
 
 	        $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
@@ -153,8 +153,7 @@ function get_my_forums()
 
             $folders = threads_get_available_folders();
 
-            $sql = "SELECT COUNT(*) AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_POST POST ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_THREAD THREAD ON (THREAD.TID = POST.TID) ";
+            $sql = "SELECT COUNT(*) AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
 	    $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ON ";
             $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
@@ -164,9 +163,9 @@ function get_my_forums()
 
 	    $row = db_fetch_array($result_post_count);
 	    $forum_data['UNREAD_MESSAGES'] = $row['UNREAD_MESSAGES'];
-        
+
             // Get unread to me message count
-        
+
             $sql = "SELECT COUNT(*) AS UNREAD_TO_ME FROM {$forum_data['WEBTAG']}_POST POST ";
             $sql.= "WHERE TO_UID = '$uid' AND VIEWED IS NULL";
 
@@ -174,27 +173,27 @@ function get_my_forums()
 
             $row = db_fetch_array($result_unread_to_me);
 	    $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
-        
+
             // Get Last Visited
-        
+
             $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
             $sql.= "FROM VISITOR_LOG WHERE FID = {$forum_data['FID']} ";
             $sql.= "AND UID = '$uid'";
 
             $result_last_visit = db_query($sql, $db_get_my_forums);
-         
+
             if (db_num_rows($result_last_visit)) {
-        
+
                 $row = db_fetch_array($result_last_visit);
                 $forum_data['LAST_LOGON'] = $row['LAST_LOGON'];
-        
+
             }else{
-        
+
                 $forum_data['LAST_LOGON'] = 0;
             }
 
             // Get Forum Description
-        
+
             $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
             $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
             $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
@@ -202,12 +201,12 @@ function get_my_forums()
             $result_description = db_query($sql, $db_get_my_forums);
 
             if (db_num_rows($result_description)) {
-            
+
                 $row = db_fetch_array($result_description);
                 $forum_data['DESCRIPTION'] = $row['SVALUE'];
-            
+
             }else{
-            
+
                 $forum_data['DESCRIPTION'] = "";
             }
 
@@ -246,7 +245,7 @@ function user_set_forum_interest($fid, $interest)
 
         $sql = "UPDATE USER_FORUM SET INTEREST = '$interest' ";
         $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
-    
+
     }else {
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";

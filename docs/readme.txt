@@ -1,6 +1,6 @@
 Beehive Forum Readme
 
-Version 0.3 / 11th February 2003
+Version 0.4 / 8th November 2003
 
 A list of changes since previous Beehive versions can be found in release.txt.
 
@@ -20,10 +20,11 @@ A list of changes since previous Beehive versions can be found in release.txt.
     1.3.1    Stylesheet
     1.3.2    Images
     1.3.3    The top frame
-  1.4    Upgrading from 0.2
+  1.4    Upgrading from 0.3 to 0.4
     1.4.1    Update the database
     1.4.2    Update the config file
-  1.5    Upgrading from 0.1
+  1.5    Upgrading from 0.2 to 0.3
+  1.6    Upgrading from 0.1 / 0.1.1 to 0.2
 
 2.    Known Issues
 
@@ -43,7 +44,7 @@ A list of changes since previous Beehive versions can be found in release.txt.
 1.1 Requirements
 ================
 You need web hosting which provides:
-  - PHP 4.x (tested on 4.0.6, 4.1.x, 4.2.x, and 4.3.0) and
+  - PHP 4.x (tested on 4.0.6, 4.1.x, 4.2.x, 4.3.0 and 4.3.3) and
   - MySQL 3.5 or above (must support compound AUTO_INCREMENT).
 
 
@@ -99,11 +100,50 @@ Change $forum_email to a reasonable email address which your notification will
 be "from". You may want to make this "noreply@yourdomain.com", just in case some
 of your users take it upon themselves to reply to it.
 
+That's all you need to do to get the forum running - however, you can read on for
+more information on other things you can change.
+
 Change $default_style to the name of the style you want as the default for your
 forum. See section 1.3, Customising Beehive, for more info.
 
-That's all you need to do to get the forum running - however, you can read on for
-more information on other things you can change.
+As of 0.4 Beehive supports I18N language selection based on the client browser
+HTTP_ACCEPT_LANGUAGE header. The $default_language setting is the language file
+that Beehive should fall back to if the language specified by the client is not
+available. It should be set to the filename (sans the .inc.php part of the
+filename - i.e. en for en.inc.php).
+
+When $show_friendly_errors is set to true Beehive will implement it's own error
+handler which will be used to show friendly error messages rather than PHP's own
+error messages. Unfortunately this setting can cause problems with certain
+server configurations / PHP versions, so if you encounter any problems (blank
+pages for example) it is recommended that you try and disable this option.
+
+The $cookie_domain setting is designed for use in a multiple subdomain environ-
+ment, where the forum installation is accessible from multiple addresses. For
+example, if your forum is accessible from both http://forum.mydomain.com/ and
+http://www.mydomain.com/forum, you could set the $cookie_domain setting as
+".mydomain.com" and this would then allow people to visit either address with
+out having to login more than once per session.
+
+With 0.4, Beehive Forum includes some basic stats such as a current active user
+list and highest post count. If you do not want your users to be able to make
+use of such a setting (they can configure it themselves to be hidden if they wish)
+you can set this variable to false.
+
+$show_links makes the links section available. If you don't want to make use of
+the links page you can set this variable to false.
+
+Beehive 0.4 includes the ability to have Guests logged in automatically as per
+Delphi.com. By default this is enabled, but if you don't want this functionality you
+can set the $auto_logon variable to false and users will be forced to the login
+page. This setting relies on the $guest_account_enabled variable which is detailed
+below.
+
+Personal Messages are now possible in Beehive. If you do not want your users to be
+able to send PMs, you can set the $show_pms to false. In addition to this you can
+also set the $pm_allow_attachment variable to false if you do not want your users
+to be able to add attachments to their PMs. The $pm_allow_attachment is dependant
+on the $attachments_enabled variable which is detailed below.
 
 $maximum_post_length: this limits the amount of a post that will be displayed in
 the message list, not the maximum possible size of posts. That's unlimited.
@@ -116,6 +156,11 @@ $post_edit_time: you can restrict the time that posts are editable by users for
 after they are created - set it to a number of hours, or to 0 to allow posts to be
 edited at any time.
 
+$search_min_word_length: This allows you to specify a minimum word length that can
+be searched for using the Beehive search page. Setting this higher can decrease
+the load on your server caused by people searching and also increases the overall
+accuracy.
+
 $attachments_enabled: turns the attatchments feature on (true) or off (false).
 If you have limited web space or bandwidth, you may want to turn off this feature.
 
@@ -126,6 +171,10 @@ root-relative path to keep them somewhere else (e.g. "/www/myattachmentdir").
 
 $guest_account_enabled: enable (true) or disable (false) the guest account, to choose
 whether or not to allow casual browsers to read the forum.
+
+$session_cutoff: This is the length of time in seconds before a user is deemed inactive
+by the active users stats display. Once this time laps the user's name will be removed
+from the active users list. They will though not be logged out.
 
 $gzip_compress_output: this nifty feature compresses the HTML output that is sent to
 the browser, which saves your bandwidth, at a cost of a slight increase in server CPU
@@ -240,31 +289,38 @@ inducing adverts for stuff, it's entirely up to you.
 Just keep it 60 pixels high or under.
 
 
-1.4 Upgrading from 0.2
+1.4 Upgrading from 0.3
 ======================
 
-If you are already using 0.2 of Beehive Forum, you will need to update your
+If you are already using 0.3 of Beehive Forum, you will need to update your
 database, and add some new variables to the config.inc.php file.
 
 
 1.4.1 Update the database
 =========================
 
-Simply run the /docs/update-02-to-03.sql script against the database using phpMyAdmin or
+Simply run the /docs/update-03-to-04.sql script against the database using phpMyAdmin or
 MySQL directly.
 
 
 1.4.2 Update the config file
 ============================
 
-Probably the easiest way to do this is to edit the config.inc.php in the 0.3 download
+Probably the easiest way to do this is to edit the config.inc.php in the 0.4 download
 and set the relevant variables again.
 
 However, you can also add the new variables to your existing config.inc.php if you wish.
 See section 1.2.2 "Configuring the forum" for details.
 
-1.5 Upgrading from 0.1
-======================
+1.5 Upgrading from 0.2 to 0.3
+=============================
+
+Follow the same procedure as detailed above, but you must run /docs/upgrade-02-to-03.sql
+beforehand.
+
+
+1.6 Upgrading from 0.1 / 0.1.1 to 0.2
+=====================================
 
 Follow the same procedure as detailed above, but you must run /docs/upgrade-01-to-02.sql
 beforehand.

@@ -1,5 +1,59 @@
 Beehive Forum Release Notes
 
+What's new in 0.4 (TBD, released ??th November 2003)
+=================
+
+- Brand new features
+        - Personal Messages allow users to keep more private matters out of
+	  view from the rest of the forum members.
+	- I18N multiple language support is now included with Beehive which
+	  allows Beehive to be viewed in a variety of languages. See readme.txt
+	  for more information.
+	- New Post and Edit pages including intelligent HTML toolbar which
+	  allows for quick and easy creation of HTML posts without having
+	  to worry about paragraphs and other such things.
+	- Configurable Profile options allow you to specify some basic options
+	  for the profile page including the type of input field (text, radio
+	  buttons, dropdown, etc)
+	- Groupable poll options allow users to create polls with different
+	  related options, so you can now easily find out who likes fried
+	  eggs and whether or not they prefer them sunny side up or not.
+	- Public Ballot polls allow the creation of a poll which can be used
+	  to display the option each user selects under the option name in
+	  the extended results display. When used in conjunction with the
+	  Public Ballot option the results can also be sorted by
+	  user so you can instantly see which options a user voted for.
+	- Stats display shows some basic stats such as the active users, the
+	  maximum number of users ever active, number of total posts and
+	  threads made and other such delights.
+
+- Fixes
+        - High Interest and Unread High Interest now work properly under
+	  MySQL 4.0.13 and above.
+	- Some fixes to make Beehive more palatable with IIS.
+	- 
+
+What's new in 0.3.1 ("Beemused", released 3rd September 2003)
+===================
+
+- New features / Enhancements
+        - There are no new features or enhancements in this release.
+          This release is primarily intended to fix some problems that
+          exist in MySQL 4.0.13 and higher. Don't worry 0.4 will be
+          coming soon!
+
+- Fixes
+        - Users lost access to restricted folders if they ignored them
+        - Queen could loose her 'Queen' Status and be demoted to a
+          soldier if he/she changed her own permissions through the
+          Admin Users interface.
+        - It was not possible to delete Profile Items and when deleting
+          a Profile Section the wrong one was deleted.
+        - Threads would not be visible at all regardless of folder
+          interest settings under MySQL 4.0.13 and later
+        - Recent discussions list on Start Page would appear empty
+          under MySQL 4.0.13.
+
 What's new in 0.3 ("A little Beehind", released 11th February 2003)
 =================
 

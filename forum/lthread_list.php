@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.65 2005-03-14 13:27:20 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.66 2005-03-21 13:05:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,22 +98,35 @@ if (isset($_GET['markread'])) {
 }
 
 if (!isset($_GET['mode'])) {
+
     if (!isset($_COOKIE['bh_thread_mode'])) {
-        if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
+
+        // default to "Unread" messages for a logged-in user, unless there aren't any
+
+        if (threads_any_unread()) {
             $mode = 1;
         }else {
             $mode = 0;
         }
+
     }else {
+
         $mode = (is_numeric($_COOKIE['bh_thread_mode'])) ? $_COOKIE['bh_thread_mode'] : 0;
     }
+
 }else {
+
     $mode = (is_numeric($_GET['mode'])) ? $_GET['mode'] : 0;
 }
 
 if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
     $folder = $_GET['folder'];
     $mode = 0;
+
+}else {
+
+    $folder = false;
 }
 
 bh_setcookie('bh_thread_mode', $mode);
@@ -127,7 +140,7 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_form'])) {
 // Output XHTML header
 light_html_draw_top();
 
-light_draw_thread_list();
+light_draw_thread_list($mode, $folder, $start_from);
 
 if (bh_session_get_value('UID') == 0) {
     echo "<h4><a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>\n";

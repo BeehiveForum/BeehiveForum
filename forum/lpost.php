@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.69 2005-03-20 12:37:33 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.70 2005-03-21 13:05:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -95,6 +95,7 @@ if (bh_session_get_value('UID') == 0) {
 }
 
 // Check that there are some available folders for this thread type
+
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
     light_html_message_type_error();
     exit;
@@ -111,15 +112,7 @@ if (isset($_POST['cancel'])) {
     }
 
     header_redirect($uri);
-
 }
-
-
-// for "REPLY ALL" form button on messages.php    ########################################################Hng
-if (isset($_POST['replyto'])) {
-        $_GET['replyto'] = $_POST['replyto'];
-}
-
 
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
@@ -132,7 +125,7 @@ $page_prefs = bh_session_get_value('POST_PAGE');
 $uid = bh_session_get_value('UID');
 
 if ($page_prefs == 0) {
-        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+    $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
 }
 
 $valid = true;
@@ -188,56 +181,57 @@ if (isset($_POST['t_newthread'])) {
 
 if (isset($_POST['t_post_html'])) {
 
-        $t_post_html = $_POST['t_post_html'];
+    $t_post_html = $_POST['t_post_html'];
 
-        if ($t_post_html == "enabled_auto") {
-                $post_html = 1;
-        } else if ($t_post_html == "enabled") {
-                $post_html = 2;
-        } else {
-                $post_html = 0;
-        }
+    if ($t_post_html == "enabled_auto") {
+        $post_html = 1;
+    }else if ($t_post_html == "enabled") {
+        $post_html = 2;
+    }else {
+        $post_html = 0;
+    }
 }
 
 if (isset($_POST['t_sig_html'])) {
 
-        $t_sig_html = $_POST['t_sig_html'];
+    $t_sig_html = $_POST['t_sig_html'];
 
-        if ($t_sig_html != "N") {
-                $sig_html = 2;
-        }
+    if ($t_sig_html != "N") {
+        $sig_html = 2;
+    }
 
-        $fetched_sig = false;
+    $fetched_sig = false;
 
-        if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
-                $t_sig = _stripslashes($_POST['t_sig']);
-        }else {
-                $t_sig = "";
-        }
+    if (isset($_POST['t_sig']) && strlen(trim(_stripslashes($_POST['t_sig']))) > 0) {
+        $t_sig = _stripslashes($_POST['t_sig']);
+    }else {
+        $t_sig = "";
+    }
 
-} else {
-        // Fetch the current user's sig
-        user_get_sig($uid, $t_sig, $t_sig_html);
+}else {
 
-        if ($t_sig_html != "N") {
-                $sig_html = 2;
-        }
+    user_get_sig($uid, $t_sig, $t_sig_html);
 
-        $t_sig = tidy_html($t_sig, false);
+    if ($t_sig_html != "N") {
+        $sig_html = 2;
+    }
 
-        $fetched_sig = true;
+    $t_sig = tidy_html($t_sig, false);
+
+    $fetched_sig = true;
 }
 
 if (!isset($sig_html)) $sig_html = 0;
 
 if (!isset($post_html)) {
-        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-                $post_html = 1;
-        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-                $post_html = 2;
-        } else {
-                $post_html = 0;
-        }
+
+    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+        $post_html = 1;
+    }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+        $post_html = 2;
+    }else {
+        $post_html = 0;
+    }
 }
 
 if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
@@ -250,8 +244,6 @@ $sig = new MessageText($sig_html, $t_sig);
 
 $t_content = $post->getContent();
 $t_sig = $sig->getContent();
-
-
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
@@ -334,113 +326,137 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     }
 }
 
-
 $allow_html = true;
 $allow_sig = true;
 
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
-        $allow_html = false;
+    $allow_html = false;
 }
+
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
-        $allow_sig = false;
+    $allow_sig = false;
 }
 
 if ($allow_html == false) {
-        if ($post->getHTML() > 0) {
-                $post->setHTML(false);
-                $t_content = $post->getContent();
-        }
-        if ($sig->getHTML() > 0) {
-                $sig->setHTML(false);
-                $t_sig = $sig->getContent();
-        }
+
+    if ($post->getHTML() > 0) {
+
+        $post->setHTML(false);
+        $t_content = $post->getContent();
+    }
+
+    if ($sig->getHTML() > 0) {
+
+        $sig->setHTML(false);
+        $t_sig = $sig->getContent();
+    }
 }
 
+if (!$newthread) {
+
+    $reply_message = messages_get($reply_to_tid, $reply_to_pid);
+    $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
+    $threaddata = thread_get($reply_to_tid);
+
+    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
+
+        $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
+        $valid = false;
+    }
+}
 
 if ($valid && isset($_POST['submit'])) {
 
-    if (check_ddkey($_POST['t_dedupe'])) {
+    if (check_post_frequency()) {
 
-        if ($newthread) {
-
-            $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle);
-            $t_rpid = 0;
-
-        }else {
-
-            $t_tid = $_POST['t_tid'];
-            $t_rpid = $_POST['t_rpid'];
-
-        }
-
-        if ($t_tid > 0) {
-
-            if ($allow_sig == true && trim($t_sig) != "") {
-                $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
-
-            }
+        if (check_ddkey($_POST['t_dedupe'])) {
 
             if ($newthread) {
 
-                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
+                $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle);
+                $t_rpid = 0;
 
             }else {
 
-                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+                $t_tid = $_POST['t_tid'];
+                $t_rpid = $_POST['t_rpid'];
+
             }
 
-            if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_high_interest($t_tid, 1, $newthread);
+            if ($t_tid > 0) {
 
-            email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
-            email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+                if ($allow_sig == true && trim($t_sig) != "") {
+                    $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
+
+                }
+
+                if ($newthread) {
+
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
+
+                }else {
+
+                    $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
+                }
+
+                if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_high_interest($t_tid, 1, $newthread);
+
+                email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+                email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+            }
+
+        }else {
+
+            $new_pid = 0;
+
+            if ($newthread) {
+
+                $t_tid = 0;
+                $t_rpid = 0;
+
+            }else {
+
+                $t_tid = $_POST['t_tid'];
+                $t_rpid = $_POST['t_rpid'];
+
+            }
+        }
+
+        if ($new_pid > -1) {
+
+            if ($t_tid > 0 && $t_rpid > 0) {
+
+              $uri = "./lmessages.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+
+            }else {
+
+              $uri = "./lmessages.php?webtag=$webtag";
+
+            }
+
+            header_redirect($uri);
+            exit;
+
+        }else {
+
+            $error_html = "<h2>{$lang['errorcreatingpost']}</h2>";
+
         }
 
     }else {
 
-        $new_pid = 0;
-
-        if ($newthread) {
-
-            $t_tid = 0;
-            $t_rpid = 0;
-
-        }else {
-
-            $t_tid = $_POST['t_tid'];
-            $t_rpid = $_POST['t_rpid'];
-
-        }
+        $error_html = "<h2>{$lang['postfrequencytoogreat_1']} ";
+        $error_html.= forum_get_setting('minimum_post_frequency', false, 0);
+        $error_html.= " {$lang['postfrequencytoogreat_2']}</h2>\n";
     }
-
-    if ($new_pid > -1) {
-
-        if ($t_tid > 0 && $t_rpid > 0) {
-
-          $uri = "./lmessages.php?webtag=$webtag&msg=$t_tid.$t_rpid";
-
-        }else {
-
-          $uri = "./lmessages.php?webtag=$webtag";
-
-        }
-
-        header_redirect($uri);
-        exit;
-
-    }else {
-
-        $error_html = "<h2>{$lang['errorcreatingpost']}</h2>";
-
-    }
-
 }
 
 light_html_draw_top();
 
 if (!isset($_POST['aid'])) {
-  $aid = md5(uniqid(rand()));
+    $aid = md5(uniqid(rand()));
 }else {
-  $aid = $_POST['aid'];
+    $aid = $_POST['aid'];
 }
 
 if ($valid && isset($_POST['preview'])) {
@@ -449,16 +465,15 @@ if ($valid && isset($_POST['preview'])) {
 
     if ($_POST['t_to_uid'] == 0) {
 
-      $preview_message['TLOGON'] = "ALL";
-      $preview_message['TNICK'] = "ALL";
+        $preview_message['TLOGON'] = "ALL";
+        $preview_message['TNICK'] = "ALL";
 
     }else {
 
-      $preview_tuser = user_get($_POST['t_to_uid']);
-      $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-      $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-      $preview_message['TO_UID'] = $preview_tuser['UID'];
-
+        $preview_tuser = user_get($_POST['t_to_uid']);
+        $preview_message['TLOGON'] = $preview_tuser['LOGON'];
+        $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
+        $preview_message['TO_UID'] = $preview_tuser['UID'];
     }
 
     $preview_tuser = user_get(bh_session_get_value('UID'));
@@ -494,6 +509,7 @@ if ($newthread) {
 if (isset($error_html)) {
     echo $error_html . "\n";
 }
+
 echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\">\n";
 
 if (!isset($t_threadtitle)) {
@@ -513,19 +529,18 @@ if ($newthread) {
 
     $reply_message = messages_get($reply_to_tid, $reply_to_pid);
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
-    $threaddata = thread_get($reply_to_tid);
 
     if ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0) {
 
-      echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
-      html_draw_bottom();
-      exit;
+        echo "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
+        html_draw_bottom();
+        exit;
 
     }else {
 
-      echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
-      echo form_input_hidden("t_tid", $reply_to_tid);
-      echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
+        echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>\n";
+        echo form_input_hidden("t_tid", $reply_to_tid);
+        echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
     }
 }
 
@@ -535,22 +550,22 @@ echo "<p>{$lang['to']}: ", post_draw_to_dropdown($t_to_uid), "</p>\n";
 echo "<p>", light_form_textarea("t_content", $post->getTidyContent(), 15, 60), "</p>\n";
 
 if ($allow_sig == true) {
-        echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
+    echo "<p>{$lang['signature']}:<br />", light_form_textarea("t_sig", $sig->getTidyContent(), 5, 60), form_input_hidden("t_sig_html", $t_sig_html)."</p>\n";
 }
 
 if ($allow_html == true) {
 
-        $tph_radio = $post->getHTML();
+    $tph_radio = $post->getHTML();
 
-        echo "<p>{$lang['htmlinmessage']}:<br />\n";
-        echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0), "<br />\n";
-        echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1), "<br />\n";
-        echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2), "<br />\n";
-        echo "</p>";
+    echo "<p>{$lang['htmlinmessage']}:<br />\n";
+    echo light_form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0), "<br />\n";
+    echo light_form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1), "<br />\n";
+    echo light_form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2), "<br />\n";
+    echo "</p>";
 
-} else {
+}else {
 
-        echo form_input_hidden("t_post_html", "disabled");
+    echo form_input_hidden("t_post_html", "disabled");
 }
 
 echo "<p>", light_form_submit("submit",$lang['post']), "&nbsp;", light_form_submit("preview",$lang['preview']), "&nbsp;", light_form_submit("cancel", $lang['cancel']);

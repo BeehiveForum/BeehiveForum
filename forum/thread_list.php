@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.159 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.160 2004-01-15 19:20:29 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -136,9 +136,9 @@ function change_current_thread (thread_id) {
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td class="postbody" colspan="2">
-      <img src="<?php echo style_image('post.png'); ?>" height="15" alt="" />&nbsp;<a href="post.php" target="main"><?php echo $lang['newdiscussion']; ?></a><br />
-      <img src="<?php echo style_image('poll.png'); ?>" height="15" alt="" />&nbsp;<a href="create_poll.php" target="main"><?php echo $lang['createpoll']; ?></a><br />
-      <img src="<?php echo style_image('search.png'); ?>" height="15" alt="" />&nbsp;<a href="search.php" target="right"><?php echo $lang['search']; ?></a><br />
+      <img src="<?php echo style_image('post.png'); ?>" height="15" alt="" />&nbsp;<a href="./post.php" target="main"><?php echo $lang['newdiscussion']; ?></a><br />
+      <img src="<?php echo style_image('poll.png'); ?>" height="15" alt="" />&nbsp;<a href="./create_poll.php" target="main"><?php echo $lang['createpoll']; ?></a><br />
+      <img src="<?php echo style_image('search.png'); ?>" height="15" alt="" />&nbsp;<a href="./search.php" target="right"><?php echo $lang['search']; ?></a><br />
     </td>
   </tr>
   <tr>
@@ -409,7 +409,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
             echo "&nbsp;{$lang['threads']}</a></td>\n";
             echo "    <td class=\"threads\" style=\"", ($visible_threads ? "border-bottom: 0px; " : ""), ($lang['_textdir'] == "ltr") ? "border-left: 0px" : "border-right: 0px", "\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"";
-            echo $folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD ? "post.php" : "create_poll.php";
+            echo $folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD ? "./post.php" : "./create_poll.php";
             echo "?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\" style=\"", ($lang['_textdir'] == "ltr") ? "text-align: right; float: right" : "text-align: left; float: left", "\">{$lang['postnew']}</a></td>\n";
             echo "  </tr>\n";
 
@@ -543,7 +543,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
             echo " {$lang['threads']}</a></td>\n";
             echo "    <td class=\"threads\" style=\"", ($lang['_textdir'] == 'ltr') ? "border-left: 1px" : "border-right: 1px", "\" align=\"right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"";
-            echo $folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD ? "post.php" : "create_poll.php";
+            echo $folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD ? "./post.php" : "./create_poll.php";
             echo "?fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">{$lang['postnew']}</a></td>\n";
             echo "  </tr>\n";
 

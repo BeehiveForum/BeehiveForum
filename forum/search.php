@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.50 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: search.php,v 1.51 2004-01-15 19:20:29 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -141,9 +141,9 @@ $error = false;
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
-echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
-echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
-echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">{$lang['search']}</a><br />\n";
+echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
+echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
+echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"./search.php\" target=\"right\">{$lang['search']}</a><br />\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";

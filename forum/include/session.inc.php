@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.68 2004-01-14 20:42:27 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.69 2004-01-15 19:20:29 decoyduck Exp $ */
 
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
@@ -266,14 +266,14 @@ function get_request_uri()
     global $HTTP_SERVER_VARS, $HTTP_GET_VARS;
 
     if (isset($HTTP_SERVER_VARS['REQUEST_URI'])) {
-        return $HTTP_SERVER_VARS['REQUEST_URI'];
+        $request_uri = $HTTP_SERVER_VARS['REQUEST_URI'];
     }else {
-        $request_uri = $HTTP_SERVER_VARS['PHP_SELF']. "?";
+        $request_uri = "{$HTTP_SERVER_VARS['PHP_SELF']}?";
         foreach ($HTTP_GET_VARS as $key => $value) {
             $request_uri.= "{$key}=". rawurlencode($value). "&";
         }
-        return $request_uri;
     }
+    return $request_uri;    
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.44 2004-01-10 22:53:18 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.45 2004-01-15 19:20:29 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -120,7 +120,7 @@ if (isset($attachment_data[1])) {
             }
 
             header("Content-Length: $length", true);
-            header("Content-disposition: attachment; filename=\"$filename\"", true);
+            header("Content-disposition: inline; filename=\"$filename\"", true);
             readfile($filepath);
             exit;
         }

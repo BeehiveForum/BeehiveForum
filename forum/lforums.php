@@ -33,6 +33,7 @@ include_once("./include/errorhandler.inc.php");
 include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
+$webtag = get_webtag();
 $forum_settings = get_forum_settings();
 
 include_once("./include/format.inc.php");
@@ -115,6 +116,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
     }
 }
 
-html_draw_bottom();
+echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+light_html_draw_bottom();
 
 ?>

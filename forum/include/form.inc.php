@@ -142,7 +142,7 @@ function form_quick_button($href,$label,$var = 0,$value = 0,$target = "_self")
     echo "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" target=\"$target\">\n";
 
     if($var){
-        if(isarray($var)){
+        if(is_array($var)){
             for($i=0;$i<count($var);$i++){
                 echo form_input_hidden($var[$i],$value[$i]);
             }

@@ -1,25 +1,31 @@
 <?php
 
+
 /*======================================================================
 Copyright Project BeehiveForum 2002
 
+
 This file is part of BeehiveForum.
+
 
 BeehiveForum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
+
 BeehiveForum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
+
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
 USA
 ======================================================================*/
+
 
 function format_user_name($u_logon,$u_nickname)
 {
@@ -52,6 +58,7 @@ function format_file_size($size)
     return $resized; 
 }
 
+
 function format_url2link($html)
 {
 	$html = " ".$html;
@@ -66,20 +73,25 @@ function format_url2link($html)
     return substr($html, 1);
 }
 
+
 function format_time($time, $verbose = 0)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
+
     include_once("./include/constants.inc.php");
     global $HTTP_COOKIE_VARS;
+
 
     // Calculate $time in local timezone and current local time (the cookie bh_sess_tz = hours difference from GMT, West = negative)
     $local_time = $time + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
     $local_time_now = time() + ($HTTP_COOKIE_VARS['bh_sess_tz'] * HOUR_IN_SECONDS);
 
+
     // Amend times for daylight saving if necessary (using critera for British Summer Time)
     if ($HTTP_COOKIE_VARS['bh_sess_dlsav']) $local_time = timestamp_amend_bst($local_time);
     if ($HTTP_COOKIE_VARS['bh_sess_dlsav']) $local_time_now = timestamp_amend_bst($local_time_now);
+
 
     if ((gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) || (gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {
         // time not today
@@ -95,6 +107,7 @@ function format_time($time, $verbose = 0)
     return $fmt;
 }
 
+
 function timestamp_to_date($timestamp)
 {
     $year=substr($timestamp,0,4);
@@ -107,8 +120,10 @@ function timestamp_to_date($timestamp)
     return ($newdate);
 }
 
+
 function timestamp_amend_bst($timestamp)
 {
+
 
     $year = date("Y", mktime());
       
@@ -129,6 +144,7 @@ function timestamp_amend_bst($timestamp)
       return $timestamp; // return unadjusted timestamp
     }
 
+
 }
 
 // Performs the reverse of htmlspecialchars
@@ -146,5 +162,6 @@ function htmlspecialchars_reverse($text)
     return $retval;
 
 }  
+
 
 ?>

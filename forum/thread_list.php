@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.149 2003-11-09 17:53:41 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.150 2003-11-09 19:18:54 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -245,54 +245,6 @@ $folder_msgs = threads_get_folder_msgs();
 // Check to see if $folder_order is an array, and define it as one if not
 if (!is_array($folder_order)) $folder_order = array();
 
-// Add any empty folders to the thread list.
-
-if (bh_session_get_value('UID') > 0) {
-
-    // Registered users can ignore folders. Move them to the bottom of
-    // the thread list.
-   
-    $visible_folders = array();
-    $ignored_folders = array();
-
-    if (isset($HTTP_GET_VARS['msg'])) {
-
-        list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
-
-        if (thread_can_view($tid, bh_session_get_value('UID'))) {
-            list(,$selectedfolder) = thread_get($tid);
-        }
-
-    }elseif (isset($HTTP_GET_VARS['folder'])) {
-
-        $selectedfolder = $HTTP_GET_VARS['folder'];
-    }
-
-    if (isset($selectedfolder) && folder_is_accessible($selectedfolder)) $visible_folders[] = $selectedfolder;
-
-    while (list($fid, $folder_data) = each($folder_info)) {
-        if ((!in_array($fid, $visible_folders)) && (!in_array($fid, $ignored_folders))) {
-            if (!$folder_data['INTEREST'] || (isset($selectedfolder) && $selectedfolder == $fid)) {
-                $visible_folders[] = $fid;
-            }else {
-                $ignored_folders[] = $fid;
-            }
-        }
-    }
-
-    $folder_order = array_merge($visible_folders, $ignored_folders);
-
-}else {
-
-    // Guest users cannot have any ignored folders, so we just add any folders
-    // which don't have any visible messages in them.
-
-    while (list($fid, $folder_data) = each($folder_info)) {
-        if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
-    }
-
-}
-
 // Sort the folders and threads correctly as per the URL query for the TID
 
 if (isset($HTTP_GET_VARS['msg']) && strlen($HTTP_GET_VARS['msg']) > 0) {
@@ -336,6 +288,50 @@ if (isset($HTTP_GET_VARS['msg']) && strlen($HTTP_GET_VARS['msg']) > 0) {
 
             }
         }
+    }
+}
+
+// Work out if any folders have no messages and add them.
+// Seperate them by INTEREST level
+
+if (bh_session_get_value('UID') > 0) {
+
+    if (isset($HTTP_GET_VARS['msg'])) {
+
+        list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+
+        if (thread_can_view($tid, bh_session_get_value('UID'))) {
+            list(,$selectedfolder) = thread_get($tid);
+        }
+
+    }elseif (isset($HTTP_GET_VARS['folder'])) {
+
+        $selectedfolder = $HTTP_GET_VARS['folder'];
+
+    }else {
+
+        $selectedfolder = 0;
+    }
+
+    $ignored_folders = array();
+
+    while (list($fid, $folder_data) = each($folder_info)) {
+        if (!$folder_data['INTEREST'] || (isset($selectedfolder) && $selectedfolder == $fid)) {
+            if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
+        }else {
+            if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
+        }
+    }
+
+    // Append ignored folders onto the end of the folder list.
+    // This will make them appear at the bottom of the thread list.
+
+    $folder_order = array_merge($folder_order, $ignored_folders);
+
+}else {
+
+    while (list($fid, $folder_data) = each($folder_info)) {
+        if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
     }
 }
 

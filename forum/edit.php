@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.63 2003-09-09 16:42:10 tribalonline Exp $ */
+/* $Id: edit.php,v 1.64 2003-09-09 17:33:03 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -155,6 +155,9 @@ html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprof
 $t_content = "";
 $edit_type = "text";
 $t_post_html = false;
+$content_html_changes = false;
+$sig_html_changes = false;
+
 if (isset($HTTP_POST_VARS['edit_type'])) {
 	$edit_type = $HTTP_POST_VARS['edit_type'];
 }
@@ -209,7 +212,12 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
+        $old_t_sig = $HTTP_POST_VARS['t_sig'];
         $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
+
+        if ($old_t_sig != $t_sig) {
+            $sig_html_changes = true;
+        }
         if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig)) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
@@ -295,7 +303,13 @@ if (isset($HTTP_POST_VARS['preview'])) {
     }
 
     if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
+        $old_t_sig = $HTTP_POST_VARS['t_sig'];
         $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
+
+        if ($old_t_sig != $t_sig) {
+            $sig_html_changes = true;
+        }
+
         if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig)) {
             $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
             $valid = false;
@@ -547,7 +561,7 @@ echo "    activate_tools();\n";
 echo "  //-->\n";
 echo "</script>\n\n";
 
-/*if ($content_html_changes == true) {
+if ($content_html_changes == true) {
 
     echo form_radio("msg_code", "correct", $lang['correctedcode'], true, "onClick=\"showContent('correct');\"")."\n";
     echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
@@ -557,7 +571,7 @@ echo "</script>\n\n";
     echo form_input_hidden("current_t_content", "correct");
 
 	echo "<br /><br />\n";
-}*/
+}
 
 if ($edit_type == "html") {
 	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
@@ -603,7 +617,7 @@ echo tools_junk()."\n";
 echo form_textarea("t_sig", _htmlentities($t_sig), 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\" ".tools_textfield_js())."\n";
 echo tools_junk()."\n";
 
-/*if ($sig_html_changes == true) {
+if ($sig_html_changes == true) {
 
     echo form_radio("sig_code", "correct", $lang['correctedcode'], true, "onClick=\"showSig('correct');\"")."\n";
     echo form_radio("sig_code", "submit", $lang['submittedcode'], false, "onClick=\"showSig('submit');\"")."\n";
@@ -611,7 +625,7 @@ echo tools_junk()."\n";
 
     echo form_input_hidden("old_t_sig", htmlentities($old_t_sig));
     echo form_input_hidden("current_t_sig", "correct");
-}*/
+}
 
 echo "</td></tr>\n";
 echo "</table>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.40 2004-04-10 16:44:08 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.41 2004-04-10 16:58:31 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -90,10 +90,10 @@ function get_webtag()
 
 	if ($uid = bh_session_get_value('UID')) {
     
-            $sql = "SELECT FORUMS.*, USER_FORUM.* FROM FORUMS FORUMS ";
-	    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ";
-	    $sql.= "ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
-	    $sql.= "WHERE WEBTAG = '$webtag' AND USER_FORUM.ALLOWED = 1";
+            $sql = "SELECT F.WEBTAG FROM FORUMS F ";
+	    $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+	    $sql.= "AND F.WEBTAG = '$webtag'";
 
 	}else {
 
@@ -113,11 +113,10 @@ function get_webtag()
 
 	if ($uid = bh_session_get_value('UID')) {
 
-            $sql = "SELECT FORUMS.*, USER_FORUM.* FROM FORUMS FORUMS ";
-	    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ";
-	    $sql.= "ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
-	    $sql.= "WHERE DEFAULT_FORUM = 1 AND USER_FORUM.ALLOWED = 1 ";
-	    $sql.= "LIMIT 0, 1";
+            $sql = "SELECT F.WEBTAG FROM FORUMS F ";
+	    $sql.= "LEFT JOIN USER_FORUM UF ON (UF.FID = F.FID AND UF.UID = '$uid') ";
+            $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+	    $sql.= "AND F.DEFAULT_FORUM = 1";
 
 	}else {
 

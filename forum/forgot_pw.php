@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.8 2003-07-27 12:42:03 hodcroftcj Exp $ */
+/* $Id: forgot_pw.php,v 1.9 2003-08-01 20:37:08 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -36,80 +36,73 @@ require_once("./include/form.inc.php");
 require_once("./include/db.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/lang.inc.php");
+require_once("./include/email.inc.php");
 
 if (isset($HTTP_POST_VARS['submit'])) {
 
-    if(isset($HTTP_POST_VARS['logon'])) {
+    if (isset($HTTP_POST_VARS['logon'])) {
 
         $logon = strtoupper($HTTP_POST_VARS['logon']);
 
-        $conn = db_connect();
-        $sql = "select UID, PASSWD, EMAIL from ". forum_table("USER") ." where LOGON = \"$logon\"";
-        $result = db_query($sql,$conn);
+	if (email_send_pw_reminder($logon)) {
 
-        if($fa = db_fetch_array($result)) {
+            html_draw_top();
 
-            if(isset($fa['UID']) && isset($fa['EMAIL'])) {
+            echo "<h1>{$lang['passwdresetemailsent']}</h1>";
+            echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
+            echo "<p class=\"smalltext\">{$lang['passwdresetexp_1']}<br />\n";
+            echo "{$lang['passwdresetexp_2']}</p>\n";
 
-                $msg = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
-                $msg.= "{$lang['forgotpwemail_3']}:\n\n";
-                $msg.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+            html_draw_bottom();
+            exit;
 
-                if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
-                  $msg.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-                }
+        }else {
 
-                $msg.= "/change_pw.php?u={$fa['UID']}&h={$fa['PASSWD']}";
+	    $error_html = "<h2>{$lang['couldnotsendpasswordreminder']}</h2>\n";
+	}
 
-                $header = "From: \"$forum_name\" <$forum_email>\n";
-                $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-                $header.= "X-Mailer: PHP/". phpversion();
+    }else {
 
-                @mail($fa['EMAIL'], "{$lang['passwdresetrequest']} - $forum_name", $msg, $header);
-
-                html_draw_top();
-
-                echo "<h1>{$lang['passwdresetemailsent']}</h1>";
-                echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
-                echo "<p class=\"smalltext\">{$lang['passwdresetexp_1']}<br />\n";
-                echo "{$lang['passwdresetexp_2']}</p>\n";
-
-                html_draw_bottom();
-                exit;
-            }
-        }
+        $error_html = "<h2>{$lang['validusernamerequired']}</h2>\n";
     }
-
-    $error_html = "<h2>{$lang['validusernamerequired']}</h2>";
 }
-
-if (!isset($logon)) $logon = "";
 
 html_draw_top();
 
 echo "<h1>{$lang['forgotpasswd']}</h1>";
 
-if (isset($error_html)) echo $error_html;
+if (isset($error_html)) {
+    echo $error_html;
+}else {
+    echo "<br />\n";
+}
 
-echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
-echo "<p class=\"smalltext\">{$lang['forgotpasswdexp_1']}<br />\n";
-echo "{$lang['forgotpasswdexp_2']}<br />\n";
-echo "{$lang['forgotpasswdexp_3']}<br />\n";
-echo "{$lang['forgotpasswdexp_4']}</p>\n";
-echo "<form name=\"forgot_pw\" action=\"". $HTTP_SERVER_VARS['PHP_SELF'] ."\" method=\"POST\">\n";
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
-echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>{$lang['forgotpasswd']}</td>\n";
-echo "</tr>\n</table>\n";
-echo "<table class=\"posthead\" width=\"100%\">\n";
-echo "<tr>\n<td align=\"right\">{$lang['username']}:</td>\n";
-echo "<td>".form_input_text("logon", $logon)."</td></tr>\n";
-echo "</table>\n";
-echo "<table class=\"posthead\" width=\"100%\">\n";
-echo "<tr><td align=\"center\">";
-echo form_submit();
-echo "</td></tr></table>\n";
-echo "</td></tr></table>\n";
-echo "</form>\n";
+echo "<div align=\"center\">\n";
+echo "  <form name=\"forgot_pw\" action=\"". $HTTP_SERVER_VARS['PHP_SELF'] ."\" method=\"POST\">\n";
+echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n";
+echo "      <tr>\n";
+echo "        <td>\n";
+echo "          <table class=\"subhead\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td>{$lang['forgotpasswd']}</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "          <table class=\"posthead\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td align=\"right\">{$lang['username']}:</td>\n";
+echo "              <td>", form_input_text("logon", (isset($logon) ? $logon : '')), "</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "          <table class=\"posthead\" width=\"100%\">\n";
+echo "            <tr>\n";
+echo "              <td align=\"center\">", form_submit('submit', $lang['request']), "</td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "        </td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
+echo "  </form>\n";
+echo "  <p>{$lang['forgotpasswdexp_1']}<br />{$lang['forgotpasswdexp_2']}</p>\n";
 echo "</div>\n";
 
 html_draw_bottom();

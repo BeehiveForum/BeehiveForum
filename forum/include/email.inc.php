@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.29 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: email.inc.php,v 1.30 2003-08-01 20:37:08 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -30,7 +30,6 @@ require_once("./include/constants.inc.php");
 
 function email_sendnotification($tuid, $msg, $fuid)
 {
-
     if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
@@ -89,7 +88,6 @@ function email_sendnotification($tuid, $msg, $fuid)
 
 function email_sendsubscription($tuid, $msg, $fuid)
 {
-
     if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
@@ -150,7 +148,6 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
 function email_send_pm_notification($tuid, $mid, $fuid)
 {
-
     if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email;
@@ -202,6 +199,46 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     return true;
 
+}
+
+function email_send_pw_reminder($logon)
+{
+    if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
+
+    global $HTTP_SERVER_VARS, $forum_name, $forum_email;
+
+    $db_email_send_pw_reminder = db_connect();
+    $logon = _addslashes($logon);
+
+    $sql = "select UID, PASSWD, EMAIL from ". forum_table("USER") ." where LOGON = \"$logon\"";
+    $result = db_query($sql, $db_email_send_pw_reminder);
+
+    if (db_num_rows($result)) {
+
+        $mailto = db_fetch_array($result);
+
+	if (isset($mailto['UID']) && isset($mailto['EMAIL']) && isset($mailto['PASSWD'])) {
+
+	    $message = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
+            $message.= "{$lang['forgotpwemail_3']}:\n\n";
+            $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+
+            if (dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
+                $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+            }
+
+            $message.= "/change_pw.php?u={$mailto['UID']}&h={$mailto['PASSWD']}";
+
+            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+	    $header.= "Content-type: text/plain; charset=UTF-8\n";
+            $header.= "X-Mailer: PHP/". phpversion();
+
+            if (mail($mailto['EMAIL'], "{$lang['passwdresetrequest']} - $forum_name", $msg, $header)) return true;
+	}
+    }
+
+    return false;
 }
 
 ?>

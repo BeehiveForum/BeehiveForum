@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.56 2003-10-29 19:48:55 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.57 2003-11-09 14:13:12 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -232,9 +232,9 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
   }
 
-  if ($t_tid > 0) {
+  if (isset($t_tid) && $t_tid > 0) {
 
-    $uri = "./discussion.php?msg=$tid.1";
+    $uri = "./discussion.php?msg=$t_tid.1";
 
   }else {
 

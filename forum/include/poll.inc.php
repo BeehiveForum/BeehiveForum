@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.74 2003-10-29 21:05:21 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.75 2003-11-09 14:13:12 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -407,14 +407,14 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
       $poll_group_count = sizeof($group_array);
 
-	  if ($poll_group_count > 0 && $totalvotes > 0) {
-
+      if ($poll_group_count > 0 && $totalvotes > 0) {
+      
         $totalvotes = ceil($totalvotes / $poll_group_count);
 
-	  }else {
+      }else {
 
-	    $totalvotes = 0;
-	  }
+	$totalvotes = 0;
+      }
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
 
@@ -930,12 +930,12 @@ function poll_vertical_graph($tid)
 
       if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
-        if ($pollresults['VOTES'][$i] > 0) {
+        if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+            $polldisplay.= "                <td style=\"width: 2px; border-left: 1px solid #000000\">&nbsp;</td>\n";
+            $poll_group_count++;
+        }
 
-          if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-              $polldisplay.= "                <td style=\"width: 2px; border-left: 1px solid #000000\">&nbsp;</td>\n";
-              $poll_group_count++;
-          }
+        if ($pollresults['VOTES'][$i] > 0) {
 
           $polldisplay.= "                <td align=\"center\" valign=\"bottom\">\n";
           $polldisplay.= "                  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"height: ". floor(round(200 / $max_values[$pollresults['GROUP_ID'][$i]], 2) * $pollresults['VOTES'][$i]). "px; width: ". round(400 / $optioncount, 2). "px\">\n";

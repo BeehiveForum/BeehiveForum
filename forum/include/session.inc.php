@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.110 2004-04-29 14:03:11 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.111 2004-04-29 15:58:33 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -61,7 +61,8 @@ function bh_session_check()
         if ($table_data = get_table_prefix()) {
 
 	    $sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, ";
-	    $sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
+	    $sql.= "SESSIONS.UID, SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+	    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
 	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$table_data['FID']}) ";
             $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
@@ -72,7 +73,8 @@ function bh_session_check()
 	    $table_data['FID'] = 0;
 
 	    $sql = "SELECT USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, SESSIONS.UID, ";
-	    $sql.= "SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
+	    $sql.= "SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+	    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
 	    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
 	    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = 0) ";
 	    $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
@@ -126,7 +128,7 @@ function bh_session_check()
                 // Everything checks out OK. If the user's session is older
                 // then 5 minutes we should update it.
 
-                if ($current_time - $user_sess['TIME'] > 60) {
+                if ($current_time - $user_sess['TIME'] > 300) {
 
                     // Update the session
 
@@ -157,6 +159,37 @@ function bh_session_check()
 
 	    return false;
 	}
+    }
+
+    // Guest user sessions are handled a bit differently.
+
+    if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
+
+    $sql = "SELECT SESSIONS.SESSID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+    $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS WHERE SESSIONS.UID = 0 ";
+    $sql.= "AND SESSIONS.IPADDRESS = '$ipaddress' ";
+    $sql.= "AND SESSIONS.FID = '{$table_data['FID']}'";
+
+    $result = db_query($sql, $db_bh_session_check);
+
+    if (db_num_rows($result) > 0) {
+
+        $user_sess = db_fetch_array($result, MYSQL_ASSOC);
+
+        if ($current_time - $user_sess['TIME'] > 300) {
+
+            $sql = "UPDATE SESSIONS SET TIME = NOW(), FID = '{$table_data['FID']}' ";
+            $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
+
+            $result = db_query($sql, $db_bh_session_check);
+        }
+
+    }else {
+
+        $sql = "INSERT INTO SESSIONS (UID, FID, IPADDRESS, TIME) ";
+        $sql.= "VALUES (0, '{$table_data['FID']}', '$ipaddress', NOW())";
+
+        $result = db_query($sql, $db_bh_session_check);
     }
 
     return array('UID'              => 0,

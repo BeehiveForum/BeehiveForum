@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.29 2004-04-29 14:03:11 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.30 2004-04-29 15:58:33 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -95,7 +95,8 @@ function get_active_users()
 {
     $db_get_active_users = db_connect();
 
-    $stats = array('NUSERS' => 0, 'AUSERS' => 0, 'USERS'  => array());
+    $stats = array('GUESTS' => 0, 'NUSERS' => 0,
+                   'AUSERS' => 0, 'USERS'  => array());
 
     if (!$table_data = get_table_prefix()) return $stats;
 
@@ -116,7 +117,11 @@ function get_active_users()
 
     while ($row = db_fetch_array($result)) {
 
-        if (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] == 1) {
+        if ($row['UID'] == 0) {
+
+            $stats['GUESTS']++;
+
+        }elseif (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] == 1) {
 
             $stats['AUSERS']++;
 

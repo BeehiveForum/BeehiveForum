@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.11 2003-11-29 20:28:04 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.12 2003-12-02 22:16:24 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -612,6 +612,7 @@ $lang['cannoteditpm'] = "Ain't gonna edit this PM. Yo bitch has seen it.";
 $lang['cannotviewpm'] = "Cannot view PM. Message is gone, homes.";
 $lang['nomessagespecifiedforreply'] = "Ain't no message specified fo' replyin' to";
 $lang['nouserspecified'] = "No bitch specified.";
+$lang['pmnotificationpopup'] = "Yo has a new PM. Would yo like to go to yo inbizox homie?";
 
 // Preferences (prefs.php) ---------------------------------------------
 $lang['newpasswd'] = "Nizew Pizasswizord";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.48 2004-05-23 13:39:35 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.49 2004-06-04 16:45:50 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -371,7 +371,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     }
 
     if (bh_session_get_value('UID') != $message['FROM_UID']) {
-      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) {
+      if ((user_get_status($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator()) {
         light_message_display_deleted($tid, $message['PID']);
         return;
       }
@@ -518,9 +518,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
         if ($in_list && $limit_text != false) {
 
-            if (!$closed) {
+            if (!$closed && perm_check_folder_permissions($message['FID'], USER_PERM_POST_CREATE)) {
 
-                echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";
+                echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
             }
         }
 
@@ -629,12 +629,26 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
     if (!$table_data = get_table_prefix()) return "";
 
-    $access_allowed = USER_PERM_POST_READ;
-    $allowed_types = FOLDER_ALLOW_NORMAL_THREAD;
+    $folders['FIDS'] = array();
+    $folders['TITLES'] = array();
 
-    $sql = "SELECT DISTINCT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
+    $allowed_types = FOLDER_ALLOW_NORMAL_THREAD;
+    $access_allowed = USER_PERM_THREAD_ACCESS;
+
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
+    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "WHERE FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";
+    $sql.= "ON (GROUP_USERS.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}GROUP_PERMS FOLDER_PERMS ";
+    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
+    $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
+    $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID";
 
     $result = db_query($sql, $db_light_folder_draw_dropdown);
@@ -643,7 +657,17 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
         while($row = db_fetch_array($result, MYSQL_ASSOC)) {
 
-            if (perm_check_folder_permissions($row['FID'], $access_allowed)) {
+            if ($row['USER_PERM_COUNT'] > 0 && (($row['USER_STATUS'] & $access_allowed) == $access_allowed)) {
+
+                $folders['FIDS'][] = $row['FID'];
+                $folders['TITLES'][] = $row['TITLE'];
+
+            }elseif (($row['USER_PERM_COUNT'] == 0 && $row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) == $access_allowed)) {
+
+                $folders['FIDS'][] = $row['FID'];
+                $folders['TITLES'][] = $row['TITLE'];
+
+            }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
 
                 $folders['FIDS'][] = $row['FID'];
                 $folders['TITLES'][] = $row['TITLE'];
@@ -655,8 +679,6 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
             return light_form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid);
         }
     }
-
-    return false;
 }
 
 function light_form_textarea($name, $value = "", $rows = 0, $cols = 0)

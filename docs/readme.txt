@@ -360,15 +360,23 @@ All this can be done through the Project page provided by SourceForge.
 Simply browse to http://sourceforge.net/projects/beehiveforum and submit
 requests or bug reports there.
 
+Alternatively you can visit http://www.tehforum.net/forum/ where you'll
+find most of the developers of Beehive hanging out. Feel free to post
+any questions or queries you have and we'll do our best to answer them.
+
 
 3.2 General questions and help
 ==============================
 
-You can also try dropping in to http://beehiveforum.net/forum, which
-is a test bed for the software where you can ask for help or check on the
-progress of the next version. There is a bugs folder there too, but it's very
-informal - it's best to use it to let us know that you've posted a bug in the SF
-system.
+You can also try dropping in to http://beehiveforum.net/forum or on
+http://www.tehforum.net/forum/, which are both test beds for the software
+where you can ask for help or check on the progress of the next version and
+see and test previews of the new features. If you need help don't think twice
+about posting on either forum (posting on Teh Forum, rather than on 
+beehiveforum.net is more likely to get someones attention) In either case you
+should find a bugs folder / Beehive Development folder where you can post about
+problems you're having. It should be noted that we prefer using this system
+over the SF bug reporting tool.
 
 
 3.3 BeehiveForums in foreign languages
@@ -376,7 +384,8 @@ system.
 
 As of 0.4 BeehiveForums supports multiple languages, but because we're all very
 busy doing other things the number of languages that ship with Beehive are few
-and far between.
+and far between, i.e. English, English and nothing but English. Oh and a bit of
+X-Hacker, but that was created by cheating.
 
 
 3.3.1 Translating BeehiveForums into my native language
@@ -388,7 +397,7 @@ of this, we're on the look out for people to start translating Beehive for us.
 If you feel you have the necessary skills to do this (no babelfish / direct
 from dictionary translations please) feel free to drop us a note. With any
 luck your language file may end up being distributed with future versions of
-BeehiveForums and you may even get to see your name in print, or at the very
+Beehive Forums and you may even get to see your name in print, or at the very
 least bundled here amongst the other credits.
 
 
@@ -398,9 +407,12 @@ least bundled here amongst the other credits.
 Current available languages are as follows:
 
 English (UK)
-French (note: incomplete - includes some English phrases still)
 X-Hacker
-Gangsta
+
+Also avaulable, but incomplete (includes some English phrases still):
+
+French
+X-Gangsta
 
 
 4 Credits
@@ -409,19 +421,20 @@ Gangsta
 4.1 Coding
 ==========
 
-Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Mike Franklin / Ben Sekulowicz / Andrew Holgate
+Matt Beale, Andy Black, Chris Hodcroft, Mark Rendle, Peter Kelly,
+Mike Franklin, Ben Sekulowicz, Andrew Holgate, Rowan Hill
 
 
 4.2 Design/CSS
 ==============
 
-Mike Franklin / Simon Roberts / Kevin Yip
+Mike Franklin, Simon Roberts, Kevin Yip
 
 
 4.3 Graphics
 ============
 
-Nigel Moore / Kevin Yip / Andrew Holgate / Mike Quigley
+Nigel Moore, Kevin Yip, Andrew Holgate, Mike Quigley
 
 
 4.4 Translations
@@ -435,14 +448,15 @@ X-Hacker - Matt Beale.
 4.5 Contributions
 =================
 
-Mike Quigley / Frnht451 / Peter Kelly / "Michael" from www.hermitscave.org / Peter Boughton / Lots of other people
+Mike Quigley, Frnht451, Michael Hermitscave, Peter Boughton, Lots of other people
 
 
-4.6 Directors
-=============
+4.6 Project Leaders
+===================
 
 Matt Beale
-Mark Rendle - taking time out
+Andy Black
+Chris Hodcroft
 
 
 4.7 Special Thanks
@@ -450,6 +464,8 @@ Mark Rendle - taking time out
 
 - The Teh Forumers for testing, moral support, saying nice things and just generally
   being teh cool.
+  
+- Michael from Hermitscave for taking the time to find all those nasty exploits.
   
 - Mike Quigley for Teh Backup Forum, Breaking lots of things and pimping Beehive without fail.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.38 2003-12-02 22:02:22 decoyduck Exp $ */
+/* $Id: nav.php,v 1.39 2003-12-21 14:59:22 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -54,7 +54,7 @@ if ($show_links) {
 
 bh_session_check();
 
-if (bh_session_get_value('UID') > 0) {
+//if (bh_session_get_value('UID') > 0) {
 
     if ($show_pms) {
         echo "<a href=\"pm.php\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
@@ -62,7 +62,7 @@ if (bh_session_get_value('UID') > 0) {
 
     echo "<a href=\"prefs.php\" target=\"main\">{$lang['preferences']}</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"profile.php\" target=\"main\">{$lang['profile']}</a>&nbsp;|&nbsp;\n";
-}
+//}
 
 if (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
     echo "<a href=\"admin.php\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.81 2003-11-28 19:49:14 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.82 2003-12-21 14:59:22 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -41,12 +41,6 @@ if(!bh_session_check()){
 }
 
 require_once("./include/html.inc.php");
-
-if (bh_session_get_value('UID') == 0) {
-    html_guest_error();
-    exit;
-}
-
 require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/fixhtml.inc.php");
@@ -93,6 +87,12 @@ $timezones_data = array(-12,-11,-10,-9.5,-9,-8.5,-8,-7,-6,-5,-4,-3.5,-3,-2,-1,0,
                         6,6.5,7,8,9,9.5,10,10.5,11,11.5,12,13,14);
 
 if (isset($HTTP_POST_VARS['submit'])) {
+
+    if (bh_session_get_value('UID') == 0) {
+
+        html_guest_error();
+	exit;
+    }
 
     $valid = true;
     $update_password = false;
@@ -433,297 +433,242 @@ if (!empty($error_html)) {
     echo "</script>";
 }
 
-?>
-<br />
-<div class="postbody">
-  <form name="prefs" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="post" target="_self">
-    <table cellpadding="0" cellspacing="0">
-      <tr>
-        <td>
-          <table class="box">
-            <tr>
-              <td class="posthead">
-                <table class="posthead" width="100%">
-                  <tr>
-                    <td class="subhead" colspan="3">User Details</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['newpasswd']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_field("pw", "", 37, 0, "password"); ?>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['confirmpasswd']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_field("cpw", "", 37, 0, "password"); ?>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td colspan="3" align="right"><span style="font-size: 10px">(<?php echo $lang['leaveblanktoretaincurrentpasswd']; ?>)</span></td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['nickname']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_field("nickname", (isset($t_nickname) ? $t_nickname : $user['NICKNAME']), 37, 32); ?>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['emailaddress']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_field("email", (isset($t_email) ? $t_email : $user['EMAIL']), 37, 80); ?>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['firstname']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_field("firstname", (isset($t_firstname) ? $t_firstname : $user_prefs['FIRSTNAME']), 37, 32); ?>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['lastname']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_field("lastname", (isset($t_lastname) ? $t_lastname : $user_prefs['LASTNAME']), 37, 32); ?>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['dateofbirth']; ?></td>
-                    <td>:</td>
-                    <td>
-                      <?php
-            
-                          if (isset($t_dob_year) && isset($t_dob_month) && isset($t_dob_year) && isset($t_dob_blank_fields)) {
-            
-                              echo form_dob_dropdowns($t_dob_year, $t_dob_month, $t_dob_day, $t_dob_blank_fields);
+echo "<br />\n";
+echo "<div class=\"postbody\">\n";
+echo "  <form name=\"prefs\" action=\"{$HTTP_SERVER_VARS['PHP_SELF']}\" method=\"post\" target=\"_self\">\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "      <tr>\n";
+echo "        <td>\n";
+echo "          <table class=\"box\">\n";
+echo "            <tr>\n";
+echo "              <td class=\"posthead\">\n";
+echo "                <table class=\"posthead\" width=\"100%\">\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\" colspan=\"3\">User Details</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['newpasswd']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_field("pw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['confirmpasswd']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_field("cpw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"3\" align=\"right\"><span style=\"font-size: 10px\">({$lang['leaveblanktoretaincurrentpasswd']})</span></td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"3\">&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['nickname']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_field("nickname", (isset($t_nickname) ? $t_nickname : $user['NICKNAME']), 37, 32), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['emailaddress']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_field("email", (isset($t_email) ? $t_email : $user['EMAIL']), 37, 80), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"3\">&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['firstname']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_field("firstname", (isset($t_firstname) ? $t_firstname : $user_prefs['FIRSTNAME']), 37, 32), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['lastname']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_field("lastname", (isset($t_lastname) ? $t_lastname : $user_prefs['LASTNAME']), 37, 32), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['dateofbirth']}</td>\n";
+echo "                    <td>:</td>\n";
+
+if (isset($t_dob_year) && isset($t_dob_month) && isset($t_dob_year) && isset($t_dob_blank_fields)) {
+    echo "                    <td>", form_dob_dropdowns($t_dob_year, $t_dob_month, $t_dob_day, $t_dob_blank_fields), "&nbsp;</td>\n";
+}else {
+    echo "                    <td>", form_dob_dropdowns($dob_year, $dob_month, $dob_day, $dob_blank_fields), "&nbsp;</td>\n";
+}
+
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['homepageURL']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_field("homepage_url", (isset($t_homepage_url) ? $t_homepage_url : $user_prefs['HOMEPAGE_URL']), 37, 255), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['pictureURL']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_field("pic_url", (isset($t_pic_url) ? $t_pic_url : $user_prefs['PIC_URL']), 37, 255), "&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"3\">&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"3\">\n";
+echo "                      <table class=\"posthead\" cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n";
+echo "                        <tr>\n";
+echo "                          <td class=\"subhead\" colspan=\"2\">{$lang['forumoptions']}</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($t_email_notify) && $t_email_notify == "Y") ? true : (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y")), "</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($t_pm_notify) && $t_pm_notify == "Y") ? true : (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y")), "</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($t_pm_notify_email) && $t_pm_notify_email == "Y") ? true : (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y")), "</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($t_dl_saving) && $t_dl_saving == "Y") ? true : (isset($user_prefs['DL_SAVING']) && $user_prefs['DL_SAVING'] == "Y")), "</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>", form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($t_mark_as_of_int) && $t_mark_as_of_int == "Y") ? true : (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y")), "</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>", form_checkbox("view_sigs", "Y", $lang['globallyignoresigs'], (isset($t_view_sigs) && $t_view_sigs == "Y") ? true : (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "Y")), "</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($t_anon_logon) && $t_anon_logon == 1) ? true : (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1)), "</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($t_show_stats) && $t_show_stats == 1) ? true : (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == 1)), "</td>\n";
+echo "                        </tr>\n";
+echo "                        <tr>\n";
+echo "                          <td>&nbsp;</td>\n";
+echo "                        </tr>\n";
+echo "                      </table>\n";
+echo "                    </td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['timezonefromGMT']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_dropdown_array("timezone", $timezones_data, $timezones, (isset($t_timezone) ? $t_timezone : $user_prefs['TIMEZONE'])), "</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['postsperpage']}</td>\n";
+echo "                    <td>:</td>\n";
+
+if (isset($t_posts_per_page)) {
+    echo "                    <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), $t_posts_per_page), "</td>\n";
+}elseif (isset($user_prefs['POSTS_PER_PAGE'])) {
+    echo "                    <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), $user_prefs['POSTS_PER_PAGE']), "</td>\n";
+}else {
+    echo "                    <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), 10), "</td>\n";
+}
+
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['fontsize']}</td>\n";
+echo "                    <td>:</td>\n";
+
+if (isset($t_font_size)) {
+    echo "                    <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $t_font_size), "</td>\n";
+}elseif (isset($user_prefs['FONT_SIZE'])) {
+    if ($user_prefs['FONT_SIZE'] == '') {
+        echo "                    <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), '10pt'), "</td>\n";
+    }else{
+        echo "                    <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE']), "</td>\n";
+    }
+}else {
+    echo "                    <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), '10pt'), "</td>\n";
+}
+
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['forumstyle']}</td>\n";
+echo "                    <td>:</td>\n";
+
+if (isset($t_style)) {
+    $selected_style = $t_style;
+    if (!in_array($selected_style, $available_styles)) {
+        $selected_style = $default_style;
+    }
+}else {
+    if ($selected_style = bh_session_get_value('STYLE')) {
+        if (!in_array($selected_style, $available_styles)) {
+            $selected_style = $default_style;
+        }
+    }else {
+        $selected_style = $default_style;
+    }
+}
       
-                          }else {
+foreach ($available_styles as $key => $style) {
+    if (strtolower($style) == strtolower($selected_style)) {
+        break;
+    }
+}
       
-                              echo form_dob_dropdowns($dob_year, $dob_month, $dob_day, $dob_blank_fields);
-                          }
+reset($available_styles);
       
-                      ?>
-                    &nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['homepageURL']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_field("homepage_url", (isset($t_homepage_url) ? $t_homepage_url : $user_prefs['HOMEPAGE_URL']), 37, 255); ?>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['pictureURL']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_field("pic_url", (isset($t_pic_url) ? $t_pic_url : $user_prefs['PIC_URL']), 37, 255); ?>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">
-                      <table class="posthead" cellspacing="0" cellpadding="0" width="100%">
-                        <tr>
-                          <td class="subhead" colspan="2"><?php echo $lang['forumoptions']; ?></td>
-                        </tr>
-                        <tr>
-                          <td><?php echo form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($t_email_notify) && $t_email_notify == "Y") ? true : (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y")); ?></td>
-                        </tr>
-                        <tr>
-                          <td><?php echo form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($t_pm_notify) && $t_pm_notify == "Y") ? true : (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y")); ?></td>
-                        </tr>
-                        <tr>
-                          <td><?php echo form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($t_pm_notify_email) && $t_pm_notify_email == "Y") ? true : (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y")); ?></td>
-                        </tr>
-                        <tr>
-                          <td><?php echo form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($t_dl_saving) && $t_dl_saving == "Y") ? true : (isset($user_prefs['DL_SAVING']) && $user_prefs['DL_SAVING'] == "Y")); ?></td>
-                        </tr>
-                        <tr>
-                          <td><?php echo form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($t_mark_as_of_int) && $t_mark_as_of_int == "Y") ? true : (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y")); ?></td>
-                        </tr>
-                        <tr>
-                          <td><?php echo form_checkbox("view_sigs", "Y", $lang['globallyignoresigs'], (isset($t_view_sigs) && $t_view_sigs == "Y") ? true : (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "Y")); ?></td>
-                        </tr>
-                        <tr>
-                          <td><?php echo form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($t_anon_logon) && $t_anon_logon == 1) ? true : (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1)); ?></td>
-                        </tr>
-                        <tr>
-                          <td><?php echo form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($t_show_stats) && $t_show_stats == 1) ? true : (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == 1)); ?></td>
-                        </tr>
-                        <tr>
-                          <td>&nbsp;</td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['timezonefromGMT']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_dropdown_array("timezone", $timezones_data, $timezones, (isset($t_timezone) ? $t_timezone : $user_prefs['TIMEZONE'])); ?></td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['postsperpage']; ?></td>
-                    <td>:</td>
-                    <td>
-                      <?php
-      
-                          if (isset($t_posts_per_page)) {
-      
-                              echo form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), $t_posts_per_page);
-      
-                          }elseif (isset($user_prefs['POSTS_PER_PAGE'])) {
-      
-                              echo form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), $user_prefs['POSTS_PER_PAGE']);
-      
-                          }else {
-      
-                              echo form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), 10);
-                          }
-      
-                      ?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['fontsize']; ?></td>
-                    <td>:</td>
-                    <td>
-                      <?php
-      
-                        if (isset($t_font_size)) {
-      
-                            echo form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $t_font_size);
-      
-                        }elseif (isset($user_prefs['FONT_SIZE'])) {
-      
-                            if ($user_prefs['FONT_SIZE'] == '') {
-      
-                                echo form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), "10pt");
-      
-                            }else{
-      
-                                echo form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE']);
-                            }
-      
-                        }else {
-      
-                            echo form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), "10pt");
-                        }
-      
-                      ?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['forumstyle']; ?></td>
-                    <td>:</td>
-                    <td>
-                      <?php
-      
-                        if (isset($t_style)) {
-                            $selected_style = $t_style;
-                            if (!in_array($selected_style, $available_styles)) {
-                                $selected_style = $default_style;
-                            }
-                        }else {
-                            if (bh_session_get_value('STYLE')) {
-                                $selected_style = bh_session_get_value('STYLE');
-                                if (!in_array($selected_style, $available_styles)) {
-                                    $selected_style = $default_style;
-                                }
-                            }else {
-                                $selected_style = $default_style;
-                            }
-                        }
-      
-                        foreach ($available_styles as $key => $style) {
-                            if (strtolower($style) == strtolower($selected_style)) {
-                                break;
-                            }
-                        }
-      
-                        reset($available_styles);
-      
-                        if (isset($key)) {
-                            echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]);
-                        }else {
-                            echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]);
-                        }
-      
-                      ?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['preferredlang']; ?></td>
-                    <td>:</td>
-                    <td><?php echo form_dropdown_array("language", $available_langs, $available_langs_labels, (isset($t_language) ? $t_language : bh_session_get_value("LANGUAGE"))); ?></td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['startpage']; ?></td>
-                    <td>:</td>
-                    <td>
-                      <?php
-      
-                          if (isset($t_start_page)) {
-      
-                              echo form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), $t_start_page);
-      
-                          }elseif (isset($user_prefs['DOB_DISPLAY'])) {
-      
-                              echo form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), $user_prefs['START_PAGE']);
-      
-                          }else {
-      
-                              echo form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), 0);
-      
-                          }
-      
-                      ?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><?php echo $lang['ageanddob']; ?></td>
-                    <td>:</td>
-                    <td>
-                      <?php
-      
-                          if (isset($t_dob_display)) {
-      
-                              echo form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $t_dob_display);
-      
-                          }elseif (isset($user_prefs['DOB_DISPLAY'])) {
-      
-                              echo form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $user_prefs['DOB_DISPLAY']);
-      
-                          }else {
-      
-                              echo form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), 0);
-      
-                          }
-      
-                      ?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="3">&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td class="subhead" colspan="3"><?php echo $lang['signature']; ?></td>
-                  </tr>
-                  <tr>
-                    <td colspan="3"><?php echo form_textarea("sig_content", (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)) : _htmlentities(_stripslashes($user_sig['SIG_CONTENT']))), 4, 60); ?></td>
-                  </tr>
-                  <tr>
-                    <td colspan="3" align="right"><?php echo form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y")); ?></td>
-                  </tr>
-	        </table>
-              </td>
-            </tr>
-          </table>
-	</td>
-      </tr>
-      <tr>
-        <td align="center"><p><?php echo form_submit("submit", $lang['save']); ?></p></td>
-      </tr>
-    </table>
-  </form>
-</div>
-<?php
+if (isset($key)) {
+    echo "                    <td>", form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]), "</td>\n";
+}else {
+    echo "                    <td>", form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]), "</td>\n";
+}
+
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['preferredlang']}</td>\n";
+echo "                    <td>:</td>\n";
+echo "                    <td>", form_dropdown_array("language", $available_langs, $available_langs_labels, (isset($t_language) ? $t_language : bh_session_get_value("LANGUAGE"))), "</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['startpage']}</td>\n";
+echo "                    <td>:</td>\n";
+
+if (isset($t_start_page)) {
+    echo "                    <td>", form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), $t_start_page), "</td>\n";
+}elseif (isset($user_prefs['DOB_DISPLAY'])) {
+    echo "                    <td>", form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), $user_prefs['START_PAGE']), "</td>\n";
+}else {
+    echo "                    <td>", form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), 0), "</td>\n";
+}
+
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td>{$lang['ageanddob']}</td>\n";
+echo "                    <td>:</td>\n";
+
+if (isset($t_dob_display)) {
+    echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $t_dob_display), "</td>\n";
+}elseif (isset($user_prefs['DOB_DISPLAY'])) {
+    echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $user_prefs['DOB_DISPLAY']), "</td>\n";
+}else {
+    echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), 0), "</td>\n";
+}
+
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"3\">&nbsp;</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td class=\"subhead\" colspan=\"3\">{$lang['signature']}</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"3\">", form_textarea("sig_content", (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)) : _htmlentities(_stripslashes($user_sig['SIG_CONTENT']))), 4, 60), "</td>\n";
+echo "                  </tr>\n";
+echo "                  <tr>\n";
+echo "                    <td colspan=\"3\" align=\"right\">", form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y")), "</td>\n";
+echo "                  </tr>\n";
+echo "	              </table>\n";
+echo "              </td>\n";
+echo "            </tr>\n";
+echo "          </table>\n";
+echo "	      </td>\n";
+echo "      </tr>\n";
+echo "      <tr>\n";
+echo "        <td align=\"center\"><p>", form_submit("submit", $lang['save']), "</p></td>\n";
+echo "      </tr>\n";
+echo "    </table>\n";
+echo "  </form>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

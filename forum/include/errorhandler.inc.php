@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.55 2004-12-05 22:10:16 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.56 2004-12-10 16:52:16 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 
@@ -63,7 +63,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         if (defined("BEEHIVEMODE_LIGHT")) {
 
             echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
+            echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
             echo "<title>Beehive Forum - Error Handler</title>\n";
@@ -129,7 +129,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             if (db_errno($db_error_handler) == DB_ER_NO_SUCH_TABLE) install_incomplete();
 
             echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+            echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
             echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
             echo "<head>\n";
             echo "<title>Beehive Forum - Error Handler</title>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.309 2004-12-05 17:58:06 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.310 2004-12-10 16:52:16 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -208,6 +208,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
+        $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 

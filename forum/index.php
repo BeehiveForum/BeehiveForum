@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.98 2004-11-06 23:43:22 decoyduck Exp $ */
+/* $Id: index.php,v 1.99 2004-12-10 16:52:16 decoyduck Exp $ */
 
 // This page doesn't validate as XHTML Frameset, but I don't care.
 
@@ -79,7 +79,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     $navsize = bh_session_get_value('FONT_SIZE');
     $navsize = max(($navsize ? $navsize * 2 : 22), 22);
 
-    echo "<!DOCTYPE HTML SYSTEM \"dtd/beehive-frameset.dtd\">\n";
+    echo "<!DOCTYPE html SYSTEM \"dtd/beehive-frameset.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$forum_name</title>\n";
@@ -171,7 +171,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    echo "<!DOCTYPE HTML SYSTEM \"dtd/beehive-frameset.dtd\">\n";
+    echo "<!DOCTYPE html SYSTEM \"dtd/beehive-frameset.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$forum_name</title>\n";

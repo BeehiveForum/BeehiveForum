@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.139 2004-11-30 22:25:26 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.140 2004-12-10 16:52:16 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -288,8 +288,8 @@ function html_draw_top()
             $robots = substr($func_args, 7);
             unset($arg_array[$key]);
         } else {
-			$robots = "noindex,follow";
-		}
+                        $robots = "noindex,follow";
+                }
     }
 
     if (!isset($title)) $title = forum_get_setting('forum_name');
@@ -301,7 +301,7 @@ function html_draw_top()
     $forum_email = html_get_forum_email();
 
     echo "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
-    echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";

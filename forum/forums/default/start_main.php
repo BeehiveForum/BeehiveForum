@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.6 2004-11-06 20:26:25 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.7 2004-12-10 16:52:16 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -80,7 +80,7 @@ if (!isset($id) && sizeof($images_array) > 0) {
 
 list($width, $height, $type, $html) = @getimagesize("{$images_dir}/{$images_array[$id]}");
 
-echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">\n";
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">\n";
 echo "<html>\n";
 echo "<head>\n";
 echo "<title>Teh Forum - Forumite Gallery</title>\n";

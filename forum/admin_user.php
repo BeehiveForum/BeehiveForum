@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.112 2004-08-17 10:52:23 tribalonline Exp $ */
+/* $Id: admin_user.php,v 1.113 2004-10-29 20:42:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -817,7 +817,7 @@ if (isset($_POST['t_delete_posts'])) {
             echo "\">";
 
             if (strlen($attachment['filename']) > 16) {
-                echo substr($attachment['filename'], 0, 16). "...</a></td>\n";
+                echo substr($attachment['filename'], 0, 16). "&hellip;</a></td>\n";
             }else{
                 echo $attachment['filename']. "</a></td>\n";
             }

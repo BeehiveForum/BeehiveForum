@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.72 2004-10-16 18:13:58 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.73 2004-10-29 20:42:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -261,7 +261,7 @@ if (is_array($attachments)) {
             echo "\">";
 
             if (strlen($attachments[$i]['filename']) > 16) {
-                echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
+                echo substr($attachments[$i]['filename'], 0, 16). "&hellip;</a></td>\n";
             }else{
                 echo $attachments[$i]['filename']. "</a></td>\n";
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.90 2004-08-09 00:49:35 rowan_hill Exp $ */
+/* $Id: search.php,v 1.91 2004-10-29 20:42:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -375,7 +375,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
             if ($schar = strrpos($message['TITLE'], ' ')) {
                 $message['TITLE'] = substr($message['TITLE'], 0, $schar);
             }else {
-                $message['TITLE'] = substr($message['TITLE'], 0, 17). "...";
+                $message['TITLE'] = substr($message['TITLE'], 0, 17). "&hellip;";
             }
 
         }
@@ -387,7 +387,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
             if ($schar = strrpos($message['CONTENT'], ' ')) {
                 $message['CONTENT'] = substr($message['CONTENT'], 0, $schar);
             }else {
-                $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "...";
+                $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "&hellip;";
             }
 
         }

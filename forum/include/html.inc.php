@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.134 2004-10-21 21:28:19 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.135 2004-10-29 20:42:48 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -537,7 +537,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
         if ($start_page > 1) {
 
-            echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\">&laquo; First</a> ... ";
+            echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\">&laquo; First</a> &hellip; ";
         }
 
         if ($current_page > 1) {
@@ -563,7 +563,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
         if ($end_page < $page_count) {
 
-            echo " ... <a href=\"{$uri}&amp;page={$page_count}\" target=\"_self\">Last &raquo;</a> ";
+            echo " &hellip; <a href=\"{$uri}&amp;page={$page_count}\" target=\"_self\">Last &raquo;</a> ";
         }
 
     }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.58 2004-10-28 19:31:33 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.59 2004-10-29 20:42:48 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -410,7 +410,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length'))));
-        $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if($in_list){
@@ -628,20 +628,19 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
     $html = "{$lang['showmessages']}:";
 
-    if($length <= $ppp){
+    if ($length <= $ppp) {
         $html .= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">{$lang['all']}</a>\n";
     }
 
-    for($i=0;$i<=$max;$i++) {
+    for ($i = 0; $i <= $max; $i++) {
 
         if (isset($navbits[$i])) {
 
             if((abs($c - $i) < 4) || $i == 0 || $i == $max){
                 $html .= "\n&nbsp;" . $navbits[$i];
             } else if(abs($c - $i) == 4){
-                $html .= "\n&nbsp;...";
+                $html .= "\n&nbsp;&hellip;";
             }
-
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.53 2004-09-02 21:16:42 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.54 2004-09-07 01:50:48 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -318,6 +318,9 @@ if (isset($_POST['submit'])) {
         if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
                 $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISPLAY;
         }
+        if (isset($_POST['sig_toggle']) && $_POST['sig_toggle'] == "Y") {
+                $user_prefs['POST_PAGE'] |= POST_SIGNATURE_DISPLAY;
+        }
         if (isset($_POST['emots_disable']) && $_POST['emots_disable'] == "Y") {
                 $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
         }
@@ -522,7 +525,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 
 if ($user_prefs['POST_PAGE'] == 0) {
-        $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS;
+        $user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_DISPLAY_SIGNATURE;
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
@@ -542,6 +545,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 $emots_toggle = $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISPLAY;
 echo "                  <td>", form_checkbox("emots_toggle", "Y", $lang['displayemoticonspanel'], $emots_toggle), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+$sig_toggle = $user_prefs['POST_PAGE'] & POST_SIGNATURE_DISPLAY;
+echo "                  <td>", form_checkbox("sig_toggle", "Y", $lang['displaysignature'], $sig_toggle), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 $emots_disabled = $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISABLED;

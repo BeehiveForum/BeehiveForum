@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.168 2004-09-03 19:56:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.169 2004-09-07 01:50:48 tribalonline Exp $ */
 
 // International English language file
 
@@ -949,6 +949,7 @@ $lang['containsinvalidchars'] = "contained invalid characters!";
 $lang['postpage'] = "Post Page";
 $lang['displayhtmltoolbar'] = "Display HTML toolbar";
 $lang['displayemoticonspanel'] = "Display emoticons panel";
+$lang['displaysignature'] = "Display signature";
 $lang['disableemoticonsinpostsbydefault'] = "Disable emoticons in messages by default";
 $lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages by default";
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
@@ -1149,6 +1150,7 @@ $lang['groupsresultsbythread'] = "Group results by thread";
 $lang['recentthreads'] = "Recent threads";
 $lang['startreading'] = "Start Reading";
 $lang['threadoptions'] = "Thread Options";
+$lang['editthreadoptions'] = "Edit Thread Options";
 $lang['showmorevisitors'] = "Show More Visitors";
 $lang['forthcomingbirthdays'] = "Forthcoming Birthdays";
 

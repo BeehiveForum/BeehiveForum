@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.38 2004-09-03 19:59:52 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.39 2004-09-07 01:50:49 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -940,6 +940,7 @@ $lang['containsinvalidchars'] = "contained invalid characters!";
 $lang['postpage'] = "Post Page";
 $lang['displayhtmltoolbar'] = "Display HTML toolbar";
 $lang['displayemoticonspanel'] = "Display emoticons panel";
+$lang['displaysignature'] = "Display signature";
 $lang['disableemoticonsinpostsbydefault'] = "Disable emoticons in messages by default";
 $lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages by default";
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
@@ -1143,6 +1144,7 @@ $lang['groupsresultsbythread'] = "Grizoup ma rizesults by thizread";
 $lang['recentthreads'] = "Rizecizent shit";
 $lang['startreading'] = "Break some off";
 $lang['threadoptions'] = "Thrizead Optizions";
+$lang['editthreadoptions'] = "Edit Thrizead Optizions";
 $lang['showmorevisitors'] = "Show mo' Homies";
 $lang['forthcomingbirthdays'] = "Fizorthcizoming Bizirthdizays";
 

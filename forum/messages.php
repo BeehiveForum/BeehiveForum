@@ -36,6 +36,13 @@ require_once("./include/user.inc.php");
 require_once("./include/perm.inc.php");
 require_once("./include/poll.inc.php");
 
+if(!bh_session_check()){
+
+    $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
+    header_redirect($uri);
+    
+}
+
 // Check that required variables are set
 // default to display most recent discussion for user
 if (!isset($HTTP_GET_VARS['msg'])) {

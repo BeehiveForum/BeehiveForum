@@ -76,33 +76,33 @@ if (isset($HTTP_POST_VARS['cancel'])) {
   }
 
   $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
-  $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
+  $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : ""; 
+  $t_message_html = (isset($HTTP_POST_VARS['t_message_html'])) ? $HTTP_POST_VARS['t_message_html'] : "";
+  $t_message_text = (isset($HTTP_POST_VARS['t_message_text'])) ? $HTTP_POST_VARS['t_message_text'] : "";
 
 }
-
-$t_message_html = @$HTTP_POST_VARS['t_message_html'];
 
 if($valid) {
 
     if($t_message_html == "Y") {
-        $messagetext = fix_html($HTTP_POST_VARS['messagetext']);
+        $t_message_text = fix_html($t_message_text);
     }
 
     if(isset($t_sig)) {
         if($t_sig_html == "Y") {
-            $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
+            $t_sig = fix_html($t_sig);
         }
     }
 
 }else {
 
     if($t_message_html == "Y") {
-        $messagetext = _stripslashes($HTTP_POST_VARS['messagetext']);
+        $t_message_text = _stripslashes($t_message_text);
     }
 
     if(isset($t_sig)) {
         if($t_sig_html == "Y") {
-          $t_sig = _stripslashes($HTTP_POST_VARS['t_sig']);
+          $t_sig = _stripslashes($t_sig);
         }
     }
 }
@@ -148,7 +148,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     // Check HTML tick box, innit.
 
-    for ($i = 0; $i < 5; $i++) {
+    for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
       if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
         $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
       }else {
@@ -162,10 +162,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     $tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y');
     $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');
+    
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
 
-    if (isset($HTTP_POST_VARS['messagetext'])) {
-      post_create($tid, 1, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, $HTTP_POST_VARS['messagetext']);
+    if (strlen($t_message_text) > 0) {
+      post_create($tid, 1, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, $t_message_text);
     }
 
     if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($tid, 1, true);
@@ -188,8 +189,8 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
 
-  $polldata['FLOGON'] = $preview_tuser['LOGON'];
-  $polldata['FNICK'] = $preview_tuser['NICKNAME'];
+  $polldata['FLOGON']   = $preview_tuser['LOGON'];
+  $polldata['FNICK']    = $preview_tuser['NICKNAME'];
   $polldata['FROM_UID'] = $preview_tuser['UID'];
 
   $polldata['CONTENT'] = "<br>\n";
@@ -204,7 +205,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
   $polldata['CONTENT'].= "            <ul>\n";
 
-  for ($i = 0; $i < 5; $i++) {
+  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
     if (strlen($HTTP_POST_VARS['answers'][$i]) > 0) {
       if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
         $polldata['CONTENT'].= "          <li>". fix_html($HTTP_POST_VARS['answers'][$i]). "</li>\n";
@@ -242,12 +243,12 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
   message_display(0, $polldata, 0, 0, false, false, false);
 
-  if (strlen($HTTP_POST_VARS['messagetext']) > 0) {
+  if (strlen($t_message_text) > 0) {
 
     if($t_message_html != "Y") {
-      $polldata['CONTENT'] = make_html($HTTP_POST_VARS['messagetext']);
+      $polldata['CONTENT'] = make_html($t_message_text);
     }else{
-      $polldata['CONTENT'] = _stripslashes($HTTP_POST_VARS['messagetext']);
+      $polldata['CONTENT'] = _stripslashes($t_message_text);
     }
 
     if($t_sig) {
@@ -285,7 +286,7 @@ if(!isset($t_sig) || !$t_sig) {
     $has_sig = true;
 }
 
-if($t_post_html != "Y") $t_content = isset($HTTP_POST_VARS['messagetext']) ? _stripslashes($HTTP_POST_VARS['messagetext']) : "";
+if($t_message_html != "Y") $t_message_text = isset($t_message_text) ? _stripslashes($t_message_text) : "";
 if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
 
 ?>
@@ -370,8 +371,8 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td><?php echo form_radio('changevote', '1', 'Yes', true); ?></td>
-                  <td><?php echo form_radio('changevote', '0', 'No', false); ?></td>
+                  <td><?php echo form_radio('changevote', '1', 'Yes', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : true); ?></td>
+                  <td><?php echo form_radio('changevote', '0', 'No', isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : false); ?></td>
                 </tr>
               </table>
             </td>
@@ -389,8 +390,8 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td><?php echo form_radio('polltype', '0', 'Horizontal Bar graph', true); ?></td>
-                  <td><?php echo form_radio('polltype', '1', 'Vertical Bar graph', false); ?></td>
+                  <td><?php echo form_radio('polltype', '0', 'Horizontal Bar graph', isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : true); ?></td>
+                  <td><?php echo form_radio('polltype', '1', 'Vertical Bar graph', isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : false); ?></td>
                 </tr>
               </table>
             </td>
@@ -408,8 +409,8 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td><?php echo form_radio('showresults', '1', 'Yes', true); ?></td>
-                  <td><?php echo form_radio('showresults', '0', 'No', false); ?></td>
+                  <td><?php echo form_radio('showresults', '1', 'Yes', isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : true); ?></td>
+                  <td><?php echo form_radio('showresults', '0', 'No', isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : false); ?></td>
                 </tr>
               </table>
             </td>
@@ -421,7 +422,7 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
             <td>When would you like your poll to automatically close?</td>
           </tr>
           <tr>
-            <td><?php echo form_dropdown_array('closepoll', range(0, 4), array('One Day', 'Three Days', 'Seven Days', 'Thirty Days', 'Never'), 4); ?></td>
+            <td><?php echo form_dropdown_array('closepoll', range(0, 4), array('One Day', 'Three Days', 'Seven Days', 'Thirty Days', 'Never'), isset($HTTP_POST_VARS['closepoll']) ? $HTTP_POST_VARS['closepoll'] : 4); ?></td>
           </tr>
           <tr>
             <td><hr /></td>
@@ -433,7 +434,7 @@ if(isset($t_sig)) $t_sig = _stripslashes($t_sig);
             <td>Do you want to include an additional post after the poll?</td>
           </tr>
 	  <tr>
-	    <td><?php echo form_textarea("messagetext", htmlspecialchars($t_content), 15, 75); ?>
+	    <td><?php echo form_textarea("t_message_text", htmlspecialchars($t_message_text), 15, 75); ?>
 	  </tr>
           <tr>
             <td>Signature:<br /><?php echo form_textarea("t_sig", htmlspecialchars($t_sig), 5, 75), form_input_hidden("t_sig_html", $t_sig_html); ?></td>

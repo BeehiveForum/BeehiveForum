@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.82 2004-04-26 11:21:06 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.83 2004-04-28 12:24:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -257,7 +257,7 @@ for ($i = 1; $i < $filecount; $i++) {
 
 echo "  <tr>\n";
 echo "    <td class=\"postbody\">&nbsp;</td>\n";
-echo "    <td class=\"postbody\">Number of files to upload: ", form_dropdown_array("filecount", array(1, 5, 10), array("1", "5", "10"), $filecount), "&amp;nbsp", form_submit("change", "Change"), "</td>\n";
+echo "    <td class=\"postbody\">Number of files to upload: ", form_dropdown_array("filecount", array(1, 5, 10), array("1", "5", "10"), $filecount), "&nbsp;", form_submit("change", "Change"), "</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\">2. {$lang['nowpress']}&nbsp;", form_submit("upload", $lang['upload'], "onclick=\"this.value='{$lang['waitdotdot']}'\""), "</td>\n";

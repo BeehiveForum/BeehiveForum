@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.68 2004-04-27 23:31:41 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.69 2004-04-28 12:24:02 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -104,30 +104,47 @@ if (bh_session_get_value('UID') == 0) {
 // Get the Message ID (MID) if any.
 
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
-    $mid = $_GET['replyto'];
+    $replyto = $_GET['replyto'];
 }elseif (isset($_POST['replyto']) && is_numeric($_POST['replyto'])) {
-    $mid = $_POST['replyto'];
+    $replyto = $_POST['replyto'];
 }
 
 // User clicked cancel
 
 if (isset($_POST['cancel'])) {
-    $uri = (isset($mid)) ? "./pm.php?webtag=$webtag&mid=$mid" : "./pm.php?webtag=$webtag";
+
+    if (isset($replyto)) {
+        $uri = "./pm.php?webtag=$webtag&mid=$replyto";
+    }else {
+        $uri = "./pm.php?webtag=$webtag";
+    }
+
     header_redirect($uri);
 }
 
 // Check the MID to see if it is valid and accessible.
 
-if (isset($mid)) {
-    $t_recipient_list = pm_get_user($mid);
-    if ($pm_data = pm_single_get($mid, PM_FOLDER_INBOX)) {
+if (isset($replyto)) {
+
+    $t_recipient_list = pm_get_user($replyto);
+
+    if ($pm_data = pm_single_get($replyto, PM_FOLDER_INBOX)) {
+
         if (!isset($_POST['t_subject']) || trim($_POST['t_subject']) == "") {
+
             $t_subject = $pm_data['SUBJECT'];
+
+            if (strtoupper(substr($t_subject, 0, 4)) == "FWD:") {
+                $t_subject = substr($t_subject, 4);
+            }
+
             if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
-                $t_subject = "Re:". $t_subject;
+                $t_subject = "Re:$t_subject";
             }
         }
+
     }else {
+
         html_draw_top();
         pm_error_refuse();
         html_draw_bottom();
@@ -138,7 +155,6 @@ if (isset($mid)) {
 // Assume everything is correct (form input, etc)
 
 $valid = true;
-$t_content = "";
 
 // User clicked the submit button - check the data that was submitted
 
@@ -257,14 +273,24 @@ if (isset($_POST['t_post_html'])) {
     }
 }
 
+if (!isset($t_content)) $t_content = "";
+
 // Process the data based on what we know.
 $post = new MessageText($post_html, $t_content);
 
 $t_content = $post->getContent();
 
 if (strlen($t_content) >= 65535) {
-    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+    $error_html = "<h2>{$lang['reducemessagelength']} ". number_format(strlen($t_content)). ")</h2>";
     $valid = false;
+}
+
+// Attachment Unique ID
+
+if (!isset($_POST['aid'])) {
+    $aid = md5(uniqid(rand()));
+}else{
+    $aid = $_POST['aid'];
 }
 
 // Send the PM
@@ -276,7 +302,7 @@ if ($valid && isset($_POST['submit'])) {
         if (isset($to_radio) && $to_radio == 0) {
 
             if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
-                pm_save_attachment_id($new_mid, $_POST['aid']);
+                if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
             }else {
                 $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                 $valid = false;
@@ -287,7 +313,7 @@ if ($valid && isset($_POST['submit'])) {
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
                 if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
-                    pm_save_attachment_id($new_mid, $_POST['aid']);
+                    if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
                 }else {
                     $error_html.= "<h2>{$lang['errorcreatingpm']}</h2>\n";
                     $valid = false;
@@ -310,14 +336,6 @@ if ($valid && isset($_POST['submit'])) {
 
 html_draw_top("openprofile.js", "post.js", "htmltools.js", "basetarget=_blank");
 draw_header_pm();
-
-// Attachment Unique ID
-
-if (!isset($_POST['aid'])) {
-  $aid = md5(uniqid(rand()));
-}else{
-  $aid = $_POST['aid'];
-}
 
 // PM link from profile
 
@@ -387,10 +405,12 @@ if ($valid && isset($_POST['preview'])) {
 
 if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>";
-    echo "<tr><td>\n";
-    echo $error_html . "\n";
-    echo "</td></tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">{$lang['error']}</td>\n";
+    echo "  </tr>";
+    echo "  <tr>\n";
+    echo "    <td>$error_html</td>\n";
+    echo "  </tr>\n";
     echo "</table>\n";
 }
 
@@ -410,17 +430,44 @@ echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td><h2>{$lang['to']}:</h2></td>\n";
 echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td>\n";
-echo "            ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
-echo "            ", pm_draw_to_dropdown_friends(isset($t_to_uid) ? $t_to_uid : 0), "<br />\n";
-echo "            ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
-echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" style=\"width: 190px\" onclick=\"checkToRadio(1)\""), "\n";
-echo "          </td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"checkToRadio(1); addRecipient()\""), "&nbsp;&nbsp;</td>\n";
-echo "        </tr>\n";
+
+if ($friends_array = pm_user_get_friends()) {
+
+    echo "        <tr>\n";
+    echo "          <td>\n";
+    echo "            ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
+    echo "            ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0)), "<br />\n";
+    echo "            ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
+    echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" style=\"width: 190px\" onclick=\"checkToRadio(1)\""), "\n";
+    echo "          </td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"checkToRadio(1); addRecipient()\""), "&nbsp;&nbsp;</td>\n";
+    echo "        </tr>\n";
+
+}else {
+
+    echo "        <tr>\n";
+    echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" style=\"width: 190px\""), "</td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"addRecipient()\""), "&nbsp;&nbsp;</td>\n";
+    echo "        </tr>\n";
+}
+
+if (!is_array($friends_array)) {
+
+    echo "        <tr>\n";
+    echo "          <td>&nbsp;</td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td><h2>Hint:</h2></td>\n";
+    echo "        </tr>\n";
+    echo "        <tr>\n";
+    echo "          <td class=\"smalltext\">Add users to your friends list to have them appear in a drop down on the PM Write Message Page.</td>\n";
+    echo "        </tr>\n";
+}
+
 echo "      </table>\n";
 echo "    </td>\n";
 echo "    <td width=\"500\">\n";
@@ -489,13 +536,24 @@ if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
-if (isset($mid)) echo form_input_hidden("replyto", $mid), "\n";
-echo "</form>\n";
+if (isset($replyto)) echo form_input_hidden("replyto", $replyto), "\n";
 
-if (isset($mid)) {
-    echo "<h1>{$lang['inreplyto']}</h1><br />";
-    draw_pm_message($pm_data);
+if (isset($pm_data) && is_array($pm_data)) {
+
+    echo "<table class=\"posthead\" width=\"720\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">{$lang['inreplyto']}</td>\n";
+    echo "  </tr>";
+    echo "  <tr>\n";
+    echo "    <td><br />", draw_pm_message($pm_data), "</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td colspan=\"2\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
+
+echo "</form>\n";
 
 html_draw_bottom();
 

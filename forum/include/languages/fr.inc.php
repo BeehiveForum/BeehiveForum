@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.12 2003-12-09 22:53:14 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.13 2003-12-10 22:29:21 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -901,29 +901,29 @@ $lang['white'] = "Blanc";
 
 // Missing Entries:
 
-$lang['with'] = "with"
-$lang['prev'] = "Prev"
-$lang['db_connect_error_1'] = "An error has occured while connecting to the database."
-$lang['db_connect_error_2'] = "If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:"
-$lang['db_connect_error_3'] = "They should be set to the database details given to you by your hosting provider."
-$lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner."
-$lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your Inbox now?"
-$lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner."
-$lang['forumstats'] = "Forum Stats"
-$lang['guests'] = "guests"
-$lang['members'] = "members"
-$lang['anonymousmembers'] = "anonymous members"
-$lang['viewcompletelist'] = "View Complete List"
-$lang['ourmembershavemadeatotalof'] = "Our members have made a total of"
-$lang['threadsand'] = "threads and"
-$lang['postslowercase'] = "posts"
-$lang['longestthreadis'] = "Longest thread is"
-$lang['therehavebeen'] = "There have been"
-$lang['postsmadeinthelastsixtyminutes'] = "posts made in the last 60 minutes"
-$lang['mostpostsevermadeinasinglesixtyminuteperiodwas'] = "Most posts ever made in a single 60 minute period was"
-$lang['wehave'] = "We have"
-$lang['registeredmembers'] = "registered members"
-$lang['thenewestmemberis'] = "The newest member is"
-$lang['mostuserseveronlinewas'] = "Most users ever online was"
+$lang['with'] = "with";
+$lang['prev'] = "Prev";
+$lang['db_connect_error_1'] = "An error has occured while connecting to the database.";
+$lang['db_connect_error_2'] = "If you are the forum owner, please ensure the following variables in your config.inc.php are set correctly:";
+$lang['db_connect_error_3'] = "They should be set to the database details given to you by your hosting provider.";
+$lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
+$lang['pmnotificationpopup'] = "You have a new PM. Would you like to go to your Inbox now?";
+$lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";
+$lang['forumstats'] = "Forum Stats";
+$lang['guests'] = "guests";
+$lang['members'] = "members";
+$lang['anonymousmembers'] = "anonymous members";
+$lang['viewcompletelist'] = "View Complete List";
+$lang['ourmembershavemadeatotalof'] = "Our members have made a total of";
+$lang['threadsand'] = "threads and";
+$lang['postslowercase'] = "posts";
+$lang['longestthreadis'] = "Longest thread is";
+$lang['therehavebeen'] = "There have been";
+$lang['postsmadeinthelastsixtyminutes'] = "posts made in the last 60 minutes";
+$lang['mostpostsevermadeinasinglesixtyminuteperiodwas'] = "Most posts ever made in a single 60 minute period was";
+$lang['wehave'] = "We have";
+$lang['registeredmembers'] = "registered members";
+$lang['thenewestmemberis'] = "The newest member is";
+$lang['mostuserseveronlinewas'] = "Most users ever online was";
 
 ?>

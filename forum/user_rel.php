@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.51 2004-05-04 17:10:19 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.52 2004-05-05 22:07:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -97,8 +97,8 @@ if (!$webtag = get_webtag($webtag_search)) {
 }
 
 if (bh_session_get_value('UID') == 0) {
-        html_guest_error();
-        exit;
+    html_guest_error();
+    exit;
 }
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -147,16 +147,16 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $uid = $_GET['uid'];
     if (!$user = user_get($uid)) {
         html_draw_top();
-        echo "<h1>{$lang['error']}:</h1>";
-        echo "<p>{$lang['invalidusername']}</p>";
+        echo "<h1>{$lang['invalidop']}:</h1>";
+        echo "<h2>{$lang['invalidusername']}</h2>";
         html_draw_bottom();
         exit;
     }
     $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile($uid, '$webtag')\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
 }else {
     html_draw_top();
-    echo "<h1>{$lang['error']}:</h1>";
-    echo "<p>{$lang['nouserspecified']}</p>";
+    echo "<h1>{$lang['invalidop']}:</h1>";
+    echo "<h2>{$lang['nouserspecified']}</h2>";
     html_draw_bottom();
     exit;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.54 2004-05-04 17:10:18 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.55 2004-05-05 22:07:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -176,6 +176,7 @@ if (isset($_POST['submit']) && $_POST['mode'] == "link") {
 }
 
 if ($mode == "link") {
+
     html_draw_top();
 
     if (!isset($uri)) $uri = "http://";
@@ -184,43 +185,103 @@ if ($mode == "link") {
 
     echo "<h1>{$lang['links']}: {$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
-    if ($error) echo "<h2>$error</h2>\n";
-    echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"POST\" target=\"_self\">\n";
-    echo form_input_hidden('webtag', $webtag), "\n";
-    echo form_input_hidden("fid", $fid) . "\n";
-    echo form_input_hidden("mode", "link") . "\n";
-    echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
-    echo "<table class=\"posthead\" cellpadding=\"2\" cellspacing=\"0\">\n";
-    echo "<tr><td align=\"right\">{$lang['addressurluri']}:</td><td>" . form_input_text("uri", $uri, 60, 255) . "</td></tr>\n";
-    echo "<tr><td align=\"right\">{$lang['name']}:</td><td>" . form_input_text("name", $name, 60, 64) . "</td></tr>\n";
-    echo "<tr><td align=\"right\">{$lang['description']}:</td><td>" . form_input_text("description", $description, 60) . "</td></tr>\n";
-    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
-    echo "</table>\n";
-    echo "</td></tr></table>\n";
-    echo "</form>\n";
-    html_draw_bottom();
-    exit;
-}
 
-if ($mode == "folder") {
+    if ($error) echo "<h2>$error</h2>\n";
+
+    echo "<form name=\"linkadd\" action=\"links_add.php\" method=\"POST\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden("fid", $fid) . "\n";
+    echo "  ", form_input_hidden("mode", "link") . "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['addlink']}:</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"right\">{$lang['addressurluri']}:</td>\n";
+    echo "                  <td>" . form_input_text("uri", $uri, 60, 255) . "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"right\">{$lang['name']}:</td>\n";
+    echo "                  <td>" . form_input_text("name", $name, 60, 64) . "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"right\">{$lang['description']}:</td>\n";
+    echo "                  <td>" . form_input_text("description", $description, 60) . "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit(), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+
+    html_draw_bottom();
+
+}elseif ($mode == "folder") {
+
     html_draw_top();
 
     echo "<h1>{$lang['links']}: {$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
+
     if ($error) echo "<h2>$error</h2>\n";
+
     echo "<form name=\"folderadd\" action=\"links_add.php\" method=\"POST\" target=\"_self\">\n";
-    echo form_input_hidden('webtag', $webtag), "\n";
-    echo form_input_hidden("fid", $fid) . "\n";
-    echo form_input_hidden("mode", "folder") . "\n";
-    echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
-    echo "<table class=\"posthead\" cellpadding=\"2\" cellspacing=\"0\">\n";
-    echo "<tr><td align=\"right\">{$lang['name']}:</td><td>" . form_input_text("name", isset($name) ? $name : '', 60, 64) . "</td></tr>\n";
-    echo "<tr><td>&nbsp;</td><td>" . form_submit() . "&nbsp;" . form_submit("cancel", $lang['cancel']) . "</td></tr>\n";
-    echo "</table>\n";
-    echo "</td></tr></table>\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden("fid", $fid) . "\n";
+    echo "  ", form_input_hidden("mode", "folder") . "\n";
+    echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['addnewfolder']}:</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"right\">{$lang['name']}:</td>\n";
+    echo "                  <td>", form_input_text("name", isset($name) ? $name : '', 60, 64), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit(), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
     echo "</form>\n";
+
     html_draw_bottom();
-    exit;
 }
 
 ?>

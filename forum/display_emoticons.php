@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.21 2004-05-04 17:10:17 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.22 2004-05-05 22:07:06 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -116,7 +116,7 @@ echo "<h1>{$lang['emoticons']}</h1>\n";
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<table cellpadding=\"1\" cellspacing=\"0\" width=\"450\">\n";
+echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"box\" width=\"100%\">\n";

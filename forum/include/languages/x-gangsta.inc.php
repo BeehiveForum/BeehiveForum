@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.7 2004-05-05 20:05:58 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.8 2004-05-05 22:07:14 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -273,9 +273,12 @@ $lang['movepoststofolder'] = "Move posts to folder";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
 $lang['mustenterfoldername'] = "You must enter a folder name";
 $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
+$lang['nofolderidspecified'] = "No Folder ID specified";
 $lang['successfullyaddedfolder'] = "Successfully Added Folder";
 $lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
 $lang['currentpasswd'] = "Current Password";
+$lang['forumisnotrestricted'] = "Forum is not restricted";
+$lang['noforumidspecified'] = "No Forum ID specified";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

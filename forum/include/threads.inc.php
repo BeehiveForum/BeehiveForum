@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.120 2004-05-23 12:33:55 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.121 2004-05-23 15:20:27 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -694,11 +694,17 @@ function threads_get_most_recent()
     $result = db_query($sql, $db_threads_get_recent);
 
     if (db_num_rows($result)) {
+
         $threads_get_array = array();
-	while ($row = db_fetch_array($result)) {
-	    $threads_get_array[] = $row;
+
+	while ($thread = db_fetch_array($result)) {
+	    if (!($thread['RELATIONSHIP'] & USER_IGNORED) || $thread['LENGTH'] > 1) {
+	        $threads_get_array[] = $thread;
+	    }
 	}
+
 	return $threads_get_array;
+
     }else {
         return false;
     }

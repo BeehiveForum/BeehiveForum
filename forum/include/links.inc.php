@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.36 2004-04-12 19:44:43 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.37 2004-04-14 20:39:12 decoyduck Exp $ */
 
-function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC") // setting $invisible to true gets links that are marked as not visible too
+function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0) // setting $invisible to true gets links that are marked as not visible too
 {
-    $links = array();
+    $links_array = array();
 
     $db_links_get_in_folder = db_connect();
 
@@ -34,28 +34,39 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     
-    if (!$table_data = get_table_prefix()) return $links;
+    if (!$table_data = get_table_prefix()) return array('links_count' => 0,
+                                                        'links_array' => array());
 
-    $sql  = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
-    $sql .= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
-    $sql .= "AVG(LINKS_VOTE.RATING) AS RATING ";
-    $sql .= "FROM {$table_data['PREFIX']}LINKS LINKS ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ";
-    $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql .= "LEFT JOIN USER USER ";
-    $sql .= "ON (LINKS.UID = USER.UID) ";
-    $sql .= "WHERE LINKS.FID = $fid ";
-    if (!$invisible) $sql .= "AND LINKS.VISIBLE = 'Y' ";
-    $sql .= "GROUP BY LINKS.LID ";
-    $sql .= "ORDER BY $sort_by $sort_dir";
+    $sql = "SELECT LID FROM {$table_data['PREFIX']}LINKS ";
+    $sql.= "WHERE FID = $fid";
+
+    $result = db_query($sql, $db_links_get_in_folder);
+    $links_count = db_num_rows($result);
+
+    $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+    $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
+    $sql.= "AVG(LINKS_VOTE.RATING) AS RATING ";
+    $sql.= "FROM {$table_data['PREFIX']}LINKS LINKS ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ";
+    $sql.= "ON (LINKS.LID = LINKS_VOTE.LID) ";
+    $sql.= "LEFT JOIN USER USER ";
+    $sql.= "ON (LINKS.UID = USER.UID) ";
+    $sql.= "WHERE LINKS.FID = $fid ";
+
+    if (!$invisible) $sql.= "AND LINKS.VISIBLE = 'Y' ";
+
+    $sql.= "GROUP BY LINKS.LID ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 20";
 
     $result_id = db_query($sql, $db_links_get_in_folder);
 
     while ($row = db_fetch_array($result_id)) {
-        $links[$row['LID']] = $row;
+        $links_array[$row['LID']] = $row;
     }
 
-    return $links;
+    return array('links_count' => $links_count,
+                 'links_array' => $links_array);
 
 }
 
@@ -225,7 +236,7 @@ function links_get_single($lid)
 
 function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC", $offset = 0)
 {
-    $links = array();
+    $links_array = array();
 
     $sort_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
 
@@ -235,28 +246,37 @@ function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC"
 
     $db_links_get_in_folder = db_connect();
     
-    if (!$table_data = get_table_prefix()) return $links;
+    if (!$table_data = get_table_prefix()) return array('links_count' => 0,
+                                                        'links_array' => array());
 
-    $sql  = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
-    $sql .= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
-    $sql .= "AVG(LINKS_VOTE.RATING) AS RATING ";
-    $sql .= "FROM {$table_data['PREFIX']}LINKS LINKS ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ";
-    $sql .= "ON (LINKS.LID = LINKS_VOTE.LID) ";
-    $sql .= "LEFT JOIN USER USER ";
-    $sql .= "ON (LINKS.UID = USER.UID) ";
-    if (!$invisible) $sql .= "WHERE LINKS.VISIBLE = 'Y' ";
-    $sql .= "GROUP BY LINKS.LID ";
-    $sql .= "ORDER BY $sort_by $sort_dir ";
-    $sql .= "LIMIT $offset, 20";
+    $sql = "SELECT LID FROM {$table_data['PREFIX']}LINKS ";
+
+    $result = db_query($sql, $db_links_get_in_folder);
+    $links_count = db_num_rows($result);
+
+    $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
+    $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
+    $sql.= "AVG(LINKS_VOTE.RATING) AS RATING ";
+    $sql.= "FROM {$table_data['PREFIX']}LINKS LINKS ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}LINKS_VOTE LINKS_VOTE ";
+    $sql.= "ON (LINKS.LID = LINKS_VOTE.LID) ";
+    $sql.= "LEFT JOIN USER USER ";
+    $sql.= "ON (LINKS.UID = USER.UID) ";
+
+    if (!$invisible) $sql.= "WHERE LINKS.VISIBLE = 'Y' ";
+
+    $sql.= "GROUP BY LINKS.LID ";
+    $sql.= "ORDER BY $sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 20";
 
     $result_id = db_query($sql, $db_links_get_in_folder);
 
     while ($row = db_fetch_array($result_id)) {
-        $links[$row['LID']] = $row;
+        $links_array[$row['LID']] = $row;
     }
 
-    return $links;
+    return array('links_count' => $links_count,
+                 'links_array' => $links_array);
 }
 
 function links_folder_change_visibility($fid, $visible = true)

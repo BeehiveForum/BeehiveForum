@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.147 2005-04-03 22:28:23 rowan_hill Exp $ */
+/* $Id: poll.inc.php,v 1.148 2005-04-04 00:35:35 rowan_hill Exp $ */
 
 /**
 * Poll related functions
@@ -109,6 +109,8 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_g
         $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
         $result = db_query($sql, $db_poll_edit);
     }
+    
+    $poll_question = addslashes($poll_question);
 
     $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
     $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";

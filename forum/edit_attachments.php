@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.57 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.58 2004-04-23 17:28:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,9 +49,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -69,7 +69,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -159,7 +159,7 @@ if (isset($_POST['del'])) {
 
     if (isset($_POST['hash']) && is_md5($_POST['hash'])) {
 
-        delete_attachment(bh_session_get_value('UID'), $_POST['hash']);
+        delete_attachment($_POST['hash']);
     }
 
 }elseif (isset($_POST['close'])) {
@@ -171,7 +171,7 @@ if (isset($_POST['del'])) {
     html_draw_bottom();
     exit;
 }
-  
+
 if (isset($_GET['popup']) || isset($_POST['popup'])) {
     $popup = true;
 }else {
@@ -186,7 +186,7 @@ if (isset($_GET['popup']) || isset($_POST['popup'])) {
     <td class="postbody">&nbsp;</td>
     <td class="postbody">&nbsp;</td>
     <td class="postbody">&nbsp;</td>
-    <td class="postbody">&nbsp;</td>    
+    <td class="postbody">&nbsp;</td>
   </tr>
 <?php
 
@@ -199,17 +199,17 @@ if (isset($_GET['popup']) || isset($_POST['popup'])) {
   if (is_array($attachments)) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
-    
+
       if (@file_exists("$attachment_dir/{$attachments[$i]['hash']}")) {
 
         echo "  <tr>\n";
         echo "    <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" />";
-        
+
         if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
             echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachments[$i]['hash'], "\" title=\"";
         }else {
             echo "<a href=\"getattachment.php/", $attachments[$i]['hash'], "/", rawurlencode($attachments[$i]['filename']), "?webtag=$webtag\" title=\"";
-        }         
+        }
 
         if (strlen($attachments[$i]['filename']) > 16) {
           echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
@@ -249,10 +249,10 @@ if (isset($_GET['popup']) || isset($_POST['popup'])) {
         echo "      <form method=\"post\" action=\"edit_attachments.php?webtag=$webtag\">\n";
         echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
         echo "        ", form_submit('del', $lang['del']), "\n";
-        
+
 	if ($popup) echo "        ", form_input_hidden('popup', $popup), "\n";
         if ($aid)   echo "        ". form_input_hidden('aid', $aid), "\n";
- 
+
         echo "      </form>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -281,13 +281,13 @@ if (isset($_GET['popup']) || isset($_POST['popup'])) {
   echo "  </tr>\n";
   echo "  <tr>\n";
   echo "    <td valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
-  echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";  
+  echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
   echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
   echo "    <td class=\"postbody\">&nbsp;</td>\n";
   echo "  </tr>\n";
   echo "  <tr>\n";
   echo "    <td valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
-  echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";    
+  echo "    <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
   echo "    <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
   echo "    <td class=\"postbody\">&nbsp;</td>\n";
   echo "  </tr>\n";
@@ -295,7 +295,7 @@ if (isset($_GET['popup']) || isset($_POST['popup'])) {
   echo "    <td colspan=\"5\"><hr width=\"600\" /></td>\n";
   echo "  </tr>\n";
   echo "</table>\n";
-  
+
   if (forum_get_setting('attachments_enabled', 'Y', false)) {
 
       if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
@@ -305,18 +305,18 @@ if (isset($_GET['popup']) || isset($_POST['popup'])) {
       }else {
           $aid = md5(uniqid(rand()));
       }
-      
+
       echo "<form method=\"post\" action=\"edit_attachments.php?webtag=$webtag\">\n";
       echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
       echo "  <tr>\n";
       echo "    <td><p align=\"center\">", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "</p></td>\n";
       echo "  </tr>\n";
       echo "</table>\n";
-      echo "</form>\n";    
+      echo "</form>\n";
   }
-  
+
   if ($popup) {
-  
+
       echo "<form method=\"post\" action=\"edit_attachments.php?webtag=$webtag\">\n";
 
       if (isset($aid)) echo form_input_hidden('aid', $aid), "\n";

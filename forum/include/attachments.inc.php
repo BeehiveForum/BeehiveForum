@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.62 2004-04-20 10:01:24 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.63 2004-04-23 17:28:48 decoyduck Exp $ */
 
 include_once("./include/edit.inc.php");
 include_once("./include/perm.inc.php");
@@ -159,14 +159,40 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
     return $result;
 }
 
-function delete_attachment($uid, $hash)
+function delete_attachment_by_aid($aid)
 {
-    if (!is_numeric($uid)) return false;
+    if (!is_md5($aid)) return false;
+
+    $db_delete_attachment_by_aid = db_connect();
+
+    if (!$uid = bh_session_get_value('UID')) return false;
+    if(!$table_data = get_table_prefix()) return false;
+
+    $forum_settings = get_forum_settings();
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
+    // Fetch the attachment to make sure the user
+    // is able to delete it, i.e. it belongs to them.
+
+    $sql = "SELECT PAF.HASH FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES PAF ";
+    $sql.= "WHERE PAF.AID = '$aid' AND PAF.UID = '$uid'";
+
+    $result = db_query($sql, $db_delete_attachment_by_aid);
+
+    while ($row = db_fetch_array($result)) {
+        delete_attachment($row['HASH']);
+    }
+}
+
+function delete_attachment($hash)
+{
     if (!is_md5($hash)) return false;
 
     $db_delete_attachment = db_connect();
 
-    if(!$table_data = get_table_prefix()) return false;
+    if (!$uid = bh_session_get_value('UID')) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = get_forum_settings();
 

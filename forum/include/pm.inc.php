@@ -21,8 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.66 2004-04-23 15:53:47 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.67 2004-04-23 17:28:48 decoyduck Exp $ */
 
+include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
 
 function pm_markasread($mid)
@@ -727,7 +728,7 @@ function pm_delete_message($mid)
     // ------------------------------------------------------------
 
     if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID']) && get_num_attachments($db_delete_pm_row['AID']) > 0) {
-        delete_attachment($db_delete_pm_row['FROM_UID'], $db_delete_pm_row['AID'], $db_delete_pm_row['FILENAME']);
+        delete_attachment_by_aid($db_delete_pm_row['AID']);
     }
 
     $sql = "DELETE FROM {$table_data['PREFIX']}PM WHERE MID = '$mid'";

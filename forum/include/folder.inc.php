@@ -27,17 +27,18 @@ require_once("./include/form.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/format.inc.php");
 
-function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
+function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $ustatus = bh_session_get_value('STATUS');
     $uid = bh_session_get_value('UID');
 
     if ($ustatus & PERM_CHECK_WORKER) {
-        $sql = "select FID, TITLE from ".forum_table("FOLDER");
+        $sql = "select FID, TITLE from ".forum_table("FOLDER")." WHERE ALLOWED_TYPES & $allowed_types > 0";
     } else {
         $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
         $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
-        $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
+        $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
+        $sql.= "AND F.ALLOWED_TYPES & $allowed_types > 0";
     }
 
     return form_dropdown_sql($field_name.$suffix, $sql, $default_fid);
@@ -57,12 +58,12 @@ function folder_get_title($fid)
    return $foldertitle;
 }
 
-function folder_create($title,$access,$description = "")
+function folder_create($title,$access,$description = "",$allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $db_folder_create = db_connect();
 
-    $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION) ";
-    $sql.= "values (\"$title\",$access,\"$description\")";
+    $sql = "insert into " . forum_table("FOLDER") . " (TITLE, ACCESS_LEVEL, DESCRIPTION, ALLOWED_TYPES) ";
+    $sql.= "values (\"$title\",$access,\"$description\",$allowed_types)";
 
     $result = db_query($sql, $db_folder_create);
 
@@ -75,13 +76,14 @@ function folder_create($title,$access,$description = "")
     return $new_fid;
 }
 
-function folder_update($fid,$title,$access,$description = "")
+function folder_update($fid,$title,$access,$description = "",$allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $db_folder_update = db_connect();
     $sql = "update low_priority " . forum_table("FOLDER") . " ";
     $sql.= "set TITLE = \"$title\", ";
     $sql.= "ACCESS_LEVEL = $access, ";
-    $sql.= "DESCRIPTION = \"$description\" ";
+    $sql.= "DESCRIPTION = \"$description\", ";
+    $sql.= "ALLOWED_TYPES = $allowed_types ";
     $sql.= "where FID = $fid";
     $result = db_query($sql, $db_folder_update);
     return $result;
@@ -130,7 +132,7 @@ function folder_get_all()
 
     $db_folder_get_all = db_connect();
 
-    $sql = "select FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, count(*) as THREAD_COUNT ";
+    $sql = "select FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, FOLDER.DESCRIPTION, FOLDER.ALLOWED_TYPES, count(*) as THREAD_COUNT ";
     $sql.= "from " . forum_table("FOLDER") . " FOLDER LEFT JOIN " . forum_table("THREAD") . " THREAD ";
     $sql.= " on (THREAD.FID = FOLDER.FID) ";
     $sql.= "group by FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";
@@ -183,6 +185,21 @@ function user_set_folder_interest($fid, $interest)
         $result = db_query($sql, $db_user_set_folder_interest);
     }
 
+}
+
+function folder_thread_type_allowed($fid, $type) // for types see constants.inc.php
+{
+    $db_folder_thread_type_allowed = db_connect();
+    
+    $sql = "SELECT ALLOWED_TYPES FROM ".forum_table("FOLDER")." WHERE FID = $fid";
+    $result = db_query($sql, $db_folder_thread_type_allowed);
+    
+    if (db_num_rows($result)) {
+        $row = db_fetch_array($result);
+        return $row['ALLOWED_TYPES'] ? ($row['ALLOWED_TYPES'] & $type) : true;
+    } else {
+        return false;
+    }      
 }
 
 ?>

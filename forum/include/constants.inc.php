@@ -47,4 +47,9 @@ define('PM_FOLDER_SENT',   PM_SENT); // Sent Items
 define('PM_FOLDER_OUTBOX', PM_NEW|PM_UNREAD); // Outbox
 define('PM_FOLDER_SAVED',  PM_SAVED_IN|PM_SAVED_OUT); // Saved Items
 
+// Allowed thread types in folders
+
+define('FOLDER_ALLOW_NORMAL_THREAD', 1);
+define('FOLDER_ALLOW_POLL_THREAD', 2);
+define('FOLDER_ALLOW_ALL_THREAD', FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD);
 ?>

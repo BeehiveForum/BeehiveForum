@@ -227,7 +227,7 @@ $lang['banneduser'] = "Banned User";
 $lang['unbanneduser'] = "Unbanned User";
 $lang['ipaddress'] = "IP address";
 $lang['deleteduser'] = "Deleted User";
-$lang['changedtitleaccessfolder'] = "Changed Folder Title / Access Privs for folder";
+$lang['changedtitleaccessfolder'] = "Changed Folder Options for folder";
 $lang['movedthreads'] = "Moved threads to folder";
 $lang['creatednewfolder'] = "Created new folder";
 $lang['changedprofilesectiontitle'] = "Changed Profile section title for section";
@@ -252,6 +252,10 @@ $lang['wordfilterupdated'] = "Word Filter updated";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['wordfilterexp_1'] = "Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line.";
 $lang['wordfilterexp_2'] = "Perl-compatible regular expressions can also be used to match words if you know how.";
+$lang['allow'] = "Allow";
+$lang['normalthreadsonly'] = "Normal threads only";
+$lang['pollthreadsonly'] = "Poll threads only";
+$lang['both'] = "Both thread types";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 
@@ -443,6 +447,7 @@ $lang['threadtitle'] = "Thread title";
 $lang['messagehasbeendeleted'] = "Message has been deleted.";
 $lang['converttoHTML'] = "Convert to HTML";
 $lang['pleaseentermembername'] = "Please enter a membername:";
+$lang['cannotpostthisthreadtypeinfolder'] = "You cannot post this thread type in that folder!";
 
 // Message display (messages.php) --------------------------------------
 

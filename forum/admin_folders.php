@@ -63,9 +63,9 @@ if(!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)){
 // Do updates
 if (isset($HTTP_POST_VARS['submit'])) {
     for($i = 0; $i < $HTTP_POST_VARS['t_count']; $i++) {
-        if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i] || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i] || $HTTP_POST_VARS['t_desc_'.$i] != $HTTP_POST_VARS['t_old_desc_'.$i]) {
+        if($HTTP_POST_VARS['t_title_'.$i] != $HTTP_POST_VARS['t_old_title_'.$i] || $HTTP_POST_VARS['t_access_'.$i] != $HTTP_POST_VARS['t_old_access_'.$i] || $HTTP_POST_VARS['t_desc_'.$i] != $HTTP_POST_VARS['t_old_desc_'.$i] || $HTTP_POST_VARS['t_allow_'.$i] != $HTTP_POST_VARS['t_old_allow_'.$i]) {
             $new_title = (trim($HTTP_POST_VARS['t_title_'.$i]) != "") ? $HTTP_POST_VARS['t_title_'.$i] : $HTTP_POST_VARS['t_old_title_'.$i];
-            folder_update($HTTP_POST_VARS['t_fid_'.$i], $new_title, $HTTP_POST_VARS['t_access_'.$i], _addslashes($HTTP_POST_VARS['t_desc_'.$i]));
+            folder_update($HTTP_POST_VARS['t_fid_'.$i], $new_title, $HTTP_POST_VARS['t_access_'.$i], _addslashes($HTTP_POST_VARS['t_desc_'.$i]), $HTTP_POST_VARS['t_allow_'.$i]);
             admin_addlog(0, $HTTP_POST_VARS['t_fid_'.$i], 0, 0, 0, 0, 7);
         }
         if($HTTP_POST_VARS['t_fid_'.$i] != $HTTP_POST_VARS['t_move_'.$i]){
@@ -74,7 +74,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         }
     }
     if(trim($HTTP_POST_VARS['t_title_new']) != "" && $HTTP_POST_VARS['t_title_new'] != "New Folder"){
-        $new_fid = folder_create($HTTP_POST_VARS['t_title_new'],$HTTP_POST_VARS['t_access_new'],_addslashes($HTTP_POST_VARS['t_desc_new']));
+        $new_fid = folder_create($HTTP_POST_VARS['t_title_new'],$HTTP_POST_VARS['t_access_new'],_addslashes($HTTP_POST_VARS['t_desc_new']),$HTTP_POST_VARS['t_allow_new']);
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
     }
 }
@@ -93,9 +93,15 @@ echo "<td class=\"subhead\" align=\"left\">{$lang['description']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['accesslevel']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['threads']}</td>\n";
 echo "<td class=\"subhead\" align=\"left\">{$lang['move']}</td>\n";
+echo "<td class=\"subhead\" align=\"left\">{$lang['allow']}</td>\n";
 echo "</tr>\n";
 
 $folder_array = folder_get_all();
+
+// Make the arrays for the allow post types dropdown
+
+$allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lang['both']);
+$allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
 
 foreach ($folder_array as $key => $folder) {
 
@@ -113,6 +119,7 @@ foreach ($folder_array as $key => $folder) {
 
     echo "  <td align=\"left\">". $folder['THREAD_COUNT']. "</td>\n";
     echo "  <td align=\"left\">". folder_draw_dropdown($folder['FID'], "t_move", "_$key"). "</td>\n";
+    echo "  <td align=\"left\">". form_dropdown_array("t_allow_$key", $allow_values, $allow_labels, $folder['ALLOWED_TYPES'] ? $folder['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow_$key", $folder['ALLOWED_TYPES'])."</td>\n";
     echo "</tr>\n";
 }
 
@@ -124,10 +131,11 @@ echo "  <td align=\"left\">". form_field("t_desc_new", "", 32, 255). "</td>\n";
 echo "  <td align=\"left\">". form_dropdown_array("t_access_new", array(-1,0,1), array($lang['closed'], $lang['open'], $lang['restricted'])). "</td>\n";
 echo "  <td align=\"left\">-</td>\n";
 echo "  <td align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "  <td align=\"left\">".form_dropdown_array("t_allow_new", $allow_values, $allow_labels, FOLDER_ALLOW_ALL_THREAD)."</td>\n";
 echo "</tr>\n";
 
-echo "<tr><td colspan=\"6\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
-echo "<tr><td colspan=\"6\" align=\"right\">\n";
+echo "<tr><td colspan=\"7\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td></tr>\n";
+echo "<tr><td colspan=\"7\" align=\"right\">\n";
 echo form_input_hidden("t_count", sizeof($folder_array));
 echo form_submit();
 echo "</td></tr></table>\n";

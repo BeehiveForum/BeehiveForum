@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.82 2005-04-03 13:41:12 tribalonline Exp $ */
+/* $Id: format.inc.php,v 1.83 2005-04-04 16:02:19 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -158,7 +158,7 @@ function _htmlentities($text)
     // This bit below doesn't appear to work with
     // all PHP versions (?) and causes strangeness
     // with some character sets and non-alphanumeric
-    // characters including the euro and pound (£)
+    // characters including the euro and pound (Â£)
     // sign.
 
     /*$lang = load_language_file();

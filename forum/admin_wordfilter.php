@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.62 2005-03-26 18:16:41 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.63 2005-03-28 19:43:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -158,7 +158,7 @@ if (isset($_POST['submit'])) {
         echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
         echo "<p>{$lang['forumsettingsupdated']}</p>";
 
-        form_quick_button("./admin_wordfilter.php", $lang['continue'], false, false, "_top");
+        echo form_quick_button("./admin_wordfilter.php", $lang['continue'], false, false, "_top");
 
         html_draw_bottom();
         exit;

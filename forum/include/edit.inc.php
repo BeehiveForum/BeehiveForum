@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.54 2005-03-23 20:34:12 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.55 2005-03-28 19:43:34 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -111,7 +111,7 @@ function edit_refuse($tid, $pid)
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['nopermissiontoedit']}</p>";
-    form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid");
+    echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid");
     echo "</div>";
 }
 

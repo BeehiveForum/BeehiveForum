@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: header.inc.php,v 1.21 2005-03-15 21:29:47 decoyduck Exp $ */
+/* $Id: header.inc.php,v 1.22 2005-03-28 19:43:35 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -72,7 +72,7 @@ function header_redirect_cookie($uri)
         echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
         echo "<p>{$lang['preferencesupdated']}</p>";
 
-        form_quick_button($uri, $lang['continue'], false, false, "_top");
+        echo form_quick_button($uri, $lang['continue'], false, false, "_top");
 
         html_draw_bottom();
         exit;

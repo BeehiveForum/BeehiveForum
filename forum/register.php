@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.108 2005-03-26 23:49:09 decoyduck Exp $ */
+/* $Id: register.php,v 1.109 2005-03-28 19:43:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -46,6 +46,8 @@ $forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "email.inc.php");
+include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -72,9 +74,9 @@ if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
 
     if (isset($final_uri)) {
-        form_quick_button("./index.php". $lang['continue'], "final_uri", $final_uri, "_top");
+        echo form_quick_button("./index.php". $lang['continue'], "final_uri", $final_uri, "_top");
     }else {
-        form_quick_button("./index.php". $lang['continue'], false, false, "_top");
+        echo form_quick_button("./index.php". $lang['continue'], false, false, "_top");
     }
 
     echo "</div>\n";
@@ -212,12 +214,20 @@ if (isset($_POST['submit'])) {
 
             $error = "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
             $valid = false;
-        }
 
-        if (email_is_banned($new_user['EMAIL'])) {
+        }else {
 
-            $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
-            $valid = false;
+            if (email_is_banned($new_user['EMAIL'])) {
+
+                $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
+                $valid = false;
+            }
+
+            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($new_user['EMAIL'])) {
+
+                $error_html.= "<h2>{$lang['emailaddressalreadyinuse']}</h2>\n";
+                $valid = false;
+            }
         }
 
     }else {
@@ -365,8 +375,16 @@ if (isset($_POST['submit'])) {
 
         if ($new_uid > -1) {
 
+            $email_confirm_result = true;
+
             user_update_prefs($new_uid, $new_user);
             user_update_sig($new_uid, $new_user['SIG_CONTENT'], $new_user['SIG_HTML']);
+
+            if (forum_get_setting('require_email_confirmation', 'Y')) {
+
+                $email_confirm_result = email_send_user_confirmation($new_uid);
+                perm_update_user_permissions($new_uid, USER_PERM_EMAIL_CONFIRM);
+            }
 
             bh_session_init($new_uid);
 
@@ -442,16 +460,70 @@ if (isset($_POST['submit'])) {
             html_draw_top();
 
             echo "<div align=\"center\">\n";
-            echo "<p>{$lang['userrecordcreated']}</p>\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+            echo "    <tr>\n";
+            echo "      <td width=\"500\">\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td class=\"subhead\">{$lang['successfullycreateduseraccount']}</td>\n";
+            echo "                </tr>\n";
 
-            if (isset($final_uri)) {
-                form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
+            if (forum_get_setting('require_email_confirmation', 'Y')) {
+
+                if ($email_confirm_result) {
+
+                    echo "                <tr>\n";
+                    echo "                  <td>{$lang['useraccountcreatedconfirmsuccess']}</td>\n";
+                    echo "                </tr>\n";
+
+                }else {
+
+                    echo "                <tr>\n";
+                    echo "                  <td>{$lang['useraccountcreatedconfirmfailed']}</td>\n";
+                    echo "                </tr>\n";
+                }
+
             }else {
-                form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+
+                echo "                <tr>\n";
+                echo "                  <td>{$lang['useraccountcreated']}</td>\n";
+                echo "                </tr>\n";
             }
 
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td>&nbsp;</td>\n";
+            echo "    </tr>\n";
+
+            if (isset($final_uri)) {
+
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top"), "</td>\n";
+                echo "    </tr>\n";
+
+            }else {
+
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_quick_button("./index.php", $lang['continue'], false, false, "_top"), "</td>\n";
+                echo "    </tr>\n";
+            }
+
+            echo "  </table>\n";
             echo "</div>\n";
+
             html_draw_bottom();
+
             exit;
 
         }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.235 2005-03-27 13:02:59 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.236 2005-03-28 19:43:36 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -56,10 +56,10 @@ function user_exists($logon)
 
 function user_create($logon, $password, $nickname, $email)
 {
-    $logon = addslashes($logon);
-    $nickname = addslashes($nickname);
-    $email = addslashes($email);
-    $md5pass = md5($password);
+    $logon     = addslashes($logon);
+    $nickname  = addslashes($nickname);
+    $email     = addslashes($email);
+    $md5pass   = md5($password);
 
     if (!$ipaddress = get_ip_address()) {
         $ipaddress = "";

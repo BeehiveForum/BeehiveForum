@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.41 2005-03-14 13:27:19 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.42 2005-03-28 19:43:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
             echo "<div align=\"center\">\n";
             echo "<p class=\"smalltext\">{$lang['passwdresetexp']}</p>\n";
 
-            form_quick_button('./logon.php', 'Back');
+            echo form_quick_button('./logon.php', 'Back');
 
             html_draw_bottom();
             exit;

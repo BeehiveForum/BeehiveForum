@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.89 2004-03-21 18:58:24 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.90 2004-03-23 02:42:00 tribalonline Exp $ */
 
 // International English language file
 
@@ -144,6 +144,7 @@ $lang['user'] = "User";
 $lang['enabled'] = "Enabled";
 $lang['disabled'] = "Disabled";
 $lang['options'] = "Options";
+$lang['emoticons'] = "Emoticons";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 

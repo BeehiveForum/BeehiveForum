@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.42 2004-03-21 18:58:24 tribalonline Exp $ */
+/* $Id: gangsta.inc.php,v 1.43 2004-03-23 02:42:00 tribalonline Exp $ */
 
 // Gangsta language file
 
@@ -144,6 +144,7 @@ $lang['enabled'] = "Enizabled";
 $lang['disabled'] = "Dizisabled";
 $lang['with'] = "wit";
 $lang['options'] = "Options";
+$lang['emoticons'] = "Emoticons";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.71 2004-03-21 18:58:25 tribalonline Exp $ */
+/* $Id: x-hacker.inc.php,v 1.72 2004-03-23 02:42:00 tribalonline Exp $ */
 
 // International English language file
 
@@ -144,6 +144,7 @@ $lang['user'] = "us3R";
 $lang['enabled'] = "3N48L3d";
 $lang['disabled'] = "Dis@8L3D";
 $lang['options'] = "op+10NS";
+$lang['emoticons'] = "Emoticons";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 

@@ -99,9 +99,9 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
   for ($i = 0; $i < sizeof($username_array); $i++) {
 
-    setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-    setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-    setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+    setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
+    setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
+    setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
 
   }
 
@@ -231,9 +231,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         for ($i = 0; $i < sizeof($username_array); $i++) {
 
-          setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-          setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
-          setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+          setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
+          setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
+          setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
 
         }
 

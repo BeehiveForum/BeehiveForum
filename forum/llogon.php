@@ -58,7 +58,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if ($luid > -1) {
 
-      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS, dirname($HTTP_SERVER_VARS['PHP_SELF']). '/');
+      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
 
       if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
 

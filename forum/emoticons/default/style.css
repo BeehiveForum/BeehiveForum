@@ -1,12 +1,13 @@
+.e__ {
+	display: none;
+}
+
 .e_smile { /* :) :-) */
 	padding-left: 19px;
     height: 19px;
 	font-size: 19px;
     background-image: url("./images/smile.png");
     background-repeat: no-repeat;
-}
-.e_smile span {
-	display: none;
 }
 
 .e_wink { /* ;) ;-) */
@@ -16,9 +17,6 @@
     background-image: url("./images/wink.png");
     background-repeat: no-repeat;
 }
-.e_wink span {
-	display: none;
-}
 
 .e_sad { /* :( :-( */
 	padding-left: 19px;
@@ -26,9 +24,6 @@
 	font-size: 19px;
     background-image: url("./images/sad.png");
     background-repeat: no-repeat;
-}
-.e_sad span {
-	display: none;
 }
 
 .e_cry { /* :'( :'-( */
@@ -38,9 +33,6 @@
     background-image: url("./images/cry.png");
     background-repeat: no-repeat;
 }
-.e_cry span {
-	display: none;
-}
 
 .e_tongue { /* :P :-P */
 	padding-left: 19px;
@@ -48,9 +40,6 @@
 	font-size: 19px;
     background-image: url("./images/tease.png");
     background-repeat: no-repeat;
-}
-.e_tongue span {
-	display: none;
 }
 
 .e_grin { /* :D :-D */
@@ -60,9 +49,6 @@
     background-image: url("./images/grin.png");
     background-repeat: no-repeat;
 }
-.e_grin span {
-	display: none;
-}
 
 .e_confused { /* :S :-S */
 	padding-left: 19px;
@@ -70,9 +56,6 @@
 	font-size: 19px;
     background-image: url("./images/confused.png");
     background-repeat: no-repeat;
-}
-.e_confused span {
-	display: none;
 }
 
 .e_plain { /* :| :-| */
@@ -82,9 +65,6 @@
     background-image: url("./images/plain.png");
     background-repeat: no-repeat;
 }
-.e_plain span {
-	display: none;
-}
 
 .e_shock { /* :O :-O */
 	padding-left: 19px;
@@ -92,9 +72,6 @@
 	font-size: 19px;
     background-image: url("./images/shock.png");
     background-repeat: no-repeat;
-}
-.e_shock span {
-	display: none;
 }
 
 .e_angry { /* :@ :-@ */
@@ -104,9 +81,6 @@
     background-image: url("./images/angry.png");
     background-repeat: no-repeat;
 }
-.e_angry span {
-	display: none;
-}
 
 .e_embarrassed { /* :$ :-$ */
 	padding-left: 19px;
@@ -114,9 +88,6 @@
 	font-size: 19px;
     background-image: url("./images/embarrassed.png");
     background-repeat: no-repeat;
-}
-.e_embarrassed span {
-	display: none;
 }
 
 .e_shades { /* B) B-) (h) */
@@ -126,9 +97,6 @@
     background-image: url("./images/shades.png");
     background-repeat: no-repeat;
 }
-.e_shades span {
-	display: none;
-}
 
 .e_angel { /* (a) */
 	padding-left: 19px;
@@ -136,9 +104,6 @@
 	font-size: 19px;
     background-image: url("./images/angel.png");
     background-repeat: no-repeat;
-}
-.e_angel span {
-	display: none;
 }
 
 .e_devil { /* (6) */
@@ -148,6 +113,107 @@
     background-image: url("./images/devil.png");
     background-repeat: no-repeat;
 }
-.e_devil span {
-	display: none;
+
+.e_alien { /* =:) */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/alien.png");
+    background-repeat: no-repeat;
+}
+
+.e_anglesad { /* :< :-< */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/anglesad.png");
+    background-repeat: no-repeat;
+}
+
+.e_cheeky { /* :> :-> */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/anglesmile.png");
+    background-repeat: no-repeat;
+}
+
+.e_smile_big_nose { /* :O) */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/bignose.png");
+    background-repeat: no-repeat;
+}
+
+.e_rabbit { /* :B :-B */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/bunnyteeth.png");
+    background-repeat: no-repeat;
+}
+
+.e_happycry { /* :'D */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/crylaugh.png");
+    background-repeat: no-repeat;
+}
+
+.e_fail { /* (fail) */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/fail.gif");
+    background-repeat: no-repeat;
+}
+
+.e_horror { /* :& :-& */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/fear.png");
+    background-repeat: no-repeat;
+}
+
+.e_nod { /* (nod) */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/nod.gif");
+    background-repeat: no-repeat;
+}
+
+.e_sleepyhead { /* I-) I) */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/sleep.png");
+    background-repeat: no-repeat;
+}
+
+.e_unsure { /* :/ :-/ */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/unsure.png");
+    background-repeat: no-repeat;
+}
+
+.e_eek { /* 8-O */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/veryshocked.png");
+    background-repeat: no-repeat;
+}
+
+.e_wrong { /* (wrong) */
+	padding-left: 19px;
+    height: 19px;
+	font-size: 19px;
+    background-image: url("./images/wrong.gif");
+    background-repeat: no-repeat;
 }

@@ -127,9 +127,20 @@ html_draw_top();
 echo "<h1>User Preferences</h1>\n";
 
 if(!empty($error_html)) {
-  echo $error_html;
+    echo $error_html;
 }elseif (isset($HTTP_GET_VARS['updated'])) {
-  echo "<h2>Preferences were successfully updated.</h2>";  
+    
+    echo "<h2>Preferences were successfully updated.</h2>\n";
+
+    if(isset($default_style)) {
+        $user_style = isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style;
+        $top_html = "./styles/$user_style/top.html";
+        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+        echo "<!--\n";
+        echo "top.frames['ftop'].location.replace('$top_html'); top.frames['fnav'].location.reload();\n";
+        echo "-->\n";
+        echo "</script>";
+    }
 }
 
 ?>

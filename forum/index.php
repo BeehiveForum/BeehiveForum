@@ -49,8 +49,8 @@ if(isset($default_style)) {
 if(bh_session_check()) {
 
     echo "<frameset rows=\"60,20,*\" border=\"0\">\n";
-    echo "<frame src=\"". $top_html. "\" name=\"top\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>\n";
-    echo "<frame src=\"./nav.php\" name=\"nav\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>\n";
+    echo "<frame src=\"". $top_html. "\" name=\"ftop\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>\n";
+    echo "<frame src=\"./nav.php\" name=\"fnav\" border=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize>\n";
 
     if (isset($HTTP_GET_VARS['final_uri'])) {
 

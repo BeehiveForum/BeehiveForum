@@ -25,10 +25,10 @@ USA
 
 // Database stuff ------------------------------------------------------
 
-$db_server   = "mysql.sourceforge.net";	// the address of your MySQL server
-$db_username = "beehiveforum";	// your MySQL username
-$db_password = "miffle";	// your MySQL password
-$db_database = "beehiveforum";	// the name of your MySQL database
+$db_server   = "localhost";	// the address of your MySQL server
+$db_username = "user";	// your MySQL username
+$db_password = "password";	// your MySQL password
+$db_database = "beehive";	// the name of your MySQL database
 
 // ---------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ $db_database = "beehiveforum";	// the name of your MySQL database
 
 $forum_name  = "A Beehive Forum"; // the name of your forum
 $forum_email = "webmaster@yourdomain.com"; // admin email
-$default_style = "Default"; // the default forum style
+$default_style = "default"; // the default forum style
 
 // ---------------------------------------------------------------------
 
@@ -54,7 +54,8 @@ $maximum_post_length = 6226;	// maximum character-length of posts
 // Enable attachments. If you have limited webspace you
 // may wish to disable attachments.
 
-$attachments_enabled = true;
+$attachments_enabled = false;
+//$attachments_enabled = true;
 
 // Where to store the attachments on
 // your server. This should be a sub-folder

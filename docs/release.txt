@@ -1,0 +1,54 @@
+Beehive Forum Release Notes
+
+What's new in 0.2
+=================
+
+User Selectable Styles
+======================
+Forum members can now select from a number of styles to
+change the appearance of the forum. Pretty much everything can be styled, by
+editing the CSS files and altering the images.
+
+Polls
+=====
+Polls are now enabled. They let people vote, and stuff.
+
+Attachments
+===========
+Forum owners can optionally enable the attachments feature, allowing members to 
+upload files to the forum server. Space available per member can be limited.
+
+Forgot password
+===============
+Muppets who forget their passwords can now get an e-mail to the address they 
+entered, with a link where they can reset the password.
+
+Guest access
+============
+Casual browsers can access forums as guests, but can not post.
+
+Lots of little things
+=====================
+Little enhancements here and there that just generally make things nicer. Like 
+friend icons in the message view, and multiple logins being saveable.
+
+Discontinued undocumented features
+==================================
+Most of the undocumented features from 0.1 have been removed, such as the 
+undocumented feature where fix_html would occasionally loop until PHP timed out,
+and the famous "time-travelling" undocumented feature where post's creation times 
+were updated when they were read by the user they were addressed to.
+
+New undocumented features
+=========================
+It is possible that the addition of the new documented features has resulted in 
+the accidental addition of new undocumented features. If you believe you have 
+found an undocumented feature, please let us know in the test forum at 
+http://beehiveforum.net/forum
+
+\o/ Domain name \o/
+===================
+We got the domain name registered, so you can now use http://beehiveforum.net for 
+all your Beehive URL needs. It's still hosted on SourceForge (http://sf.net),
+lovely people that they are.
+

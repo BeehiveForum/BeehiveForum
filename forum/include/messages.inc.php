@@ -49,13 +49,15 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
     // for threads with unread messages, so the UID needs to be passed to the function
     $sql  = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, UNIX_TIMESTAMP(POST.VIEWED) as VIEWED, ";
-    $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER.RELATIONSHIP as TO_RELATIONSHIP, ";
-    $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP as FROM_RELATIONSHIP ";
+    $sql .= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, USER_PEER_TO.RELATIONSHIP as TO_RELATIONSHIP, ";
+    $sql .= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER_FROM.RELATIONSHIP as FROM_RELATIONSHIP ";
     $sql .= "from " . forum_table("POST") . " POST ";
     $sql .= "left join " . forum_table("USER") . " FUSER on (POST.from_uid = FUSER.uid) ";
     $sql .= "left join " . forum_table("USER") . " TUSER on (POST.to_uid = TUSER.uid) ";
-    $sql .= "left join " . forum_table("USER_PEER") . " USER_PEER ";
-    $sql .= "on (USER_PEER.uid = '$uid' and USER_PEER.PEER_UID = POST.FROM_UID) ";
+    $sql .= "left join " . forum_table("USER_PEER") . " USER_PEER_TO ";
+    $sql .= "on (USER_PEER_TO.uid = '$uid' and USER_PEER_TO.PEER_UID = POST.TO_UID) ";
+    $sql .= "left join " . forum_table("USER_PEER") . " USER_PEER_FROM ";
+    $sql .= "on (USER_PEER_FROM.uid = '$uid' and USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql .= "where POST.TID = '$tid' ";
     $sql .= "and POST.PID >= '$pid' ";
     $sql .= "order by POST.PID ";

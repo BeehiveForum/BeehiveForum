@@ -32,6 +32,7 @@ require_once("./include/form.inc.php"); // Form functions
 require_once("./include/user.inc.php"); // User functions
 require_once("./include/folder.inc.php");
 require_once("./include/fixhtml.inc.php");
+require_once("./include/attachments.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
 {
@@ -192,7 +193,33 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 	}
 
 	if(!($message['RELATIONSHIP'] < 0 && $limit_text)){
-		echo "<tr><td class=\"postbody\">". $message['CONTENT'] ."</td></tr>\n";
+
+		echo "<tr><td class=\"postbody\">". $message['CONTENT'];
+		
+		if ($tid <> 0 && isset($message['PID'])) {
+		
+                  $aid = get_attachment_id($tid, $message['PID']);
+ 		  if ($aid != -1) {
+		
+		    $attachments = get_attachments($message['FROM_UID'], $aid);
+		  
+		    if (is_array($attachments)) {
+		  
+		      echo "<p>Attachments:</p>\n<p>";
+		     
+                      for ($i = 0; $i < sizeof($attachments); $i++) {
+                        echo "<img src=\"./images/attach.png\" width=\"14\" height=\"14\" border=\"0\">&nbsp;<a href=\"getattachment.php?owneruid=". $message['FROM_UID']. "&filename=". $attachments[$i]['filename']. "&msg=". $tid. ".". $message['PID']. "\" target=\"_self\">". $attachments[$i]['filename']. "</a><br />\n";
+                      }
+                    
+                      echo "</p>\n";
+                    
+                    }
+                    
+                  }
+                  
+                }
+		
+		echo "</td></tr>\n";
 
 		if($in_list && $limit_text != false){
 			echo "<tr><td align=\"center\"><span class=\"postresponse\">";

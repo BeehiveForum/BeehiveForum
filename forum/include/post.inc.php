@@ -24,7 +24,7 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/forum.inc.php");
-function post_create($tid,$reply_pid,$fuid,$tuid,$content)
+function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 {
     $db_post_create = db_connect();
     $content = mysql_escape_string($content);
@@ -50,13 +50,15 @@ require_once("./include/forum.inc.php");
 
 function post_save_attachment_id($tid, $pid, $aid)
 {
+
     $db_post_save_attachment_id = db_connect();
-    $sql = "insert into ". forum_table("POST_ATTACHMENT_ID"). " (TID, PID, AID) values ($tid, $pid, '$aid')";
+    $sql = "insert into ". forum_table("POST_ATTACHMENT_IDS"). " (TID, PID, AID) values ($tid, $pid, '$aid')";
+    
     $result = db_query($sql, $db_post_save_attachment_id);
     return $result;
 }
 
-function post_create_thread($fid,$title)
+function post_create_thread($fid, $title)
 {
     $title = mysql_escape_string(htmlentities($title));
 

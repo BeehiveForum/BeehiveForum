@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.329 2005-02-16 23:39:36 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.330 2005-02-17 23:15:00 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -163,7 +163,9 @@ function message_apply_wikilinks($content)
 {
     $webtag = get_webtag($webtag_search);
 
-    if (forum_get_setting('enable_wiki_integration', 'Y', false)) {
+    $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+
+    if (forum_get_setting('enable_wiki_integration', 'Y', false) && $user_prefs['ENABLE_WIKI_WORDS'] == 'Y') {
 
         $wiki_location = forum_get_setting('wiki_integration_uri', '', '');
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.45 2004-08-01 16:04:12 rowan_hill Exp $ */
+/* $Id: forum_options.php,v 1.46 2004-08-02 13:40:48 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -212,6 +212,27 @@ if (isset($_POST['submit'])) {
         $user_prefs['START_PAGE'] = 0;
     }
 
+	$user_prefs['POST_PAGE'] = 0;
+	// toolbar_toggle emots_toggle emots_disable  post_html
+	if (isset($_POST['toolbar_toggle']) && $_POST['toolbar_toggle'] == "Y") {
+		$user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
+	}
+	if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
+		$user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISPLAY;
+	}
+	if (isset($_POST['emots_disable']) && $_POST['emots_disable'] == "Y") {
+		$user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
+	}
+	if (isset($_POST['post_html'])) {
+		if ($_POST['post_html'] == 0) {
+			$user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
+		} else if ($_POST['post_html'] == 1) {
+			$user_prefs['POST_PAGE'] |= POST_AUTOHTML_DEFAULT;
+		} else {
+			$user_prefs['POST_PAGE'] |= POST_HTML_DEFAULT;
+		}
+	}
+
     // User's UID for updating with.
 
     $uid = bh_session_get_value('UID');
@@ -325,6 +346,7 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -350,6 +372,7 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -389,6 +412,61 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
+
+if ($user_prefs['POST_PAGE'] == 0) {
+	$user_prefs['POST_PAGE'] = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+}
+
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"500\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['postpage']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+$toolbar_toggle = $user_prefs['POST_PAGE'] & POST_TOOLBAR_DISPLAY;
+echo "                  <td>", form_checkbox("toolbar_toggle", "Y", $lang['displayhtmltoolbar'], $toolbar_toggle), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+$emots_toggle = $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISPLAY;
+echo "                  <td>", form_checkbox("emots_toggle", "Y", $lang['displayemoticonspanel'], $emots_toggle), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+$emots_disabled = $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISABLED;
+echo "                  <td>", form_checkbox("emots_disable", "Y", $lang['disableemoticonsinpostsbydefault'], $emots_disabled), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+if (($user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0) {
+	$post_html = 1;
+} else if (($user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0) {
+	$post_html = 2;
+} else {
+	$post_html = 0;
+}
+echo "                  <td>", form_radio("post_html", "0", $lang['postinplaintextbydefault'], $post_html == 0), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_radio("post_html", "1", $lang['postinhtmlwithautolinebreaksbydefault'], $post_html == 1), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_radio("post_html", "2", $lang['postinhtmlbydefault'], $post_html == 2), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

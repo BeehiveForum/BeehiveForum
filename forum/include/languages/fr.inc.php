@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.96 2004-08-02 00:32:30 tribalonline Exp $ */
+/* $Id: fr.inc.php,v 1.97 2004-08-02 13:40:49 tribalonline Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -915,6 +915,13 @@ $lang['includeadminfilter'] = "Include admin word filter in my list.";
 $lang['allowpersonalmessages'] = "Allow other users to send me personal messages";
 $lang['allowemails'] = "Allow other users to send me emails via my profile";
 $lang['currentpasswd'] = "Current Password";
+$lang['postpage'] = "Post Page";
+$lang['displayhtmltoolbar'] = "Display HTML toolbar";
+$lang['displayemoticonspanel'] = "Display emoticons panel";
+$lang['disableemoticonsinpostsbydefault'] = "Disable emoticons in posts by default";
+$lang['postinplaintextbydefault'] = "Post in plain text by default";
+$lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-linebreaks by default";
+$lang['postinhtmlbydefault'] = "Post in HTML by default";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

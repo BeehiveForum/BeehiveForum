@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.119 2004-07-07 18:11:31 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.120 2004-07-31 20:22:35 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -335,7 +335,7 @@ if ($valid && isset($_POST['submit'])) {
             $_POST['pollvotetype'] = 1;
         }
 
-        poll_create($t_tid, $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
+        poll_create($t_tid, $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype'], $_POST['optiontype']);
 
         if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
             if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $t_pid, $aid);
@@ -578,6 +578,27 @@ echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
+
+echo "          <tr>\n";
+echo "            <td>&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td><h2>{$lang['optionsdisplay']}</h2></td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>{$lang['optionsdisplayexp']}</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>\n";
+echo "              <table border=\"0\" width=\"500\">\n";
+echo "                <tr>\n";
+echo "                  <td width=\"30%\">", form_radio('optiontype', '0', $lang['radios'], isset($_POST['optiontype']) ? $_POST['optiontype'] == 0 : true), "</td>\n";
+echo "                  <td width=\"30%\">", form_radio('optiontype', '1', $lang['dropdown'], isset($_POST['optiontype']) ? $_POST['optiontype'] == 1 : false), "</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+
 echo "          <tr>\n";
 echo "            <td>&nbsp;</td>\n";
 echo "          </tr>\n";

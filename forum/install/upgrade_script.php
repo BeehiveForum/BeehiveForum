@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.10 2004-07-14 13:29:50 hodcroftcj Exp $ */
+/* $Id: upgrade_script.php,v 1.11 2004-07-31 20:22:36 rowan_hill Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -1043,6 +1043,12 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_FOLDER DROP ACCESS_LEVEL";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        die(mysql_error());
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POLL ADD OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' AFTER VOTETYPE";
 
     if (!$result = mysql_query($sql, $db_install)) {
         die(mysql_error());

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install_script.php,v 1.8 2004-07-14 13:29:49 hodcroftcj Exp $ */
+/* $Id: install_script.php,v 1.9 2004-07-31 20:22:35 rowan_hill Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "install_script.php") {
 
@@ -292,6 +292,7 @@ $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
 $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
 $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
 $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (TID)";
 $sql.= ")";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.93 2004-07-30 00:00:18 rowan_hill Exp $ */
+/* $Id: fr.inc.php,v 1.94 2004-07-31 20:22:35 rowan_hill Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -930,6 +930,10 @@ $lang['possibleanswers'] = "Réponses possibles";
 $lang['enterpollquestionexp'] = "Entrer les réponses pour votre question de sondage. Si votre sondage est un \"yes/no\" la question, simplement entrer \"Yes\" pour la Réponse 1 et \"No\" pour la Réponse 2.";
 $lang['numberanswers'] = "No les Réponses";
 $lang['answerscontainHTML'] = "Les réponses Contiennent HTML (pas y compris la signature)";
+$lang['optionsdisplay'] = "Answers display type";
+$lang['optionsdisplayexp'] = "How should the possible answers be displayed to potential voters?";
+$lang['dropdown'] = "As drop-down list(s)";
+$lang['radios'] = "As series of radio buttons";
 $lang['votechanging'] = "Voter Changer";
 $lang['votechangingexp'] = "Pouvoir une personne change son ou son vote?";
 $lang['allowmultiplevotes'] = "Permettre des Votes Multiples";

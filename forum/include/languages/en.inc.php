@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.150 2004-07-30 00:00:17 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.151 2004-07-31 20:22:35 rowan_hill Exp $ */
 
 // International English language file
 
@@ -943,6 +943,10 @@ $lang['possibleanswers'] = "Possible Answers";
 $lang['enterpollquestionexp'] = "Enter the answers for your poll question.. If your poll is a \"yes/no\" question, simply enter \"Yes\" for Answer 1 and \"No\" for Answer 2.";
 $lang['numberanswers'] = "No. Answers";
 $lang['answerscontainHTML'] = "Answers Contain HTML (not including signature)";
+$lang['optionsdisplay'] = "Answers display type";
+$lang['optionsdisplayexp'] = "How should the possible answers be displayed to potential voters?";
+$lang['dropdown'] = "As drop-down list(s)";
+$lang['radios'] = "As series of radio buttons";
 $lang['votechanging'] = "Vote Changing";
 $lang['votechangingexp'] = "Can a person change his or her vote?";
 $lang['allowmultiplevotes'] = "Allow Multiple Votes";

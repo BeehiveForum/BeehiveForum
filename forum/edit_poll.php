@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.78 2004-07-25 20:04:29 rowan_hill Exp $ */
+/* $Id: edit_poll.php,v 1.79 2004-07-31 20:22:35 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -373,7 +373,7 @@ if ($valid && isset($_POST['preview'])) {
     	$hardedit = true;
     }    
 
-    poll_edit($tid, $_POST['question'], $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype'], $hardedit);
+    poll_edit($tid, $_POST['question'], $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype'], $_POST['optiontype'], $hardedit);
     post_add_edit_text($tid, 1);
 
     if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
@@ -678,7 +678,26 @@ echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table border=\"0\" class=\"posthead\" width=\"500\">\n"; 
-   
+
+echo "          <tr>\n";
+echo "            <td><h2>{$lang['optionsdisplay']}</h2></td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>{$lang['optionsdisplayexp']}</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>\n";
+echo "              <table border=\"0\" width=\"400\">\n";
+echo "                <tr>\n";
+echo "                  <td width=\"30%\">", form_radio('optiontype', '0', $lang['radios'], isset($_POST['optiontype']) ? $_POST['optiontype'] == 0 : $polldata['OPTIONTYPE'] == 0), "</td>\n";
+echo "                  <td width=\"30%\">", form_radio('optiontype', '1', $lang['dropdown'], isset($_POST['optiontype']) ? $_POST['optiontype'] == 1 : $polldata['OPTIONTYPE'] == 1), "</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>&nbsp;</td>\n";
+echo "          </tr>\n";   
 echo "          <tr>\n";
 echo "            <td><h2>{$lang['votechanging']}</h2></td>\n";
 echo "          </tr>\n";

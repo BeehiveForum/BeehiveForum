@@ -23,8 +23,8 @@ USA
 
 // Author: Matt Beale
 
-require_once('messages.inc.php');
-require_once('thread.inc.php');
+require_once('./include/messages.inc.php');
+require_once('./include/thread.inc.php');
 
 function poll_create($tid, $answers, $closes, $change_vote, $poll_type, $show_results)
 {
@@ -161,7 +161,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           if (!empty($pollresults[$i]['option'])) {
             
             $polldata['CONTENT'].= "          <tr>\n";
-            $polldata['CONTENT'].= "            <td width=\"100\" class=\"postbody\">". form_radio("pollvote", $i, '', false). "&nbsp;". $pollresults[$i]['option']. "</td>\n";
+            $polldata['CONTENT'].= "            <td class=\"postbody\">". form_radio("pollvote", $i, '', false). "&nbsp;". $pollresults[$i]['option']. "</td>\n";
             $polldata['CONTENT'].= "          </tr>\n";
             
           }
@@ -189,7 +189,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
             if (!empty($pollresults[$i]['option'])) {
 
               $polldata['CONTENT'].= "          <tr>\n";
-              $polldata['CONTENT'].= "            <td width=\"100\" class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
+              $polldata['CONTENT'].= "            <td class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
               $polldata['CONTENT'].= "          </tr>\n";
           
             }
@@ -207,7 +207,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         if (!empty($pollresults[$i]['option'])) {
         
           $polldata['CONTENT'].= "          <tr>\n";
-          $polldata['CONTENT'].= "            <td width=\"100\" class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
+          $polldata['CONTENT'].= "            <td class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
           $polldata['CONTENT'].= "          </tr>\n";
           
         }
@@ -355,7 +355,7 @@ function poll_horizontal_graph($pollresults, $bar_width)
       if (!empty($pollresults[$i]['option'])) {
     
         $polldisplay.= "              <tr>\n";
-        $polldisplay.= "                <td width=\"100\" class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
+        $polldisplay.= "                <td width=\"150\" class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
         
         if ($pollresults[$i]['votes'] > 0) {
         

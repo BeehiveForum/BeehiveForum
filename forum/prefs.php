@@ -210,4 +210,3 @@ echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
 
 html_draw_bottom();
 ?>
-

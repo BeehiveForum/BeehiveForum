@@ -29,3 +29,5 @@ function forum_table($table)
 {
     return $table;
 }
+
+?>

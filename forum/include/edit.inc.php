@@ -25,6 +25,7 @@ USA
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
+require_once("./include/poll.inc.php");
 
 function post_update($tid,$pid,$content)
 {
@@ -45,16 +46,23 @@ function post_update($tid,$pid,$content)
     return $return;
 }
 
-function post_delete($tid,$pid)
+function post_delete($tid, $pid)
 {
     if(!($tid && $pid)) return false;
-
+    
     $db_post_delete = db_connect();
+    
+    if (thread_is_poll($tid) && $pid == 1) {
+    
+      $sql = "update " . forum_table("THREAD") . " set POLL_FLAG = 'N' where TID = $tid";
+      $result = db_query($sql, $db_post_delete);
 
+    }
+      
     $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = NULL ";
     $sql .= "where TID = $tid and PID = $pid";
     
-    $result = db_query($sql,$db_post_delete);
+    $result = db_query($sql, $db_post_delete);
     $return = ($result) ? true : false;
 
     return $return;

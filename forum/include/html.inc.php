@@ -31,6 +31,13 @@ function html_guest_error ()
      html_draw_bottom(); 
 }
 
+function html_poll_edit_error ()
+{
+    html_draw_top();
+    echo "<h1>You cannot edit polls</h1>";
+    html_draw_bottom();
+}
+
 function _html_draw_top1($title = false)
 {
 

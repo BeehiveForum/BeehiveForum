@@ -216,8 +216,8 @@ if(isset($error_html)) echo $error_html. "\n";
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td><?php echo form_radio('polltype', '1', 'Horizontal Bar graph', true); ?></td>
-                  <td><?php echo form_radio('polltype', '0', 'Vertical Bar graph', false); ?></td>
+                  <td><?php echo form_radio('polltype', '0', 'Horizontal Bar graph', true); ?></td>
+                  <td><?php echo form_radio('polltype', '1', 'Vertical Bar graph', false); ?></td>
                 </tr>
               </table>
             </td>

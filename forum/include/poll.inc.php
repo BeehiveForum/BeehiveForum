@@ -49,40 +49,72 @@ function poll_create($tid, $answers, $closes, $change_vote, $poll_type, $show_re
     
 }
 
+function poll_get($tid)
+{
+
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+
+    $db_poll_get = db_connect();
+
+    $sql = "select POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";    
+    $sql.= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
+    $sql.= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
+    $sql.= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
+    $sql.= "from ". forum_table("POST"). " POST ";
+    $sql.= "left join ". forum_table("USER"). " FUSER on (POST.from_uid = FUSER.uid) ";
+    $sql.= "left join ". forum_table("USER"). " TUSER on (POST.to_uid = TUSER.uid) ";
+    $sql.= "left join ". forum_table("USER_PEER") . " USER_PEER ";
+    $sql.= "on (USER_PEER.UID = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";    
+    $sql.= "where POST.TID = $tid and POST.PID = 1";
+    
+    $result = db_query($sql, $db_poll_get);
+    $polldata = db_fetch_array($result);
+    
+    return $polldata;
+    
+}
+
+function poll_sort($a, $b) {
+
+    if ($a['votes'] == $b['votes']) return 0;
+    return ($a['votes'] > $b['votes']) ? -1 : 1;
+    
+}
+
 function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
 {
 
     global $HTTP_COOKIE_VARS, $HTTP_SERVER_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    if(!$uid) $uid = 0;
 
     $db_poll_display = db_connect();
     
-    $sql = "select POLL.TID, POLL.O1, POLL.O2, POLL.O3, POLL.O4, POLL.O5, ";
-    $sql.= "POLL.O1_VOTES, POLL.O2_VOTES, POLL.O3_VOTES, POLL.O4_VOTES, POLL.O5_VOTES, ";
-    $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, ";
-    $sql.= "POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";    
-    $sql.= "UNIX_TIMESTAMP(POST.CREATED) as CREATED, POST.VIEWED, ";
-    $sql.= "FUSER.LOGON as FLOGON, FUSER.NICKNAME as FNICK, ";
-    $sql.= "TUSER.LOGON as TLOGON, TUSER.NICKNAME as TNICK, USER_PEER.RELATIONSHIP ";
-    $sql.= "from ". forum_table("POLL"). " POLL, ". forum_table("POST"). " POST ";
-    $sql.= "left join ". forum_table("USER"). " FUSER on (POST.from_uid = FUSER.uid) ";
-    $sql.= "left join ". forum_table("USER"). " TUSER on (POST.to_uid = TUSER.uid) ";
-    $sql.= "left join ". forum_table("USER_PEER") . " USER_PEER ";
-    $sql.= "on (USER_PEER.UID = $uid and USER_PEER.PEER_UID = POST.FROM_UID) ";    
-    $sql.= "where POLL.TID = $tid and POST.TID = POLL.TID ";
-    $sql.= "and POST.PID = 1";
+    $sql = "select O1, O2, O3, O4, O5, O1_VOTES, O2_VOTES, O3_VOTES, O4_VOTES, O5_VOTES, ";
+    $sql.= "CHANGEVOTE, POLLTYPE, SHOWRESULTS, UNIX_TIMESTAMP(CLOSES) AS CLOSES ";
+    $sql.= "FROM POLL WHERE TID = $tid";
     
     $result = db_query($sql, $db_poll_display);
-    $polldata = db_fetch_array($result);
+    $poll = db_fetch_array($result);
+    
+    $totalvotes = $poll['O1_VOTES'] + $poll['O2_VOTES'] + 
+                  $poll['O3_VOTES'] + $poll['O4_VOTES'] + 
+                  $poll['O5_VOTES'];
+    
+    $pollresults = array(0 => array('option' => $poll['O1'], 'votes' => $poll['O1_VOTES']),
+                         1 => array('option' => $poll['O2'], 'votes' => $poll['O2_VOTES']),
+                         2 => array('option' => $poll['O3'], 'votes' => $poll['O3_VOTES']),
+                         3 => array('option' => $poll['O4'], 'votes' => $poll['O4_VOTES']),
+                         4 => array('option' => $poll['O5'], 'votes' => $poll['O5_VOTES']));
+                         
+                       
+    //usort($pollresults, "poll_sort");
+
+    $polldata = poll_get($tid);
     
     $sql = "select VOTE, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from POLL_VOTES where UID = $uid and TID = $tid";
     $result = db_query($sql, $db_poll_display);
     $userpolldata = db_fetch_array($result);
-    
-    $totalvotes = $polldata['O1_VOTES'] + $polldata['O2_VOTES'];
-    $totalvotes+= $polldata['O3_VOTES'] + $polldata['O4_VOTES'];
-    $totalvotes+= $polldata['O5_VOTES'];
     
     $polldata['CONTENT'] = "<br>\n";
     $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
@@ -97,85 +129,140 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td>\n";
-    $polldata['CONTENT'].= "            <table width=\"100%\" align=\"center\">\n";
-    
+
     $max_value = 0;
     
-    for ($i = 1; $i < 6; $i++) {
+    for ($i = 0; $i < 5; $i++) {
     
-      if ($polldata['O'. $i. '_VOTES'] > $max_value) $max_value = $polldata['O'. $i. '_VOTES'];
-      
-    }
+      if (!empty($pollresults[$i]['option'])) {
     
-    if ($max_value > 0) $bar_width = (300 / $max_value);
-    
-    for ($i = 1; $i < 6; $i++) {
-
-      if (!empty($polldata['O'. $i])) {
-     
-        $polldata['CONTENT'].= "          <tr>\n";
-        $polldata['CONTENT'].= "            <td width=\"100\" class=\"postbody\">";
-        
-        if ($in_list) {
-        
-          if ((!isset($userpolldata['VOTE']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
-        
-            $polldata['CONTENT'].= form_radio("pollvote", $i, '', false);
-            $polldata['CONTENT'].= "&nbsp;". $polldata['O'. $i]. "</td>\n";
-          
-          }else {
-        
-            $polldata['CONTENT'].= $polldata['O'. $i]. "</td>\n";
-            $polldata['CONTENT'].= "            <td class=\"postbody\">";
-            $polldata['CONTENT'].= "<img src=\"./images/pollbar". $i. ".png\" height=\"20\" width=\"". $bar_width * $polldata['O'. $i. '_VOTES']. "\" alt=\"\">";
-            $polldata['CONTENT'].= "</td>\n";
-          
-          }
-          
-        }else {
-        
-          $polldata['CONTENT'].= $polldata['O'. $i]. "</td>\n";
-          
-        }
-        
-        $polldata['CONTENT'].= "          </tr>\n";
+        if ($pollresults[$i]['votes'] > $max_value) $max_value = $pollresults[$i]['votes'];
+        $optioncount++;
         
       }
       
     }
     
-    $polldata['CONTENT'].= "            </table>\n";
+    if ($max_value > 0) {
+    
+      $horizontal_bar_width = (300 / $max_value);
+      
+      $vertical_bar_height = (200 / $max_value);
+      $vertical_bar_width = (350 / $optioncount);
+      
+    }
+        
+    if ($in_list) {
+          
+      if ((!isset($userpolldata['VOTE']) && $HTTP_COOKIE_VARS['bh_sess_uid'] > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
+      
+        for ($i = 0; $i < 5; $i++) {
+        
+          if (!empty($pollresults[$i]['option'])) {
+            
+            $polldata['CONTENT'].= "          <tr>\n";
+            $polldata['CONTENT'].= "            <td width=\"100\" class=\"postbody\">". form_radio("pollvote", $i, '', false). "&nbsp;". $pollresults[$i]['option']. "</td>\n";
+            $polldata['CONTENT'].= "          </tr>\n";
+            
+          }
+          
+        }
+        
+      }else {
+      
+        if ($poll['SHOWRESULTS'] == 1) {
+            
+          if ($poll['POLLTYPE'] == 0) {
+        
+            $polldata['CONTENT'].= poll_horizontal_graph($pollresults, $horizontal_bar_width);
+               
+          }else {
+              
+            $polldata['CONTENT'].= poll_vertical_graph($pollresults, $vertical_bar_height, $vertical_bar_width);
+                
+          }
+          
+        }else {
+        
+          for ($i = 0; $i < 5; $i++) {
+        
+            if (!empty($pollresults[$i]['option'])) {
+
+              $polldata['CONTENT'].= "          <tr>\n";
+              $polldata['CONTENT'].= "            <td width=\"100\" class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
+              $polldata['CONTENT'].= "          </tr>\n";
+          
+            }
+        
+          }
+          
+        }
+              
+      }
+          
+    }else {
+    
+      for ($i = 0; $i < 5; $i++) {
+        
+        if (!empty($pollresults[$i]['option'])) {
+        
+          $polldata['CONTENT'].= "          <tr>\n";
+          $polldata['CONTENT'].= "            <td width=\"100\" class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
+          $polldata['CONTENT'].= "          </tr>\n";
+          
+        }
+        
+      }
+          
+    }
+
     $polldata['CONTENT'].= "          </td>\n";    
     
     if ($in_list) {
-    
-      // Number of votes
     
       $polldata['CONTENT'].= "        <tr>\n";
       $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
       $polldata['CONTENT'].= "        </tr>\n";    
       $polldata['CONTENT'].= "        <tr>\n";
-      $polldata['CONTENT'].= "          <td class=\"postbody\">". $totalvotes. " people ";
+      $polldata['CONTENT'].= "          <td class=\"postbody\">";
       
-      if ($polldata['CLOSES'] < gmmktime() && $polldata['CLOSES'] != 0) {
+      if ($totalvotes == 0 && ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0)) {
       
-        $polldata['CONTENT'].= "voted.</td>\n";
+        $polldata['CONTENT'].= "Nobody voted.";
+        
+      }elseif ($totalvotes == 0 && ($poll['CLOSES'] > gmmktime() || $poll['CLOSES'] == 0)) {
+      
+        $polldata['CONTENT'].= "Nobody has voted,";
+      
+      }elseif ($totalvotes == 1 && ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0)) {
+      
+        $polldata['CONTENT'].= "1 person voted.";
+        
+      }elseif ($totalvotes == 1 && ($poll['CLOSES'] > gmmktime() || $poll['CLOSES'] == 0)) {
+      
+        $polldata['CONTENT'].= "1 person has voted,";
         
       }else {
       
-        $polldata['CONTENT'].= "have voted so far.</td>\n";
+        if ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0) {
+      
+          $polldata['CONTENT'].= $totalvotes. " people voted.";
+          
+        }else {
+        
+          $polldata['CONTENT'].= $totalvotes. " people have voted.";
+          
+        }
         
       }
       
+      $polldata['CONTENT'].= "</td>\n";
       $polldata['CONTENT'].= "        </tr>\n";
       $polldata['CONTENT'].= "        <tr>\n";
       $polldata['CONTENT'].= "          <td>&nbsp;</td>\n";
       $polldata['CONTENT'].= "        </tr>\n";
       
-
-      // User voting options
-      
-      if ($polldata['CLOSES'] < gmmktime() && $polldata['CLOSES'] != 0) {
+      if ($poll['CLOSES'] < gmmktime() && $poll['CLOSES'] != 0) {
       
         $polldata['CONTENT'].= "        <tr>\n";
         $polldata['CONTENT'].= "          <td class=\"postbody\">Poll has ended.</td>\n";
@@ -184,7 +271,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         if (isset($userpolldata['VOTE'])) {
     
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td class=\"postbody\">Your vote was '". $polldata[$userpolldata['VOTE']]. "' on ". gmdate("j M H:i", $userpolldata['TSTAMP']). ".</td>\n";
+          $polldata['CONTENT'].= "          <td class=\"postbody\">Your vote was '". $pollresults[$userpolldata['VOTE']]['option']. "' on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";        
               
         }
@@ -194,7 +281,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         if (isset($userpolldata['VOTE'])) {
     
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td class=\"postbody\">Your vote was '". $polldata[$userpolldata['VOTE']]. "' on ". gmdate("j M H:i", $userpolldata['TSTAMP']). ".</td>\n";
+          $polldata['CONTENT'].= "          <td class=\"postbody\">Your vote was '". $pollresults[$userpolldata['VOTE']]['option']. "' on ". gmdate("jS M Y", $userpolldata['TSTAMP']). ".</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
           
           if($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()){
@@ -208,7 +295,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
            
           }
           
-          if ($polldata['CHANGEVOTE'] == 1) {
+          if ($poll['CHANGEVOTE'] == 1) {
       
             $polldata['CONTENT'].= "        <tr>\n";
             $polldata['CONTENT'].= "          <td align=\"center\">". form_submit('pollchangevote', 'Change Vote'). "</td>\n";
@@ -222,7 +309,13 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           $polldata['CONTENT'].= "          <td align=\"center\">". form_submit('pollsubmit', 'Vote'). "</td>\n";
           $polldata['CONTENT'].= "        </tr>\n";
           $polldata['CONTENT'].= "        <tr>\n";
-          $polldata['CONTENT'].= "          <td align=\"center\">". form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+          $polldata['CONTENT'].= "          <td align=\"center\">";
+          
+          if ($poll['SHOWRESULTS'] == 1) {
+          
+            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+            
+          }
 
           if($HTTP_COOKIE_VARS['bh_sess_uid'] == $polldata['FROM_UID'] || perm_is_moderator()){
       
@@ -246,7 +339,92 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "</table>\n";
     $polldata['CONTENT'].= "<br><br>\n";
 
-    message_display($tid, $polldata, $msg_count, $first_msg, $in_list, $closed, $limit_text);
+    message_display($tid, $polldata, $msg_count, $first_msg, $in_list, $closed, $limit_text, true);
+    
+}
+
+function poll_horizontal_graph($pollresults, $bar_width)
+{
+
+    usort($pollresults, "poll_sort");
+
+    $polldisplay = "            <table width=\"100%\" align=\"center\">\n";
+    
+    for ($i = 0; $i < 5; $i++) {
+    
+      if (!empty($pollresults[$i]['option'])) {
+    
+        $polldisplay.= "              <tr>\n";
+        $polldisplay.= "                <td width=\"100\" class=\"postbody\">". $pollresults[$i]['option']. "</td>\n";
+        
+        if ($pollresults[$i]['votes'] > 0) {
+        
+          $polldisplay.= "                <td class=\"postbody\"><img src=\"./images/pollbar". $i. ".png\" height=\"20\" width=\"". $bar_width * $pollresults[$i]['votes']. "\" alt=\"\"></td>\n";
+          
+        }else {
+        
+          $polldisplay.= "                <td class=\"postbody\">&nbsp;</td>\n";
+          
+        }
+        
+        $polldisplay.= "              </tr>\n";
+        
+      }
+      
+    }
+    
+    $polldisplay.= "            </table>\n";
+    
+    return $polldisplay;
+    
+}
+
+function poll_vertical_graph($pollresults, $bar_height, $bar_width)
+{
+
+    usort($pollresults, "poll_sort");
+
+    $polldisplay = "            <table width=\"460\" align=\"center\">\n";
+    $polldisplay.= "              <tr>\n";
+    
+    for ($i = 0; $i < 5; $i++) {
+    
+      if (!empty($pollresults[$i]['option'])) {
+        
+        if ($pollresults[$i]['votes'] > 0) {
+        
+          $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"bottom\"><img src=\"./images/pollbar". $i. ".png\" height=\"". $bar_height * $pollresults[$i]['votes']. "\" width=\"". $bar_width. "\" alt=\"\"></td>\n";
+          
+        }else {
+        
+          $polldisplay.= "                <td class=\"postbody\" align=\"center\" valign=\"bottom\">&nbsp;</td>\n";
+          
+        }
+        
+        $polldisplay.= "                <td>&nbsp;</td>\n";
+        
+      }
+      
+    }
+    
+    $polldisplay.= "              </tr>\n";
+    $polldisplay.= "              <tr>\n";
+    
+    for ($i = 0; $i < 5; $i++) {
+    
+      if (!empty($pollresults[$i]['option'])) {
+     
+        $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['option']. "</td>\n";
+        $polldisplay.= "                <td>&nbsp;</td>\n";
+        
+      }
+      
+    }    
+
+    $polldisplay.= "              </tr>\n";
+    $polldisplay.= "            </table>\n";
+    
+    return $polldisplay;
     
 }
 
@@ -278,12 +456,13 @@ function poll_vote($tid, $vote)
 
     $db_poll_vote = db_connect();
     
-    $sql = "update ". forum_table("POLL"). " set O". $vote. "_VOTES = O". $vote. "_VOTES + 1 where TID = $tid";
-    $result = db_query($sql, $db_poll_vote);
-
     $sql = "insert into ". forum_table("POLL_VOTES"). " (TID, UID, VOTE, TSTAMP) ";
-    $sql.= "values ($tid, ". $HTTP_COOKIE_VARS['bh_sess_uid']. ", '$vote', NOW())";
+    $sql.= "values ($tid, ". $HTTP_COOKIE_VARS['bh_sess_uid']. ", '". $vote. "', FROM_UNIXTIME(". mktime(). "))";
+    $result = db_query($sql, $db_poll_vote);
     
+    $vote++;
+    
+    $sql = "update ". forum_table("POLL"). " set O". $vote. "_VOTES = O". $vote. "_VOTES + 1 where TID = $tid";
     $result = db_query($sql, $db_poll_vote);
     
 }
@@ -301,12 +480,33 @@ function poll_delete_vote($tid)
     if (db_num_rows($result) > 0) {
     
       $userpollvote = db_fetch_array($result);
+      $userpollvote['VOTE']++;
     
       $sql = "update ". forum_table("POLL"). " set O". $userpollvote['VOTE']. "_VOTES = O". $userpollvote['VOTE']. "_VOTES - 1 where TID = $tid";
       $result = db_query($sql, $db_poll_delete_vote);
     
       $sql = "delete from ". forum_table("POLL_VOTES"). " where TID = $tid and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
       $result = db_query($sql, $db_poll_delete_vote);
+      
+    }
+    
+}
+
+function thread_is_poll($tid)
+{
+
+    $db_thread_is_poll = db_connect();
+    
+    $sql = "select CLOSES from ". forum_table("POLL"). " where TID = $tid";
+    $result = db_query($sql, $db_thread_is_poll);
+    
+    if (db_num_rows($result) > 0) {
+    
+      return true;
+      
+    }else {
+    
+      return false;
       
     }
     

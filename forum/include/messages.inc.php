@@ -152,7 +152,7 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true)
+function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false)
 {
 
     global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length;
@@ -267,13 +267,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('folder.png')."\" border=\"0\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
-                echo "&nbsp;&nbsp;<img src=\"".style_image('poll.png')."\" border=\"0\" />";
-                echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
+                
+                if (!$is_poll) {
+                
+                  echo "&nbsp;&nbsp;<img src=\"".style_image('poll.png')."\" border=\"0\" />";
+                  echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
+                  
+                }
             }
-			if(perm_is_moderator()){
+            if(perm_is_moderator()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('subscribe.png')."\" border=\"0\" />";
-				echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."\" target=\"_self\">Privileges</a>";
-			}
+                echo "&nbsp;<a href=\"admin_user.php?uid=".$message['FROM_UID']."\" target=\"_self\">Privileges</a>";
+            }
             echo "</span></td></tr>";
         }
         echo "</table>\n";
@@ -322,10 +327,10 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1); // Don't add <a> tag for current section
         }
-		$i = 1;
+        $i = 1;
     } else {
-		$i = 0;
-	}
+        $i = 0;
+    }
 
     // The middle section(s)
     while($spid + ($ppp - 1) <= $length){

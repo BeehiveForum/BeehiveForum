@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.6 2004-11-06 23:43:22 decoyduck Exp $ */
+/* $Id: install.php,v 1.7 2004-11-10 17:57:29 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -29,6 +29,7 @@ if (@file_exists("./include/config.inc.php")) {
 
 include_once("./include/db.inc.php");
 include_once("./include/constants.inc.php");
+include_once("./include/install.inc.php");
 
 if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
 
@@ -56,11 +57,13 @@ if (isset($_POST['submit']) && !defined('BEEHIVE_INSTALLED')) {
         $forum_webtag = strtoupper(trim($_POST['forum_webtag']));
 
         if (!preg_match("/^[A-Z0-9_-]+$/", $forum_webtag)) {
+
             $error_html.= "<h2>The forum webtag can only conatin uppercase A-Z, 0-9 and hyphen (-) and underscore (_) characters</h2>\n";
             $valid = false;
         }
 
     }else {
+
         $forum_webtag = "";
     }
 
@@ -475,14 +478,14 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\" valign=\"top\">Default Forum Webtag:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" autocomplete=\"off\" value=\"default\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" autocomplete=\"off\" value=\"DEFAULT\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">&nbsp;</td>\n";
-    echo "                  <td width=\"250\">(not applicable during upgrade)</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                  <td width=\"250\" valign=\"top\">\n";
+    echo "                    <p>For upgrades enter the WEBTAG of the forum to upgrade or leave blank to upgrade all forums.</p>\n";
+    echo "                    <p>For new installs enter the WEBTAG you want to use for the default forum.</p>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.39 2004-02-05 21:14:19 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.40 2004-02-13 01:29:22 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -101,6 +101,10 @@ function thread_get($tid)
         
         if (!isset($threaddata['ADMIN_LOCK'])) {
             $threaddata['ADMIN_LOCK'] = 0;
+        }
+        
+        if (!isset($threaddata['CLOSED'])) {
+            $threaddata['CLOSED'] = 0;
         }
     }
 

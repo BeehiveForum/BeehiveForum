@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.31 2003-07-31 22:08:38 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.32 2003-08-07 16:06:12 hodcroftcj Exp $ */
 
 // Frameset for thread list and messages
 
@@ -237,7 +237,7 @@ echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td class=\"posthead\" align=\"left\">\n";
 echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
-echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('submit', $lang['clear']), "\n";
+echo "              {$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_reset('reset', $lang['clear']), "\n";
 echo "              ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";
 echo "            </form>\n";
 echo "          </td>\n";

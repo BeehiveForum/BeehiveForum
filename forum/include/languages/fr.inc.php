@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.47 2004-04-04 21:12:22 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.48 2004-04-06 21:06:31 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -340,6 +340,7 @@ $lang['attachmentdirblank'] = "You must supply a directory to save attachments i
 $lang['mainsettings'] = "Main Settings";
 $lang['forumname'] = "Forum Name";
 $lang['forumemail'] = "Forum Email";
+$lang['forumdesc'] = "Forum Description";
 $lang['defaultstyle'] = "Default Style";
 $lang['defaultemoticons'] = "Default Emoticons";
 $lang['defaultlanguage'] = "Default Language";

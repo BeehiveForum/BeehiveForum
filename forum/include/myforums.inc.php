@@ -57,7 +57,7 @@ function get_forum_list()
         
         $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
         $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
-        $sql.= "FORUM_SETTINGS.SNAME = 'description'";
+        $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
 
         $result = db_query($sql, $db_get_forum_list);
 
@@ -148,13 +148,13 @@ function get_my_forums()
         
         $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
         $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
-        $sql.= "FORUM_SETTINGS.SNAME = 'description'";
+        $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
 
         $result = db_query($sql, $db_get_my_forums);
 
         if (db_num_rows($result)) {
             
-            $row = db_fetch_array($lv_result);
+            $row = db_fetch_array($result);
             $forum_data['DESCRIPTION'] = $row['SVALUE'];
             
         }else{

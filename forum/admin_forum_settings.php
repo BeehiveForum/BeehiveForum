@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.16 2004-04-06 02:51:22 tribalonline Exp $ */
+/* $Id: admin_forum_settings.php,v 1.17 2004-04-06 21:06:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -120,6 +120,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }else {
         $error_html = "<h2>{$lang['mustsupplyforumemail']}</h2>\n";
         $valid = false;
+    }
+
+    if (isset($HTTP_POST_VARS['forum_desc']) && strlen(trim($HTTP_POST_VARS['forum_desc'])) > 0) {
+        $new_forum_settings['forum_desc'] = trim($HTTP_POST_VARS['forum_desc']);
+    }else {
+        $new_forum_settings['forum_desc'] = "";
     }
 
     if (isset($HTTP_POST_VARS['default_style']) && strlen(trim($HTTP_POST_VARS['default_style'])) > 0) {
@@ -391,6 +397,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">{$lang['forumemail']}:</td>\n";
 echo "                  <td>", form_input_text("forum_email", forum_get_setting('forum_email', false, 'admin@abeehiveforum.net'), 45, 80), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"200\">{$lang['forumdesc']}:</td>\n";
+echo "                  <td>", form_input_text("forum_desc", forum_get_setting('forum_desc', false, ''), 45, 80), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

@@ -100,13 +100,15 @@ function post_draw_to_dropdown($default_uid)
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
-    $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
-    $result = db_query($top_sql,$db_post_draw_to_dropdown);
-    if(db_num_rows($result)>0){
-        $top_user = db_fetch_array($result);
-        $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-        $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
-    }
+	if(isset($default_uid) && $default_uid != 0){
+	    $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
+		$result = db_query($top_sql,$db_post_draw_to_dropdown);
+		if(db_num_rows($result)>0){
+			$top_user = db_fetch_array($result);
+			$fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
+			$html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+		}
+	}
 
     $html .= "<option value=\"0\">ALL</option>\n";
 
@@ -132,7 +134,7 @@ function post_draw_to_dropdown($default_uid)
         $fmt_uid = $row['UID'];
         $fmt_username = format_user_name($logon,$nickname);
 
-        if($fmt_uid != $default_uid){
+        if($fmt_uid != $default_uid && $fmt_uid != 0){
             $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
         }
         //$html .= ">$fmt_username</option>";

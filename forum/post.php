@@ -228,18 +228,23 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
     }
 
     if($new_pid > -1) {
-
-        html_draw_top();
+//		html_draw_top();
         
-        // Check to see if any attachments were uploaded.
-        
+		// Check to see if any attachments were uploaded.
         if (get_num_attachments($aid) > 0) { 
+			post_save_attachment_id($t_tid, $new_pid, $aid);
+		}
+
+		if($newthread){
+			$t_rpid = 1;
+		}
+
+		$uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+		$uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+		$uri.= "/discussion.php?msg=$t_tid.$t_rpid";
+	    header_redirect($uri);
         
-          post_save_attachment_id($t_tid, $new_pid, $aid);
-          
-        }
-        
-        echo "<p>&nbsp;</p>";
+/*        echo "<p>&nbsp;</p>";
         echo "<p>&nbsp;</p>";
         echo "<div align=\"center\"><p>\n";
         echo "Message posted successfully\n";
@@ -252,7 +257,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
         
         echo "</p></div>\n";
         html_draw_bottom();
-        exit;
+        exit;*/
 
     }else{
         $error_html = "<h2>Error creating post</h2>";

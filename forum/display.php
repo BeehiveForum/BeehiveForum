@@ -55,14 +55,10 @@ messages_top($foldertitle,stripslashes($threaddata['TITLE']));
 echo "</td></tr></table></div>\n";
 
 if($message){
-    $first_msg = $message['PID'];
-    if($message['RELATIONSHIP'] >= 0){ // if we're not ignoring this user
-        $message['CONTENT'] = message_get_content($tid, $message['PID']);
-    } else {
-        $message['CONTENT'] = 'Ignored'; // must be set to something or will show as deleted
-    }
-    message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed,false);
-    $last_pid = $message['PID'];
+	$first_msg = $message['PID'];
+	$message['CONTENT'] = message_get_content($tid, $message['PID']);
+	message_display($tid,$message,$threaddata['LENGTH'],$first_msg,true,$closed,false);
+	$last_pid = $message['PID'];
 }
 
 echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td align=\"center\">\n";

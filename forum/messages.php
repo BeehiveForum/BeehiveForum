@@ -33,6 +33,7 @@ require_once("./include/form.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/user.inc.php");
+require_once("./include/perm.inc.php");
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -113,7 +114,7 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
 	messages_interest_form($tid, $pid);
 	messages_fontsize_form($tid, $pid);
 
-	if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
+	if(perm_is_moderator()){
 		messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);
 	}
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.32 2005-03-31 19:23:40 decoyduck Exp $ */
+/* $Id: install.php,v 1.33 2005-04-02 21:40:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -41,6 +41,8 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 
 if (isset($_GET['force_install']) && $_GET['force_install'] == 'yes') {
     $force_install = true;
+}elseif (isset($_POST['force_install']) && $_POST['force_install'] == 'yes') {
+    $force_install = true;
 }else {
     $force_install = false;
 }
@@ -50,7 +52,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
     $valid = true;
     $config_saved = false;
 
-    $error_html = "";
+    $error_array = array();
 
     if (isset($_POST['install_method']) && strlen(trim(_stripslashes($_POST['install_method']))) > 0) {
 
@@ -61,13 +63,13 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
         }else if (trim(_stripslashes($_POST['install_method']) == 'upgrade06')) {
             $install_method = 2;
         }else {
-            $error_html.= "<h2>You must choose an installation method.</h2>\n";
+            $error_array[] = "You must choose an installation method.\n";
             $valid = false;
         }
 
     }else {
 
-        $error_html.= "<h2>You must choose an installation method.</h2>\n";
+        $error_array[] = "You must choose an installation method.\n";
         $valid = false;
     }
 
@@ -77,7 +79,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
         if (!preg_match("/^[A-Z0-9_-]+$/", $forum_webtag)) {
 
-            $error_html.= "<h2>The forum webtag can only conatin uppercase A-Z, 0-9 and hyphen and underscore characters</h2>\n";
+            $error_array[] = "The forum webtag can only conatin uppercase A-Z, 0-9 and hyphen and underscore characters\n";
             $valid = false;
         }
 
@@ -85,7 +87,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
         if (isset($install_method) && $install_method < 2) {
 
-            $error_html.= "<h2>You must specify a forum webtag for your choosen type of installation.</h2>\n";
+            $error_array[] = "You must specify a forum webtag for this type of installation.\n";
             $valid = false;
         }
     }
@@ -93,28 +95,28 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
     if (isset($_POST['db_server']) && strlen(trim(_stripslashes($_POST['db_server']))) > 0) {
         $db_server = trim(_stripslashes($_POST['db_server']));
     }else {
-        $error_html.= "<h2>You must supply the hostname of your MySQL database.</h2>\n";
+        $error_array[] = "You must supply the hostname of your MySQL database.\n";
         $valid = false;
     }
 
     if (isset($_POST['db_database']) && strlen(trim(_stripslashes($_POST['db_database']))) > 0) {
         $db_database = trim(_stripslashes($_POST['db_database']));
     }else {
-        $error_html.= "<h2>You must supply the name of your MySQL database.</h2>\n";
+        $error_array[] = "You must supply the name of your MySQL database.\n";
         $valid = false;
     }
 
     if (isset($_POST['db_username']) && strlen(trim(_stripslashes($_POST['db_username']))) > 0) {
         $db_username = trim(_stripslashes($_POST['db_username']));
     }else {
-        $error_html.= "<h2>You must enter your username for your MySQL database.</h2>\n";
+        $error_array[] = "You must enter your username for your MySQL database.\n";
         $valid = false;
     }
 
     if (isset($_POST['db_password']) && strlen(trim(_stripslashes($_POST['db_password']))) > 0) {
         $db_password = trim(_stripslashes($_POST['db_password']));
     }else {
-        $error_html.= "<h2>You must enter your password for your MySQL database.</h2>\n";
+        $error_array[] = "You must enter your password for your MySQL database.\n";
         $valid = false;
     }
 
@@ -129,14 +131,14 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
         if (isset($_POST['admin_username']) && strlen(trim(_stripslashes($_POST['admin_username']))) > 0) {
             $admin_username = trim(_stripslashes($_POST['admin_username']));
         }else {
-            $error_html.= "<h2>You must supply a username for your administrator account.</h2>\n";
+            $error_array[] = "You must supply a username for your administrator account.\n";
             $valid = false;
         }
 
         if (isset($_POST['admin_password']) && strlen(trim(_stripslashes($_POST['admin_password']))) > 0) {
             $admin_password = trim(_stripslashes($_POST['admin_password']));
         }else {
-            $error_html.= "<h2>You must supply a password for your administrator account.</h2>\n";
+            $error_array[] = "You must supply a password for your administrator account.\n";
             $valid = false;
         }
 
@@ -168,12 +170,12 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
     if ($valid) {
 
         if ($install_method == 0 && ($admin_password != $admin_cpassword)) {
-            $error_html.= "<h2>Administrator account passwords do not match.</h2>\n";
+            $error_array[] = "Administrator account passwords do not match.\n";
             $valid = false;
         }
 
         if ($db_password != $db_cpassword) {
-            $error_html.= "<h2>MySQL database passwords do not match.</h2>\n";
+            $error_array[] = "MySQL database passwords do not match.\n";
             $valid = false;
         }
     }
@@ -196,7 +198,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
             }else {
 
-                $error_html.= "<h2>Could not find the required script.</h2>\n";
+                $error_array[] = "Could not find the required script.\n";
                 $valid = false;
             }
 
@@ -347,7 +349,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
                 }else {
 
-                    $error_html.= "<h2>Could not complete installation. Error was: failed to read config.inc.php</h2>\n";
+                    $error_array[] = "Could not complete installation. Error was: failed to read config.inc.php\n";
                     $valid = false;
                 }
 
@@ -355,14 +357,14 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
                 if (($errno = db_errno($db_install)) > 0) {
 
-                    $error_html.="<h2>Could not complete installation. Error was: ". db_error($db_install). "</h2>\n";
+                    $error_array[] = "<h2>Could not complete installation. Error was: ". db_error($db_install). "</h2>\n";
                     $valid = false;
                 }
             }
 
         }elseif ($valid) {
 
-            $error_html.= "<h2>Database connection to '$db_server' could not be established or permission is denied.</h2>\n";
+            $error_array[] = "Database connection to '$db_server' could not be established or permission is denied.\n";
             $valid = false;
         }
     }
@@ -509,7 +511,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
     }else {
 
-        $error_html.= "<h2>Could not complete installation. Error was: failed to read config.inc.php</h2>\n";
+        $error_array[] = "Could not complete installation. Error was: failed to read config.inc.php\n";
         $valid = false;
     }
 
@@ -545,27 +547,44 @@ echo "//-->\n";
 echo "</script>\n";
 echo "</head>\n";
 echo "<body>\n";
-echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
-echo "<input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
 
 if (!defined('BEEHIVE_INSTALLED') || $force_install) {
 
+    echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
+    echo "<input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
     echo "<h1>BeehiveForum ", BEEHIVE_VERSION, " Installation</h1>\n";
     echo "<div align=\"center\">\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td width=\"500\">\n";
+    echo "      <td colspan=\"2\">\n";
     echo "        <p>Welcome to the BeehiveForum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
     echo "        <p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
-    echo "  </table>\n";
 
-    if (isset($error_html)) {
-        echo $error_html;
-        echo "<br />\n";
+    if (isset($error_array) && sizeof($error_array) > 0) {
+
+        echo "    <tr>\n";
+        echo "      <td colspan=\"2\"><hr /></td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td><img src=\"./images/warning.png\" /></td>\n";
+        echo "      <td><h2>The following errors have occured. Correct them before trying again:</h2></td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td colspan=\"2\">\n";
+        echo "        <ul>\n";
+
+        foreach ($error_array as $error_text) {
+            echo "      <li>$error_text</li>\n";
+        }
+
+        echo "        </ul>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
     }
 
+    echo "  </table>\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td width=\"500\">\n";
@@ -715,12 +734,15 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
     echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"disable_button(this); install_form.submit()\" /></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
+    echo "</form>\n";
     echo "</div>\n";
 
 }else {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
+    echo "<form id=\"install_form\" method=\"get\" action=\"install.php\">\n";
+    echo "  <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -732,7 +754,7 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
     echo "                  <td colspan=\"2\" class=\"subhead\">Installation Already Complete</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>Your BeehiveForum would appear to be already installed, but you have not removed the install folder. You must delete the 'install' directory before your Beehive Forum can be used.</td>\n";
+    echo "                  <td>Your BeehiveForum would appear to be already installed. If this is not the case or you need to perform an upgrade please click the ignore button below.</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
@@ -743,11 +765,17 @@ if (!defined('BEEHIVE_INSTALLED') || $force_install) {
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Ignore\" class=\"button\" /></td>\n";
+    echo "    </tr>\n";
     echo "  </table>\n";
+    echo "</form>\n";
     echo "</div>\n";
 }
 
-echo "</form>\n";
 echo "</body>\n";
 echo "</html>\n";
 

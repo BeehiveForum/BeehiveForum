@@ -64,6 +64,7 @@ if(bh_session_check()){
     }
     
     $final_uri = str_replace("\\", "", $final_uri);
+    $final_uri = str_replace("//", "/", $final_uri);
     
     echo urlencode($final_uri);
     echo "\" name=\"main\" border=\"1\">\n";

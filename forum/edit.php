@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.61 2003-08-31 18:15:10 decoyduck Exp $ */
+/* $Id: edit.php,v 1.62 2003-09-03 17:20:26 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -81,6 +81,16 @@ if (isset($HTTP_GET_VARS['msg'])) {
 
 }
 
+if (!is_numeric($tid) || !is_numeric($pid)) {
+
+  html_draw_top();
+  echo "<h1>{$lang['invalidop']}</h1>\n";
+  echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
+  html_draw_bottom();
+  exit;
+
+}
+
 if (thread_is_poll($tid) && $pid == 1) {
     html_poll_edit_error();
     exit;
@@ -108,19 +118,54 @@ html_draw_top("openprofile.js", "basetarget=_blank");
 
 if (isset($HTTP_POST_VARS['preview'])) {
 
-    $to_uid    = $HTTP_POST_VARS['t_to_uid'];
-    $from_uid  = $HTTP_POST_VARS['t_from_uid'];
-
-    $edit_msg  = $HTTP_POST_VARS['t_msg'];
-    $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");
-
     $preview_message = messages_get($tid, $pid, 1);
 
-    if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
+    if (isset($HTTP_POST_VARS['t_to_uid'])) {
+        $to_uid = $HTTP_POST_VARS['t_to_uid'];
+    }else {
+        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $valid = false;
+    }
 
+    if (isset($HTTP_POST_VARS['t_from_uid'])) {
+        $from_uid = $HTTP_POST_VARS['t_from_uid'];
+    }else {
+        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
+        $t_post_html = "Y";
+        $edit_html = true;
+    }else {
+        $t_post_html = "N";
+        $edit_html = false;
+    }
+
+    if (isset($HTTP_POST_VARS['t_content']) && strlen(trim($HTTP_POST_VARS['t_content'])) > 0) {
         $t_content = $HTTP_POST_VARS['t_content'];
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && $t_post_html == "Y") {
+            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+            $valid = false;
+        }
+    }else {
+        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+        $valid = false;
+    }
 
-        if ($HTTP_POST_VARS['t_post_html'] == "Y") {
+    if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
+        $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig)) {
+            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+            $valid = false;
+        }
+    }else {
+        $t_sig = "";
+    }
+
+    if ($valid) {
+
+        if ($t_post_html == "Y") {
             $t_content = fix_html($t_content);
             $preview_message['CONTENT'] = $t_content;
             $t_content = str_replace("&", "&amp;", $t_content);
@@ -131,9 +176,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
             $t_content = ereg_replace("\n+", "\n", $t_content);
         }
 
-        $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
-
-        $preview_message['CONTENT'].= "<div class=\"sig\">".$t_sig."</div>";
+        $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
 
         if ($to_uid == 0) {
 
@@ -153,32 +196,69 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $preview_message['FLOGON'] = $preview_tuser['LOGON'];
         $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['FROM_UID'] = $from_uid;
+    }
 
-    }else{
+}elseif (isset($HTTP_POST_VARS['submit'])) {
+
+    $editmessage = messages_get($tid, $pid, 1);
+
+    if (isset($HTTP_POST_VARS['t_to_uid'])) {
+        $to_uid = $HTTP_POST_VARS['t_to_uid'];
+    }else {
+        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($HTTP_POST_VARS['t_from_uid'])) {
+        $from_uid = $HTTP_POST_VARS['t_from_uid'];
+    }else {
+        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
+        $t_post_html = "Y";
+        $edit_html = true;
+    }else {
+        $t_post_html = "N";
+        $edit_html = false;
+    }
+
+    if (isset($HTTP_POST_VARS['t_content']) && strlen(trim($HTTP_POST_VARS['t_content'])) > 0) {
+        $t_content = $HTTP_POST_VARS['t_content'];
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_content) && $t_post_html == "Y") {
+            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+            $valid = false;
+        }
+    }else {
         $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
         $valid = false;
     }
 
-} elseif (isset($HTTP_POST_VARS['submit']) && is_numeric($tid) && is_numeric($pid)) {
+    if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
+        $t_sig = fix_html($HTTP_POST_VARS['t_sig']);
+        if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig)) {
+            $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+            $valid = false;
+        }
+    }else {
+        $t_sig = "";
+    }
 
-    $editmessage = messages_get($tid, $pid, 1);
     if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
         edit_refuse($tid, $pid);
         exit;
     }
 
-    if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
+    if ($valid) {
 
-        $t_content = $HTTP_POST_VARS['t_content'];
-
-        if ($HTTP_POST_VARS['t_post_html'] == "Y") {
+        if ($t_post_html == "Y") {
             $t_content = fix_html($t_content);
         }else{
             $t_content = make_html($t_content);
         }
 
-        $t_content.= "<div class=\"sig\">".fix_html($HTTP_POST_VARS['t_sig'])."</div>";
-
+        $t_content.= "<div class=\"sig\">$t_sig</div>";
         $t_content.= "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ". date("d/m/y H:i T");
         $t_content.= " {$lang['by']} ". user_get_logon(bh_session_get_value('UID'));
         $t_content.= "</p>";
@@ -202,79 +282,76 @@ if (isset($HTTP_POST_VARS['preview'])) {
         }else{
             $error_html = "<h2>{$lang['errorupdatingpost']}</h2>";
         }
-    }else{
-        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-        $valid = false;
     }
 
 }else{
 
-    if ($tid && $pid) {
+    $editmessage = messages_get($tid, $pid, 1);
 
-        $editmessage = messages_get($tid, $pid, 1);
+    if (count($editmessage) > 0) {
 
-        if (count($editmessage) > 0) {
+        $editmessage['CONTENT'] = message_get_content($tid, $pid);
 
-            $editmessage['CONTENT'] = message_get_content($tid, $pid);
-
-            if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
-                edit_refuse($tid, $pid);
-                exit;
-            }
-
-            $preview_message = $editmessage;
-
-            $to_uid = $editmessage['TO_UID'];
-            $from_uid = $editmessage['FROM_UID'];
-
-            $t_content_temp = $editmessage['CONTENT'];
-            $t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
-
-            if(count($t_content_temp)>1){
-                $t_sig_temp = array_pop($t_content_temp);
-                $t_sig_temp = preg_split("/<\/div>/", $t_sig_temp);
-
-                $t_sig = "";
-                for($i=0;$i<count($t_sig_temp)-1;$i++){
-                    $t_sig .= $t_sig_temp[$i];
-                    if($i<count($t_sig_temp)-2){
-                        $t_sig .= "</div>";
-                    }
-                }
-
-            } else {
-                $t_sig = "";
-            }
-            $t_content = "";
-
-            for($i=0;$i<count($t_content_temp);$i++){
-                $t_content .= $t_content_temp[$i];
-                if($i<count($t_content_temp)-1){
-                    $t_content .= "<div class=\"sig\">";
-                }
-            }
-
-            $preview_message['CONTENT'] = $t_content."<div class=\"sig\">".$t_sig."</div>";
-
-            if (!isset($HTTP_POST_VARS['b_edit_html'])) {
-                $t_content = str_replace("\n", "", $t_content);
-                $t_content = str_replace("\r", "", $t_content);
-                $t_content = str_replace("<p>", "\n\n<p>", $t_content);
-                $t_content = str_replace("</p>", "</p>\n", $t_content);
-                $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
-                $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
-                $t_content = strip_tags($t_content);
-            }else{
-                $t_content = _htmlentities($t_content);
-            }
-
-        }else{
-            $valid = false;
-            $error_html = "<h2>{$lang['message']} ". $HTTP_GET_VARS['msg']. " {$lang['wasnotfound']}</h2>";
+        if ((!$allow_post_editing || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS)) && $post_edit_time != 0)) && !perm_is_moderator()) {
+            edit_refuse($tid, $pid);
+            exit;
         }
-        unset($editmessage);
+
+        $preview_message = $editmessage;
+
+        $to_uid = $editmessage['TO_UID'];
+        $from_uid = $editmessage['FROM_UID'];
+
+        $t_content_temp = $editmessage['CONTENT'];
+        $t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
+
+        if (count($t_content_temp) > 1) {
+
+            $t_sig_temp = array_pop($t_content_temp);
+            $t_sig_temp = preg_split("/<\/div>/", $t_sig_temp);
+
+            $t_sig = "";
+
+            for ($i = 0; $i < count($t_sig_temp) - 1; $i++) {
+                $t_sig.= $t_sig_temp[$i];
+                if ($i < count($t_sig_temp) - 2 ) {
+                    $t_sig.= "</div>";
+                }
+            }
+
+        }else {
+            $t_sig = "";
+        }
+
+        $t_content = "";
+
+        for ($i = 0; $i < count($t_content_temp); $i++) {
+            $t_content.= $t_content_temp[$i];
+            if ($i < count($t_content_temp) - 1) {
+                $t_content.= "<div class=\"sig\">";
+            }
+        }
+
+        $preview_message['CONTENT'] = $t_content."<div class=\"sig\">".$t_sig."</div>";
+
+        if (!isset($HTTP_POST_VARS['b_edit_html'])) {
+            $t_content = str_replace("\n", "", $t_content);
+            $t_content = str_replace("\r", "", $t_content);
+            $t_content = str_replace("<p>", "\n\n<p>", $t_content);
+            $t_content = str_replace("</p>", "</p>\n", $t_content);
+            $t_content = ereg_replace("^\n\n<p>", "<p>", $t_content);
+            $t_content = ereg_replace("<br[[:space:]*]/>", "\n", $t_content);
+            $t_content = strip_tags($t_content);
+        }else{
+            $t_content = _htmlentities($t_content);
+        }
+
+    }else{
+        $valid = false;
+        $error_html = "<h2>{$lang['message']} ". $HTTP_GET_VARS['msg']. " {$lang['wasnotfound']}</h2>";
     }
 
+    unset($editmessage);
     $edit_html = isset($HTTP_POST_VARS['b_edit_html']);
 }
 

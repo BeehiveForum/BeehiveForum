@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.36 2003-09-03 15:21:37 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.37 2003-09-03 17:20:30 decoyduck Exp $ */
 
 // International English language file
 
@@ -518,6 +518,8 @@ $lang['htmlinmessage'] = "HTML in message";
 $lang['enabledwithautolinebreaks'] = "Enabled with auto-linebreaks";
 $lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\\n\\nTo view your original code, select the \\'Submitted code\\' radio button.\\nTo view the modified code, select the \\'Corrected code\\' radio button.";
 $lang['messageoptions'] = "Message options";
+$lang['notallowedembedattachmentpost'] = "You are not allowed to embed attachments in your posts.";
+$lang['notallowedembedattachmentsignature'] = "You are not allowed to embed attachments in your signature.";
 
 // Message display (messages.php) --------------------------------------
 
@@ -639,6 +641,7 @@ $lang['mustenterpollquestion'] = "You must enter a poll question";
 $lang['groupcountmustbelessthananswercount'] = "Number of answer groups must be less than total number of answers";
 $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";
+$lang['cannotcreatemultivotepublicballot'] = "You cannot create multi-vote public ballots. Public ballots require the use of vote logging to work.";
 $lang['abletochangevote'] = "You will be able to change your vote.";
 $lang['abletovotemultiple'] = "You will be able to vote multiple times.";
 $lang['notabletochangevote'] = "You will not be able to change your vote.";

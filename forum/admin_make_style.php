@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.62 2004-10-24 13:25:57 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.63 2004-11-01 23:58:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -478,7 +478,7 @@ echo "                      <option value=\"10\">{$lang['ivesubscribedto']}</opt
 echo "                      <option value=\"11\">{$lang['startedbyfriend']}</option>\n";
 echo "                      <option value=\"12\">{$lang['unreadstartedbyfriend']}</option>\n";
 echo "                    </select>\n";
-echo "                    <input type=\"submit\" name=\"go\" value={$lang['goexcmark']} class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
+echo "                    <input type=\"submit\" name=\"go\" value=\"{$lang['goexcmark']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
 echo "                  </form>\n";
 echo "                </td>\n";
 echo "              </tr>\n";

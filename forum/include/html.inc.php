@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.135 2004-10-29 20:42:48 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.136 2004-11-01 23:58:43 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/forum.inc.php");
@@ -314,10 +314,10 @@ function html_draw_top()
     }
 
     if ($meta_refresh) {
-        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
+        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\" />\n";
     }
 
-    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} RSS Feed\" href=\"threads_rss.php\">\n";
+    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} RSS Feed\" href=\"threads_rss.php\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 
     $stylesheet = html_get_style_sheet();
@@ -571,7 +571,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
         echo "<a href=\"{$uri}&amp;page=1\" target=\"_self\"><b>[1]</b></a> ";
     }
 
-    echo "</span>\n";
+    echo "</span>";
 }
 
 ?>

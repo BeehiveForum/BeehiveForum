@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.55 2004-08-02 00:32:29 tribalonline Exp $ */
+/* $Id: form.inc.php,v 1.56 2004-11-01 23:58:42 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -97,7 +97,7 @@ function form_textarea($name, $value = false, $rows = false, $cols = false, $wra
         $html.= "cols=\"$cols\" ";
     }
 
-    $html.= "dir=\"{$lang['_textdir']}\" autocomplete=\"off\">$value</textarea>";
+    $html.= "dir=\"{$lang['_textdir']}\">$value</textarea>";
     return $html;
 }
 

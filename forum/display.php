@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.53 2004-08-17 23:46:32 tribalonline Exp $ */
+/* $Id: display.php,v 1.54 2004-11-01 23:58:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -138,9 +138,13 @@ $threaddata = thread_get($tid);
 
 $foldertitle = folder_get_title($threaddata['FID']);
 
-echo "<div align=\"center\"><table width=\"96%\" border=\"0\"><tr><td>\n";
-messages_top($foldertitle,_stripslashes($threaddata['TITLE']));
-echo "</td></tr></table></div>\n";
+echo "<div align=\"center\">\n";
+echo "<table width=\"96%\" border=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td>", messages_top($foldertitle,_stripslashes($threaddata['TITLE'])), "</td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+echo "</div>\n";
 
 if ($message) {
 
@@ -169,14 +173,19 @@ if ($message) {
     }
 }
 
-messages_end_panel();
-echo "<table width=\"96%\" border=\"0\"><tr><td align=\"center\">\n";
-echo "<form name=\"display\" method=\"get\" action=\"messages.php\" target=\"_self\">\n";
-echo form_input_hidden("webtag", $webtag), "\n";
-echo form_input_hidden("msg", "$tid.$pid"), "\n";
-echo form_submit("submit", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"window.print()\"");
-echo "</form>\n";
-echo "</td></tr></table>\n";
+//messages_end_panel();
+
+echo "<table width=\"96%\" border=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td align=\"center\">\n";
+echo "      <form name=\"display\" method=\"get\" action=\"messages.php\" target=\"_self\">\n";
+echo "        ", form_input_hidden("webtag", $webtag), "\n";
+echo "        ", form_input_hidden("msg", "$tid.$pid"), "\n";
+echo "        ", form_submit("submit", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"window.print()\""), "\n";
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
 
 html_draw_bottom();
 

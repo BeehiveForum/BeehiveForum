@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.12 2003-07-28 17:09:24 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.13 2003-07-30 19:53:18 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -154,6 +154,22 @@ function profile_item_update($piid, $psid, $position, $type, $name)
     $result = db_query($sql, $db_profile_item_update);
 
     return $result;
+}
+
+function profile_section_delete($psid)
+{
+    $db_profile_section_delete = db_connect();
+
+    $sql = "delete from ". forum_table("PROFILE_SECTION"). " where PSID = $psid";
+    return db_query($sql, $db);
+}
+
+function profile_item_delete($piid)
+{
+    $db_profile_item_delete = db_connect();
+
+    $sql = "delete from ". forum_table("PROFILE_ITEM"). " where PIID = $piid";
+    return db_query($sql, $db);
 }
 
 function profile_section_dropdown($default_psid,$field_name="t_psid",$suffix="")

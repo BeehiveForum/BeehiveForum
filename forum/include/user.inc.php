@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.72 2003-07-28 20:20:14 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.73 2003-07-30 19:53:18 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -447,6 +447,7 @@ function user_get_age($uid)
 function user_get_forthcoming_birthdays()
 {
     $db_user_get_forthcoming_birthdays = db_connect();
+
     $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, MOD(DAYOFYEAR(UP.DOB) - DAYOFYEAR(NOW()) ";
     $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
     $sql .= "FROM " . forum_table("USER"). " U, ". forum_table("USER_PREFS") . " UP ";
@@ -465,4 +466,43 @@ function user_get_forthcoming_birthdays()
     }
     return $birthdays;
 }
+
+function user_search($usersearch)
+{
+    $db_user_search = db_connect();
+
+    $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, LOGON_FROM ";
+    $sql.= "FROM " . forum_table("USER") . " WHERE LOGON LIKE '%$usersearch%' ";
+    $sql.= "OR NICKNAME LIKE '%$usersearch%' LIMIT 0, 20";
+
+    $result = db_query($sql, $db_user_search);
+
+    if (db_num_rows($result)) {
+        $user_search_array = array();
+	while ($row = db_fetch_array($result)) {
+	    $user_search_array[] = $row;
+	}
+	return $user_search_array;
+    }else {
+        return false;
+    }
+}
+
+function user_get_all($offset = 0)
+{
+    $db_user_get_all = db_connect();
+    $user_get_all_array = array();
+
+    $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM ". forum_table("USER"). " ORDER BY LAST_LOGON DESC LIMIT $offset, 20";
+
+    $result = db_query($sql, $db_user_get_all);
+
+    while($row = db_fetch_array($result)) {
+       $user_get_all_array[] = $row;
+    }
+
+    return $user_get_all_array;
+}
+
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.8 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: visitor_log.php,v 1.9 2003-07-30 19:53:13 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -35,6 +35,7 @@ require_once("./include/header.inc.php");
 require_once('./include/db.inc.php');
 require_once("./include/lang.inc.php");
 require_once("./include/html.inc.php");
+require_once("./include/user.inc.php");
 
 if (!bh_session_check()) {
 
@@ -50,7 +51,7 @@ if (isset($HTTP_GET_VARS['page'])) {
 }
 
 if (isset($HTTP_GET_VARS['usersearch']) && isset($HTTP_GET_VARS['submit']) && $HTTP_GET_VARS['submit'] == 'Search') {
-    $usersearch = $HTTP_GET_VARS['usersearch'];
+    $usersearch = trim($HTTP_GET_VARS['usersearch']);
 }else {
     $usersearch = '';
 }
@@ -59,22 +60,11 @@ html_draw_top_script();
 
 echo "<h1>{$lang['recentvisitors']}</h1><br />\n";
 
-$db = db_connect();
-
 if (isset($usersearch) && strlen($usersearch) > 0) {
-
-  $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
-  $sql.= "FROM ". forum_table("USER"). " WHERE LOGON LIKE '%$usersearch%' OR ";
-  $sql.= "NICKNAME LIKE '%$usersearch%' ORDER BY LAST_LOGON DESC LIMIT $start, 20";
-
+  $user_array = user_search($usersearch);
 }else {
-
-  $sql = "SELECT UID, LOGON, NICKNAME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
-  $sql.= "FROM ". forum_table("USER"). " ORDER BY LAST_LOGON DESC LIMIT $start, 20";
-
+  $user_array = user_get_all($start);
 }
-
-$result = db_query($sql, $db);
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"65%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -86,13 +76,11 @@ echo "          <td class=\"subhead\" align=\"left\">{$lang['member']}</td>\n";
 echo "          <td class=\"subhead\" align=\"right\" width=\"200\">{$lang['lastvisit']}</td>\n";
 echo "        </tr>\n";
 
-while ($row = db_fetch_array($result)) {
-
-  echo "        <tr>\n";
-  echo "          <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $row['UID'], ")\">", format_user_name($row['LOGON'], $row['NICKNAME']), "</a></td>\n";
-  echo "          <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($row['LAST_LOGON']), "</td>\n";
-  echo "        </tr>\n";
-
+foreach ($user_array as $user_entry) {
+    echo "        <tr>\n";
+    echo "          <td class=\"postbody\" align=\"left\"><a href=\"#\" target=\"_self\" onclick=\"openProfile(", $user_entry['UID'], ")\">", format_user_name($user_entry['LOGON'], $user_entry['NICKNAME']), "</a></td>\n";
+    echo "          <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($user_entry['LAST_LOGON']), "</td>\n";
+    echo "        </tr>\n";
 }
 
 echo "      </table>\n";
@@ -100,7 +88,7 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-if (db_num_rows($result) == 20) {
+if ((sizeof($user_array) == 20) && (strlen($usersearch) == 0)) {
   if ($start < 20) {
     echo "<p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"visitor_log.php?page=", ($start / 20) + 1, "\" target=\"_self\">{$lang['more']}</a></p>\n";
   }elseif ($start >= 20) {

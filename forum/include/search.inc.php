@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.29 2003-07-28 20:20:14 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.30 2003-07-30 19:53:18 decoyduck Exp $ */
 
 require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
@@ -406,7 +406,7 @@ function search_draw_user_dropdown($name)
     $uid = bh_session_get_value('UID');
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM ".forum_table("USER")." U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST') ";
+    $sql.= "FROM ".forum_table("USER")." U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
     $sql.= "AND U.UID <> $uid ORDER BY U.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 

@@ -43,7 +43,7 @@ if(!$logged_in){
 	  <frame src="./top.html" name="top" border="0" scrolling="no" marginwidth="0" marginheight="0" noresize>
 <?
 if($logged_in){
-    if($HTTP_GET_VARS['msg']){
+    if(isset($HTTP_GET_VARS['msg'])){
         echo "          <frame src=\"./discussion.php?msg=".$HTTP_GET_VARS['msg'];
     } else {
         echo "          <frame src=\"./start.php";
@@ -51,7 +51,7 @@ if($logged_in){
     echo "\" name=\"main\" border=\"1\">";
 } else {
     echo "<frame src=\"./logon.php?final_uri=";
-    if($HTTP_GET_VARS['msg']){
+    if(isset($HTTP_GET_VARS['msg'])){
         echo urlencode(dirname($HTTP_SERVER_VARS['PHP_SELF'])."/discussion.php?msg=".$HTTP_GET_VARS['msg']);
     } else {
         echo urlencode(dirname($HTTP_SERVER_VARS['PHP_SELF'])."/start.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.136 2004-12-07 17:48:02 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.137 2005-01-01 20:58:28 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -443,11 +443,12 @@ if (isset($_POST['change_count'])) {
     $valid = true;
     unset($error_html);
 
-    if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
-        $t_answer_count = $_POST['answer_count'];
-    }else {
-        $t_answer_count = 5;
-    }
+}
+
+if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
+    $t_answer_count = $_POST['answer_count'];
+}else {
+    $t_answer_count = 0;
 }
 
 $allow_html = true;
@@ -738,7 +739,7 @@ echo "            <td>\n";
 echo "              <table border=\"0\" class=\"posthead\" cellpadding=\"0\" cellspacing=\"5\">\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), isset($t_answer_count) ? $t_answer_count : 0), "&nbsp;", form_submit('change_count', $lang['change']), "</td>\n";
+echo "                  <td>{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), $t_answer_count), "&nbsp;", form_submit('change_count', $lang['change']), "</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";

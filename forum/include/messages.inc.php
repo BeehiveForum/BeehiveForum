@@ -87,9 +87,9 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
     // Loop through the results and construct an array to return
 
     if($limit > 1) {
-    
+
         for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
-        
+
             $messages[$i]['PID'] = $message['PID'];
             $messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
             $messages[$i]['FROM_UID'] = $message['FROM_UID'];
@@ -101,7 +101,7 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
             $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $messages['TO_RELATIONSHIP'] : 0;
             $messages[$i]['FNICK'] = $message['FNICK'];
             $messages[$i]['FLOGON'] = $message['FLOGON'];
-            
+
             if(isset($message['TNICK'])){
                 $messages[$i]['TNICK'] = $message['TNICK'];
                 $messages[$i]['TLOGON'] = $message['TLOGON'];
@@ -111,20 +111,20 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
             }
         }
     } else {
-    
+
         $messages = db_fetch_array($resource_id);
-        
+
         if(!isset($messages['VIEWED'])){
             $messages['VIEWED'] = '';
         }
-        
+
         if(!isset($messages['FROM_RELATIONSHIP'])){
             $messages['FROM_RELATIONSHIP'] = 0;
         }
         if(!isset($messages['TO_RELATIONSHIP'])){
             $messages['TO_RELATIONSHIP'] = 0;
         }
-        
+
         if(!isset($messages['TNICK'])){
             $messages['TNICK'] = 'ALL';
             $messages['TLOGON'] = 'ALL';
@@ -150,7 +150,7 @@ function messages_top($foldertitle, $threadtitle, $interest_level = 0)
     if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"Subscribed\" align=\"middle\">";
     echo "</p>";
     // To be expanded later
-    
+
 }
 
 function messages_bottom()
@@ -167,7 +167,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         message_display_deleted($tid, $message['PID']);
         return;
     }
-    
+
+    if ($HTTP_COOKIE_VARS['bh_sess_uid'] != $message['FROM_UID']) {
+      if (user_get_status($message['FROM_UID']) & USER_PERM_WORM) {
+        message_display_deleted($tid, $message['PID']);
+	return;
+      }
+    }
+
     if(!isset($message['FROM_RELATIONSHIP'])) {
         $message['FROM_RELATIONSHIP'] = 0;
     }
@@ -194,7 +201,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(" . $message['FROM_UID'] . ")\" target=\"_self\">";
     echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a></span>";
-    
+
     if($message['FROM_RELATIONSHIP'] == 1) {
         echo "&nbsp;&nbsp;<img src=\"".style_image('friend.png')."\" height=\"15\" alt=\"Friend\" />";
     } else if($message['FROM_RELATIONSHIP'] == -1) {
@@ -202,7 +209,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     echo "</td><td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
-    
+
     if($message['FROM_RELATIONSHIP'] < 0 && $limit_text) {
         echo "<b>Ignored message</b>";
     } else {
@@ -211,12 +218,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo format_time($message['CREATED'], 1);
         }
     }
-    
+
     echo "&nbsp;</span></td>\n";
     echo "</tr><tr>\n";
     echo "<td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;To:&nbsp;</span></td>\n";
     echo "<td nowrap=\"nowrap\" width=\"98%\"><span class=\"posttofrom\">";
-    
+
     if(($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile(". $message['TO_UID']. ")\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a></span>";
@@ -235,10 +242,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }else {
         echo "ALL</span>";
     }
-    
+
     echo "</td>\n";
     echo "<td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">";
-    
+
     if($message['FROM_RELATIONSHIP'] == -1 && $limit_text && $in_list) {
         echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=%2Fforum%2Fmessages.php?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
@@ -255,7 +262,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(!($message['FROM_RELATIONSHIP'] == -1 && $limit_text)) {
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
         if($in_list) {
-            echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";            
+            echo "<a href=\"http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             if($message['PID'] > 1) {
                 echo " in reply to ";
                 if(intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
@@ -276,23 +283,23 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 if (is_array($attachments)) {
                     echo "<p><b>Attachments:</b><br>\n";
                     for ($i = 0; $i < sizeof($attachments); $i++) {
-                    
+
                         echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"absmiddle\">";
                         echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\" title=\"";
-                        
+
                         if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
                           echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                         }
-                        
+
                         echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
                         echo "Downloaded: ". $attachments[$i]['downloads'];
-                        
+
                         if ($attachments[$i]['downloads'] == 1) {
                           echo " time";
                         }else {
                           echo " times";
                         }
-                        
+
                         echo "\">". $attachments[$i]['filename']. "</a><br />";
 
                     }
@@ -300,26 +307,26 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 }
             }
         }
-        
+
         echo "</td></tr>\n";
 
         if($in_list && $limit_text != false){
             echo "<tr><td align=\"center\"><span class=\"postresponse\">";
             if(!($closed || ($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_WASP))) {
-               
+
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"_parent\">Reply</a>";
-                                    
+
             }
             if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
                 echo "&nbsp;&nbsp;<img src=\"".style_image('delete.png')."\" height=\"15\" border=\"0\" />";
                 echo "&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."&back=$tid.$first_msg\" target=\"_parent\">Delete</a>";
-                
+
                 if (!$is_poll || $message['PID'] > 1) {
-                
+
                   echo "&nbsp;&nbsp;<img src=\"".style_image('edit.png')."\" height=\"15\" border=\"0\" />";
                   echo "&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"_parent\">Edit</a>";
-                  
+
                 }
             }
 
@@ -337,7 +344,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
         echo "</table>\n";
     }
-    
+
     echo "</td></tr></table></div>\n";
 }
 
@@ -424,7 +431,7 @@ function messages_nav_strip($tid,$pid,$length,$ppp)
             $html .= "\n&nbsp;...";
         }
     }
-    
+
     unset($navbits);
 
     echo "<p align=\"center\" class=\"smalltext\">" . $html . "</p>\n";
@@ -512,11 +519,11 @@ function messages_update_read($tid,$pid,$uid,$spid = 1)
         // Update if already existing
         $fa = db_fetch_array($result);
         if($pid > $fa['LAST_READ']){
-        
+
             $sql = "update low_priority " . forum_table("USER_THREAD");
             $sql.= " set LAST_READ = $pid, LAST_READ_AT = NOW()";
             $sql.= "where UID = $uid and TID = $tid";
-            
+
             db_query($sql, $db_message_update_read);
         }
     } else {
@@ -535,7 +542,7 @@ function messages_update_read($tid,$pid,$uid,$spid = 1)
 function messages_get_most_recent($uid)
 {
     $return = "1.1";
-    
+
     $fidlist = folder_get_available();
 
     $db_messages_get_most_recent = db_connect();
@@ -557,7 +564,7 @@ function messages_get_most_recent($uid)
             $return = $fa['TID'] . ".1";
         }
     }
-    
+
     return $return;
 }
 
@@ -565,31 +572,31 @@ function messages_fontsize_form($tid, $pid)
 {
 
     global $HTTP_COOKIE_VARS;
-    
+
     $fontstrip = "Adjust text size: ";
-    
+
     if (($HTTP_COOKIE_VARS['bh_sess_fontsize'] > 1) && ($HTTP_COOKIE_VARS['bh_sess_fontsize'] < 15)) {
-    
+
       $fontsmaller = $HTTP_COOKIE_VARS['bh_sess_fontsize'] - 1;
       $fontlarger = $HTTP_COOKIE_VARS['bh_sess_fontsize'] + 1;
-        
+
       if ($fontsmaller < 1) $fontsmaller = 1;
       if ($fontlarger > 15) $fontlarger = 15;
-        
+
       $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=$fontsmaller\" target=\"_self\">Smaller</a> ";
       $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. " <a href=\"messages.php?msg=$tid.$pid&fontsize=$fontlarger\" target=\"_self\">Larger</a>";
-      
+
     }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 1) {
-    
+
       $fontstrip.= $HTTP_COOKIE_VARS['bh_sess_fontsize']. "<a href=\"messages.php?msg=$tid.$pid&fontsize=2\" target=\"_self\">Larger</a>";
-      
+
     }elseif ($HTTP_COOKIE_VARS['bh_sess_fontsize'] == 15) {
-   
+
       $fontstrip.= "<a href=\"messages.php?msg=$tid.$pid&fontsize=14\" target=\"_self\">Smaller</a> ". $HTTP_COOKIE_VARS['bh_sess_fontsize'];
-      
+
     }
-      
-    echo $fontstrip;   
+
+    echo $fontstrip;
 }
 
 ?>

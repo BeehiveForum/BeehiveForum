@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -32,7 +32,7 @@ require_once("./include/folder.inc.php");
 function threads_get_available_folders()
 {
     return folder_get_available();
-    
+
     /*global $HTTP_COOKIE_VARS;
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
     $db_threads_get_available_folders = db_connect();
@@ -69,7 +69,7 @@ function threads_get_folders()
     $sql = "select DISTINCT F.FID, F.TITLE, UF.INTEREST from ".forum_table("FOLDER")." F left join ";
     $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) order by F.FID";
-    
+
     $result = db_query($sql, $db_threads_get_folders);
 
     if (!db_num_rows($result)) {
@@ -119,13 +119,14 @@ function threads_get_unread($uid) // get unread messages for $uid
 
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
-    $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
+    $sql .= "FROM " . forum_table("THREAD") . " THREAD, " . forum_table("USER_FOLDER") . " USER_FOLDER ";
     $sql .= "LEFT JOIN " . forum_table("USER_THREAD") . " USER_THREAD ON ";
-    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid AND USER_FOLDER.FID = THREAD.FID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL)";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
-    $sql .= "ORDER BY THREAD.modified DESC ";
+    $sql .= "AND NOT (USER_FOLDER.INTEREST <=> -1) ";
+    $sql .= "ORDER BY USER_FOLDER.INTEREST DESC "; //THREAD.modified DESC ";
     $sql .= "LIMIT 0, 50";
 
     $resource_id = db_query($sql, $db_threads_get_unread);
@@ -267,7 +268,7 @@ function threads_get_folder($uid, $fid, $start = 0)
     $db_threads_get_folder = db_connect();
 
     // Formulate query
-    
+
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified ";
     $sql .= "FROM " . forum_table("THREAD") . " THREAD ";
@@ -276,7 +277,7 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql .= "WHERE THREAD.fid = $fid ";
     $sql .= "AND NOT (USER_THREAD.INTEREST <=> -1) ";
     $sql .= "ORDER BY THREAD.modified DESC ";
-    $sql .= "LIMIT $start, 50";     
+    $sql .= "LIMIT $start, 50";
 
     $resource_id = db_query($sql, $db_threads_get_folder);
     list($threads, $folder_order) = threads_process_list($resource_id);
@@ -372,9 +373,9 @@ function threads_mark_all_read()
 {
 
     global $HTTP_COOKIE_VARS;
-    
+
     $db_threads_mark_all_read = db_connect();
-    
+
     $sql = "SELECT TID, LENGTH FROM ". forum_table("THREAD");
     $result_threads = db_query($sql, $db_threads_mark_all_read);
 
@@ -403,7 +404,7 @@ function threads_mark_all_read()
       }
 
     }
-        
+
 }
 
 ?>

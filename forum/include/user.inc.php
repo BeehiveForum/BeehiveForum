@@ -61,13 +61,26 @@ function user_update($uid,$password,$nickname,$email)
 
     $sql = "update " . forum_table("USER") . " set " . $bit . "NICKNAME = \"". htmlspecialchars($nickname). "\", EMAIL = \"". htmlspecialchars($email). "\"";
     $sql .= " WHERE UID = $uid";
-    
+
     //echo $sql;
 
     $db_user_update = db_connect();
     $result = db_query($sql, $db_user_update);
 
     return $result;
+}
+
+function user_get_status($uid)
+{
+
+    $sql = "select STATUS from ". forum_table("USER") . " where UID = $uid";
+    $db_user_get_status = db_connect();
+
+    $result = db_query($sql, $db_user_get_status);
+    list($status) = db_fetch_array($result);
+
+    return $status;
+
 }
 
 function user_update_status($uid,$status)
@@ -105,7 +118,7 @@ function user_update_folders($uid,$folders)
         mysql_query($sql,$db);
     }
 }
-    
+
 
 function user_logon($logon, $password)
 {
@@ -193,17 +206,17 @@ function user_get_uid($logon)
 {
 
     $db_user_get_uid = db_connect();
-    
+
     $sql = "select UID from ". forum_table("USER"). " where LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
-    
+
     if (!db_num_rows($result)) {
         return -1;
     }else{
         $fa = db_fetch_array($result);
         return $fa['UID'];
     }
-    
+
 }
 
 function user_get_sig($uid, &$content, &$html)
@@ -251,10 +264,10 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 {
 
     $db_user_update_prefs = db_connect();
-    
+
     $sql = "delete from ". forum_table("USER_PREFS"). " where UID = $uid";
     $result = db_query($sql, $db_user_update_prefs);
-    
+
     if (empty($timezone)) $timezone = 0;
     if (empty($posts_per_page)) $posts_per_page = 0;
     if (empty($font_size)) $font_size = 0;
@@ -275,7 +288,7 @@ function user_update_sig($uid,$content,$html){
 
     $content = mysql_escape_string($content);
     $db_user_update_sig = db_connect();
-    
+
     $sql = "delete from ". forum_table("USER_SIG"). " where UID = $uid";
     $result = db_query($sql, $db_user_update_sig);
 

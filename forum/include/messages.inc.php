@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.158 2003-08-05 21:32:09 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.159 2003-08-08 23:25:17 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -740,6 +740,8 @@ function messages_get_most_recent($uid, $fid = false)
             return $fa['TID'] . ".1";
         }
     }
+
+    return "1.1";
 }
 
 function messages_fontsize_form($tid, $pid)

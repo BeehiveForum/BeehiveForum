@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.81 2003-08-05 21:32:04 decoyduck Exp $ */
+/* $Id: messages.php,v 1.82 2003-08-08 23:25:17 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -62,11 +62,7 @@ if (!bh_session_check()) {
 if (isset($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }else {
-    if (bh_session_get_value('UID')) {
-        $msg = messages_get_most_recent(bh_session_get_value('UID'));
-    }else {
-        $msg = "1.1";
-    }
+    $msg = messages_get_most_recent(bh_session_get_value('UID'));
 }
 
 list($tid, $pid) = explode('.', $msg);

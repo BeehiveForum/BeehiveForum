@@ -42,9 +42,9 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
   $daterange = search_date_range($argarray['date_from'], $argarray['date_to']);
   $fromtouser = "";
 
-    if(!isset($argarray['me_only'])){
-        $argarray['me_only'] = "N";
-    }
+  if(!isset($argarray['me_only'])){
+      $argarray['me_only'] = "N";
+  }
 
   if (empty($argarray['to_other']) && $argarray['to_uid'] > 0) {
       $fromtouser = "AND POST.TO_UID = ". $argarray['to_uid'];
@@ -68,12 +68,12 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       $threadtitle = "";
       foreach($keywords as $word) {
-          $threadtitle.= "THREAD.TITLE LIKE '%$word%' AND ";
+          $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%' AND ";
       }
 
       $postcontent = "";
       foreach($keywords as $word) {
-        $postcontent.= "POST_CONTENT.CONTENT LIKE '%$word%' AND ";
+        $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%' AND ";
       }
 
       $threadtitle = substr($threadtitle, 0, -5);
@@ -98,12 +98,14 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
       $keywords = explode(' ', $argarray['search_string']);
 
+      $threadtitle = "";
       foreach($keywords as $word) {
-        $threadtitle.= "THREAD.TITLE LIKE '%$word%' OR ";
+        $threadtitle.= "THREAD.TITLE LIKE '%". _addslashes($word). "%' OR ";
       }
 
+      $postcontent = "";
       foreach($keywords as $word) {
-        $postcontent.= "POST_CONTENT.CONTENT LIKE '%$word%' OR ";
+        $postcontent.= "POST_CONTENT.CONTENT LIKE '%". _addslashes($word). "%' OR ";
       }
 
       $threadtitle = substr($threadtitle, 0, -4);
@@ -126,8 +128,8 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
 
     }elseif ($argarray['method'] == 3) { // EXACT
 
-      $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". $argarray['search_string']. "%' ";
-      $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". $argarray['search_string']. "%') ";
+      $searchsql.= $folders. " AND (THREAD.TITLE LIKE '%". _addslashes($argarray['search_string']). "%' ";
+      $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". _addslashes($argarray['search_string']). "%') ";
       $searchsql.= $daterange;
 
       if ($argarray['me_only'] == 'Y') {
@@ -313,6 +315,8 @@ function search_date_range($from, $to)
 
 function folder_search_dropdown()
 {
+
+    global $HTTP_COOKIE_VARS;
 
     $db_folder_search_dropdown = db_connect();
 

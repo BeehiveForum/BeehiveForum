@@ -418,6 +418,10 @@ if(!isset($t_threadtitle)) {
     $t_threadtitle = "";
 }
 
+if (!isset($t_fid)) {
+    $t_fid = 0;
+}
+
 if($newthread) {
 
     echo "<table>\n";
@@ -522,7 +526,7 @@ if(!$newthread) {
     }else {
 
     //message_display($tid, $message, $msg_count, $first_msg, $in_list, $closed, $limit_text, $is_poll, $show_sigs)
-      
+
       message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, true, true);
 
     }

@@ -22,7 +22,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
@@ -40,15 +40,15 @@ function format_user_name($u_logon,$u_nickname)
     } else {
         $fmt = strtoupper($u_logon);
     }
-    
+
     return $fmt;
 }
 
-function format_file_size($size) 
+function format_file_size($size)
 {
 
     $megabyte = 1024 * 1024;
-    
+
     if ($size >= $megabyte) {
         $resized = round($size / $megabyte, 1). " MB";
     }else if ($size >= 1024) {
@@ -56,8 +56,8 @@ function format_file_size($size)
     }else{
         $resized = $size. " bytes";
     }
-    
-    return $resized; 
+
+    return $resized;
 }
 
 
@@ -105,7 +105,7 @@ function format_time($time, $verbose = 0)
     } else {
         $fmt = gmdate("H:i", $local_time); // time is today, display hours and minutes
     }
-    
+
     return $fmt;
 }
 
@@ -128,18 +128,18 @@ function timestamp_amend_bst($timestamp)
 
 
     $year = date("Y", mktime());
-      
+
     $ldmarw = date("w", mktime(2, 0, 0, 4,  0, $year));
     $ldoctw = date("w", mktime(2, 0, 0, 11, 0, $year));
     $ldmard = date("d", mktime(2, 0, 0, 4,  0, $year));
     $ldoctd = date("d", mktime(2, 0, 0, 11, 0, $year));
-      
+
     if ($ldmarw > 0) $ldmard = $ldmard - $ldmarw;
     if ($ldoctw > 0) $ldoctd = $ldoctd - $ldoctw;
-      
+
     $startofbst = mktime(2, 0, 0, 3,  $ldmard, $year);
     $endofbst   = mktime(2, 0, 0, 10, $ldoctd, $year);
-      
+
     if (($timestamp > $startofbst) && ($timestamp < $endofbst)) {
       return $timestamp + 3600;  // return adjusted timestamp
     }else{
@@ -157,7 +157,7 @@ function htmlspecialchars_reverse($text)
     $search = array ("'&(quote|#34);'i", "'&(amp|#38);'i", "'&(lt|#60);'i", "'&(gt|#62);'i",
                      "'&(nbsp|#160);'i", "'&(iexcl|#161);'i", "'&(cent|#162);'i", "'&(pound|#163);'i",
                      "'&(copy|#169);'i");
-                 
+
     $replace = array ("\"", "&", "<", ">", " ", chr(161), chr(162), chr(163), chr(169));
     $retval = preg_replace ($search, $replace, $text);
 
@@ -175,7 +175,20 @@ function _stripslashes($string)
   }else {
     return $string;
   }
-  
+
+}
+
+// Checks for Magic Quotes and perform addslashes if nessecary
+
+function _addslashes($string)
+{
+
+  if (get_magic_quotes_gpc() == 1) {
+    return $string;
+  }else {
+    return addslashes($string);
+  }
+
 }
 
 ?>

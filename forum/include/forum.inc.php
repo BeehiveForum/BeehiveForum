@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.126 2005-03-24 18:54:38 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.127 2005-03-25 21:37:54 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -182,12 +182,15 @@ function forum_check_password($forum_data)
 
             $passwd = md5($_COOKIE["bh_{$forum_data['WEBTAG']}_password"]);
 
-            $sql = "SELECT * FROM FORUMS WHERE FID = '{$forum_data['FID']}' ";
-            $sql.= "AND ACCESS_LEVEL = 2 AND FORUM_PASSWD = '$passwd'";
+            $sql = "SELECT COUNT(*) AS FORUM_COUNT FROM FORUMS ";
+            $sql.= "WHERE FID = '{$forum_data['FID']}' AND ";
+            $sql.= "ACCESS_LEVEL = 2 AND FORUM_PASSWD = '$passwd'";
 
             $result = db_query($sql, $db_forum_check_password);
 
-            if (db_num_rows($result) > 0) return true;
+            list($forum_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+            if ($forum_count > 0) return true;
         }
 
         if (in_array(basename($_SERVER['PHP_SELF']), $page_array)) return true;
@@ -1021,10 +1024,14 @@ function forum_update_access($fid, $access, $passwd = false)
 
             $result = db_query($sql, $db_forum_update_access);
 
-            $sql = "SELECT * FROM USER_FORUM WHERE FID = '$fid' AND UID = '$uid'";
+            $sql = "SELECT COUNT(*) AS USER_COUNT FROM ";
+            $sql.= "USER_FORUM WHERE FID = '$fid' AND UID = '$uid'";
+
             $result = db_query($sql, $db_forum_update_access);
 
-            if (db_num_rows($result) > 0) {
+            list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+            if ($user_count > 0) {
 
                 $sql = "UPDATE USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
                 $result = db_query($sql, $db_forum_update_access);
@@ -1055,7 +1062,7 @@ function forum_get($fid)
         $sql = "SELECT * FROM FORUMS WHERE FID = '$fid'";
         $result = db_query($sql, $db_forum_get);
 
-        if (db_num_rows($result) > 0) {
+        if ($forum_count > 0) {
 
             $forum_get_array = db_fetch_array($result);
             $forum_get_array['FORUM_SETTINGS'] = array();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.231 2005-03-15 21:30:07 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.232 2005-03-25 21:37:54 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -1190,12 +1190,15 @@ function user_is_active($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM SESSIONS WHERE UID = '$uid' ";
+    $sql = "SELECT COUNT(*) AS USER_ACTIVE ";
+    $sql.= "FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND FID = '{$table_data['FID']}'";
 
     $result = db_query($sql, $db_user_is_active);
 
-    return (db_num_rows($result) > 0);
+    list($user_active) = db_fetch_array($result);
+
+    return ($user_active > 0);
 }
 
 function user_allow_pm($uid)

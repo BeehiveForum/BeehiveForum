@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.54 2004-04-05 21:12:36 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.55 2004-04-07 17:33:57 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -341,7 +341,7 @@ function draw_pm_message($pm_elements_array)
     if (isset($pm_elements_array['AID'])) {
           
         $aid = $pm_elements_array['AID'];
-        $attachments = get_attachments($pm_elements_array['FROM_UID'], $aid);
+        $attachments_array = get_attachments($pm_elements_array['FROM_UID'], $aid);
 
         if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
                     

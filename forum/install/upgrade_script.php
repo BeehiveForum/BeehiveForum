@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.34 2004-11-13 18:59:42 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.35 2004-11-16 21:09:44 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -30,6 +30,8 @@ if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
     header("Location: ./install.php");
     exit;
 }
+
+set_time_limit(0);
 
 if (isset($forum_webtag) && strlen(trim($forum_webtag)) > 0) {
 
@@ -1675,6 +1677,39 @@ foreach($forum_webtag_array as $forum_webtag) {
         $error_html.= db_error($db_install);
         $valid = false;
         return;
+    }
+
+    $sql = "CREATE TABLE DICTIONARY (";
+    $sql.= "  WORD varchar(64) NOT NULL default '',";
+    $sql.= "  SOUND varchar(64) NOT NULL default '',";
+    $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
+    $sql.= "  KEY SOUND (SOUND),";
+    $sql.= "  KEY UID (UID),";
+    $sql.= "  KEY WORD (WORD)";
+    $sql.= ")";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= db_error($db_install);
+        $valid = false;
+        return;
+    }
+
+    $dictionary_words = file('english.dic');
+
+    foreach($dictionary_words as $word) {
+
+        $word  = addslashes(trim($word));
+
+        $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+        $sql.= "VALUES ('$word', SUBSTR(SOUNDEX('$word'), 1, 4), 0)";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $error_html.= db_error($db_install);
+            $valid = false;
+            return;
+        }
     }
 }
 

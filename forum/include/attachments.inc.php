@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.69 2004-06-29 16:02:36 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.70 2004-07-02 20:08:41 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -320,10 +320,10 @@ function get_folder_fid($aid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT FOLDER.FID FROM PM_ATTACHMENT_IDS ";
-    $sql.= "LEFT JOIN THREAD THREAD ON (THREAD.TID = PM_ATTACHMENT_IDS.TID) ";
-    $sql.= "LEFT JOIN FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE PM_ATTCHMENT_IDS.AID = '$aid'";
+    $sql = "SELECT FOLDER.FID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS POST_ATTACHMENT_IDS ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST_ATTACHMENT_IDS.TID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "WHERE POST_ATTACHMENT_IDS.AID = '$aid'";
 
     $result = db_query($sql, $db_get_folder_fid);
 

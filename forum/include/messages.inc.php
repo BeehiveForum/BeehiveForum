@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.297 2004-10-20 23:21:24 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.298 2004-10-21 13:42:15 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -808,8 +808,6 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (!$table_data = get_table_prefix()) return "1.1";
 
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
-
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "JOIN {$table_data['PREFIX']}POST POST ";
@@ -822,7 +820,6 @@ function messages_get_most_recent($uid, $fid = false)
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND POST.TID = THREAD.TID ";
     $sql.= "AND POST.PID = 1 ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";
@@ -875,8 +872,6 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
     if (!$table_data = get_table_prefix()) return "1.1";
 
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
-
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "JOIN {$table_data['PREFIX']}POST POST ";
@@ -889,7 +884,6 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "WHERE THREAD.FID in ($fidlist) ";
     $sql.= "AND POST.TID = THREAD.TID ";
     $sql.= "AND POST.PID = 1 ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
     $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.223 2004-09-13 12:06:56 tribalonline Exp $ */
+/* $Id: post.php,v 1.224 2004-10-21 13:42:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -334,33 +334,33 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 }
 
 if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
-	if (isset($_POST['t_newthread'])) {
-		if (isset($_POST['t_threadtitle']) && trim($_POST['t_threadtitle']) != "") {
-			$t_threadtitle = trim($_POST['t_threadtitle']);
-		}
+        if (isset($_POST['t_newthread'])) {
+                if (isset($_POST['t_threadtitle']) && trim($_POST['t_threadtitle']) != "") {
+                        $t_threadtitle = trim($_POST['t_threadtitle']);
+                }
 
-		if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
-			$t_fid = $_POST['t_fid'];
-		}
-	}
+                if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+                        $t_fid = $_POST['t_fid'];
+                }
+        }
 
-	if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-		$t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
-	}
+        if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+                $t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
+        }
 
-	if (isset($_POST['t_sig'])) {
-		$t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
-	}
+        if (isset($_POST['t_sig'])) {
+                $t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
+        }
 
-	if (isset($_POST['emots_toggle_x'])) {
-		$page_prefs ^= POST_EMOTICONS_DISPLAY;
-	} else {
-		$page_prefs ^= POST_SIGNATURE_DISPLAY;
-	}
+        if (isset($_POST['emots_toggle_x'])) {
+                $page_prefs ^= POST_EMOTICONS_DISPLAY;
+        } else {
+                $page_prefs ^= POST_SIGNATURE_DISPLAY;
+        }
 
-	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+        user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
 
-	$fix_html = false;
+        $fix_html = false;
 }
 
 
@@ -610,14 +610,20 @@ if ($valid && isset($_POST['submit'])) {
 
     if ($new_pid > -1) {
 
-        if ($t_tid > 0 && $t_rpid > 0) {
+        if ($newthread && $t_tid > 0) {
 
-          $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+            $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.1";
 
-        }else{
+        }else {
 
-          $uri = "./discussion.php?webtag=$webtag";
+            if ($t_tid > 0 && $t_rpid > 0) {
 
+                $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+
+            }else{
+
+                $uri = "./discussion.php?webtag=$webtag";
+            }
         }
 
         header_redirect($uri);
@@ -804,7 +810,7 @@ $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
-		echo "<br />\n";
+                echo "<br />\n";
 
         echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "  <tr>\n";
@@ -842,7 +848,7 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+        echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
@@ -856,21 +862,21 @@ if ($post->isDiff() && $fix_html) {
 
 if ($allow_html == true) {
 
-	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-	$tph_radio = $post->getHTML();
+        $tph_radio = $post->getHTML();
 
-	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-	if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-		echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-	}
+        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+                echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        }
 
 } else {
 
-	echo form_input_hidden("t_post_html", "disabled");
+        echo form_input_hidden("t_post_html", "disabled");
 }
 
 // SUBMIT BUTTONS
@@ -888,37 +894,37 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && (perm_check_folder_p
 
 if ($allow_sig == true) {
 
-	echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-	echo "  <tr>\n";
-	echo "    <td class=\"subhead\">\n";
-	echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
+        echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"subhead\">\n";
+        echo "      <div style=\"float:left\">&nbsp;{$lang['signature']}:</div>\n";
 
-	$t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
+        $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
-	if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-		echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
-		echo "    </td>\n";
-		echo "  </tr>\n";
+        if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
+                echo "      <div style=\"float:right\">". form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "</div>\n";
+                echo "    </td>\n";
+                echo "  </tr>\n";
 
-		echo "  <tr>\n";
-		echo "    <td colspan=\"2\">\n";
+                echo "  <tr>\n";
+                echo "    <td colspan=\"2\">\n";
 
-		echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+                echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
-		echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
+                echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
-		if ($sig->isDiff() && $fix_html && !$fetched_sig) {
-			echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-		}
+                if ($sig->isDiff() && $fix_html && !$fetched_sig) {
+                        echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+                }
 
-	} else {
-		echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
-		echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
-	}
+        } else {
+                echo "      <div style=\"float:right\">". form_submit_image('sig_show.png', 'sig_toggle', 'show'). "</div>\n";
+                echo "      ".form_input_hidden("t_sig", $t_sig)."\n";
+        }
 
-	echo "    </td>\n";
-	echo "  </tr>\n";
-	echo "</table>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
 
 }
 

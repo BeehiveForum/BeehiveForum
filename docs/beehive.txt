@@ -92,15 +92,17 @@ PROJECT BEEHIVE
 	
 	Please fully qualify INSERT statements, i.e. instead of just:
 	
-	INSERT INTO table VALUES (3, 'miffle', 42);
+	INSERT INTO TABLE VALUES (3, 'miffle', 42);
 	
 	do:
 	
-	INSERT INTO table (field1, field2, field3) VALUES (3, 'miffle', 42);
+	INSERT INTO TABLE (FIELD1, FIELD2, FIELD3) VALUES (3, 'miffle', 42);
 	
 	If you specify the fields that you're INSERTing into, than that means 
 	that we don't break your code if we have to add another field to a 
 	table, which is a good thing.
+	
+	Also, bear in mind table names are case-sensitive, so need to be in upper-case.
 
 5. STRUCTURE
 

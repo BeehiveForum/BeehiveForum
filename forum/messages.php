@@ -167,6 +167,7 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
   }else {
     echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?msg=$tid.1\" target=\"_self\" title=\"Click to vote\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> You have not voted</td>\n";
   }
+
 }
 
 echo "  </tr>\n";

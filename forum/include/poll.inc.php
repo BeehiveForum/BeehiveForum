@@ -684,7 +684,7 @@ function poll_is_closed($tid)
 
     if (db_num_rows($result)) {
       $polldata = db_fetch_array($result);
-      if (($polldata['CLOSES'] <= gmmktime()) && $polldata['CLOSES'] != 0) return true;
+      if (isset($polldata['CLOSES']) && $polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0) return true;
     }
 
     return false;

@@ -61,12 +61,16 @@ if ($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
 } else {
     $user = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
-    if (isset($HTTP_GET_VARS['mvr'])) {
+    if (isset($HTTP_GET_VARS['markread'])) {
+
+      if ($HTTP_GET_VARS['markread'] == 'mvr') {
         threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
-    }elseif (isset($HTTP_GET_VARS['mar'])) {
+      }elseif ($HTTP_GET_VARS['markread'] == 'mar') {
         threads_mark_all_read();
-    }elseif (isset($HTTP_GET_VARS['mfr'])) {
+      }elseif ($HTTP_GET_VARS['markread'] == 'mfr') {
         threads_mark_50_read();
+      }
+
     }
 
     if (!isset($HTTP_GET_VARS['mode'])) {
@@ -431,19 +435,30 @@ echo "</tr>\n";
 if (is_array($visiblethreads)) {
   echo "<tr>\n";
   echo "  <td>&nbsp;</td>\n";
-  echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mvr&tids=". implode(',', $visiblethreads). "\">Mark these discussions as read</a></td>\n";
+  echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?markread=mvr&tids=". implode(',', $visiblethreads). "\" title=\"Mark read all the threads currently visible in the Thread List.\">Current visible discussions</a></td>\n";
   echo "</tr>\n";
 }
 
 echo "<tr>\n";
 echo "  <td>&nbsp;</td>\n";
-echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mar\">All discussions</a></td>\n";
+echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?markread=mar\" title=\"Mark _ALL_ threads as read. This will leave you with no unread messages.\">All discussions</a></td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
 echo "  <td>&nbsp;</td>\n";
-echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mfr\">Next 50 discussions</a></td>\n";
+echo "  <td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?markread=mfr\" title=\"Mark next 50 unread messages as read (May include threads not currently visible in Thread List)\">Next 50 discussions</a></td>\n";
 echo "</tr>\n";
+
+echo "<tr>\n";
+echo "  <td>&nbsp;</td>\n";
+echo "  <td>&nbsp;</td>\n";
+echo "</tr>\n";
+
+echo "<tr>\n";
+echo "  <td>&nbsp;</td>\n";
+echo "  <td class=\"smalltext\">(Temporary: Will change this to a drop down (unless Andy beats me to it))</td>\n";
+echo "</tr>\n";
+
 echo "</table\n";
 
 echo "<script language=\"JavaScript\">\n";

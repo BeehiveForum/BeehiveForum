@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.185 2003-09-22 20:18:18 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.186 2003-09-23 19:43:34 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -494,7 +494,9 @@ function message_display_deleted($tid,$pid)
 function messages_start_panel()
 {
     echo "<div align=\"center\">\n";
-    echo "<table width=\"96%\" class=\"messagefoot\"><tr><td align=\"center\">";
+    echo "<table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"center\">\n";
 }
 
 function messages_end_panel()
@@ -806,7 +808,7 @@ function messages_forum_stats($tid, $pid)
 
     echo "<div align=\"center\">\n";
     echo "  <br />\n";
-    echo "  <table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    echo "  <table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "    <tr>\n";
     echo "      <td class=\"subhead\">&nbsp;Forum stats:</td>\n";
 
@@ -826,8 +828,9 @@ function messages_forum_stats($tid, $pid)
 
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
-            echo "            <td width=\"30\">&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "            <td>&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "          <tr>\n";
             echo "            <td>&nbsp;</td>\n";
@@ -837,29 +840,33 @@ function messages_forum_stats($tid, $pid)
             echo "              <b>{$user_stats['AUSERS']}</b> anonymous members\n";
             echo "              [ <a href=\"start.php?show=visitors\" target=\"main\">View Complete List</a> ]\n";
             echo "            </td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
 
             if (sizeof($user_stats['USERS']) > 0) {
 
                 echo "          <tr>\n";
-                echo "            <td width=\"30\">&nbsp;</td>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "            <td>&nbsp;</td>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
                 echo "          <tr>";
                 echo "            <td>&nbsp;</td>\n";
                 echo "            <td class=\"activeusers\">\n";
 
                 for ($i = 0; $i < sizeof($user_stats['USERS']); $i++) {
-                    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']})\" target=\"_self\">", format_user_name($user_stats['USERS'][$i]['LOGON'], $user_stats['USERS'][$i]['NICKNAME']), "</a>";
+                    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']})\" target=\"_self\">";
+                    echo str_replace(" ", "&nbsp;", format_user_name($user_stats['USERS'][$i]['LOGON'], $user_stats['USERS'][$i]['NICKNAME'])), "</a>";
                     if ($i < (sizeof($user_stats['USERS']) - 1)) echo ", ";
                 }
 
                 echo "            </td>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
             }
 
             echo "          <tr>\n";
-            echo "            <td width=\"30\">&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "            <td>&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
@@ -867,8 +874,9 @@ function messages_forum_stats($tid, $pid)
 
         echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         echo "          <tr>\n";
-        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td width=\"35\">&nbsp;</td>\n";
         echo "            <td>Our members have made a total of <b>", number_format(get_thread_count(), 0, ".", ","), "</b> threads and <b>", number_format(get_post_count(), 0, ".", ","), "</b> posts</td>\n";
+        echo "            <td width=\"35\">&nbsp;</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
 
@@ -876,8 +884,9 @@ function messages_forum_stats($tid, $pid)
 
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
-            echo "            <td width=\"30\">&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "            <td>Longest thread is '<a href=\"./?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' with <b>", number_format($longest_thread['LENGTH'], 0, ".", ","), "</b> posts.</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
         }
@@ -886,14 +895,16 @@ function messages_forum_stats($tid, $pid)
 
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
-            echo "            <td width=\"30\">&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "            <td>&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
-            echo "            <td width=\"30\">&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "            <td>There have been <b>$recent_posts</b> posts made in the last 60 minutes.</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
 
@@ -903,8 +914,9 @@ function messages_forum_stats($tid, $pid)
 
                     echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                     echo "          <tr>\n";
-                    echo "            <td width=\"30\">&nbsp;</td>\n";
+                    echo "            <td width=\"35\">&nbsp;</td>\n";
                     echo "            <td>Most posts ever made in a single 60 minute period is <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ".", ","), "</b></td>\n";
+                    echo "            <td width=\"35\">&nbsp;</td>\n";
                     echo "          </tr>\n";
                     echo "        </table>\n";
                 }
@@ -913,11 +925,12 @@ function messages_forum_stats($tid, $pid)
 
         echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         echo "          <tr>\n";
-        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td width=\"35\">&nbsp;</td>\n";
         echo "            <td>&nbsp;</td>\n";
+        echo "            <td width=\"35\">&nbsp;</td>\n";
         echo "          </tr>\n";
         echo "          <tr>\n";
-        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td width=\"35\">&nbsp;</td>\n";
         echo "            <td>\n";
         echo "              We have <b>", user_count(), "</b> registered members.\n";
 
@@ -927,6 +940,7 @@ function messages_forum_stats($tid, $pid)
         }
 
         echo "            </td>\n";
+        echo "            <td width=\"35\">&nbsp;</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
 
@@ -936,16 +950,18 @@ function messages_forum_stats($tid, $pid)
 
                 echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "          <tr>\n";
-                echo "            <td width=\"30\">&nbsp;</td>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "            <td>Most users ever online was <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ".", ","), "</b> on ", date("M jS Y, g:i A", $most_users['MOST_USERS_DATE']), "</td>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
             }
         }
 
         echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         echo "          <tr>\n";
-        echo "            <td width=\"30\">&nbsp;</td>\n";
+        echo "            <td width=\"35\">&nbsp;</td>\n";
         echo "            <td>&nbsp;</td>\n";
+        echo "            <td width=\"35\">&nbsp;</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
         echo "      </td>\n";

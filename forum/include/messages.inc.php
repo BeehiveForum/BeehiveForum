@@ -194,7 +194,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>";
     }
 
-    if (sizeof($message['CONTENT']) > 0) {
+    if (sizeof($highlight) > 0) {
         foreach ($highlight as $word) {
             $message['CONTENT'] = preg_replace("/($word)/i", "<span class=\"highlight\">\\1</span>", $message['CONTENT']);
 	}

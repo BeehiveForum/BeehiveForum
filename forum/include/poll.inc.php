@@ -82,7 +82,7 @@ function poll_get_votes($tid)
     
     $sql = "select O1, O2, O3, O4, O5, O1_VOTES, O2_VOTES, O3_VOTES, O4_VOTES, O5_VOTES, ";
     $sql.= "CHANGEVOTE, POLLTYPE, SHOWRESULTS, UNIX_TIMESTAMP(CLOSES) AS CLOSES ";
-    $sql.= "FROM POLL WHERE TID = $tid";
+    $sql.= "FROM ". forum_table('POLL'). " WHERE TID = $tid";
     
     $result = db_query($sql, $db_poll_get_votes);
     $pollresults = db_fetch_array($result);
@@ -99,7 +99,7 @@ function poll_get_user_vote($tid)
     
     $db_poll_get_user_vote = db_connect();
 
-    $sql = "select VOTE, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from POLL_VOTES where UID = $uid and TID = $tid";
+    $sql = "select VOTE, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from ". forum_table('POLL_VOTES'). " where UID = $uid and TID = $tid";
     $result = db_query($sql, $db_poll_get_user_vote);
     $userpolldata = db_fetch_array($result);
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.234 2004-03-03 22:43:25 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.235 2004-03-03 23:36:25 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -180,12 +180,6 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>";
 }
 
-function message_sort_filter($a, $b)
-{
-    if (strlen($a) == strlen($b)) return 0;
-    return (strlen($a) > strlen($b)) ? -1 : 1;
-}
-
 function message_filter($content)
 {
     $db_mf = db_connect();
@@ -216,9 +210,6 @@ function message_filter($content)
             }
         }
     }
-
-    usort($pattern_array, 'message_sort_filter');
-    usort($replace_array, 'message_sort_filter');
 
     if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
         return $new_content;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.6 2004-05-10 09:36:05 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.7 2004-05-10 09:39:42 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -159,11 +159,11 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['access_level']) && is_numeric($_POST['access_level'])) {
-        $folder_data['ACCESS_LEVEL'] = trim(_stripslashes($_POST['access_level']));
+        $folder_data['ACCESS_LEVEL'] = $_POST['access_level'];
     }
 
     if (isset($_POST['allowed_types']) && is_numeric($_POST['allowed_types'])) {
-        $folder_data['ALLOWED_TYPES'] = trim(_stripslashes($_POST['allowed_types']));
+        $folder_data['ALLOWED_TYPES'] = $_POST['allowed_types'];
     }
 
     folder_update($fid, $folder_data);

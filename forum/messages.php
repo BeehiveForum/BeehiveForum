@@ -74,6 +74,7 @@ if (!isset($pid)) $pid = 1;
 
 if(!thread_can_view($tid, bh_session_get_value('UID'))) {
         html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         html_draw_bottom();
         exit;

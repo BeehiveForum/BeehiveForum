@@ -180,7 +180,7 @@ function pm_draw_to_dropdown($default_uid)
 
     $db_post_draw_to_dropdown = db_connect();
 
-    if(isset($default_uid) && $default_uid != 0) {
+    if (isset($default_uid) && $default_uid != 0) {
         $top_sql = "select LOGON, NICKNAME from ". forum_table("USER"). " where UID = '" . $default_uid . "'";
         $result = db_query($top_sql,$db_post_draw_to_dropdown);
         if(db_num_rows($result)>0){

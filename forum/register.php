@@ -261,6 +261,38 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
 }
 
+$available_styles = array();
+$style_names = array();
+
+if ($dir = @opendir('styles')) {
+  while (($file = readdir($dir)) !== false) {
+    if (is_dir("styles/$file") && $file != '.' && $file != '..') {
+      if (@file_exists("./styles/$file/desc.txt")) {
+        if ($fp = fopen("./styles/$file/desc.txt", "r")) {
+          $available_styles[] = $file;
+          $style_names[] = _htmlentities(fread($fp, filesize("styles/$file/desc.txt")));
+          fclose($fp);
+        }else {
+          $available_styles[] = $file;
+          $style_names[] = $file;
+        }
+      }
+    }
+  }
+  closedir($dir);
+}
+
+$available_langs = lang_get_available(); // Get available languages
+
+$timezones = array("GMT - 11 {$lang['hours']}", "GMT - 10 {$lang['hours']}", "GMT - 9 {$lang['hours']}",
+                   "GMT - 8 {$lang['hours']}", "GMT - 7 {$lang['hours']}", "GMT - 6 {$lang['hours']}",
+                   "GMT - 5 {$lang['hours']}", "GMT - 4 {$lang['hours']}", "GMT - 3 {$lang['hours']}",
+                   "GMT - 2 {$lang['hours']}", "GMT - 1 {$lang['hours']}", "GMT",
+                   "GMT + 1 {$lang['hours']}", "GMT + 2 {$lang['hours']}", "GMT + 3 {$lang['hours']}",
+                   "GMT + 4 {$lang['hours']}", "GMT + 5 {$lang['hours']}", "GMT + 6 {$lang['hours']}",
+                   "GMT + 7 {$lang['hours']}", "GMT + 8 {$lang['hours']}", "GMT + 9 {$lang['hours']}",
+                   "GMT + 10 {$lang['hours']}", "GMT + 11 {$lang['hours']}");
+
 html_draw_top();
 
 echo "<h1>{$lang['userregistration']}</h1>\n";
@@ -271,54 +303,138 @@ if (isset($error_html)) echo $error_html;
 <p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>
 <div align="center">
 <form name="register" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
-  <table class="box" cellpadding="0" cellspacing="0" align="center">
+  <table class="box" cellpadding="0" cellspacing="0" align="center" width="500">
     <tr>
       <td>
-        <table class="subhead" width="100%">
-          <tr>
-            <td><?php echo $lang['register']; ?></td>
-          </tr>
-        </table>
         <table class="posthead" width="100%">
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['username']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-            <td><?php echo form_field("logon", (isset($HTTP_POST_VARS['logon']) ? _stripslashes(trim($HTTP_POST_VARS['logon'])) : ''), 32, 32); ?></td>
+            <td class="subhead" colspan="2"><?php echo $lang['registrationinformationrequired']; ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['passwd']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-            <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes(trim($HTTP_POST_VARS['pw'])) : ''), 32, 32,"password"); ?></td>
+            <td class="posthead" width="260">&nbsp;<?php echo $lang['username']; ?>:</td>
+            <td><?php echo form_field("logon", (isset($HTTP_POST_VARS['logon']) ? _stripslashes(trim($HTTP_POST_VARS['logon'])) : ''), 35, 32); ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['confirm']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-            <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes(trim($HTTP_POST_VARS['cpw'])) : ''), 32, 32,"password"); ?></td>
+            <td class="posthead">&nbsp;<?php echo $lang['email']; ?>:</td>
+            <td><?php echo form_field("email", (isset($HTTP_POST_VARS['email']) ? _stripslashes(trim($HTTP_POST_VARS['email'])) : ''), 35, 80); ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['nickname']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes(trim($HTTP_POST_VARS['nickname'])) : ''), 32, 32); ?></td>
+            <td class="posthead">&nbsp;<?php echo $lang['passwd']; ?>:</td>
+            <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes(trim($HTTP_POST_VARS['pw'])) : ''), 35, 32,"password"); ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['email']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-            <td><?php echo form_field("email", (isset($HTTP_POST_VARS['email']) ? _stripslashes(trim($HTTP_POST_VARS['email'])) : ''), 32, 80); ?></td>
+            <td class="posthead">&nbsp;<?php echo $lang['confirm']; ?>:</td>
+            <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes(trim($HTTP_POST_VARS['cpw'])) : ''), 35, 32,"password"); ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['dateofbirth']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
-            <td><?php echo form_dob_dropdowns((isset($HTTP_POST_VARS['dob_year']) ? $HTTP_POST_VARS['dob_year'] : 0), (isset($HTTP_POST_VARS['dob_month']) ? $HTTP_POST_VARS['dob_month'] : 0), (isset($HTTP_POST_VARS['dob_day']) ? $HTTP_POST_VARS['dob_day'] : 0), true); ?></td>
-          <tr>
-            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+            <td>&nbsp;</td>
             <td><?php echo form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")); ?></td>
           </tr>
-        </table>
-        <table class="posthead" width="100%">
           <tr>
-            <td align="center"><?php echo form_submit("submit", $lang['register']); ?></td>
+            <td colspan="2">&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="subhead" colspan="2"><?php echo $lang['profileinformationoptional']; ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['nickname']; ?>:</td>
+            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes(trim($HTTP_POST_VARS['nickname'])) : ''), 35, 32); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['firstname']; ?>:</td>
+            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['firstname']) ? _stripslashes(trim($HTTP_POST_VARS['firstname'])) : ''), 35, 32); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['lastname']; ?>:</td>
+            <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['lastname']) ? _stripslashes(trim($HTTP_POST_VARS['lastname'])) : ''), 35, 32); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['dateofbirth']; ?>:</td>
+            <td><?php echo form_dob_dropdowns((isset($HTTP_POST_VARS['dob_year']) ? $HTTP_POST_VARS['dob_year'] : 0), (isset($HTTP_POST_VARS['dob_month']) ? $HTTP_POST_VARS['dob_month'] : 0), (isset($HTTP_POST_VARS['dob_day']) ? $HTTP_POST_VARS['dob_day'] : 0), true); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead" valign="top">&nbsp;<?php echo $lang['signature']; ?>:</td>
+            <td><?php echo form_textarea("sig_content", (isset($HTTP_POST_VARS['sig_content']) ? _htmlentities(_stripslashes(trim($HTTP_POST_VARS['sig_content']))) : ''), 6, 32); ?>
+          </tr>
+         <tr>
+           <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+           <td><?php echo form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($HTTP_POST_VARS['sig_html']) && $HTTP_POST_VARS['sig_html'] == "Y")); ?></td>
+         </tr>
+          <tr>
+            <td colspan="2">&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="subhead" colspan="2"><?php echo $lang['preferencesoptional']; ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['alwaysnotifymeofrepliestome']; ?>:</td>
+            <td><?php echo form_radio("notifybyemail", "Y", $lang['yes'], (isset($HTTP_POST_VARS['notifybyemail']) && $HTTP_POST_VARS['notifybyemail'] == "Y")), "&nbsp;", form_radio("notifybyemail", "N", $lang['no'], ((isset($HTTP_POST_VARS['notifybyemail']) && $HTTP_POST_VARS['notifybyemail'] == "N") || (!isset($HTTP_POST_VARS['notifybyemail'])))); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['notifyonnewprivatemessage']; ?>:</td>
+            <td><?php echo form_radio("notifyofnewpmemail", "Y", $lang['yes'], (isset($HTTP_POST_VARS['notifyofnewpmemail']) && $HTTP_POST_VARS['notifyofnewpmemail'] == "Y")), "&nbsp;", form_radio("notifyofnewpmemail", "N", $lang['no'], ((isset($HTTP_POST_VARS['notifyofnewpmemail']) && $HTTP_POST_VARS['notifyofnewpmemail'] == "N") || (!isset($HTTP_POST_VARS['notifyofnewpmemail'])))); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['popuponnewprivatemessage']; ?>:</td>
+            <td><?php echo form_radio("notifyofnewpm", "Y", $lang['yes'], (isset($HTTP_POST_VARS['notifyofnewpm']) && $HTTP_POST_VARS['notifyofnewpm'] == "Y")), "&nbsp;", form_radio("notifyofnewpm", "N", $lang['no'], ((isset($HTTP_POST_VARS['notifyofnewpm']) && $HTTP_POST_VARS['notifyofnewpm'] == "N") || (!isset($HTTP_POST_VARS['notifyofnewpm'])))); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['automatichighinterestonpost']; ?>:</td>
+            <td><?php echo form_radio("autohighinterest", "Y", $lang['yes'], (isset($HTTP_POST_VARS['autohighinterest']) && $HTTP_POST_VARS['autohighinterest'] == "Y")), "&nbsp;", form_radio("autohighinterest", "N", $lang['no'], ((isset($HTTP_POST_VARS['autohighinterest']) && $HTTP_POST_VARS['autohighinterest'] == "N") || (!isset($HTTP_POST_VARS['autohighinterest'])))); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['daylightsaving']; ?>:</td>
+            <td><?php echo form_radio("daylightsaving", "Y", $lang['yes'], (isset($HTTP_POST_VARS['daylightsaving']) && $HTTP_POST_VARS['daylightsaving'] == "Y")), "&nbsp;", form_radio("daylightsaving", "N", $lang['no'], ((isset($HTTP_POST_VARS['daylightsaving']) && $HTTP_POST_VARS['daylightsaving'] == "N") || (!isset($HTTP_POST_VARS['daylightsaving'])))); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['timezonefromGMT']; ?></td>
+            <td><?php echo form_dropdown_array("timezone", range(-11,11), $timezones, (isset($HTTP_POST_VARS['timezone']) ? $HTTP_POST_VARS['timezone'] : 0)); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['preferredlang']; ?>:</td>
+            <td><?php echo form_dropdown_array("language", $available_langs, NULL, bh_session_get_value("LANGUAGE")); ?></td>
+          </tr>
+          <tr>
+            <td class="posthead">&nbsp;<?php echo $lang['forumstyle']; ?></td>
+            <td>
+              <?php
+
+                if (isset($HTTP_POST_VARS['forumstyle'])) {
+                    $selected_style = $HTTP_POST_VARS['forumstyle'];
+                    if (!in_array($selected_style, $available_styles)) {
+                        $selected_style = $default_style;
+                    }
+                }else {
+                  $selected_style = $default_style;
+                }
+
+                foreach ($available_styles as $key => $style) {
+                  if (strtolower($style) == strtolower($selected_style)) {
+                    break;
+                  }
+                }
+
+                reset($available_styles);
+
+                if (isset($key)) {
+                  echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]);
+                }else {
+                  echo form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]);
+                }
+
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">&nbsp;</td>
           </tr>
         </table>
       </td>
     </tr>
   </table>
+  <p><?php echo form_submit("submit", $lang['register']); ?></p>
 </form>
 </div>
-
 <?php
 
 html_draw_bottom();

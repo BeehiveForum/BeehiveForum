@@ -370,23 +370,20 @@ function search_date_range($from, $to)
 
 function folder_search_dropdown()
 {
-
-    $uid = bh_session_get_value('UID');
+    global $lang;
 
     $db_folder_search_dropdown = db_connect();
 
-    if(bh_session_get_value('STATUS') & PERM_CHECK_WORKER){
-      $sql = "select FID, TITLE from " . forum_table("FOLDER");
-    }else {
-      $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
-      $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
-      $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
-    }
+    $uid = bh_session_get_value('UID');
+
+    $sql = "select DISTINCT F.FID, F.TITLE from ".forum_table("FOLDER")." F left join ";
+    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = '$uid') ";
+    $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
 
     $result = db_query($sql, $db_folder_search_dropdown);
 
     $fids[] = 0;
-    $titles[] = "ALL";
+    $titles[] = $lang['all_caps'];
 
     while($row = db_fetch_array($result)) {
 

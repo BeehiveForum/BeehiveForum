@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.104 2004-04-29 14:02:51 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.105 2004-04-29 15:26:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -213,7 +213,7 @@ if (isset($_POST['cancel'])) {
 
     if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
 
-        $t_sig = trim($_POST['t_sig']);
+        $t_sig = trim(_stripslashes($_POST['t_sig']));
 
         if (strlen($t_sig) >= 65535) {
             $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
@@ -240,10 +240,10 @@ if (isset($_POST['cancel'])) {
     }
 }
 
-if (!isset($t_content)) $t_content = "";
+if (!isset($t_message_text)) $t_message_text = "";
 if (!isset($t_sig)) $t_sig = "";
 
-$post = new MessageText($post_html, $t_content);
+$post = new MessageText($post_html, $t_message_text);
 $sig = new MessageText($sig_html, $t_sig);
 
 if ($valid && isset($_POST['submit'])) {
@@ -692,10 +692,13 @@ echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 if ($sig->isDiff()) {
     echo "          <tr><td>\n";
     echo $tools->compare_original("t_sig", $sig->getOriginalContent());
-    echo "          </tr></td>\n";
+    echo "          </td></tr>\n";
 }
 
 echo "            </td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";

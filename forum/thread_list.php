@@ -138,8 +138,19 @@ while (list($key1, $folder) = each($folder_order)) {
 				}*/
 
 				echo "<tr><td valign=\"top\" align=\"middle\" nowrap=\"nowrap\">";
+				
+                                if ($thread['last_read'] == 0) {
+					$number = "[".$thread['length']."&nbsp;new]";
+					$latest_post = 1;
 
-				if ($thread['last_read'] < $thread['length']) {
+					if(!isset($first_thread)){
+						$first_thread = $thread['tid'];
+						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\"  />";
+					} else {
+						echo "<img src=\"./images/star.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\" />";
+					}				
+
+				} elseif ($thread['last_read'] < $thread['length']) {
 					$new_posts = $thread['length'] - $thread['last_read'];
 					$number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
 					$latest_post = $thread['last_read'] + 1;
@@ -147,17 +158,6 @@ while (list($key1, $folder) = each($folder_order)) {
 					if(!isset($first_thread)){
 						$first_thread = $thread['tid'];
 						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\" />";
-					} else {
-						echo "<img src=\"./images/star.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\" />";
-					}
-
-				} else if ($thread['last_read'] == 0) {
-					$number = "[".$thread['length']."&nbsp;new]";
-					$latest_post = 1;
-
-					if(!isset($first_thread)){
-						$first_thread = $thread['tid'];
-						echo "<img src=\"./images/ct.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\"  />";
 					} else {
 						echo "<img src=\"./images/star.png\" name=\"t".$thread['tid']."\" align=\"absmiddle\" />";
 					}
@@ -221,8 +221,3 @@ echo "</script>\n";
 html_draw_bottom();
 
 ?>
-
-
-
-
-

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.283 2004-05-15 14:43:42 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.284 2004-05-17 15:57:01 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -641,29 +641,6 @@ function messages_interest_form($tid,$pid)
     echo form_input_hidden("tid",$tid);
     echo form_submit("submit", $lang['apply']);
     echo "</p>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-}
-
-function messages_edit_thread($fid, $tid, $pid, $title)
-{
-    $lang = load_language_file();
-
-    $webtag = get_webtag($webtag_search);
-
-    echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
-
-    if (thread_is_poll($tid)) {
-        echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
-    }else {
-        echo "<p>{$lang['renamethread']}: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", $lang['apply']). "</p>\n";
-    }
-
-    echo "<p>{$lang['movethread']}: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", $lang['move']);
-
-    echo form_input_hidden("t_tid", $tid);
-    echo form_input_hidden("t_pid", $pid);
     echo "</form>\n";
     echo "</div>\n";
 }

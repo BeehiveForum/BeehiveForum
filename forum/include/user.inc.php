@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.173 2004-05-15 14:43:42 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.174 2004-05-17 15:57:01 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -134,68 +134,6 @@ function user_get_status($uid, $fid = 0)
     list($status) = db_fetch_array($result);
 
     return $status;
-}
-
-function user_update_status($uid, $status)
-{
-    $db_user_update_status = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    if (!is_numeric($uid)) return false;
-    if (!is_numeric($status)) return false;
-
-    $sql = "SELECT UID FROM USER_STATUS ";
-    $sql.= "WHERE UID = '$uid' AND FID = '{$table_data['FID']}'";
-
-    $result = db_query($sql, $db_user_update_status);
-
-    if (db_num_rows($result) > 0) {
-
-        $sql = "UPDATE USER_STATUS SET STATUS = '$status' ";
-        $sql.= "WHERE UID = '$uid' AND FID = '{$table_data['FID']}'";
-
-    }else {
-
-        $sql = "INSERT INTO USER_STATUS (UID, FID, STATUS) ";
-        $sql.= "VALUES ('$uid', '{$table_data['FID']}', '$status')";
-    }
-
-    return db_query($sql, $db_user_update_status);
-}
-
-function user_update_folders($uid, $folders_array)
-{
-    $db_user_update_folders = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    if (!is_numeric($uid)) return false;
-    if (!is_array($folders_array)) return false;
-
-    foreach ($folders_array as $folder) {
-
-        if (is_numeric($folder['allowed']) && is_numeric($folder['fid'])) {
-
-            $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_FOLDER ";
-	    $sql.= "WHERE UID = '$uid' AND FID = '{$folder['fid']}'";
-
-	    $result = db_query($sql, $db_user_update_folders);
-
-	    if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE {$table_data['PREFIX']}USER_FOLDER SET ALLOWED = '{$folder['allowed']}' ";
-                $sql.= "WHERE UID = '$uid' AND FID = '{$folder['fid']}'";
-
-	    }else {
-
-                $sql = "INSERT INTO {$table_data['PREFIX']}USER_FOLDER (UID, FID, ALLOWED) ";
-                $sql.= "VALUES ('$uid', '{$folder['fid']}', '{$folder['allowed']}')";
-	    }
-
-    	    $result = db_query($sql, $db_user_update_folders);
-    	}
-    }
 }
 
 function user_update_forums($uid, $forums_array)
@@ -624,16 +562,14 @@ function user_search($usersearch, $offset = 0)
     if (!$table_data = get_table_prefix()) return array('user_count' => 0,
                                                         'user_array' => array());
 
-    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 'VISITOR_LOG.LAST_LOGON');
+    $sort_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON');
 
     if (!is_numeric($offset)) $offset = 0;
 
     $usersearch = addslashes($usersearch);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER_STATUS.STATUS FROM USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
@@ -642,10 +578,8 @@ function user_search($usersearch, $offset = 0)
     $result = db_query($sql, $db_user_search);
     $user_search_count = db_num_rows($result);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER_STATUS.STATUS FROM USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
@@ -674,16 +608,14 @@ function user_get_all($sort_by = "VISITOR_LOG.LAST_LOGON", $sort_dir = "ASC", $o
 
     $user_get_all_array = array();
 
-    $sort_array = array('USER.UID', 'USER.LOGON', 'USER_STATUS.STATUS', 'VISITOR_LOG.LAST_LOGON');
+    $sort_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON');
 
     if (!is_numeric($offset)) $offset = 0;
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "USER_STATUS.STATUS FROM USER USER ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE NOT (USER_PREFS.ANON_LOGON <=> 1) AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
     $sql.= "ORDER BY $sort_by $sort_dir ";

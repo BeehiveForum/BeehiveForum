@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.131 2004-05-11 16:49:15 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.132 2004-05-17 15:57:02 decoyduck Exp $ */
 
 // International English language file
 
@@ -492,6 +492,7 @@ $lang['nomessagespecifiedfordel'] = "No message specified for deletion";
 $lang['postdelsuccessfully'] = "Post deleted successfully";
 $lang['errordelpost'] = "Error deleting post";
 $lang['delthismessage'] = "Delete this message";
+$lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder";
 
 // Editing things (edit.php, edit_poll.php) -----------------------------------------
 
@@ -511,6 +512,7 @@ $lang['msgsent'] = "Message sent";
 $lang['msgfail'] = "Mail system failure. Message not sent.";
 $lang['nopermissiontoedit'] = "You are not permitted to edit this message.";
 $lang['pollediterror'] = "You cannot edit polls";
+$lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
 
 // Email (email.php) ---------------------------------------------------
 
@@ -706,6 +708,8 @@ $lang['notallowedembedattachmentpost'] = "You are not allowed to embed attachmen
 $lang['notallowedembedattachmentsignature'] = "You are not allowed to embed attachments in your signature.";
 $lang['reducemessagelength'] = "Message length must be under 65,535 characters (currently: ";
 $lang['reducesiglength'] = "Signature length must be under 65,535 characters (currently: ";
+$lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
+$lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 
 // Message display (messages.php) --------------------------------------
 

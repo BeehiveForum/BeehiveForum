@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.73 2004-05-09 20:58:30 decoyduck Exp $ */
+/* $Id: delete.php,v 1.74 2004-05-17 15:56:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,10 +122,28 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     $msg = $_POST['msg'];
     list($tid, $pid) = explode(".", $msg);
 
+    if (!$t_fid = thread_get_folder($tid, $pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
     list($tid, $pid) = explode(".", $msg);
+
+    if (!$t_fid = thread_get_folder($tid, $pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
 
 }else {
 
@@ -139,6 +157,17 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 if (isset($_POST['cancel'])) {
     $uri = "./discussion.php?webtag=$webtag&msg=". $msg;
     header_redirect($uri);
+}
+
+if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT)) {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['cannotdeletepostsinthisfolder']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
 }
 
 if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {

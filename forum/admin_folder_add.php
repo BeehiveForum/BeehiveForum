@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.5 2004-05-15 14:43:40 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.6 2004-05-17 15:56:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -133,12 +133,6 @@ if (isset($_POST['submit'])) {
         $t_description = "";
     }
 
-    if (isset($_POST['t_access_level']) && is_numeric($_POST['t_access_level'])) {
-        $t_access_level = $_POST['t_access_level'];
-    }else {
-        $t_access_level = 0;
-    }
-
     if (isset($_POST['t_allowed_types']) && is_numeric($_POST['t_allowed_types'])) {
         $t_allowed_types = $_POST['t_allowed_types'];
     }else {
@@ -147,7 +141,7 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        $new_fid = folder_create($t_name, $t_access_level, $t_description, $t_allowed_types);
+        $new_fid = folder_create($t_name, $t_description, $t_allowed_types);
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);
 
         $add_success = rawurlencode(_stripslashes($t_name));
@@ -196,15 +190,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['accesslevel']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"200\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
-echo "                  <td>", form_dropdown_array("t_access_level", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['locked']), (isset($t_access_level) ? $t_access_level : 0)), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.71 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.72 2004-05-17 15:56:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -113,10 +113,28 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     list($edit_msg) = explode(' ', rawurldecode($_GET['msg']));
     list($tid, $pid) = explode('.', $edit_msg);
 
+    if (!$t_fid = thread_get_folder($tid, $pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
+
 }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
 
     list($edit_msg) = explode(' ', rawurldecode($_POST['t_msg']));
     list($tid, $pid) = explode('.', $_POST['t_msg']);
+
+    if (!$t_fid = thread_get_folder($tid, $pid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+        html_draw_bottom();
+        exit;
+    }
 
 }else {
 
@@ -139,8 +157,20 @@ if (isset($_POST['cancel'])) {
 
     $uri = "./discussion.php?webtag=$webtag&msg=$edit_msg";
     header_redirect($uri);
+}
 
-}elseif (isset($_POST['preview']) || isset($_POST['submit'])) {
+if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT)) {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
+}
+
+if (isset($_POST['preview']) || isset($_POST['submit'])) {
 
     if ($valid && strlen(trim($_POST['answers'][0])) == 0) {
         $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";

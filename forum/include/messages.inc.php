@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.179 2003-09-21 14:33:37 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.180 2003-09-21 15:02:23 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -865,7 +865,7 @@ function messages_forum_stats()
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS ON (SESSIONS.UID = USER_PREFS.UID) ";
     $sql.= "WHERE SESSIONS.UID <> 0 AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
     $sql.= "AND USER_PREFS.ANON_LOGON <> 1 ";
-    $sql.= "GROUP BY SESSIONS.UID ORDER BY SESSIONS.SESSID ";
+    $sql.= "GROUP BY SESSIONS.UID ORDER BY SESSIONS.SESSID DESC ";
     $sql.= "DESC LIMIT 0, 8";
 
     $result = db_query($sql, $db_messages_forum_stats);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.22 2004-06-19 11:30:33 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.23 2004-08-17 11:21:28 rowan_hill Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -145,7 +145,7 @@ if (isset($_POST['submit'])) {
         }
 
 	if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
-	    $new_name = trim(_stripslashes($_POST['t_name_new']));
+	    $new_name = _htmlentities(trim($_POST['t_name_new']));
 	}else {
 	    $new_name = "";
 	}
@@ -262,7 +262,7 @@ if (sizeof($forums_array) > 0) {
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum['WEBTAG']}\" target=\"_blank\">{$forum['WEBTAG']}</a></td>\n";
-        echo "                  <td align=\"left\">{$forum['FORUM_NAME']}</td>\n";
+        echo "                  <td align=\"left\">"._stripslashes($forum['FORUM_NAME'])."</td>\n";
         echo "                  <td align=\"left\">{$forum['MESSAGES']} Messages</td>\n";
         echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwd']), $forum['ACCESS_LEVEL']), "</td>\n";
 

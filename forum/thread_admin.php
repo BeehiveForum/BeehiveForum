@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.29 2004-02-05 21:14:20 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.30 2004-02-05 22:10:32 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -150,10 +150,12 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
     }
 }
 
-if (isset($HTTP_GET_VARS['ret'])) {
-    header_redirect($HTTP_GET_VARS['ret']);
-}else {
-    header_redirect("./messages.php");
+$uri = "./messages.php";
+
+if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+    $uri.= "?msg=". $HTTP_GET_VARS['msg'];
 }
+
+header_redirect($uri);
 
 ?>

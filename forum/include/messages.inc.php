@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.221 2004-02-05 21:14:19 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.222 2004-02-05 22:10:32 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -647,7 +647,7 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     global $HTTP_SERVER_VARS, $lang;
 
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?msg=$tid.$pid\" method=\"post\">\n";
 
     if (thread_is_poll($tid)) {
         echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";
@@ -702,7 +702,7 @@ function messages_edit_thread($fid, $tid, $pid, $title)
     global $HTTP_SERVER_VARS, $lang;
     
     echo "<div align=\"center\" class=\"messagefoot\">\n";
-    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?ret=", get_request_uri(), "\" method=\"post\">\n";
+    echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?msg=$tid.$pid\" method=\"post\">\n";
 
     if (thread_is_poll($tid)) {
         echo "<p>{$lang['renamethread']}: <a href=\"edit_poll.php?msg=$tid.$pid\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</p>\n";

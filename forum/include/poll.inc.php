@@ -157,8 +157,8 @@ function poll_user_has_voted($tid)
 
     $sql = "SELECT POLL_VOTES.OPTION_ID FROM ". forum_table('POLL_VOTES'). " POLL_VOTES ";
     $sql.= "LEFT JOIN ". forum_table('USER_POLL_VOTES'). " USER_POLL_VOTES ON ";
-    $sql.= "(POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID AND POLL_VOTES.TID = USER_POLL_VOTES.TID) ";
-    $sql.= "WHERE POLL_VOTES.VOTES > 0 AND POLL_VOTES.TID = $tid AND USER_POLL_VOTES.UID = $uid"; 
+    $sql.= "(POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID) ";
+    $sql.= "WHERE POLL_VOTES.VOTES > 0 AND POLL_VOTES.TID = $tid AND USER_POLL_VOTES.PTUID = MD5($tid.$uid)"; 
     
     $result = db_query($sql, $db_poll_get_votes);
     
@@ -183,7 +183,7 @@ function poll_get_user_vote($tid)
 
     $db_poll_get_user_vote = db_connect();
 
-    $sql = "select OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from ". forum_table('USER_POLL_VOTES'). " where UID = $uid and TID = $tid";
+    $sql = "select OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP from ". forum_table('USER_POLL_VOTES'). " where PTUID = MD5($tid.$uid)";
     $result = db_query($sql, $db_poll_get_user_vote);
     $userpolldata = db_fetch_array($result);
 
@@ -652,11 +652,12 @@ function poll_vote($tid, $vote)
     $db_poll_vote = db_connect();
 
     $userpolldata = poll_get_user_vote($tid);
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
     if ((!isset($userpolldata['OPTION_ID'])) && ($HTTP_COOKIE_VARS['bh_sess_uid'] > 0)) {
 
-      $sql = "insert into ". forum_table("USER_POLL_VOTES"). " (TID, UID, OPTION_ID, TSTAMP) ";
-      $sql.= "values ($tid, ". $HTTP_COOKIE_VARS['bh_sess_uid']. ", '". $vote. "', FROM_UNIXTIME(". mktime(). "))";
+      $sql = "insert into ". forum_table("USER_POLL_VOTES"). " (TID, PTUID, OPTION_ID, TSTAMP) ";
+      $sql.= "values ($tid, MD5($tid.$uid), $vote, FROM_UNIXTIME(". mktime(). "))";
       $result = db_query($sql, $db_poll_vote);
 
     }
@@ -673,7 +674,9 @@ function poll_delete_vote($tid)
 
     $db_poll_delete_vote = db_connect();
 
-    $sql = "select OPTION_ID from ". forum_table("USER_POLL_VOTES"). " where TID = $tid and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+
+    $sql = "select OPTION_ID from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)"; 
     $result = db_query($sql, $db_poll_delete_vote);
 
     if (db_num_rows($result) > 0) {
@@ -683,7 +686,7 @@ function poll_delete_vote($tid)
       $sql = "update ". forum_table("POLL_VOTES"). " set VOTES = VOTES - 1 where OPTION_ID = ". $userpollvote['OPTION_ID']. " and TID = $tid";
       $result = db_query($sql, $db_poll_delete_vote);
 
-      $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where TID = $tid and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+      $sql = "delete from ". forum_table("USER_POLL_VOTES"). " where PTUID = MD5($tid.$uid)"; 
       $result = db_query($sql, $db_poll_delete_vote);
 
     }

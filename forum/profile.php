@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.php,v 1.24 2003-10-23 19:16:45 uid81631 Exp $ */
+/* $Id: profile.php,v 1.25 2003-10-23 19:21:18 uid81631 Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -122,13 +122,13 @@ if ($profile_values = profile_get_user_values($uid)) {
                 echo form_dropdown_array("t_entry[$i]", array_keys($field_values), $field_values, $profile_values[$i]['ENTRY']);
             }
 
-            //echo form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), "&nbsp;&nbsp;</td>\n";
+            echo "&nbsp;&nbsp;</td>\n";
 
         }elseif ($profile_values[$i]['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" width=\"200\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
-            echo "                  <td valign=\"top\">", form_textarea("t_entry[$i]", $profile_values[$i]['ENTRY'], 4, 57), /* form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), */ "&nbsp;&nbsp;</td>\n";
+            echo "                  <td valign=\"top\">", form_textarea("t_entry[$i]", $profile_values[$i]['ENTRY'], 4, 57), "&nbsp;&nbsp;</td>\n";
             echo "                </tr>\n";
 
         }else {
@@ -137,7 +137,7 @@ if ($profile_values = profile_get_user_values($uid)) {
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" width=\"200\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":</td>\n";
-            echo "                  <td valign=\"top\">", form_field("t_entry[$i]", $profile_values[$i]['ENTRY'], $text_width[$profile_values[$i]['TYPE']], 255), /* form_input_hidden("t_old_entry[$i]", $profile_values[$i]['ENTRY']), form_input_hidden("t_new[$i]", $new), */ "&nbsp;&nbsp;</td>\n";
+            echo "                  <td valign=\"top\">", form_field("t_entry[$i]", $profile_values[$i]['ENTRY'], $text_width[$profile_values[$i]['TYPE']], 255), "&nbsp;&nbsp;</td>\n";
             echo "                </tr>\n";
 
         }

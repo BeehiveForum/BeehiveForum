@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.13 2005-02-02 23:19:48 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.14 2005-02-25 13:41:42 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -44,7 +44,7 @@ class dictionary {
         $this->ignored_words_array = array();
         $this->suggestions_array = array();
 
-        preg_match_all("/([\w]+)|(.)/i", $content, $content_array);
+        preg_match_all("/([\w']+)|(.)/i", $content, $content_array);
         $this->content_array = $content_array[0];
 
         $this->ignored_words_array = explode(" ", $ignored_words);

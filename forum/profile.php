@@ -138,7 +138,7 @@ for($i=0;$i<$result_count;$i++){
 
     if($row['PSID'] != $last_psid){
         if($last_psid > -1){
-            echo "          <tr>\n            <td colspan=\"2\">&nbsp;</td>\n          </tr>\n";
+            echo "          <tr>\n            <td colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n          </tr>\n";
         }
         echo "          <tr>\n            <td class=\"subhead\" colspan=\"2\">". $row['SECTION_NAME']. "</td>\n          </tr>\n";
         $last_psid = $row['PSID'];
@@ -146,13 +146,13 @@ for($i=0;$i<$result_count;$i++){
 
 
     echo "          <tr>\n            <td>".$row['ITEM_NAME'].form_input_hidden("t_piid_$i",$row['PIID'])."</td>\n";
-    echo "            <td nowrap=\"nowrap\" align=\"right\">:&nbsp;". form_field("t_entry_$i",$row['ENTRY'], 60, 255);
+    echo "            <td nowrap=\"nowrap\" align=\"right\">:<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_field("t_entry_$i",$row['ENTRY'], 60, 255);
     echo form_input_hidden("t_old_entry_$i", $row['ENTRY']);
-    echo form_input_hidden("t_new_$i", $new)."<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo></td>\n          </tr>\n";
+    echo form_input_hidden("t_new_$i", $new)."<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n          </tr>\n";
 }
 
 
-echo "          <tr>\n            <td colspan=\"2\">&nbsp;</td>\n          </tr>\n";
+echo "          <tr>\n            <td colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n          </tr>\n";
 echo "          <tr>\n            <td colspan=\"2\" align=\"right\">";
 echo form_input_hidden("t_count", $result_count);
 echo form_submit("submit", $lang['submit']);

@@ -139,7 +139,7 @@ echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
         <td width="370">: <?php echo $lang['globallyignoredsig_exp']; ?></td>
       </tr>
     </table>
-    <p><?php echo form_submit("submit", $lang['submit'])."&nbsp;".form_submit("cancel", $lang['cancel']); ?></p>
+    <p><?php echo form_submit("submit", $lang['submit'])."<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("cancel", $lang['cancel']); ?></p>
   </form>
 </div>
 <?php html_draw_bottom(); ?>

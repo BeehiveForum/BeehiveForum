@@ -260,7 +260,7 @@ echo "<h1>{$lang['userregistration']}</h1>\n";
 if (isset($error_html)) echo $error_html;
 
 ?>
-<p>&nbsp;</p>
+<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>
 <div align="center">
 <form name="register" action="<?php echo $HTTP_SERVER_VARS['PHP_SELF']; ?>" method="POST">
   <table class="box" cellpadding="0" cellspacing="0" align="center">
@@ -273,27 +273,27 @@ if (isset($error_html)) echo $error_html;
         </table>
         <table class="posthead" width="100%">
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['username']; ?>&nbsp;</td>
+            <td align="right" class="posthead"><?php echo $lang['username']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
             <td><?php echo form_field("logon", (isset($HTTP_POST_VARS['logon']) ? _stripslashes(trim($HTTP_POST_VARS['logon'])) : ''), 32, 32); ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['passwd']; ?>&nbsp;</td>
+            <td align="right" class="posthead"><?php echo $lang['passwd']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
             <td><?php echo form_field("pw", (isset($HTTP_POST_VARS['pw']) ? _stripslashes(trim($HTTP_POST_VARS['pw'])) : ''), 32, 32,"password"); ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['confirm']; ?>&nbsp;</td>
+            <td align="right" class="posthead"><?php echo $lang['confirm']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
             <td><?php echo form_field("cpw", (isset($HTTP_POST_VARS['cpw']) ? _stripslashes(trim($HTTP_POST_VARS['cpw'])) : ''), 32, 32,"password"); ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['nickname']; ?>&nbsp;</td>
+            <td align="right" class="posthead"><?php echo $lang['nickname']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
             <td><?php echo form_field("nickname", (isset($HTTP_POST_VARS['nickname']) ? _stripslashes(trim($HTTP_POST_VARS['nickname'])) : ''), 32, 32); ?></td>
           </tr>
           <tr>
-            <td align="right" class="posthead"><?php echo $lang['email']; ?>&nbsp;</td>
+            <td align="right" class="posthead"><?php echo $lang['email']; ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
             <td><?php echo form_field("email", (isset($HTTP_POST_VARS['email']) ? _stripslashes(trim($HTTP_POST_VARS['email'])) : ''), 32, 80); ?></td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
             <td><?php echo form_checkbox("remember_user", "Y", $lang['rememberpasswd'], (isset($HTTP_POST_VARS['remember_user']) && $HTTP_POST_VARS['remember_user'] == "Y")); ?></td>
           </tr>
         </table>

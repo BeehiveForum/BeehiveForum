@@ -130,7 +130,7 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
     echo "</script>";
 
     // If they're still here, Javascript's not working. Give up, give a link.
-    echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
+    echo "<div align=\"center\"><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>";
     echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
     if (isset($final_uri)) {
@@ -269,7 +269,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
           echo "</script>";
 
           // If they're still here, Javascript's not working. Give up, give a link.
-          echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
+          echo "<div align=\"center\"><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p><p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>";
           echo "<p>{$lang['loggedinsuccessfully']}</p>";
 
           if (isset($final_uri)) {
@@ -338,7 +338,7 @@ if (isset($HTTP_GET_VARS['other'])) {
   $otherlogon = false;
 }
 
-echo "<p>&nbsp;</p>\n";
+echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
 echo "    <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -397,7 +397,7 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
     $request_uri.= "?other=true";
   }
 
-  echo "&nbsp;", form_button("other", "Other", "onclick=\"self.location.href='". $request_uri. "';\""), "</td>\n";
+  echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_button("other", "Other", "onclick=\"self.location.href='". $request_uri. "';\""), "</td>\n";
 
   echo "          </tr>\n";
   echo "          <tr>\n";
@@ -461,7 +461,7 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 }
 
 echo "            <tr>\n";
-echo "              <td>&nbsp;</td>\n";
+echo "              <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "              <td>";
 
 echo form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && $password_array[0] != str_repeat(chr(255), 4)) && strlen($password_array[0]) > 0 && $otherlogon == false);

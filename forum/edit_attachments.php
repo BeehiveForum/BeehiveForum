@@ -104,9 +104,9 @@ if (isset($HTTP_POST_VARS['submit'])) {
 <h1><?php echo $lang['attachments']; ?></h1>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
-    <td width="300" class="postbody">&nbsp;</td>
-    <td width="200" class="postbody">&nbsp;</td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="300" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="200" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
 <?php
 
@@ -163,13 +163,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     echo "  <tr>\n";
     echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">({$lang['none']})</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
     echo "  </tr>\n";
 
   }
@@ -182,12 +182,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
   <tr>
     <td valign="top" width="300" class="postbody"><?php echo $lang['totalsize']; ?>:</td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size($total_attachment_size); ?></td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
     <td valign="top" width="300" class="postbody"><?php echo $lang['freespace']; ?>:</td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space($uid)); ?></td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
     <td width="500" colspan="3"><hr width="500"/></td>

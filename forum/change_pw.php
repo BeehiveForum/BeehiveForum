@@ -53,7 +53,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 html_draw_top();
 
                 echo "<h1>{$lang['passwdchanged']}</h1>";
-                echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+                echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
                 echo "<p>{$lang['passwdchangedexp']}</p>\n";
                 echo "<p><a href=\"logon.php\">{$lang['gotologin']}</a></p></div>";
 
@@ -74,7 +74,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 } else if(!isset($HTTP_GET_VARS['u']) || !isset($HTTP_GET_VARS['h'])){
     html_draw_top();
     echo "<h1>{$lang['invalidaccess']}</h1>\n";
-    echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
     echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
     html_draw_bottom();
     exit;
@@ -89,7 +89,7 @@ $result = db_query($sql,$conn);
 if(!$fa = db_fetch_array($result)){
     html_draw_top();
     echo "<h1>{$lang['invalidaccess']}</h1>\n";
-    echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
     echo "<h2>{$lang['requiredinformationnotfound']}</h2></div>\n";
     html_draw_bottom();
     exit;
@@ -103,7 +103,7 @@ echo "<h1>{$lang['forgotpasswd']}</h1>";
 
 if (isset($error_html)) echo $error_html;
 
-echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
 echo "<p class=\"smalltext\">{$lang['enternewpasswdforuser']} $logon</p>\n";
 echo "<form name=\"forgot_pw\" action=\"". $HTTP_SERVER_VARS['PHP_SELF'] ."\" method=\"POST\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";

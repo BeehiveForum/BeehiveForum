@@ -180,9 +180,9 @@ echo "<form name=\"f_delete\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" m
 echo form_input_hidden("t_msg",$delete_msg);
 echo form_input_hidden("t_back",$back);
 echo form_submit("submit",$lang['delete']);
-echo "&nbsp;".form_submit("cancel",$lang['cancel']);
+echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit("cancel",$lang['cancel']);
 echo "</form>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 
 html_draw_bottom();
 

@@ -97,7 +97,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 
 // Draw the form
 echo "<h1>{$lang['manageprofilesections']}</h1>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\">\n";
 echo "  <tr>\n";
@@ -107,8 +107,8 @@ echo "        <table class=\"posthead\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"subhead\" align=\"left\">{$lang['id']}</td>\n";
 echo "            <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
-echo "            <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
+echo "            <td class=\"subhead\" align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td class=\"subhead\" align=\"left\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 
 $sql = "select PROFILE_SECTION.PSID, PROFILE_SECTION.NAME ";
@@ -138,7 +138,7 @@ for($i = 0; $i < $result_count; $i++){
 
     }else{
 
-      echo "&nbsp;";
+      echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>";
 
     }
 
@@ -150,10 +150,10 @@ for($i = 0; $i < $result_count; $i++){
 echo "          <tr>\n";
 echo "            <td align=\"left\">NEW</td>\n";
 echo "            <td align=\"left\">", form_field("t_name_new",$lang['newsection'],64,64), "</td>\n";
-echo "            <td align=\"center\" colspan=\"2\">&nbsp;</td>\n";
+echo "            <td align=\"center\" colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td colspan=\"4\">&nbsp;</td>\n";
+echo "            <td colspan=\"4\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td colspan=\"4\" align=\"right\">", form_input_hidden("t_count",$result_count), form_submit(), "</td>\n";

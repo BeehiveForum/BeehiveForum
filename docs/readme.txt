@@ -73,10 +73,10 @@ Look in the forum/include folder, and open the file called "config.inc.php".
 In here are some variables you need to set so that Beehive Forum can find your
 database:
 
-$db_server   = "localhost";	// the address of your MySQL server
-$db_username = "user";	// your MySQL username
-$db_password = "password";	// your MySQL password
-$db_database = "beehivedbs";	// the name of your MySQL database
+$db_server   = "localhost";     // the address of your MySQL server
+$db_username = "user";  // your MySQL username
+$db_password = "password";      // your MySQL password
+$db_database = "beehivedbs";    // the name of your MySQL database
 
 You need to change those values in quotes to the correct details for your MySQL
 setup. You should be able to get the information from your hosting provider if
@@ -299,7 +299,7 @@ system.
 
 4.1 Coding
 ==========
-Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Ben Sekulowicz
+Matt Beale / Andy Black / Chris Hodcroft / Mark Rendle / Michael Franklin / Ben Sekulowicz
 
 
 4.2 Design/CSS

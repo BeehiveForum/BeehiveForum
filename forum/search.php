@@ -146,13 +146,13 @@ if (isset($searchsql)) {
   echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
   echo "  <tr>\n";
   echo "    <td class=\"postbody\" colspan=\"2\">\n";
-  echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
-  echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
-  echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php\" target=\"right\">{$lang['search']}</a><br />\n";
+  echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"post.php\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
+  echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"create_poll.php\" target=\"main\">{$lang['createpoll']}</a><br />\n";
+  echo "      <img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"search.php\" target=\"right\">{$lang['search']}</a><br />\n";
   echo "    </td>\n";
   echo "  </tr>\n";
   echo "  <tr>\n";
-  echo "    <td colspan=\"2\">&nbsp;</td>\n";
+  echo "    <td colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
   echo "  </tr>\n";
   echo "  <tr>\n";
   echo "    <td colspan=\"2\">\n";
@@ -194,10 +194,10 @@ if (isset($searchsql)) {
   $result  = db_query($sql, $db);
   $numrows = db_num_rows($result);
 
-  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: ", $numrows, " {$lang['matches']}<br />\n";
+  echo "<img src=\"".style_image('search.png')."\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>{$lang['found']}: ", $numrows, " {$lang['matches']}<br />\n";
 
   if ($sstart >= 50) {
-      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" /><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"search.php?sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
   }
 
   echo "<ol start=\"", $sstart + 1, "\">\n";
@@ -247,14 +247,14 @@ if (isset($searchsql)) {
 
     echo "  <li><p><a href=\"messages.php?msg=", $row['TID'], ".", $row['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />";
     if (strlen($message['CONTENT']) > 0) echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
-    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></a></p></li>\n";
+    echo "<span class=\"smalltext\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>-<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></a></p></li>\n";
 
   }
 
   echo "</ol>\n";
 
   if ($numrows == 50) {
-      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
+      echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><a href=\"search.php?sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
   }
 
   html_draw_bottom();
@@ -271,15 +271,15 @@ if (isset($searchsql)) {
     <td class="postbody" colspan="2"><?php echo $lang['searchdiscussions']; ?>...</td>
   </tr>
   <tr>
-    <td>&nbsp;</td>
-    <td><?php echo form_dropdown_array("method", range(1,3), array($lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 1). "&nbsp;". form_input_text("search_string", "", 20). "&nbsp;". form_submit("submit", $lang['find']); ?></td>
+    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td><?php echo form_dropdown_array("method", range(1,3), array($lang['containingallwords'], $lang['containinganywords'], $lang['containingexactphrase']), 1). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_input_text("search_string", "", 20). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("submit", $lang['find']); ?></td>
   </tr>
   <tr>
-    <td>&nbsp;</td>
+    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
     <td class="postbody"><?php echo $lang['wordsshorterthan_1']." ".(isset($search_min_word_length) ? $search_min_word_length : "3")." {$lang['wordsshorterthan_2']}"; ?>.</td>
   </tr>
   <tr>
-    <td class="postbody" colspan="2">&nbsp;</td>
+    <td class="postbody" colspan="2"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
     <td class="postbody" colspan="2"><?php echo $lang['additionalcriteria']; ?></td>
@@ -309,11 +309,11 @@ if (isset($searchsql)) {
     <td><?php echo form_dropdown_array("order_by", range(1, 3), array($lang['relevance'], $lang['newestfirst'], $lang['oldestfirst']), 1); ?></td>
   </tr>
   <tr>
-    <td>&nbsp;</td>
+    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
     <td><?php echo form_checkbox("me_only", "Y", $lang['onlyshowmessagestoorfromme'], false); ?></td>
   </tr>
   <tr>
-    <td>&nbsp;</td>
+    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
     <td><?php echo form_submit("submit", $lang['find']); ?></td>
   </tr>
 </table>

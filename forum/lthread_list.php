@@ -292,13 +292,13 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                     if ($thread['last_read'] == 0) {
 
-                        $number = "[".$thread['length']."&nbsp;new]";
+                        $number = "[".$thread['length']."<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>new]";
                         $latest_post = 1;
 
                     }elseif ($thread['last_read'] < $thread['length']) {
 
                         $new_posts = $thread['length'] - $thread['last_read'];
-                        $number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
+                        $number = "[".$new_posts."<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>new<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>of<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".$thread['length']."]";
                         $latest_post = $thread['last_read'] + 1;
 
                     } else {
@@ -393,7 +393,7 @@ echo "<tr>\n";
 echo "  <td class=\"smalltext\" colspan=\"2\">Navigate:</td>\n";
 echo "</tr>\n";
 echo "<tr>\n";
-echo "  <td>&nbsp;</td>\n";
+echo "  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "  <td class=\"smalltext\">\n";
 echo "    <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
 echo form_input_text('msg', '1.1', 10). "\n        ";

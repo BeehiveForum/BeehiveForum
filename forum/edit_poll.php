@@ -326,7 +326,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    </td>";
   $polldata['CONTENT'].= "  </tr>\n";
   $polldata['CONTENT'].= "</table>\n";
-  $polldata['CONTENT'].= "<p>&nbsp;</p>\n";
+  $polldata['CONTENT'].= "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 
   if (bh_session_get_value('UID') != $polldata['FROM_UID'] && !perm_is_moderator()) {
     edit_refuse($tid, $pid);
@@ -351,7 +351,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
       <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid), 30, 64); ?></td>
     </tr>
     <tr>
-      <td>&nbsp;</td>
+      <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
     </tr>
   </table>
   <table class="box" cellpadding="0" cellspacing="0" width="500">
@@ -389,7 +389,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
 
                 ?>
                 <tr>
-                  <td>&nbsp;</td>
+                  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
                   <td><?php echo $lang['numberanswers'] ?>: <?php echo form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), $answerselection), " ", form_submit("changecount", $lang['change'])  ?></td>
                 </tr>
                 <?php
@@ -431,14 +431,14 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
 
                 ?>
                 <tr>
-                  <td>&nbsp;</td>
+                  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
                   <td><?php echo form_checkbox("t_post_html", "Y", $lang['answerscontainHTML'], $t_post_html); ?></td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['votechanging'] ?></h2></td>
@@ -458,7 +458,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             </td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['pollresults'] ?></h2></td>
@@ -477,7 +477,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             </td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['expiration'] ?></h2></td>
@@ -496,7 +496,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             </td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td><?php echo $lang['changewhenpollcloses']; ?></td>
@@ -505,7 +505,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td><?php echo form_dropdown_array('closepoll', range(0, 5), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($HTTP_POST_VARS['closepoll']) ? $HTTP_POST_VARS['closepoll'] : 5); ?></td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
         </table>
       </td>
@@ -513,10 +513,10 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
   </table>
 <?php
 
-  echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
+  echo form_submit("submit", $lang['apply']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("preview", $lang['preview']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("cancel", $lang['cancel']);
 
   if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"window.open('edit_attachments.php?aid=". $aid. "', 'edit_attachments', 'width=640, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
   }
 
   echo "</form>\n";

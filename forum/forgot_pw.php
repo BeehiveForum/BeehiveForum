@@ -68,7 +68,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                 html_draw_top();
 
                 echo "<h1>{$lang['passwdresetemailsent']}</h1>";
-                echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+                echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
                 echo "<p class=\"smalltext\">{$lang['passwdresetexp_1']}<br />\n";
                 echo "{$lang['passwdresetexp_2']}</p>\n";
 
@@ -89,7 +89,7 @@ echo "<h1>{$lang['forgotpasswd']}</h1>";
 
 if (isset($error_html)) echo $error_html;
 
-echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
+echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n<div align=\"center\">\n";
 echo "<p class=\"smalltext\">{$lang['forgotpasswdexp_1']}<br />\n";
 echo "{$lang['forgotpasswdexp_2']}<br />\n";
 echo "{$lang['forgotpasswdexp_3']}<br />\n";

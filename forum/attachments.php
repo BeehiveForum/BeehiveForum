@@ -136,28 +136,28 @@ if (isset($HTTP_POST_VARS['submit'])) {
     <td class="postbody"><?php echo form_field('userfile', '', 45, 0, 'file'); ?></td>
   </tr>
   <tr>
-    <td class="postbody">&nbsp;</td>
-    <td class="postbody">&nbsp;</td>
+    <td class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
-    <td class="postbody">2. <?php echo $lang['nowpress'], "&nbsp;", form_submit('submit', $lang['upload'], "onclick=\"this.value='{$lang["waitdotdot"]}'\""); ?></td>
-    <td class="postbody">&nbsp;</td>
+    <td class="postbody">2. <?php echo $lang['nowpress'], "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>", form_submit('submit', $lang['upload'], "onclick=\"this.value='{$lang["waitdotdot"]}'\""); ?></td>
+    <td class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
-    <td class="postbody">&nbsp;</td>
-    <td class="postbody">&nbsp;</td>
+    <td class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
-    <td class="postbody" colspan="2">3. <?php echo $lang['ifdoneattachingfiles']."&nbsp;".form_submit('submit', $lang['complete']); ?></td>
+    <td class="postbody" colspan="2">3. <?php echo $lang['ifdoneattachingfiles']."<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_submit('submit', $lang['complete']); ?></td>
   </tr>
 </table>
 </form>
 <h1><?php echo $lang['attachmentsforthismessage']; ?></h1>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
-    <td width="300" class="postbody">&nbsp;</td>
-    <td width="200" class="postbody">&nbsp;</td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="300" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="200" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
 <?php
 
@@ -211,13 +211,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     echo "  <tr>\n";
     echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">({$lang['none']})</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
     echo "  </tr>\n";
 
   }
@@ -225,27 +225,27 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 ?>
   <tr>
-    <td width="300" class="postbody">&nbsp;</td>
+    <td width="300" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
     <td width="200" class="postbody"><hr /></td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
-    <td valign="top" width="300" class="postbody">&nbsp;</td>
+    <td valign="top" width="300" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size($total_attachment_size); ?></td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
-    <td width="300" class="postbody">&nbsp;</td>
-    <td width="200" class="postbody">&nbsp;</td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="300" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="200" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
 </table>
 <h1><?php echo $lang['allattachmentsexcludingcurrent']; ?></h1>
 <table border="0" cellpadding="0" cellspacing="0" width="600">
   <tr>
-    <td width="300" class="postbody">&nbsp;</td>
-    <td width="200" class="postbody">&nbsp;</td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="300" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="200" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
 <?php
 
@@ -300,13 +300,13 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     echo "  <tr>\n";
     echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">({$lang['none']})</td>\n";
-    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td width=\"300\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
-    echo "    <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td width=\"300\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td width=\"200\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+    echo "    <td width=\"100\" class=\"postbody\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
     echo "  </tr>\n";
 
   }
@@ -319,12 +319,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
   <tr>
     <td valign="top" width="300" class="postbody"><?php echo $lang['totalsize']; ?>:</td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size($total_attachment_size); ?></td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
   <tr>
     <td valign="top" width="300" class="postbody"><?php echo $lang['freespace']; ?>:</td>
     <td align="right" valign="top" width="200" class="postbody"><?php echo format_file_size(get_free_attachment_space(bh_session_get_value('UID'))); ?></td>
-    <td width="100" class="postbody">&nbsp;</td>
+    <td width="100" class="postbody"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
   </tr>
 </table>
 <?php

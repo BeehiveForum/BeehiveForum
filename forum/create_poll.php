@@ -384,10 +384,10 @@ if (isset($HTTP_GET_VARS['fid'])) {
       <td><h2><?php echo $lang['pollquestion']; ?></h2></td>
     </tr>
     <tr>
-      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : '', 30, 64); ?>&nbsp;<?php echo form_submit("submit", $lang['post']); ?></td>
+      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : '', 30, 64); ?><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo><?php echo form_submit("submit", $lang['post']); ?></td>
     </tr>
     <tr>
-      <td>&nbsp;</td>
+      <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
     </tr>
   </table>
   <table class="box" cellpadding="0" cellspacing="0" width="500">
@@ -401,18 +401,18 @@ if (isset($HTTP_GET_VARS['fid'])) {
             <td><?php echo $lang['enterpollquestionexp']; ?></td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td>
               <table class="posthead" cellpadding="0" cellspacing="0" width="500">
                 <tr>
-                  <td>&nbsp;</td>
+                  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
                   <td><?php echo $lang['numberanswers'].": ".form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), isset($HTTP_POST_VARS['answercount']) ? $HTTP_POST_VARS['answercount'] : 0), " ", form_submit("changecount", $lang['change'])  ?></td>
                 </tr>
                 <tr>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
+                  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
+                  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
                 </tr>
                 <?php
 
@@ -435,14 +435,14 @@ if (isset($HTTP_GET_VARS['fid'])) {
 
                 ?>
                 <tr>
-                  <td>&nbsp;</td>
+                  <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
                   <td><?php echo form_checkbox("t_post_html", "Y", $lang['answerscontainHTML'], (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['votechanging']; ?></h2></td>
@@ -462,7 +462,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
             </td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['pollresults']; ?></h2></td>
@@ -481,7 +481,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
             </td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td><h2><?php echo $lang['expiration']; ?></h2></td>
@@ -500,7 +500,7 @@ if (isset($HTTP_GET_VARS['fid'])) {
             </td>
           </tr>
           <tr>
-            <td>&nbsp;</td>
+            <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>
           </tr>
           <tr>
             <td><?php echo $lang['whenlikepollclose']; ?></td>
@@ -532,11 +532,11 @@ if (isset($HTTP_GET_VARS['fid'])) {
   </table>
 <?php
 
-    echo form_submit("submit", $lang['post']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
+    echo form_submit("submit", $lang['post']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("preview", $lang['preview']). "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>". form_submit("cancel", $lang['cancel']);
 
     if ($attachments_enabled) {
 
-      echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+      echo "<bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
       echo form_input_hidden("aid", $aid);
 
     }

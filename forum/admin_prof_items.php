@@ -111,7 +111,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
 
 // Draw the form
 echo "<h1>{$lang['manageprofileitems']}<br />{$lang['section']}: ".profile_section_get_name($psid)."</h1>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\">\n";
 echo "  <tr>\n";
@@ -151,11 +151,11 @@ for($i=0;$i<$result_count;$i++){
 echo "          <tr>\n";
 echo "            <td align=\"left\">{$lang['new_caps']}</td>\n";
 echo "            <td align=\"left\">", form_field("t_name_new",$lang['newitem'],64,64), "</td>";
-echo "            <td align=\"center\">&nbsp;</td>\n";
-echo "            <td align=\"center\">&nbsp;</td>\n";
+echo "            <td align=\"center\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
+echo "            <td align=\"center\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td colspan=\"4\">&nbsp;</td>\n";
+echo "            <td colspan=\"4\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td colspan=\"4\" align=\"right\">", form_input_hidden("t_psid",$psid), form_input_hidden("t_count",$result_count), form_submit(), "</td>\n";

@@ -91,7 +91,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         html_draw_top($lang['emailresult']);
 
-        echo "<p>&nbsp;</p>\n";
+        echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
         echo "<div align=\"center\">\n";
 
         if (@mail($to_user['EMAIL'],$subject,$message,$from)) {
@@ -125,7 +125,7 @@ echo "<tr><td class=\"subhead\">{$lang['subject']}:</td>\n";
 echo "<td class=\"posthead\">".form_field("t_subject",$subject,32,128)."</td></tr>\n";
 echo "<tr><td class=\"subhead\" valign=\"top\">{$lang['message']}:</td>\n";
 echo "<td class=\"posthead\">".form_textarea("t_message",$message,8,32)."</td></tr>\n";
-echo "<tr><td class=\"subhead\">&nbsp;</td>\n";
+echo "<tr><td class=\"subhead\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
 echo "<td class=\"posthead\" align=\"right\">\n";
 echo form_field("t_to_uid",$to_uid,0,0,"hidden");
 echo form_submit("submit",$lang['send'])."\n";

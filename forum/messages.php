@@ -244,7 +244,7 @@ if($last_pid < $threaddata['LENGTH']){
     echo form_quick_button($HTTP_SERVER_VARS['PHP_SELF'], "{$lang['keepreading']} >>", "msg", "$tid.$npid");
     echo "</td></tr></table>\n";
 }else {
-    echo "<p>&nbsp;</p>\n";
+    echo "<p><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></p>\n";
 }
 
 messages_start_panel();

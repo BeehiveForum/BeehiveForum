@@ -118,6 +118,28 @@ function folder_get_available()
     return $return;
 }
 
+function folder_get_all()
+{
+
+    $return = array();
+
+    $db_folder_get_all = db_connect();
+
+    $sql = "select FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL, count(*) as THREAD_COUNT ";
+    $sql.= "from " . forum_table("FOLDER") . " FOLDER LEFT JOIN " . forum_table("THREAD") . " THREAD ";
+    $sql.= " on (THREAD.FID = FOLDER.FID) ";
+    $sql.= "group by FOLDER.FID, FOLDER.TITLE, FOLDER.ACCESS_LEVEL";
+
+    $result = db_query($sql, $db_folder_get_all);
+
+    while ($row = db_fetch_array($result)) {
+      $return[] = $row;
+    }
+
+    return $return;
+
+}
+
 function user_set_folder_interest($fid, $interest)
 {
     global $HTTP_COOKIE_VARS;
@@ -131,7 +153,7 @@ function user_set_folder_interest($fid, $interest)
     if ($interest == -1) {
         $sql = "insert into ". forum_table("USER_FOLDER"). " (UID, FID, INTEREST) ";
         $sql.= "values ($uid, $fid, $interest)";
-	$result = db_query($sql, $db_user_set_folder_interest);
+        $result = db_query($sql, $db_user_set_folder_interest);
     }
 
 }

@@ -53,71 +53,174 @@ if(!($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER)){
     exit;
 }
 
+// Column sorting stuff
+
+if (isset($HTTP_GET_VARS['sort_by'])) {
+    if ($HTTP_GET_VARS['sort_by'] == "UID") {
+        $sort_by = "UID";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "LOGON") {
+        $sort_by = "LOGON";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "NICKNAME") {
+        $sort_by = "NICKNAME";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "STATUS") {
+        $sort_by = "STATUS";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "LAST_LOGON") {
+        $sort_by = "LAST_LOGON";
+    } elseif ($HTTP_GET_VARS['sort_by'] == "LOGON_FROM") {
+        $sort_by = "LOGON_FROM";
+    }
+} else {
+    $sort_by = "LAST_LOGON";
+}
+
+if (isset($HTTP_GET_VARS['sort_dir'])) {
+    if ($HTTP_GET_VARS['sort_dir'] == "DESC") {
+        $sort_dir = "DESC";
+    } else {
+        $sort_dir = "ASC";
+    }
+} else {
+    $sort_dir = "DESC";
+}
+
+if (isset($HTTP_GET_VARS['usersearch']) && isset($HTTP_GET_VARS['submit']) && $HTTP_GET_VARS['submit'] == 'Search') {
+    $usersearch = $HTTP_GET_VARS['usersearch'];
+}else {
+    $usersearch = '';
+}
+
 // Draw the form
 echo "<h1>Manage Users</h1>\n";
-echo "<p>Click on a user's name to alter their permissions</p>\n";
+echo "<p>This list shows the last 20 users to logon to the forum. To alter a user's permissions click their name.</p>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"posthead\">\n";
 echo "      <table width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=UID"; if ($HTTP_GET_VARS['sort'] == 'UID') echo '%20DESC'; echo "\">UID</a></td>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=LOGON"; if ($HTTP_GET_VARS['sort'] == 'LOGON') echo '%20DESC'; echo "\">Logon</a></td>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=NICKNAME"; if ($HTTP_GET_VARS['sort'] == 'NICKNAME') echo '%20DESC'; echo "\">Nickname</a></td>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=STATUS"; if ($HTTP_GET_VARS['sort'] == 'STATUS') echo '%20DESC'; echo "\">Status</a></td>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=LAST_LOGON"; if ($HTTP_GET_VARS['sort'] == 'LAST_LOGON') echo '%20DESC'; echo "\">Last Logon</a></td>\n";
-echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort=LOGON_FROM"; if ($HTTP_GET_VARS['sort'] == 'LOGON_FROM') echo '%20DESC'; echo "\">IP Address</a></td>\n";
+
+if ($sort_by == 'UID' && $sort_dir == 'ASC') {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&sort_dir=DESC&usersearch=$usersearch\">UID</a></td>\n";
+}else {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=UID&sort_dir=ASC&usersearch=$usersearch\">UID</a></td>\n";
+}
+
+if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&sort_dir=DESC&usersearch=$usersearch\">Logon</a></td>\n";
+}else {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON&sort_dir=ASC&usersearch=$usersearch\">Logon</a></td>\n";
+}
+
+if ($sort_by == 'STATUS' && $sort_dir == 'ASC') {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&sort_dir=DESC&usersearch=$usersearch\">Status</a></td>\n";
+}else {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=STATUS&sort_dir=ASC&usersearch=$usersearch\">Status</a></td>\n";
+}
+
+if ($sort_by == 'LAST_LOGON' && $sort_dir == 'ASC') {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&sort_dir=DESC&usersearch=$usersearch\">Last Logon</a></td>\n";
+}else {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LAST_LOGON&sort_dir=ASC&usersearch=$usersearch\">Last Logon</a></td>\n";
+}
+
+if ($sort_by == 'LOGON_FROM' && $sort_dir == 'ASC') {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&sort_dir=DESC&usersearch=$usersearch\">Logon From</a></td>\n";
+}else {
+  echo "          <td class=\"subhead\"><a href=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?sort_by=LOGON_FROM&sort_dir=ASC&usersearch=$usersearch\">Logon From</a></td>\n";
+}
+
 echo "        </tr>\n";
 
 $db = db_connect();
 
-$sql = "select UID, LOGON, NICKNAME, STATUS, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, LOGON_FROM from " . forum_table("USER") . " where UID > 0 order by ";
+if (isset($usersearch) && strlen($usersearch) > 0) {
 
-if (isset($HTTP_GET_VARS['sort'])) {
-  if ($HTTP_GET_VARS['sort'] == 'STATUS') {
-    $sql.= "STATUS desc";
-  }else {
-    $sql.= $HTTP_GET_VARS['sort'];
-  }
+  $sql = "SELECT UID, LOGON, STATUS, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, ";
+  $sql.= "LOGON_FROM FROM " . forum_table("USER") . " WHERE LOGON LIKE '%$usersearch%' ";
+  $sql.= "OR NICKNAME LIKE '%$usersearch%' ORDER BY $sort_by $sort_dir LIMIT 0, 20";
+
 }else {
-  $sql.= "UID";
+
+  $sql = "SELECT UID, LOGON, STATUS, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON, ";
+  $sql.= "LOGON_FROM FROM " . forum_table("USER") . " WHERE UID > 0 ORDER BY $sort_by $sort_dir LIMIT 0, 20";
+
 }
 
 $result = db_query($sql,$db);
-$result_count = db_num_rows($result);
 
-for($i=0; $i < $result_count; $i++){
+if (db_num_rows($result)) {
 
-    $row = db_fetch_array($result);
+    while ($row = db_fetch_array($result)) {
 
-    echo "        <tr>\n";
-    echo "          <td class=\"posthead\">", $row['UID'], "</td>\n";
-    echo "          <td class=\"posthead\"><a href=\"./admin_user.php?uid=", $row['UID'], "\">", $row['LOGON'], "</a></td>\n";
-    echo "          <td class=\"posthead\">", $row['NICKNAME'], "</td>\n";
-    echo "          <td class=\"posthead\">";
+        echo "        <tr>\n";
+        echo "          <td class=\"posthead\">", $row['UID'], "</td>\n";
+        echo "          <td class=\"posthead\"><a href=\"./admin_user.php?uid=", $row['UID'], "\">", $row['LOGON'], "</a></td>\n";
+        echo "          <td class=\"posthead\">";
 
-    if (isset($row['STATUS']) && $row['STATUS'] > 0) {
+        if (isset($row['STATUS']) && $row['STATUS'] > 0) {
 
-      if ($row['STATUS'] & USER_PERM_QUEEN)   echo "Queen ";
-      if ($row['STATUS'] & USER_PERM_SOLDIER) echo "Soldier ";
-      if ($row['STATUS'] & USER_PERM_WORKER)  echo "Worker ";
-      if ($row['STATUS'] & USER_PERM_WORM)    echo "Worm ";
-      if ($row['STATUS'] & USER_PERM_WASP)    echo "Wasp ";
-      if ($row['STATUS'] & USER_PERM_SPLAT)   echo "Splat";
+            if ($row['STATUS'] & USER_PERM_QUEEN)   echo "Queen ";
+            if ($row['STATUS'] & USER_PERM_SOLDIER) echo "Soldier ";
+            if ($row['STATUS'] & USER_PERM_WORKER)  echo "Worker ";
+            if ($row['STATUS'] & USER_PERM_WORM)    echo "Worm ";
+            if ($row['STATUS'] & USER_PERM_WASP)    echo "Wasp ";
+            if ($row['STATUS'] & USER_PERM_SPLAT)   echo "Splat";
 
-      echo " (", $row['STATUS'], ")</td>\n";
+            echo " (", $row['STATUS'], ")</td>\n";
 
-    }else {
-      echo "&nbsp;</td>\n";
+        }else {
+          echo "&nbsp;</td>\n";
+        }
+
+        echo "          <td class=\"posthead\">", format_time($row['LAST_LOGON'], 1), "</td>\n";
+        echo "          <td class=\"posthead\">", $row['LOGON_FROM'], "</td>\n";
+        echo "        </tr>\n";
+
     }
 
-    echo "          <td class=\"posthead\">", format_time($row['LAST_LOGON'], 1), "</td>\n";
-    echo "          <td class=\"posthead\">", $row['LOGON_FROM'], "</td>\n";
-    echo "        </tr>\n";
+}else {
+
+    if (isset($usersearch) && strlen($usersearch) > 0) {
+
+        echo "        <tr>\n";
+        echo "          <td class=\"posthead\" colspan=\"6\">No matches found.</td>\n";
+        echo "        </tr>\n";
+
+    }else {
+
+        // Shouldn't happen ever, after all how did you get here if there are no user accounts?
+
+        echo "        <tr>\n";
+        echo "          <td class=\"posthead\" colspan=\"6\">No user accounts in database.</td>\n";
+        echo "        </tr>\n";
+
+    }
 
 }
 
+echo "        <tr>\n";
+echo "          <td colspan=\"6\">&nbsp;</td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+echo "<p>&nbsp;</p>\n";
+echo "<table width=\"96%\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"posthead\">\n";
+echo "      <table width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td class=\"subhead\">Search for a user not in list:</td>\n";
+echo "        </tr>\n";
+echo "        <tr>\n";
+echo "          <td class=\"posthead\">\n";
+echo "            <form method=\"get\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "\">\n";
+echo "              Username: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', 'Search'), " ", form_submit('submit', 'Clear'), "\n";
+echo "              ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";
+echo "            </form>\n";
+echo "          </td>\n";
+echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";

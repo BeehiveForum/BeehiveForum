@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.32 2004-07-09 18:08:06 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.33 2004-07-14 18:39:01 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -266,6 +266,108 @@ function get_newest_user()
     if (db_num_rows($result)) {
         $row = db_fetch_array($result);
         return $row;
+    }
+
+    return false;
+}
+
+function get_month_post_tallys()
+{
+    $db_get_month_post_tallys = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') ";
+    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC";
+
+    $result = db_query($sql, $db_get_month_post_tallys);
+
+    if (db_num_rows($result) > 0) {
+
+        $post_tallys = array();
+
+        while ($row = db_fetch_array($result)) {
+            $post_tallys[] = $row;
+        }
+
+        return $post_tallys;
+    }
+
+    return false;
+}
+
+function get_week_post_tallys()
+{
+    $db_get_week_post_tallys = db_connect();
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%U-%Y') = DATE_FORMAT(NOW(), '%U-%Y') ";
+    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC";
+
+    $result = db_query($sql, $db_get_week_post_tallys);
+
+    if (db_num_rows($result) > 0) {
+
+        $post_tallys = array();
+
+        while ($row = db_fetch_array($result)) {
+            $post_tallys[] = $row;
+        }
+
+        return $post_tallys;
+    }
+
+    return false;
+}
+
+function get_day_post_tallys()
+{
+    $db_get_day_post_tallys = db_connect();
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') ";
+    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC";
+
+    $result = db_query($sql, $db_get_day_post_tallys);
+
+    if (db_num_rows($result) > 0) {
+
+        $post_tallys = array();
+
+        while ($row = db_fetch_array($result)) {
+            $post_tallys[] = $row;
+        }
+
+        return $post_tallys;
+    }
+
+    return false;
+}
+
+function get_hour_post_tallys()
+{
+    $db_get_hour_post_tallys = db_connect();
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql.= "WHERE DATE_FORMAT(POST.CREATED, '%Y-%m-%d-%H') = DATE_FORMAT(NOW(), '%Y-%m-%d-%H') ";
+    $sql.= "GROUP BY (POST.FROM_UID) ORDER BY POST_COUNT DESC";
+
+    $result = db_query($sql, $db_get_hour_post_tallys);
+
+    if (db_num_rows($result) > 0) {
+
+        $post_tallys = array();
+
+        while ($row = db_fetch_array($result)) {
+            $post_tallys[] = $row;
+        }
+
+        return $post_tallys;
     }
 
     return false;

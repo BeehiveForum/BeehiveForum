@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.52 2003-09-21 18:28:45 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.53 2003-09-22 20:18:18 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
@@ -61,23 +61,47 @@ function bh_session_check()
                 // Everything checks out OK, update the user's SESSION entry
                 // in the database.
 
-                $sql = "SELECT SESSID FROM ". forum_table("SESSIONS"). " ";
-                $sql.= "WHERE UID = {$user_sess['UID']} AND IPADDRESS = '$ipaddress'";
+                if ($user_sess['UID'] > 0) {
 
-                $result = db_query($sql, $db_bh_session_check);
+                    $sql = "SELECT SESSID FROM ". forum_table("SESSIONS"). " ";
+                    $sql.= "WHERE UID = {$user_sess['UID']}";
 
-                if (db_num_rows($result)) {
+                    $result = db_query($sql, $db_bh_session_check);
 
-                    $sess_array = db_fetch_array($result);
+                    if (db_num_rows($result)) {
 
-                    $sql = "UPDATE ". forum_table("SESSIONS"). " ";
-                    $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
-                    $sql.= "WHERE SESSID = {$sess_array['SESSID']}";
+                        $sess_array = db_fetch_array($result);
+
+                        $sql = "UPDATE ". forum_table("SESSIONS"). " ";
+                        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
+                        $sql.= "WHERE SESSID = {$sess_array['SESSID']}";
+
+                    }else {
+
+                        $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
+                        $sql.= "VALUES ('{$user_sess['UID']}', '$ipaddress', NOW())";
+                    }
 
                 }else {
 
-                    $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
-                    $sql.= "VALUES ('{$user_sess['UID']}', '$ipaddress', NOW())";
+                    $sql = "SELECT SESSID FROM ". forum_table("SESSIONS"). " ";
+                    $sql.= "WHERE IPADDRESS = '$ipaddress'";
+
+                    $result = db_query($sql, $db_bh_session_check);
+
+                    if (db_num_rows($result)) {
+
+                        $sess_array = db_fetch_array($result);
+
+                        $sql = "UPDATE ". forum_table("SESSIONS"). " ";
+                        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW() ";
+                        $sql.= "WHERE SESSID = {$sess_array['SESSID']}";
+
+                    }else {
+
+                        $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
+                        $sql.= "VALUES ('{$user_sess['UID']}', '$ipaddress', NOW())";
+                    }
                 }
 
                 db_query($sql, $db_bh_session_check);
@@ -130,8 +154,18 @@ function bh_session_init($uid)
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
 
-    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE IPADDRESS = '$ipaddress'";
-    $result = db_query($sql, $db_bh_session_init);
+    if ($uid > 0) {
+
+        $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE ";
+        $sql.= "IPADDRESS = '$ipaddress' OR UID = '$uid'";
+
+        $result = db_query($sql, $db_bh_session_init);
+
+    }else {
+
+        $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE IPADDRESS = '$ipaddress'";
+        $result = db_query($sql, $db_bh_session_init);
+    }
 
     $sql = "INSERT INTO ". forum_table("SESSIONS"). " (UID, IPADDRESS, TIME) ";
     $sql.= "VALUES ('$uid', '$ipaddress', NOW())";

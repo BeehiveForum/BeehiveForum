@@ -91,6 +91,8 @@ function get_active_users()
     $db_get_active_users = db_connect();
     $session_stamp = time() - $session_cutoff;
 
+    $uid = bh_session_get_value('UID');
+
     $stats = array('GUESTS' => 0, 'NUSERS' => 0,
                    'AUSERS' => 0, 'USERS'  => array());
 
@@ -118,13 +120,9 @@ function get_active_users()
         }else {
 
             $stats['NUSERS']++;
-
-            if (sizeof($stats['USERS']) < 8) {
-
-                $stats['USERS'][] = array('UID'      => $row['UID'],
-                                          'LOGON'    => $row['LOGON'],
-                                          'NICKNAME' => $row['NICKNAME']);
-            }
+            $stats['USERS'][] = array('UID'      => $row['UID'],
+                                      'LOGON'    => $row['LOGON'],
+                                      'NICKNAME' => $row['NICKNAME']);
         }
     }
 

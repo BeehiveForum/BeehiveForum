@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.66 2003-09-21 12:57:59 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.67 2003-09-22 20:18:18 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -211,35 +211,6 @@ function html_draw_top()
 
 function html_draw_bottom ()
 {
-    /*global $HTTP_SERVER_VARS, $debug_level, $bh_query_array, $bh_script_time, $bh_gz_status;
-
-    $html = "";
-
-    if (basename($HTTP_SERVER_VARS['PHP_SELF']) != "nav.php" && isset($debug_level) && $debug_level > 0) {
-
-        $html.= "<p class=\"info-text\">[&nbsp;Script Execution time:&nbsp;$bh_script_time&nbsp;]   ";
-        $html.= "[&nbsp;". sizeof($bh_query_array). "&nbsp;queries&nbsp;used&nbsp;]  ";
-        $html.= "[&nbsp;$bh_gz_status&nbsp;]</p>\n";
-
-        if ($debug_level > 1) {
-
-            foreach($bh_query_array as $bh_query) {
-                $bh_query = preg_replace("/^SELECT/i" , "<span style=\"color:red; font-weight:bold\">SELECT</span>", $bh_query);
-                $bh_query = preg_replace("/^UPDATE/i" , "<span style=\"color:blue; font-weight:bold\">UPDATE</span>", $bh_query);
-                $bh_query = preg_replace("/^DELETE/i" , "<span style=\"color:orange; font-weight:bold\">DELETE</span>", $bh_query);
-                $bh_query = preg_replace("/^INSERT/i" , "<span style=\"color:green; font-weight:bold\">INSERT</span>", $bh_query);
-                $bh_query = str_replace( "LEFT JOIN", "<span style=\"color:red; font-weight:bold\">LEFT JOIN</span>", $bh_query);
-
-                $html.= "<p class=\"info-text\" style=\"text-align: left\">$bh_query</p>\n";
-            }
-        }
-    }
-
-    $html.= "</body>\n";
-    $html.= "</html>\n";
-
-    return $html;*/
-
     echo "</body>\n";
     echo "</html>\n";
 }

@@ -30,7 +30,7 @@ frame           {
                 color: #FFFFFF;
 		background-color: #666666;
                 }
-                
+
 .navpage A	{
 		color: #FFFFFF;
 		text-decoration: none;
@@ -338,7 +338,7 @@ A		{
           background-color: #D42AD4
 }
 
-.highlight { 
+.highlight {
           background-color: #666666
 }
 
@@ -401,4 +401,8 @@ A		{
 		border-right: 1px solid buttonhighlight;
 		margin:1;
 		float:left;
+}
+
+.activeusers {
+                font-size: 8pt;
 }

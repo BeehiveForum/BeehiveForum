@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.85 2005-02-06 21:35:25 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.86 2005-02-22 14:21:31 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -37,7 +37,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
     // Ensure the bare minimum of variables are set
 
-    if (!isset($argarray['method'])) $argarray['method'] = 2;
+    if (!isset($argarray['method'])) $argarray['method'] = 1;
     if (!isset($argarray['date_from'])) $argarray['date_from'] = 7;
     if (!isset($argarray['date_to'])) $argarray['date_to'] = 2;
     if (!isset($argarray['order_by'])) $argarray['order_by'] = 1;
@@ -57,7 +57,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $forum_settings = get_forum_settings();
 
-    $search_sql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, ";
+    $search_sql = "SELECT THREAD.FID, THREAD.TID, POST.PID, THREAD.TITLE, ";
     $search_sql.= "POST.FROM_UID, POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
     $search_sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $search_sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
@@ -122,10 +122,6 @@ function search_execute($argarray, &$urlquery, &$error)
 
         $keywords_array = explode(' ', trim($argarray['search_string']));
 
-        // Boolean Search Parameters that we don't want to strip
-
-        $boolean_search_params = array('and', 'or', 'not', '+', '~', '-');
-
         foreach ($keywords_array as $key => $value) {
 
             if (!in_array($value, $boolean_search_params)) {
@@ -138,68 +134,48 @@ function search_execute($argarray, &$urlquery, &$error)
 
         if (sizeof($keywords_array) > 0) {
 
-            if ((db_fetch_mysql_version() > 33232) && ($argarray['method'] == 1)) {
-
-                // Full Text Support in MySQL 3.32.32 and above
-
-                $keywords = addslashes(trim(implode(' ', $keywords_array)));
-
-                $bool_mode = (db_fetch_mysql_version() > 40010) ? "IN BOOLEAN MODE" : "";
-                $keywords = search_convert_fulltext($keywords);
+            if ($argarray['method'] == 1) { // AND
 
                 if ($argarray['include'] > 0) {
-                    $thread_title_sql = "MATCH(THREAD.TITLE) AGAINST('$keywords' $bool_mode)";
+
+                    $thread_title_sql = "THREAD.TITLE LIKE '%";
+                    $thread_title_sql.= implode("%' AND THREAD.TITLE LIKE '%", $keywords_array);
+                    $thread_title_sql.= "%'";
                 }
 
                 if ($argarray['include'] > 1) {
-                    $thread_title_sql = "MATCH(THREAD.TITLE, POST_CONTENT.CONTENT) AGAINST('$keywords' $bool_mode)";
+
+                    $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
+                    $post_content_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                    $post_content_sql.= "%'";
                 }
 
-            }else {
+            }elseif ($argarray['method'] == 2) { // OR
 
-                if ($argarray['method'] == 2) { // AND
+                if ($argarray['include'] > 0) {
 
-                    if ($argarray['include'] > 0) {
+                    $thread_title_sql = "THREAD.TITLE LIKE '%";
+                    $thread_title_sql.= implode("%' OR THREAD.TITLE LIKE '%", $keywords_array);
+                    $thread_title_sql.= "%'";
+                }
 
-                        $thread_title_sql = "THREAD.TITLE LIKE '%";
-                        $thread_title_sql.= implode("%' AND THREAD.TITLE LIKE '%", $keywords_array);
-                        $thread_title_sql.= "%'";
-                    }
+                if ($argarray['include'] > 1) {
 
-                    if ($argarray['include'] > 1) {
+                    $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
+                    $post_content_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                    $post_content_sql.= "%'";
+                }
 
-                        $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
-                        $post_content_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
-                        $post_content_sql.= "%'";
-                    }
+            }elseif ($argarray['method'] == 3) { // EXACT
 
-                }elseif ($argarray['method'] == 3) { // OR
+                $keywords = addslashes(trim(implode(' ', $keywords_array)));
 
-                    if ($argarray['include'] > 0) {
+                if ($argarray['include'] > 0) {
+                    $thread_title_sql.= "INSTR(THREAD.TITLE, '{$keywords}')";
+                }
 
-                        $thread_title_sql = "THREAD.TITLE LIKE '%";
-                        $thread_title_sql.= implode("%' OR THREAD.TITLE LIKE '%", $keywords_array);
-                        $thread_title_sql.= "%'";
-                    }
-
-                    if ($argarray['include'] > 1) {
-
-                        $post_content_sql = "POST_CONTENT.CONTENT LIKE '%";
-                        $post_content_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
-                        $post_content_sql.= "%'";
-                    }
-
-                }elseif ($argarray['method'] == 4) { // EXACT
-
-                    $keywords = addslashes(trim(implode(' ', $keywords_array)));
-
-                    if ($argarray['include'] > 0) {
-                        $thread_title_sql.= "INSTR(THREAD.TITLE, '{$keywords}')";
-                    }
-
-                    if ($argarray['include'] > 1) {
-                        $post_content_sql = "INSTR(POST_CONTENT.CONTENT, '{$keywords}')";
-                    }
+                if ($argarray['include'] > 1) {
+                    $post_content_sql = "INSTR(POST_CONTENT.CONTENT, '{$keywords}')";
                 }
             }
         }
@@ -268,6 +244,8 @@ function search_execute($argarray, &$urlquery, &$error)
         $search_sql.= " LIMIT ". $argarray['sstart']. ", 50";
         $search_sql = preg_replace("/ +/", " ", $search_sql);
 
+        echo $search_sql; exit;
+
         $result = db_query($search_sql, $db_search_execute);
 
         $urlquery = "&amp;fid={$argarray['fid']}&amp;date_from={$argarray['date_from']}";
@@ -298,17 +276,6 @@ function search_execute($argarray, &$urlquery, &$error)
         $error = SEARCH_NO_KEYWORDS;
         return false;
     }
-}
-
-function search_convert_fulltext($search_string)
-{
-    $search_string = preg_replace( "/\s+AND\s+/i", " ",  $search_string);
-    $search_string = preg_replace( "/\s+NOT\s+/i", " -", $search_string);
-    $search_string = preg_replace( "/\s+OR\s+/i",  " ~", $search_string);
-    $search_string = preg_replace( "/\s+(?!-|~)/", " +", $search_string);
-    $search_string = preg_replace( "/~/",          "",   $search_string);
-
-    return $search_string;
 }
 
 function search_date_range($from, $to)

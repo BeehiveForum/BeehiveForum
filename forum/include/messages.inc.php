@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.330 2005-02-17 23:15:00 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.331 2005-02-22 14:21:31 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/banned.inc.php");
@@ -1298,35 +1298,34 @@ function messages_forum_stats($tid, $pid)
                 echo "        </table>\n";
             }
 
-            if ($recent_posts = get_recent_post_count()) {
+            $recent_posts = get_recent_post_count();
 
-                echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                echo "          <tr>\n";
-                echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "            <td>&nbsp;</td>\n";
-                echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "          </tr>\n";
-                echo "        </table>\n";
-                echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                echo "          <tr>\n";
-                echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "            <td>{$lang['therehavebeen']} <b>$recent_posts</b> {$lang['postsmadeinthelastsixtyminutes']}</td>\n";
-                echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "          </tr>\n";
-                echo "        </table>\n";
+            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "          <tr>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "            <td>&nbsp;</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+            echo "          <tr>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "            <td>{$lang['therehavebeen']} <b>$recent_posts</b> {$lang['postsmadeinthelastsixtyminutes']}</td>\n";
+            echo "            <td width=\"35\">&nbsp;</td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
 
-                if ($most_posts = get_most_posts()) {
+            if ($most_posts = get_most_posts()) {
 
-                    if ($most_posts['MOST_POSTS_COUNT'] > 0 && $most_posts['MOST_POSTS_DATE'] > 0) {
+                if ($most_posts['MOST_POSTS_COUNT'] > 0 && $most_posts['MOST_POSTS_DATE'] > 0) {
 
-                        echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-                        echo "          <tr>\n";
-                        echo "            <td width=\"35\">&nbsp;</td>\n";
-                        echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodwas']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ","), "</b> {$lang['on']} ", format_time($most_posts['MOST_POSTS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
-                        echo "            <td width=\"35\">&nbsp;</td>\n";
-                        echo "          </tr>\n";
-                        echo "        </table>\n";
-                    }
+                    echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+                    echo "          <tr>\n";
+                    echo "            <td width=\"35\">&nbsp;</td>\n";
+                    echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodwas']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ","), "</b> {$lang['on']} ", format_time($most_posts['MOST_POSTS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
+                    echo "            <td width=\"35\">&nbsp;</td>\n";
+                    echo "          </tr>\n";
+                    echo "        </table>\n";
                 }
             }
 

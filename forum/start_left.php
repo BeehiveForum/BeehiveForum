@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.43 2003-08-02 18:42:36 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.44 2003-08-24 16:39:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -36,7 +36,7 @@ require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/form.inc.php");
 
-if(!bh_session_check()){
+if (!bh_session_check()) {
 
     $uri = "./index.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
@@ -53,7 +53,7 @@ require_once("./include/folder.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/threads.inc.php");
 
-html_draw_top_script();
+html_draw_top("openprofile.js");
 
 echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.4 2003-07-28 20:55:50 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.5 2003-08-24 16:39:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -183,7 +183,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     }
 }
 
-html_draw_top_script();
+html_draw_top("openprofile.js");
 draw_header_pm();
 
 echo "<h1>{$lang['privatemessages']}: {$lang['editpm']}</h1>\n";

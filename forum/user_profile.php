@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.28 2003-07-30 21:48:31 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.29 2003-08-24 16:39:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -60,7 +60,9 @@ if (!isset($uid)) {
 $user = user_get($uid);
 $your_uid = bh_session_get_value('UID');
 
-html_draw_top(format_user_name($user['LOGON'], $user['NICKNAME']));
+$title = format_user_name($user['LOGON'], $user['NICKNAME']);
+
+html_draw_top("title=$title");
 
 if (!$profile_sections = profile_sections_get()) {
     echo "<h1>{$lang['error']}:</h1>";

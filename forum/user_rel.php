@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.16 2003-07-30 21:48:31 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.17 2003-08-24 16:39:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -101,7 +101,7 @@ if (isset($HTTP_GET_VARS['uid'])) {
     exit;
 }
 
-html_draw_top_script();
+html_draw_top("openprofile.js");
 
 $rel = user_rel_get($my_uid, $uid);
 

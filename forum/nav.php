@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.31 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: nav.php,v 1.32 2003-08-24 16:39:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -38,9 +38,10 @@ require_once("./include/config.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/pm.inc.php");
+
 header_no_cache();
 
-html_draw_top('Nav', 'navpage');
+html_draw_top("body_class=navpage");
 
 echo "<a href=\"start.php\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
 echo "<a href=\"discussion.php\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";

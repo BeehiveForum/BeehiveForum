@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.13 2005-03-06 23:36:40 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.14 2005-03-11 23:23:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -187,7 +187,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
 echo "                </tr>\n";
 
-$group_users_array = perm_group_get_users($gid);
+$group_users_array = perm_group_get_users($gid, $start_main);
 
 if (sizeof($group_users_array['user_array']) > 0) {
 

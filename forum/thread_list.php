@@ -212,7 +212,7 @@ if (!$thread_info) {
     echo "</tr>\n<tr>\n<td>&nbsp;</td>\n<tr>\n";
 }
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from - 50)."\">Previous 50 threads</a></td></tr>\n";
 
 // Iterate through the information we've just got and display it in the right order
 while (list($key1, $folder_number) = each($folder_order)) {
@@ -306,8 +306,8 @@ if ($mode == 0 && !isset($folder)) {
         $total_threads += $num_threads;
     }
     $more_threads = $total_threads - $start_from - 50;
-  if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
-  if ($more_threads > 50) echo "<tr><td><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</td></tr>\n";
+  if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next $more_threads threads</td></tr>\n";
+  if ($more_threads > 50) echo "<tr><td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mode=0&start_from=".($start_from + 50)."\">Next 50 threads</a></td></tr>\n";
 }
 echo "<tr>\n<td>&nbsp;</td></tr>\n<tr>\n<td class=\"smalltext\"><a href=\"".$HTTP_SERVER_VARS['PHP_SELF']."?mark_all_read=1\">Mark all as read</a></td></tr>\n";
 echo "</table>\n";

@@ -332,7 +332,10 @@ if($valid && isset($HTTP_POST_VARS['preview'])) {
 
     }
 
-    message_display(0, $preview_message, 0, 0, false, false, false, false, true);
+    $preview_message['CREATED'] = mktime();
+    $preview_message['AID'] = $aid;
+
+    message_display(0, $preview_message, 0, 0, true, false, false, false, true);
     echo "<br />\n";
 
 }
@@ -484,13 +487,13 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo form_submit("submit","Post");
-echo "&nbsp;".form_submit("preview","Preview");
-echo "&nbsp;".form_submit("cancel", "Cancel");
+echo form_submit('submit','Post', 'onclick="attachwin.close();"');
+echo "&nbsp;".form_submit('preview', 'Preview');
+echo "&nbsp;".form_submit('cancel', 'Cancel');
 
 if ($attachments_enabled) {
 
-    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;".form_button("attachments", "Attachments", "onclick=\"attachwin = window.open('attachments.php?aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
     echo form_input_hidden("aid", $aid);
 
 }

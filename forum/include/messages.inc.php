@@ -257,7 +257,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list) {
         echo "<a href=\"set_relation.php?uid=".$message['FROM_UID']."&rel=0&exists=1&ret=". urlencode($HTTP_SERVER_VARS['PHP_SELF']). "?msg=$tid.".$message['PID']."\" target=\"_self\">Stop ignoring this user</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"./display.php?msg=$tid.". $message['PID']. "\" target=\"_self\">View message</a>";
-    }else if($in_list) {
+    }else if($in_list && $msg_count > 0) {
         if ($is_poll) {
           echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"><img src=\"".style_image('poll.png')."\" border=\"0\" height=\"15\" alt=\"This is a poll. Click to view results.\" align=\"middle\"></a> Poll ";
         }
@@ -269,7 +269,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     if(!($message['FROM_RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
-        if($in_list) {
+        if($in_list && $msg_count > 0) {
             echo "<a href=\"http://", $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']), "/?msg=$tid.". $message['PID']. "\" target=\"_top\">$tid.". $message['PID']. "</a>";
             if($message['PID'] > 1) {
                 echo " in reply to ";
@@ -297,35 +297,42 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 	}
 
         echo "<tr><td class=\"postbody\">". $message['CONTENT'];
-        if ($tid <> 0 && isset($message['PID'])) {
-            if ($aid = get_attachment_id($tid, $message['PID'])) {
-                $attachments = get_attachments($message['FROM_UID'], $aid);
-                if (is_array($attachments)) {
-                    echo "<p><b>Attachments:</b><br>\n";
-                    for ($i = 0; $i < sizeof($attachments); $i++) {
+        if (($tid <> 0 && isset($message['PID'])) || $message['AID']) {
+	      $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
+              $attachments = get_attachments($message['FROM_UID'], $aid);
+              if (is_array($attachments)) {
+                  echo "<p><b>Attachments:</b><br>\n";
+                  for ($i = 0; $i < sizeof($attachments); $i++) {
 
-                        echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"absmiddle\">";
-                        echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" target=\"_self\" title=\"";
+                      echo "<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"absmiddle\">";
+                      echo "<a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\"";
+                        
+                      if (basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+                        echo " target=\"_blank\"";
+                      }else {
+                        echo " target=\"_self\"";
+                      }
+                        
+                      echo " title=\"";
 
-                        if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
-                          echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-                        }
+                      if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+                        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+                      }
 
-                        echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
-                        echo "Downloaded: ". $attachments[$i]['downloads'];
+                      echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
+                      echo "Downloaded: ". $attachments[$i]['downloads'];
 
-                        if ($attachments[$i]['downloads'] == 1) {
-                          echo " time";
-                        }else {
-                          echo " times";
-                        }
+                      if ($attachments[$i]['downloads'] == 1) {
+                        echo " time";
+                      }else {
+                        echo " times";
+                      }
 
-                        echo "\">". $attachments[$i]['filename']. "</a><br />";
+                      echo "\">". $attachments[$i]['filename']. "</a><br />";
 
-                    }
-                    echo "</p>\n";
-                }
-            }
+                  }
+                  echo "</p>\n";
+              }
         }
 
         echo "</td></tr>\n";

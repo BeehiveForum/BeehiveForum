@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.92 2003-09-06 18:18:47 decoyduck Exp $ */
+/* $Id: logon.php,v 1.93 2003-09-15 17:02:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -112,9 +112,9 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
   for ($i = 0; $i < sizeof($username_array); $i++) {
 
-    setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
-    setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
-    setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
 
   }
 
@@ -173,7 +173,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if (isset($luid) && $luid > -1) {
 
-      setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
+      bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
 
       if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
 
@@ -244,16 +244,16 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
         for ($i = 0; $i < sizeof($username_array); $i++) {
 
-          setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
-          setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
-          setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
+          bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
+          bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
+          bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
 
         }
 
         // set / update the cookie that remembers if the user
         // has any logon form data.
 
-        setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS);
+        bh_setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS);
 
       }
 
@@ -300,7 +300,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     }else {
 
-      setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
+      bh_setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
 
       html_draw_top();
       echo "<div align=\"center\">\n";

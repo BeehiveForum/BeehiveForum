@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: prefs.php,v 1.72 2003-09-03 17:20:27 decoyduck Exp $ */
+/* $Id: prefs.php,v 1.73 2003-09-15 17:02:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -336,8 +336,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
                     $passw = str_repeat(chr(32), strlen(_stripslashes($t_password)));
                     $passh = md5(_stripslashes($t_password));
                     if (isset($password_array[$key]) && isset($passhash_array[$key])) {
-                        setcookie("bh_remember_password[$key]", $passw, time() + YEAR_IN_SECONDS);
-                        setcookie("bh_remember_passhash[$key]", $passh, time() + YEAR_IN_SECONDS);
+                        bh_setcookie("bh_remember_password[$key]", $passw, time() + YEAR_IN_SECONDS);
+                        bh_setcookie("bh_remember_passhash[$key]", $passh, time() + YEAR_IN_SECONDS);
                     }
                 }
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.21 2004-01-26 19:41:00 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.22 2004-02-20 22:04:24 decoyduck Exp $ */
 
 // Functions for the very stripped-down "light" version of Beehive
 
@@ -118,13 +118,15 @@ function light_poll_confirm_close($tid)
 
 }
 
-function light_messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N")
+function light_messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     global $lang;
     echo "<h2>$foldertitle: $threadtitle";
+    if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
     if ($interest_level == 2) echo "&nbsp;<font color=\"#FF0000\">({$lang['subscribed']})</font>";
     if ($sticky == "Y") echo "&nbsp;({$lang['sticky']})";
+    if ($locked) echo "&nbsp;<font color=\"#FF0000\">({$lang['locked']})</font>";
     echo "</h2>";
 }
 
@@ -462,6 +464,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         echo "<p>\n";
 
         if ($in_list && $limit_text != false) {
+
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP))) {
 
                 echo "<a href=\"lpost.php?replyto=$tid.".$message['PID']."\">{$lang['reply']}</a>";

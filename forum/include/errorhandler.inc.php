@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.32 2004-01-14 20:42:26 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.33 2004-02-20 22:04:24 decoyduck Exp $ */
 
 // Error Handler
 
@@ -46,9 +46,6 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
     if (error_reporting()) {
 
         global $HTTP_SERVER_VARS, $HTTP_GET_VARS, $HTTP_POST_VARS, $lang;
-
-        if (substr($getvars, 0, 1) == '&') $getvars = substr($getvars, 1);
-        if (substr($getvars, -1) == '&') $getvars = substr($getvars, 0, -1);
 
         srand((double)microtime()*1000000);
 

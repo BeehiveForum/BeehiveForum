@@ -335,7 +335,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
           
           if ($poll['SHOWRESULTS'] == 1 && $totalvotes > 0) {
           
-            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=350, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+            $polldata['CONTENT'].= form_button("pollresults", "Results", "onclick=\"window.open('pollresults.php?tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
             
           }
 
@@ -392,7 +392,7 @@ function poll_horizontal_graph($pollresults, $bar_width, $totalvotes)
         $polldisplay.= "              </tr>\n";
         $polldisplay.= "              <tr>\n";
         $polldisplay.= "                <td width=\"150\" class=\"postbody\">&nbsp;</td>\n";
-        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['votes']. " votes (". (100 / $totalvotes) * $pollresults[$i]['votes']. "%)</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" height=\"20\">". $pollresults[$i]['votes']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['votes'], 0). "%)</td>\n";
         $polldisplay.= "              </tr>\n";
         
       }
@@ -438,7 +438,7 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
     
       if (!empty($pollresults[$i]['option'])) {
      
-        $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['option']. "<br />". $pollresults[$i]['votes']. " votes (". (100 / $totalvotes) * $pollresults[$i]['votes']. "%)</td>\n";
+        $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['option']. "<br />". $pollresults[$i]['votes']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['votes'], 0). "%)</td>\n";
         
       }
       

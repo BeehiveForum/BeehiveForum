@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.27 2004-04-17 18:40:59 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.28 2004-04-17 20:06:58 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -412,7 +412,7 @@ echo "                  <td width=\"200\">{$lang['defaultstyle']}:</td>\n";
 
 $styles = style_get_styles();
 
-echo "                  <td>", form_dropdown_array("default_style", array_keys($styles), array_values($styles), forum_get_setting('default_style')), "</td>\n";
+echo "                  <td>", form_dropdown_array("default_style", array_keys($styles), array_values($styles), forum_get_setting('default_style', false, 'Beehive')), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">{$lang['defaultemoticons']} ";

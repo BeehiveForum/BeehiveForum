@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.53 2004-04-17 18:41:02 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.54 2004-04-17 20:06:59 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -135,22 +135,28 @@ function get_webtag()
 
 function get_forum_settings()
 {
-    static $forum_settings = array();
+    global $default_settings;
+    static $forum_settings = false;
     
-    if (sizeof($forum_settings) > 0) return $forum_settings;
+    if (!$forum_settings) {
     
-    $db_get_forum_settings = db_connect();
+        $db_get_forum_settings = db_connect();
     
-    if (!$table_data = get_table_prefix()) $table_data['FID'] == 0;
+        $forum_settings = array();
     
-    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
-    $result = db_query($sql, $db_get_forum_settings);
+        if (!$table_data = get_table_prefix()) $table_data['FID'] == 0;
     
-    while ($row = db_fetch_array($result)) {
-        $forum_settings[$row['SNAME']] = $row['SVALUE'];
+        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
+        $result = db_query($sql, $db_get_forum_settings);
+    
+        while ($row = db_fetch_array($result)) {
+            $forum_settings[$row['SNAME']] = $row['SVALUE'];
+        }
+    
+        return array_merge($default_settings, $forum_settings);
     }
     
-    return $forum_settings;
+    return array_merge($default_settings, $forum_settings);
 }
 
 function save_forum_settings($forum_settings_array)

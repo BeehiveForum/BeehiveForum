@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.31 2004-04-17 17:39:27 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.32 2004-04-23 22:11:09 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -59,6 +59,10 @@ if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
 
 }
 
+// Load language file
+
+$lang = load_language_file();
+
 // Check we have a webtag
 
 $webtag = get_webtag();
@@ -90,9 +94,9 @@ if (isset($_POST['submit'])) {
         bh_session_init($luid);
 
       }
-      
+
       if (isset($_POST['remember_user']) && $_POST['remember_user'] == 'Y') {
-      
+
           bh_setcookie("bh_light_remember_username", $_POST['logon'], time() + YEAR_IN_SECONDS);
 	  bh_setcookie("bh_light_remember_password", $_POST['password'], time() + YEAR_IN_SECONDS);
       }

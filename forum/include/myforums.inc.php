@@ -21,14 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.26 2004-04-23 17:28:48 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.27 2004-04-23 22:12:17 decoyduck Exp $ */
 
 require_once("./include/html.inc.php");
 require_once("./include/threads.inc.php");
 
 function get_forum_list()
 {
-    global $lang;
+    $lang = load_language_file();
 
     $db_get_forum_list = db_connect();
     $get_forum_list_array = array();
@@ -105,7 +105,7 @@ function get_forum_list()
 
 function get_my_forums()
 {
-    global $lang;
+    $lang = load_language_file();
 
     $db_get_my_forums = db_connect();
 

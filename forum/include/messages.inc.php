@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.273 2004-04-23 11:42:40 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.274 2004-04-23 22:12:14 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -135,7 +135,7 @@ function message_get_content($tid, $pid)
 
 function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
-    global $lang;
+    $lang = load_language_file();
 
     echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;", apply_wordfilter("$foldertitle: $threadtitle");
 
@@ -155,7 +155,7 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -500,7 +500,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
 function message_display_deleted($tid,$pid)
 {
-    global $lang;
+    $lang = load_language_file();
 
     echo "<br /><div align=\"center\">";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
@@ -525,7 +525,7 @@ function messages_end_panel()
 
 function messages_nav_strip($tid, $pid, $length, $ppp)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -617,7 +617,7 @@ function mess_nav_range($from,$to)
 
 function messages_interest_form($tid,$pid)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -638,7 +638,7 @@ function messages_interest_form($tid,$pid)
 
 function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky = false, $sticky_until = false, $locked = false)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -695,7 +695,7 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
 
 function messages_edit_thread($fid, $tid, $pid, $title)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -940,7 +940,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
 
 function messages_fontsize_form($tid, $pid)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -987,7 +987,7 @@ function validate_msg($msg)
 
 function messages_forum_stats($tid, $pid)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 

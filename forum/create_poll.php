@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.96 2004-04-17 18:41:00 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.97 2004-04-23 22:10:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -54,9 +54,9 @@ include_once("./include/thread.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -74,7 +74,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -86,6 +86,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -234,28 +238,28 @@ if (isset($_POST['cancel'])) {
 if ($valid && isset($_POST['submit'])) {
 
   if (check_ddkey($_POST['t_dedupe'])) {
-  
+
      $folderdata = folder_get($_POST['t_fid']);
-     
+
      if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($_POST['t_fid']) && !perm_is_moderator()) {
-        
+
        html_draw_top();
-                
+
        echo "<form name=\"f_post\" action=\"./create_poll.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
        echo "<table class=\"posthead\" width=\"720\">\n";
        echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
        echo "<tr><td>\n";
        echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
        echo "</td></tr>\n";
- 
+
        echo "<tr><td align=\"center\">\n";
        echo form_submit('cancel', $lang['cancel']);
        echo "</td></tr>\n";
        echo "</table></form>\n";
- 
+
        html_draw_bottom();
        exit;
-    }  
+    }
 
     // Work out when the poll will close.
 

@@ -21,27 +21,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.53 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.54 2004-04-23 22:12:31 decoyduck Exp $ */
 
 function search_execute($argarray, &$urlquery, &$error)
 {
     // Ensure the bare minimum of variables are set
-    
-    if (!isset($argarray['method'])) $argarray['method'] = 1;    
+
+    if (!isset($argarray['method'])) $argarray['method'] = 1;
     if (!isset($argarray['date_from'])) $argarray['date_from'] = 7;
     if (!isset($argarray['date_to'])) $argarray['date_to'] = 2;
-    if (!isset($argarray['order_by'])) $argarray['order_by'] = 1;    
-    if (!isset($argarray['sstart'])) $argarray['sstart'] = 0;        
+    if (!isset($argarray['order_by'])) $argarray['order_by'] = 1;
+    if (!isset($argarray['sstart'])) $argarray['sstart'] = 0;
     if (!isset($argarray['fid'])) $argarray['fid'] = 0;
     if (!isset($argarray['to_other'])) $argarray['to_other'] = "";
     if (!isset($argarray['from_other'])) $argarray['from_other'] = "";
     if (!isset($argarray['to_uid'])) $argarray['to_uid'] = 0;
-    if (!isset($argarray['from_uid'])) $argarray['from_uid'] = 0;    
+    if (!isset($argarray['from_uid'])) $argarray['from_uid'] = 0;
 
     $db_search_execute = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $forum_settings = get_forum_settings();
 
     $searchsql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
@@ -392,12 +392,12 @@ function search_date_range($from, $to)
 
 function folder_search_dropdown()
 {
-    global $lang;
+    $lang = load_language_file();
 
     $db_folder_search_dropdown = db_connect();
 
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT DISTINCT F.FID, F.TITLE FROM {$table_data['PREFIX']}FOLDER F LEFT JOIN ";
@@ -421,11 +421,11 @@ function folder_search_dropdown()
 
 function search_draw_user_dropdown($name)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $db_search_draw_user_dropdown = db_connect();
     $uid = bh_session_get_value('UID');
-    
+
     if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -433,7 +433,7 @@ function search_draw_user_dropdown($name)
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')) ";
     $sql.= "AND USER.UID <> '$uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 20";    
+    $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_search_draw_user_dropdown);
 

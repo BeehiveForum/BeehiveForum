@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.195 2004-04-17 18:41:02 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.196 2004-04-23 22:11:52 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -53,9 +53,9 @@ include_once("./include/word_filter.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -73,7 +73,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -85,6 +85,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -118,7 +122,7 @@ if (bh_session_get_value('UID') == 0) {
     $uid = bh_session_get_value('UID');
 
     if (isset($_GET['markread'])) {
-       
+
         if ($_GET['markread'] == 2 && isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
             threads_mark_read($_GET['tid_array']);
         }elseif ($_GET['markread'] == 0) {
@@ -182,7 +186,7 @@ if ($pm_new_count = pm_get_unread_count()) {
 }else {
     echo "      <img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a><br />\n";
 }
-    
+
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
@@ -301,7 +305,7 @@ if (!is_array($folder_order)) $folder_order = array();
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $threadvisible = false;
-    
+
     list($tid, $pid) = explode('.', $_GET['msg']);
 
     if (thread_can_view($tid, bh_session_get_value('UID'))) {
@@ -409,13 +413,13 @@ while (list($key1, $folder_number) = each($folder_order)) {
     echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "        <tr>\n";
     echo "          <td class=\"foldername\">\n";
-    
+
     if ($folder_info[$folder_number]['INTEREST'] == -1) {
         echo "            <img src=\"".style_image('folder_ignored.png')."\" height=\"15\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
     }else {
         echo "            <img src=\"".style_image('folder.png')."\" height=\"15\" alt=\"{$lang['folder']}\" />\n";
     }
-    
+
     echo "            <a href=\"thread_list.php?webtag=$webtag&mode=0&amp;folder=$folder_number\" title=\"", apply_wordfilter(_htmlentities(_stripslashes($folder_info[$folder_number]['DESCRIPTION']))), "\">", apply_wordfilter(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
     echo "          </td>\n";
 
@@ -459,18 +463,18 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
             echo "&nbsp;{$lang['threads']}</a></td>\n";
             echo "    <td class=\"threads\" style=\"", ($visible_threads ? "border-bottom: 0px; " : ""), ($lang['_textdir'] == "ltr") ? "border-left: 0px" : "border-right: 0px", "\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
-            
+
             if ($folder_info[$folder_number]['ACCESS_LEVEL'] < 2 || folder_is_accessible($folder_number) || perm_is_moderator()) {
-            
+
                 echo "<a href=\"";
                 echo $folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
                 echo "&fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\" style=\"", ($lang['_textdir'] == "ltr") ? "text-align: right; float: right" : "text-align: left; float: left", "\">{$lang['postnew']}</a>";
-            
+
             }else {
-            
+
                 echo "&nbsp;";
             }
-            
+
             echo "</td>\n";
             echo "  </tr>\n";
 
@@ -659,7 +663,7 @@ if (bh_session_get_value('UID') != 0) {
     if (isset($visiblethreads) && is_array($visiblethreads)) {
 
         $labels[] = $lang['visiblediscussions'];
-        
+
         for ($i = 0; $i < sizeof($visiblethreads); $i++) {
             echo "        ", form_input_hidden("tid_array[]", $visiblethreads[$i]), "\n";
         }

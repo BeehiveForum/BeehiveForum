@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.23 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.24 2004-04-23 22:10:53 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,9 +48,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -68,7 +68,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -80,6 +80,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -101,35 +105,35 @@ if (isset($_POST['submit'])) {
     // Required fields
 
     if (isset($_POST['pw']) && strlen(trim($_POST['pw'])) > 0) {
-    
+
         if (isset($_POST['cpw']) && strlen(trim($_POST['cpw'])) > 0) {
-        
+
             if (trim($_POST['pw']) == trim($_POST['cpw'])) {
-            
+
                 if (_htmlentities(trim($_POST['pw'])) != trim($_POST['pw'])) {
                     $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
                     $valid = false;
                 }
-                
+
                 if (!preg_match("/^[a-z0-9_-]+$/i", trim($_POST['pw']))) {
                     $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
                     $valid = false;
-                }                
-                
+                }
+
                 if (strlen(trim($_POST['pw'])) < 6) {
                     $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
                     $valid = false;
                 }
-                
+
                 if ($valid) {
                     $t_password = $_POST['pw'];
                 }
-                
+
             }else {
                 $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
                 $valid = false;
             }
-            
+
         }else {
             $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
             $valid = false;
@@ -139,7 +143,7 @@ if (isset($_POST['submit'])) {
         $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
         $valid = false;
     }
-    
+
     if ($valid) {
 
         // User's UID for updating with.
@@ -219,7 +223,7 @@ if (isset($_POST['submit'])) {
             exit;
         }
     }
-}    
+}
 
 // Start Output Here
 

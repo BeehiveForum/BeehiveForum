@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.59 2004-04-23 11:42:39 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.60 2004-04-23 22:12:11 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -220,7 +220,7 @@ function forum_get_setting($setting_name, $value = false, $default = false)
 
 function draw_start_page()
 {
-    global $lang;
+    $lang = load_language_file();
 
     $db_draw_start_page = db_connect();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.33 2004-04-17 17:39:26 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.34 2004-04-23 22:10:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -34,6 +34,10 @@ include_once("./include/forum.inc.php");
 
 // Fetch the forum settings
 $forum_settings = get_forum_settings();
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -54,34 +58,34 @@ if (isset($_POST['submit'])) {
     $error_html = "";
 
     if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
-    
+
         if (isset($_POST['key']) && is_md5($_POST['key'])) {
-        
+
             if (isset($_POST['pw']) && isset($_POST['cpw'])) {
 
                 if (trim($_POST['pw']) == trim($_POST['cpw'])) {
-        
+
                     if (_htmlentities(trim($_POST['pw'])) != trim($_POST['pw'])) {
                         $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
                         $valid = false;
                     }
-       
+
                     if (!preg_match("/^[a-z0-9_-]+$/i", trim($_POST['pw']))) {
                         $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
                         $valid = false;
-                    }      
-      
+                    }
+
                     if (strlen(trim($_POST['pw'])) < 6) {
                         $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
                         $valid = false;
                     }
-            
+
                     if ($valid) {
 
                         if (user_change_pw($_POST['uid'], trim($_POST['pw']), $_POST['key'])) {
 
                             html_draw_top();
- 
+
                             echo "<h1>{$lang['passwdchanged']}</h1>";
                             echo "<br />\n";
                             echo "<div align=\"center\">\n";
@@ -109,11 +113,11 @@ if (isset($_POST['submit'])) {
                 $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
                 $valid = false;
             }
-    
+
         }else {
             $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
             $valid = false;
-        }            
+        }
 
     }else {
         $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";

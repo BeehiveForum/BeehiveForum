@@ -21,14 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.103 2004-04-21 20:25:37 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.104 2004-04-23 22:12:11 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
 
 function html_guest_error ()
 {
-     global $lang;
+     $lang = load_language_file();
 
      html_draw_top();
 
@@ -42,7 +42,7 @@ function html_guest_error ()
 
 function html_poll_edit_error ()
 {
-    global $lang;
+    $lang = load_language_file();
 
     html_draw_top();
     echo "<h1>{$lang['pollediterror']}</h1>";
@@ -51,7 +51,7 @@ function html_poll_edit_error ()
 
 function html_message_type_error()
 {
-    global $lang;
+    $lang = load_language_file();
 
     html_draw_top();
     echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
@@ -125,7 +125,7 @@ function html_message_type_error()
 
 function html_draw_top()
 {
-    global $lang;
+    $lang = load_language_file();
 
     $onload_array = array();
     $onunload_array = array();

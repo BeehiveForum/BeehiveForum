@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.84 2004-04-17 17:39:28 decoyduck Exp $ */
+/* $Id: register.php,v 1.85 2004-04-23 22:11:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -56,19 +56,24 @@ if ($user_sess = bh_session_check()) {
     html_draw_top();
     echo "<div align=\"center\">\n";
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-    
+
     if (isset($final_uri)) {
         form_quick_button("./index.php". $lang['continue'], "final_uri", $final_uri, "_top");
     }else {
         form_quick_button("./index.php". $lang['continue'], false, false, "_top");
     }
-    
+
     echo "</div>\n";
     html_draw_bottom();
     exit;
 }
 
-// Fetch the forum webtag and settings
+// Load language file
+
+$lang = load_language_file();
+
+// Make sure we have a webtag
+
 $webtag = get_webtag();
 
 $available_styles = array();
@@ -138,24 +143,24 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['LOGON']) && strlen(trim($_POST['LOGON'])) > 0) {
 
         $new_user['LOGON'] = strtoupper(_stripslashes(trim($_POST['LOGON'])));
-      
+
         if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['LOGON'])) {
             $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
             $valid = false;
         }
-      
+
         if (strlen($new_user['LOGON']) < 2) {
             $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
             $valid = false;
         }
-      
+
         if (strlen($new_user['LOGON']) > 15) {
             $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
             $valid = false;
         }
-      
+
     }else {
-  
+
         $error_html.= "<h2>{$lang['usernamerequired']}</h2>\n";
         $valid = false;
     }
@@ -163,19 +168,19 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['PW']) && strlen(trim($_POST['PW'])) > 0) {
 
         $new_user['PW'] = _stripslashes(trim($_POST['PW']));
-      
+
         if (!preg_match("/^[a-z0-9_-]+$/i", $new_user['PW'])) {
             $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
             $valid = false;
-        }      
-      
+        }
+
         if (strlen($new_user['PW']) < 6) {
             $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
             $valid = false;
         }
-        
+
     }else {
-    
+
         $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
         $valid.= false;
     }
@@ -183,24 +188,24 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['CPW']) && strlen(trim($_POST['CPW'])) > 0) {
 
         $new_user['CPW'] = _stripslashes(trim($_POST['CPW']));
-      
+
         if (_htmlentities($new_user['CPW']) != $new_user['CPW']) {
             $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
             $valid = false;
         }
-      
+
     }else {
-    
+
         $error_html.= "<h2>{$lang['confirmationpasswdrequired']}</h2>\n";
         $valid = false;
     }
 
     if (isset($_POST['NICKNAME']) && strlen(trim($_POST['NICKNAME'])) > 0) {
-      
+
         $new_user['NICKNAME'] = _stripslashes(trim($_POST['NICKNAME']));
-        
+
     }else {
-  
+
         $error_html.= "<h2>{$lang['nicknamerequired']}</h2>\n";
         $valid = false;
     }
@@ -214,9 +219,9 @@ if (isset($_POST['submit'])) {
             $error = "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
             $valid = false;
         }
-        
+
     }else {
-    
+
         $error_html.= "<h2>{$lang['emailrequired']}</h2>\n";
         $valid = false;
     }
@@ -226,28 +231,28 @@ if (isset($_POST['submit'])) {
         $new_user['DOB_DAY']   = _stripslashes(trim($_POST['dob_day']));
         $new_user['DOB_MONTH'] = _stripslashes(trim($_POST['dob_month']));
         $new_user['DOB_YEAR']  = _stripslashes(trim($_POST['dob_year']));
-          
+
         $new_user['DOB'] = "{$new_user['DOB_YEAR']}-{$new_user['DOB_MONTH']}-{$new_user['DOB_DAY']}";
         $new_user['DOB_BLANK_FIELDS'] = ($new_user['DOB_YEAR'] == 0 || $new_user['DOB_MONTH'] == 0 || $new_user['DOB_DAY'] == 0) ? true : false;
-        
+
     }else {
-    
+
         $error_html.= "<h2>{$lang['birthdayrequired']}</h2>";
         $valid = false;
     }
-    
+
     if (isset($_POST['FIRSTNAME']) && strlen(trim($_POST['FIRSTNAME'])) > 0) {
         $new_user['FIRSTNAME'] = _stripslashes(trim($_POST['FIRSTNAME']));
     }else {
         $new_user['FIRSTNAME'] = "";
     }
-      
+
     if (isset($_POST['LASTNAME']) && strlen(trim($_POST['LASTNAME'])) > 0) {
         $new_user['LASTNAME'] = _stripslashes(trim($_POST['LASTNAME']));
     }else {
         $new_user['LASTNAME'] = "";
-    }      
-        
+    }
+
     if (isset($_POST['SIG_CONTENT']) && strlen(trim($_POST['SIG_CONTENT'])) > 0) {
         $new_user['SIG_CONTENT'] = trim($_POST['SIG_CONTENT']);
     }else {
@@ -261,19 +266,19 @@ if (isset($_POST['submit'])) {
         $new_user['SIG_CONTENT'] = _stripslashes($new_user['SIG_CONTENT']);
         $new_user['SIG_HTML'] = "N";
     }
-        
+
     if (isset($_POST['EMAIL_NOTIFY']) && $_POST['EMAIL_NOTIFY'] == "Y") {
         $new_user['EMAIL_NOTIFY'] = "Y";
     }else {
         $new_user['EMAIL_NOTIFY'] = "N";
     }
-        
+
     if (isset($_POST['PM_NOTIFY_EMAIL']) && $_POST['PM_NOTIFY_EMAIL'] == "Y") {
         $new_user['PM_NOTIFY_EMAIL'] = "Y";
     }else {
         $new_user['PM_NOTIFY_EMAIL'] = "N";
     }
-        
+
     if (isset($_POST['PM_NOTIFY']) && $_POST['PM_NOTIFY'] == "Y") {
         $new_user['PM_NOTIFY'] = "Y";
     }else {
@@ -285,25 +290,25 @@ if (isset($_POST['submit'])) {
     }else {
         $new_user['MARK_AS_OF_INT'] = "N";
     }
-        
+
     if (isset($_POST['DL_SAVING']) && $_POST['DL_SAVING'] == "Y") {
         $new_user['DL_SAVING'] = "Y";
     }else {
         $new_user['DL_SAVING'] = "N";
     }
-        
+
     if (isset($_POST['TIMEZONE']) && _in_array($_POST['TIMEZONE'], $timezones_data)) {
         $new_user['TIMEZONE'] = $_POST['TIMEZONE'];
     }else {
         $new_user['TIMEZONE'] = 0;
     }
-        
+
     if (isset($_POST['LANGUAGE']) && _in_array($_POST['LANGUAGE'], $available_langs_labels)) {
         $new_user['LANGUAGE'] = $_POST['LANGUAGE'];
     }else {
         $new_user['LANGUAGE'] = forum_get_setting('default_language');
     }
-        
+
     if (isset($_POST['STYLE']) && _in_array($_POST['STYLE'], $available_styles)) {
         $new_user['STYLE'] = $_POST['STYLE'];
     }else {
@@ -314,15 +319,15 @@ if (isset($_POST['submit'])) {
         $new_user['EMOTICONS'] = $_POST['EMOTICONS'];
     }else {
         $new_user['EMOTICONS'] = forum_get_setting('default_emoticons');
-    }    
-    
+    }
+
     if ($valid) {
-  
+
         if ($new_user['PW'] != $new_user['CPW']) {
             $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
             $valid = false;
         }
-      
+
         if (strtolower($new_user['LOGON']) == strtolower($new_user['PW'])) {
             $error_html.= "<h2>{$lang['usernamesameaspasswd']}</h2>\n";
             $valid = false;
@@ -330,7 +335,7 @@ if (isset($_POST['submit'])) {
     }
 
     if ($valid) {
-    
+
         if (user_exists($new_user['LOGON'])) {
             $error_html.= "<h2>{$lang['usernameexists']}</h2>\n";
             $valid = false;
@@ -375,9 +380,9 @@ if (isset($_POST['submit'])) {
             }
 
             // Prepare Form Data
-         
+
             $passw = str_repeat(chr(32), strlen($new_user['PW']));
-            $passh = md5(_stripslashes($new_user['PW']));          
+            $passh = md5(_stripslashes($new_user['PW']));
 
             if (($key = _array_search($new_user['LOGON'], $username_array)) !== false) {
 
@@ -387,31 +392,31 @@ if (isset($_POST['submit'])) {
             }
 
             array_unshift($username_array, $new_user['LOGON']);
-        
+
             if (isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y')) {
-        
+
                 array_unshift($password_array, $passw);
                 array_unshift($passhash_array, $passh);
 
             }else {
-        
+
                 array_unshift($password_array, "");
                 array_unshift($passhash_array, "");
             }
- 
+
             // set / update the username and password cookies
-        
+
             for ($i = 0; $i < sizeof($username_array); $i++) {
 
                 bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
-             
+
                 if (isset($password_array[$i]) && isset($passhash_array[$i])) {
-                        
+
                     bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
                     bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
 
                 }else {
-                        
+
                     bh_setcookie("bh_remember_password[$i]", "", time() + YEAR_IN_SECONDS);
                     bh_setcookie("bh_remember_passhash[$i]", "", time() + YEAR_IN_SECONDS);
                 }
@@ -426,13 +431,13 @@ if (isset($_POST['submit'])) {
 
             echo "<div align=\"center\">\n";
             echo "<p>{$lang['userrecordcreated']}</p>\n";
-          
+
             if (isset($final_uri)) {
                 form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
             }else {
                 form_quick_button("./index.php", $lang['continue'], false, false, "_top");
             }
-          
+
             echo "</div>\n";
             html_draw_bottom();
             exit;

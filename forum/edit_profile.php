@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.33 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.34 2004-04-23 22:10:54 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -51,9 +51,9 @@ include_once("./include/user_profile.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -71,7 +71,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -83,6 +83,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -111,7 +115,7 @@ if (isset($_POST['submit'])) {
         $entry = trim($_POST['t_entry'][$i]);
         user_profile_update($uid, $_POST['t_piid'][$i], $entry);
     }
-    
+
     echo "<h2>{$lang['profileupdated']}</h2>";
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.35 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.36 2004-04-23 22:11:09 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -59,6 +59,10 @@ if (!$user_sess = bh_session_check()) {
     $uri = "./llogon.php?webtag=$webtag&final_uri=". rawurlencode(get_request_uri());
     header_redirect($uri);
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.29 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.30 2004-04-23 22:10:55 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,9 +50,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -70,7 +70,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -82,6 +82,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -97,7 +101,7 @@ $uid = bh_session_get_value('UID');
 if (isset($_POST['submit'])) {
 
     user_clear_word_filter();
-    
+
     if (isset($_POST['match']) && is_array($_POST['match'])) {
         foreach ($_POST['match'] as $key => $value) {
             $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
@@ -108,7 +112,7 @@ if (isset($_POST['submit'])) {
             }
         }
     }
-    
+
     if (isset($_POST['new_match']) && strlen(trim($_POST['new_match'])) > 0) {
         $filter_option = (isset($_POST['new_filter_option'])) ? $_POST['new_filter_option'][$key] : 0;
         if (isset($_POST['new_replace']) && strlen(trim($_POST['new_replace'])) > 0) {
@@ -117,19 +121,19 @@ if (isset($_POST['submit'])) {
             user_add_word_filter($_POST['new_match'], "", $filter_option);
         }
     }
-    
+
     if (isset($_POST['use_admin_filter']) && $_POST['use_admin_filter'] == "Y") {
         $user_prefs['USE_ADMIN_FILTER'] = "Y";
     }else {
         $user_prefs['USE_ADMIN_FILTER'] = "N";
     }
-    
+
     if (isset($_POST['use_word_filter']) && $_POST['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
     }else {
         $user_prefs['USE_WORD_FILTER'] = "N";
-    }    
-    
+    }
+
     user_update_prefs($uid, $user_prefs);
     if (!isset($status_text)) $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
 
@@ -180,22 +184,22 @@ echo "                </tr>\n";
 foreach ($word_filter_array as $key => $word_filter) {
 
     echo "                <tr>\n";
-    
+
     if ($word_filter['UID'] == 0) {
-        echo "                  <td align=\"center\"><sup>[A]</sup></td>\n";    
+        echo "                  <td align=\"center\"><sup>[A]</sup></td>\n";
         echo "                  <td>", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), "</td>\n";
         echo "                  <td>", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), "</td>\n";
         echo "                  <td>&nbsp;</td>\n";
     }else {
-        echo "                  <td>&nbsp;</td>\n";    
+        echo "                  <td>&nbsp;</td>\n";
         echo "                  <td>", form_input_text("match[$key]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
         echo "                  <td>", form_input_text("replace[$key]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
         echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "0", "", $word_filter['FILTER_OPTION'] == 0), "</td>\n";
         echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "1", "", $word_filter['FILTER_OPTION'] == 1), "</td>\n";
-        echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "2", "", $word_filter['FILTER_OPTION'] == 2), "</td>\n";        
+        echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "2", "", $word_filter['FILTER_OPTION'] == 2), "</td>\n";
         echo "                  <td align=\"center\">", form_submit("delete[$key]", $lang['delete']), "</td>\n";
     }
-    
+
     echo "                </tr>\n";
 }
 

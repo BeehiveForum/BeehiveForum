@@ -21,50 +21,71 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.14 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.15 2004-04-23 22:12:12 decoyduck Exp $ */
 
-include_once("./include/config.inc.php");
-include_once("./include/session.inc.php");
+function load_language_file()
+{
+    static $lang = false;
 
-$default_language = forum_get_setting('default_language', false, 'en');
-$pref_language = bh_session_get_value("LANGUAGE");
+    if (!$lang) {
 
-if ($pref_language && $pref_language != "") { // if the user has expressed a preference for language, ignore what the browser wants and use that if available
-   if (file_exists("./include/languages/{$pref_language}.inc.php")) {
-        include_once("./include/languages/{$pref_language}.inc.php");
-        return;
+        $default_language = forum_get_setting('default_language', false, 'en');
+
+         // if the user has expressed a preference for language,
+         // ignore what the browser wants and use that if available
+
+        if ($pref_language = bh_session_get_value("LANGUAGE")) {
+            if (file_exists("./include/languages/{$pref_language}.inc.php")) {
+                include_once("./include/languages/{$pref_language}.inc.php");
+                return $lang;
+            }
+        }
+
+         // if the browser doesn't send an Accept-Language header, give up.
+
+        if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            include_once("./include/languages/{$default_language}.inc.php");
+            return $lang;
+        }
+
+        // split the provided Accept-Language string into individual languages
+
+        $langs = preg_split("/\s*,\s*/", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+
+         // work out what the q values associated with each language are
+
+        foreach ($langs as $key => $value) {
+            if (strstr($value, ";q=")) {
+                $bits = explode(";q=", $value);
+                $langs[$key] = $bits[0];
+                $qvalue[$key] = $bits[1];
+            }else {
+                $qvalue[$key] = 1;
+            }
+        }
+
+        // sort the array in descending order of q value
+
+        arsort($qvalue);
+
+        // go through the array and use the first language installed that matches
+        // if we've got to the stage where the user will accept any language,
+        // default to what is specified in config.inc.php
+
+        foreach ($qvalue as $key => $value) {
+            if ($langs[$key] == "*") $langs[$key] = $default_language;
+            if (file_exists("./include/languages/{$langs[$key]}.inc.php")) {
+                include_once("./include/languages/{$langs[$key]}.inc.php");
+                return $lang;
+            }
+        }
+
+        // if we're still here, no languages matched. Use the default specified in config.inc.php
+        include_once ("./include/languages/{$default_language}.inc.php");
     }
+
+    return $lang;
 }
-
-if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-   include_once("./include/languages/{$default_language}.inc.php"); // if the browser doesn't send an Accept-Language header, give up.
-   return;
-}
-
-$langs = preg_split("/\s*,\s*/", $_SERVER['HTTP_ACCEPT_LANGUAGE']); // split the provided Accept-Language string into individual languages
-
-foreach ($langs as $key => $value) { // work out what the q values associated with each language are
-    if (strstr($value, ";q=")) {
-       $bits = explode(";q=", $value);
-       $langs[$key] = $bits[0];
-       $qvalue[$key] = $bits[1];
-    } else {
-       $qvalue[$key] = 1;
-    }
-}
-
-arsort($qvalue); // sort the array in descending order of q value
-
-foreach ($qvalue as $key => $value) { // go through the array and use the first language installed that matches
-    if ($langs[$key] == "*") $langs[$key] = forum_get_setting('default_language'); // if we've got to the stage where the user will accept any language, default to what is specified in config.inc.php
-    if (file_exists("./include/languages/".$langs[$key].".inc.php")) {
-        include_once("./include/languages/".$langs[$key].".inc.php");
-        return;
-    }
-}
-
-// if we're still here, no languages matched. Use the default specified in config.inc.php
-include_once ("./include/languages/{$default_language}.inc.php");
 
 function lang_get_available()
 {

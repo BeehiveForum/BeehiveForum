@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.5 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.6 2004-04-23 22:12:14 decoyduck Exp $ */
 
 function perform_logon($logon_main)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -177,7 +177,7 @@ function perform_logon($logon_main)
                     echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
                     echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
                 }
-	    
+
 	    }else {
 
 	        echo "</div>\n";
@@ -192,7 +192,7 @@ function perform_logon($logon_main)
 
 function draw_logon_form($logon_main)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $webtag = get_webtag();
 
@@ -348,7 +348,7 @@ function draw_logon_form($logon_main)
     echo "            <tr>\n";
     echo "              <td>&nbsp;</td>\n";
     echo "              <td>";
-    
+
     echo form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false));
 
     echo "</td>\n";

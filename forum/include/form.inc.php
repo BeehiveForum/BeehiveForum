@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.50 2004-04-19 20:56:13 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.51 2004-04-23 22:12:10 decoyduck Exp $ */
 
 // Create a form field
 
 function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\" autocomplete=\"off\" value=\"$value\" ";
 
@@ -75,7 +75,7 @@ function form_input_hidden($name, $value = false, $custom_html = false)
 
 function form_textarea($name, $value = false, $rows = false, $cols = false, $wrap = "virtual", $custom_html = false)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $html = "<textarea name=\"$name\" class=\"bhtextarea\" autocomplete=\"off\" ";
 
@@ -102,7 +102,7 @@ function form_textarea($name, $value = false, $rows = false, $cols = false, $wra
 
 function form_dropdown_sql($name, $sql, $default, $custom_html = false)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" ";
     $html.= "dir=\"{$lang['_textdir']}\" ";
@@ -134,7 +134,7 @@ function form_dropdown_sql($name, $sql, $default, $custom_html = false)
 
 function form_dropdown_array($name, $value, $label, $default = false, $custom_html = false)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $html = "<select name=\"$name\" class=\"bhselect\" autocomplete=\"off\" ";
     $html.= "dir=\"{$lang['_textdir']}\" ";
@@ -297,7 +297,7 @@ function form_quick_button($href, $label, $var = false, $value = false, $target 
 
 function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $birthday_days = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
                            '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
@@ -367,7 +367,7 @@ function form_input_hidden_array($name, $value)
 
 function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false)
 {
-    global $lang;
+    $lang = load_language_file();
 
     $days = range(1,31);
     array_unshift($days, " ");

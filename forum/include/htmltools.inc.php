@@ -51,9 +51,9 @@ class TextAreaHTML {
 	// Returns the HTML for the toolbar
 	// ----------------------------------------------------
 	function toolbar ($emoticons = true, $custom_html = "") {
-		
-		global $lang;
-		
+
+		$lang = load_language_file();
+
 		$forum_settings = get_forum_settings();
 		$webtag = get_webtag();
 
@@ -182,8 +182,8 @@ class TextAreaHTML {
 	//		$text = 'original' code submitted to fixhtml
 	// ----------------------------------------------------
 	function compare_original ($ta, $text) {
-		
-		global $lang;
+
+		$lang = load_language_file();
 
 		$str = form_radio("co_".$ta."_rb", "correct", $lang['correctedcode'], true, "onClick=\"co_".$ta."_show('correct');\"")."\n";
 		$str.= form_radio("co_".$ta."_rb", "submit", $lang['submittedcode'], false, "onClick=\"co_".$ta."_show('submit');\"")."\n";

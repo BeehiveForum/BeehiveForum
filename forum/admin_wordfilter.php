@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.42 2004-04-17 18:41:00 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.43 2004-04-23 22:10:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,9 +50,9 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -70,7 +70,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -82,6 +82,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -102,7 +106,7 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 if (isset($_POST['submit'])) {
 
     admin_clear_word_filter();
-    
+
     if (isset($_POST['match']) && is_array($_POST['match'])) {
         foreach ($_POST['match'] as $key => $value) {
             $filter_option = (isset($_POST['filter_option'][$key])) ? $_POST['filter_option'][$key] : 0;
@@ -112,8 +116,8 @@ if (isset($_POST['submit'])) {
                 admin_add_word_filter($_POST['match'][$key], "", $filter_option);
             }
         }
-    }    
-    
+    }
+
     if (isset($_POST['new_match']) && strlen(trim($_POST['new_match'])) > 0) {
         $new_filter_option = (isset($_POST['new_filter_option'][$key])) ? $_POST['new_filter_option'][$key] : 0;
         if (isset($_POST['new_replace']) && strlen(trim($_POST['new_replace'])) > 0) {
@@ -122,18 +126,18 @@ if (isset($_POST['submit'])) {
             admin_add_word_filter($_POST['new_match'], "", $new_filter_option);
         }
     }
-    
+
     if (isset($_POST['admin_force_word_filter']) && $_POST['admin_force_word_filter'] == "Y") {
         $new_forum_settings['admin_force_word_filter'] = "Y";
     }else {
         $new_forum_settings['admin_force_word_filter'] = "N";
     }
-    
+
     save_forum_settings($new_forum_settings);
-    
-    $uid = bh_session_get_value('UID');        
+
+    $uid = bh_session_get_value('UID');
     admin_addlog($uid, 0, 0, 0, 0, 0, 28);
-    
+
     if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
         header_redirect("./admin_wordfilter.php?webtag=$webtag&updated=true");
@@ -157,7 +161,7 @@ if (isset($_POST['submit'])) {
 
         html_draw_bottom();
         exit;
-    }    
+    }
 
 }elseif (isset($_POST['delete'])) {
 
@@ -198,11 +202,11 @@ foreach ($word_filter_array as $key => $word_filter) {
     echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>", form_input_text("match[$key]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
     echo "                  <td>", form_input_text("replace[$key]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
-    echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "0", "", $word_filter['FILTER_OPTION'] == 0), "</td>\n";    
+    echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "0", "", $word_filter['FILTER_OPTION'] == 0), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "1", "", $word_filter['FILTER_OPTION'] == 1), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "2", "", $word_filter['FILTER_OPTION'] == 2), "</td>\n";
     echo "                  <td align=\"center\">", form_submit("delete[$key]", $lang['delete']), "</td>\n";
-    echo "                </tr>\n";    
+    echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
@@ -212,7 +216,7 @@ echo "                  <td>", form_input_text("new_replace", "", 30), "</td>\n"
 echo "                  <td align=\"center\">", form_radio("new_filter_option", "0", "", true), "</td>\n";
 echo "                  <td align=\"center\">", form_radio("new_filter_option", "1", "", false), "</td>\n";
 echo "                  <td align=\"center\">", form_radio("new_filter_option", "2", "", false), "</td>\n";
-echo "                </tr>\n"; 
+echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";

@@ -9,7 +9,7 @@ BeehiveForum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
-			 
+
 BeehiveForum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.5 2004-04-17 18:40:59 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.6 2004-04-23 22:10:09 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -53,9 +53,9 @@ include_once("./include/session.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -73,7 +73,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -85,6 +85,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Load language file
+
+$lang = load_language_file();
 
 // Check we have a webtag
 
@@ -182,7 +186,7 @@ if ($forum_array = forum_get($fid)) {
         echo "        </tr>\n";
 
     }else {
-        
+
         echo "        <tr>\n";
         echo "          <td align=\"left\">{$lang['nousers']}</td>\n";
         echo "        </tr>\n";
@@ -207,16 +211,16 @@ if ($forum_array = forum_get($fid)) {
                 echo "          <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</td>\n";
                 echo "        </tr>\n";
             }
-      
+
             echo "        <tr>\n";
             echo "          <td align=\"left\">&nbsp;</td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
             echo "          <td align=\"left\">", form_submit('add_searched_user', $lang['add']), "</td>\n";
             echo "        </tr>\n";
-        
+
         }else {
-         
+
             echo "        <tr>\n";
             echo "          <td align=\"left\">{$lang['nomatches']}</td>\n";
             echo "        </tr>\n";

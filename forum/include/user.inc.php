@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.163 2004-04-22 16:55:08 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.164 2004-04-23 22:12:31 decoyduck Exp $ */
 
 function user_count()
 {
@@ -512,7 +512,7 @@ function user_get_post_count($uid)
 
 function user_get_last_logon_time($uid, $verbose = true)
 {
-    global $lang;
+    $lang = load_language_file();
 
     if (!is_numeric($uid)) return false;
 

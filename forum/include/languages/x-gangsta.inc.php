@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.67 2004-04-20 10:01:44 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.1 2004-04-23 22:13:25 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -265,7 +265,7 @@ $lang['warningnoforums'] = "WARNING: You have no forums set up.";
 $lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it's entire contents is lost forever and cannot be recovered.";
 $lang['deleteforum'] = "Delete Forum";
 $lang['defaultforum'] = "Default Forum";
-$lang['successfullycreatedforum'] = "Successfully created forum $new_webtag";
+$lang['successfullycreatedforum'] = "Successfully created forum";
 $lang['failedtocreateforum_1'] = "Failed to create forum";
 $lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 
@@ -464,7 +464,7 @@ $lang['gotologin'] = "Go to tha motherfucking Login screen";
 
 $lang['updatefailed'] = "Tha fuckin' update fizailed";
 $lang['passwdsdonotmatch'] = "Sheeeeeit. Passwords do not match you dumb fuck.";
-$lang['allfieldsrequired'] = "All <b>mutha<b>fucking</b></i> fields are required.";
+$lang['allfieldsrequired'] = "All <b>mutha<i>fucking</i></b> fields are required.";
 $lang['invalidaccess'] = "Invalid Access. CRACKA ALERT!";
 $lang['requiredinformationnotfound'] = "Required shit ain't fizound, homes";
 $lang['forgotpasswd'] = "Forgot yo fuckin' password";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.77 2005-03-20 17:53:31 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.78 2005-03-20 20:35:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -195,69 +195,94 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = sprintf($lang['changedpasswordforuser'], $entry_array[0]);
                 break;
 
-            case BANNED_IPADDRESS:
+            case ADD_BANNED_IP:
 
-                $action_text = "{$lang['bannedipaddress']} {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['addedipaddresstobanlist'], $entry_array[0]);
                 break;
 
-            case UNBANNED_IPADDRESS:
+            case REMOVE_BANNED_IP:
 
-                $action_text = "{$lang['unbannedipaddress']} {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['removedipaddressfrombanlist'], $entry_array[0]);
                 break;
 
-            case DELETE_ALL_ATTACHMENTS:
+            case ADD_BANNED_LOGON:
 
-                $action_text = "{$lang['deletedusersattachments']} {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['addedlogontobanlist'], $entry_array[0]);
+                break;
+
+            case REMOVE_BANNED_LOGON:
+
+                $action_text = sprintf($lang['removedlogonfrombanlist'], $entry_array[0]);
+                break;
+
+            case ADD_BANNED_NICKNAME:
+
+                $action_text = sprintf($lang['addednicknametobanlist'], $entry_array[0]);
+                break;
+
+            case REMOVE_BANNED_NICKNAME:
+
+                $action_text = sprintf($lang['removednicknamefrombanlist'], $entry_array[0]);
+                break;
+
+            case ADD_BANNED_EMAIL:
+
+                $action_text = sprintf($lang['addedemailtobanlist'], $entry_array[0]);
+                break;
+
+            case REMOVE_BANNED_EMAIL:
+
+                $action_text = sprintf($lang['removedemailfrombanlist'], $entry_array[0]);
                 break;
 
             case EDIT_THREAD_OPTIONS:
 
-                $action_text = "{$lang['changedtitleaccessfolder']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['editedfolder'], $entry_array[0]);
                 break;
 
             case MOVED_THREADS:
 
-                $action_text = "{$lang['movedthreads']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['movedallthreadsfromto'], $entry_array[0], $entry_array[1]);
                 break;
 
             case CREATE_FOLDER:
 
-                $action_text = "{$lang['creatednewfolder']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['creatednewfolder'], $entry_array[0]);
                 break;
 
             case DELETE_FOLDER:
 
-                $action_text = "{$lang['deletedfolder']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedfolder'], $entry_array[0]);
                 break;
 
             case CHANGE_PROFILE_SECT:
 
-                $action_text = "{$lang['changedprofilesectiontitle']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['changedprofilesectiontitle'], $entry_array[0], $entry_array[2]);
                 break;
 
             case ADDED_PROFILE_SECT:
 
-                $action_text = "{$lang['addednewprofilesection']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['addednewprofilesection'], $entry_array[0]);
                 break;
 
             case DELETE_PROFILE_SECT:
 
-                $action_text = "{$lang['deletedprofilesection']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedprofilesection'], $entry_array[0]);
                 break;
 
             case CHANGE_PROFILE_ITEM:
 
-                $action_text = "{$lang['changedprofileitemtitle']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['changedprofileitem'], $entry_array[0]);
                 break;
 
             case ADDED_PROFILE_ITEM:
 
-                $action_text = "{$lang['addednewprofileitem']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['addednewprofileitem'], $entry_array[1], $entry_array[0]);
                 break;
 
             case DELETE_PROFILE_ITEM:
 
-                $action_text = "{$lang['deletedprofileitem']}: {$admin_log_entry['ENTRY']}";
+                $action_text = sprintf($lang['deletedprofileitem'], $entry_array[0]);
                 break;
 
             case EDITED_START_PAGE:

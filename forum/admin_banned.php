@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.8 2005-03-14 13:27:14 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.9 2005-03-20 20:35:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -137,6 +137,7 @@ if (isset($_POST['add_ipaddress'])) {
             if (!ip_is_banned($add_banned_ipaddress)) {
 
                 add_ban_data('IPADDRESS', $add_banned_ipaddress);
+                admin_add_log_entry(ADD_BANNED_IP, $add_banned_ipaddress);
 
             }else {
 
@@ -156,6 +157,7 @@ if (isset($_POST['add_ipaddress'])) {
 
             $banned_ipaddress = trim(_stripslashes($banned_ipaddress));
             remove_ban_data('IPADDRESS', $banned_ipaddress);
+            admin_add_log_entry(REMOVE_BANNED_IP, $banned_ipaddress);
         }
     }
 }
@@ -176,6 +178,7 @@ if (isset($_POST['add_logon'])) {
             if (!logon_is_banned($add_banned_logon)) {
 
                 add_ban_data('LOGON', $add_banned_logon);
+                admin_add_log_entry(ADD_BANNED_LOGON, $add_banned_logon);
 
             }else {
 
@@ -195,6 +198,7 @@ if (isset($_POST['add_logon'])) {
 
             $banned_logon = trim(_stripslashes($banned_logon));
             remove_ban_data('LOGON', $banned_logon);
+            admin_add_log_entry(REMOVE_BANNED_LOGON, $banned_logon);
         }
     }
 }
@@ -215,6 +219,7 @@ if (isset($_POST['add_nickname'])) {
             if (!nickname_is_banned($add_banned_nickname)) {
 
                 add_ban_data('NICKNAME', $add_banned_nickname);
+                admin_add_log_entry(ADD_BANNED_NICKNAME, $add_banned_nickname);
 
             }else {
 
@@ -234,6 +239,7 @@ if (isset($_POST['add_nickname'])) {
 
             $banned_nickname = trim(_stripslashes($banned_nickname));
             remove_ban_data('NICKNAME', $banned_nickname);
+            admin_add_log_entry(REMOVE_BANNED_NICKNAME, $banned_nickname);
         }
     }
 }
@@ -254,6 +260,7 @@ if (isset($_POST['add_email'])) {
             if (!email_is_banned($add_banned_email)) {
 
                 add_ban_data('EMAIL', $add_banned_email);
+                admin_add_log_entry(ADD_BANNED_EMAIL, $add_banned_email);
 
             }else {
 
@@ -273,6 +280,7 @@ if (isset($_POST['add_email'])) {
 
             $banned_email = trim(_stripslashes($banned_email));
             remove_ban_data('EMAIL', $banned_email);
+            admin_add_log_entry(REMOVE_BANNED_EMAIL, $banned_email);
         }
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.61 2004-04-30 21:10:50 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.62 2004-05-08 17:56:44 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -115,8 +115,6 @@ function search_execute($argarray, &$urlquery, &$error)
 
             if (sizeof($keywords_array) > 0) {
 
-                $keyword_search_sql = "";
-
                 if ($argarray['include'] > 0) {
 
                     $thread_title_sql = "THREAD.TITLE LIKE '%";
@@ -150,8 +148,6 @@ function search_execute($argarray, &$urlquery, &$error)
             }
 
             if (sizeof($keywords_array) > 0) {
-
-                $keyword_search_sql = "";
 
                 if ($argarray['include'] > 0) {
 
@@ -194,7 +190,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
         if ($argarray['me_only'] == 'Y') {
 
-            $keyword_search_sql.= "{$folder_sql} AND (";
+            $keyword_search_sql = "{$folder_sql} AND (";
 
             if ($thread_title_sql) {
                 $keyword_search_sql.= "(({$thread_title_sql}) AND (POST.TO_UID = '$uid' OR POST.FROM_UID = '$uid') {$date_range_sql}) ";
@@ -220,7 +216,7 @@ function search_execute($argarray, &$urlquery, &$error)
 
         }else {
 
-            $keyword_search_sql.= "{$folder_sql} AND (";
+            $keyword_search_sql = "{$folder_sql} AND (";
 
             if ($thread_title_sql) {
                 $keyword_search_sql.= "(({$thread_title_sql}) {$date_range_sql} {$from_to_user_sql}) ";

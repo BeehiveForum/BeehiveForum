@@ -31,7 +31,7 @@ function form_field($name, $value = "", $width = 0, $maxchars = 0, $type = "text
     $html = "<input type=\"$type\" name=\"$name\" class=\"bhinputtext\"";
 
     if($value) $html.= " value=\"$value\"";
-    if($width) $html.= " width=\"$width\"";
+    if($width) $html.= " size=\"$width\"";
     if($maxchars) $html.= " maxchars=\"$maxchars\"";
 
     return $html.">\n";

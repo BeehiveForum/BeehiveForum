@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.94 2004-09-26 19:35:33 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.95 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -189,16 +189,19 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
         if ($user_prefs['PM_INCLUDE_REPLY'] == 'Y') {
 
-            $t_content_array = explode("\n", wordwrap(trim($pm_data['CONTENT']), 72, "\n", 0));
+            // Quote the original PM using our psuedo HTML tag
 
-            foreach($t_content_array as $key => $t_content_line) {
-                $t_content_array[$key] = "> {$t_content_line}";
-            }
+            $t_content = "<quote source=\"";
+            $t_content.= format_user_name($pm_data['TLOGON'], $pm_data['TNICK']);
+            $t_content.= "\" url=\"\">";
+            $t_content.= trim($pm_data['CONTENT']);
+            $t_content.= "</quote>\n\n";
 
-            $t_content = format_user_name($pm_data['TLOGON'], $pm_data['TNICK']);
-            $t_content.= " wrote:\n";
-            $t_content.= implode("\n", $t_content_array);
-            $t_content.= "\n\n";
+            // Set the HTML mode to 'with automatic line breaks' so
+            // the quote is handled correctly when the user previews
+            // the message.
+
+            $post_html = 1;
         }
 
     }else {
@@ -405,7 +408,7 @@ if (isset($_POST['t_post_links'])) {
                 $links_enabled = false;
 }
 
-$post_html = 0;
+if (!isset($post_html)) $post_html = 0;
 
 if (isset($_POST['t_post_html'])) {
 

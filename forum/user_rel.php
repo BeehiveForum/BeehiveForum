@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.57 2004-09-13 14:43:22 tribalonline Exp $ */
+/* $Id: user_rel.php,v 1.58 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -138,10 +138,13 @@ if (isset($_POST['submit'])) {
     $rel+= isset($_POST['sig']) ? $_POST['sig'] : 0;
 
     $view_sigs = isset($_POST['view_sigs']) ? $_POST['view_sigs'] : '';
-	$view_sigs_global = false;
-	if (isset($_POST['view_sigs_global'])) {
-		$view_sigs_global = ($_POST['view_sigs_global'] == "Y") ? true : false;
-	}
+
+    $view_sigs_global = false;
+
+    if (isset($_POST['view_sigs_global'])) {
+
+        $view_sigs_global = ($_POST['view_sigs_global'] == "Y") ? true : false;
+    }
 
     user_rel_update($my_uid, $_POST['uid'], $rel);
 
@@ -153,6 +156,7 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_POST['cancel'])) {
+
     if ($edit_rel) {
         header_redirect("./edit_relations.php?webtag=$webtag");
     }else {

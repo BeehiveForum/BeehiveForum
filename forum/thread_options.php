@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.29 2004-09-07 23:03:10 tribalonline Exp $ */
+/* $Id: thread_options.php,v 1.30 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -244,7 +244,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
                 $threaddata['FID'] = $_POST['move'];
                 thread_change_folder($tid, $threaddata['FID']);
 
-	            post_add_edit_text($tid, 1);
+                post_add_edit_text($tid, 1);
 
                 if (perm_is_moderator($fid) && $threaddata['FROM_UID'] != $uid) {
                     admin_addlog(0, $threaddata['FID'], $tid, 0, 0, 0, 18);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.2 2004-09-13 12:34:11 tribalonline Exp $ */
+/* $Id: admin_forum_links.php,v 1.3 2004-10-27 22:33:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -121,31 +121,41 @@ if (!(perm_has_admin_access())) {
 }
 
 if (isset($_POST['l_lid'])) {
-	$first_mark = false;
-	foreach($_POST['l_lid'] as $lid => $value) {
-		if (isset($_POST['l_delete'][$lid])) {
-			// Delete
-			forum_links_delete($lid);
 
-		} else if (!$first_mark) {
-			$first_mark = true;
-			if ($lid == 0) {
-				forum_links_add(1, $_POST['l_title'][$lid], "");
-			} else {
-				forum_links_update($lid, 1, $_POST['l_title'][$lid], "");
-			}
+    $first_mark = false;
 
-		} else {
-			// Update
-			forum_links_update($lid, $_POST['l_pos'][$lid] + 1, $_POST['l_title'][$lid], $_POST['l_uri'][$lid]);
-		}
-	}
+    foreach($_POST['l_lid'] as $lid => $value) {
+
+        if (isset($_POST['l_delete'][$lid])) {
+
+            forum_links_delete($lid);
+
+        }else if (!$first_mark) {
+
+            $first_mark = true;
+
+            if ($lid == 0) {
+
+                forum_links_add(1, $_POST['l_title'][$lid], "");
+
+            }else {
+
+                 forum_links_update($lid, 1, $_POST['l_title'][$lid], "");
+            }
+
+        }else {
+
+            forum_links_update($lid, $_POST['l_pos'][$lid] + 1, $_POST['l_title'][$lid], $_POST['l_uri'][$lid]);
+        }
+    }
 
     $uid = bh_session_get_value('UID');
     admin_addlog($uid, 0, 0, 0, 0, 0, 35);
 }
+
 if (isset($_POST['l_title_new']) && $_POST['l_title_new'] != "" && isset($_POST['l_pos_new']) && isset($_POST['l_uri_new'])) {
-	forum_links_add($_POST['l_pos_new'] + 1, $_POST['l_title_new'], $_POST['l_uri_new']);
+
+    forum_links_add($_POST['l_pos_new'] + 1, $_POST['l_title_new'], $_POST['l_uri_new']);
 
     $uid = bh_session_get_value('UID');
     admin_addlog($uid, 0, 0, 0, 0, 0, 35);
@@ -156,11 +166,9 @@ html_draw_top();
 echo "<h1>{$lang['admin']} : {$lang['editforumlinks']}</h1>\n";
 echo "<p>{$lang['editforumlinks_exp']}</p>\n";
 
-
 $links = forum_links_get_links();
 
 if (isset($status_text)) echo $status_text;
-
 
 echo "<form method=\"post\" action=\"admin_forum_links.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
@@ -187,20 +195,25 @@ echo "                  <td>&nbsp;</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 
-for ($i=1; $i<count($links); $i++) {
-	$lid = $links[$i]['LID'];
-	echo "                <tr>\n";
+for ($i = 1; $i < count($links); $i++) {
 
-	if (count($links) > 2) {
-		echo "                  <td>", form_dropdown_array("l_pos[$lid]", range(1, count($links)-1), range(1, count($links)-1), $i), form_input_hidden("l_lid[$lid]", $lid), "</td>\n";
-	} else {
-		echo "                  <td>1", form_input_hidden("l_pos[$lid]", 1), form_input_hidden("l_lid[$lid]", $lid), "</td>\n";
-	}
+        $lid = $links[$i]['LID'];
 
-	echo "                  <td>". form_field("l_title[$lid]", $links[$i]['TITLE'], 32, 64) ."</td>\n";
-	echo "                  <td>". form_field("l_uri[$lid]", $links[$i]['URI'], 32, 255) ."</td>\n";
-	echo "                  <td>". form_submit("l_delete[$lid]", $lang['delete']) ."</td>\n";
-	echo "                </tr>\n";
+        echo "                <tr>\n";
+
+        if (count($links) > 2) {
+
+            echo "                  <td>", form_dropdown_array("l_pos[$lid]", range(1, count($links)-1), range(1, count($links)-1), $i), form_input_hidden("l_lid[$lid]", $lid), "</td>\n";
+
+        }else {
+
+            echo "                  <td>1", form_input_hidden("l_pos[$lid]", 1), form_input_hidden("l_lid[$lid]", $lid), "</td>\n";
+        }
+
+        echo "                  <td>". form_field("l_title[$lid]", $links[$i]['TITLE'], 32, 64) ."</td>\n";
+        echo "                  <td>". form_field("l_uri[$lid]", $links[$i]['URI'], 32, 255) ."</td>\n";
+        echo "                  <td>". form_submit("l_delete[$lid]", $lang['delete']) ."</td>\n";
+        echo "                </tr>\n";
 }
 
 echo "                <tr>\n";

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.30 2004-08-17 20:38:00 rowan_hill Exp $ */
+/* $Id: forums.php,v 1.31 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -98,14 +98,14 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['add_fav']) && is_array($_POST['add_fav'])) {
         foreach ($_POST['add_fav'] as $fid => $value) {
-	    user_set_forum_interest($fid, 1);
-	}
+            user_set_forum_interest($fid, 1);
+        }
     }
 
     if (isset($_POST['rem_fav']) && is_array($_POST['rem_fav'])) {
         foreach ($_POST['rem_fav'] as $fid => $value) {
-	    user_set_forum_interest($fid, 0);
-	}
+            user_set_forum_interest($fid, 0);
+        }
     }
 }
 
@@ -155,20 +155,20 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "                  </td>\n";
                 echo "                  <td width=\"30%\">{$forum['DESCRIPTION']}</td>\n";
 
-	        if ($forum['UNREAD_TO_ME'] > 0) {
+                if ($forum['UNREAD_TO_ME'] > 0) {
                     echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</a></td>\n";
-	        }else {
+                }else {
                     echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
                 }
 
-		if ($forum['LAST_LOGON'] > 0) {
+                if ($forum['LAST_LOGON'] > 0) {
                     echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
-		}else {
+                }else {
                     echo "                  <td width=\"20%\">{$lang['never']}</td>\n";
-		}
+                }
 
                 echo "                </tr>\n";
-	    }
+            }
 
             echo "                <tr>\n";
             echo "                  <td colspan=\"5\">&nbsp;</td>\n";
@@ -224,11 +224,11 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
                 }
 
-		if ($forum['LAST_LOGON'] > 0) {
+                if ($forum['LAST_LOGON'] > 0) {
                     echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
-		}else {
+                }else {
                     echo "                  <td width=\"20%\">{$lang['never']}</td>\n";
-		}
+                }
 
                 echo "                </tr>\n";
             }
@@ -249,7 +249,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "      <td align=\"right\">", form_submit("submit", $lang['addtofavourites']), "</td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-	    echo "  <br />\n";
+            echo "  <br />\n";
         }
 
         if (sizeof($forums_array['OTHER_FORUMS']) > 0 && !isset($webtag_search)) {
@@ -287,11 +287,11 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "                  <td width=\"20%\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
                 }
 
-		if ($forum['LAST_LOGON'] > 0) {
+                if ($forum['LAST_LOGON'] > 0) {
                     echo "                  <td width=\"20%\">", format_time($forum['LAST_LOGON']), "</td>\n";
-		}else {
+                }else {
                     echo "                  <td width=\"20%\">{$lang['never']}</td>\n";
-		}
+                }
 
                 echo "                </tr>\n";
             }
@@ -322,7 +322,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
         echo "<h1>{$lang['myforums']}</h1>\n";
         echo "<br>\n";
         echo "<h2>{$lang['noforumsavailable']}</h2>\n";
-	echo "<br>\n";
+        echo "<br>\n";
     }
 
 }else {

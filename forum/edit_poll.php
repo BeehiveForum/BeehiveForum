@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.81 2004-08-08 20:24:09 tribalonline Exp $ */
+/* $Id: edit_poll.php,v 1.82 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -216,7 +216,7 @@ html_draw_top("basetarget=_blank", "openprofile.js", "post.js");
 $allow_html = true;
 
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
-	$allow_html = false;
+    $allow_html = false;
 }
 
 if ($valid && isset($_POST['preview'])) {
@@ -626,10 +626,11 @@ for ($i = 0; $i < $answercount; $i++) {
 }
 
 if ($allow_html == true) {
-	echo "                <tr>\n";
-	echo "                  <td>&nbsp;</td>\n";
-	echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], $t_post_html), "</td>\n";
-	echo "                </tr>\n";
+
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], $t_post_html), "</td>\n";
+    echo "                </tr>\n";
 }
 
 echo "              </table>\n";

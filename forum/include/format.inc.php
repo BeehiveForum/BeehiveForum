@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.74 2004-08-14 23:25:36 tribalonline Exp $ */
+/* $Id: format.inc.php,v 1.75 2004-10-27 22:33:17 decoyduck Exp $ */
 
 include_once("./include/lang.inc.php");
 include_once("./include/word_filter.inc.php");
@@ -169,10 +169,10 @@ function _htmlentities($text)
 
 function _htmlentities_decode($text)
 {
-	$trans_tbl = get_html_translation_table (HTML_ENTITIES);
-	$trans_tbl = array_flip ($trans_tbl);
-	$ret = strtr ($text, $trans_tbl);
-	return preg_replace('/&amp;#(\d+);/me', "chr('\\1')",$ret);
+    $trans_tbl = get_html_translation_table (HTML_ENTITIES);
+    $trans_tbl = array_flip ($trans_tbl);
+    $ret = strtr ($text, $trans_tbl);
+    return preg_replace('/&amp;#(\d+);/me', "chr('\\1')",$ret);
 }
 
 // Checks for Magic Quotes and perform stripslashes if nessecary

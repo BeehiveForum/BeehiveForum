@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.2 2004-05-09 14:50:58 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.3 2004-10-27 22:33:18 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -29,10 +29,10 @@ USA
 
 // Database stuff ------------------------------------------------------
 
-$db_server   = "{db_server}";	// the address of your MySQL server
-$db_username = "{db_username}";	// your MySQL username
-$db_password = "{db_password}";	// your MySQL password
-$db_database = "{db_database}";	// the name of your MySQL database
+$db_server   = "{db_server}";    // the address of your MySQL server
+$db_username = "{db_username}";  // your MySQL username
+$db_password = "{db_password}";  // your MySQL password
+$db_database = "{db_database}";  // the name of your MySQL database
 
 // ---------------------------------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.12 2004-08-17 10:52:22 tribalonline Exp $ */
+/* $Id: admin_folder_add.php,v 1.13 2004-10-27 22:33:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -152,8 +152,8 @@ if (isset($_POST['submit'])) {
     $t_post_edit     = (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
     $t_post_delete   = (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
     $t_post_attach   = (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
-	$t_post_html     = (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
-	$t_post_sig      = (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
+    $t_post_html     = (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
+    $t_post_sig      = (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
 
     // We need a double / float here because we're storing a high bit value
 

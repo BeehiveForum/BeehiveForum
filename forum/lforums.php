@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.11 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.12 2004-10-27 22:33:17 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -84,14 +84,14 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 
                 echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
 
-	        if ($forum['UNREAD_TO_ME'] > 0) {
+                if ($forum['UNREAD_TO_ME'] > 0) {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
-	        }else {
+                }else {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
                 echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
-	    }
+            }
         }
 
         if (sizeof($forums_array['RECENT_FORUMS']) > 0) {
@@ -102,14 +102,14 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 
                 echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
 
-	        if ($forum['UNREAD_TO_ME'] > 0) {
+                if ($forum['UNREAD_TO_ME'] > 0) {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
-	        }else {
+                }else {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
                 echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
-	    }
+            }
         }
 
         if (sizeof($forums_array['OTHER_FORUMS']) > 0) {
@@ -120,14 +120,14 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
 
                 echo "<h3><a href=\"./lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
 
-	        if ($forum['UNREAD_TO_ME'] > 0) {
+                if ($forum['UNREAD_TO_ME'] > 0) {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</p>\n";
-	        }else {
+                }else {
                     echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                 }
 
                 echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
-	    }
+            }
         }
 
     }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.57 2004-12-05 20:34:59 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.58 2004-12-09 13:20:39 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -1309,7 +1309,22 @@ $lang['interestupdated'] = "Thread Interest Status Updated Successfully";
 
 // Dictionary (dictionary.php) -----------------------------------------
 
-$lang['spellcheck'] = "Spizellin'";
+$lang['dictionary'] = "Dictionary";
+$lang['spellcheck'] = "Spell Check";
+$lang['notindictionary'] = "Not in dictionary";
+$lang['changeto'] = "Change to";
+$lang['initialisingdotdotdot'] = "Initialising...";
+$lang['spellcheckcomplete'] = "Spell check is complete. Do you wish to start again from the beginning?";
+$lang['spellcheck'] = "Spell check";
+$lang['noformobj'] = "No form object specified for return text";
+$lang['bodytext'] = "Body Text";
+$lang['ignore'] = "Ignore";
+$lang['ignoreall'] = "Ignore All";
+$lang['change'] = "Change";
+$lang['changeall'] = "Change All";
+$lang['add'] = "Add";
+$lang['ok'] = "OK";
+$lang['cancel'] = "Cancel";
 
 // Permissions keys ----------------------------------------------------
 

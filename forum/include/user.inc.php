@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.105 2003-11-27 12:00:32 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.106 2003-11-27 14:04:25 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -59,6 +59,9 @@ function user_create($logon, $password, $nickname, $email)
 {
     global $HTTP_SERVER_VARS;
 
+    $logon = addslashes($logon);
+    $nickname = addslashes($nickname);
+    $email = addslashes($email);
     $md5pass = md5($password);
 
     if (!$ipaddress = get_ip_address()) {
@@ -112,6 +115,7 @@ function user_change_pw($uid, $password, $hash = false)
 
 function user_get_status($uid)
 {
+    if (!is_numeric($uid)) return 0;
 
     $sql = "SELECT STATUS FROM ". forum_table("USER") . " WHERE UID = $uid";
     $db_user_get_status = db_connect();
@@ -125,12 +129,13 @@ function user_get_status($uid)
 
 function user_update_status($uid, $status)
 {
-    $sql = "update " . forum_table("USER") . " set STATUS = $status ";
-    $sql .= "WHERE UID = $uid";
-
-    //echo $sql;
-
     $db_user_update_status = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    $sql = "UPDATE " . forum_table("USER") . " SET STATUS = $status ";
+    $sql.= "WHERE UID = $uid";
+
     $result = db_query($sql, $db_user_update_status);
 
     return $result;
@@ -139,6 +144,9 @@ function user_update_status($uid, $status)
 function user_update_folders($uid, $folders)
 {
     $db_user_update_folders = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    if (!is_array($folders)) return false;
 
     for ($i = 0; $i < sizeof($folders); $i++) {
 
@@ -168,10 +176,12 @@ function user_logon($logon, $password, $md5hash = false)
     global $HTTP_SERVER_VARS;
 
     if ($md5hash) {
-      $md5pass = $password;
+      $md5pass = addslashes($password);
     }else {
       $md5pass = md5($password);
     }
+
+    $logon = addslashes($logon);
 
     $sql = "SELECT UID, STATUS FROM ". forum_table("USER"). " WHERE LOGON = '$logon' AND PASSWD = '$md5pass'";
 
@@ -204,8 +214,12 @@ function user_logon($logon, $password, $md5hash = false)
 
 function user_check_logon($uid, $logon, $md5pass)
 {
+    if (!is_numeric($uid)) return false;
+
     if ($uid > 0) {
 
+        $logon = addslashes($logon);
+        
         $db_user_check_logon = db_connect();
 
         $sql = "SELECT STATUS FROM ". forum_table("USER"). " WHERE UID = '$uid' AND LOGON = '$logon' AND PASSWD = '$md5pass'";
@@ -233,6 +247,8 @@ function user_get($uid, $hash = false)
 {
     $db_user_get = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     $sql = "SELECT * FROM " . forum_table("USER") . " WHERE UID = $uid ";
 
     if ($hash) {
@@ -254,6 +270,8 @@ function user_get_logon($uid)
 {
     $db_user_get_logon = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     $sql = "select LOGON from " . forum_table("USER") . " where uid = $uid";
 
     $result = db_query($sql, $db_user_get_logon);
@@ -270,8 +288,9 @@ function user_get_logon($uid)
 
 function user_get_uid($logon)
 {
-
     $db_user_get_uid = db_connect();
+
+    $logon = addslashes($logon);
 
     $sql = "SELECT UID, LOGON, NICKNAME FROM ". forum_table("USER"). " WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_user_get_uid);
@@ -287,6 +306,8 @@ function user_get_uid($logon)
 function user_get_sig($uid, &$content, &$html)
 {
     $db_user_get_sig = db_connect();
+
+    if (!is_numeric($uid)) return false;
 
     $sql = "SELECT CONTENT, HTML FROM " . forum_table("USER_SIG") . " WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_sig);
@@ -306,6 +327,8 @@ function user_get_sig($uid, &$content, &$html)
 function user_get_prefs($uid)
 {
     $db_user_get_prefs = db_connect();
+
+    if (!is_numeric($uid)) return false;
 
     $sql = "select * from " . forum_table("USER_PREFS") . " where uid = $uid";
 
@@ -334,6 +357,8 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
 
     global $default_style;
 
+    if (!is_numeric($uid)) return false;
+
     $db_user_update_prefs = db_connect();
 
     $sql = "delete from ". forum_table("USER_PREFS"). " where UID = $uid";
@@ -360,6 +385,7 @@ function user_update_prefs($uid,$firstname = "",$lastname = "",$dob,$homepage_ur
 
 function user_update_sig($uid, $content, $html)
 {
+    if (!is_numeric($uid)) return false;
 
     $content = addslashes($content);
     $db_user_update_sig = db_connect();
@@ -377,6 +403,7 @@ function user_update_sig($uid, $content, $html)
 
 function user_update_global_sig($uid, $value)
 {
+    if (!is_numeric($uid)) return false;
 
     $db_user_update_global_sig = db_connect();
 
@@ -390,6 +417,7 @@ function user_update_global_sig($uid, $value)
 
 function user_get_global_sig($uid)
 {
+    if (!is_numeric($uid)) return false;
 
     $db_user_update_global_sig = db_connect();
 
@@ -407,6 +435,8 @@ function user_get_global_sig($uid)
 
 function user_get_post_count($uid)
 {
+    if (!is_numeric($uid)) return 0;
+
     $db_user_get_count = db_connect();
 
     $sql = "select COUNT(FROM_UID) AS COUNT FROM " . forum_table("POST") . " where FROM_UID = $uid";
@@ -419,6 +449,8 @@ function user_get_post_count($uid)
 
 function user_get_last_logon_time($uid)
 {
+    if (!is_numeric($uid)) return false;
+
     $db_user_get_last_logon_time = db_connect();
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM " . forum_table("USER") . " WHERE UID = $uid";
@@ -450,7 +482,10 @@ function user_guest_enabled()
 
 function user_get_dob($uid)
 {
+    if (!is_numeric($uid)) return false;
+
     $prefs = user_get_prefs($uid);
+
     if (isset($prefs['DOB_DISPLAY']) && $prefs['DOB_DISPLAY'] == 2 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
         return format_birthday($prefs['DOB']);
     } else {
@@ -460,6 +495,8 @@ function user_get_dob($uid)
 
 function user_get_age($uid)
 {
+    if (!is_numeric($uid)) return false;
+
     $prefs = user_get_prefs($uid);
 
     if (isset($prefs['DOB_DISPLAY']) && $prefs['DOB_DISPLAY'] > 0 && !empty($prefs['DOB']) && $prefs['DOB'] != "0000-00-00") {
@@ -498,6 +535,14 @@ function user_search($usersearch, $sort_by = "LAST_LOGON", $sort_dir = "DESC", $
 {
     $db_user_search = db_connect();
 
+    $sort_array = array('UID', 'LOGON', 'STATUS', 'LAST_LOGON', 'LOGON_FROM');
+
+    if (!is_numeric($offset)) $offset = 0;
+    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
+
+    $usersearch = addslashes($usersearch);
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM " . forum_table("USER") . " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
@@ -524,6 +569,12 @@ function user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset = 0)
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
+    $sort_array = array('UID', 'LOGON', 'STATUS', 'LAST_LOGON', 'LOGON_FROM');
+
+    if (!is_numeric($offset)) $offset = 0;
+    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
+    if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
+
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(USER.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER.LOGON_FROM, USER.STATUS FROM ". forum_table("USER"). " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
@@ -543,12 +594,14 @@ function user_get_by_ipaddress($ip, $uid_filter = false)
 {
     $db_user_get_by_ipaddress = db_connect();
 
+    $ip = addslashes($ip);
+
     $sql = "SELECT UID, LOGON from ". forum_table("USER"). " ";
     $sql.= "WHERE LOGON_FROM = '$ip' ";
 
     // filter out a UID if specified
 
-    if ($uid_filter) {
+    if (is_numeric($uid_filter)) {
         $uid_filter = addslashes($uid_filter);
         $sql.= "AND UID <> '$uid_filter'";
     }

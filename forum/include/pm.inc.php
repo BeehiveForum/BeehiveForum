@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.28 2004-02-13 01:14:11 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.29 2004-02-13 02:37:02 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -89,10 +89,10 @@ function pm_add_sentitem($mid)
     // sender's sent items
     // ------------------------------------------------------------
 
-    $sql = "INSERT INTO ". forum_table("PM"). " (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED) ";
+    $sql = "INSERT INTO ". forum_table("PM"). " (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
     $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
     $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
-    $sql.= "'{$db_pm_add_sentitem_row['CREATED']}')";
+    $sql.= "'{$db_pm_add_sentitem_row['CREATED']}', 1)";
 
     $result  = db_query($sql, $db_pm_add_sentitem);
     $new_mid = db_insert_id($db_pm_add_sentitem);

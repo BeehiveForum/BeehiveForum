@@ -103,7 +103,7 @@ function get_active_users()
     $sql.= "LEFT JOIN ". forum_table("USER"). " USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN ". forum_table("USER_PREFS"). " USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "ORDER BY SESSIONS.TIME DESC";
+    $sql.= "ORDER BY USER.LOGON, USER.NICKNAME "; //SESSIONS.TIME DESC";
 
     $result = db_query($sql, $db_get_active_users);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.71 2003-11-07 20:04:18 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.72 2003-11-12 20:31:38 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -187,7 +187,7 @@ function html_draw_top()
         echo "<style type=\"text/css\">@import \"fontsize.php\";</style>\n";
     }
 
-    if ((basename($HTTP_SERVER_VARS['PHP_SELF']) != 'pm.php') && (basename($HTTP_SERVER_VARS['PHP_SELF']) != 'nav.php')) {
+    if (!stristr($HTTP_SERVER_VARS['PHP_SELF'], 'pm') && !stristr($HTTP_SERVER_VARS['PHP_SELF'], 'nav.php')) {
         if ((bh_session_get_value('PM_NOTIFY') == 'Y') && (pm_new_check())) {
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/pm_notification.js\"></script>\n";
             if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.17 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.18 2004-03-19 15:00:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -66,14 +66,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
     user_clear_word_filter();
     
     if (isset($HTTP_POST_VARS['match']) && is_array($HTTP_POST_VARS['match'])) {
-        for ($i = 0; $i < sizeof($HTTP_POST_VARS['match']); $i++) {
-            if (isset($HTTP_POST_VARS['match'][$i]) && trim(strlen($HTTP_POST_VARS['match'][$i])) > 0) {
-                $preg_expr = (isset($HTTP_POST_VARS['preg_expr'][$i]) && $HTTP_POST_VARS['preg_expr'][$i] == "Y") ? 1 : 0;
-                if (isset($HTTP_POST_VARS['replace'][$i]) && trim(strlen($HTTP_POST_VARS['replace'][$i])) > 0) {
-                    user_add_word_filter($HTTP_POST_VARS['match'][$i], $HTTP_POST_VARS['replace'][$i], $preg_expr);
-                }else {
-                    user_add_word_filter($HTTP_POST_VARS['match'][$i], "", $preg_expr);
-                }
+        foreach ($HTTP_POST_VARS['match'] as $key => $value) {
+            $preg_expr = (isset($HTTP_POST_VARS['preg_expr'][$key]) && $HTTP_POST_VARS['preg_expr'][$key] == "Y") ? 1 : 0;
+            if (isset($HTTP_POST_VARS['replace'][$key]) && trim(strlen($HTTP_POST_VARS['replace'][$key])) > 0) {
+                user_add_word_filter($HTTP_POST_VARS['match'][$key], $HTTP_POST_VARS['replace'][$key], $preg_expr);
+            }else {
+                user_add_word_filter($HTTP_POST_VARS['match'][$key], "", $preg_expr);
             }
         }
     }

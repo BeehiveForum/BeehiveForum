@@ -45,12 +45,12 @@ html_draw_top();
 ?>
 <table width="100%" border="0" cellpadding=\0" cellspacing="0">
 	<tr>
-		<td class="thread_list_mode">
+		<td>
 			<?
 			// Calls the desired mode, whilst retaining the current UID
 			echo "<form method=\"GET\" action=\"".$HTTP_SERVER_VARS['PHP_SELF']."\">";
 			echo "<input type=\"hidden\" name=\"user\" value=\"$user\">";
-			echo "<select name=\"mode\" class=\"thread_list_form\">\n";
+			echo "<select name=\"mode\" class=\"thread_list_mode\">\n";
 			
 			echo "<option ";
 			if ($mode == 0) echo "selected ";
@@ -60,7 +60,7 @@ html_draw_top();
 			if ($mode == 1) echo "selected ";
 			echo "value=\"1\">Unread discussions</option>\n";
 			?>
-			</select><input type="submit" value="Go!" class="thread_list_form" />
+			</select><input type="submit" value="Go!" class="thread_list_mode" />
 			</form>
 		</td>
 	</tr>

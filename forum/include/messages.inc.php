@@ -78,21 +78,21 @@ function messages_bottom()
 
 function message_display($tid, $message)
 {
-    echo "<br /><div align=\"center\">";
-    echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>";
-    echo "<table width=\"100%\" border=\"0\"><tr>";
-    echo "<td class=\"posthead\" width=\"1%\" align=\"right\">";
-    echo "<p class=\"posttofrom\">From:<br>To:</p></td>";
-    echo "<td class=\"posthead\" width=\"99%\">";
-    echo "<p class=\"posttofrom\">" . $message['fnick'] . "<br>" . $message['tnick'] . "</p></td>";
-    echo "<td class=\"posthead\" width=\"1%\" align=\"right\">";
-    echo "<p class=\"postinfo\">Info</p></td></table>";
-    echo "<table width=\"100%\" border=\"0\">";
-    echo "<tr><td align=\"right\">$tid.".$message['pid']."</td></tr>";
-    echo "<tr><td class=\"postbody\">";
-    echo $message['content'];
-    echo "</td></tr>";
-    echo "<tr><td><p class=\"postresponse\">Reply</p></td></tr></table>";
-    echo "</td></tr></table></div>";
+    echo "<br /><div align=\"center\">\n";
+    echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
+    echo "<table width=\"100%\" border=\"0\"><tr>\n";
+    echo "<td class=\"posthead\" width=\"1%\" align=\"right\">\n";
+    echo "<p class=\"posttofromlabel\">From:<br>To:</p></td>\n";
+    echo "<td class=\"posthead\" width=\"99%\">\n";
+    echo "<p class=\"posttofrom\">" . $message['fnick'] . "<br>" . $message['tnick'] . "</p></td>\n";
+    echo "<td class=\"posthead\" width=\"1%\" align=\"right\">\n";
+    echo "<p class=\"postinfo\">Info</p></td></table>\n";
+    echo "<table width=\"100%\" border=\"0\">\n";
+    echo "<tr><td class=\"postnumber\">$tid.".$message['pid']."</td></tr>\n";
+    echo "<tr><td class=\"postbody\">\n";
+    echo $message['content']."\n";
+    echo "</td></tr>\n";
+    echo "<tr><td><p class=\"postresponse\">Reply</p></td></tr></table>\n";
+    echo "</td></tr></table></div>\n";
 }
 ?>

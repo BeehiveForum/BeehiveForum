@@ -146,13 +146,16 @@ function threads_display_list($thread_info, $folder_order) // Displays the threa
 			if ($thread['fid'] == $folder) {
 				if ($thread['length'] == $thread['last_read']) {
 					$number = "[".$thread['length']."]";
+					$latest_post = 1;
 				} elseif ($thread['last_read'] == 0) {
 					$number = "[".$thread['length']." new]";
+					$latest_post = 1;
 				} else {
 					$new_posts = $thread['length'] - $thread['last_read'];
 					$number = "[".$new_posts." new of ".$thread['length']."]";
+					$latest_post = $thread['last_read'] + 1;
 				}
-				echo "<li>".$thread['title'];
+				echo "<li><a href=\"messages.php?msg=".$thread['tid'].".".$latest_post."\" target=\"right\">".$thread['title']."</a>";
 				echo "<span class=\"folderxnewofy\">$number</span></li>\n";
 			}
 		}

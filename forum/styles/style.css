@@ -54,12 +54,13 @@ A		{
 		color: #000000;
 		text-decoration: none;
 		font-weight: bold;
+		list-style-image: url('../images/bullet.png');
 		}
-
-A:hover 	{
+		
+A.visited	{
 		background-color: transparent;
 		color: #000000;
-		text-decoration:underline;
+		text-decoration: none;
 		font-weight: bold;
 		}
 
@@ -75,7 +76,7 @@ A:hover 	{
 		vertical-align:middle;
 		}
 
-.thread_list_form {
+.thread_list_mode {
 		background-color:#FFFFFF;
 		border-style:solid;
 		border-top-width:01px;
@@ -150,22 +151,21 @@ A:hover 	{
           font-size: 10pt;
           border: solid;
           float: left;
-          border-width: 1px 1px 0px;
+          border-width: 1px;
           border-color: black #000000
 }
 
 .postbody {
           background-color: #FFFFFF;
+          font-size: 10pt;
           padding-top: 2px;
           padding-right: 2px;
           padding-bottom: 2px;
           padding-left: 2px;
-          border: solid;
-          border-width: 0px 1px 1px;
-          border-color: black #000000 #000000
+          border: none;
 }
 
-.posstnumber {
+.postnumber {
           text-align: right;
           font-size: 10pt
 }
@@ -176,8 +176,14 @@ A:hover 	{
           float: right
 }
 
+.posttofromlabel {
+          font-size: 10pt;
+          text-align: right;
+}
+
 .posttofrom {
-          font-size: 10pt
+          font-size: 10pt;
+          text-align: left;
 }
 
 .postresponse {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.2 2004-12-04 22:01:37 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.3 2004-12-04 22:08:57 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -108,7 +108,30 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "CREATE TABLE DEDUPE (";
+$sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
+$sql.= "  DDKEY char(32) default NULL,";
+$sql.= "  PRIMARY KEY  (UID)";
+$sql.= ")";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 foreach($forum_webtag_array as $forum_webtag) {
+
+    // DEDUPE has been globalised so we can drop the per-forum
+    // table
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_DEDUPE";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     // Need to recreate the THREAD table so we reuse the BY_UID column
     // that was removed in 0.4. This is designed as a measure to combat

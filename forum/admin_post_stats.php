@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.10 2005-03-14 13:27:15 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.11 2005-03-19 17:53:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -138,8 +138,8 @@ if (isset($_POST['update'])) {
 
     if ($valid) {
 
-        $stats_start = mktime(0, 0, 0, $from_month, $from_day, $from_year);
-        $stats_end = mktime(23, 59, 59, $to_month, $to_day, $to_year);
+        $stats_start = gmmktime(0, 0, 0, $from_month, $from_day, $from_year);
+        $stats_end = gmmktime(23, 59, 59, $to_month, $to_day, $to_year);
 
         if ($stats_start > $stats_end) {
 
@@ -166,8 +166,8 @@ if (!isset($user_stats_array) || !is_array($user_stats_array)) {
     $to_month = date('n');
     $to_year = date('Y');
 
-    $stats_start = mktime(0, 0, 0, $from_month, $from_day, $from_year);
-    $stats_end = mktime(23, 59, 59, $to_month, $to_day, $to_year);
+    $stats_start = gmmktime(0, 0, 0, $from_month, $from_day, $from_year);
+    $stats_end = gmmktime(23, 59, 59, $to_month, $to_day, $to_year);
 
     $num_days = ((($stats_end - $stats_start) / 60) / 60) / 24;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.107 2005-03-18 23:58:39 decoyduck Exp $ */
+/* $Id: search.php,v 1.108 2005-03-19 17:53:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -272,8 +272,8 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
     echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: ", sizeof($search_results_array), " {$lang['matches']}<br />\n";
 
-    if ($sstart >= 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
+    if ($sstart >= 20) {
+        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart - 20, $urlquery, "\">{$lang['prevpage']}</a>\n";
     }
 
     echo "<ol start=\"", $sstart + 1, "\">\n";
@@ -341,7 +341,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     echo "</ol>\n";
 
     if (sizeof($search_results_array) == 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
+        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 20, $urlquery, "\">{$lang['findmore']}</a>\n";
     }
 
 }else if ($error) {

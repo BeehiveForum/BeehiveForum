@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.244 2005-03-18 23:58:37 decoyduck Exp $ */
+/* $Id: post.php,v 1.245 2005-03-19 17:53:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -723,7 +723,7 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
-    $preview_message['CREATED'] = mktime();
+    $preview_message['CREATED'] = gmmktime();
     $preview_message['AID'] = $aid;
 
     echo "<tr><td>\n";

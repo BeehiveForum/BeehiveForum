@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.143 2005-03-15 21:30:04 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.144 2005-03-19 17:53:34 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -32,7 +32,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     $db_poll_create = db_connect();
 
     if (is_numeric($closes)) {
-        $closes = "FROM_UNIXTIME('$closes')";
+        $closes = "FROM_UNIXTIME($closes)";
     }else {
         $closes = 'NULL';
     }
@@ -1725,7 +1725,11 @@ function poll_close($tid)
 
         if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($t_fid)) {
 
-            $sql = "update {$table_data['PREFIX']}POLL set CLOSES = FROM_UNIXTIME(". gmmktime(). ") where TID = $tid";
+            $timestamp = gmmktime();
+
+            $sql = "UPDATE {$table_data['PREFIX']}POLL SET ";
+            $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = $tid";
+
             $result = db_query($sql, $db_poll_close);
         }
     }
@@ -1765,6 +1769,8 @@ function poll_vote($tid, $vote_array)
     $polldata = poll_get($tid);
     $vote_count = sizeof($vote_array);
 
+    $timestamp = gmmktime();
+
     if (!poll_get_user_vote($tid) || $polldata['CHANGEVOTE'] == 2) {
 
         foreach ($vote_array as $user_vote) {
@@ -1772,12 +1778,12 @@ function poll_vote($tid, $vote_array)
             if ($polldata['VOTETYPE'] == 0) {
 
                 $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
-                $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME(". mktime(). "))";
+                $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME($timestamp))";
 
             }else {
 
                 $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
-                $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME(". mktime(). "))";
+                $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME($timestamp))";
             }
 
             $result = db_query($sql, $db_poll_vote);

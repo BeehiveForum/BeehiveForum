@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.114 2004-03-13 00:00:21 decoyduck Exp $ */
+/* $Id: logon.php,v 1.115 2004-03-13 00:03:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -65,7 +65,7 @@ if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
     unset($final_uri);
 }
 
-if ($user_sess = bh_session_check()) {
+if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
 
     html_draw_top();
     echo "<div align=\"center\">\n";

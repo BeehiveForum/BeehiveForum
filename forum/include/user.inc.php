@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.118 2004-02-22 15:24:39 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.119 2004-02-23 21:31:27 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -710,6 +710,69 @@ function users_get_recent()
 	    $users_get_recent_array[] = $row;
 	}
 	return $users_get_recent_array;
+    }else {
+        return false;
+    }
+}
+
+function user_get_friends($uid)
+{
+    $db_user_get_peers = db_connect();
+    
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM ". forum_table("USER"). " USER ";
+    $sql.= "LEFT JOIN ". forum_table("USER_PEER"). " USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 1";
+
+    $result = db_query($sql, $db_user_get_peers);
+    
+    if (db_num_rows($result)) {
+        $user_get_peers_array = array();
+        while ($row = db_fetch_array($result)) {
+            $user_get_peers_array[] = $row;
+        }
+        return $user_get_peers_array;
+    }else {
+        return false;
+    }
+}
+
+function user_get_ignored($uid)
+{
+    $db_user_get_peers = db_connect();
+    
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM ". forum_table("USER"). " USER ";
+    $sql.= "LEFT JOIN ". forum_table("USER_PEER"). " USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 2";
+
+    $result = db_query($sql, $db_user_get_peers);
+    
+    if (db_num_rows($result)) {
+        $user_get_peers_array = array();
+        while ($row = db_fetch_array($result)) {
+            $user_get_peers_array[] = $row;
+        }
+        return $user_get_peers_array;
+    }else {
+        return false;
+    }
+}
+
+function user_get_ignored_signatures($uid)
+{
+    $db_user_get_peers = db_connect();
+    
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM ". forum_table("USER"). " USER ";
+    $sql.= "LEFT JOIN ". forum_table("USER_PEER"). " USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP = 3";
+
+    $result = db_query($sql, $db_user_get_peers);
+    
+    if (db_num_rows($result)) {
+        $user_get_peers_array = array();
+        while ($row = db_fetch_array($result)) {
+            $user_get_peers_array[] = $row;
+        }
+        return $user_get_peers_array;
     }else {
         return false;
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.25 2004-02-13 13:20:26 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.26 2004-02-23 21:31:25 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -645,6 +645,7 @@ $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
 $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
+$lang['editrelationships'] = "Edit Relationships";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
 $lang['searchagain'] = "Search Again";
@@ -818,6 +819,11 @@ $lang['yoursearchdidnotreturnanymatches'] = "Yo sizearch retizurned no pussy. Si
 // Relationships (user_rel.php) ----------------------------------------
 
 $lang['userrelationship'] = "Homie's vibes";
+$lang['userrelationships'] = "Lots-a-vibes";
+$lang['friends'] = "In wit'da possie";
+$lang['ignoredusers'] = "Rivals";
+$lang['ignoredsignatures'] = "Mofos got no art skillz";
+
 $lang['relationship'] = "Vibes";
 $lang['friend_exp'] = "Homie's pizosts mizarked with a &quot;Homie&quot; iizcon.";
 $lang['normal_exp'] = "Homie's pizosts appizear as nizormizal.";

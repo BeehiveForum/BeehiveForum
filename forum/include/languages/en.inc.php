@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.71 2004-02-13 13:20:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.72 2004-02-23 21:31:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -640,6 +640,7 @@ $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
 $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
+$lang['editrelationships'] = "Edit Relationships";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
 $lang['newpasswd'] = "New Password";
@@ -813,6 +814,10 @@ $lang['yoursearchdidnotreturnanymatches'] = "Your search did not return any matc
 // Relationships (user_rel.php) ----------------------------------------
 
 $lang['userrelationship'] = "User Relationship";
+$lang['userrelationships'] = "User Relationships";
+$lang['friends'] = "Friends";
+$lang['ignoredusers'] = "Ignored Users";
+$lang['ignoredsignatures'] = "Ignored Signatures";
 $lang['relationship'] = "Relationship";
 $lang['friend_exp'] = "User's posts marked with a &quot;Friend&quot; icon.";
 $lang['normal_exp'] = "User's posts appear as normal.";

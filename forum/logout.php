@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.39 2004-03-16 23:03:12 decoyduck Exp $ */
+/* $Id: logout.php,v 1.40 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -92,8 +92,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
         echo "</script>";
 
         // If they're still here, Javascript's not working. Give up, give a link.
-        echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-        echo "<p>{$lang['youhaveloggedout']}</p>";
+        echo "<div align=\"center\">\n";
+        echo "<p>{$lang['youhaveloggedout']}</p>\n";
 
         form_quick_button("./index.php", $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
 

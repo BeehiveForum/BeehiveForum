@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.93 2004-03-17 03:57:17 tribalonline Exp $ */
+/* $Id: edit.php,v 1.94 2004-03-17 17:24:12 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -128,12 +128,13 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
+
     $uri = "./edit_poll.php?webtag={$webtag['WEBTAG']}";
 
     if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-        $uri.= "?msg=". $HTTP_GET_VARS['msg'];
+        $uri.= "&msg=". $HTTP_GET_VARS['msg'];
     }elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
-        $uri.= "?msg=". $HTTP_POST_VARS['t_msg'];
+        $uri.= "&msg=". $HTTP_POST_VARS['t_msg'];
     }
 
     header_redirect($uri);
@@ -144,9 +145,9 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
 
     if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-        $uri.= "?msg=". $HTTP_GET_VARS['msg'];
+        $uri.= "&msg=". $HTTP_GET_VARS['msg'];
     }elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
-        $uri.= "?msg=". $HTTP_POST_VARS['t_msg'];
+        $uri.= "&msg=". $HTTP_POST_VARS['t_msg'];
     }
 
     header_redirect($uri);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.70 2004-03-16 23:03:12 decoyduck Exp $ */
+/* $Id: register.php,v 1.71 2004-03-17 17:20:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -57,7 +57,13 @@ if (bh_session_get_value('UID')) {
     html_draw_top();
     echo "<div align=\"center\">\n";
     echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-    echo form_quick_button("./index.php?webtag={$webtag['WEBTAG']}". (isset($final_uri) ? "?$final_uri" : ""), $lang['continue'], 0, 0, "_top");
+    
+    if (isset($final_uri)) {
+        form_quick_button("./index.php". $lang['continue'], array("final_uri", "webtag"), array($final_uri, $webtag['WEBTAG']), "_top");
+    }else {
+        form_quick_button("./index.php". $lang['continue'], "webtag", $webtag['WEBTAG'], "_top");
+    }
+    
     echo "</div>\n";
     html_draw_bottom();
     exit;

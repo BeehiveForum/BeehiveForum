@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.15 2004-12-22 22:33:57 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.16 2004-12-26 12:21:30 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -666,7 +666,8 @@ $sql = "CREATE TABLE {$forum_webtag}_USER_FOLDER (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (UID,FID)";
+$sql.= "  PRIMARY KEY  (UID,FID),";
+$sql.= "  KEY INTEREST (INTEREST)";
 $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -680,7 +681,8 @@ $sql = "CREATE TABLE {$forum_webtag}_USER_PEER (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (UID,PEER_UID)";
+$sql.= "  PRIMARY KEY  (UID,PEER_UID),";
+$sql.= "  KEY RELATIONSHIP (RELATIONSHIP)";
 $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -770,7 +772,9 @@ $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_READ MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
 $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (UID,TID)";
+$sql.= "  PRIMARY KEY  (UID,TID),";
+$sql.= "  KEY LAST_READ (LAST_READ),";
+$sql.= "  KEY INTEREST (INTEREST)";
 $sql.= ") TYPE=MyISAM";
 
 if (!$result = db_query($sql, $db_install)) {

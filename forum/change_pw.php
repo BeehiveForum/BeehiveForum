@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.43 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.44 2004-12-26 12:21:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -63,70 +63,79 @@ if (isset($_POST['submit'])) {
     $error_html = "";
 
     if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
-
-        if (isset($_POST['key']) && is_md5($_POST['key'])) {
-
-            if (isset($_POST['pw']) && isset($_POST['cpw'])) {
-
-                if (trim(_stripslashes($_POST['pw']) == trim(_stripslashes($_POST['cpw'])))) {
-
-                    if (_htmlentities(trim(_stripslashes($_POST['pw'])) != trim(_stripslashes($_POST['pw'])))) {
-                        $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
-                        $valid = false;
-                    }
-
-                    if (!preg_match("/^[a-z0-9_-]+$/i", trim(_stripslashes($_POST['pw'])))) {
-                        $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
-                        $valid = false;
-                    }
-
-                    if (strlen(trim(_stripslashes($_POST['pw']))) < 6) {
-                        $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
-                        $valid = false;
-                    }
-
-                    if ($valid) {
-
-                        if (user_change_pw($_POST['uid'], trim(_stripslashes($_POST['pw']), $_POST['key']))) {
-
-                            html_draw_top();
-
-                            echo "<h1>{$lang['passwdchanged']}</h1>";
-                            echo "<br />\n";
-                            echo "<div align=\"center\">\n";
-                            echo "<p>{$lang['passedchangedexp']}</p>\n";
-
-                            form_quick_button("./index.php", $lang['continue'], false, false, "_top");
-
-                            echo "</div>\n";
-
-                            html_draw_bottom();
-                            exit;
-
-                        }else {
-                            $error_html = "<h2>{$lang['updatefailed']}.</h2>";
-                            $valid = false;
-                        }
-                    }
-
-                }else {
-                    $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
-                    $valid = false;
-                }
-
-            }else {
-                $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
-                $valid = false;
-            }
-
-        }else {
-            $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
-            $valid = false;
-        }
-
+        $uid = $_POST['uid'];
     }else {
         $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
         $valid = false;
+    }
+
+    if (isset($_POST['key']) && is_md5(trim(_stripslashes($_POST['key'])))) {
+        $key = $_POST['key'];
+    }else {
+        $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
+        $valid = false;
+    }
+
+    if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw'])))) {
+        $pw = $_POST['pw'];
+    }else {
+        $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
+        $valid = false;
+    }
+
+    if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw'])))) {
+        $cpw = $_POST['cpw'];
+    }else {
+        $error_html = "<h2>{$lang['allfieldsrequired']}</h2>";
+        $valid = false;
+    }
+
+    if ($valid) {
+
+        if (_htmlentities($pw) != $pw) {
+            $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+            $valid = false;
+        }
+
+        if (!preg_match("/^[a-z0-9_-]+$/i", trim(_stripslashes($_POST['pw'])))) {
+            $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+            $valid = false;
+        }
+
+        if (strlen(trim(_stripslashes($_POST['pw']))) < 6) {
+            $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+            $valid = false;
+        }
+
+        if ($pw != $cpw) {
+            $error_html = "<h2>{$lang['passwdsdonotmatch']}</h2>";
+            $valid = false;
+        }
+    }
+
+    if ($valid) {
+
+        if (user_change_pw($uid, $pw, $key)) {
+
+            html_draw_top();
+
+            echo "<h1>{$lang['passwdchanged']}</h1>";
+            echo "<br />\n";
+            echo "<div align=\"center\">\n";
+            echo "<p>{$lang['passedchangedexp']}</p>\n";
+
+            form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+
+            echo "</div>\n";
+
+            html_draw_bottom();
+            exit;
+
+        }else {
+
+            $error_html = "<h2>{$lang['updatefailed']}.</h2>";
+            $valid = false;
+        }
     }
 }
 

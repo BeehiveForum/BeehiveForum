@@ -104,7 +104,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 // Otherwise create some random numbers to work with.
 
 if (isset($HTTP_GET_VARS['seed'])) {
-    $seed = $HTTP_GET_VARS['seed'];
+    $seed = substr(preg_replace("/[^0-9|A-F]/i", "", $HTTP_GET_VARS['seed']), 0, 6);
     list ($red, $green, $blue) = hexToDec($seed);
 }else {
     $red = rand(0, 255);
@@ -241,7 +241,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">\n";
 echo "                    <form action=\"$PHP_SELF\" method=\"get\">\n";
-echo "                      ", form_input_text("seed", strtoupper($seed)), "&nbsp;", form_submit('submit', 'Go'), "\n";
+echo "                      ", form_input_text("seed", strtoupper($seed), 15, 6), "&nbsp;", form_submit('submit', 'Go'), "\n";
 echo "                    </form>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
@@ -262,14 +262,14 @@ foreach ($elements as $key => $value) {
 
 reset($elements);
 
-echo "                      <table width=\"300\" cellspacing=\"5\">\n";
+echo "                      <table width=\"100%\" cellspacing=\"5\">\n";
 echo "                        <tr>\n";
 echo "                          <td class=\"posthead\">Filename:</td>\n";
-echo "                          <td>", form_input_text("stylename", isset($HTTP_POST_VARS['stylename']) ? $HTTP_POST_VARS['stylename'] : '', 20, 10), "</td>\n";
+echo "                          <td>", form_input_text("stylename", isset($HTTP_POST_VARS['stylename']) ? $HTTP_POST_VARS['stylename'] : '', 35, 10), "</td>\n";
 echo "                        </tr>\n";
 echo "                        <tr>\n";
-echo "                          <td class=\"posthead\">Style Name:</td>\n";
-echo "                          <td>", form_input_text("styledesc", isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : '', 20, 20), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
+echo "                          <td class=\"posthead\">Style Desc.:</td>\n";
+echo "                          <td>", form_input_text("styledesc", isset($HTTP_POST_VARS['styledesc']) ? $HTTP_POST_VARS['styledesc'] : '', 35, 20), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </form>\n";

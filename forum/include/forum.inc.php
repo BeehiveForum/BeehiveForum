@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.106 2005-01-30 18:56:26 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.107 2005-02-06 13:58:51 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
@@ -485,7 +485,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (LOG_ID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -497,8 +497,8 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
         $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
         $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY  (IP)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= "  PRIMARY KEY  (ID)";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -511,7 +511,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (ID,UID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -524,7 +524,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL,";
         $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (FID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -536,7 +536,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  URI VARCHAR(255) DEFAULT NULL,";
         $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (LID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -547,7 +547,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (GID,FID)";
-        $sql.= ")";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -557,7 +557,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (GID,UID)";
-        $sql.= ")";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -569,7 +569,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
         $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (GID)";
-        $sql.= ")";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -587,7 +587,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (LID),";
         $sql.= "  KEY FID (FID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -601,7 +601,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  COMMENT TEXT NOT NULL,";
         $sql.= "  PRIMARY KEY  (CID),";
         $sql.= "  KEY LID (LID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -613,7 +613,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  NAME VARCHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT '',";
         $sql.= "  PRIMARY KEY  (FID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -625,7 +625,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
         $sql.= "  PRIMARY KEY  (LID,UID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -640,7 +640,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (TID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -652,7 +652,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (TID,OPTION_ID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -667,13 +667,15 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  VIEWED DATETIME DEFAULT NULL,";
         $sql.= "  CREATED DATETIME DEFAULT NULL,";
         $sql.= "  STATUS TINYINT(4) DEFAULT '0',";
+        $sql.= "  APPROVED DATETIME DEFAULT NULL,";
+        $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  EDITED DATETIME DEFAULT NULL,";
         $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
         $sql.= "  PRIMARY KEY  (TID,PID),";
         $sql.= "  KEY TO_UID (TO_UID),";
         $sql.= "  KEY IPADDRESS (IPADDRESS)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -685,7 +687,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  CONTENT TEXT,";
         $sql.= "  PRIMARY KEY  (TID,PID),";
         $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -698,7 +700,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  TYPE TINYINT(3) UNSIGNED DEFAULT '0',";
         $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (PIID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -709,7 +711,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
         $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (PSID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -722,7 +724,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
         $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (ID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -745,7 +747,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY FID (FID),";
         $sql.= "  KEY BY_UID (BY_UID),";
         $sql.= "  FULLTEXT KEY TITLE (TITLE)";
-        $sql.= ")";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -756,7 +758,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (UID,FID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -767,7 +769,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -779,7 +781,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
         $sql.= "  PRIMARY KEY  (TID, UID, OPTION_ID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -808,7 +810,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  SHOW_THUMBS CHAR(2) NOT NULL DEFAULT '2',";
         $sql.= "  PRIMARY KEY  (UID)";
-        $sql.= ")";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -819,7 +821,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID,PIID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -830,7 +832,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  CONTENT TEXT,";
         $sql.= "  HTML CHAR(1) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -843,7 +845,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
         $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID,TID)";
-        $sql.= ") TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 
@@ -853,7 +855,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID)";
-        $sql.= ")";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) return false;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.14 2005-01-30 14:10:25 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.15 2005-02-06 13:58:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -97,7 +97,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (MID),";
         $sql.= "  KEY TO_UID (TO_UID)";
-        $sql.=") TYPE=MyISAM";
+        $sql.=") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -114,7 +114,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  PRIMARY KEY  (MID),";
         $sql.= "  KEY AID (AID)";
-        $sql.=") TYPE=MyISAM";
+        $sql.=") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -131,7 +131,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  CONTENT TEXT,";
         $sql.= "  PRIMARY KEY  (MID),";
         $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-        $sql.=") TYPE=MyISAM";
+        $sql.=") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -147,7 +147,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
         $sql.= "  DDKEY char(32) default NULL,";
         $sql.= "  PRIMARY KEY  (UID)";
-        $sql.=") TYPE=MyISAM";
+        $sql.=") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -187,7 +187,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
     $sql.= "  TIME datetime NOT NULL default '0000-00-00 00:00:00',";
     $sql.= "  FID mediumint(8) unsigned NOT NULL default '0',";
     $sql.= "  PRIMARY KEY  (HASH, UID, IPADDRESS)";
-    $sql.=") TYPE=MyISAM";
+    $sql.=") TYPE=MYISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -267,7 +267,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  KEY BY_UID (BY_UID),";
         $sql.= "  KEY FID (FID),";
         $sql.= "  FULLTEXT KEY TITLE (TITLE)";
-        $sql.=") TYPE=MyISAM";
+        $sql.=") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -333,7 +333,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
         $sql.= "  LAST_LOGON datetime DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID)";
-        $sql.=") TYPE=MyISAM";
+        $sql.=") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -473,7 +473,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  PRIMARY KEY  (UID)";
-        $sql.=") TYPE=MyISAM";
+        $sql.=") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -542,7 +542,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
     $sql.= "  KEY SOUND (SOUND),";
     $sql.= "  KEY UID (UID),";
     $sql.= "  KEY WORD (WORD)";
-    $sql.= ") TYPE=MyISAM";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = db_query($sql, $db_install)) {
 

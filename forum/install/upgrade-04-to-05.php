@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.19 2005-01-30 18:56:26 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.20 2005-02-06 13:58:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -274,7 +274,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "CREATE TABLE {$forum_webtag}_BANNED_IP_NEW (";
         $sql.= "  IP CHAR(15) NOT NULL DEFAULT '',";
         $sql.= "  PRIMARY KEY  (IP)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -327,7 +327,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  KEY FID (FID),";
         $sql.= "  KEY BY_UID (BY_UID),";
         $sql.= "  FULLTEXT KEY TITLE (TITLE)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -375,7 +375,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
         $sql.= "  PRIMARY KEY (LID, UID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -418,7 +418,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  PRIMARY KEY  (TID,PID),";
         $sql.= "  KEY AID (AID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -462,7 +462,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
         $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (ID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -506,7 +506,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
         $sql.= "  ALLOWED TINYINT(4) DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (UID,FID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -549,7 +549,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -622,7 +622,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  POST_PAGE CHAR(3) NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (UID)";
-        $sql.= "  ) TYPE=MYISAM;";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -812,7 +812,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  PRIMARY KEY  (UID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -826,7 +826,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID,PIID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -869,7 +869,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  CONTENT TEXT,";
         $sql.= "  HTML CHAR(1) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY (UID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -914,7 +914,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
         $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY (UID, TID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -986,7 +986,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (ID, UID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1039,7 +1039,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  TIME datetime NOT NULL default '0000-00-00 00:00:00',";
         $sql.= "  FID mediumint(8) unsigned NOT NULL default '0',";
         $sql.= "  PRIMARY KEY  (HASH, UID, IPADDRESS)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1055,7 +1055,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  ACCESS_LEVEL tinyint(4) NOT NULL DEFAULT '0',";
         $sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  PRIMARY KEY (FID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1078,7 +1078,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  SNAME VARCHAR(255) NOT NULL,";
         $sql.= "  SVALUE VARCHAR(255) NOT NULL,";
         $sql.= "  PRIMARY KEY (FID, SNAME)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1137,7 +1137,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY (UID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1189,7 +1189,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  URI VARCHAR(255) DEFAULT NULL,";
         $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (LID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if(!$result = db_query($sql, $db_install)) {
 
@@ -1258,7 +1258,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
         $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (GID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1272,7 +1272,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (GID,FID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1285,7 +1285,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (GID,UID)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 
@@ -1500,7 +1500,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  KEY SOUND (SOUND),";
         $sql.= "  KEY UID (UID),";
         $sql.= "  KEY WORD (WORD)";
-        $sql.= ") TYPE=MyISAM";
+        $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_install)) {
 

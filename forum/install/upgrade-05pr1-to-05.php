@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.5 2004-12-05 17:58:07 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.6 2004-12-10 17:35:12 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -46,7 +46,7 @@ set_time_limit(0);
 // this happens because otherwise if you later try to upgrade
 // a second forum you will run into problems
 
-$sql = "SHOW TABLES LIKE 'FORUMS' ";
+$sql = "SHOW TABLES LIKE 'FORUMS'";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -56,7 +56,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 if (db_num_rows($result) > 0) {
 
-    $sql = "SELECT WEBTAG FROM FORUMS ";
+    $sql = "SELECT WEBTAG FROM FORUMS";
     $result = db_query($sql, $db_install);
 
     while ($row = db_fetch_array($result)) {
@@ -69,6 +69,14 @@ if (db_num_rows($result) > 0) {
 // so user's don't end up with multiple
 // inboxes that are hard to keep track of.
 
+$sql = "DROP TABLE IF EXISTS PM";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE PM (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
@@ -80,6 +88,14 @@ $sql.= "  NOTIFIED TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (MID),";
 $sql.= "  KEY TO_UID (TO_UID)";
 $sql.= ")";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS PM_ATTACHMENT_IDS";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -100,12 +116,28 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "DROP TABLE IF EXISTS PM_CONTENT";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE PM_CONTENT (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  CONTENT TEXT,";
 $sql.= "  PRIMARY KEY  (MID),";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
 $sql.= ")";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS DEDUPE";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -138,22 +170,6 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    // Change in the way ANON_LOGON works which makes more
-    // sense. Now instead of checking the user pref value
-    // before deciding to show the LAST_LOGON value we have
-    // bh_update_visitor_log() set the LAST_LOGON column
-    // as NULL if applicable and then check that when we
-    // go to display it.
-
-    $sql = "ALTER TABLE {$forum_webtag}_VISITOR_LOG CHANGE ";
-    $sql.= "LAST_LOGON LAST_LOGON DATETIME DEFAULT NULL ";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
     // Need to allow Guest access to the folders which is the
     // default behaviour.
 
@@ -170,6 +186,14 @@ foreach($forum_webtag_array as $forum_webtag) {
     // that was removed in 0.4. This is designed as a measure to combat
     // server load introduced by the ignore completely option making
     // use of the POST table.
+
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_THREAD_NEW";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     $sql = "CREATE TABLE {$forum_webtag}_THREAD_NEW (";
     $sql.= "  TID mediumint(8) unsigned NOT NULL auto_increment,";
@@ -236,6 +260,14 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Visitor log has been changed to per-forum table.
 
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_VISITOR_LOG";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     $sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";
     $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
     $sql.= "  LAST_LOGON datetime DEFAULT NULL,";
@@ -252,7 +284,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     // the old values from it really, as there will be a lot
     // of duplicates that don't make any sense.
 
-    $sql = "DROP TABLE VISITOR_LOG";
+    $sql = "DROP TABLE IF EXISTS VISITOR_LOG";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -265,7 +297,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     // to drop and recreate the table here with the new
     // indexes / keys.
 
-    $sql = "DROP TABLE SESSIONS";
+    $sql = "DROP TABLE IF EXISTS SESSIONS";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -306,7 +338,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     // email notification links, but this is better than
     // loosing people's PMs entirely!
 
-    $sql = "SELECT * FROM {$forum_webtag}_PM";
+    $sql = "SHOW TABLES LIKE '{$forum_webtag}_PM'";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -314,44 +346,56 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    while($pm_data = db_fetch_array($result)) {
+    if (db_num_rows($result) > 0) {
 
-        $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
-        $sql.= "VALUES ('{$pm_data['TYPE']}', '{$pm_data['TO_UID']}', '{$pm_data['FROM_UID']}', ";
-        $sql.= "'{$pm_data['SUBJECT']}', '{$pm_data['CREATED']}', '{$pm_data['NOTIFIED']}')";
+        $sql = "SELECT * FROM {$forum_webtag}_PM";
 
-        if ($pm_result = db_query($sql, $db_install)) {
-
-            $pm_mid = db_insert_id($db_install);
-
-            $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
-            $sql.= "SELECT $pm_mid, AID FROM {$forum_webtag}_PM_ATTACHMENT_IDS";
-
-            if (!$result = db_query($sql, $db_install)) {
-
-                $valid = false;
-                return;
-            }
-
-            $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-            $sql.= "SELECT $pm_mid, CONTENT FROM {$forum_webtag}_PM_CONTENT";
-
-            if (!$result = db_query($sql, $db_install)) {
-
-                $valid = false;
-                return;
-            }
-
-        }else {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
         }
+
+        while($pm_data = db_fetch_array($result)) {
+
+            $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
+            $sql.= "VALUES ('{$pm_data['TYPE']}', '{$pm_data['TO_UID']}', '{$pm_data['FROM_UID']}', ";
+            $sql.= "'{$pm_data['SUBJECT']}', '{$pm_data['CREATED']}', '{$pm_data['NOTIFIED']}')";
+
+            if ($pm_result = db_query($sql, $db_install)) {
+
+                $pm_mid = db_insert_id($db_install);
+
+                $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
+                $sql.= "SELECT $pm_mid, AID FROM {$forum_webtag}_PM_ATTACHMENT_IDS";
+
+                if (!$result = db_query($sql, $db_install)) {
+
+                    $valid = false;
+                    return;
+                }
+
+                $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
+                $sql.= "SELECT $pm_mid, CONTENT FROM {$forum_webtag}_PM_CONTENT";
+
+                if (!$result = db_query($sql, $db_install)) {
+
+                    $valid = false;
+                    return;
+                }
+
+            }else {
+
+                $valid = false;
+                return;
+            }
+        }
     }
+
 
     // Drop the old PM table
 
-    $sql = "DROP TABLE {$forum_webtag}_PM";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_PM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -361,7 +405,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Drop the old PM_ATTACHMENT_IDS table
 
-    $sql = "DROP TABLE {$forum_webtag}_PM_ATTACHMENT_IDS";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_PM_ATTACHMENT_IDS";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -371,7 +415,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Drop the old PM_CONTENT table
 
-    $sql = "DROP TABLE {$forum_webtag}_PM_CONTENT";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_PM_CONTENT";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -379,19 +423,9 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    // Drop the per-forum PM_NOTIFY column from USER_PREFS
+    // Fix the USER_PREFS table
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_NOTIFY";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Drop the per-forum PM_NOTIFY_EMAIL column from USER_PREFS
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_NOTIFY_EMAIL";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_PREFS_NEW";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -399,9 +433,29 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    // Drop the per-forum PM_SAVE_SENT_ITEM column from USER_PREFS
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_SAVE_SENT_ITEM";
+    $sql = "CREATE TABLE {$forum_webtag}_USER_PREFS_NEW (";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  HOMEPAGE_URL VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  PIC_URL VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  EMAIL_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  MARK_AS_OF_INT CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  POSTS_PER_PAGE CHAR(3) NOT NULL DEFAULT '20',";
+    $sql.= "  FONT_SIZE CHAR(2) NOT NULL DEFAULT '10',";
+    $sql.= "  STYLE VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
+    $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
+    $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
+    $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
+    $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+    $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
+    $sql.= "  PRIMARY KEY  (UID)";
+    $sql.= ")";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -409,19 +463,17 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    // Drop the per-forum PM_INCLUDE_REPLY column from USER_PREFS
+    // Move the data from the old USER_PREFS table into
+    // our new one.
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_INCLUDE_REPLY";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Drop the per-forum PM_AUTO_PRUNE column from USER_PREFS
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_AUTO_PRUNE";
+    $sql = "INSERT INTO {$forum_webtag}_USER_PREFS_NEW (UID, HOMEPAGE_URL, PIC_URL, ";
+    $sql.= "EMAIL_NOTIFY, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, EMOTICONS, ";
+    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, ";
+    $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ALLOW_EMAIL, ALLOW_PM) ";
+    $sql.= "SELECT UID, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, MARK_AS_OF_INT, POSTS_PER_PAGE, ";
+    $sql.= "FONT_SIZE, STYLE, EMOTICONS, VIEW_SIGS, START_PAGE, LANGUAGE, DOB_DISPLAY, ";
+    $sql.= "ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
+    $sql.= "ALLOW_EMAIL, ALLOW_PM FROM {$forum_webtag}_USER_PREFS";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -429,9 +481,19 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    // Drop the per-forum PM_AUTO_PRUNE_LENGTH column from USER_PREFS
+    // DROP the old USER_PREFS table
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_AUTO_PRUNE_LENGTH";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_PREFS";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Rename our new USER_PREFS table
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS_NEW RENAME {$forum_webtag}_USER_PREFS";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -441,6 +503,14 @@ foreach($forum_webtag_array as $forum_webtag) {
 }
 
 // Create the table for the dictionary
+
+$sql = "DROP TABLE IF EXISTS DICTIONARY";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
 
 $sql = "CREATE TABLE DICTIONARY (";
 $sql.= "  WORD varchar(64) NOT NULL default '',";

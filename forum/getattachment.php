@@ -37,6 +37,7 @@ if(!bh_session_check()){
 require_once("./include/html.inc.php");
 require_once("./include/attachments.inc.php");
 require_once("./include/user.inc.php");
+require_once("./include/db.inc.php");
 
 if (isset($HTTP_GET_VARS['owneruid']) && isset($HTTP_GET_VARS['filename'])) {
 
@@ -47,24 +48,52 @@ if (isset($HTTP_GET_VARS['owneruid']) && isset($HTTP_GET_VARS['filename'])) {
     $attachments_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON'];
   
     if (file_exists($attachments_dir. '/'. $HTTP_GET_VARS['filename'])) {
-
-      if(isset($HTTP_GET_VARS['download'])) {
-  
-        header("Content-Type: application/x-ms-download");
-        header("Content-Length: ". filesize($attachments_dir. '/'. $filename));
-        header("Content-disposition: filename=". $filename);
-        header("Content-Transfer-Encoding: binary");
-        header("Pragma: no-cache");
-        header("Expires: 0");
-
-        readfile($attachments_dir. '/'. $HTTP_GET_VARS['filename']);
-        exit;
-      
-      }else {
-  
-        $attachments_dir = "http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). '/attachments/'. $userinfo['LOGON'];
-        header_redirect($attachments_dir. '/'. $HTTP_GET_VARS['filename']);
     
+      $db = db_connect();
+      
+      $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES");
+      $sql.= " where UID = ". $HTTP_GET_VARS['owneruid']. " and";
+      $sql.= " FILENAME = '". $HTTP_GET_VARS['filename']. "'";
+      
+      $result = db_query($sql, $db);
+      
+      if (db_num_rows($result)) {
+      
+        $attachmentdetails = db_fetch_array($result);
+        
+        if(isset($HTTP_GET_VARS['download'])) {
+  
+          header("Content-Type: application/x-ms-download");
+          header("Content-Length: ". filesize($attachments_dir. '/'. $HTTP_GET_VARS['filename']));
+          header("Content-disposition: filename=". $filename);
+          header("Content-Transfer-Encoding: binary");
+          header("Pragma: no-cache");
+          header("Expires: 0");
+ 
+          readfile($attachments_dir. '/'. $HTTP_GET_VARS['filename']);
+          exit;
+      
+        }else {
+        
+          if (empty($attachmentdetails['MIMETYPE'])) {
+          
+            header("Content-Type: application/octet-stream");
+            
+          }else{
+      
+            header("Content-Type: ". $attachmentdetails['MIMETYPE']);
+            
+          }
+          
+          header("Content-disposition: filename=". $HTTP_GET_VARS['filename']);
+          header("Pragma: no-cache");
+          header("Expires: 0");
+          
+          readfile($attachments_dir. '/'. $HTTP_GET_VARS['filename']);
+          exit;          
+  
+        }
+        
       }
     
     }
@@ -72,5 +101,9 @@ if (isset($HTTP_GET_VARS['owneruid']) && isset($HTTP_GET_VARS['filename'])) {
   }
   
 }
+
+html_draw_top();
+echo "<h2>There was a problem downloading this attachment. Please try again later.</h2>\n";
+html_draw_bottom();
 
 ?>

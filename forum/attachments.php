@@ -71,7 +71,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
   }else {
     
     move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $userinfo['LOGON']. '/'. $HTTP_POST_FILES['userfile']['name']);
-    add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name']);
+    add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name'], $HTTP_POST_FILES['userfile']['type']);
     echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";    
   
   }

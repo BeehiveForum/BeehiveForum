@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.137 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: edit.php,v 1.138 2004-08-07 15:23:56 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -235,6 +235,17 @@ if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_
 // Check if the user is viewing signatures.
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
+
+// Get the user's post page preferences.
+$page_prefs = bh_session_get_value('POST_PAGE');
+
+if ($page_prefs == 0) {
+        $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+}
+
+if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+
+
 $valid = true;
 
 html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "edit.js", "openprofile.js", "htmltools.js", "emoticons.js");
@@ -265,13 +276,21 @@ if (isset($_POST['t_sig_html'])) {
         }
 }
 
+if (isset($_POST['t_post_emots'])) {
+        if ($_POST['t_post_emots'] == "enabled") {
+                $emots_enabled = true;
+        } else {
+                $emots_enabled = false;
+        }
+}
+
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 }else{
     $aid = md5(uniqid(rand()));
 }
 
-$post = new MessageText($post_html);
+$post = new MessageText($post_html, "", $emots_enabled);
 $sig = new MessageText($sig_html);
 
 if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
@@ -460,7 +479,29 @@ if (isset($_POST['preview'])) {
         }
     }
 
-}else{
+} else if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
+
+    $preview_message = messages_get($tid, $pid, 1);
+
+    if (isset($_POST['t_to_uid'])) {
+        $to_uid = $_POST['t_to_uid'];
+    }else {
+        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['t_from_uid'])) {
+        $from_uid = $_POST['t_from_uid'];
+    }else {
+        $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
+        $valid = false;
+    }
+
+	$page_prefs ^= POST_EMOTICONS_DISPLAY;
+
+	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+
+} else {
 
     $editmessage = messages_get($tid, $pid, 1);
 
@@ -494,8 +535,7 @@ if (isset($_POST['preview'])) {
         $to_uid = $editmessage['TO_UID'];
         $from_uid = $editmessage['FROM_UID'];
 
-        $t_content_temp = clean_emoticons($editmessage['CONTENT']);
-        $t_content_temp = preg_split("/<div class=\"sig\">/", $t_content_temp);
+        $t_content_temp = preg_split("/<div class=\"sig\">/", $editmessage['CONTENT']);
 
         if (count($t_content_temp) > 1) {
 
@@ -524,11 +564,20 @@ if (isset($_POST['preview'])) {
             }
         }
 
-        $t_content = _htmlentities_decode($t_content);
-        $post_html = 0;
-        $t_content_tmp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
+		$t_sig = clean_emoticons($t_sig);
 
-        if (strip_tags($t_content, '<p><br>') != $t_content_tmp) {
+        $t_content_temp = clean_emoticons($t_content);
+		if ($t_content_temp == $t_content && emoticons_convert($t_content_temp) != $t_content) {
+			$emots_enabled = false;
+		} else if ($t_content_temp != $t_content) {
+			$emots_enabled = true;
+		}
+		$t_content = $t_content_temp;
+
+        $post_html = 0;
+        $t_content_temp = preg_replace("/<a href=\"([^\"]*)\">\\1<\/a>/", "\\1", $t_content);
+
+        if (strip_tags($t_content, '<p><br>') != $t_content_temp) {
             $post_html = 2;
                 if (add_paragraphs($t_content) == $t_content) {
                         $post_html = 1;
@@ -537,8 +586,11 @@ if (isset($_POST['preview'])) {
             $t_content = strip_tags($t_content);
         }
 
-        $post = new MessageText($post_html, $t_content);
+        $post = new MessageText($post_html, $t_content, $emots_enabled);
         $sig = new MessageText($sig_html, $t_sig);
+
+		$post->diff = false;
+		$sig->diff = false;
 
         $t_content = $post->getContent();
         $t_sig = $sig->getContent();
@@ -612,9 +664,28 @@ echo "</a><br /><br />\n";
 
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
+
 if ($emot_prev != "") {
-        echo "<h2>".$lang['emoticons'].":</h2>\n";
-        echo $emot_prev."<br />\n";
+        echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"subhead\">\n";
+        echo "      <div style=\"float:left\">&nbsp;{$lang['emoticons']}:</div>\n";
+
+        if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
+                echo "      <div style=\"float:right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "</div>\n";
+                echo "    </td>\n";
+                echo "  </tr>\n";
+
+                echo "  <tr>\n";
+                echo "    <td colspan=\"2\">\n";
+                echo $emot_prev;
+        } else {
+                echo "      <div style=\"float:right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "</div>\n";
+        }
+
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
 }
 
 echo "</td></tr>\n";
@@ -634,7 +705,9 @@ echo "<tr><td>\n";
 
 echo "<h2>". $lang['message'] .":</h2>\n";
 
-echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+	echo $tools->toolbar(false, form_submit('submit',$lang['apply'], 'onclick="closeAttachWin(); clearFocus()"'));
+}
 
 echo $tools->textarea("t_content", $post->getTidyContent(), 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 
@@ -654,6 +727,11 @@ echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'
 echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+
+echo "<br /><br /><h2>". $lang['emoticonsinmessage'] .":</h2>\n";
+
+echo form_radio("t_post_emots", "enabled", $lang['enabled'], $emots_enabled)." \n";
+echo form_radio("t_post_emots", "disabled", $lang['disabled'], !$emots_enabled)." \n";
 
 echo "<br /><br />\n";
 

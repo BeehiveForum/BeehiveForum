@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.61 2005-01-19 21:49:25 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.62 2005-01-19 22:44:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -77,13 +77,12 @@ if (!(perm_has_admin_access())) {
     exit;
 }
 
-echo "<table border=\"0\" width=\"100%\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"subhead\">Tools</td>\n";
-echo "  </tr>\n";
+if (forum_check_access_level()) {
 
-if ($webtag) {
-
+    echo "<table border=\"0\" width=\"100%\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">Tools</td>\n";
+    echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_users.php?webtag=$webtag\" target=\"right\">{$lang['users']}</a></td>\n";
     echo "  </tr>\n";
@@ -117,6 +116,9 @@ if ($webtag) {
     echo "  <tr>\n";
     echo "    <td class=\"postbody\"><a href=\"admin_viewlog.php?webtag=$webtag\" target=\"right\">{$lang['viewlog']}</a></td>\n";
     echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"postbody\">&nbsp;</td>\n";
+    echo "  </tr>\n";
     echo "</table>\n";
 }
 
@@ -124,9 +126,6 @@ if ($webtag) {
 if (perm_has_forumtools_access()) {
 
     echo "<table border=\"0\" width=\"100%\">\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"postbody\">&nbsp;</td>\n";
-    echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"subhead\">Forums</td>\n";
     echo "  </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.83 2004-07-23 19:51:44 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.84 2004-08-02 00:32:29 tribalonline Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -420,7 +420,7 @@ class MessageText {
                 $this->original_text = $text;
 
                 if ($this->html == 0) {
-                        $text = make_html($text);
+                        $text = make_html($text, false, $this->emoticons);
                 } else if ($this->html > 0) {
                         $text = fix_html($text, $this->emoticons);
 

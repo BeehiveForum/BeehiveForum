@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.79 2004-06-18 10:39:45 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.80 2004-06-25 14:55:56 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -192,8 +192,11 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
         $t_to_uid = $_POST['t_to_uid'];
-    }elseif ($to_radio == 0) {
+    }else {
         $t_to_uid = 0;
+    }
+
+    if ($to_radio == 0 && $t_to_uid == 0) {
         $error_html.= "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
         $valid = false;
     }

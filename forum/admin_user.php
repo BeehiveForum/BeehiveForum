@@ -42,6 +42,7 @@ require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/poll.inc.php");
+require_once("./include/config.inc.php");
 
 if(isset($HTTP_POST_VARS['cancel'])){
 	header_redirect($HTTP_POST_VARS['ret']);
@@ -82,6 +83,13 @@ $user = db_fetch_array($result);
 
 // Do updates
 if(isset($HTTP_POST_VARS['submit'])) {
+
+  if ($HTTP_POST_VARS['submit'] == 'Del') {
+
+    unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. _stripslashes($HTTP_POST_VARS['userfile'])));
+    delete_attachment($uid, $HTTP_POST_VARS['aid'], rawurlencode(_stripslashes($HTTP_POST_VARS['userfile'])));
+
+  }else {
 
     $new_status = $HTTP_POST_VARS['t_worker'] | $HTTP_POST_VARS['t_worm'] | $HTTP_POST_VARS['t_wasp'] | $HTTP_POST_VARS['t_splat'];
 
@@ -127,11 +135,10 @@ if(isset($HTTP_POST_VARS['submit'])) {
             $result2 = db_query($sql, $db);
 
           }
-          
         }       
       }
     }
-    
+  }
 }
 
 // Draw the form
@@ -207,8 +214,76 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
   }
 
   echo "<tr><td>&nbsp;</td></tr>\n";
-  echo "<tr><td class=\"subhead\">Folder Access:</td></tr>\n";
+  echo "<tr><td class=\"subhead\">Delete Posts:</td></tr>\n";
   echo "<tr><td>", form_checkbox("t_delete_posts", 1, "Delete all of this user's posts", false), "</td></tr>\n";
+  echo "<tr><td>&nbsp;</td></tr>\n";
+  echo "<tr><td class=\"subhead\">Attachments:</td></tr>\n";
+  echo "<tr><td>\n";
+  echo "<table class=\"posthead\" width=\"100%\">\n";
+
+  $attachments = get_users_attachments($uid);
+
+  if (is_array($attachments)) {
+  
+    for ($i = 0; $i < sizeof($attachments); $i++) {
+
+      echo "  <tr>\n";
+      echo "    <td valign=\"top\" width=\"300\" class=\"postbody\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" /><a href=\"getattachment.php?hash=". $attachments[$i]['hash']. "\" title=\"";
+      
+      if (strlen($attachments[$i]['filename']) > 16) {
+        echo "Filename: ". $attachments[$i]['filename']. ", ";
+      }      
+      
+      if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+        echo "Dimensions: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
+      }
+                        
+      echo "Size: ". format_file_size($attachments[$i]['filesize']). ", ";
+      echo "Downloaded: ". $attachments[$i]['downloads'];
+                        
+      if ($attachments[$i]['downloads'] == 1) {
+        echo " time";
+      }else {
+        echo " times";
+      }
+      
+      echo "\">";
+      
+      if (strlen($attachments[$i]['filename']) > 16) {
+        echo substr($attachments[$i]['filename'], 0, 16). "...</a></td>\n";
+      }else{
+        echo $attachments[$i]['filename']. "</a></td>\n";
+      }
+      
+      echo "    <td valign=\"top\" width=\"100\" class=\"postbody\"><a href=\"messages.php?msg=". get_message_tidpid($attachments[$i]['aid']). "\" target=\"_blank\">View Message</a></td>\n";
+      echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
+      echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
+      echo "      ". form_input_hidden('userfile', $attachments[$i]['filename']);
+      echo "      ". form_input_hidden('aid', $attachments[$i]['aid']);
+      echo "      ". form_submit('submit', 'Del'). "\n";
+      echo "    </td>\n";
+      echo "  </tr>\n";
+    
+      $total_attachment_size += $attachments[$i]['filesize'];
+      
+    }
+    
+  }else {
+  
+    echo "  <tr>\n";
+    echo "    <td valign=\"top\" width=\"300\" class=\"postbody\">No attachments for this user</td>\n";
+    echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td align=\"right\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td width=\"300\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
+    echo "    <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    
+  }
+
+  echo "</table></td></tr>\n";
   echo "</table>\n";
   echo form_input_hidden("uid", $uid);
   echo form_input_hidden("ret", $ret);

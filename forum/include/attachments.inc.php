@@ -87,6 +87,42 @@ function get_all_attachments($uid, $aid) {
     return $userattachments;
     
 }
+
+function get_users_attachments($uid) {
+
+    global $HTTP_SERVER_VARS, $attachment_dir;
+
+    $userattachments = '';
+
+    $db = db_connect();
+
+    $sql = "SELECT PAI.TID, PAI.PID, PAF.AID, PAF.FILENAME, PAF.MIMETYPE, PAF.HASH, PAF.DOWNLOADS ";
+    $sql.= "FROM ". forum_table("POST_ATTACHMENT_IDS"). " PAI ";
+    $sql.= "LEFT JOIN ". forum_table("POST_ATTACHMENT_FILES"). " PAF ON ";
+    $sql.= "(PAF.AID = PAI.AID) WHERE PAF.UID = $uid";
+
+    $result = db_query($sql, $db);
+
+    while($row = db_fetch_array($result)) {
+      
+      if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+      
+        if (!is_array($userattachments)) $userattachments = array();
+      
+        $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                   "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                   "aid"       => $row['AID'],
+                                   "hash"      => $row['HASH'],
+                                   "mimetype"  => $row['MIMETYPE'],
+                                   "downloads" => $row['DOWNLOADS']);
+      }
+      
+    }
+    
+    return $userattachments;
+
+}
+
     
 function add_attachment($uid, $aid, $filename, $mimetype) {
 

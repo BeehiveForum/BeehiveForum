@@ -25,18 +25,16 @@ require_once("./include/gzipenc.inc.php");
 
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
-//            N.B. filtering comments (!--) or xmp tags will
-//            also filter everything within the tag pair
 
 // "$bad_tags" is an array of tags to be filtered
 function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html", "head", "title", "base", "meta", "!doctype", "button", "fieldset", "form", "frame", "frameset", "iframe", "input", "label", "legend", "link", "noframes", "noscript", "object", "optgroup", "option", "param", "script", "select", "style", "textarea"))
 {
 
 	$ret_text = '';
+	array_push($bad_tags, "!--");
 
 	if (!empty($html)) {
 		$html = _stripslashes($html);
-		$html = preg_replace("/<xmp[^>]*>((.|\n)*)<\/xmp[^>]*>/i", "<xmp>\\1</xmp>", $html);
 
 		$open_pos = strpos($html, "<");
 		$next_open_pos = strpos($html, "<", $open_pos+1);
@@ -44,36 +42,20 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 		$html_parts = array();
 
 		while(is_integer($open_pos) || is_integer($close_pos)){
-			if(substr($html, $open_pos+1, 3) == "!--"){
-				$end_comment = strpos($html, "-->", $open_pos);
-				if(!is_integer($end_comment)){
-					$html = substr_replace($html, " -->", $open_pos+4, 0);
-					$end_comment = $open_pos+5;
-				}
-				if(substr($html, $open_pos+4, 1) != " "){
-					$html = substr_replace($html, " ", $open_pos+4, 0);
-					$end_comment++;
-				}
-				array_push($html_parts, substr($html, 0, $open_pos));
-				array_push($html_parts, substr($html, $open_pos+1, $end_comment-$open_pos+1));
-
-				$html = substr($html, $end_comment+3);
-
-			} else if(strtolower(substr($html, $open_pos+1, 3)) == "xmp"){
-				$html = substr_replace($html, "xmp", $open_pos+1, 3);
-				$html = substr_replace($html, "", $open_pos+4, $close_pos-$open_pos-4);
-				$end_xmp = strpos($html, "</xmp>", $open_pos);
-				if(!is_integer($end_xmp)){
-					$html = substr_replace($html, "</xmp>", $open_pos+5, 0);
-					$end_xmp = $open_pos+5;
+			if(strtolower(substr($html, $open_pos+1, 4)) == "code"){
+				$html = substr_replace($html, "code", $open_pos+1, 4);
+				$html = substr_replace($html, "", $open_pos+5, $close_pos-$open_pos-5);
+				$end_code = strpos(strtolower($html), "</code", $open_pos);
+				if(!is_integer($end_code)){
+					$html = substr_replace($html, "</code>", $open_pos+6, 0);
+					$end_code = $open_pos+6;
 				} else {
-					$close_pos = strpos($html, ">", $closepos);
-					$html = substr_replace($html, "", $end_xmp+5, $close_pos-$end_xmp-4);
+					$close_pos = strpos($html, ">", $end_code);
+					$html = substr_replace($html, "", $end_code+6, $close_pos-$end_code-6);
 				}
-				array_push($html_parts, substr($html, 0, $open_pos));
-				array_push($html_parts, substr($html, $open_pos+1, $end_xmp-$open_pos+4));
 
-				$html = substr($html, $end_xmp+6);
+				$tmp_code = substr($html, $open_pos+6, $end_code-$open_pos-6);
+				$html = substr_replace($html, "<pre>".htmlentities($tmp_code)."</pre>", $open_pos, $end_code-$open_pos+7);
 
 			} else if(!is_integer($open_pos) || ($close_pos < $open_pos && is_integer($close_pos))){
 				// > by itself
@@ -120,8 +102,28 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 		$opentags = array();
 		$last_tag = array();
-		$single_tags = array("br", "img", "hr", "!--", "area", "embed", "xmp");
-		$no_nest = array("p");
+		$single_tags = array("br", "img", "hr", "area", "embed");
+
+		$no_nest = array();
+		$no_nest["p"] = array("table", "li");
+		$no_nest["li"] = array("ul", "ol");
+		$no_nest["td"] = array("tr");
+		$no_nest["tr"] = array("table");
+
+		$nest = array();
+		$nest["td"] = array("tr");
+		$nest["th"] = array("tr");
+		$nest["tr"] = array("table");
+		$nest["tbody"] = array("table");
+		$nest["tfoot"] = array("table");
+		$nest["thead"] = array("table");
+		$nest["caption"] = array("table");
+		$nest["colgroup"] = array("table");
+		$nest["col"] = array("table");
+	
+		$nest["map"] = array("area");
+		$nest["param"] = array("object");
+		$nest["li"] = array("ul", "ol");
 
 		for($i=0; $i<count($html_parts); $i++){
 			if($i%2){
@@ -157,12 +159,17 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 						// previous tag hasn't been closed
 						} else if ($last_tag2 != $tag){
-							array_splice($html_parts, $i, 0, array("/".$last_tag2,""));
+							// wrap white-text
+							if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws)) {
+								$html_parts[$i-1] = preg_replace("/( )?\s+$/", "$1", $html_parts[$i-1]);
+							}
+							array_splice($html_parts, $i, 0, array("/".$last_tag2, $ws[0]));
 							$opentags[$last_tag2]--;
 							$i++;
 
 						}
 					}
+
 
 				} else {
 					if(substr($html_parts[$i], -1) == "/"){
@@ -171,11 +178,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 
 					$firstspace = strpos($html_parts[$i], " ");
 
-					$firstthree = strtolower(substr($html_parts[$i], 0, 3));
-					if($firstthree == "!--" || $firstthree == "xmp"){
-						$tag = $firstthree;
-
-					} else if(is_integer($firstspace)){
+					if(is_integer($firstspace)){
 						$html_parts[$i] = clean_attributes($html_parts[$i]);
 
 						$tag = substr($html_parts[$i], 0, $firstspace);
@@ -193,29 +196,82 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						$i -= 2;
 
 					} else if(!in_array($tag, $single_tags)){
-						$opentags[$tag]++;
-						array_push($last_tag, $tag);
-
-						// make sure certain tags can't nest within themselves, e.g. <p><p>
-						if(in_array($tag, $no_nest) && $opentags[$tag] > (1 + $opentags["table"])){
-
-							for($j=count($last_tag)-2;$j>=0;$j--){
-								if($last_tag[$j] == $tag){
-									array_splice($last_tag, $j, 1);
+						if(isset($nest[$tag]) && $opentags[$nest[$tag][0]] == 0) {
+							$tmp_nest = $tag;
+							$last_tag2 = array_pop($last_tag);
+							$tmp_tags = array($last_tag2); 
+							$tmp_len = $i;
+							while (isset($nest[$tmp_nest])) {
+								if (in_array($last_tag2, $nest[$tmp_nest])) {
 									break;
-								} else {
-									array_splice($html_parts, $i, 0, array("/".$last_tag[$j], ""));
-									$opentags[$last_tag[$j]]--;
-									array_splice($last_tag, $j, 1);
-									$i+=2;
+								}
+								array_splice($html_parts, $tmp_len, 0, array($nest[$tmp_nest][0], ""));
+
+								$i += 2;
+								array_splice($tmp_tags, 1, 0, $nest[$tmp_nest][0]);
+								$last_tag2 = $tmp_tags[1];
+								$tmp_nest = $nest[$tmp_nest][0];
+							}
+
+
+							$tmp_len = count($last_tag);
+							for($j=0;$j<count($tmp_tags);$j++){
+								if (strlen($tmp_tags[$j]) > 0) {
+									array_push($last_tag, $tmp_tags[$j]);
+									if ($j != 0) {
+										$opentags[$tmp_tags[$j]]++;
+									}
 								}
 							}
-							array_splice($html_parts, $i, 0, array("/".$tag, ""));
-							$opentags[$tag]--;
-							$i+=2;
+						}
+
+						array_push($last_tag, $tag);
+
+						$opentags[$tag]++;
+
+
+						// make sure certain tags can't nest within themselves, e.g. <p><p>
+						if(isset($no_nest[$tag])) {
+							$opencount = 0;
+							for ($j=0; $j<count($no_nest[$tag]); $j++) {
+								$opencount += $opentags[$no_nest[$tag][$j]];
+							}
+							if ($tag == "p") $opencount++;
+							
+							if ($opentags[$tag] > $opencount) {
+								for($j=count($last_tag)-2;$j>=0;$j--){
+									if($last_tag[$j] == $tag){
+										array_splice($last_tag, $j, 1);
+										break;
+									} else {
+										array_splice($html_parts, $i, 0, array("/".$last_tag[$j], ""));
+
+										// wrap white-text
+										if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws)) {
+											$html_parts[$i-1] = preg_replace("/( )?\s+$/", "$1", $html_parts[$i-1]);
+											$html_parts[$i+1] = $ws[0].$html_parts[$i+1];
+										}
+
+										$opentags[$last_tag[$j]]--;
+										array_splice($last_tag, $j, 1);
+										$i+=2;
+									}
+								}
+
+								array_splice($html_parts, $i, 0, array("/".$tag, ""));
+
+								// wrap white-text
+								if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws)) {
+									$html_parts[$i-1] = preg_replace("/( )?\s+$/", "$1", $html_parts[$i-1]);
+									$html_parts[$i+1] = $ws[0].$html_parts[$i+1];
+								}
+
+								$opentags[$tag]--;
+								$i+=2;
+							}
 						}
 					// make XHTML single tag
-					} else if(substr($html_parts[$i], -2) != "--" && substr($html_parts[$i], -2) != " /" && substr($html_parts[$i], -3) != "xmp"){
+					} else if(substr($html_parts[$i], -2) != " /"){
 						if(substr($html_parts[$i], -1) != "/"){
 							$html_parts[$i] .= " /";
 						} else {
@@ -233,13 +289,10 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 				$ret_text .= $html_parts[$i];
 			}
 		}
-		$reverse_ot = array_reverse($opentags);
 
-		// add unclosed/unnested tags
-		foreach($reverse_ot as $tag => $n){
-			for($i=0;$i<$n;$i++){
-				$ret_text .= "</$tag>";
-			}
+		$reverse_lt = array_reverse($last_tag);
+		for($i=0;$i<count($reverse_lt);$i++) {
+			$ret_text .= "</".$reverse_lt[$i].">";
 		}
 
 		return $ret_text;
@@ -286,6 +339,8 @@ function clean_attributes($tag)
 
 	$valid["object"] = array("archive", "classid", "codebase", "codetype", "data", "declare", "height", "width", "name", "standby", "type", "usemap");
 	$valid["param"] = array("name", "id", "value", "valuetype", "type");
+
+	$valid["marquee"] = array("direction", "behavior", "loop", "scrollamount", "scrolldelay", "height", "width", "hspace", "vspace");
 
 
 	$split_tag = preg_split("/\s+/", $tag);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.95 2004-04-09 21:19:02 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.96 2004-04-10 10:27:05 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -106,7 +106,7 @@ function bh_session_check()
                 // If the user is not logged into the current forum, we should
                 // do that now for them.
                     
-                if (strtoupper($user_sess['FID']) <> $table_data['FID']) {
+                if ($user_sess['FID'] <> $table_data['FID']) {
                     
                     $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' AND FID = '{$table_data['FID']}'";
                     $result = db_query($sql, $db_bh_session_check);
@@ -124,15 +124,13 @@ function bh_session_check()
 
                         $result = db_query($sql, $db_bh_session_check);
 
-                        if (!db_affected_rows($db_bh_session_check) && $table_data) {
+                        if (db_affected_rows($db_bh_session_check) < 1 && $table_data) {
     
                             $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
                             $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
     
                             $result = db_query($sql, $db_bh_session_check);
                         }
-    
-                        $result = db_query($sql, $db_bh_session_check);                            
                     }
                 }
 

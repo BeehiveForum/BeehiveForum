@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.35 2004-04-09 21:32:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.36 2004-04-10 10:27:05 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -34,75 +34,81 @@ include_once("./include/lang.inc.php");
 function get_table_prefix()
 {
     global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
+
+    static $forum_data = false;
+
+    if (!$forum_data) {
     
-    $db_get_table_prefix = db_connect();    
+        $db_get_table_prefix = db_connect();    
     
-    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
-        $webtag = trim($HTTP_GET_VARS['webtag']);
-    }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
-        $webtag = trim($HTTP_POST_VARS['webtag']);
-    }else {
-        $webtag = "";
-    }
+        if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+            $webtag = trim($HTTP_GET_VARS['webtag']);
+        }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
+            $webtag = trim($HTTP_POST_VARS['webtag']);
+        }else {
+            $webtag = "";
+        }
     
-    $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
-    $result = db_query($sql, $db_get_table_prefix);
+        $sql = "SELECT FID, CONCAT(WEBTAG, '', '_') AS PREFIX FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+        $result = db_query($sql, $db_get_table_prefix);
         
-    // if we found the post table return the table prefix
-    // (same as the webtag with a underscore after it)
+        // if we found the post table return the table prefix
+        // (same as the webtag with a underscore after it)
     
-    if (db_num_rows($result) > 0) {
-        
-        $forum_data = db_fetch_array($result);
+        if (db_num_rows($result) > 0) {
+            $forum_data = db_fetch_array($result);
+	    return $forum_data;
+        }
 
-	if (strlen(trim($webtag)) > 0) {
-            $forum_data['PREFIX'] = "{$webtag}_";
-	}else {
-	    $forum_data['PREFIX'] = "";
-	}
-
-	return $forum_data;
+        return false;
     }
 
-    return false;
+    return $forum_data;
 }
 
 function get_webtag()
 {
     global $HTTP_GET_VARS, $HTTP_POST_VARS, $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS;
-    
-    $db_get_webtag = db_connect();    
-    
-    if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
-        $webtag = trim($HTTP_GET_VARS['webtag']);
-    }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
-        $webtag = trim($HTTP_POST_VARS['webtag']);
-    }else {
-        $webtag = "";
-    }
 
-    // Check #1: See if the webtag specified in GET/POST
-    // actually exists.
+    static $webtag_data = false;
+
+    if (!$webtag_data) {
     
-    $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
-    $result = db_query($sql, $db_get_webtag);
+        $db_get_webtag = db_connect();    
+    
+        if (isset($HTTP_GET_VARS['webtag']) && strlen(trim($HTTP_GET_VARS['webtag'])) > 0) {
+            $webtag = trim($HTTP_GET_VARS['webtag']);
+        }else if (isset($HTTP_POST_VARS['webtag']) && strlen(trim($HTTP_POST_VARS['webtag'])) > 0) {        
+            $webtag = trim($HTTP_POST_VARS['webtag']);
+        }else {
+            $webtag = "";
+        }
+
+        // Check #1: See if the webtag specified in GET/POST
+        // actually exists.
+    
+        $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'"; 
+        $result = db_query($sql, $db_get_webtag);
         
-    if (db_num_rows($result) > 0) {
-        return $webtag;
-    }
+        if (db_num_rows($result) > 0) {
+            return $webtag;
+        }
 
-    // Check #2: Try and select a default webtag from
-    // the databse
+        // Check #2: Try and select a default webtag from
+        // the databse
 
-    $sql = "SELECT WEBTAG FROM FORUMS WHERE DEFAULT_FORUM = 1 LIMIT 0, 1";
-    $result = db_query($sql, $db_get_webtag);
+        $sql = "SELECT WEBTAG FROM FORUMS WHERE DEFAULT_FORUM = 1 LIMIT 0, 1";
+        $result = db_query($sql, $db_get_webtag);
     
-    if (db_num_rows($result) > 0) {
-        $row = db_fetch_array($result);
-        return $row['WEBTAG'];
+        if (db_num_rows($result) > 0) {
+            $webtag_data = db_fetch_array($result);
+            return $webtag_data['WEBTAG'];
+        }
+        
+        return false;
     }
 
-    return false;
+    return $webtag_data['WEBTAG'];
 }
 
 function get_forum_settings()

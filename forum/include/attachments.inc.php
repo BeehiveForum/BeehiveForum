@@ -93,8 +93,8 @@ function add_attachment($uid, $aid, $filename, $mimetype) {
     
     $hash = md5($aid. $filename);
     
-    $sql = "insert into ". forum_table("POST_ATTACHMENT_FILES"). " (AID, UID, FILENAME, MIMETYPE, HASH) ";
-    $sql.= "values ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
+    $sql = "insert into ". forum_table("POST_ATTACHMENT_FILES"). " (ID, AID, UID, FILENAME, MIMETYPE, HASH) ";
+    $sql.= "values ('', '$aid', '$uid', '$filename', '$mimetype', '$hash')";
     
     $result = db_query($sql, $db) or die(mysql_error());
     
@@ -176,6 +176,16 @@ function get_message_tidpid($aid) {
       return "";
       
     }
+    
+}
+
+function get_num_attachments($aid) {
+
+    $db = db_connect();
+    
+    $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where AID = '$aid'";
+    $result = db_query($sql, $db);
+    return db_num_rows($result);
     
 }
 

@@ -32,9 +32,17 @@ $db_database = "beehiveforum";	// the name of your MySQL database
 
 // ---------------------------------------------------------------------
 
+
 // Post stuff ----------------------------------------------------------
 
 $maximum_post_length = 6226;	// maximum character-length of posts
+
+// ---------------------------------------------------------------------
+
+
+// Attachment stuff ----------------------------------------------------
+
+$attachment_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments';
 
 // ---------------------------------------------------------------------
 

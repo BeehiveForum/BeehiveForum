@@ -211,8 +211,14 @@ if($valid && isset($HTTP_POST_VARS['submit'])) {
     if($new_pid > -1) {
 
         html_draw_top();
-    
-        post_save_attachment_id($t_tid, $new_pid, $aid);
+        
+        // Check to see if any attachments were uploaded.
+        
+        if (get_num_attachments($aid) > 0) { 
+        
+          post_save_attachment_id($t_tid, $new_pid, $aid);
+          
+        }
         
         echo "<p>&nbsp;</p>";
         echo "<p>&nbsp;</p>";

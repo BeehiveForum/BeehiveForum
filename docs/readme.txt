@@ -427,7 +427,7 @@ Nigel Moore / Kevin Yip / Andrew Holgate
 4.4 Translations
 ================
 
-French   - Mark Krywonos.
+French   - Mark Krywonos (note: incomplete - includes some English phrases still)
 Gangsta  - Jay Graham.
 X-Hacker - Matt Beale.
 
@@ -438,11 +438,11 @@ X-Hacker - Matt Beale.
 Mike Quigley / Frnht451 / Peter Kelly / "Michael" from www.hermitscave.org / Lots of other people
 
 
-4.6 Director
-============
+4.6 Directors
+=============
 
-Mark Rendle
-and Matt/Andy while I was moving house...
+Matt Beale
+Mark Rendle - taking time out
 
 
 4.7 Thanks to

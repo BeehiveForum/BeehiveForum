@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.153 2003-12-09 22:46:57 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.154 2003-12-09 23:03:49 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -431,7 +431,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                     if ($thread['fid'] == $folder_number) {
 
                         echo "        <tr>\n";
-                        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"16\">";
+                        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\">";
 
                         if ($thread['last_read'] == 0) {
 
@@ -447,7 +447,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\" />";
                             }else {
-                                echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\"/>";
+                                echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"\"/>;";
                             }
 
                         }elseif ($thread['last_read'] < $thread['length']) {
@@ -486,9 +486,9 @@ while (list($key1, $folder_number) = each($folder_order)) {
                         $thread_time = format_time($thread['modified']);
                         // $thread_author = thread_get_author($thread['tid']);
 
-                        echo "</td>\n";
-                        echo "<td valign=\"top\">\n";
-                        echo "&nbsp;<a href=\"messages.php?msg={$thread['tid']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['tid']}');\" title=\"#{$thread['tid']} {$lang['startedby']} ", format_user_name($thread['logon'], $thread['nickname']), "\">{$thread['title']}</a> ";
+                        echo "&nbsp;</td>\n";
+                        echo "          <td valign=\"top\">";
+                        echo "<a href=\"messages.php?msg={$thread['tid']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['tid']}');\" title=\"#{$thread['tid']} {$lang['startedby']} ", format_user_name($thread['logon'], $thread['nickname']), "\">{$thread['title']}</a> ";
                         if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
                         if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
                         if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";

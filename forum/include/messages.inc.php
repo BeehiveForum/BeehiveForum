@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.204 2003-12-09 22:26:54 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.205 2003-12-09 23:03:49 decoyduck Exp $ */
 
 // Included functions for displaying messages in the main frameset.
 
@@ -304,7 +304,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             $user_prefs = user_get_prefs(bh_session_get_value('UID'));
             if ((user_get_status($message['FROM_UID']) & USER_PERM_WORM)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
-            if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) echo "<b class=\"adminipdisplay\">{$lang['ip']}: {$message['IPADDRESS']}</b> ";
+	    if (perm_is_soldier()) {
+                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) echo "<b class=\"adminipdisplay\">{$lang['ip']}: {$message['IPADDRESS']}</b> ";
+	    }
             echo format_time($message['CREATED'], 1);
         }
     }
@@ -479,7 +481,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['print']}\" />";
             echo "&nbsp;<a href=\"display.php?msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['print']}</a>";
 
-            if(bh_session_get_value('UID') != $message['FROM_UID']) {
+            if (bh_session_get_value('UID') != $message['FROM_UID']) {
                 echo "<bdo dir=\"", $lang['_textdir'], "\">&nbsp;&nbsp;</bdo><img src=\"".style_image('enemy.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['relationship']}\" />";
                 echo "&nbsp;<a href=\"user_rel.php?uid=", $message['FROM_UID'], "&amp;msg=$tid.".$message['PID']."\" target=\"_self\">{$lang['relationship']}</a>";
             }

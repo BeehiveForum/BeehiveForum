@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.27 2005-02-22 12:55:46 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.28 2005-03-04 22:54:07 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -105,7 +105,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  MATCH_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  REPLACE_TEXT VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  FILTER_OPTION TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (ID,UID)";
+$sql.= "  PRIMARY KEY  (ID, UID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -423,7 +423,7 @@ $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  OPTION_NAME CHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  GROUP_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (OPTION_ID, TID)";
+$sql.= "  PRIMARY KEY  (TID, OPTION_ID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -447,7 +447,7 @@ $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  EDITED DATETIME DEFAULT NULL,";
 $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (PID, TID),";
+$sql.= "  PRIMARY KEY  (TID, PID),";
 $sql.= "  KEY TID (TID),";
 $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY IPADDRESS (IPADDRESS),";

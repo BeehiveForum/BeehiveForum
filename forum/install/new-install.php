@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.31 2005-03-06 23:36:41 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.32 2005-03-07 12:47:41 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -201,7 +201,7 @@ if (!@$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS VALUES (1, 0, 0, 1536);";
+$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 1, 1, 6652)";
 
 if (!@$result = db_query($sql, $db_install)) {
 
@@ -210,7 +210,7 @@ if (!@$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS VALUES (1, 1, 1, 6652);";
+$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 0, 0, 1536)";
 
 if (!@$result = db_query($sql, $db_install)) {
 
@@ -219,7 +219,16 @@ if (!@$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_PERMS VALUES (0, 1, 1, 14588);";
+$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (0, 1, 1, 14588)";
+
+if (!@$result = db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) VALUES (1, 1, 0, 34560)";
 
 if (!@$result = db_query($sql, $db_install)) {
 
@@ -241,7 +250,7 @@ if (!@$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUP_USERS VALUES (1, 1);";
+$sql = "INSERT INTO GROUP_USERS (GID, UID) VALUES (1, 1)";
 
 if (!@$result = db_query($sql, $db_install)) {
 
@@ -276,8 +285,8 @@ if (!@$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-$sql.= "VALUES (1, NULL, NULL, 1);";
+$sql = "INSERT INTO GROUPS (GID, FORUM, GROUP_NAME, GROUP_DESC, ";
+$sql.= "AUTO_GROUP) VALUES (1, 1, NULL, NULL, 1)";
 
 if (!@$result = db_query($sql, $db_install)) {
 

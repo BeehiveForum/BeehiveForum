@@ -62,7 +62,7 @@ echo "<table width=\"100%\">\n";
 
 $db = db_connect();
 
-$sql = "select UID, LOGON, NICKNAME from " . forum_table("USER");
+$sql = "select UID, LOGON, NICKNAME from " . forum_table("USER") . " order by NICKNAME, LOGON";
 
 $result = db_query($sql,$db);
 

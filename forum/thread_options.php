@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.3 2004-04-12 20:31:03 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.4 2004-04-12 20:39:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,6 +47,7 @@ include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/perm.inc.php");
 include_once("./include/poll.inc.php");
+include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 include_once("./include/user.inc.php");
@@ -336,6 +337,10 @@ if (perm_is_moderator() || $canedit) {
     echo "                  <td class=\"posthead\">{$lang['movethread']}:</td>\n";
     echo "                  <td>", folder_draw_dropdown($threaddata['FID'], "move"), "</td>\n";
     echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
 
     if (perm_is_moderator()) {
 
@@ -362,6 +367,10 @@ if (perm_is_moderator() || $canedit) {
 	echo "                  <td>&nbsp;</td>\n";
 	echo "                  <td>", form_radio("sticky", "N", $lang['no'], $threaddata['STICKY'] == "N"), "</td>\n";
 	echo "                </tr>\n";
+	echo "                <tr>\n";
+	echo "                  <td>&nbsp;</td>\n";
+	echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td class=\"posthead\">{$lang['closedforposting']}:</td>\n";
         echo "                  <td>\n";
@@ -376,12 +385,21 @@ if (perm_is_moderator() || $canedit) {
         echo "                    ", form_radio("lock", "N", $lang['no'], !$threaddata['ADMIN_LOCK']), "\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
+	echo "                <tr>\n";
+	echo "                  <td>&nbsp;</td>\n";
+	echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td class=\"posthead\">{$lang['deletepostsinthreadbyuser']}:</td>\n";
-        echo "                  <td class=\"posthead\">\n";
-        echo "                    ", form_input_text("deluser", "", 20), "\n";
-        echo "                    ", form_checkbox("deluser_con", "Y", $lang['confirm']), "\n";
-        echo "                  </td>\n";
+        echo "                  <td class=\"posthead\">", post_draw_to_dropdown_in_thread($tid, 0, false, true), "</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+	echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td class=\"posthead\">", form_checkbox("deluser_con", "Y", $lang['confirm']), "</td>\n";
+        echo "                </tr>\n";
+	echo "                <tr>\n";
+	echo "                  <td>&nbsp;</td>\n";
+	echo "                  <td>&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td class=\"posthead\">{$lang['deletethread']}:</td>\n";

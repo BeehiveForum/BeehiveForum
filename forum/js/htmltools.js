@@ -1,6 +1,7 @@
 /*
 <script>
 */
+
 var selected_text = "";
 var active_field = "";
 

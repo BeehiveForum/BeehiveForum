@@ -109,19 +109,20 @@ if($last_pid < $threaddata['LENGTH']){
 messages_start_panel();
 
 messages_nav_strip($tid,$pid,$threaddata['LENGTH'],$ppp);
-messages_interest_form($tid, $pid);
-messages_fontsize_form($tid, $pid);
+if ($HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
+	messages_interest_form($tid, $pid);
+	messages_fontsize_form($tid, $pid);
 
-if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
-    messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);
+	if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & PERM_CHECK_WORKER){
+		messages_admin_form($tid,$pid,$threaddata['TITLE'],$closed);
+	}
 }
-
 messages_end_panel();
 
 draw_beehive_bar();
 html_draw_bottom();
 
-if($msg_count > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
+if($msg_count > 0 && isset($HTTP_COOKIE_VARS['bh_sess_uid']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0){
     messages_update_read($tid,$last_pid,$HTTP_COOKIE_VARS['bh_sess_uid']);
 }
 

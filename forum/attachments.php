@@ -37,6 +37,12 @@ if(!bh_session_check()){
 
 require_once("./include/config.inc.php");
 require_once("./include/html.inc.php");
+
+if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+	html_guest_error();
+	exit;
+}
+
 require_once("./include/form.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/attachments.inc.php");

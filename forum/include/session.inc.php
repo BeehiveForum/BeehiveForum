@@ -83,11 +83,13 @@ function bh_session_init($uid)
         } else {
             $user_status = 0;
         }
-        if(isset($fa['POSTS_PER_PAGE'])){
+        
+        if(isset($fa['POSTS_PER_PAGE']) && $fa['POSTS_PER_PAGE'] > 0) {
             $user_ppp = $fa['POSTS_PER_PAGE'];
         } else {
             $user_ppp = 20;
         }
+        
         if (isset($fa['TIMEZONE'])){
             $user_tz = $fa['TIMEZONE'];
         } else {
@@ -160,7 +162,7 @@ function get_request_uri()
         }
     }
     
-    return substr($return,0,-1);
+    return $return;
 }
 
 ?>

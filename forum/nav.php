@@ -41,7 +41,7 @@ header_no_cache();
         <a href="preferences.php" target="main">Preferences</a>&nbsp|&nbsp;
         <a href="profile.php" target="main">Profile</a>&nbsp|&nbsp;
 <?
-if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) & USER_PERM_SOLDIER){
+if(isset($HTTP_COOKIE_VARS['bh_sess_ustatus']) && $HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER) { 
 ?>
         <a href="admin.php" target="main">Admin</a>&nbsp|&nbsp;
 <?

@@ -39,6 +39,12 @@ if(!bh_session_check()) {
 }
 
 require_once("./include/html.inc.php");
+
+if($HTTP_COOKIE_VARS['bh_sess_uid'] == 0) {
+	html_guest_error();
+	exit;
+}
+
 require_once("./include/user.inc.php");
 require_once("./include/post.inc.php");
 require_once("./include/format.inc.php");
@@ -146,6 +152,15 @@ if($valid) {
 	if(isset($t_sig)) {
 		if($t_sig_html == "Y") {
 			$t_sig = fix_html($t_sig);
+		}
+	}
+} else {
+    if($t_post_html == "Y") {
+        $t_content = stripslashes($t_content);
+    }
+	if(isset($t_sig)) {
+		if($t_sig_html == "Y") {
+			$t_sig = stripslashes($t_sig);
 		}
 	}
 }
@@ -415,13 +430,10 @@ echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td>To: ". post_draw_to_dropdown($t_to_uid). "&nbsp;<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\"></td>\n";
+echo "          <td>To: ". post_draw_to_dropdown($t_to_uid). "&nbsp;<input class=\"button\" id=\"t_others\" onClick=\"javascript:launchOthers()\" type=\"button\" value=\"Others\" name=\"others\"> ". form_submit("submit","Post") ."</td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "      <table border=\"0\" class=\"posthead\">\n";
-echo "        <tr>\n";
-echo "          <td>Type in your message and click ". form_submit("submit","Post"). "</td>\n";
-echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td>".form_textarea("t_content", htmlspecialchars($t_content), 15, 85). "</td>\n";
 echo "        </tr>\n";

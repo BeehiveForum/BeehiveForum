@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.35 2003-08-08 23:49:51 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.36 2003-08-20 02:20:45 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/db.inc.php");
@@ -194,15 +194,31 @@ function folder_get_permissions($fid)
     }
 }
 
-// Checks that a $fid is a valid folder and is accessible by the user.
+// Checks that a $fid is a valid folder (i.e. it actually exists).
 
 function folder_is_valid($fid)
+{
+    $db_folder_get_available = db_connect();
+
+    $sql = "SELECT DISTINCT FID FROM ". forum_table("FOLDER"). " WHERE FID = $fid";
+    $result = db_query($sql, $db_folder_get_available);
+
+    if (db_num_rows($result)) {
+        return true;
+    }
+
+    return false;
+}
+
+// Same as above, but also checks that the folder is accessible by the current user
+
+function folder_is_accessible($fid)
 {
     $uid = bh_session_get_value('UID');
     $db_folder_get_available = db_connect();
 
-    $sql = "select DISTINCT F.FID from ".forum_table("FOLDER")." F left join ";
-    $sql.= forum_table("USER_FOLDER")." UF on (UF.FID = F.FID and UF.UID = $uid) ";
+    $sql = "SELECT DISTINCT F.FID FROM ".forum_table("FOLDER")." F LEFT JOIN ";
+    $sql.= forum_table("USER_FOLDER")." UF ON (UF.FID = F.FID and UF.UID = $uid) ";
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1)) ";
     $sql.= "and F.FID = $fid";
 
@@ -213,7 +229,6 @@ function folder_is_valid($fid)
     }
 
     return false;
-
 }
 
 function user_set_folder_interest($fid, $interest)

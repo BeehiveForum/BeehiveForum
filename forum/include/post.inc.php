@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.41 2003-08-17 17:59:10 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.42 2003-08-20 02:20:45 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/format.inc.php");
@@ -29,7 +29,6 @@ require_once("./include/forum.inc.php");
 
 function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 {
-
     $db_post_create = db_connect();
     $content = _addslashes($content);
 

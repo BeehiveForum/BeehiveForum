@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.20 2003-08-02 00:02:53 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.21 2003-08-20 02:20:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -62,9 +62,8 @@ if (isset($HTTP_POST_VARS['move'])) {
         $tid = $HTTP_POST_VARS['t_tid'];
         $fid = $HTTP_POST_VARS['t_move'];
 
-	thread_change_folder($fid, $tid);
+	thread_change_folder($tid, $fid);
         admin_addlog(0, $fid, $tid, 0, 0, 0, 18);
-
     }
 
 }else if (isset($HTTP_POST_VARS['close']) && isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && thread_can_view($HTTP_POST_VARS['t_tid'], bh_session_get_value('UID'))) {

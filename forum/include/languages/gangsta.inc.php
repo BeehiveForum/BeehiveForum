@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.8 2003-11-10 20:37:48 decoyduck Exp $ */
+/* $Id: gangsta.inc.php,v 1.9 2003-11-20 19:40:51 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -925,7 +925,7 @@ $lang['postslowercase'] = "pizosts";
 $lang['longestthreadis'] = "Tha biggest-ass thrizead is";
 $lang['therehavebeen'] = "There be";
 $lang['postsmadeinthelastsixtyminutes'] = "pizosts made in tha last fuckin' hizour";
-$lang['mostpostsevermadeinasinglesixtyminuteperiodis'] = "Tha most pizosts ever made in an hizour is";
+$lang['mostpostsevermadeinasinglesixtyminuteperiodwas'] = "Tha most pizosts ever made in an hizour was";
 $lang['wehave'] = "We's got";
 $lang['registeredmembers'] = "rizegistizered homiez";
 $lang['thenewestmemberis'] = "The greenest-ass homie is";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.54 2003-11-09 14:37:29 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.55 2003-11-20 19:40:51 decoyduck Exp $ */
 
 // International English language file
 
@@ -918,7 +918,7 @@ $lang['postslowercase'] = "posts";
 $lang['longestthreadis'] = "Longest thread is";
 $lang['therehavebeen'] = "There have been";
 $lang['postsmadeinthelastsixtyminutes'] = "posts made in the last 60 minutes";
-$lang['mostpostsevermadeinasinglesixtyminuteperiodis'] = "Most posts ever made in a single 60 minute period is";
+$lang['mostpostsevermadeinasinglesixtyminuteperiodwas'] = "Most posts ever made in a single 60 minute period was";
 $lang['wehave'] = "We have";
 $lang['registeredmembers'] = "registered members";
 $lang['thenewestmemberis'] = "The newest member is";

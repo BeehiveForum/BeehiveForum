@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.56 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.57 2003-11-20 19:40:51 decoyduck Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -77,7 +77,7 @@ function format_url2link($html)
 }
 
 
-function format_time($time, $verbose = false)
+function format_time($time, $verbose = false, $custom_format = false)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
@@ -113,6 +113,12 @@ function format_time($time, $verbose = false)
     } else {
         // time is today
         $fmt = gmdate("H:i", $local_time); // display hours and minutes
+    }
+
+    // Apply the custom format if any.
+
+    if ($custom_format) {
+        $fmt = gmdate($custom_format, $local_time);
     }
 
     return $fmt;

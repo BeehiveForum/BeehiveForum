@@ -111,7 +111,7 @@ if(isset($HTTP_POST_VARS['submit'])){
                           @$HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
                           @$HTTP_POST_VARS['dl_saving'], @$HTTP_POST_VARS['mark_as_of_int'],
                           $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size'],
-                          $HTTP_POST_VARS['style']);
+                          $HTTP_POST_VARS['style'], @$HTTP_POST_VARS['view_sigs']);
                         
         // Update USER_SIG
         
@@ -222,6 +222,9 @@ if(!empty($error_html)) {
       </tr>
       <tr>
         <td><?php echo form_checkbox("mark_as_of_int", "Y", "Automatically mark threads I post in as High Interest", ($user_prefs['MARK_AS_OF_INT'] == "Y")); ?></td>
+      </tr>
+      <tr>
+        <td><?php echo form_checkbox("view_sigs", "Y", "Globally ignore user signatures", ($user_prefs['VIEW_SIGS'] == "Y")); ?></td>
       </tr>
       <tr>
         <td>&nbsp;</td>

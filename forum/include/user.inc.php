@@ -122,9 +122,6 @@ function user_update_folders($uid,$folders)
 
 function user_logon($logon, $password)
 {
-
-    global $HTTP_SERVER_VARS;
-
     $md5pass = md5($password);
 
     $sql = "SELECT uid, status FROM ". forum_table("USER"). " WHERE logon = '$logon' AND passwd = '$md5pass'";
@@ -137,18 +134,10 @@ function user_logon($logon, $password)
     } else {
         $fa = db_fetch_array($result);
         $uid = $fa['uid'];
-
         if($fa['status'] & USER_PERM_SPLAT){ // User is banned
             $uid = -2;
         }
-
-	if (isset($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
-	  $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
-	}else {
-	  $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
-	}
-
-        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW(), LOGON_FROM = '$ipaddress' where UID = $uid", $db_user_logon);
+        db_query("update ".forum_table("USER")." set LAST_LOGON = NOW() where UID = $uid", $db_user_logon);
     }
 
     return $uid;
@@ -261,7 +250,8 @@ function user_get_prefs($uid)
     if(!db_num_rows($result)){
         $fa = array('UID' => '', 'FIRSTNAME' => '', 'LASTNAME' => '', 'HOMEPAGE_URL' => '',
                     'PIC_URL' => '', 'EMAIL_NOTIFY' => '', 'TIMEZONE' => '', 'DL_SAVING' => '',
-                    'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '', 'STYLE' => '');
+                    'MARK_AS_OF_INT' => '', 'POST_PER_PAGE' => '', 'FONT_SIZE' => '',
+					'STYLE' => '', 'VIEW_SIGS' => '');
     } else {
         $fa = db_fetch_array($result);
     }
@@ -271,7 +261,7 @@ function user_get_prefs($uid)
 
 function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
                            $email_notify,$timezone,$dl_saving,$mark_as_of_int,
-                           $posts_per_page, $font_size, $style)
+                           $posts_per_page, $font_size, $style, $view_sigs)
 {
 
     $db_user_update_prefs = db_connect();
@@ -285,10 +275,11 @@ function user_update_prefs($uid,$firstname,$lastname,$homepage_url,$pic_url,
 	if (!ereg("([[:alnum:]]+)", $style)) $style = $default_style;
 
     $sql = "insert into " . forum_table("USER_PREFS") . " (UID, FIRSTNAME, LASTNAME, HOMEPAGE_URL,";
-    $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE)";
+    $sql .= " PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS)";
     $sql .= " values ($uid, \"". htmlspecialchars($firstname). "\", \"". htmlspecialchars($lastname). "\",";
     $sql .= " \"". htmlspecialchars($homepage_url). "\", \"". htmlspecialchars($pic_url). "\",";
-    $sql .= " \"". htmlspecialchars($email_notify). "\", $timezone, \"$dl_saving\", \"$mark_as_of_int\", $posts_per_page, $font_size, \"$style\")";
+    $sql .= " \"". htmlspecialchars($email_notify). "\", $timezone, \"$dl_saving\", \"$mark_as_of_int\",";
+	$sql .= " $posts_per_page, $font_size, \"$style\", \"$view_sigs\")";
 
     $result = db_query($sql, $db_user_update_prefs);
 
@@ -309,6 +300,34 @@ function user_update_sig($uid,$content,$html){
     $result = db_query($sql, $db_user_update_sig);
 
     return $result;
+}
+
+function user_update_global_sig($uid,$value){
+
+    $db_user_update_global_sig = db_connect();
+
+	$sql = "update " . forum_table("USER_PREFS") . " set ";
+	$sql .= "VIEW_SIGS = '$value' where UID = $uid";
+
+    $result = db_query($sql, $db_user_update_global_sig);
+
+    return $result;
+}
+
+function user_get_global_sig($uid){
+
+    $db_user_update_global_sig = db_connect();
+
+	$sql = "select VIEW_SIGS from " . forum_table("USER_PREFS") . " where uid = $uid";
+
+    $result = db_query($sql, $db_user_update_global_sig);
+
+    if (db_num_rows($result)) {
+        $fa = db_fetch_array($result);
+        return $fa['VIEW_SIGS'];
+    }
+
+	return "";
 }
 
 ?>

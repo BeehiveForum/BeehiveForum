@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.8 2003-07-28 20:41:46 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.9 2003-09-06 18:09:30 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -51,48 +51,68 @@ function ip_check()
 
 function ban_ip($ipaddress)
 {
-
    $db_ban_ip = db_connect();
 
    $sql = "INSERT INTO " . forum_table("BANNED_IP") . " (IP) VALUES ('$ipaddress')";
    $result = db_query($sql, $db_ban_ip);
 
    return $result;
-
 }
 
 function unban_ip($ipaddress)
 {
-
    $db_ban_ip = db_connect();
 
    $sql = "DELETE FROM " . forum_table("BANNED_IP") . " WHERE IP = '$ipaddress'";
    $result = db_query($sql, $db_ban_ip);
 
    return $result;
-
 }
 
 function ip_is_banned($ipaddress)
 {
-
    $db_ip_is_banned = db_connect();
 
    $sql = "SELECT IP FROM " . forum_table("BANNED_IP") . " WHERE IP = '$ipaddress'";
    $result = db_query($sql, $db_ip_is_banned);
 
    return (db_num_rows($result) > 0);
-
 }
 
 function get_ip_address()
 {
     global $HTTP_SERVER_VARS;
 
-    if (!empty($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
-      $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
+    if (isset($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_X_FORWARDED'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_X_FORWARDED'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_FORWARDED_FOR'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_FORWARDED_FOR'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_FORWARDED'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_FORWARDED'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_VIA'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_VIA'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_X_COMING_FROM'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_X_COMING_FROM'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_COMING_FROM'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_COMING_FROM'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_PROXY_CONNECTION'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_PROXY_CONNECTION'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_CLIENT_IP'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_CLIENT_IP'];
+    }elseif (isset($HTTP_SERVER_VARS['HTTP_FROM'])) {
+        $ipaddress = $HTTP_SERVER_VARS['HTTP_FROM'];
+    }elseif (isset($HTTP_SERVER_VARS['CLIENT_IP'])) {
+        $ipaddress = $HTTP_SERVER_VARS['CLIENT_IP'];
     }else {
-      $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+        $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
+    }
+
+    if (preg_match("/^([0-9]{1,3}\.){3,3}[0-9]{1,3}/", $ipaddress, $matches)) {
+        $ipaddress = $matches[1];
+    }else {
+        $ipaddress = "0.0.0.0";
     }
 
     return $ipaddress;

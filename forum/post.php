@@ -48,11 +48,11 @@ if(isset($HTTP_POST_VARS['t_newthread'])){
 
 html_draw_top();
 
-echo "<table border=\"1\">";
+/* echo "<table border=\"1\">";
 foreach ($HTTP_POST_VARS as $var => $value) {
     echo "<tr><td>$var</td><td>$value</td></tr>";
 }
-echo "</table>";
+echo "</table>"; */
 
 if($valid){
     if($newthread){
@@ -68,7 +68,7 @@ if($valid){
         }
         if($t_sig){
             if($t_sig_html != "Y"){
-                $t_sig = make_html($t_content);
+                $t_sig = make_html($t_sig);
             }
             $t_content .= $t_sig;
         }

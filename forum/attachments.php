@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.53 2004-03-04 11:54:02 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.54 2004-03-04 20:30:35 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -94,6 +94,11 @@ if (!is_dir($attachment_dir)) {
 
 $filecount = 1;
 
+// Arrays to hold the success and error messages
+
+$upload_success = array();
+$upload_failure = array();
+
 // Start Stuff
 
 if (isset($HTTP_POST_VARS['upload'])) {
@@ -106,7 +111,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
 
                 if ($users_free_space < $HTTP_POST_FILES['userfile']['size'][$i]) {
 
-                    echo "<p>{$lang['attachmentnospace']}</p>";
+                    $upload_failure[] = $HTTP_POST_FILES['userfile']['name'][$i];
 
                     if (@file_exists($HTTP_POST_FILES['userfile']['tmp_name'][$i])) {
                         unlink($HTTP_POST_FILES['userfile']['tmp_name'][$i]);
@@ -120,6 +125,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
 
                         add_attachment(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'], $uniqfileid, rawurlencode(_stripslashes($HTTP_POST_FILES['userfile']['name'][$i])), $HTTP_POST_FILES['userfile']['type'][$i]);
                         $users_free_space -= $HTTP_POST_FILES['userfile']['size'][$i];
+                        $upload_success[] = $HTTP_POST_FILES['userfile']['name'][$i];
 
                     }else {
 
@@ -127,7 +133,7 @@ if (isset($HTTP_POST_VARS['upload'])) {
                             unlink($HTTP_POST_FILES['userfile']['tmp_name'][$i]);
                         }
                         
-                        echo "<p>{$lang['uploadfailed']}.</p>";
+                        $upload_failure[] = $HTTP_POST_FILES['userfile']['name'][$i];
                     }
                 }
             }
@@ -156,6 +162,14 @@ if (isset($HTTP_POST_VARS['upload'])) {
 
     html_draw_bottom();
     exit;
+}
+
+if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
+    echo "<h2>{$lang['successfullyuploaded']}: ", implode(",", $upload_success), "</h2>\n";
+}
+
+if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
+    echo "<h2>{$lang['uploadfailed']}: ", implode(",", $upload_failure), "</h2>\n";
 }
 
 echo "<h1>{$lang['uploadattachment']}</h1>\n";

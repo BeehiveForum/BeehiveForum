@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.4 2004-02-03 13:01:28 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.5 2004-03-04 20:30:35 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -139,47 +139,46 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<div class=\"postbody\">\n";
-echo "  <form name=\"prefs\" action=\"edit_email.php\" method=\"post\" target=\"_self\">\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"box\">\n";
-echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
-echo "                <table class=\"posthead\" width=\"400\">\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['emailsettings']}</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>&nbsp;</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "    <br />\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"box\">\n";
-echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
-echo "                <table class=\"posthead\" width=\"400\">\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['privacysettings']}</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>{$lang['ageanddob']}:</td>\n";
+echo "<form name=\"prefs\" action=\"edit_email.php\" method=\"post\" target=\"_self\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"400\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['emailsettings']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y") ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y") ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"400\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['privacysettings']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>{$lang['ageanddob']}:</td>\n";
 
 if (isset($user_prefs['DOB_DISPLAY'])) {
     echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $user_prefs['DOB_DISPLAY']), "</td>\n";
@@ -187,25 +186,27 @@ if (isset($user_prefs['DOB_DISPLAY'])) {
     echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), 0), "</td>\n";
 }
 
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) ? true : false), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>&nbsp;</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "        <td align=\"center\"><p>", form_submit("submit", $lang['save']), "</p></td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "  </form>\n";
-echo "</div>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 
 html_draw_bottom();
 

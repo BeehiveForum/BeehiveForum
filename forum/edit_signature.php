@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.4 2004-02-22 14:27:21 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.5 2004-03-04 20:30:35 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -143,36 +143,37 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<div class=\"postbody\">\n";
-echo "  <form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"box\">\n";
-echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
-echo "                <table class=\"posthead\" width=\"100%\">\n";
-echo "                  <tr>\n";
-echo "                    <td class=\"subhead\">{$lang['signature']}</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_textarea("sig_content", (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)) : _htmlentities(_stripslashes($user_sig['SIG_CONTENT']))), 4, 60), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td align=\"right\">", form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y")), "</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "        <td align=\"center\"><p>", form_submit("submit", $lang['save']), "</p></td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "  </form>\n";
-echo "</div>\n";
+echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">{$lang['signature']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_textarea("sig_content", (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)) : _htmlentities(_stripslashes($user_sig['SIG_CONTENT']))), 4, 60), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"right\">", form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y")), "</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 
 html_draw_bottom();
 

@@ -400,12 +400,14 @@ if ((sizeof($username_array) > 1) && $otherlogon == false) {
 
       echo form_input_password('password', $password_array[0]);
       echo form_input_hidden('savepass', true);
+      $savepass = true;
 
     }
 
   }else {
 
     echo form_input_password('password', '');
+    $savepass = false;
 
   }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.127 2005-03-25 21:37:54 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.128 2005-03-26 18:16:45 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -495,20 +495,19 @@ function forum_create($webtag, $forum_name, $access)
         // Create ADMIN_LOG table
 
         $sql = "CREATE TABLE {$webtag}_ADMIN_LOG (";
-        $sql.= "  LOG_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  LOG_TIME DATETIME DEFAULT NULL,";
-        $sql.= "  ADMIN_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  CREATED DATETIME DEFAULT NULL,";
         $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (LOG_ID)";
+        $sql.= "  ENTRY TEXT,";
+        $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create BANNED table
 
@@ -521,7 +520,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create FILTER_LIST table
 
@@ -534,7 +537,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY (ID, UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create FOLDER table
 
@@ -547,7 +554,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (FID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create FORUM_LINKS table
 
@@ -559,7 +570,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (LID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create LINKS table
 
@@ -577,7 +592,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY FID (FID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create LINKS_COMMENT table
 
@@ -591,7 +610,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY LID (LID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create LINKS_FOLDERS table
 
@@ -603,7 +626,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (FID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create LINKS_VOTE table
 
@@ -615,7 +642,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (LID,UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create POLL table
 
@@ -630,7 +661,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (TID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create POLL_VOTES table
 
@@ -642,7 +677,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (TID, OPTION_ID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create POST table
 
@@ -665,7 +704,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY IPADDRESS (IPADDRESS)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create POST_CONTENT table
 
@@ -677,7 +720,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create PROFILE_ITEM table
 
@@ -690,7 +737,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (PIID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create PROFILE_SECTION table
 
@@ -701,7 +752,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (PSID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create STATS table
 
@@ -714,7 +769,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create THREAD table
 
@@ -737,7 +796,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  FULLTEXT KEY TITLE (TITLE)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create USER_FOLDER table
 
@@ -748,7 +811,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (UID,FID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create USER_PEER table
 
@@ -759,7 +826,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create USER_POLL_VOTES table
 
@@ -772,7 +843,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create USER_PREFS table
 
@@ -802,7 +877,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create USER_PROFILE table
 
@@ -813,7 +892,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (UID,PIID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create USER_SIG table
 
@@ -824,7 +907,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create USER_THREAD table
 
@@ -837,7 +924,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (UID,TID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Create VISITOR_LOG table
 
@@ -847,13 +938,21 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Save Webtag
 
         $sql = "INSERT INTO FORUMS (WEBTAG, ACCESS_LEVEL) VALUES ('$webtag', $access)";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
 
         // Get the new FID so we can save the settings
 
@@ -864,70 +963,118 @@ function forum_create($webtag, $forum_name, $access)
         $sql = "INSERT INTO {$webtag}_FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
         $sql.= "VALUES ('General', NULL, NULL, 0)";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         // Add some default forum links
 
         $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (1, 'Forum Links:', NULL)";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         // Create folder permissions
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
         $sql.= "VALUES (0, '$forum_fid', 0, 14588);";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         // Create user permissions (current user)
 
         $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
         $sql.= "VALUES ('$forum_fid', NULL, NULL, 1);";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         $new_gid = db_insert_id($db_forum_create);
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
         $sql.= "VALUES ('$new_gid', '$forum_fid', 0, 1792);";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         $sql = "INSERT INTO GROUP_USERS VALUES ($new_gid, $uid);";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
         $sql.= "VALUES ('$new_gid', '$forum_fid', 1, 6652);";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         // Create Top Level Links Folder
 
         $sql = "INSERT INTO {$webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         // Store Forum Name
 
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$forum_fid', 'forum_name', '$forum_name')";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$uid', '$forum_fid', 1)";
 
-        if (!$result = db_query($sql, $db_forum_create)) return false;
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
 
         return $forum_fid;
     }
@@ -937,8 +1084,6 @@ function forum_create($webtag, $forum_name, $access)
 
 function forum_delete($fid)
 {
-    // Only the queen can delete forums!!
-
     if (perm_has_forumtools_access()) {
 
         $db_forum_delete = db_connect();
@@ -950,7 +1095,7 @@ function forum_delete($fid)
 
         if (db_num_rows($result) > 0) {
 
-            $forum_data = db_fetch_array($result);
+            list($webtag) = db_fetch_array($result, DB_RESULT_NUM);
 
             $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$fid'";
             $result = db_query($sql, $db_forum_delete);
@@ -962,26 +1107,35 @@ function forum_delete($fid)
             $result = db_query($sql, $db_forum_delete);
 
             while ($row = db_fetch_array($result)) {
-
                 delete_attachment_by_aid($row['AID']);
             }
 
-            $table_array = array('ADMIN_LOG', 'BANNED', 'FILTER_LIST',
-                                 'FOLDER', 'FORUM_LINKS', 'GROUPS',
-                                 'GROUP_PERMS', 'GROUP_USERS', 'LINKS',
-                                 'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
-                                 'POLL', 'POLL_VOTES', 'POST',
-                                 'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
-                                 'STATS', 'THREAD', 'USER_FOLDER',
-                                 'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
-                                 'USER_PROFILE', 'USER_SIG', 'USER_THREAD',
-                                 'VISITOR_LOG');
+            forum_delete_tables($webtag);
+        }
+    }
+}
 
-            foreach ($table_array as $table_name) {
+function forum_delete_tables($webtag)
+{
+    // Only the queen can delete forums!!
 
-                $sql = "DROP TABLE IF EXISTS {$forum_data['WEBTAG']}_{$table_name}";
-                $result = db_query($sql, $db_forum_delete);
-            }
+    if (perm_has_forumtools_access()) {
+
+        $table_array = array('ADMIN_LOG', 'BANNED', 'FILTER_LIST',
+                             'FOLDER', 'FORUM_LINKS', 'GROUPS',
+                             'GROUP_PERMS', 'GROUP_USERS', 'LINKS',
+                             'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
+                             'POLL', 'POLL_VOTES', 'POST',
+                             'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
+                             'STATS', 'THREAD', 'USER_FOLDER',
+                             'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
+                             'USER_PROFILE', 'USER_SIG', 'USER_THREAD',
+                             'VISITOR_LOG');
+
+        foreach ($table_array as $table_name) {
+
+            $sql = "DROP TABLE IF EXISTS {$webtag}_{$table_name}";
+            $result = db_query($sql, $db_forum_delete);
         }
     }
 

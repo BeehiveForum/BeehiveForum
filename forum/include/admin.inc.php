@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.60 2005-03-15 21:29:45 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.61 2005-03-26 18:16:45 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
@@ -294,18 +294,20 @@ function admin_get_users_attachments($uid)
 
     $forum_settings = forum_get_settings();
 
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
     $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_users_attachments);
 
     while($row = db_fetch_array($result)) {
 
-        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
+        if (@file_exists("$attachment_dir/{$row['HASH']}")) {
 
             if (!is_array($userattachments)) $userattachments = array();
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                       "filesize"  => filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
-                                       "filedate"  => filemtime(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
+                                       "filesize"  => filesize("$attachment_dir/{$row['HASH']}"),
+                                       "filedate"  => filemtime("$attachment_dir/{$row['HASH']}"),
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],

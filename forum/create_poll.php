@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.149 2005-03-20 21:47:00 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.150 2005-03-26 18:16:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -92,7 +92,7 @@ if (bh_session_get_value('UID') == 0) {
 
 // Check to see if the forum owner has allowed the creation of polls
 
-if (forum_get_setting('allow_polls', 'N', false)) {
+if (forum_get_setting('allow_polls', 'N')) {
     html_draw_top();
     echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -524,7 +524,7 @@ if ($valid && isset($_POST['submit'])) {
 
             poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type);
 
-            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
 
                 if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $t_pid, $aid);
             }
@@ -948,7 +948,7 @@ echo form_checkbox("t_post_interest", "high", $lang['setthreadtohighinterest'], 
 echo "<br />\n";
 echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']);
 
-if (forum_get_setting('attachments_enabled', 'Y', false)) {
+if (forum_get_setting('attachments_enabled', 'Y')) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);

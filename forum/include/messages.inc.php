@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.339 2005-03-23 21:35:56 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.340 2005-03-26 18:16:46 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -165,9 +165,9 @@ function message_apply_wikilinks($content)
 
     $user_prefs = user_get_prefs(bh_session_get_value('UID'));
 
-    if (forum_get_setting('enable_wiki_integration', 'Y', false) && $user_prefs['ENABLE_WIKI_WORDS'] == 'Y') {
+    if (forum_get_setting('enable_wiki_integration', 'Y') && $user_prefs['ENABLE_WIKI_WORDS'] == 'Y') {
 
-        $wiki_location = forum_get_setting('wiki_integration_uri', '', '');
+        $wiki_location = forum_get_setting('wiki_integration_uri', false, '');
 
         if (strlen($wiki_location) > 0) {
 
@@ -202,7 +202,7 @@ function message_apply_wikilinks($content)
         }
     }
 
-    if (forum_get_setting('enable_wiki_quick_links', 'Y', false)) {
+    if (forum_get_setting('enable_wiki_quick_links', 'Y')) {
 
         if (preg_match("/<div class=\"sig\">/", $content)) {
 
@@ -324,9 +324,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
-    if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length'))) && $limit_text) {
+    if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 
-        $cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length')));
+        $cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
         $cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
@@ -402,7 +402,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
     }
 
-    if (forum_get_setting('require_post_approval', 'Y', false) && $message['FROM_UID'] != $uid) {
+    if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $uid) {
 
         if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !perm_is_moderator($message['FID'])) {
 
@@ -471,7 +471,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
-            if (forum_get_setting('require_post_approval', 'Y', false) && isset($message['APPROVED']) && $message['APPROVED'] == 0) echo "<b>{$lang['approvalrequired']}</b> ";
+            if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) echo "<b>{$lang['approvalrequired']}</b> ";
 
             echo format_time($message['CREATED'], 1);
         }
@@ -616,7 +616,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "              </tr>\n";
         }
 
-        if (forum_get_setting('require_post_approval', 'Y', false) && isset($message['APPROVED']) && $message['APPROVED'] > 0 && perm_is_moderator($message['FID'])) {
+        if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] > 0 && perm_is_moderator($message['FID'])) {
 
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
@@ -685,7 +685,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
             }
 
-            if (($uid == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && (((time() - $message['CREATED']) < (forum_get_setting('post_edit_time') * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time') == 0) && (forum_get_setting('allow_post_editing', 'Y', false)))) || perm_is_moderator($message['FID'])) {
+            if (($uid == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && (((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')))) || perm_is_moderator($message['FID'])) {
 
                 if ($is_poll && $message['PID'] == 1) {
 
@@ -722,7 +722,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"", style_image('admintool.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a>&nbsp;";
                 }
 
-                if (forum_get_setting('require_post_approval', 'Y', false) && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
+                if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
 
                     echo "<a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a>&nbsp;";
                 }
@@ -1228,7 +1228,7 @@ function messages_forum_stats($tid, $pid)
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");
 
-    if (forum_get_setting('show_stats', 'Y', false)) {
+    if (forum_get_setting('show_stats', 'Y')) {
 
         echo "<div align=\"center\">\n";
         echo "  <br />\n";

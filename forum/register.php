@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.106 2005-03-14 13:27:22 decoyduck Exp $ */
+/* $Id: register.php,v 1.107 2005-03-26 18:16:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -92,7 +92,7 @@ $webtag = get_webtag($webtag_search);
 
 // check to see if user registration is available
 
-if (forum_get_setting('allow_new_registrations', 'N', false)) {
+if (forum_get_setting('allow_new_registrations', 'N')) {
 
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
@@ -306,19 +306,19 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['LANGUAGE']) && _in_array($_POST['LANGUAGE'], $available_langs_labels)) {
         $new_user['LANGUAGE'] = $_POST['LANGUAGE'];
     }else {
-        $new_user['LANGUAGE'] = forum_get_setting('default_language');
+        $new_user['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
     }
 
     if (isset($_POST['STYLE']) && _in_array($_POST['STYLE'], $available_styles)) {
         $new_user['STYLE'] = $_POST['STYLE'];
     }else {
-        $new_user['STYLE'] = forum_get_setting('default_style');
+        $new_user['STYLE'] = forum_get_setting('default_style', false, 'default');
     }
 
     if (isset($_POST['EMOTICONS']) && _in_array($_POST['EMOTICONS'], $available_emoticons)) {
         $new_user['EMOTICONS'] = $_POST['EMOTICONS'];
     }else {
-        $new_user['EMOTICONS'] = forum_get_setting('default_emoticons');
+        $new_user['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
     }
 
     // Defaults that we don't otherwise set.
@@ -571,11 +571,11 @@ echo "                  <td>", form_dropdown_array("LANGUAGE", $available_langs,
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['style']}</td>\n";
-echo "                  <td>", form_dropdown_array("STYLE", array_keys($available_styles), array_values($available_styles), (isset($new_user['STYLE']) && _in_array($new_user['STYLE'], array_keys($available_styles))) ? $new_user['STYLE'] : forum_get_setting('default_style')), "</td>\n";
+echo "                  <td>", form_dropdown_array("STYLE", array_keys($available_styles), array_values($available_styles), (isset($new_user['STYLE']) && _in_array($new_user['STYLE'], array_keys($available_styles))) ? $new_user['STYLE'] : forum_get_setting('default_style', false, 'default')), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;{$lang['forumemoticons']}</td>\n";
-echo "                  <td>", form_dropdown_array("EMOTICONS", array_keys($available_emoticons), array_values($available_emoticons), (isset($new_user['EMOTICONS']) && _in_array($new_user['EMOTICONS'], array_keys($available_emoticons))) ? $new_user['EMOTICONS'] : forum_get_setting('default_emoticons')), "</td>\n";
+echo "                  <td>", form_dropdown_array("EMOTICONS", array_keys($available_emoticons), array_values($available_emoticons), (isset($new_user['EMOTICONS']) && _in_array($new_user['EMOTICONS'], array_keys($available_emoticons))) ? $new_user['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default')), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

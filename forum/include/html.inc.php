@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.155 2005-03-24 21:03:23 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.156 2005-03-26 18:16:45 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -300,7 +300,7 @@ function html_draw_top()
         }
     }
 
-    if (!isset($title)) $title = forum_get_setting('forum_name');
+    if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
     if (!isset($body_class)) $body_class = false;
     if (!isset($base_target)) $base_target = false;
 
@@ -319,7 +319,7 @@ function html_draw_top()
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
     echo "<meta name=\"description\" content=\"$forum_description\" />\n";
 
-    if (forum_get_setting('allow_search_spidering', 'N', false)) {
+    if (forum_get_setting('allow_search_spidering', 'N')) {
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
 
@@ -339,10 +339,10 @@ function html_draw_top()
 
     echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
 
-    if (forum_get_setting('default_emoticons')) {
+    if (forum_get_setting('default_emoticons', false, 'default')) {
 
         $user_emots = bh_session_get_value('EMOTICONS');
-        $user_emots = $user_emots ? $user_emots : forum_get_setting('default_emoticons');
+        $user_emots = $user_emots ? $user_emots : forum_get_setting('default_emoticons', false, 'default');
 
         if (@is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
             echo "<link rel=\"stylesheet\" href=\"emoticons/$user_emots/style.css\" type=\"text/css\" />\n";

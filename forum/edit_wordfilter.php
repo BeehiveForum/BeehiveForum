@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.46 2005-03-14 13:27:19 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.47 2005-03-26 18:16:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -196,7 +196,7 @@ foreach ($word_filter_array as $key => $word_filter) {
 
     if ($word_filter['UID'] == 0) {
 
-        if (!forum_get_setting('admin_force_word_filter', 'Y', false)) {
+        if (!forum_get_setting('admin_force_word_filter', 'Y')) {
 
             echo "                  <td align=\"center\"><sup>[A]</sup></td>\n";
             echo "                  <td>", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), "</td>\n";
@@ -265,7 +265,7 @@ echo "                <tr>\n";
 echo "                  <td>", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "</td>\n";
 echo "                </tr>\n";
 
-if (!forum_get_setting('admin_force_word_filter', 'Y', false)) {
+if (!forum_get_setting('admin_force_word_filter', 'Y')) {
 
     echo "                <tr>\n";
     echo "                  <td>", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], (isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y')), "</td>\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.247 2005-03-20 21:47:00 decoyduck Exp $ */
+/* $Id: post.php,v 1.248 2005-03-26 18:16:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -596,7 +596,7 @@ if ($valid && isset($_POST['submit'])) {
                     if (!$newthread) email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
                 }
 
-                if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+                if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
                     if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $new_pid, $aid);
                 }
             }
@@ -908,7 +908,7 @@ echo form_submit("submit", $lang['post'], "tabindex=\"2\" onclick=\"return autoC
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
-if (forum_get_setting('attachments_enabled', 'Y', false) && (perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ) || $newthread)) {
+if (forum_get_setting('attachments_enabled', 'Y') && (perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ) || $newthread)) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);

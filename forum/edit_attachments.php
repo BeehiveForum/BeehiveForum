@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.87 2005-03-14 13:27:18 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.88 2005-03-26 18:16:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -82,7 +82,7 @@ if (!forum_check_access_level()) {
 
 // If attachments are disabled then no need to go any further.
 
-if (forum_get_setting('attachments_enabled', 'N', false)) {
+if (forum_get_setting('attachments_enabled', 'N')) {
     html_draw_top();
     echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -337,7 +337,7 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">\n";
 
-if (forum_get_setting('attachments_enabled', 'Y', false)) {
+if (forum_get_setting('attachments_enabled', 'Y')) {
 
     if (!is_md5($aid)) $aid = md5(uniqid(rand()));
     echo "        ", form_button("attachments", $lang['uploadnewattachment'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\""), "&nbsp;";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.91 2005-03-14 13:27:18 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.92 2005-03-26 18:16:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -82,7 +82,7 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (forum_get_setting('allow_polls', 'N', false)) {
+if (forum_get_setting('allow_polls', 'N')) {
 
     html_draw_top();
     echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
@@ -469,7 +469,7 @@ if ($valid && isset($_POST['preview'])) {
     poll_edit($tid, $t_question, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $hardedit);
     post_add_edit_text($tid, 1);
 
-    if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+    if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
 
         if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
     }
@@ -851,7 +851,7 @@ echo "  </table>\n";
 
 echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
-if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+if (forum_get_setting('attachments_enabled', 'Y') && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('{$polldata['FROM_UID']}', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.79 2005-03-15 21:30:03 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.80 2005-03-26 18:16:45 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -38,7 +38,7 @@ function light_html_draw_top ($title = false)
     if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
 
     if (!isset($title) || !$title) {
-        $title = forum_get_setting('forum_name');
+        $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
     }
 
     echo "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
@@ -877,8 +877,8 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
-    if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length'))) && $limit_text && !$is_poll) {
-        $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length'))));
+    if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text && !$is_poll) {
+        $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226))));
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 

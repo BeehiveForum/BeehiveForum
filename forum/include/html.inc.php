@@ -24,6 +24,13 @@ USA
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
 
+function html_guest_error () 
+{ 
+     html_draw_top(); 
+     echo "<h1>Sorry, you need to be logged in to use this feature.</h1>"; 
+     html_draw_bottom(); 
+}
+
 function _html_draw_top1($title = false)
 {
 

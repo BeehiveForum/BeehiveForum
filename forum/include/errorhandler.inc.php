@@ -46,11 +46,12 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
       $getvars.= $key. '='. $value. '&';
     }
 
-    $getvars = substr($getvars, 0, -1);
-
     if (!isset($HTTP_GET_VARS['retryerror'])) {
       $getvars.= "&retryerror=yes";
     }
+
+    if (substr($getvars, 0, 1) == '&') $getvars = substr($getvars, 1);
+    if (substr($getvars, -1) == '&') $getvars = substr($getvars, 0, -1);
 
     srand((double)microtime()*1000000);
 

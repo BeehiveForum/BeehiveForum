@@ -141,4 +141,22 @@ function bh_session_end()
     setcookie("bh_sess_check","",-3600);
 }
 
+// IIS does not support the REQUEST_URI server var, so we will make one for it
+function get_request_uri()
+{
+    global $HTTP_SERVER_VARS;
+
+    if(isset($HTTP_SERVER_VARS['REQUEST_URI'])){
+        $return = $HTTP_SERVER_VARS['REQUEST_URI'];
+    } else {
+        global $HTTP_GET_VARS;
+        $return = $HTTP_SERVER_VARS['PHP_SELF']."?";
+        foreach($HTTP_GET_VARS as $key => $value){
+            $return .= "$key=".rawurlencode($value)."&";
+        }
+    }
+    
+    return $return;
+}
+
 ?>

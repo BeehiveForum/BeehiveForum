@@ -39,7 +39,7 @@ if(isset($HTTP_POST_VARS['submit'])){
 html_draw_top();
 
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logon\" action=\"" . $HTTP_SERVER_VARS['REQUEST_URI'] . "\" method=\"POST\">\n";
+echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"POST\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
 echo "<table class=\"subhead\" width=\"100%\"><tr><td>\n";
 echo "Log out:\n";

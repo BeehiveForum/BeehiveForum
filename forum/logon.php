@@ -61,8 +61,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
             
       } else {
         
-        setcookie("bh_remember_user","", time() - YEAR_IN_SECONDS, '/');
-        setcookie("bh_remember_password", time() - YEAR_IN_SECONDS, '/');
+        setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
+        setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
       }
       
       header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
@@ -88,14 +88,15 @@ html_draw_top();
 if (isset($error_html)) echo $error_html;
 
 if(isset($HTTP_COOKIE_VARS['bh_remember_user'])) {
-
-  $logon = $HTTP_COOKIE_VARS['bh_remember_user'];
-  $password = $HTTP_COOKIE_VARS['bh_remember_password'];
-  
+    $logon = $HTTP_COOKIE_VARS['bh_remember_user'];
+    $password = $HTTP_COOKIE_VARS['bh_remember_password'];
+} else {
+    $logon = "";
+    $password = "";
 }
     
 echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logon\" action=\"". $HTTP_SERVER_VARS['REQUEST_URI']. "&". md5(uniqid(rand())). "\" method=\"POST\">\n";
+echo "<form name=\"logon\" action=\"". get_request_uri() ."&". md5(uniqid(rand())). "\" method=\"POST\">\n";
 echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">\n<tr>\n<td>\n";
 echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
 echo "</tr>\n</table>\n";

@@ -143,8 +143,8 @@ if(isset($HTTP_POST_VARS['submit'])) {
             
           }else {
         
-            setcookie("bh_remember_user","", time() - YEAR_IN_SECONDS, '/');
-            setcookie("bh_remember_password", time() - YEAR_IN_SECONDS, '/');
+            setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
+            setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
     
           }
           

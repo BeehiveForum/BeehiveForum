@@ -33,6 +33,14 @@ $db_database = "beehiveforum";	// the name of your MySQL database
 // ---------------------------------------------------------------------
 
 
+// Forum-specific ------------------------------------------------------
+
+$forum_name  = "A Beehive Forum"; // the name of your forum
+$forum_email = "webmaster@yourdomain.com"; // admin email
+
+// ---------------------------------------------------------------------
+
+
 // Post stuff ----------------------------------------------------------
 
 $maximum_post_length = 6226;	// maximum character-length of posts

@@ -29,7 +29,7 @@ function get_forum_list()
     $db_get_forum_list = db_connect();
     $get_forum_list_array = array();
 
-    $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUM_SETTINGS.SVALUE AS FORUM_NAME ";
+    $sql = "SELECT FORUMS.*, FORUM_SETTINGS.SVALUE AS FORUM_NAME ";
     $sql.= "FROM FORUMS FORUMS LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON ";
     $sql.= "(FORUMS.FID = FORUM_SETTINGS.FID AND FORUM_SETTINGS.SNAME = 'forum_name')";
 

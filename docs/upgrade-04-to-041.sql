@@ -4,7 +4,7 @@
 #
 # Generation Time: Mar 16, 2004 at 00:17
 #
-# $Id: upgrade-04-to-041.sql,v 1.19 2004-04-09 16:43:17 decoyduck Exp $
+# $Id: upgrade-04-to-041.sql,v 1.20 2004-04-09 21:18:56 decoyduck Exp $
 #
 # --------------------------------------------------------#
 
@@ -201,9 +201,10 @@ ALTER TABLE SESSIONS ADD INDEX (FID);
 ALTER TABLE SESSIONS ADD INDEX (UID);
 
 CREATE TABLE FORUMS (
-  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  WEBTAG VARCHAR(255) DEFAULT NULL,
-  PRIMARY KEY (FID)
+  FID mediumint(8) unsigned NOT NULL auto_increment,
+  WEBTAG varchar(255) NOT NULL default '',
+  DEFAULT_FORUM tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (FID)
 ) TYPE=MyISAM;
 
 INSERT INTO FORUMS (WEBTAG) VALUES('');

@@ -1,0 +1,256 @@
+<?php
+
+/*======================================================================
+Copyright Project BeehiveForum 2002
+
+This file is part of BeehiveForum.
+
+BeehiveForum is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+BeehiveForum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+======================================================================*/
+
+/* $Id: admin_forums.php,v 1.1 2004-04-09 21:19:01 decoyduck Exp $ */
+
+// Compress the output
+include_once("./include/gzipenc.inc.php");
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
+
+// Multiple forum support
+include_once("./include/forum.inc.php");
+
+include_once("./include/admin.inc.php");
+include_once("./include/constants.inc.php");
+include_once("./include/db.inc.php");
+include_once("./include/folder.inc.php");
+include_once("./include/form.inc.php");
+include_once("./include/format.inc.php");
+include_once("./include/header.inc.php");
+include_once("./include/html.inc.php");
+include_once("./include/lang.inc.php");
+include_once("./include/logon.inc.php");
+include_once("./include/myforums.inc.php");
+include_once("./include/perm.inc.php");
+include_once("./include/session.inc.php");
+
+if (!$user_sess = bh_session_check()) {
+
+    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+        
+        if (perform_logon(false)) {
+	    
+	    html_draw_top();
+
+            echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
+            echo "<div align=\"center\">\n";
+	    echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+
+            $request_uri = get_request_uri();
+
+            echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+
+            foreach($HTTP_POST_VARS as $key => $value) {
+	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
+            }
+
+	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
+            echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
+	    echo "</form>\n";
+	    
+	    html_draw_bottom();
+	    exit;
+	}
+
+    }else {
+        html_draw_top();
+        draw_logon_form(false);
+	html_draw_bottom();
+	exit;
+    }
+}
+
+// Load the wordfilter for the current user
+
+$user_wordfilter = load_wordfilter();
+
+html_draw_top();
+
+if (!(bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_bottom();
+    exit;
+}
+
+// Do updates
+if (isset($HTTP_POST_VARS['submit'])) {
+
+    $valid = true;
+    $error_html = "";
+
+    if (isset($HTTP_POST_VARS['t_access']) && is_array($HTTP_POST_VARS['t_access'])) {
+
+        foreach($HTTP_POST_VARS['t_access'] as $fid => $new_access) {
+            echo "forum_update_access($fid, $new_access);\n";
+        }
+    }
+
+    if (isset($HTTP_POST_VARS['t_webtag_new']) && strlen(trim($HTTP_POST_VARS['t_webtag_new'])) > 0) {
+	       
+        $new_webtag = strtoupper(trim(_stripslashes($HTTP_POST_VARS['t_webtag_new'])));
+        
+        if (!preg_match("/^[A-Z0-9_-]+$/", $new_webtag)) {
+            $error_html.= "<h2>{$lang['webtaginvalidchars']}</h2>\n";
+            $valid = false;
+        }
+
+	if (isset($HTTP_POST_VARS['t_name_new']) && strlen(trim($HTTP_POST_VARS['t_name_new'])) > 0) {
+	    $new_name = trim(_stripslashes($HTTP_POST_VARS['t_name_new']));
+	}else {
+	    $new_name = "";
+	}
+        
+	if (isset($HTTP_POST_VARS['t_access_new']) && is_numeric($HTTP_POST_VARS['t_access_new'])) {
+	    $new_access = $HTTP_POST_VARS['t_access_new'];
+	}else {
+	    $new_access = 0;
+	}
+
+	if ($valid) {
+            forum_create($new_webtag, $new_name, $new_access);
+	}
+    }
+
+}elseif (isset($HTTP_POST_VARS['t_delete'])) {
+
+    list($fid) = array_keys($HTTP_POST_VARS['t_delete']);
+    forum_delete($fid);
+}
+
+// Draw the form
+echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
+
+if (isset($error_html) && strlen($error_html) > 0) {
+    echo "<p>$error_html</p>\n";
+}else {
+    echo "<br />\n";
+}
+
+echo "<div align=\"center\">\n";
+echo "<form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+
+$forums_array = get_forum_list();
+
+if (sizeof($forums_array) > 0) {
+
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" width=\"150\">&nbsp;{$lang['webtag']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['name']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['messages']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['allow']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['permissions']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['delete']}</td>\n";
+    echo "                </tr>\n";
+
+    foreach ($forums_array as $forum) {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum['WEBTAG']}\" target=\"_blank\">{$forum['WEBTAG']}</a></td>\n";
+        echo "                  <td align=\"left\">{$forum['FORUM_NAME']}</td>\n";
+        echo "                  <td align=\"left\">{$forum['MESSAGES']} Messages</td>\n";
+        echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), $forum['ACCESS_LEVEL']), "</td>\n";
+
+        if ($forum['ACCESS_LEVEL'] > 0) {
+            echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_folder_access.php&fid={$forum['FID']}'\""), "</td>\n";
+        }else {
+            echo "                  <td align=\"center\">-</td>\n";
+        }
+
+        echo "                  <td align=\"left\">", form_submit("t_delete[{$forum['FID']}]", "Delete Forum"), "</td>\n";
+        echo "                </tr>\n";
+    }
+
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['savechanges']), "</td>\n";
+    echo "    </tr>\n";  
+    echo "  </table>\n";
+    echo "  <br />\n";
+}
+
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">&nbsp;</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['webtag']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['name']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['allow']}</td>\n";
+echo "                  <td class=\"subhead\" width=\"50%\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>{$lang['newcaps']}</td>\n";
+echo "                  <td>", form_field("t_webtag_new", "", 20, 32), "</td>\n";
+echo "                  <td>", form_field("t_name_new", "", 45, 255), "</td>\n";
+echo "                  <td>", form_dropdown_array("t_access_new", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), 0), "</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['add']), "</td>\n";
+echo "    </tr>\n";  
+echo "  </table>\n";
+echo "</form>\n";;
+echo "</div>\n";
+
+html_draw_bottom();
+
+?>

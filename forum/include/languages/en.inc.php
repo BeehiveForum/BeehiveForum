@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.94 2004-04-09 12:56:14 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.95 2004-04-09 21:19:02 decoyduck Exp $ */
 
 // International English language file
 
@@ -65,6 +65,7 @@ $lang['subscribe'] = "Subscribe";
 $lang['apply'] = "Apply";
 $lang['submit'] = "Submit";
 $lang['save'] = "Save";
+$lang['savechanges'] = "Save Changes";
 $lang['update'] = "Update";
 $lang['cancel'] = "Cancel";
 $lang['continue'] = "Continue";
@@ -145,6 +146,7 @@ $lang['enabled'] = "Enabled";
 $lang['disabled'] = "Disabled";
 $lang['options'] = "Options";
 $lang['emoticons'] = "Emoticons";
+$lang['webtag'] = "Webtag";
 
 // Error handling messages (error_handler.inc.php) ---------------------
 
@@ -157,6 +159,7 @@ $lang['db_connect_error_3'] = "They should be set to the database details given 
 $lang['accessdenied'] = "Access Denied";
 $lang['accessdeniedexp'] = "You do not have permission to use this section.";
 $lang['managefolders'] = "Manage Folders";
+$lang['manageforums'] = "Manage Forums";
 $lang['managefolder'] = "Manage Folder";
 $lang['id'] = "ID";
 $lang['foldername'] = "Folder Name";
@@ -330,6 +333,10 @@ $lang['word_filter_help_1'] = "<b>All</b> matches against the whole text so filt
 $lang['word_filter_help_2'] = "<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument.";
 $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expressions to match text.";
 
+// Admin Forms (admin_forums.php) ------------------------------------------------
+
+$lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9, _ - characters";
+$lang['warningnoforums'] = "WARNING: You have no forums set up.";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 

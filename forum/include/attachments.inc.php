@@ -21,14 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.26 2003-08-31 19:02:32 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.27 2003-09-01 16:08:10 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/config.inc.php");
 
-function get_attachments($uid, $aid) {
+function get_attachments($uid, $aid)
+{
 
     global $HTTP_SERVER_VARS, $attachment_dir;
 
@@ -41,25 +42,24 @@ function get_attachments($uid, $aid) {
 
     while($row = db_fetch_array($result)) {
 
-      if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+        if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
 
-        if (!is_array($userattachments)) $userattachments = array();
+            if (!is_array($userattachments)) $userattachments = array();
 
-        $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                   "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
-                                   "aid"       => $row['AID'],
-                                   "hash"      => $row['HASH'],
-                                   "mimetype"  => $row['MIMETYPE'],
-                                   "downloads" => $row['DOWNLOADS']);
-      }
-
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS']);
+        }
     }
 
     return $userattachments;
-
 }
 
-function get_all_attachments($uid, $aid) {
+function get_all_attachments($uid, $aid)
+{
 
     global $HTTP_SERVER_VARS, $attachment_dir;
 
@@ -72,25 +72,24 @@ function get_all_attachments($uid, $aid) {
 
     while($row = db_fetch_array($result)) {
 
-      if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+        if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
 
-        if (!is_array($userattachments)) $userattachments = array();
+            if (!is_array($userattachments)) $userattachments = array();
 
-        $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                   "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
-                                   "aid"       => $row['AID'],
-                                   "hash"      => $row['HASH'],
-                                   "mimetype"  => $row['MIMETYPE'],
-                                   "downloads" => $row['DOWNLOADS']);
-      }
-
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS']);
+        }
     }
 
     return $userattachments;
-
 }
 
-function get_users_attachments($uid) {
+function get_users_attachments($uid)
+{
 
     global $HTTP_SERVER_VARS, $attachment_dir;
 
@@ -109,26 +108,25 @@ function get_users_attachments($uid) {
 
     while($row = db_fetch_array($result)) {
 
-      if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+        if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
 
-        if (!is_array($userattachments)) $userattachments = array();
+            if (!is_array($userattachments)) $userattachments = array();
 
-        $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                   "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
-                                   "aid"       => $row['AID'],
-                                   "hash"      => $row['HASH'],
-                                   "mimetype"  => $row['MIMETYPE'],
-                                   "downloads" => $row['DOWNLOADS']);
-      }
-
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS']);
+        }
     }
 
     return $userattachments;
-
 }
 
 
-function add_attachment($uid, $aid, $filename, $mimetype) {
+function add_attachment($uid, $aid, $filename, $mimetype)
+{
 
     $db_add_attachment = db_connect();
 
@@ -140,10 +138,10 @@ function add_attachment($uid, $aid, $filename, $mimetype) {
     $result = db_query($sql, $db_add_attachment);
 
     return $result;
-
 }
 
-function delete_attachment($uid, $aid, $filename) {
+function delete_attachment($uid, $aid, $filename)
+{
 
     global $attachment_dir;
 
@@ -157,24 +155,23 @@ function delete_attachment($uid, $aid, $filename) {
     $result = db_query($sql, $db_delete_attachment);
 
     if (file_exists($attachment_dir. '/'. md5($aid. rawurldecode($filename)))) {
-      unlink($attachment_dir. '/'. md5($aid. rawurldecode($filename)));
+        unlink($attachment_dir. '/'. md5($aid. rawurldecode($filename)));
     }
 
     if (db_num_rows($result) == 0) {
 
-      $sql = "delete from ". forum_table("POST_ATTACHMENT_IDS"). " where AID = '$aid'";
-      $result = db_query($sql, $db_delete_attachment);
+        $sql = "delete from ". forum_table("POST_ATTACHMENT_IDS"). " where AID = '$aid'";
+        $result = db_query($sql, $db_delete_attachment);
 
-      $sql = "delete from ". forum_table("PM_ATTACHMENT_IDS"). " where AID = '$aid'";
-      $result = db_query($sql, $db_delete_attachment);
-
+        $sql = "delete from ". forum_table("PM_ATTACHMENT_IDS"). " where AID = '$aid'";
+        $result = db_query($sql, $db_delete_attachment);
     }
 
     return $result;
-
 }
 
-function get_free_attachment_space($uid) {
+function get_free_attachment_space($uid)
+{
 
     global $HTTP_SERVER_VARS, $attachment_dir;
     $used_attachment_space = 0;
@@ -186,18 +183,17 @@ function get_free_attachment_space($uid) {
 
     while($row = db_fetch_array($result)) {
 
-      if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+        if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
 
-        $used_attachment_space += filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])));
-
-      }
-
+            $used_attachment_space += filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])));
+        }
     }
 
     return MAX_ATTACHMENT_SIZE - $used_attachment_space;
 }
 
-function get_attachment_id($tid, $pid) {
+function get_attachment_id($tid, $pid)
+{
 
     $db_get_attachment_id = db_connect();
 
@@ -206,18 +202,17 @@ function get_attachment_id($tid, $pid) {
 
     if (db_num_rows($result) > 0) {
 
-      $attachment = db_fetch_array($result);
-      return $attachment['AID'];
+        $attachment = db_fetch_array($result);
+        return $attachment['AID'];
 
     }else{
 
-      return false;
-
+        return false;
     }
-
 }
 
-function get_pm_attachment_id($mid) {
+function get_pm_attachment_id($mid)
+{
 
     $db_get_pm_attachment_id = db_connect();
 
@@ -226,48 +221,45 @@ function get_pm_attachment_id($mid) {
 
     if (db_num_rows($result) > 0) {
 
-      $attachment = db_fetch_array($result);
-      return $attachment['AID'];
+        $attachment = db_fetch_array($result);
+        return $attachment['AID'];
 
     }else{
 
-      return false;
-
+        return false;
     }
-
 }
 
-function get_message_link($aid) {
+function get_message_link($aid)
+{
 
     $db_get_message_link = db_connect();
 
     $sql = "SELECT TID, PID FROM ". forum_table("POST_ATTACHMENT_IDS"). " WHERE AID = '$aid'";
-    $result = db_query($sql, $db);
+    $result = db_query($sql, $db_get_message_link);
 
     if (db_num_rows($result) > 0) {
 
-      $tidpid = db_fetch_array($result);
-      return "./messages.php?msg=". $tidpid['TID']. ".". $tidpid['PID'];
+        $tidpid = db_fetch_array($result);
+        return "./messages.php?msg=". $tidpid['TID']. ".". $tidpid['PID'];
 
     }else{
 
-      $sql = "SELECT MID FROM ". forum_table("PM_ATTACHMENT_IDS"). " WHERE AID = '$aid'";
-      $result = db_query($sql, $db_get_message_link);
+        $sql = "SELECT MID FROM ". forum_table("PM_ATTACHMENT_IDS"). " WHERE AID = '$aid'";
+        $result = db_query($sql, $db_get_message_link);
 
-      if (db_num_rows($result) > 0) {
+        if (db_num_rows($result) > 0) {
 
-        $mid = db_fetch_array($result);
-        return "./pm.php?mid=". $mid['MID'];
-
-      }
-
+            $mid = db_fetch_array($result);
+            return "./pm.php?mid=". $mid['MID'];
+        }
     }
 
     return "";
-
 }
 
-function get_num_attachments($aid) {
+function get_num_attachments($aid)
+{
 
     $db_get_num_attachments = db_connect();
 

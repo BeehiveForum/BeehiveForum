@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.51 2004-04-17 18:41:00 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.52 2004-04-23 11:42:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -40,13 +40,14 @@ include_once("./include/header.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
+include_once("./include/threads.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -64,7 +65,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -108,11 +109,21 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
     echo "  <frame src=\"./messages.php?webtag=$webtag&msg={$_GET['msg']}\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 
 }else {
-    
-    $msg = messages_get_most_recent(bh_session_get_value('UID'));
 
-    echo "  <frame src=\"./thread_list.php?webtag=$webtag&msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
-    echo "  <frame src=\"./messages.php?webtag=$webtag&msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    if (threads_any_unread()) {
+
+        $msg = messages_get_most_recent_unread(bh_session_get_value('UID'));
+
+        echo "  <frame src=\"./thread_list.php?webtag=$webtag&msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "  <frame src=\"./messages.php?webtag=$webtag&msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+
+    }else {
+
+        $msg = messages_get_most_recent(bh_session_get_value('UID'));
+
+        echo "  <frame src=\"./thread_list.php?webtag=$webtag&msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "  <frame src=\"./messages.php?webtag=$webtag&msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    }
 }
 
 echo "</frameset>\n";

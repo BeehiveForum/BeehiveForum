@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.272 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.273 2004-04-23 11:42:40 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -34,7 +34,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     if(!$uid) $uid = 0;
 
     $db_message_get = db_connect();
-   
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
@@ -123,7 +123,7 @@ function message_get_content($tid, $pid)
 
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
-    
+
     if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT CONTENT FROM {$table_data['PREFIX']}POST_CONTENT WHERE TID = '$tid' AND PID = '$pid'";
@@ -136,15 +136,15 @@ function message_get_content($tid, $pid)
 function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     global $lang;
-    
+
     echo "<p><img src=\"". style_image('folder.png'). "\" alt=\"{$lang['folder']}\" />&nbsp;", apply_wordfilter("$foldertitle: $threadtitle");
-    
+
     if ($closed) echo "&nbsp;<img src=\"". style_image('thread_closed.png'). "\" height=\"15\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" align=\"middle\" />\n";
     if ($interest_level == 1) echo "&nbsp;<img src=\"". style_image('high_interest.png'). "\" height=\"15\" alt=\"{$lang['highinterest']}\"  title=\"{$lang['highinterest']}\" align=\"middle\" />";
     if ($interest_level == 2) echo "&nbsp;<img src=\"". style_image('subscribe.png'). "\" height=\"15\" alt=\"{$lang['subscribed']}\"  title=\"{$lang['subscribed']}\" align=\"middle\" />";
     if ($sticky == "Y") echo "&nbsp;<img src=\"". style_image('sticky.png'). "\" height=\"15\" alt=\"{$lang['sticky']}\"  title=\"{$lang['sticky']}\" align=\"middle\" />";
     if ($locked) echo "&nbsp;<img src=\"". style_image('admin_locked.png'). "\" height=\"15\" alt=\"{$lang['locked']}\"  title=\"{$lang['locked']}\" align=\"middle\" />\n";
-    
+
     echo "</p>";
 }
 
@@ -158,7 +158,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     global $lang;
 
     $webtag = get_webtag();
-    
+
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);
         return;
@@ -181,8 +181,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     // Check for words that should be filtered ---------------------------------
 
-    $message['CONTENT'] = apply_wordfilter($message['CONTENT']);    
-    
+    $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
+
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
@@ -334,7 +334,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if(!($message['FROM_RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
 
         echo "<tr><td><table width=\"100%\"><tr align=\"right\"><td colspan=\"3\"><span class=\"postnumber\">";
-        
+
         if($in_list && $msg_count > 0) {
 
             if ($is_preview) {
@@ -380,22 +380,22 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<tr><td class=\"postbody\" align=\"left\">". $message['CONTENT']. "</td></tr>\n";
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
-            
+
             $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
             $attachments_array = get_attachments($message['FROM_UID'], $aid);
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-                    
+
                 // Draw the attachment header at the bottom of the post
-                
+
                 echo "<tr><td>&nbsp;</td></tr>\n";
                 echo "<tr><td class=\"postbody\" align=\"left\">\n";
-                echo "<b>{$lang['attachments']}:</b><br />\n";                
-                
+                echo "<b>{$lang['attachments']}:</b><br />\n";
+
                 foreach($attachments_array as $attachment) {
 
                     echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" />";
-                            
+
                     if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
                         echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $attachment['hash'], "\"";
                     }else {
@@ -413,7 +413,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
                         echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
                     }
- 
+
                     echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
                     echo "{$lang['downloaded']}: ". $attachment['downloads'];
 
@@ -433,11 +433,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "<table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
 
         if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
-        
+
             echo "<tr>\n";
             echo "  <td width=\"25%\">&nbsp;</td>\n";
             echo "  <td width=\"50%\" nowrap=\"nowrap\">";
-            
+
             if(!($closed || (bh_session_get_value('STATUS') & USER_PERM_WASP)) || (bh_session_get_value('STATUS') & PERM_CHECK_WORKER)) {
 
                 echo "<img src=\"".style_image('post.png')."\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />";
@@ -479,7 +479,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                 echo "<a href=\"admin_user.php?webtag=$webtag&uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
-                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) { 
+                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 	            echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
 		}else {
 		    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
@@ -501,7 +501,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 function message_display_deleted($tid,$pid)
 {
     global $lang;
-    
+
     echo "<br /><div align=\"center\">";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
     echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
@@ -620,7 +620,7 @@ function messages_interest_form($tid,$pid)
     global $lang;
 
     $webtag = get_webtag();
-    
+
     $interest = thread_get_interest($tid);
     $chk = array("","","","");
     $chk[$interest+1] = " checked";
@@ -658,12 +658,12 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
     } else {
         echo "&nbsp;".form_submit("close",$lang['closeforposting']);
     }
-    
+
     if ($locked) {
         echo "&nbsp;".form_submit("unlock", $lang['allowediting']);
     } else {
         echo "&nbsp;".form_submit("lock", $lang['preventediting']);
-    }    
+    }
 
     echo "</p>\n";
 
@@ -698,7 +698,7 @@ function messages_edit_thread($fid, $tid, $pid, $title)
     global $lang;
 
     $webtag = get_webtag();
-    
+
     echo "<div align=\"center\" class=\"messagefoot\">\n";
     echo "<form name=\"thread_admin\" target=\"_self\" action=\"./thread_admin.php?webtag=$webtag&msg=$tid.$pid\" method=\"post\">\n";
 
@@ -707,8 +707,8 @@ function messages_edit_thread($fid, $tid, $pid, $title)
     }else {
         echo "<p>{$lang['renamethread']}: ". form_input_text("t_name", _stripslashes($title), 30, 64). "&nbsp;". form_submit("rename", $lang['apply']). "</p>\n";
     }
-    
-    echo "<p>{$lang['movethread']}: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", $lang['move']);    
+
+    echo "<p>{$lang['movethread']}: " . folder_draw_dropdown($fid, "t_move"). "&nbsp;".form_submit("move", $lang['move']);
 
     echo form_input_hidden("t_tid", $tid);
     echo form_input_hidden("t_pid", $pid);
@@ -722,7 +722,7 @@ function message_get_user($tid, $pid)
 
     if (!is_numeric($tid)) return "";
     if (!is_numeric($pid)) return "";
-    
+
     if (!$table_data = get_table_prefix()) return "";
 
     $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = '$tid' AND PID = '$pid'";
@@ -748,11 +748,11 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     if (!is_numeric($spid)) return false;
 
     // Check for existing entry in USER_THREAD
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     // Guest users' can't mark as read!
-    
+
     if ($uid == 0) return false;
 
     $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD ";
@@ -782,7 +782,7 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
-        
+
         $result = db_query($sql, $db_message_update_read);
     }
 
@@ -803,7 +803,7 @@ function messages_set_read($tid, $pid, $uid)
     if (!is_numeric($uid)) return false;
 
     // Check for existing entry in USER_THREAD
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     // Guest can't mark as read
@@ -830,7 +830,7 @@ function messages_set_read($tid, $pid, $uid)
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
-        
+
         $result = db_query($sql, $db_message_set_read);
     }
 
@@ -853,7 +853,7 @@ function messages_get_most_recent($uid, $fid = false)
     }
 
     if (!is_numeric($uid)) return false;
-    
+
     if (!$table_data = get_table_prefix()) return "1.1";
 
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
@@ -890,12 +890,60 @@ function messages_get_most_recent($uid, $fid = false)
     return "1.1";
 }
 
+function messages_get_most_recent_unread($uid, $fid = false)
+{
+    $db_messages_get_most_recent = db_connect();
+
+    if (is_numeric($fid)) {
+        $fidlist = $fid;
+    }else {
+        $fidlist = folder_get_available();
+    }
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return "1.1";
+
+    $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "WHERE THREAD.FID in ($fidlist) ";
+    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST <> -1) ";
+    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST <> -1) ";
+    $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
+    $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
+
+    $result = db_query($sql, $db_messages_get_most_recent);
+
+    if (db_num_rows($result)) {
+
+        $fa = db_fetch_array($result);
+
+        if (isset($fa['LAST_READ'])) {
+
+            if ($fa['LAST_READ'] < $fa['LENGTH']) {
+              return $fa['TID'] . ".". ($fa['LAST_READ'] + 1);
+            }else {
+              return $fa['TID'] . "." . $fa['LAST_READ'];
+            }
+
+        }else {
+            return $fa['TID'] . ".1";
+        }
+    }
+
+    return "1.1";
+}
+
 function messages_fontsize_form($tid, $pid)
 {
     global $lang;
 
     $webtag = get_webtag();
-    
+
     $fontstrip = "<p>{$lang['adjtextsize']}: ";
 
     if ((bh_session_get_value('FONT_SIZE') > 5) && (bh_session_get_value('FONT_SIZE') < 15)) {
@@ -940,12 +988,12 @@ function validate_msg($msg)
 function messages_forum_stats($tid, $pid)
 {
     global $lang;
-    
+
     $webtag = get_webtag();
 
     $uid = bh_session_get_value("UID");
     $user_show_stats = bh_session_get_value("SHOW_STATS");
-    
+
     if (forum_get_setting('show_stats', 'Y', false)) {
 
         echo "<div align=\"center\">\n";
@@ -997,7 +1045,7 @@ function messages_forum_stats($tid, $pid)
                     echo "            <td class=\"activeusers\">\n";
 
                     for ($i = 0; $i < sizeof($user_stats['USERS']); $i++) {
-            
+
                         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_stats['USERS'][$i]['UID']}, '$webtag')\" target=\"_self\">";
                         echo str_replace(" ", "&nbsp;", format_user_name($user_stats['USERS'][$i]['LOGON'], $user_stats['USERS'][$i]['NICKNAME'])), "</a>";
                         if ($i < (sizeof($user_stats['USERS']) - 1)) echo ", ";
@@ -1014,7 +1062,7 @@ function messages_forum_stats($tid, $pid)
                 echo "          </tr>\n";
                 echo "        </table>\n";
             }
-     
+
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
             echo "            <td width=\"35\">&nbsp;</td>\n";
@@ -1024,7 +1072,7 @@ function messages_forum_stats($tid, $pid)
             echo "        </table>\n";
 
             if ($longest_thread = get_longest_thread()) {
-     
+
                 echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "          <tr>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";

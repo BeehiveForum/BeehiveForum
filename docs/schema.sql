@@ -213,7 +213,7 @@ CREATE TABLE THREAD (
 # Dumping data for table `THREAD`
 #
 
-INSERT INTO THREAD VALUES (1, 1, NULL, 'Welcome', 1, 'N', NOW(), NULL);
+INSERT INTO THREAD VALUES (1, 1, 1, 'Welcome', 1, 'N', NOW(), NULL);
 # --------------------------------------------------------
 
 #

@@ -66,7 +66,7 @@ if(isset($HTTP_POST_VARS['submit'])){
     }
 
     if($valid){
-        if($HTTP_POST_VARS['sig_html'] == "Y"){
+        if(@$HTTP_POST_VARS['sig_html'] == "Y"){
             $HTTP_POST_VARS['sig_content'] = fix_html($HTTP_POST_VARS['sig_content']);
         }
     }
@@ -85,15 +85,15 @@ if(isset($HTTP_POST_VARS['submit'])){
         user_update_prefs($HTTP_COOKIE_VARS['bh_sess_uid'],
                           $HTTP_POST_VARS['firstname'], $HTTP_POST_VARS['lastname'],
                           $HTTP_POST_VARS['homepage_url'], $HTTP_POST_VARS['pic_url'],
-                          $HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
-                          $HTTP_POST_VARS['dl_saving'], $HTTP_POST_VARS['mark_as_of_int'],
+                          @$HTTP_POST_VARS['email_notify'], $HTTP_POST_VARS['timezone'],
+                          @$HTTP_POST_VARS['dl_saving'], @$HTTP_POST_VARS['mark_as_of_int'],
                           $HTTP_POST_VARS['posts_per_page'], $HTTP_POST_VARS['font_size']);
                         
         // Update USER_SIG
         
         user_update_sig($HTTP_COOKIE_VARS['bh_sess_uid'],
                         $HTTP_POST_VARS['sig_content'],
-                        $HTTP_POST_VARS['sig_html']);
+                        @$HTTP_POST_VARS['sig_html']);
                         
         // Update the User's Session to save them having to logout and back in
         
@@ -194,7 +194,7 @@ html_draw_top();
       </tr>
       <tr>
         <td>Posts per page</td>
-        <td><?php echo form_dropdown_array("posts_per_page" ,array(5,10,20), array(5,10,20), $user_prefs['POSTS_PER_PAGE']); ?></td>
+        <td><?php echo form_dropdown_array("posts_per_page" ,array(5,10,20), array(5,10,20), isset($user_prefs['POSTS_PER_PAGE']) ? $user_prefs['POSTS_PER_PAGE'] : 10); ?></td>
       </tr>
       <tr>
         <td>Font size</td>

@@ -47,7 +47,7 @@ function thread_get($tid)
    $db_thread_get = db_connect();
    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, ";
    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, USER_THREAD.INTEREST AS INTEREST, USER_THREAD.LAST_READ FROM ";
-   $sql.= forum_table("THREAD") . " LEFT JOIN ". forum_table("USER_THREAD"). " ";
+   $sql.= forum_table("THREAD") . " THREAD LEFT JOIN ". forum_table("USER_THREAD"). " USER_THREAD ";
    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = ";
    $sql.= $HTTP_COOKIE_VARS['bh_sess_uid'] . ") WHERE THREAD.TID = $tid";
    $resource_id = db_query($sql, $db_thread_get);
@@ -55,6 +55,13 @@ function thread_get($tid)
      $threaddata = false;
    } else {
      $threaddata = db_fetch_array($resource_id);
+   }
+   
+   if(!isset($threaddata['INTEREST'])){
+       $threaddata['INTEREST'] = 0;
+   }
+   if(!isset($threaddata['LAST_READ'])){
+       $threaddata['LAST_READ'] = 0;
    }
    return $threaddata;
 }

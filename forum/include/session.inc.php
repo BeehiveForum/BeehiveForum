@@ -35,16 +35,18 @@ function bh_session_check()
     }
 
     $check = $HTTP_COOKIE_VARS['bh_sess_uid'];
-    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_ustatus'];
-    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_ppp'];
-    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_tz'];
-    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_dlsav'];
-    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_markread'];
-    $check.= " " . $HTTP_COOKIE_VARS['bh_sess_fontsize'];
-    $check.= " " . @$HTTP_SERVER_VARS['SERVER_SIGNATURE'];
+    $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_ustatus'];
+    $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_ppp'];
+    $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_tz'];
+    $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_dlsav'];
+    $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_markread'];
+    $check.= " " . @$HTTP_COOKIE_VARS['bh_sess_fontsize'];
+    if(isset($HTTP_SERVER_VARS['SERVER_SIGNATURE'])){
+        $check.= " " . $HTTP_SERVER_VARS['SERVER_SIGNATURE'];
+    }
     $check.= " " . BH_SESS_HASH;
 
-    if(md5($check) != $HTTP_COOKIE_VARS['bh_sess_check']){
+    if(md5($check) != @$HTTP_COOKIE_VARS['bh_sess_check']){
         return false;
     }
 
@@ -115,7 +117,9 @@ function bh_session_init($uid)
     $check.= " " . $user_dlsav;
     $check.= " " . $user_markread;
     $check.= " " . $user_fontsize;
-    $check.= " " . @$HTTP_SERVER_VARS['SERVER_SIGNATURE'];
+    if(isset($HTTP_SERVER_VARS['SERVER_SIGNATURE'])){
+        $check.= " " . $HTTP_SERVER_VARS['SERVER_SIGNATURE'];
+    }
     $check.= " " . BH_SESS_HASH;
 
     setcookie("bh_sess_uid",$uid);
@@ -156,7 +160,7 @@ function get_request_uri()
         }
     }
     
-    return $return;
+    return substr($return,0,-1);
 }
 
 ?>

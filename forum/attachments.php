@@ -59,12 +59,12 @@ if (!is_dir('attachments')) {
 
 
 // Do the requested action
-if ($HTTP_POST_VARS['submit'] == 'Del') {
+if (@$HTTP_POST_VARS['submit'] == 'Del') {
 
   @unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. $HTTP_POST_VARS['userfile']));
   delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['aid'], $HTTP_POST_VARS['userfile']);
     
-}elseif ($HTTP_POST_VARS['submit'] == 'Upload') {
+}elseif (@$HTTP_POST_VARS['submit'] == 'Upload') {
 
   if (!empty($HTTP_POST_FILES['userfile']['tmp_name'])) {
 
@@ -75,17 +75,19 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
     
     }else {
     
-      move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($aid. $HTTP_POST_FILES['userfile']['name']));
-      unlink($HTTP_POST_FILES['userfile']['tmp_name']);
-      
-      add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name'], $HTTP_POST_FILES['userfile']['type']);
-      echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";    
-  
+      if(@move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($aid. $HTTP_POST_FILES['userfile']['name']))){
+          @unlink($HTTP_POST_FILES['userfile']['tmp_name']);
+          
+          add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name'], $HTTP_POST_FILES['userfile']['type']);
+          echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";
+      } else {
+          echo "<p>Could not upload file. Sorry.</p>";
+      }
     }
-    
+
   }
-  
-}elseif ($HTTP_POST_VARS['submit'] == 'Complete') {
+
+}elseif (@$HTTP_POST_VARS['submit'] == 'Complete') {
 
   echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
   echo "  window.close();\n";

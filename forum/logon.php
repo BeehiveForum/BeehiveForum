@@ -64,9 +64,25 @@ if (isset($HTTP_POST_VARS['submit'])) {
         setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
         setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
       }
-      
-      header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
-        
+
+      if(substr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'],0,13) != "Microsoft-IIS"){ // Not IIS
+          header_redirect("http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri);
+      } else { // IIS bug prevents redirect at same time as setting cookies.
+          html_draw_top();
+          // Try a Javascript redirect
+          echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+          echo "<!--\n";
+          echo "document.location.href = 'http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri ."';\n";
+          echo "//-->\n";
+          echo "</script>";
+          
+          // If they're still here, Javascript's not working. Give up, give a link.
+          echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
+          echo "<p>You logged in successfully.</p>";
+          //echo "<p><a href=\"http://".$HTTP_SERVER_VARS['HTTP_HOST'].$final_uri."\">Continue</a></p>";
+          html_draw_bottom();
+          exit;
+      }
     } else if($luid == -2){ // User is banned - everybody hide
         header("HTTP/1.0 500 Internal Server Error");
         exit;

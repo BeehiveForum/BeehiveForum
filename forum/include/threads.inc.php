@@ -297,7 +297,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 			$lst[$i]['last_read'] = 0;
 		}
 
-        $lst[$i]['interest'] = $thread['interest'];
+                $lst[$i]['interest'] = isset($thread['interest']) ? $thread['interest'] : 0;
 		$lst[$i]['modified'] = $thread['modified'];
 
 	    }

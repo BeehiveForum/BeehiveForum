@@ -49,6 +49,7 @@ if(isset($HTTP_COOKIE_VARS['bh_sess_uid'])){
 }
 
 $valid = true;
+$error_html = "";
 
 if(isset($HTTP_POST_VARS['submit'])) {
 
@@ -113,7 +114,7 @@ if(isset($HTTP_POST_VARS['submit'])) {
       $error_html.= "<h2>An email address is required</h2>\n";
       $valid = false;
   }
-  
+
   if($valid) {
       if(user_exists(strtoupper($HTTP_POST_VARS['logon']))) {
           $error_html.= "<h2>Sorry, a user with that name already exists</h2>\n";
@@ -129,43 +130,43 @@ if(isset($HTTP_POST_VARS['submit'])) {
   }
 
   if($valid) {
-  
+
       $new_uid = user_create(strtoupper($HTTP_POST_VARS['logon']), $HTTP_POST_VARS['pw'], $HTTP_POST_VARS['nickname'], $HTTP_POST_VARS['email']);
-      
+
       if($new_uid > -1) {
-      
+
           bh_session_init($new_uid);
-          
+
           if($HTTP_POST_VARS['remember_user'] == "Y") {
-        
+
             setcookie('bh_remember_user', $HTTP_POST_VARS['logon'], time() + YEAR_IN_SECONDS, '/');
             setcookie('bh_remember_password', $HTTP_POST_VARS['pw'], time() + YEAR_IN_SECONDS, '/');
-            
+
           }else {
-        
+
             setcookie("bh_remember_user", "", time() - YEAR_IN_SECONDS, '/');
             setcookie("bh_remember_password", "", time() - YEAR_IN_SECONDS, '/');
-    
+
           }
-          
+
           html_draw_top();
-          
+
           echo "<div align=\"center\">\n";
           echo "<p>Huzzah! Your user record has been created successfully!</p>\n";
-          echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>\n";      
+          echo "<p><a href=\"$final_uri\" target=\"_top\">Continue</a></p>\n";
           echo "</div>\n";
-          
+
           html_draw_bottom();
           exit;
-          
+
       } else {
-      
+
           $error_html.= "<h2>Error creating user record</h2>\n";
           $valid = false;
-          
+
       }
   }
-  
+
 }
 
 html_draw_top();

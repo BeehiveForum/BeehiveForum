@@ -25,6 +25,76 @@ require_once("./include/form.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/user.inc.php");
 
+function search_construct_query($argarray, &$searchsql, &$urlquery)
+{
+
+  if ($argarray['fid'] > 0) {
+    $searchsql.= "THREAD.FID = ". $argarray['fid']. " ";
+  }else{
+    $folders = threads_get_available_folders();
+    $searchsql.= "THREAD.FID in ($folders) ";
+  }
+  
+  $searchsql.= search_date_range($argarray['date_from'], $argarray['date_to']). " ";
+  
+  if (!empty($argarray['search_string'])) {
+  
+    if ($argarray['method'] == 1) {
+  
+      $keywords = explode(' ', $argarray['search_string']);
+      foreach($keywords as $word) $searchsql.= "AND POST_CONTENT.CONTENT LIKE '%$word%' ";
+    
+    }elseif ($argarray['method'] == 2) {
+  
+      $searchsql.= "AND ";
+      $keywords = explode(' ', $argarray['search_string']);
+      foreach($keywords as $word) $searchsql.= "POST_CONTENT.CONTENT LIKE '%$word%' OR ";
+      $searchsql = substr($searchsql, 0, -3);
+    
+    }elseif ($argarray['method'] == 3) {
+  
+      $searchsql.= "AND POST_CONTENT.CONTENT LIKE '%". $argarray['search_string']. "%' ";
+
+    }
+    
+  }
+  
+  if ($argarray['me_only'] != 'Y') {
+  
+    if (empty($argarray['to_other']) && $argarray['to_uid'] > 0) {
+      $searchsql.= "AND POST.TO_UID = ". $argarray['to_uid']. " ";
+    }elseif (!empty($argarray['to_other'])) {
+      $touid = user_get_uid($argarray['to_other']);
+      if ($touid > -1) $searchsql.= "AND POST.TO_UID = ". $touid. " ";    
+    }
+  
+    if (empty($argarray['from_other']) && $argarray['from_uid'] > 0) {
+      $searchsql.= "AND POST.FROM_UID = ". $argarray['from_uid']. " ";
+    }elseif (!empty($argarray['from_other'])) {
+      $fromuid = user_get_uid($argarray['from_other']);
+      if ($fromuid > -1) $searchsql.= "AND POST.FROM_UID = ". $fromuid. " ";      
+    }
+    
+  }else {
+  
+    $searchsql.= "AND POST.TO_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " OR ";
+    $searchsql.= $searchsql. " AND POST.FROM_UID = ". $HTTP_COOKIE_VARS['bh_sess_uid']. " ";
+
+  }
+  
+  if ($argarray['order_by'] == 2) {
+    $searchsql.= "ORDER BY POST.CREATED DESC";
+  }elseif($argarray['order_by'] == 3) {
+    $searchsql.= "ORDER BY POST.CREATED";
+  }
+  
+  $urlquery = "&fid=". $argarray['fid']. "&date_from=". $argarray['date_from']. "&date_to=". $argarray['date_to'];
+  $urlquery.= "&search_string=". rawurlencode($argarray['search_string']). "&method=". $argarray['method']. "&me_only=". $argarray['me_only'];
+  $urlquery.= "&to_other=". $argarray['to_other']. "&to_uid=". $argarray['to_uid']. "&from_other=". $argarray['from_other'];
+  $urlquery.= "&from_uid=". $argarray['from_uid']. "&order_by=". $argarray['order_by'];
+  
+}
+
 function search_date_range($from, $to)
 {
 

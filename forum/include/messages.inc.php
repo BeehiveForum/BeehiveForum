@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.342 2005-03-27 13:02:57 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.343 2005-03-28 00:16:07 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -302,7 +302,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
     // Convert emoticons
 
-    $message['CONTENT'] = emoticons_convert($message['CONTENT']);
+    $emots = new Emoticons();
+
+    $message['CONTENT'] = $emots->convert($message['CONTENT']);
 
     // Convert any WikiWords to hyperlinks -------------------------------------
 

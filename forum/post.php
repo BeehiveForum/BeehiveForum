@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.211 2004-08-08 12:10:56 tribalonline Exp $ */
+/* $Id: post.php,v 1.212 2004-08-08 23:47:10 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -252,7 +252,7 @@ if (isset($_POST['t_sig_html'])) {
                 $sig_html = 2;
         }
 
-        $t_sig = tidy_html($t_sig, true);
+        $t_sig = tidy_html($t_sig, false);
 
         $fetched_sig = true;
 }

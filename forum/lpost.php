@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.53 2004-08-08 14:36:03 tribalonline Exp $ */
+/* $Id: lpost.php,v 1.54 2004-08-08 23:47:10 tribalonline Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -208,7 +208,7 @@ if (isset($_POST['t_sig_html'])) {
 		$sig_html = 2;
 	}
 
-	$t_sig = tidy_html($t_sig, true);
+	$t_sig = tidy_html($t_sig, false);
 
 	$fetched_sig = true;
 }

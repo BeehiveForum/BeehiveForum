@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.112 2004-04-29 21:01:31 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.113 2004-05-11 16:49:14 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -374,7 +374,7 @@ function bh_setcookie($name, $value, $expires = 0)
     return setcookie($name, $value, $expires);
 }
 
-function page_links($uri, $offset, $total_rows, $rows_per_page)
+function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "page")
 {
     $page_count   = ceil($total_rows / $rows_per_page);
     $current_page = floor($offset / $rows_per_page) + 1;
@@ -420,14 +420,14 @@ function page_links($uri, $offset, $total_rows, $rows_per_page)
             if ($page == $current_page) {
                 echo "<b>$page</b> ";
             }else {
-                echo "<a href=\"{$uri}&amp;page={$page}\" target=\"_self\">{$page}</a> ";
+                echo "<a href=\"{$uri}&amp;{$page_var}={$page}\" target=\"_self\">{$page}</a> ";
             }
         }
 
         if ($current_page < $page_count) {
 
             $next_page = (($current_page + 1) <= $page_count) ? ($current_page + 1) : $page_count;
-            echo "<a href=\"{$uri}&amp;page={$next_page}\" target=\"_self\">&gt;&gt;</a> ";
+            echo "<a href=\"{$uri}&amp;{$page_var}={$next_page}\" target=\"_self\">&gt;&gt;</a> ";
         }
 
     }else {

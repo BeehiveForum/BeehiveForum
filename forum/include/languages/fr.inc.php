@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.80 2004-05-09 21:20:57 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.81 2004-05-11 16:49:15 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -102,6 +102,7 @@ $lang['change'] = "Changement";
 $lang['yes'] = "Oui";
 $lang['no'] = "Non";
 $lang['signature'] = "Signature";
+$lang['signaturepreview'] = "Aperçu de Signature";
 $lang['wasnotfound'] = "pas trouvé";
 $lang['back'] = "Dos";
 $lang['subject'] = "Sujet";
@@ -801,6 +802,7 @@ $lang['emailandprivacy'] = "Email & Privacy";
 $lang['editsignature'] = "Edit Signature";
 $lang['newrelationship'] = "New Relationship";
 $lang['editrelationships'] = "Edit Relationships";
+$lang['norelationships'] = "You have no user relationships set up";
 $lang['editattachments'] = "Edit Attachments";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";

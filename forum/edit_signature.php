@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.35 2004-05-09 00:57:48 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.36 2004-05-11 16:49:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,6 +49,7 @@ include_once("./include/html.inc.php");
 include_once("./include/htmltools.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
+include_once("./include/messages.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
@@ -107,12 +108,12 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-if (isset($_POST['submit'])) {
+$valid = true;
 
-    $valid = true;
+if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['sig_content']) && trim($_POST['sig_content']) != "") {
-        $t_sig_content = _stripslashes(trim($_POST['sig_content']));
+    if (isset($_POST['sig_content']) && strlen(trim($_POST['sig_content'])) > 0) {
+        $t_sig_content = trim(_stripslashes($_POST['sig_content']));
     }else {
         $t_sig_content = "";
     }
@@ -123,22 +124,35 @@ if (isset($_POST['submit'])) {
         $t_sig_html = "N";
     }
 
-	// Check the signature code to see if it needs running through fix_html
-	if ($t_sig_html == "Y") {
-		$t_sig_content = fix_html($t_sig_content);
+    if (isset($_POST['sig_content_old']) && strlen(trim($_POST['sig_content_old'])) > 0) {
+        $t_sig_content_old = trim(_stripslashes($_POST['sig_content_old']));
+    }else {
+        $t_sig_content_old = "";
+    }
 
-	}else {
-		$t_sig_content = _stripslashes($t_sig_content);
-	}
+    if (isset($_POST['sig_html_old']) && $_POST['sig_html_old'] == "Y") {
+        $t_sig_html_old = "Y";
+    }else {
+        $t_sig_html_old = "N";
+    }
 
-	// If nothing's changed, don't update
-	if (isset($_POST['sig_content_old']) && $t_sig_content == $_POST['sig_content_old'] &&
-		isset($_POST['sig_html_old']) && $t_sig_html == $_POST['sig_html_old']) {
-		$valid = false;
-	}
+    // Check the signature code to see if it needs running through fix_html
+
+    if ($t_sig_html == "Y") {
+        $t_sig_content = fix_html($t_sig_content);
+    }
 
     if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
         $error_html.= "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
+        $valid = false;
+    }
+}
+
+if (isset($_POST['submit'])) {
+
+    // If nothing's changed, don't update
+
+    if ($t_sig_content == $t_sig_content_old && $t_sig_html == $t_sig_html_old) {
         $valid = false;
     }
 
@@ -192,6 +206,39 @@ user_get_sig(bh_session_get_value('UID'), $user_sig['SIG_CONTENT'], $user_sig['S
 // Start Output Here
 
 html_draw_top("htmltools.js");
+
+if (isset($_POST['preview'])) {
+
+    if ($valid) {
+
+        $preview_message['TLOGON'] = "ALL";
+        $preview_message['TNICK'] = "ALL";
+
+        $preview_tuser = user_get(bh_session_get_value('UID'));
+
+        $preview_message['FLOGON']   = $preview_tuser['LOGON'];
+        $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
+        $preview_message['FROM_UID'] = $preview_tuser['UID'];
+
+        $preview_message['CONTENT'] = $lang['signaturepreview'];
+        $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
+
+        $preview_message['CREATED'] = mktime();
+
+        echo "<h1>{$lang['preview']}</h1>\n";
+
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+
+        message_display(0, $preview_message, 0, 0, true, false, false, false, true, true);
+        echo "<br />\n";
+
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+    }
+}
 
 echo "<h1>{$lang['editsignature']}</h1>\n";
 
@@ -254,7 +301,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

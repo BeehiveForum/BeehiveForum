@@ -74,6 +74,16 @@ function db_fetch_array ($resource_id)
 	return $results;
 }
 
+// Seeks to the specified row in a SELECT query (0 based)
+function db_data_seek ($resource_id, $row_number)
+{
+
+	$seek_result = @mysql_data_seek($resource_id, $row_number);
+	return $seek_result;
+	
+}
+
+
 // Returns the AUTO_INCREMENT ID from the last insert statement
 function db_insert_id($resource_id)
 {

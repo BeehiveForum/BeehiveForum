@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: admin_users.php,v 1.29 2003-07-27 12:42:03 hodcroftcj Exp $ */
+
 // Frameset for thread list and messages
 
 // Enable the error handler

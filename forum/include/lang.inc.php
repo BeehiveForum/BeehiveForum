@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: lang.inc.php,v 1.4 2003-07-27 12:42:05 hodcroftcj Exp $ */
+
 // I18N SUPPORT
 
 require_once("./include/config.inc.php");
@@ -67,7 +69,7 @@ require_once ("./include/languages/$default_language.inc.php");
 
 function lang_get_available()
 {
-    $available_langs = array('No Preference');
+    $available_langs = array();
     $dir = opendir("./include/languages");
     while ($item = readdir($dir)) {
         if (strpos($item, '.inc.php') !== false) array_push($available_langs, substr($item, 0, strpos($item, '.inc.php')));

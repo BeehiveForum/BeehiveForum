@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: fixhtml.inc.php,v 1.40 2003-07-27 12:42:04 hodcroftcj Exp $ */
+
 // fix_html - process html to prevent it breaking the forum
 //            (e.g. close open tags, filter certain tags)
 

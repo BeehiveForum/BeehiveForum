@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: gzipenc.inc.php,v 1.14 2003-07-27 12:42:04 hodcroftcj Exp $ */
+
 // Compresses the output of the PHP scripts to save bandwidth.
 
 require_once('./include/config.inc.php');

@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: en.inc.php,v 1.18 2003-07-27 12:42:05 hodcroftcj Exp $ */
+
 // International English language file
 
 // Language character set and text direction options -------------------
@@ -269,6 +271,7 @@ $lang['nousers'] = "No users";
 $lang['addnewuser'] = "Add New User";
 $lang['adduser'] = "Add User";
 $lang['searchforuser'] = "Search For User";
+$lang['browsernegotiation'] = "Browser negotiation";
 
 // Attachments (attachments.php, getattachment.php) ---------------------------------------
 

@@ -26,6 +26,7 @@ USA
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
+require_once("./include/header.inc.php");
 
 if(isset($HTTP_POST_VARS['move'])){
     if(isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_move'])){
@@ -71,16 +72,12 @@ if(isset($HTTP_POST_VARS['move'])){
 
 if(isset($HTTP_GET_VARS['ret'])){
 
-    header ("Request-URI: ". $HTTP_GET_VARS['ret']);
-    header ("Content-Location: ". $HTTP_GET_VARS['ret']);
-    header ("Location: ". $HTTP_GET_VARS['ret']);
+    header_redirect($HTTP_GET_VARS['ret']);
     
 } else {
 
-    header ("Request-URI: ". dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
-    header ("Content-Location: ". dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
-    header ("Location: ". dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
-    
+    header_redirect(dirname($HTTP_SERVER_VARS['PHP_SELF']). "/messages.php");
+   
 }
 
 ?>

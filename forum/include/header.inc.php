@@ -37,6 +37,8 @@ function header_no_cache()
 
 function header_redirect($uri)
 {
+    header("Request-URI: $uri");
+    header("Content-Location: $uri");
     header("Location: $uri");
     exit;
 }

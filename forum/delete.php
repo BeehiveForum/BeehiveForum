@@ -23,20 +23,25 @@ USA
 
 //Check logged in status
 require_once("./include/session.inc.php");
+require_once("./include/header.inc.php");
+
 if(!bh_session_check()){
-    $go = "Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-    $go .= "/".dirname($HTTP_SERVER_VARS['PHP_SELF']);
-    $go .= "/logon.php?final_uri=";
-    $go .= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
-    header($go);
+
+    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+    $uri.= "/".dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $uri.= "/logon.php?final_uri=";
+    $uri.= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
+    
+    header_redirect($uri);
 }
 
 if(isset($HTTP_POST_VARS['cancel'])){
-    $go = "Location: http://".$HTTP_SERVER_VARS['HTTP_HOST'];
-    $go .= dirname($HTTP_SERVER_VARS['PHP_SELF']);
-    $go .= "/discussion.php?msg=" . $HTTP_POST_VARS['t_back'];
-    //echo $go;
-    header($go);
+
+    $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
+    $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+    $uri.= "/discussion.php?msg=" . $HTTP_POST_VARS['t_back'];
+
+    header_redirect($uri);
 }
 
 require_once("./include/html.inc.php");
@@ -139,4 +144,5 @@ echo "<input name=\"submit\" type=\"submit\" value=\"Delete\">";
 echo "&nbsp;&nbsp;<input name=\"cancel\" type=\"submit\" value=\"Cancel\"></form>";
 echo "<p>&nbsp;&nbsp;</p>";
 html_draw_bottom();
+
 ?>

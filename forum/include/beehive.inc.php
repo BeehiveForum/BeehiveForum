@@ -28,3 +28,5 @@ function draw_beehive_bar()
     echo "<a href=\"http://beehiveforum.sourceforge.net/\" target=\"_blank\">";
     echo "Project BeehiveForum</a></td></tr></table>";
 }
+
+?>

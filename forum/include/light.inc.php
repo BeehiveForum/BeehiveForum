@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.40 2004-04-24 18:42:30 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.41 2004-04-25 13:55:45 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -116,12 +116,15 @@ function light_poll_confirm_close($tid)
 function light_messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     $lang = load_language_file();
+
     echo "<h2>$foldertitle: $threadtitle";
+
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";
     if ($interest_level == 2) echo "&nbsp;<font color=\"#FF0000\">({$lang['subscribed']})</font>";
     if ($sticky == "Y") echo "&nbsp;({$lang['sticky']})";
     if ($locked) echo "&nbsp;<font color=\"#FF0000\">({$lang['locked']})</font>";
+
     echo "</h2>";
 }
 
@@ -602,6 +605,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 function light_html_guest_error ()
 {
      $lang = load_language_file();
+
      light_html_draw_top();
      echo "<h1>{$lang['guesterror']}</h1>";
      light_html_draw_bottom();
@@ -688,6 +692,7 @@ function light_form_input_password($name, $value = "", $width = 0, $maxchars = 0
 function light_html_message_type_error()
 {
     $lang = load_language_file();
+
     light_html_draw_top();
     echo "<h1>{$lang['cannotpostthisthreadtype']}</h1>";
     light_html_draw_bottom();

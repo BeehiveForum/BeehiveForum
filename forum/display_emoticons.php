@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.23 2004-05-09 00:57:47 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.24 2004-05-20 10:34:27 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -116,7 +116,7 @@ if ($mode == "mini") {
 	exit;
 }
 
-html_draw_top();
+html_draw_top("emoticons.js");
 
 echo "<h1>{$lang['emoticons']}</h1>\n";
 
@@ -132,9 +132,15 @@ echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
 
 
+$emot_forum = forum_get_setting('default_emoticons');
 $emot_sets = emoticons_get_sets();
 unset($emot_sets['none']);
+unset($emot_sets['text']);
 $emot_sets_keys = array_keys($emot_sets);
+
+if ($pack != "user" && !in_array($pack, $emot_sets_keys)) {
+	$pack = $emot_forum;
+}
 
 if ($pack != "user") {
 	echo "              <td valign=\"top\" width=\"200\">\n";
@@ -149,8 +155,6 @@ if ($pack != "user") {
 
 	echo "                </td>\n";
 }
-
-$emot_forum = forum_get_setting('default_emoticons');
 
 if ($pack == "user") {
     $pack = bh_session_get_value('EMOTICONS');
@@ -188,7 +192,10 @@ echo "                <td>\n";
 echo "                  <table class=\"posthead\" width=\"300\">\n";
 
 for ($i=0; $i<count($emot_match); $i++) {
-	echo "                    <tr>\n";
+	$tmp_ts = split(" ", $emot_match[$i]);
+	$tmp_ts = $tmp_ts[0];
+
+	echo "                    <tr onclick=\"insertEmoticon(' ". str_replace("'", "\\'", $tmp_ts) ." ');\">\n";
 	echo "                      <td width=\"100\"><img src=\"$path/".$emot_image[$i]."\" title=\"".$emot_text[$i]."\"></td>\n";
 	echo "                      <td>".$emot_match[$i]."</td>\n";
 	echo "                    </tr>\n";

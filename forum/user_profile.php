@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.38 2003-11-10 21:10:06 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.39 2003-11-11 19:10:26 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -198,7 +198,7 @@ echo "                </tr>\n";
 if ($uid == bh_session_get_value('UID')) {
 
     echo "                <tr>\n";
-    echo "                  <td><a href=\"javascript:void(0)\" onclick=\"launchAttachWin();\">{$lang['editmyattachments']}</a></td>\n";
+    echo "                  <td><a href=\"javascript:void(0)\" onclick=\"launchAttachProfileWin();\">{$lang['editmyattachments']}</a></td>\n";
     echo "                </tr>\n";
 }
 

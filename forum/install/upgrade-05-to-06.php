@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.6 2005-01-17 17:12:43 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.7 2005-01-17 17:39:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -309,7 +309,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // it would make sense to try and reverse the MD5 hashing in the
     // PTUID, at least not with modern servers ;)
 
-    $sql = "DELETE FROM {$forum_webtag}_default_user_poll_votes";
+    $sql = "DELETE FROM {$forum_webtag}_USER_POLL_VOTES";
 
     if (!$result = db_query($sql, $db_install)) {
 

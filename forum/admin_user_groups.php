@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.80 2004-05-19 00:27:28 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.1 2004-05-19 00:27:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -42,17 +42,23 @@ include_once("./include/forum.inc.php");
 $forum_settings = get_forum_settings();
 
 include_once("./include/admin.inc.php");
+include_once("./include/attachments.inc.php");
 include_once("./include/constants.inc.php");
 include_once("./include/db.inc.php");
+include_once("./include/edit.inc.php");
 include_once("./include/folder.inc.php");
 include_once("./include/form.inc.php");
-include_once("./include/format.inc.php");
 include_once("./include/header.inc.php");
 include_once("./include/html.inc.php");
+include_once("./include/ip.inc.php");
 include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
+include_once("./include/messages.inc.php");
 include_once("./include/perm.inc.php");
+include_once("./include/poll.inc.php");
+include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
+include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
@@ -103,66 +109,21 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-html_draw_top();
+html_draw_top('admin.js');
 
-if (!perm_has_admin_access()) {
+if (!(perm_has_admin_access())) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
 
-if (isset($_POST['t_more'])) {
-
-    list($fid) = array_keys($_POST['t_more']);
-    header_redirect("./admin_folder_edit.php?webtag=$webtag&fid=$fid");
-}
-
-if (isset($_POST['addnew'])) {
-    header_redirect("./admin_folder_Add.php?webtag=$webtag");
-}
-
-if (isset($_POST['t_permissions'])) {
-
-    list($fid) = array_keys($_POST['t_permissions']);
-    header_redirect("./admin_folder_access.php?webtag=$webtag&fid=$fid");
-}
-
-// Do updates
-if (isset($_POST['submit'])) {
-
-    if (isset($_POST['t_fid'])) {
-
-        foreach($_POST['t_fid'] as $fid => $value) {
-
-            $folder_data = folder_get($fid);
-
-            if (isset($_POST['t_position'][$fid]) && is_numeric($_POST['t_position'][$fid])) {
-                $folder_data['POSITION'] = $_POST['t_position'][$fid];
-            }
-
-            folder_update($fid, $folder_data);
-            admin_addlog(0, $fid, 0, 0, 0, 0, 7);
-        }
-    }
-}
-
-// Draw the form
-echo "<h1>{$lang['admin']} : {$lang['managefolders']}</h1>\n";
-
-if (isset($_GET['add_success'])) {
-    echo "<h2>{$lang['successfullyaddedfolder']}: ", _stripslashes($_GET['add_success']), "</h2>\n";
-}
-
-if (isset($_GET['del_success'])) {
-    echo "<h2>{$lang['successfullydeletedfolder']}: ", _stripslashes($_GET['del_success']), "</h2>\n";
-}
-
+echo "<h1>{$lang['admin']} : {$lang['usergroups']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -170,35 +131,49 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['position']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['foldername']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['threadcount']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['usergroups']}:</td>\n";
 echo "                </tr>\n";
 
-if ($folder_array = folder_get_all()) {
+if ($user_groups_array = perm_get_user_groups()) {
 
-    $folder_index = 0;
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"box\" width=\"90%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td class=\"posthead\">\n";
+    echo "                          <table class=\"posthead\" width=\"100%\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td class=\"subhead\">&nbsp;Group Name</td>\n";
+    echo "                              <td class=\"subhead\">&nbsp;Users in Group</td>\n";
+    echo "                            </tr>\n";
 
-    foreach ($folder_array as $key => $folder) {
+    foreach ($user_groups_array as $user_group) {
 
-        $folder_index++;
-
-        echo "                <tr>\n";
-
-        if (sizeof($folder_array) > 1) {
-            echo "                  <td align=\"left\">", form_dropdown_array("t_position[{$folder['FID']}]", range(1, sizeof($folder_array) + 1), range(1, sizeof($folder_array) + 1), $folder_index), form_input_hidden("t_old_position[{$folder['FID']}]", $folder_index), form_input_hidden("t_fid[{$folder['FID']}]", $folder['FID']), "</td>\n";
-        }else {
-            echo "                  <td align=\"left\">{$folder_index}</td>\n";
-        }
-
-        echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
-        echo "                  <td align=\"left\">{$folder['THREAD_COUNT']}</td>\n";
-        echo "                </tr>\n";
+        echo "                            <tr>\n";
+        echo "                              <td>&nbsp;{$user_group['GROUP_NAME']}</td>\n";
+        echo "                              <td>&nbsp;{$user_group['USER_COUNT']}</td>\n";
+        echo "                            </tr>\n";
     }
+
+
+    echo "                            <tr>\n";
+    echo "                              <td>&nbsp;</td>\n";
+    echo "                              <td>&nbsp;</td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td colspan=\"8\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -213,7 +188,7 @@ echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("addnew", $lang['addnewfolder']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "</form>\n";;
+echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

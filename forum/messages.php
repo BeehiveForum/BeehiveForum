@@ -42,9 +42,8 @@ if (!isset($HTTP_GET_VARS['msg'])) {
     $msg = $HTTP_GET_VARS['msg'];
 }
 
-$tidpid = explode('.',$msg);
-$tid = $tidpid[0];
-$pid = $tidpid[1];
+list($tid, $pid) = explode('.', $msg);
+if ($pid == '') $pid = 1;
 
 // Output XHTML header
 html_draw_top_script();

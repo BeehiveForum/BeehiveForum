@@ -182,6 +182,28 @@ A		{
           padding: 0px;
 }
 
+.pmhead  {
+          height: 20px
+          border: none;
+          padding: 0px;
+}
+
+.pmheadl {
+          background-color: #C8D7E6;
+          font-size: 10pt;
+          border: none;
+          padding: 0px;
+	  height: 20px;
+}
+
+.pmheadr {
+          background-color: #C8D7E6;
+          font-size: 10pt;
+          border: none;
+          padding: 0px;
+	  height: 20px;
+}
+
 .postbody {
           font-size: 10pt;
           padding-top: 2px;
@@ -411,6 +433,19 @@ A		{
 		margin-right: 1px;
 		width: 18px;
 		height: 18px;
+}
+
+.spellcheckbodytext {
+		border-top: 1px solid buttonshadow;
+		border-left: 1px solid buttonshadow;
+		border-bottom: 1px solid buttonhighlight;
+		border-right: 1px solid buttonhighlight;
+		background-color: #FFFFFF;
+		margin-left: 1px;
+		margin-right: 1px;
+		width: 100%;
+		height: 200px;
+		font-size: 10pt;
 }
 
 .activeusers {

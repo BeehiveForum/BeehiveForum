@@ -85,7 +85,6 @@ if (isset($HTTP_GET_VARS['sort'])) {
 }
 
 $result = db_query($sql,$db);
-
 $result_count = db_num_rows($result);
 
 for($i=0; $i < $result_count; $i++){

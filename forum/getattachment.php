@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Compress the output
-require_once("./include/gzipenc.inc.php");
+//require_once("./include/gzipenc.inc.php");
 
 require_once("./include/header.inc.php");
 require_once("./include/session.inc.php");
@@ -31,7 +31,7 @@ if(!bh_session_check()){
 
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-    
+
 }
 
 require_once("./include/html.inc.php");
@@ -42,62 +42,62 @@ require_once("./include/config.inc.php");
 
 if (!$attachments_enabled) {
   header("HTTP/1.0 404 File Not Found");
-  exit;    
+  exit;
 }
 
 if (isset($HTTP_GET_VARS['hash'])) {
-  
+
   $db = db_connect();
-  
-  $hash = $HTTP_GET_VARS['hash']; 
+
+  $hash = $HTTP_GET_VARS['hash'];
   $sql = "update low_priority ". forum_table("POST_ATTACHMENT_FILES"). " set DOWNLOADS = DOWNLOADS + 1 where HASH = '$hash'";
   $result = db_query($sql, $db);
-  
+
   $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash'";
   $result = db_query($sql, $db);
-  
+
   if (db_num_rows($result)) {
-      
+
     $attachmentdetails = db_fetch_array($result);
-    
-    if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {    
-        
-      if(isset($HTTP_GET_VARS['download'])) {
-  
+
+    if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {
+
+      // IIS seems to trip up over certain Content-Type headers.
+      // Until a proper fix can be found, we'll single out IIS
+      // and force it to send the attachment as a download, so
+      // the client can't see the attachment data in their browser.
+
+      if (isset($HTTP_GET_VARS['download']) || strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+
         header("Content-Type: application/x-ms-download");
         header("Content-Length: ". filesize($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']))));
         header("Content-disposition: filename=". $attachmentdetails['FILENAME']);
         header("Content-Transfer-Encoding: binary");
-        header("Pragma: no-cache");
-        header("Expires: 0");
- 
+
         readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
         exit;
-      
+
       }else {
-    
-        header("Content-Type: ". $attachmentdetails['MIMETYPE']);
+
+        header("Content-Type: ", $attachmentdetails['MIMETYPE']);
         header("Content-Length: ". filesize($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']))));
-        header("Content-disposition: filename=". $attachmentdetails['FILENAME']);        
-        
-        if($attachmentdetails['MIMETYPE'] == 'application/octet-stream') {
+        header("Content-disposition: filename=". $attachmentdetails['FILENAME']);
+
+        if ($attachmentdetails['MIMETYPE'] == 'application/octet-stream') {
 
           header("Content-Transfer-Encoding: binary");
-          
+
         }
-        
-        header("Pragma: no-cache");
-        header("Expires: 0");
-          
+
         readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
-        exit;          
-  
+        exit;
+
       }
-        
+
     }
-   
+
   }
-  
+
 }
 
 html_draw_top();

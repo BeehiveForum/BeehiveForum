@@ -41,6 +41,11 @@ $default_style = "default"; // the default forum style directory name
 
 // ---------------------------------------------------------------------
 
+// Forum options -------------------------------------------------------
+
+$show_links = true; // Show the links section
+
+// ---------------------------------------------------------------------
 
 // Post stuff ----------------------------------------------------------
 
@@ -74,7 +79,7 @@ $attachment_dir = 'attachments';
 
 $guest_account_enabled = true;  // Enable the use of forum guest account
                                 // Requires the creation of a GUEST user
-				// with the password also set as GUEST.
+				                // with the password also set as GUEST.
 
 // ---------------------------------------------------------------------
 

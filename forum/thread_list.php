@@ -490,7 +490,7 @@ echo "<tr>\n";
 echo "  <td>&nbsp;</td>\n";
 echo "  <td class=\"smalltext\">\n";
 echo "    <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-echo form_input_text('msg', '1.1', 5). "\n        ";
+echo form_input_text('msg', '1.1', 10). "\n        ";
 echo form_submit("go","Go!"). "\n";
 echo "    </form>\n";
 echo "  </td>\n";

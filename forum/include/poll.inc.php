@@ -144,6 +144,34 @@ function poll_get_votes($tid)
 
 }
 
+function poll_user_has_voted($tid)
+{
+
+    global $HTTP_COOKIE_VARS;
+    $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
+
+    $db_poll_get_votes = db_connect();
+
+    $sql = "SELECT POLL_VOTES.OPTION_NAME FROM ". forum_table('POLL_VOTES'). " POLL_VOTES ";
+    $sql.= "LEFT JOIN ". forum_table('USER_POLL_VOTES'). " USER_POLL_VOTES ON ";
+    $sql.= "(POLL_VOTES.OPTION_ID = USER_POLL_VOTES.OPTION_ID) ";
+    $sql.= "WHERE POLL_VOTES.TID = $tid AND USER_POLL_VOTES.UID = $uid"; 
+    
+    $result = db_query($sql, $db_poll_get_votes);
+    
+    if (db_num_rows($result)) {
+    
+      list($vote) = db_fetch_array($result);
+      return $vote;
+      
+    }else {
+    
+      return false;
+      
+    }
+
+}
+
 function poll_get_user_vote($tid)
 {
 
@@ -518,8 +546,16 @@ function poll_vertical_graph($pollresults, $bar_height, $bar_width, $totalvotes)
     for ($i = 1; $i <= sizeof($pollresults); $i++) {
 
       if (!empty($pollresults[$i]['OPTION_NAME'])) {
+      
+        if ($totalvots > 0) {
 
-        $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['OPTION_NAME']. "<br />". $pollresults[$i]['VOTES']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['VOTES'], 2). "%)</td>\n";
+          $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['OPTION_NAME']. "<br />". $pollresults[$i]['VOTES']. " votes (". round((100 / $totalvotes) * $pollresults[$i]['VOTES'], 2). "%)</td>\n";
+          
+        }else {
+        
+          $polldisplay.= "                <td class=\"postbody\" align=\"center\">". $pollresults[$i]['OPTION_NAME']. "<br />". $pollresults[$i]['VOTES']. " votes (". round((100 / sizeof($pollresults)), 2). "%)</td>\n";
+          
+        }
 
       }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.130 2004-04-12 03:11:38 tribalonline Exp $ */
+/* $Id: messages.php,v 1.131 2004-04-12 20:31:03 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -309,12 +309,13 @@ messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
 if ($threaddata['POLL_FLAG'] == 'Y') {
-	echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
+    echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
 }
 
 if (bh_session_get_value('UID') != 0) {
-	messages_fontsize_form($tid, $pid);
-	echo "<p><a href=\"thread_options.php?webtag=$webtag&tid=$tid\" target=\"_self\">{$lang['threadoptions']}</a></p>\n";
+
+    messages_fontsize_form($tid, $pid);
+    form_quick_button("thread_options.php", $lang['threadoptions'], "msg", $msg);
 }
 
 draw_beehive_bar();

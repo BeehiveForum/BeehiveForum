@@ -48,7 +48,7 @@ require_once("./include/constants.inc.php");
 html_draw_top();
 
 echo "<h1>Edit Profile</h1>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<br />\n";
 
 $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
@@ -68,11 +68,10 @@ if(isset($HTTP_POST_VARS['submit'])){
 }
 
 // Draw the form
-echo "<div align=\"center\">\n";
-echo "<table width=\"96%\"><tr><td class=\"box\">";
+echo "<table width=\"600\" class=\"box\">\n  <tr>\n    <td class=\"posthead\">\n";
 
-echo "<form name=\"f_profile\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
-echo "<table class=\"posthead\" width=\"100%\">\n";
+echo "      <form name=\"f_profile\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">\n";
+echo "        <table class=\"posthead\" width=\"100%\">\n";
 
 $db = db_connect();
 
@@ -87,7 +86,6 @@ $sql.= "where PROFILE_ITEM.PSID = PROFILE_SECTION.PSID ";
 $sql.= "order by PROFILE_SECTION.PSID, PROFILE_ITEM.PIID";
 
 $result = db_query($sql,$db);
-
 $result_count = db_num_rows($result);
 
 if($result_count == 0){
@@ -107,26 +105,25 @@ for($i=0;$i<$result_count;$i++){
 
     if($row['PSID'] != $last_psid){
         if($last_psid > -1){
-            echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
+            echo "          <tr>\n            <td colspan=\"2\">&nbsp;</td>\n          </tr>\n";
         }
-        echo "<tr><td class=\"subhead\" colspan=\"2\">".$row['SECTION_NAME']."</td></tr>\n";
+        echo "          <tr>\n            <td class=\"subhead\" colspan=\"2\">". $row['SECTION_NAME']. "</td>\n          </tr>\n";
         $last_psid = $row['PSID'];
     }
 
-    echo "<tr><td>".$row['ITEM_NAME'].form_input_hidden("t_piid_$i",$row['PIID'])."</td>\n";
-    echo "<td>".form_field("t_entry_$i",$row['ENTRY'],80,255);
-    echo form_input_hidden("t_old_entry_$i",$row['ENTRY']);
-    echo form_input_hidden("t_new_$i",$new)."</td></tr>";
+    echo "          <tr>\n            <td>".$row['ITEM_NAME'].form_input_hidden("t_piid_$i",$row['PIID'])."</td>\n";
+    echo "            <td nowrap=\"nowrap\" align=\"right\">:&nbsp;". form_field("t_entry_$i",$row['ENTRY'], 60, 255);
+    echo form_input_hidden("t_old_entry_$i", $row['ENTRY']);
+    echo form_input_hidden("t_new_$i", $new)."&nbsp;&nbsp;</td>\n          </tr>\n";
 }
 
-echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
-echo "<tr><td colspan=\"2\" align=\"right\">\n";
-echo form_input_hidden("t_count",$result_count);
-echo form_submit("submit","Submit");
-echo "</td></tr></table>\n";
-echo "</form>\n";
-echo "</td></tr></table>\n";
-echo "</div>\n";
+echo "          <tr>\n            <td colspan=\"2\">&nbsp;</td>\n          </tr>\n";
+echo "          <tr>\n            <td colspan=\"2\" align=\"right\">";
+echo form_input_hidden("t_count", $result_count);
+echo form_submit("submit", "Submit");
+echo "</td>\n          </tr>\n        </table>\n";
+echo "      </form>\n";
+echo "    </td>\n  </tr>\n</table>\n";
 
 html_draw_bottom();
 

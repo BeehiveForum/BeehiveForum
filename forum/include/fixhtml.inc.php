@@ -26,19 +26,12 @@ USA
 // "$bad_tags" is an array of tags to be filtered
 function fix_html($html, $bad_tags = array("plaintext"))
 {
-	$opentags = array();
-	$last_tag = array();
-	$single_tags = array("br","img","hr","!--");
-	$no_nest = array("p");
-
-	$html_parts = array();
-	//$html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
-
 	$open_pos = strpos($html, "<");
 	$next_open_pos = strpos($html, "<", $open_pos+1);
 	$close_pos = strpos($html, ">");
 
-	// Split by < and >
+	$html_parts = array();
+
 	while(is_integer($open_pos) || is_integer($close_pos)){
 		if(substr($html, $open_pos+1, 3) == "!--"){
 			$end_comment = strpos($html, "-->", $open_pos);
@@ -95,7 +88,13 @@ function fix_html($html, $bad_tags = array("plaintext"))
 
 	$html_parts[count($html_parts)] .= $html;
 
-	// Analyse
+	//$html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
+
+	$opentags = array();
+	$last_tag = array();
+	$single_tags = array("br","img","hr","!--");
+	$no_nest = array("p");
+
 	for($i=0; $i<count($html_parts); $i++){
 		if($i%2){
 			if(substr($html_parts[$i],0,1) == "/"){ // closing tag
@@ -172,10 +171,10 @@ function fix_html($html, $bad_tags = array("plaintext"))
 					}
 
 				// make XHTML single tag
-				} else if(substr($html_parts[$i], -2) != "--"){
-					if(substr($html_parts[$i], -1) != "/" && substr($html_parts[$i], -2) != " /"){
+				} else if(substr($html_parts[$i], -2) != "--" && substr($html_parts[$i], -2) != " /"){
+					if(substr($html_parts[$i], -1) != "/"){
 						$html_parts[$i] .= " /";
-					} else if (substr($html_parts[$i], -1) == "/"){
+					} else {
 						$html_parts[$i] = substr($html_parts[$i], 0, -1)." /";
 					}
 				}

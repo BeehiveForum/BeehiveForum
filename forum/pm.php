@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.24 2003-12-22 22:41:22 decoyduck Exp $ */
+/* $Id: pm.php,v 1.25 2004-01-07 20:57:02 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -138,8 +138,8 @@ $pm_folders = array(0 => $lang['pminbox'],
 
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"posthead\">&nbsp;<b>{$lang['privatemessages']}: {$pm_folders[$folder]}</b></td>\n";
-echo "    <td class=\"posthead\" align=\"right\"><a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$pm_folders[$folder]}</b></td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";

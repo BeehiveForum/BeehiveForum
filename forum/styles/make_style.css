@@ -68,6 +68,12 @@ A                   { background-color: transparent; color: #$text_colour[body];
 
 .posthead           { background-color: #$elements[threads]; font-size: 10pt; border: none;
                       padding: 0px; color: #$text_colour[threads] }
+                      
+.pmheadl            { background-color: #$elements[threads]; font-size: 10pt; border: none;
+                      padding: 0px; color: #$text_colour[threads] }
+                      
+.pmheadr            { background-color: #$elements[threads]; font-size: 10pt; border: none;
+                      padding: 0px; color: #$text_colour[threads] }
 
 .posthead A         { background-color: transparent; color: #$text_colour[threads] }
 

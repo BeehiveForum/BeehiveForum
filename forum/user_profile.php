@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.36 2003-10-10 21:25:00 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.37 2003-10-23 19:16:45 uid81631 Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -61,7 +61,7 @@ $user = user_get($uid);
 
 $title = format_user_name($user['LOGON'], $user['NICKNAME']);
 
-html_draw_top("title=$title");
+html_draw_top("title=$title", "edit.js");
 
 if (!$profile_sections = profile_sections_get()) {
     echo "<h1>{$lang['error']}:</h1>";
@@ -82,7 +82,7 @@ if (isset($HTTP_GET_VARS['setrel']) && ($uid != bh_session_get_value('UID')) && 
 }
 
 echo "<div align=\"center\">\n";
-echo "  <table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table width=\"550\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
@@ -152,7 +152,7 @@ echo "        </table>\n";
 
 echo "        <table width=\"100%\" class=\"posthead\">\n";
 echo "          <tr>\n";
-echo "            <td width=\"75%\" valign=\"top\">\n";
+echo "            <td width=\"70%\" valign=\"top\">\n";
 echo "              <table width=\"100%\">\n";
 
 $user_profile_array = user_get_profile_entries($uid, $psid);
@@ -194,6 +194,13 @@ if ($profile_image = user_get_profile_image($uid)) {
 }
 
 echo "                </tr>\n";
+
+if ($uid == bh_session_get_value('UID')) {
+
+    echo "                <tr>\n";
+    echo "                  <td><a href=\"javascript:void(0)\" onclick=\"launchAttachWin(null, $uid);\">{$lang['editmyattachments']}</a></td>\n";
+    echo "                </tr>\n";
+}
 
 if (bh_session_get_value('UID') != 0) {
 

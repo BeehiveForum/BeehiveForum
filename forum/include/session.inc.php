@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.122 2004-08-14 15:11:45 hodcroftcj Exp $ */
+/* $Id: session.inc.php,v 1.123 2004-09-08 00:49:46 tribalonline Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -366,6 +366,17 @@ function get_request_uri($rawurlencode = false)
     }else {
         return $request_uri;
     }
+}
+
+function bh_session_get_post_page_prefs()
+{
+	$page_prefs = bh_session_get_value('POST_PAGE');
+
+	if (!($page_prefs > 0)) {
+		$page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_DISPLAY_SIGNATURE;
+	}
+
+	return $page_prefs;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.84 2004-03-16 19:22:50 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.85 2004-03-16 23:55:33 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -58,7 +58,7 @@ function bh_session_check()
 	$sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, ";
 	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
 	$sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-	$sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+	$sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$webtag['FID']}) ";
         $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
 	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 

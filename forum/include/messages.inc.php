@@ -156,8 +156,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 {
 
     global $HTTP_SERVER_VARS, $HTTP_COOKIE_VARS, $maximum_post_length;
-    
-    $message['CONTENT'] = message_get_content($tid, $message['PID']);
 
     if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         message_display_deleted($tid, $message['PID']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.4 2004-12-05 17:58:07 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.5 2004-12-05 22:10:17 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -297,7 +297,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_THREAD_NEW (";
-    $sql.= "  TID mediumint(8) unsigned NOT NULL default '0',";
+    $sql.= "  TID mediumint(8) unsigned NOT NULL AUTO_INCREMENT,";
     $sql.= "  FID mediumint(8) unsigned DEFAULT NULL,";
     $sql.= "  BY_UID mediumint(8) DEFAULT NULL,";
     $sql.= "  TITLE varchar(64) DEFAULT NULL,";
@@ -324,7 +324,7 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
     $sql.= "SELECT THREAD.TID, THREAD.FID, POST.FROM_UID, THREAD.TITLE, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.MODIFIED, THREAD.CLOSED, ";
-    $sql.= "THREAD.STICKY, THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK ";
+    $sql.= "THREAD.STICKY, THREAD.STICKY_UNTIL, NULL ";
     $sql.= "FROM {$forum_webtag}_THREAD THREAD LEFT JOIN {$forum_webtag}_POST POST ";
     $sql.= "ON (POST.TID = THREAD.TID AND POST.PID = 1)";
 
@@ -334,7 +334,7 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD RENAME {$forum_webtag}_THREAD_OLD";
+    $sql = "DROP TABLE {$forum_webtag}_THREAD ";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -343,15 +343,6 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD CHANGE TID TID MEDIUMINT(8) ";
-    $sql.= "UNSIGNED DEFAULT '0' NOT NULL AUTO_INCREMENT";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -755,12 +746,6 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
     $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
     $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
-    $sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
-    $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
-    $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
-    $sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
-    $sql.= "  PM_AUTO_PRUNE CHAR(1) NOT NULL DEFAULT 'N',";
-    $sql.= "  PM_AUTO_PRUNE_LENGTH CHAR(3) NOT NULL DEFAULT '60',";
     $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
     $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
     $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
@@ -890,14 +875,6 @@ foreach($forum_webtag_array as $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD_NEW RENAME {$forum_webtag}_USER_THREAD";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD ADMIN_LOCK DATETIME DEFAULT NULL";
 
     if (!$result = db_query($sql, $db_install)) {
 

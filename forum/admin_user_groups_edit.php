@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.1 2004-05-19 21:17:35 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.2 2004-05-20 16:14:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -166,7 +166,7 @@ if (isset($_POST['submit'])) {
         $new_group_perms = (double)$new_group_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
     }
 
-    if ($new_group_perms != $user_perms) {
+    if ($new_group_perms != $group_permissions) {
 
         perm_group_update_permissions($gid, $new_group_perms);
         admin_addlog($uid, 0, 0, 0, 0, 0, 1);

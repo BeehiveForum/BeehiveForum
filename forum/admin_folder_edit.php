@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.11 2004-05-17 21:56:23 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.12 2004-05-20 16:14:08 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -162,8 +162,8 @@ if (isset($_POST['submit'])) {
 
     // We need a double / float here because we're storing a high bit value
 
-    $folder_data['PERMS'] = (double)$t_post_read | $t_post_create | $t_thread_create;
-    $folder_data['PERMS'] = (double)$folder_data['PERMS'] | $t_post_edit | $t_post_delete | $t_post_attach;
+    $folder_data['PERM'] = (double)$t_post_read | $t_post_create | $t_thread_create;
+    $folder_data['PERM'] = (double)$folder_data['PERM'] | $t_post_edit | $t_post_delete | $t_post_attach;
 
     if ($valid) {
 
@@ -181,7 +181,6 @@ if (isset($_POST['submit'])) {
 }
 
 $folder_data = folder_get($fid);
-$folder_permissions = folder_get_permissions($fid);
 
 if (isset($_POST['delete']) && $folder_data['THREAD_COUNT'] == 0) {
 
@@ -262,19 +261,19 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\">{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>\n";
-echo "                    <table class=\"posthead\" width=\"80%\">\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"90%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_post_read", USER_PERM_POST_READ, "Read Posts", $folder_permissions & USER_PERM_POST_READ), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_create", USER_PERM_POST_CREATE, "Reply to threads", $folder_permissions & USER_PERM_POST_CREATE), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_read", USER_PERM_POST_READ, "Read Posts", $folder_data['PERM'] & USER_PERM_POST_READ), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_create", USER_PERM_POST_CREATE, "Reply to threads", $folder_data['PERM'] & USER_PERM_POST_CREATE), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, "Create new threads", $folder_permissions & USER_PERM_THREAD_CREATE), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, "Edit Posts", $folder_permissions & USER_PERM_POST_EDIT), "</td>\n";
+echo "                        <td>", form_checkbox("t_thread_create", USER_PERM_THREAD_CREATE, "Create new threads", $folder_data['PERM'] & USER_PERM_THREAD_CREATE), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_edit", USER_PERM_POST_EDIT, "Edit Posts", $folder_data['PERM'] & USER_PERM_POST_EDIT), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, "Delete Posts", $folder_permissions & USER_PERM_POST_DELETE), "</td>\n";
-echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, "Upload Attachments", $folder_permissions & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_delete", USER_PERM_POST_DELETE, "Delete Posts", $folder_data['PERM'] & USER_PERM_POST_DELETE), "</td>\n";
+echo "                        <td>", form_checkbox("t_post_attach", USER_PERM_POST_ATTACHMENTS, "Upload Attachments", $folder_data['PERM'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

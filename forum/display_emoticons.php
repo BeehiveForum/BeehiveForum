@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.6 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.7 2004-04-03 20:51:54 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -116,7 +116,8 @@ array_multisort($emot_names, $available_emots);
 echo "<h1>{$lang['emoticons']}</h1>\n";
 
 echo "<br />\n";
-echo "<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\">\n";
+echo "<div align=\"center\">\n";
+echo "<table cellpadding=\"1\" cellspacing=\"0\" width=\"450\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
 echo "      <table class=\"box\" width=\"100%\">\n";
@@ -189,6 +190,7 @@ echo "  <tr>\n";
 echo "    <td align=\"center\">".form_submit('close', $lang['close'], "onclick='window.close()'")."</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
+echo "</div>\n";
 
 html_draw_bottom();
 

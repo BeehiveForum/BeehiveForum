@@ -180,36 +180,53 @@ echo "<table class=\"subhead\" width=\"100%\">\n<tr>\n<td>Logon:</td>\n";
 echo "</tr>\n</table>\n";
 echo "<table class=\"posthead\" width=\"100%\">\n";
 
-if ((sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) && $otherlogon == false) {
+if (!is_array($HTTP_COOKIE_VARS['bh_remember_user'])) {
 
-  echo "<tr>\n";
-  echo "<td align=\"right\">User Name:</td>\n";
-  echo "<td>";
-  echo form_dropdown_array('logonarray', $HTTP_COOKIE_VARS['bh_remember_user'], $HTTP_COOKIE_VARS['bh_remember_user'], "", "onchange='changepassword()'");
-  echo form_input_hidden('logon', $HTTP_COOKIE_VARS['bh_remember_user'][0]);
-  
-  for ($i = 0; $i < sizeof($HTTP_COOKIE_VARS['bh_remember_password']); $i++) {
-    echo form_input_hidden('password'. $i, $HTTP_COOKIE_VARS['bh_remember_password'][$i]);
-  }
-    
-  echo "&nbsp;". form_button("other", "Other", "onclick=\"self.location.href='". get_request_uri(). "&other=true';\""). "</td>\n";
-  echo "</tr>\n";
-  echo "<tr>\n";
-  echo "<td align=\"right\">Password:</td>\n";
-  echo "<td>".form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0])."</td>\n";
-  echo "</tr>\n";
-    
-}else {
+  // Still support the old cookie method
 
   echo "<tr>\n";
   echo "  <td align=\"right\">User Name:</td>\n";
-  echo "  <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user'][0]). "</td>\n";
+  echo "  <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user']). "</td>\n";
   echo "</tr>\n";
   echo "<tr>\n";
   echo "  <td align=\"right\">Password:</td>\n";
-  echo "  <td>". form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0]). "</td>\n";
-  echo "</tr>\n";  
+  echo "  <td>". form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password']). "</td>\n";
+  echo "</tr>\n";
   
+}else {
+
+  if ((sizeof($HTTP_COOKIE_VARS['bh_remember_user']) > 1) && $otherlogon == false) {
+
+    echo "<tr>\n";
+    echo "<td align=\"right\">User Name:</td>\n";
+    echo "<td>";
+    echo form_dropdown_array('logonarray', $HTTP_COOKIE_VARS['bh_remember_user'], $HTTP_COOKIE_VARS['bh_remember_user'], "", "onchange='changepassword()'");
+    echo form_input_hidden('logon', $HTTP_COOKIE_VARS['bh_remember_user'][0]);
+  
+    for ($i = 0; $i < sizeof($HTTP_COOKIE_VARS['bh_remember_password']); $i++) {
+      echo form_input_hidden('password'. $i, $HTTP_COOKIE_VARS['bh_remember_password'][$i]);
+    }
+    
+    echo "&nbsp;". form_button("other", "Other", "onclick=\"self.location.href='". get_request_uri(). "&other=true';\""). "</td>\n";
+    echo "</tr>\n";
+    echo "<tr>\n";
+    echo "<td align=\"right\">Password:</td>\n";
+    echo "<td>".form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0])."</td>\n";
+    echo "</tr>\n";
+    
+  }else {
+  
+    echo "<tr>\n";
+    echo "  <td align=\"right\">User Name:</td>\n";
+    echo "  <td>". form_input_text("logon", $HTTP_COOKIE_VARS['bh_remember_user'][0]). "</td>\n";
+    echo "</tr>\n";
+    echo "<tr>\n";
+    echo "  <td align=\"right\">Password:</td>\n";
+    echo "  <td>". form_input_password("password", $HTTP_COOKIE_VARS['bh_remember_password'][0]). "</td>\n";
+    echo "</tr>\n";
+    
+  }
+    
 }
 
 echo "<tr><td>&nbsp;</td><td>\n";

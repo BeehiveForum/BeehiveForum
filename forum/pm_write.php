@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.47 2004-03-15 19:25:16 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.48 2004-03-15 21:33:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/attachments.inc.php");
 include_once("./include/email.inc.php");
@@ -43,10 +47,6 @@ include_once("./include/pm.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (!$user_sess = bh_session_check()) {
 
@@ -62,9 +62,6 @@ if (bh_session_get_value('UID') == 0) {
     html_guest_error();
     exit;
 }
-
-if (!isset($pm_allow_attachments)) $pm_allow_attachments = true;
-if (!isset($$attachments_enabled)) $$attachments_enabled = true;
 
 // Get the Message ID (MID) if any.
 
@@ -330,7 +327,7 @@ echo "</table>\n";
 echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "&nbsp;";
 echo form_submit('cancel', $lang['cancel']);
 
-if ($attachments_enabled && $pm_allow_attachments) {
+if (strtoupper($forum_settings['attachments_enabled']) == "N" && strtoupper($forum_settings['pm_allow_attachments']) == "N") {
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?webtag={$webtag['WEBTAG']}&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
     echo form_input_hidden("aid", $aid);
 }

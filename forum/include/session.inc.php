@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.82 2004-03-13 20:04:36 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.83 2004-03-15 21:33:32 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -33,13 +33,8 @@ include_once("./include/user.inc.php");
 
 function bh_session_check()
 {
-    global $HTTP_COOKIE_VARS, $session_cutoff, $show_stats, $default_language, $default_style;
+    global $HTTP_COOKIE_VARS, $forum_settings;
     
-    if (!isset($default_style)) $default_style = "default";
-    if (!isset($default_language)) $default_language = "en";
-    if (!isset($show_stats)) $show_stats = true;
-    if (!isset($session_cutoff)) $session_cutoff = 86400;
-
     //ip_check();
 
     $db_bh_session_check = db_connect();
@@ -84,10 +79,10 @@ function bh_session_check()
                                          'DL_SAVING'        => 0,
                                          'MARK_AS_OF_INT'   => 0,
                                          'FONT_SIZE'        => 10,
-                                         'STYLE'            => $default_style,
+                                         'STYLE'            => $forum_settings['default_style'],
                                          'VIEW_SIGS'        => 0,
                                          'START_PAGE'       => 0,
-                                         'LANGUAGE'         => $default_language,
+                                         'LANGUAGE'         => $forum_settings['default_language'],
                                          'PM_NOTIFY'        => 'N',
                                          'SHOW_STATS'       => 1,
                                          'IMAGES_TO_LINKS'  => 'N',
@@ -142,14 +137,16 @@ function bh_session_check()
 
   			// Delete expires sessions 			
 
-                        $session_stamp = time() - $session_cutoff;  			
+                        $session_stamp = time() - intval($forum_settings['session_cutoff']);  			
 
                         $sql = "DELETE FROM SESSIONS WHERE ";
                         $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
                         db_query($sql, $db_bh_session_check);
 
-                        if ($show_stats) update_stats();
+                        if (strtoupper($forum_settings['show_stats']) == "N") {
+                            update_stats();
+                        }
 		    }
 
                     return $user_sess;
@@ -176,9 +173,7 @@ function bh_session_get_value($session_key)
 
 function bh_session_init($uid)
 {
-    global $HTTP_COOKIE_VARS, $session_cutoff;
-    
-    if (!isset($session_cutoff)) $session_cutoff = 86400;
+    global $HTTP_COOKIE_VARS, $forum_settings;
 
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
@@ -186,7 +181,7 @@ function bh_session_init($uid)
     $webtag = get_webtag();
     $forum_webtag = get_webtag();
     
-    $session_stamp = time() - $session_cutoff;
+    $session_stamp = time() - intval($forum_settings['session_cutoff']);
 
     // Delete expires sessions
 

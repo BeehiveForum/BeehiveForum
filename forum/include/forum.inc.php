@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.12 2004-03-15 19:25:16 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.13 2004-03-15 21:33:32 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/form.inc.php");
+include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
 
 function get_webtag()
@@ -62,7 +63,32 @@ function get_webtag()
 
 function get_forum_settings()
 {
-    global $default_settings;
+    $default_settings = array('forum_name'                => "A Beehive Forum",
+                              'forum_email'               => "admin@abeehiveforum.net",
+                              'default_style'             => "default",
+                              'default_language'          => "en",
+                              'show_friendly_errors'      => 'Y',
+                              'cookie_domain'             => "",
+                              'show_stats'                => "Y",
+                              'show_links'                => "Y",
+                              'auto_logon'                => "Y",
+                              'show_pms'                  => "Y",
+                              'pm_allow_attachments'      => "Y",
+                              'maximum_post_length'       => 6226,
+                              'allow_post_editing'        => "Y",
+                              'post_edit_time'            => 0,
+                              'allow_polls'               => "Y",
+                              'search_min_word_length'    => 3,
+                              'attachments_enabled'       => "Y",
+                              'attachment_dir'            => "attachments",
+                              'attachments_show_deleted'  => "N",
+                              'attachment_allow_embed'    => "N",
+                              'attachment_use_old_method' => "N",
+                              'guest_account_enabled'     => "Y",
+                              'session_cutoff'            => 86400,
+                              'active_sess_cutoff'        => 900,
+                              'gzip_compress_output'      => "Y",
+                              'gzip_compress_level'       => 1);
     
     $db_get_forum_settings = db_connect();
     
@@ -83,8 +109,6 @@ function get_forum_settings()
 
 function draw_start_page()
 {
-    global $default_start_main;
-    
     $db_draw_start_page = db_connect();
     
     $webtag = get_webtag();
@@ -99,7 +123,9 @@ function draw_start_page()
 
     }else {
     
-        echo $default_start_main;
+        html_draw_top();
+        echo "<h1>You can edit this page from the admin interface</h1>\n";
+        html_draw_bottom();
     }
 }
 

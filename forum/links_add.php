@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.35 2004-03-15 19:25:15 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.36 2004-03-15 21:33:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/config.inc.php");
 include_once("./include/form.inc.php");
@@ -40,12 +44,6 @@ include_once("./include/lang.inc.php");
 include_once("./include/links.inc.php");
 include_once("./include/perm.inc.php");
 include_once("./include/session.inc.php");
-
-if (!isset($show_links)) $show_links = true;
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (!$user_sess = bh_session_check()) {
 
@@ -57,7 +55,7 @@ if (!$user_sess = bh_session_check()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (!$show_links) {
+if (strtoupper($forum_settings['show_links']) == "N") {
     html_draw_top();
     echo "<h2>{$lang['maynotaccessthissection']}.</h2>\n";
     html_draw_bottom();

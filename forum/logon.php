@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.118 2004-03-15 19:25:15 decoyduck Exp $ */
+/* $Id: logon.php,v 1.119 2004-03-15 21:33:30 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/beehive.inc.php");
 include_once("./include/config.inc.php");
@@ -43,10 +47,6 @@ include_once("./include/lang.inc.php");
 include_once("./include/messages.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (isset($HTTP_GET_VARS['final_uri'])) {
 
@@ -186,7 +186,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
             if ((strtoupper($HTTP_POST_VARS['logon']) == 'GUEST') && (strtoupper($HTTP_POST_VARS['password']) == 'GUEST')) {
 
-                if (user_guest_enabled() && $guest_account_enabled) {
+                if (user_guest_enabled()) {
 
                     bh_session_init(0); // Use UID 0 for guest account.
                 }
@@ -453,7 +453,7 @@ echo "      </tr>\n";
 echo "    </table>\n";
 echo "  </form>\n";
 
-if (user_guest_enabled() && $guest_account_enabled) {
+if (user_guest_enabled()) {
 
     echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_top\">\n";
     echo "    <p class=\"smalltext\">{$lang['enterasa']} ". form_input_hidden("logon", "guest"). form_input_hidden("password", "guest"). form_submit("submit", $lang['guest']). "</p>\n";

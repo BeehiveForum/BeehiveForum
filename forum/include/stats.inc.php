@@ -66,17 +66,13 @@ function update_stats()
 
 function get_num_sessions()
 {
-    global $active_sess_cutoff;
-    
-    // Check to make sure the active_sess_cutoff is defined.
-   
-    if (!isset($active_sess_cutoff)) $active_sess_cutoff = 900;
+    global $forum_settings;
 
     $get_num_sessions = db_connect();
     
     $webtag = get_webtag();
     
-    $session_stamp = time() - $active_sess_cutoff;
+    $session_stamp = time() - intval($forum_settings['active_sess_cutoff']);
 
     $sql = "SELECT DISTINCT COUNT(UID) AS SESSION_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp)";
@@ -93,18 +89,14 @@ function get_num_sessions()
 
 function get_active_users()
 {
-    global $active_sess_cutoff;
-    
-    // Check to make sure the active_sess_cutoff is defined.
-   
-    if (!isset($active_sess_cutoff)) $active_sess_cutoff = 900;
+    global $forum_settings;
 
     $db_get_active_users = db_connect();
     
     $webtag = get_webtag();
     $forum_webtag = get_webtag();
     
-    $session_stamp = time() - $active_sess_cutoff;
+    $session_stamp = time() - intval($forum_settings['active_sess_cutoff']);
 
     $uid = bh_session_get_value('UID');
 

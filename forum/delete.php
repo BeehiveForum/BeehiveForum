@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.50 2004-03-15 19:25:14 decoyduck Exp $ */
+/* $Id: delete.php,v 1.51 2004-03-15 21:33:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -46,10 +50,6 @@ include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/thread.inc.php");
 include_once("./include/user.inc.php");
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (!$user_sess = bh_session_check()) {
 

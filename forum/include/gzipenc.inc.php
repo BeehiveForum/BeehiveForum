@@ -21,20 +21,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.26 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.27 2004-03-15 21:33:32 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
 function bh_check_gzip()
 {
-    global $HTTP_SERVER_VARS, $gzip_compress_output;
-    
-    if (!isset($gzip_compress_output)) $gzip_compress_output = false;
+    global $HTTP_SERVER_VARS, $forum_settings;
 
     // check that no headers have already been sent
     // and that gzip compression is actually enabled.
 
-    if (headers_sent() || $gzip_compress_output == false) {
+    if (headers_sent() || strtoupper($forum_settings['gzip_compress_output']) == "N") {
         return false;
     }
 
@@ -58,19 +56,14 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    global $gzip_compress_level;
-
-    // check the compression level variable
-    if (!isset($gzip_compress_level)) $gzip_compress_level = 1;
-    if ($gzip_compress_level > 9) $gzip_compress_level = 9;
-    if ($gzip_compress_level < 1) $gzip_compress_level = 1;
+    global $forum_settings;
 
     // check that the encoding is possible.
     // and fetch the client's encoding method.
     if ($encoding = bh_check_gzip()) {
 
         // do the compression
-        if ($gz_contents = gzcompress($contents, $gzip_compress_level)) {
+        if ($gz_contents = gzcompress($contents, intval($forum_settings['gzip_compress_level']))) {
             
             // generate the error checking bits
             $size  = strlen($contents);

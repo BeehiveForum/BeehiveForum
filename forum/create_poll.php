@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.79 2004-03-15 19:25:14 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.80 2004-03-15 21:33:29 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -42,10 +46,6 @@ include_once("./include/lang.inc.php");
 include_once("./include/poll.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
-
-// Fetch the forum webtag
-
-$webtag = get_webtag();
 
 if (!$user_sess = bh_session_check()) {
 
@@ -64,7 +64,7 @@ if (bh_session_get_value('UID') == 0) {
 
 // Check to see if the forum owner has allowed the creation of polls
 
-if (isset($allow_polls) && !$allow_polls) {
+if (strtoupper($forum_settings['allow_polls']) == "Y") {
     html_draw_top();
     echo "<h1>{$lang['pollshavebeendisabled']}</h1>\n";
     html_draw_bottom();
@@ -258,7 +258,7 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     poll_create($t_tid, $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
 
-    if (isset($HTTP_POST_VARS['aid']) && isset($attachments_enabled) && $attachments_enabled) {
+    if (isset($HTTP_POST_VARS['aid']) && (strtoupper($forum_settings['attachments_enabled']) == "Y")) {
         if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $t_pid, $HTTP_POST_VARS['aid']);
     }
 
@@ -657,7 +657,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
 
     echo form_submit("submit", $lang['post']). "&nbsp;</bdo>". form_submit("preview", $lang['preview']). "&nbsp;</bdo>". form_submit("cancel", $lang['cancel']);
 
-    if (isset($attachments_enabled) && $attachments_enabled) {
+    if (strtoupper($forum_settings['attachments_enabled']) == "Y") {
 
       echo "&nbsp;</bdo>".form_button("attachments", $lang['attachments'], "onclick=\"window.open('attachments.php?webtag={$webtag['WEBTAG']}&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
       echo form_input_hidden("aid", $aid);

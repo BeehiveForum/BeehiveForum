@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.68 2004-03-14 18:33:42 decoyduck Exp $ */
+/* $Id: register.php,v 1.69 2004-03-15 21:33:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -58,9 +62,6 @@ if (bh_session_get_value('UID')) {
     html_draw_bottom();
     exit;
 }
-
-if (!isset($default_style)) $default_style = "default";
-if (!isset($default_language)) $default_language = "en";
 
 $valid = true;
 $error_html = "";
@@ -214,8 +215,8 @@ if (isset($HTTP_POST_VARS['submit'])) {
       $user_prefs['MARK_AS_OF_INT']  = (isset($HTTP_POST_VARS['autohighinterest']) && $HTTP_POST_VARS['autohighinterest'] == "Y") ? "Y" : "N";
       $user_prefs['DL_SAVING']       = (isset($HTTP_POST_VARS['daylightsaving']) && $HTTP_POST_VARS['daylightsaving'] == "Y") ? "Y" : "N";
       $user_prefs['TIMEZONE']        = (isset($HTTP_POST_VARS['timezone'])) ? $HTTP_POST_VARS['timezone'] : 0;
-      $user_prefs['LANGUAGE']        = (isset($HTTP_POST_VARS['language'])) ? $HTTP_POST_VARS['language'] : $default_language;
-      $user_prefs['STYLE']           = (isset($HTTP_POST_VARS['forumstyle'])) ? $HTTP_POST_VARS['forumstyle'] : $default_style;
+      $user_prefs['LANGUAGE']        = (isset($HTTP_POST_VARS['language'])) ? $HTTP_POST_VARS['language'] : $forum_settings['default_language'];
+      $user_prefs['STYLE']           = (isset($HTTP_POST_VARS['forumstyle'])) ? $HTTP_POST_VARS['forumstyle'] : $forum_settings['default_style'];
 
       if ($new_uid > -1) {
 
@@ -487,10 +488,10 @@ echo "            <td>";
 if (isset($HTTP_POST_VARS['forumstyle'])) {
     $selected_style = $HTTP_POST_VARS['forumstyle'];
     if (!in_array($selected_style, $available_styles)) {
-        $selected_style = $default_style;
+        $selected_style = $forum_settings['default_style'];
     }
 }else {
-    $selected_style = $default_style;
+    $selected_style = $forum_settings['default_style'];
 }
 
 foreach ($available_styles as $key => $style) {

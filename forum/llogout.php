@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.8 2004-03-15 19:25:15 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.9 2004-03-15 21:33:30 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -29,11 +29,15 @@ define("BEEHIVEMODE_LIGHT", true);
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -45,13 +49,9 @@ include_once("./include/light.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-// Fetch the forum webtag
-
-$webtag = get_webtag();
-
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./llogon.php?webtag={$webtag['WEBTAG']}");
+    $uri = "./llogon.php?webtag={$webtag['WEBTAG']}";
     header_redirect($uri);
 }
 

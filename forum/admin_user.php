@@ -21,16 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.67 2004-03-15 19:25:14 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.68 2004-03-15 21:33:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
 
-// Enable the error handler
-include_once("./include/errorhandler.inc.php");
-
 //Multiple forum support
 include_once("./include/forum.inc.php");
+
+// Fetch the forum webtag and settings
+$webtag = get_webtag();
+$forum_settings = get_forum_settings();
+
+// Enable the error handler
+include_once("./include/errorhandler.inc.php");
 
 include_once("./include/admin.inc.php");
 include_once("./include/attachments.inc.php");
@@ -50,10 +54,6 @@ include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
 
-// Fetch the forum webtag
-
-$webtag = get_webtag();
-
 if (!$user_sess = bh_session_check()) {
 
     $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". rawurlencode(get_request_uri());
@@ -63,8 +63,6 @@ if (!$user_sess = bh_session_check()) {
 // Load the wordfilter for the current user
 
 $user_wordfilter = load_wordfilter();
-
-if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     $ret = "./messages.php?msg={$HTTP_GET_VARS['msg']}";
@@ -483,7 +481,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
                 echo "{$lang['filename']}: ". $attachments[$i]['filename']. ", ";
             }
 
-            if (@$imageinfo = getimagesize($attachment_dir. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
+            if (@$imageinfo = getimagesize($forum_settings['attachment_dir']. '/'. md5($attachments[$i]['aid']. rawurldecode($attachments[$i]['filename'])))) {
                 echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
             }
 

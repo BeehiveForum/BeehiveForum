@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.38 2004-03-13 00:12:41 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.39 2004-03-15 21:33:32 decoyduck Exp $ */
 
 include_once("./include/constants.inc.php");
 include_once("./include/form.inc.php");
@@ -223,7 +223,9 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 }
 
 // set to the user defined error handler
-if (!isset($show_friendly_errors)) $show_friendly_errors = true;
-if ($show_friendly_errors) set_error_handler("bh_error_handler");
+
+$forum_settings = get_forum_settings();
+
+if ($forum_settings['show_friendly_errors']) set_error_handler("bh_error_handler");
 
 ?>

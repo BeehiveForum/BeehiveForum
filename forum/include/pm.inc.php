@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.20 2003-09-04 15:53:43 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.21 2003-09-04 16:02:53 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/forum.inc.php');
@@ -109,7 +109,7 @@ function pm_add_sentitem($mid)
     // the sender's Sent Items
     // ------------------------------------------------------------
 
-    if (get_num_attachments($db_pm_add_sentitem_row['AID'])) {
+    if (isset($db_pm_add_sentitem_row['AID']) && get_num_attachments($db_pm_add_sentitem_row['AID'])) {
 
         $sql = "INSERT INTO ". forum_table("PM_ATTACHMENT_IDS"). " (MID, AID) ";
         $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['AID']}')";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.43 2003-08-02 01:30:51 decoyduck Exp $ */
+/* $Id: search.php,v 1.44 2003-09-04 16:02:53 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -82,7 +82,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";
-    echo "    <td class=\"postbody\">{$lang['wordsshorterthan_1']}", (isset($search_min_word_length) ? $search_min_word_length : "3"), " {$lang['wordsshorterthan_2']}", ".</td>\n";
+    echo "    <td class=\"postbody\">{$lang['wordsshorterthan_1']} ", (isset($search_min_word_length) ? $search_min_word_length : "3"), " {$lang['wordsshorterthan_2']}", ".</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td class=\"postbody\" colspan=\"2\"><bdo dir=\"{$lang['_textdir']}\">&nbsp;</bdo></td>\n";

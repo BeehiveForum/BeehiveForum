@@ -21,9 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.49 2004-04-19 20:06:01 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.50 2004-05-10 15:56:49 decoyduck Exp $ */
 
-include_once("./include/config.inc.php");
+if (@file_exists("./include/config.inc.php")) {
+    include_once("./include/config.inc.php");
+}
+
 include_once("./include/constants.inc.php");
 
 // Connects to the database and returns the connection ID

@@ -29,6 +29,7 @@ USA
 // Require functions
 require_once("./include/html.inc.php"); // HTML functions
 require_once("./include/threads.inc.php"); // Thread processing functions
+require_once("./include/format.inc.php"); // Formatting functions
 
 // Check that required variables are set
 // default to display all discussions if no other mode specified

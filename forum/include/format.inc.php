@@ -143,12 +143,18 @@ function timestamp_amend_bst($timestamp)
 
 }
 
-// Lazy htmlentities function which ensures the use of UTF-8
-// encoding for all character code sets.
+// Lazy htmlentities function which ensures the use of
+// unicode for all character code sets.
+//
+// NOTE: Requires PHP/4.1.0 or higher to support unicode
 
 function _htmlentities($text)
 {
-    return htmlentities($text, ENT_COMPAT, "UTF-8");
+    if (phpversion() >= "4.1.0") {
+        return htmlentities($text, ENT_COMPAT, "UTF-8");
+    }else {
+        return htmlentities($text, ENT_COMPAT);
+    }
 }
 
 // Lazy reversal of _htmlentities

@@ -250,7 +250,7 @@ messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
 if($threaddata['POLL_FLAG'] == 'Y') {
-    echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\">View Results</a>\n";
+    echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes');\">View Results</a>\n";
 }
 
 if (bh_session_get_value('UID') != 0) {

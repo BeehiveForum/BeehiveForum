@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.37 2003-11-27 12:00:32 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.38 2003-11-27 12:03:10 decoyduck Exp $ */
 
 require_once("./include/db.inc.php"); // Database functions
 require_once("./include/format.inc.php"); // Formatting functions
@@ -171,7 +171,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 function email_send_pm_notification($tuid, $mid, $fuid)
 {
     if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP') || !(bool)ini_get('sendmail_path')) return false;
-    if (!is_numeric($tuid) || !is_numeric($fuid) || !is_)numeric($mid)) return false;
+    if (!is_numeric($tuid) || !is_numeric($fuid) || !is_numeric($mid)) return false;
 
     global $HTTP_SERVER_VARS, $forum_name, $forum_email, $lang;
 

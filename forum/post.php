@@ -169,6 +169,7 @@ if($valid && isset($HTTP_POST_VARS['submit'])){
             }
 
             $new_pid = post_create($t_tid, $t_rpid, $HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['t_to_uid'], $t_content);
+            
             if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($t_tid, 1, $newthread);
             
             email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", $HTTP_COOKIE_VARS['bh_sess_uid']);

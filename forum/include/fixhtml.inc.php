@@ -86,7 +86,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 						$i += 8;
 
 					} else if ($tag == "quote" && $close == true) {
-						$html_parts[$i] = "/pre";
+						$html_parts[$i] = "/div";
 					} else if ($tag == "quote") {
 						$source_name = stristr($html_parts[$i], " source=");
 						$source_name = substr($source_name, 8);
@@ -112,7 +112,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 							$source_name = "";
 						}
 								
-						$html_parts[$i] = "pre class=\"quote\"";
+						$html_parts[$i] = "div class=\"quote\"";
 						array_splice($html_parts, $i, 0, array("div class=\"quotetext\"", "", "b", "quote: ", "/b", $source_name, "/div", ""));
 						$i += 8;
 					}
@@ -601,7 +601,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 						$tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
 						$tmp[2] = substr($html_a[$i], $close);
 
-						$tmp[1] = add_paragraphs($tmp[1], false, preg_match("/\bstyle=[^<>]*>$/i", $tmp[0]));
+						$tmp[1] = add_paragraphs($tmp[1], false, preg_match("/(\bstyle=[^<>]*>$)|(^<div\b)/i", $tmp[0]));
 
 						$offset = strlen($tmp[0].$tmp[1]);
 
@@ -617,7 +617,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 				$tmp[1] = substr($html_a[$i], $cur_pos, $close-$cur_pos);
 				$tmp[2] = substr($html_a[$i], $close);
 
-				$tmp[1] = add_paragraphs($tmp[1], false, preg_match("/\bstyle=[^<>]*>$/i", $tmp[0]));
+				$tmp[1] = add_paragraphs($tmp[1], false, preg_match("/(\bstyle=[^<>]*>$)|(^<div\b)/i", $tmp[0]));
 
 				$html_a[$i] = $tmp[0].$tmp[1].$tmp[2];
 			}
@@ -636,7 +636,7 @@ function add_paragraphs ($html, $base = true, $br_only = false) {
 			$p_open = false;
 
 			$tmp = split("\n", $html_a[$i]);
-			if ($base == true || count($tmp) > 2) {
+			if (count($tmp) > 2) {
 				$p_open = true;
 				if (!preg_match("/(\s*<[^<>]*>\s*)*<p[ >]/", $tmp[0])) {
 					$tmp[0] = "<p>".$tmp[0];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.80 2004-04-11 01:01:16 tribalonline Exp $ */
+/* $Id: x-hacker.inc.php,v 1.81 2004-04-11 13:53:42 decoyduck Exp $ */
 
 // International English language file
 
@@ -632,7 +632,7 @@ $lang['myforums'] = "mY foRUm5";
 $lang['availableforums'] = "4V4ILaBLe forum5";
 $lang['favouriteforums'] = "Ph4V0uR1+e fOrumS";
 $lang['lastvisited'] = "L4\$T VI\$i+ED";
-$lang['newmessages'] = "new m3S\$@ge5";
+$lang['uneadmessages'] = "Unread m3S\$@ge5";
 $lang['removefromfavourites'] = "reMoVe PHR0M PH4v0ur1T3s";
 $lang['addtofavourites'] = "AdD +0 ph@VourI+e5";
 $lang['availableforums'] = "aV4iL@BL3 F0RuM5";

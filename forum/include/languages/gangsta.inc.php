@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gangsta.inc.php,v 1.51 2004-04-11 01:01:16 tribalonline Exp $ */
+/* $Id: gangsta.inc.php,v 1.52 2004-04-11 13:53:42 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -634,7 +634,7 @@ $lang['myforums'] = "My Forums";
 $lang['availableforums'] = "Available Forums";
 $lang['favouriteforums'] = "Favourite Forums";
 $lang['lastvisited'] = "Last Visited";
-$lang['newmessages'] = "New Messages";
+$lang['unreadmessages'] = "Unread Messages";
 $lang['removefromfavourites'] = "Remove From Favourites";
 $lang['addtofavourites'] = "Add To Favourites";
 $lang['availableforums'] = "Available Forums";

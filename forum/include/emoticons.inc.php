@@ -23,12 +23,19 @@ USA
 
 // Emoticon filter file
 
+// --------------------------------------
+// Begin emoticons
+// --------------------------------------
+
+// Standard emoticons
 $emoticon[':-)'] = "smile";
 $emoticon[':)'] = "smile";
 $emoticon[';-)'] = "wink";
 $emoticon[';)'] = "wink";
 $emoticon[':-('] = "sad";
 $emoticon[':('] = "sad";
+$emoticon[':\'-('] = "cry";
+$emoticon[':\'('] = "cry";
 $emoticon[':-P'] = "tease";
 $emoticon[':P'] = "tease";
 $emoticon[':-D'] = "grin";
@@ -43,7 +50,25 @@ $emoticon[':-O'] = "shock";
 $emoticon[':O'] = "shock";
 $emoticon[':-@'] = "angry";
 $emoticon[':@'] = "angry";
+$emoticon[':-$'] = "embarrassed";
+$emoticon[':$'] = "embarrassed";
 
+// Peter Boughton's emoticons
+$emoticon['}:>'] = "evil_cheeky";
+$emoticon[':>'] = "cheeky";
+$emoticon['B-)'] = "shades";
+$emoticon['B)'] = "shades";
+$emoticon['8-)'] = "shades";
+$emoticon['8)'] = "shades";
+$emoticon[':o)'] = "smile_big_nose";
+$emoticon[':O)'] = "smile_big_nose";
+$emoticon['>.<'] = "cringe";
+$emoticon['^.^'] = "happy";
+
+
+// --------------------------------------
+// End emoticons
+// --------------------------------------
 
 function emoticons_convert ($content) {
 	global $emoticon;
@@ -51,7 +76,7 @@ function emoticons_convert ($content) {
 	if (!is_array($emoticon)) return $content;
 
 	foreach ($emoticon as $k => $v) {
-		$pattern_array[] = "/". preg_quote($k, "/"). "/i";
+		$pattern_array[] = "/". preg_quote(_htmlentities($k), "/"). "/i";
 		$replace_array[] = "<span class=\"e_$v\" title=\"$v\"><span>$k</span></span>";
 	}
 	if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.4 2004-05-21 23:25:57 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.5 2004-05-22 17:58:13 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -128,6 +128,17 @@ if (!(perm_has_admin_access())) {
     exit;
 }
 
+if (isset($_POST['delete'])) {
+
+    if (isset($_POST['delete_group']) && is_array($_POST['delete_group'])) {
+
+        foreach($_POST['delete_group'] as $gid) {
+
+            perm_remove_group($gid);
+        }
+    }
+}
+
 echo "<h1>{$lang['admin']} : {$lang['usergroups']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
@@ -152,7 +163,7 @@ if ($user_groups_array = perm_get_user_groups()) {
     foreach ($user_groups_array as $user_group) {
 
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+        echo "                  <td>&nbsp;", form_checkbox("delete_group[]", $user_group['GID'], "", false), "&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
         echo "                  <td>&nbsp;{$user_group['GROUP_DESC']}</td>\n";
         echo "                  <td>&nbsp;{$user_group['USER_COUNT']}</td>\n";
         echo "                  <td align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
@@ -180,7 +191,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("addnew", $lang['addnewgroup']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("addnew", $lang['addnewgroup']), "&nbsp;", form_submit("delete", $lang['deletegroups']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

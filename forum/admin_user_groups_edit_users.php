@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.1 2004-05-21 23:25:57 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.2 2004-05-22 17:58:14 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -155,6 +155,34 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
+if (isset($_POST['add'])) {
+
+    if (isset($_POST['add_user']) && is_array($_POST['add_user'])) {
+
+        foreach($_POST['add_user'] as $uid) {
+
+            if (!perm_user_in_group($uid, $gid)) {
+                echo $uid, "<br>\n";
+                perm_add_user_to_group($uid, $gid);
+            }
+        }
+    }
+}
+
+if (isset($_POST['remove'])) {
+
+    if (isset($_POST['remove_user']) && is_array($_POST['remove_user'])) {
+
+        foreach($_POST['add_user'] as $uid) {
+
+            if (perm_user_in_group($uid, $gid)) {
+                echo $uid, "<br>\n";
+                perm_remove_user_from_group($uid, $gid);
+            }
+        }
+    }
+}
+
 $group = perm_get_group($gid);
 
 echo "<h1>{$lang['admin']} : {$lang['manageusergroups']} : {$group['GROUP_NAME']} : {$lang['addremoveusers']}</h1>\n";
@@ -183,7 +211,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
     foreach($group_users_array['user_array'] as $user) {
 
         echo "                <tr>\n";
-        echo "                  <td>", form_checkbox("remove_user[{$user['UID']}]", 1, "", false), "&nbsp;", format_username($user['LOGON'], $user['NICKNAME']), "</td>\n";
+        echo "                  <td>", form_checkbox("remove_user[]", $user['UID'], "", false), "&nbsp;", format_user_name($user['LOGON'], $user['NICKNAME']), "</td>\n";
         echo "                </tr>\n";
     }
 
@@ -252,7 +280,7 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
         foreach ($user_search_array['user_array'] as $user) {
 
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;", form_checkbox("add_user[{$user['UID']}]", 1, "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+            echo "                  <td>&nbsp;", form_checkbox("add_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
             echo "                </tr>\n";
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.140 2005-03-28 23:45:10 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.141 2005-03-29 18:25:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -245,6 +245,20 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
         }
     }
 
+    // Confirmation email
+
+    if (isset($_POST['t_confirm_email']) && strlen(trim(_stripslashes($_POST['t_confirm_email']))) > 0) {
+
+        if ($_POST['t_confirm_email'] == 'cancel') {
+
+            perm_user_cancel_email_confirmation($uid);
+
+        }else if ($_POST['t_confirm_email'] == 'resend') {
+
+            email_send_user_confirmation($uid);
+        }
+    }
+
     // Password reset
 
     if (isset($_POST['t_reset_password']) && $_POST['t_reset_password'] == 'Y') {
@@ -452,6 +466,46 @@ if (isset($_POST['t_delete_posts'])) {
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "  <br />\n";
+
+        if ($global_user_perm & USER_PERM_EMAIL_CONFIRM) {
+
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+            echo "    <tr>\n";
+            echo "      <td>\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['emailconfirmationrequired']}</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table width=\"90%\" class=\"posthead\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td>", form_radio("t_confirm_email", "cancel", $lang['cancelemailconfirmation'], false), "</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td>", form_radio("t_confirm_email", "resend", $lang['resendconfirmationemail'], false), "</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td>", form_radio("t_confirm_email", "nothing", $lang['donothing'], true), "</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+            echo "  <br />\n";
+        }
     }
 
     if ($folder_array = perm_user_get_folders($uid)) {

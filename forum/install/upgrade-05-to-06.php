@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.39 2005-03-25 20:45:44 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.40 2005-03-29 18:25:58 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -316,8 +316,11 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Extend any USER_PERM_FORUM_TOOLS AND USER_PERM_ADMIN_TOOLS permissions
     // to cover all forums so it mimics the behavior in 0.5.
 
+    $upft = USER_PERM_FORUM_TOOLS;
+    $upat = USER_PERM_ADMIN_TOOLS;
+
     $sql = "SELECT GID, PERM FROM {$forum_webtag}_GROUP_PERMS ";
-    $sql.= "WHERE (PERM & 1024 > 0 OR PERM & 512 > 0) ";
+    $sql.= "WHERE (PERM & $upft > 0 OR PERM & $upat > 0) ";
     $sql.= "AND FID = 0";
 
     if ($result = @db_query($sql, $db_install)) {

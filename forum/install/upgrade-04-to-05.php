@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.27 2005-03-25 20:45:43 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.28 2005-03-29 18:25:58 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1218,10 +1218,10 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                 return;
             }
 
-            if (($row['STATUS'] & 32) > 0) $new_status = (double)$new_status | 1024;
-            if (($row['STATUS'] & 16) > 0) $new_status = (double)$new_status | 512;
-            if (($row['STATUS'] & 4)  > 0) $new_status = (double)$new_status | 2;
-            if (($row['STATUS'] & 1)  > 0) $new_status = (double)$new_status | 1;
+            if (($row['STATUS'] & USER_PERM_QUEEN)   > 0) $new_status = (double)$new_status | USER_PERM_FORUM_TOOLS;
+            if (($row['STATUS'] & USER_PERM_SOLDIER) > 0) $new_status = (double)$new_status | USER_PERM_ADMIN_TOOLS;
+            if (($row['STATUS'] & USER_PERM_WORM)    > 0) $new_status = (double)$new_status | USER_PERM_WORMED;
+            if (($row['STATUS'] & USER_PERM_SPLAT)   > 0) $new_status = (double)$new_status | USER_PERM_BANNED;
 
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
             $sql.= "VALUES ('$gid', '0', '$new_status')";
@@ -1232,7 +1232,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                 return;
             }
 
-            if (($row['STATUS'] & 32) > 0 || ($row['STATUS'] & 16) > 0 || ($row['STATUS'] & 8) > 0) {
+            if (($row['STATUS'] & USER_PERM_QUEEN) > 0 || ($row['STATUS'] & USER_PERM_SOLDIER) > 0 || ($row['STATUS'] & USER_PERM_WORKER) > 0) {
 
                 $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
                 $sql.= "SELECT $gid, FID, 6652 FROM {$forum_webtag}_FOLDER ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.28 2004-03-13 00:00:20 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.29 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,7 +41,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -63,25 +63,25 @@ echo "  <tr>\n";
 echo "    <td class=\"subhead\">Tools</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"admin_users.php?webtag=$webtag\" target=\"right\">{$lang['users']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_users.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['users']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"admin_folders.php?webtag=$webtag\" target=\"right\">{$lang['folders']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_folders.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['folders']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"admin_prof_sect.php?webtag=$webtag\" target=\"right\">{$lang['profiles']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_prof_sect.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['profiles']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"admin_startpage.php?webtag=$webtag\" target=\"right\">{$lang['startpage']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_startpage.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['startpage']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"admin_make_style.php?webtag=$webtag\" target=\"right\">{$lang['forumstyle']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_make_style.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['forumstyle']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"admin_wordfilter.php?webtag=$webtag\" target=\"right\">{$lang['wordfilter']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_wordfilter.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['wordfilter']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><a href=\"admin_viewlog.php?webtag=$webtag\" target=\"right\">{$lang['viewlog']}</a></td>\n";
+echo "    <td class=\"postbody\"><a href=\"admin_viewlog.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['viewlog']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

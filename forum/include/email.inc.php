@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.47 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.48 2004-03-13 20:04:35 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
@@ -34,10 +34,10 @@ function email_sendnotification($tuid, $msg, $fuid)
 
     $db_email_sendnotification = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT PREFS.EMAIL_NOTIFY, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
-    $sql.= "{$table_prefix}USER_PREFS PREFS, ";
+    $sql.= "{$webtag['PREFIX']}USER_PREFS PREFS, ";
     $sql.= "USER PROFILE ";
     $sql.= "WHERE PROFILE.UID = '$tuid' ";
     $sql.= "AND PROFILE.UID = PREFS.UID";
@@ -108,10 +108,10 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
     list($tid, $pid) = explode('.', $msg);
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT USER.UID, USER.NICKNAME, USER.EMAIL FROM ";
-    $sql.= "{$table_prefix}USER_THREAD USER_THREAD, ";
+    $sql.= "{$webtag['PREFIX']}USER_THREAD USER_THREAD, ";
     $sql.= "USER USER ";
     $sql.= "WHERE USER_THREAD.TID = '$tid' ";
     $sql.= "AND USER_THREAD.INTEREST = 2 ";
@@ -180,10 +180,10 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     $db_email_sendnotification = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT PREFS.PM_NOTIFY_EMAIL, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
-    $sql.= "{$table_prefix}USER_PREFS PREFS, USER PROFILE ";
+    $sql.= "{$webtag['PREFIX']}USER_PREFS PREFS, USER PROFILE ";
     $sql.= "WHERE PROFILE.UID = '$tuid' AND PROFILE.UID = PREFS.UID";
 
     $result = db_query($sql, $db_email_sendnotification);
@@ -251,7 +251,7 @@ function email_send_pw_reminder($logon)
     $db_email_send_pw_reminder = db_connect();
     $logon = addslashes($logon);
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);
@@ -273,7 +273,7 @@ function email_send_pw_reminder($logon)
                 $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
             }
 
-            $message.= "/change_pw.php?webtag=$webtag&u={$mailto['UID']}&h={$mailto['PASSWD']}";
+            $message.= "/change_pw.php?webtag={$webtag['WEBTAG']}&u={$mailto['UID']}&h={$mailto['PASSWD']}";
 
             $header = "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";

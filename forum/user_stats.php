@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_stats.php,v 1.8 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: user_stats.php,v 1.9 2004-03-13 20:04:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -39,7 +39,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -63,11 +63,11 @@ if (isset($HTTP_GET_VARS['show_stats']) && $uid > 0) {
     user_update_prefs($uid, $user_prefs);
 
     bh_session_init(bh_session_get_value('UID'));
-    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
+    header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg");
 
 }else {
 
-   header_redirect("./messages.php?webtag=$webtag&msg=$msg");
+   header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg");
 
 }
 

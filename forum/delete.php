@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.47 2004-03-13 00:00:20 decoyduck Exp $ */
+/* $Id: delete.php,v 1.48 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -87,7 +87,7 @@ if (isset($HTTP_POST_VARS['msg']) && validate_msg($HTTP_POST_VARS['msg'])) {
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    $uri = "./discussion.php?webtag=$webtag&msg=". $msg;
+    $uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=". $msg;
     header_redirect($uri);
 }
 
@@ -128,7 +128,7 @@ if ($valid) {
 
             echo "<div align=\"center\">";
             echo "<p>{$lang['postdelsuccessfully']}</p>";
-            echo form_quick_button("discussion.php?webtag=$webtag", $lang['back'], "msg", $HTTP_POST_VARS['msg']);
+            echo form_quick_button("discussion.php?webtag={$webtag['WEBTAG']}", $lang['back'], "msg", $HTTP_POST_VARS['msg']);
             echo "</div>";
             html_draw_bottom();
             exit;
@@ -177,7 +177,7 @@ if ($valid) {
 if (isset($error_html)) echo $error_html;
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"f_delete\" action=\"delete.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"f_delete\" action=\"delete.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
 echo "    <p>", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
 echo "  </form>\n";

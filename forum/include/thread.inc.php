@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.45 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.46 2004-03-13 20:04:36 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 
@@ -29,11 +29,11 @@ function thread_get_title($tid)
 {
     $db_thread_get_title = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($tid)) return "The Unknown Thread";
 
-    $sql = "SELECT TITLE FROM {$table_prefix}THREAD WHERE TID = '$tid'";
+    $sql = "SELECT TITLE FROM {$webtag['PREFIX']}THREAD WHERE TID = '$tid'";
     $resource_id = db_query($sql, $db_thread_get_title);
 
     if (!db_num_rows($resource_id)) {
@@ -50,7 +50,7 @@ function thread_get($tid)
 {
     $db_thread_get = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
   
     $uid = bh_session_get_value('UID');
 
@@ -61,16 +61,16 @@ function thread_get($tid)
     $sql.= "UNIX_TIMESTAMP(THREAD.modified) AS MODIFIED, THREAD.CLOSED, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
     $sql.= "THREAD.ADMIN_LOCK, USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
     $sql.= "USER.LOGON, USER.NICKNAME, UP.RELATIONSHIP, AT.AID, FOLDER.TITLE AS FOLDER_TITLE ";
-    $sql.= "FROM {$table_prefix}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ";
+    $sql.= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql.= "JOIN USER USER ";
-    $sql.= "JOIN {$table_prefix}POST POST ";
-    $sql.= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql.= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql.= "(UP.UID = $uid AND UP.PEER_UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql.= "(AT.TID = THREAD.TID) ";
-    $sql.= "LEFT JOIN {$table_prefix}FOLDER FOLDER ON ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}FOLDER FOLDER ON ";
     $sql.= "(FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE USER.UID = POST.FROM_UID ";
     $sql.= "AND POST.TID = THREAD.TID ";
@@ -114,11 +114,11 @@ function thread_get_author($tid)
 {
     $db_thread_get_author = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT U.LOGON, U.NICKNAME FROM USER U, {$table_prefix}POST P ";
+    $sql = "SELECT U.LOGON, U.NICKNAME FROM USER U, {$webtag['PREFIX']}POST P ";
     $sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
 
     $result = db_query($sql, $db_thread_get_author);
@@ -132,7 +132,7 @@ function thread_get_interest($tid)
     $uid = bh_session_get_value('UID');
     $db_thread_get_interest = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($tid)) return false;
 
@@ -154,13 +154,13 @@ function thread_set_interest($tid, $interest, $new = false)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($interest)) return false;
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if ($new) {
-        $sql = "insert into {$table_prefix}USER_THREAD (UID, TID, INTEREST) ";
+        $sql = "insert into {$webtag['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
         $sql.= "values ($uid, $tid, $interest)";
     }else {
-        $sql = "update low_priority {$table_prefix}USER_THREAD ";
+        $sql = "update low_priority {$webtag['PREFIX']}USER_THREAD ";
         $sql.= "set INTEREST = $interest where UID = $uid and TID = $tid";
     }
 
@@ -173,12 +173,12 @@ function thread_can_view($tid = 0, $uid = 0)
     $fidlist = folder_get_available();
     $db_thread_can_view = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($uid)) return false;
 
-    $sql = "SELECT * FROM {$table_prefix}THREAD WHERE TID = '$tid' AND FID IN ($fidlist)";
+    $sql = "SELECT * FROM {$webtag['PREFIX']}THREAD WHERE TID = '$tid' AND FID IN ($fidlist)";
     $result = db_query($sql,$db_thread_can_view);
 
     return (db_num_rows($result) > 0);
@@ -188,12 +188,12 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 {
     $db_thread_set_sticky = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($tid)) return false;
 
     if ($sticky) {
-        $sql  = "UPDATE {$table_prefix}THREAD SET STICKY = 'Y' ";
+        $sql  = "UPDATE {$webtag['PREFIX']}THREAD SET STICKY = 'Y' ";
         if ($sticky_until) {
             $sql .= ", STICKY_UNTIL = FROM_UNIXTIME($sticky_until) ";
         } else {
@@ -201,7 +201,7 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
         }
         $sql .= "WHERE TID = $tid";
     } else {
-        $sql = "UPDATE {$table_prefix}THREAD SET STICKY = 'N' WHERE TID = $tid";
+        $sql = "UPDATE {$webtag['PREFIX']}THREAD SET STICKY = 'N' WHERE TID = $tid";
     }
 
     return db_query($sql,$db_thread_set_sticky);
@@ -211,14 +211,14 @@ function thread_set_closed($tid, $closed = true)
 {
     $db_thread_set_closed = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($tid)) return false;
 
     if ($closed) {
-        $sql = "UPDATE {$table_prefix}THREAD SET CLOSED = NOW() WHERE TID = $tid";
+        $sql = "UPDATE {$webtag['PREFIX']}THREAD SET CLOSED = NOW() WHERE TID = $tid";
     } else {
-        $sql = "UPDATE {$table_prefix}THREAD SET CLOSED = NULL WHERE TID = $tid";
+        $sql = "UPDATE {$webtag['PREFIX']}THREAD SET CLOSED = NULL WHERE TID = $tid";
     }
 
     return db_query($sql,$db_thread_set_closed);
@@ -228,14 +228,14 @@ function thread_admin_lock($tid, $locked = true)
 {
     $db_thread_admin_lock = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($tid)) return false;
 
     if ($locked) {
-        $sql = "UPDATE {$table_prefix}THREAD SET ADMIN_LOCK = NOW() WHERE TID = $tid";
+        $sql = "UPDATE {$webtag['PREFIX']}THREAD SET ADMIN_LOCK = NOW() WHERE TID = $tid";
     } else {
-        $sql = "UPDATE {$table_prefix}THREAD SET ADMIN_LOCK = NULL WHERE TID = $tid";
+        $sql = "UPDATE {$webtag['PREFIX']}THREAD SET ADMIN_LOCK = NULL WHERE TID = $tid";
     }
 
     return db_query($sql, $db_thread_admin_lock);
@@ -245,12 +245,12 @@ function thread_change_folder($tid, $new_fid)
 {
     $db_thread_set_closed = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($new_fid)) return false;
 
-    $sql = "UPDATE {$table_prefix}THREAD SET FID = $new_fid WHERE TID = $tid";
+    $sql = "UPDATE {$webtag['PREFIX']}THREAD SET FID = $new_fid WHERE TID = $tid";
     return db_query($sql, $db_thread_set_closed);
 }
 
@@ -258,13 +258,13 @@ function thread_change_title($tid, $new_title)
 {
     $db_thread_change_title = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
     
     $new_title = addslashes(_htmlentities($new_title));
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "UPDATE {$table_prefix}THREAD SET TITLE = '$new_title' WHERE TID = $tid";
+    $sql = "UPDATE {$webtag['PREFIX']}THREAD SET TITLE = '$new_title' WHERE TID = $tid";
     return db_query($sql, $db_thread_change_title);
 }
 

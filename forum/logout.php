@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.35 2004-03-13 19:13:48 decoyduck Exp $ */
+/* $Id: logout.php,v 1.36 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -43,7 +43,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag";
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}";
     header_redirect($uri);
 }
 
@@ -56,9 +56,9 @@ $user_wordfilter = load_wordfilter();
 if (bh_session_get_value('UID') == 0) {
 
     if (isset($HTTP_GET_VARS['final_uri'])) {
-        $uri = "./index.php?webtag=$webtag&final_uri=". $HTTP_GET_VARS['final_uri'];
+        $uri = "./index.php?webtag={$webtag['WEBTAG']}&final_uri=". $HTTP_GET_VARS['final_uri'];
     }else {
-        $uri = "./index.php?webtag=$webtag";
+        $uri = "./index.php?webtag={$webtag['WEBTAG']}";
     }
     
     bh_session_end();
@@ -74,7 +74,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
     if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
     
-        header_redirect("./index.php?webtag=$webtag");
+        header_redirect("./index.php?webtag={$webtag['WEBTAG']}");
 
     }else {
     
@@ -83,7 +83,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
-        echo "document.location.href = './index.php?webtag=$webtag';\n";
+        echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}';\n";
         echo "//-->\n";
         echo "</script>";
 

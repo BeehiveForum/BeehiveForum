@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.22 2004-03-13 00:00:20 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.23 2004-03-13 20:04:33 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,7 +45,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -100,7 +100,7 @@ if (isset($status_text)) echo $status_text;
 echo "<p>{$lang['wordfilterexp_1']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php?webtag=$webtag\">\n";
+echo "  <form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php?webtag={$webtag['WEBTAG']}\">\n";
 echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "      <tr>\n";
 echo "        <td>\n";

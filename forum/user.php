@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.8 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: user.php,v 1.9 2004-03-13 20:04:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -41,7 +41,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -65,8 +65,8 @@ echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\">\n";
 echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
 echo "</head>\n";
 echo "<frameset cols=\"180,*\" border=\"1\">\n";
-echo "<frame src=\"./user_menu.php?webtag=$webtag\" name=\"left\" border=\"1\">\n";
-echo "<frame src=\"./user_main.php?webtag=$webtag\" name=\"right\" border=\"1\">\n";
+echo "<frame src=\"./user_menu.php?webtag={$webtag['WEBTAG']}\" name=\"left\" border=\"1\">\n";
+echo "<frame src=\"./user_main.php?webtag={$webtag['WEBTAG']}\" name=\"right\" border=\"1\">\n";
 echo "</frameset>\n";
 echo "</html>\n";
 

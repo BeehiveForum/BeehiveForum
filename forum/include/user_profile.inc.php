@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.21 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.22 2004-03-13 20:04:36 decoyduck Exp $ */
 
 include_once("./include/profile.inc.php");
 
@@ -29,16 +29,16 @@ function user_profile_update($uid, $piid, $entry)
 {
     $db_user_profile_update = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $entry = addslashes(_htmlentities($entry));
 
-    $sql = "DELETE FROM {$table_prefix}USER_PROFILE ";
+    $sql = "DELETE FROM {$webtag['PREFIX']}USER_PROFILE ";
     $sql.= "WHERE UID = $uid AND PIID = $piid";
 
     if (db_query($sql, $db_user_profile_update)) {
 
-        $sql = "INSERT INTO {$table_prefix}USER_PROFILE (UID, PIID, ENTRY) ";
+        $sql = "INSERT INTO {$webtag['PREFIX']}USER_PROFILE (UID, PIID, ENTRY) ";
         $sql.= "VALUES ($uid, $piid, '$entry')";
 
         return db_query($sql, $db_user_profile_update);
@@ -51,10 +51,10 @@ function user_get_profile_entries($uid, $psid)
 {
     $db_user_get_profile_entries = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM {$table_prefix}PROFILE_ITEM PI ";
-    $sql.= "LEFT JOIN {$table_prefix}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
+    $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY FROM {$webtag['PREFIX']}PROFILE_ITEM PI ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PROFILE UP ON (UP.PIID = PI.PIID AND UP.UID = $uid) ";
     $sql.= "WHERE PI.PSID = $psid ORDER BY PI.POSITION, PI.PIID";
 
     $result = db_query($sql, $db_user_get_profile_entries);
@@ -71,9 +71,9 @@ function user_get_profile_image($uid)
 {
     $db_user_get_profile_image = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "SELECT PIC_URL from {$table_prefix}USER_PREFS WHERE UID = $uid";
+    $sql = "SELECT PIC_URL from {$webtag['PREFIX']}USER_PREFS WHERE UID = $uid";
     $result = db_query($sql, $db_user_get_profile_image);
 
     $row = db_fetch_array($result);

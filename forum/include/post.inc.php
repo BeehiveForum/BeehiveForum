@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.56 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.57 2004-03-13 20:04:36 decoyduck Exp $ */
 
 function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 {
@@ -37,9 +37,9 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
     if (!is_numeric($fuid)) return -1;
     if (!is_numeric($tuid)) return -1;
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "INSERT INTO {$table_prefix}POST ";
+    $sql = "INSERT INTO {$webtag['PREFIX']}POST ";
     $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, IPADDRESS) ";
     $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), '$ipaddress')";
 
@@ -49,7 +49,7 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
         $new_pid = db_insert_id($db_post_create);
 
-        $sql = "insert into  {$table_prefix}POST_CONTENT ";
+        $sql = "insert into  {$webtag['PREFIX']}POST_CONTENT ";
         $sql.= "(TID,PID,CONTENT) ";
         $sql.= "values ($tid, $new_pid, '$content')";
 
@@ -57,7 +57,7 @@ function post_create($tid, $reply_pid, $fuid, $tuid, $content)
 
         if ($result) {
 
-            $sql = "update {$table_prefix}THREAD set length = $new_pid, modified = NOW() ";
+            $sql = "update {$webtag['PREFIX']}THREAD set length = $new_pid, modified = NOW() ";
             $sql.= "where tid = $tid";
             $result = db_query($sql, $db_post_create);
 
@@ -82,9 +82,9 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     $db_post_save_attachment_id = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "insert into {$table_prefix}POST_ATTACHMENT_IDS (TID, PID, AID) values ($tid, $pid, '$aid')";
+    $sql = "insert into {$webtag['PREFIX']}POST_ATTACHMENT_IDS (TID, PID, AID) values ($tid, $pid, '$aid')";
     $result = db_query($sql, $db_post_save_attachment_id);
 
     return $result;
@@ -102,9 +102,9 @@ function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = 
 
     $db_post_create_thread = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "insert into {$table_prefix}THREAD" ;
+    $sql = "insert into {$webtag['PREFIX']}THREAD" ;
     $sql.= "(FID,TITLE,LENGTH,POLL_FLAG,STICKY,MODIFIED,CLOSED) ";
     $sql.= "values ($fid, '$title', 0, '$poll', '$sticky', NOW(), $closed)";
 
@@ -134,7 +134,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
@@ -193,7 +193,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     $html = "<select name=\"t_to_uid_recent\" style=\"width: 190px\" onClick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
@@ -255,7 +255,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($default_uid)) $default_uid = 0;
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (isset($default_uid) && $default_uid != 0) {
         
@@ -275,7 +275,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true)
     }
 
     $sql = "SELECT DISTINCT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
-    $sql.= "FROM {$table_prefix}POST P ";
+    $sql.= "FROM {$webtag['PREFIX']}POST P ";
     $sql.= "LEFT JOIN USER U ON (P.FROM_UID = U.UID) ";
     $sql.= "WHERE P.TID = '$tid' ";
     $sql.= "LIMIT 0, 20";
@@ -314,9 +314,9 @@ function get_user_posts($uid)
 
     if (!is_numeric($uid)) return false;
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "SELECT TID, PID FROM {$table_prefix}POST WHERE FROM_UID = '$uid'";
+    $sql = "SELECT TID, PID FROM {$webtag['PREFIX']}POST WHERE FROM_UID = '$uid'";
     $result = db_query($sql, $db_get_user_posts);
 
     if (db_num_rows($result)) {
@@ -335,22 +335,22 @@ function check_ddkey($ddkey)
     $db_check_ddkey = db_connect();
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "SELECT DDKEY FROM {$table_prefix}DEDUPE WHERE UID = '$uid'";
+    $sql = "SELECT DDKEY FROM {$webtag['PREFIX']}DEDUPE WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_ddkey);
 
     if (db_num_rows($result)) {
 
         list($ddkey_check) = db_fetch_array($result);
-        $sql = "UPDATE {$table_prefix}DEDUPE SET DDKEY = '$ddkey' WHERE UID = '$uid'";
+        $sql = "UPDATE {$webtag['PREFIX']}DEDUPE SET DDKEY = '$ddkey' WHERE UID = '$uid'";
         $result = db_query($sql, $db_check_ddkey);
 
     }else{
 
         $ddkey_check = "";
 
-        $sql = "INSERT INTO {$table_prefix}DEDUPE (UID, DDKEY) ";
+        $sql = "INSERT INTO {$webtag['PREFIX']}DEDUPE (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', '$ddkey')";
         $result = db_query($sql, $db_check_ddkey);
     }

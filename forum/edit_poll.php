@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.44 2004-03-13 00:00:21 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.45 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -43,7 +43,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -88,7 +88,7 @@ $valid = true;
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-  $uri = "./discussion.php?webtag=$webtag&msg=$edit_msg";
+  $uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=$edit_msg";
   header_redirect($uri);
 
 }elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
@@ -244,7 +244,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
   }  
   
-  header_redirect("./discussion.php?webtag=$webtag&msg=$tid.1");
+  header_redirect("./discussion.php?webtag={$webtag['WEBTAG']}&msg=$tid.1");
 
 }else {
 
@@ -355,7 +355,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 if (isset($error_html)) echo $error_html;
 
-echo "<form name=\"f_edit_poll\" action=\"edit_poll.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"f_edit_poll\" action=\"edit_poll.php?webtag={$webtag['WEBTAG']}\" method=\"POST\" target=\"_self\">\n";
 echo form_input_hidden("t_msg", $edit_msg);
 echo "<p>{$lang['editpollwarning']}</p>\n";
 

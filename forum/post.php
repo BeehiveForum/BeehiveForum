@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.157 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: post.php,v 1.158 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -55,7 +55,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -76,7 +76,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-    $uri = "./discussion.php?webtag=$webtag";
+    $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
 
     if (isset($HTTP_POST_VARS['t_tid']) && is_numeric($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid']) && is_numeric($HTTP_POST_VARS['t_rpid']) ) {
         $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
@@ -450,11 +450,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($t_tid > 0 && $t_rpid > 0) {
 
-          $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+          $uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=$t_tid.$t_rpid";
 
         }else{
 
-          $uri = "./discussion.php?webtag=$webtag";
+          $uri = "./discussion.php?webtag={$webtag['WEBTAG']}";
 
         }
 
@@ -478,7 +478,7 @@ if (!isset($HTTP_POST_VARS['aid'])) {
 }
 
 echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
-echo "<br /><form name=\"f_post\" action=\"post.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "<br /><form name=\"f_post\" action=\"post.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
 
 if (!$newthread) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.30 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.31 2004-03-13 20:04:35 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,7 +45,7 @@ include_once("./include/user_rel.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -89,14 +89,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     // Update the User's Session to save them having to logout and back in
     bh_session_init(bh_session_get_value('UID'));
-    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
+    header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg");
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
     if ($edit_rel) {
-        header_redirect("./edit_relations.php?webtag=$webtag");
+        header_redirect("./edit_relations.php?webtag={$webtag['WEBTAG']}");
     }else {
-        header_redirect("./messages.php?webtag=$webtag&msg=$msg");
+        header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg");
     }
 }
 
@@ -125,7 +125,7 @@ $rel = user_rel_get($my_uid, $uid);
 echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
 echo "<br />\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"relationship\" action=\"user_rel.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"relationship\" action=\"user_rel.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
 echo "    ", form_input_hidden("uid", $uid), "\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
 echo "    ", form_input_hidden("edit_rel", $edit_rel), "\n";

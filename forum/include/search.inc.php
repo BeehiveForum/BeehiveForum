@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.43 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.44 2004-03-13 20:04:36 decoyduck Exp $ */
 
 function search_execute($argarray, &$urlquery, &$error)
 {
@@ -42,13 +42,13 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $db_search_execute = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $searchsql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
     $searchsql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
-    $searchsql.= "FROM {$table_prefix}THREAD THREAD ";
-    $searchsql.= "LEFT JOIN {$table_prefix}POST POST ON (THREAD.TID = POST.TID) ";
-    $searchsql.= "LEFT JOIN {$table_prefix}POST_CONTENT POST_CONTENT ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
+    $searchsql.= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $searchsql.= "LEFT JOIN {$webtag['PREFIX']}POST POST ON (THREAD.TID = POST.TID) ";
+    $searchsql.= "LEFT JOIN {$webtag['PREFIX']}POST_CONTENT POST_CONTENT ON (POST.PID = POST_CONTENT.PID AND POST.TID = POST_CONTENT.TID) ";
     $searchsql.= "WHERE ";
 
     if (isset($argarray['fid']) && $argarray['fid'] > 0) {
@@ -404,10 +404,10 @@ function folder_search_dropdown()
 
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "select DISTINCT F.FID, F.TITLE from {$table_prefix}FOLDER F left join ";
-    $sql.= "{$table_prefix}USER_FOLDER UF on (UF.FID = F.FID and UF.UID = '$uid') ";
+    $sql = "select DISTINCT F.FID, F.TITLE from {$webtag['PREFIX']}FOLDER F left join ";
+    $sql.= "{$webtag['PREFIX']}USER_FOLDER UF on (UF.FID = F.FID and UF.UID = '$uid') ";
     $sql.= "where (F.ACCESS_LEVEL = 0 or (F.ACCESS_LEVEL = 1 AND UF.ALLOWED <=> 1))";
 
     $result = db_query($sql, $db_folder_search_dropdown);
@@ -433,7 +433,7 @@ function search_draw_user_dropdown($name)
     $db_search_draw_user_dropdown = db_connect();
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER U WHERE (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";

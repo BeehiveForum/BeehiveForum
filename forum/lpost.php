@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.29 2004-03-13 00:00:21 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.30 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -57,7 +57,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./llogon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./llogon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -78,7 +78,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-    $uri = "./lthread_list.php?webtag=$webtag";
+    $uri = "./lthread_list.php?webtag={$webtag['WEBTAG']}";
     
     if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid'])) {
         $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
@@ -255,11 +255,11 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         if ($t_tid > 0 && $t_rpid > 0) {
 
-          $uri = "./lmessages.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+          $uri = "./lmessages.php?webtag={$webtag['WEBTAG']}&msg=$t_tid.$t_rpid";
 
         }else {
 
-          $uri = "./lmessages.php?webtag=$webtag";
+          $uri = "./lmessages.php?webtag={$webtag['WEBTAG']}";
 
         }
 

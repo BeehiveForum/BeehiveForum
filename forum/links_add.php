@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.32 2004-03-13 00:00:21 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.33 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -45,7 +45,7 @@ if (!isset($show_links)) $show_links = true;
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -69,7 +69,7 @@ if (bh_session_get_value('UID') == 0) {
 
 $uid = bh_session_get_value('UID');
 
-if (isset($HTTP_POST_VARS['cancel'])) header_redirect("./links.php?webtag=$webtag&fid={$HTTP_POST_VARS['fid']}");
+if (isset($HTTP_POST_VARS['cancel'])) header_redirect("./links.php?webtag={$webtag['WEBTAG']}&fid={$HTTP_POST_VARS['fid']}");
 
 if (isset($HTTP_GET_VARS['mode'])) {
     if ($HTTP_GET_VARS['mode'] == 'link') {
@@ -107,7 +107,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
         $name = addslashes(_htmlentities($name));
         $description = addslashes(_htmlentities($description));
         links_add($uri, $name, $description, $fid, $uid);
-        header_redirect("./links.php?webtag=$webtag&fid=$fid");
+        header_redirect("./links.php?webtag={$webtag['WEBTAG']}&fid=$fid");
         exit;
     }
 } elseif (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "folder") {
@@ -117,7 +117,7 @@ if (isset($HTTP_POST_VARS['submit']) && $HTTP_POST_VARS['mode'] == "link") {
     if (!$error) {
         $name = addslashes(_htmlentities($name));
         links_add_folder($fid, $name, true);
-        header_redirect("./links.php?webtag=$webtag&fid=$fid");
+        header_redirect("./links.php?webtag={$webtag['WEBTAG']}&fid=$fid");
         exit;
     }
 } elseif (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
@@ -145,7 +145,7 @@ if ($mode == "link") {
     echo "<h1>{$lang['links']}: {$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
     if ($error) echo "<h2>$error</h2>\n";
-    echo "<form name=\"linkadd\" action=\"links_add.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
+    echo "<form name=\"linkadd\" action=\"links_add.php?webtag={$webtag['WEBTAG']}\" method=\"POST\" target=\"_self\">\n";
     echo form_input_hidden("fid", $fid) . "\n";
     echo form_input_hidden("mode", "link") . "\n";
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";
@@ -167,7 +167,7 @@ if ($mode == "folder") {
     echo "<h1>{$lang['links']}: {$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
     if ($error) echo "<h2>$error</h2>\n";
-    echo "<form name=\"folderadd\" action=\"links_add.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
+    echo "<form name=\"folderadd\" action=\"links_add.php?webtag={$webtag['WEBTAG']}\" method=\"POST\" target=\"_self\">\n";
     echo form_input_hidden("fid", $fid) . "\n";
     echo form_input_hidden("mode", "folder") . "\n";
     echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\"posthead\"><td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.104 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.105 2004-03-13 20:04:36 decoyduck Exp $ */
 
 function threads_get_available_folders()
 {
@@ -34,11 +34,11 @@ function threads_get_folders()
 
     $db_threads_get_folders = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT DISTINCT F.FID, F.TITLE, F.DESCRIPTION, F.ALLOWED_TYPES, ";
-    $sql.= "F.ACCESS_LEVEL, UF.INTEREST FROM {$table_prefix}FOLDER F LEFT JOIN ";
-    $sql.= "{$table_prefix}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
+    $sql.= "F.ACCESS_LEVEL, UF.INTEREST FROM {$webtag['PREFIX']}FOLDER F LEFT JOIN ";
+    $sql.= "{$webtag['PREFIX']}USER_FOLDER UF ON (UF.FID = F.FID AND UF.UID = $uid) ";
     $sql.= "WHERE (F.ACCESS_LEVEL = 0 OR F.ACCESS_LEVEL = 2 OR ";
     $sql.= "(F.ACCESS_LEVEL = 1 AND UF.ALLOWED = 1)) ORDER BY F.FID";
 
@@ -73,7 +73,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -83,16 +83,16 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -115,7 +115,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -125,16 +125,16 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -165,15 +165,15 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql  = "SELECT DISTINCT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";
-    $sql ."{$table_prefix}POST POST ";
+    $sql ."{$webtag['PREFIX']}POST POST ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST2 ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST2 ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND (USER_THREAD.last_read < THREAD.length OR USER_THREAD.last_read IS NULL) ";
@@ -198,7 +198,7 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $folders = threads_get_available_folders();
     $db_threads_get_by_days = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($days)) $days = 1;
@@ -209,16 +209,16 @@ function threads_get_by_days($uid,$days = 1) // get threads from the last $days 
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -242,7 +242,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $folders = threads_get_available_folders();
     $db_threads_get_by_interest = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($interest)) $interest = 1;
@@ -252,15 +252,15 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD, ";
-    $sql ."{$table_prefix}USER_THREAD USER_THREAD ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD, ";
+    $sql ."{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -284,7 +284,7 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $folders = threads_get_available_folders();
     $db_threads_get_unread_by_interest = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($interest)) $interest = 1;
@@ -294,15 +294,15 @@ function threads_get_unread_by_interest($uid,$interest = 1) // get unread messag
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD, ";
-    $sql ."{$table_prefix}USER_THREAD USER_THREAD ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD, ";
+    $sql ."{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -327,7 +327,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $folders = threads_get_available_folders();
     $db_threads_get_recently_viewed = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -336,15 +336,15 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read,  USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD, ";
-    $sql ."{$table_prefix}USER_THREAD USER_THREAD ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD, ";
+    $sql ."{$webtag['PREFIX']}USER_THREAD USER_THREAD ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -369,7 +369,7 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -378,16 +378,16 @@ function threads_get_by_relationship($uid,$relationship = USER_FRIEND,$start = 0
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -411,7 +411,7 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -421,16 +421,16 @@ function threads_get_unread_by_relationship($uid,$relationship = USER_FRIEND) //
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, USER_FOLDER.interest AS folder_interest, ";
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -455,7 +455,7 @@ function threads_get_polls($uid, $start = 0)
     $folders = threads_get_available_folders();
     $db_threads_get_polls = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -465,16 +465,16 @@ function threads_get_polls($uid, $start = 0)
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND THREAD.poll_flag = 'Y' ";
@@ -498,7 +498,7 @@ function threads_get_sticky($uid, $start = 0)
     $folders = threads_get_available_folders();
     $db_threads_get_all = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($start)) $start = 0;
@@ -509,16 +509,16 @@ function threads_get_sticky($uid, $start = 0)
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -542,7 +542,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $folders = threads_get_available_folders();
     $db_threads_get_unread = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
 
@@ -553,16 +553,16 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql .= "UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "THREAD.length - IF (USER_THREAD.last_read, USER_THREAD.last_read, 0) AS T_LENGTH, ";
     $sql .= "USER.logon, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($folders) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -584,7 +584,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 {
     $db_threads_get_folder = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_numeric($uid)) $uid = bh_session_get_value('UID');
     if (!is_numeric($start)) $start = 0;
@@ -594,16 +594,16 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql  = "SELECT THREAD.tid, THREAD.fid, THREAD.title, THREAD.length, THREAD.poll_flag, THREAD.sticky, ";
     $sql .= "USER_THREAD.last_read, USER_THREAD.interest, UNIX_TIMESTAMP(THREAD.modified) AS modified, ";
     $sql .= "USER.logon, USER.status, USER.nickname, UP.relationship, AT.aid ";
-    $sql .= "FROM {$table_prefix}THREAD THREAD ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql .= "FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_FOLDER USER_FOLDER ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
     $sql .= "JOIN USER USER ";
-    $sql .= "JOIN {$table_prefix}POST POST ";
-    $sql .= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql .= "JOIN {$webtag['PREFIX']}POST POST ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql .= "(UP.uid = $uid AND UP.peer_uid = POST.from_uid) ";
-    $sql .= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql .= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql .= "(AT.TID = THREAD.TID) ";
     $sql .= "WHERE THREAD.fid in ($fid) ";
     $sql .= "AND USER.uid = POST.from_uid ";
@@ -624,23 +624,23 @@ function threads_get_most_recent()
 {
     $db_threads_get_recent = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
     
     $fidlist = folder_get_available();
     $uid = bh_session_get_value('UID');
 
     $sql = "SELECT T.TID, T.TITLE, T.STICKY, T.LENGTH, T.POLL_FLAG, UT.LAST_READ, ";
     $sql.= "UP.RELATIONSHIP, AT.AID AS ATTACHMENTS, UT.INTEREST, U.NICKNAME, U.LOGON ";
-    $sql.= "FROM {$table_prefix}THREAD T ";
-    $sql.= "LEFT JOIN {$table_prefix}USER_THREAD UT ";
+    $sql.= "FROM {$webtag['PREFIX']}THREAD T ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD UT ";
     $sql.= "ON (T.TID = UT.TID and UT.UID = '$uid') ";
     $sql.= "JOIN USER U ";
-    $sql.= "JOIN {$table_prefix}POST P ";
-    $sql.= "LEFT JOIN {$table_prefix}USER_FOLDER UF ON ";
+    $sql.= "JOIN {$webtag['PREFIX']}POST P ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_FOLDER UF ON ";
     $sql.= "(UF.FID = T.FID AND UF.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_prefix}USER_PEER UP ON ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PEER UP ON ";
     $sql.= "(UP.UID = '$uid' AND UP.PEER_UID = P.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_IDS AT ON ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_IDS AT ON ";
     $sql.= "(AT.TID = T.TID) ";
     $sql.= "WHERE T.FID IN ($fidlist) ";
     $sql.= "AND U.UID = P.FROM_UID ";
@@ -730,9 +730,9 @@ function threads_get_folder_msgs()
     $folder_msgs = array();
     $db_threads_get_folder_msgs = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "SELECT FID, COUNT(*) AS TOTAL FROM {$table_prefix}THREAD GROUP BY FID";
+    $sql = "SELECT FID, COUNT(*) AS TOTAL FROM {$webtag['PREFIX']}THREAD GROUP BY FID";
     $resource_id = db_query($sql, $db_threads_get_folder_msgs);
 
     while($folder = db_fetch_array($resource_id)){
@@ -746,9 +746,9 @@ function threads_any_unread()
 {
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "select * from {$table_prefix}THREAD T left join {$table_prefix}USER_THREAD UT ";
+    $sql = "select * from {$webtag['PREFIX']}THREAD T left join {$webtag['PREFIX']}USER_THREAD UT ";
     $sql.= "on (T.TID = UT.TID and UT.UID = '$uid') ";
     $sql.= "where T.LENGTH > UT.LAST_READ ";
     $sql.= "limit 0,1";
@@ -766,9 +766,9 @@ function threads_mark_all_read()
 
     $db_threads_mark_all_read = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "SELECT TID, LENGTH FROM {$table_prefix}THREAD";
+    $sql = "SELECT TID, LENGTH FROM {$webtag['PREFIX']}THREAD";
     $result_threads = db_query($sql, $db_threads_mark_all_read);
 
     while($row = db_fetch_array($result_threads)) {
@@ -783,10 +783,10 @@ function threads_mark_50_read()
 
     $db_threads_mark_50_read = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "SELECT DISTINCT THREAD.TID, THREAD.LENGTH FROM {$table_prefix}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_prefix}USER_THREAD USER_THREAD ON ";
+    $sql = "SELECT DISTINCT THREAD.TID, THREAD.LENGTH FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_THREAD USER_THREAD ON ";
     $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50";
@@ -802,13 +802,13 @@ function threads_mark_read($tidarray)
 {
     $db_threads_mark_read = db_connect();
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     if (!is_array($tidarray)) return false;
     
     foreach($tidarray as $ctid) {
 
-        $sql = "SELECT LENGTH FROM {$table_prefix}THREAD WHERE TID = $ctid";
+        $sql = "SELECT LENGTH FROM {$webtag['PREFIX']}THREAD WHERE TID = $ctid";
 
         $result = db_query($sql, $db_threads_mark_read);
 

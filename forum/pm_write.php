@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.44 2004-03-13 00:00:22 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.45 2004-03-13 20:04:34 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -46,7 +46,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag&final_uri=". urlencode(get_request_uri());
+    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -73,7 +73,7 @@ if (isset($HTTP_GET_VARS['replyto']) && is_numeric($HTTP_GET_VARS['replyto'])) {
 // User clicked cancel
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    $uri = (isset($mid)) ? "./pm.php?webtag=$webtag&mid=$mid" : "./pm.php?webtag=$webtag";
+    $uri = (isset($mid)) ? "./pm.php?webtag={$webtag['WEBTAG']}&mid=$mid" : "./pm.php?webtag={$webtag['WEBTAG']}";
     header_redirect($uri);
 }
 
@@ -213,9 +213,9 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
         }
     }
     if (isset($mid)) {
-        $uri = "./pm.php?webtag=$webtag&mid=$mid";
+        $uri = "./pm.php?webtag={$webtag['WEBTAG']}&mid=$mid";
     }else {
-        $uri = "./pm.php?webtag=$webtag";
+        $uri = "./pm.php?webtag={$webtag['WEBTAG']}";
     }
     header_redirect($uri);
 }
@@ -285,7 +285,7 @@ if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['writepm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
@@ -298,7 +298,7 @@ if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
     $t_content = isset($t_content) ? _stripslashes($t_content) : "";
 }
 
-echo "<form name=\"f_post\" action=\"pm_write.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"f_post\" action=\"pm_write.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
 echo "<table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
@@ -327,7 +327,7 @@ echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lan
 echo form_submit('cancel', $lang['cancel']);
 
 if ($attachments_enabled && $pm_allow_attachments) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?webtag=$webtag&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"attachwin = window.open('attachments.php?webtag={$webtag['WEBTAG']}&aid=". $aid. "', 'attachments', 'width=640, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');\"");
     echo form_input_hidden("aid", $aid);
 }
 

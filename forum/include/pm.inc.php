@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.41 2004-03-12 18:46:51 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.42 2004-03-13 20:04:36 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
@@ -36,9 +36,9 @@ function pm_markasread($mid)
     // Update the row so it appears as read to the receipient
     // ------------------------------------------------------------
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
-    $sql = "UPDATE {$table_prefix}PM SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
+    $sql = "UPDATE {$webtag['PREFIX']}PM SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
     
     $result = db_query($sql, $db_pm_markasread);
@@ -51,7 +51,7 @@ function pm_edit_refuse()
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannoteditpm']}</p>";
-    echo form_quick_button("pm.php?webtag=$webtag", $lang['back'], "folder", "2");
+    echo form_quick_button("pm.php?webtag={$webtag['WEBTAG']}", $lang['back'], "folder", "2");
     echo "</div>";
 
 }
@@ -63,7 +63,7 @@ function pm_error_refuse()
     echo "<div align=\"center\">";
     echo "<h1>{$lang['error']}</h1>";
     echo "<p>{$lang['cannotviewpm']}</p>";
-    echo form_quick_button("pm.php?webtag=$webtag", $lang['back'], "folder", "1");
+    echo form_quick_button("pm.php?webtag={$webtag['WEBTAG']}", $lang['back'], "folder", "1");
     echo "</div>";
 }
 
@@ -74,12 +74,12 @@ function pm_add_sentitem($mid)
 
     if (!is_numeric($mid)) return false;
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.CREATED, PM_CONTENT.CONTENT, AT.AID ";
-    $sql.= "FROM {$table_prefix}PM PM ";
-    $sql.= "LEFT JOIN {$table_prefix}PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN {$table_prefix}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
+    $sql.= "FROM {$webtag['PREFIX']}PM PM ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 
     $result = db_query($sql, $db_pm_add_sentitem);
@@ -90,7 +90,7 @@ function pm_add_sentitem($mid)
     // sender's sent items
     // ------------------------------------------------------------
 
-    $sql = "INSERT INTO {$table_prefix}PM (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
+    $sql = "INSERT INTO {$webtag['PREFIX']}PM (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
     $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
     $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
     $sql.= "'{$db_pm_add_sentitem_row['CREATED']}', 1)";
@@ -103,7 +103,7 @@ function pm_add_sentitem($mid)
     // the sender's sent items
     // ------------------------------------------------------------
 
-    $sql = "INSERT INTO {$table_prefix}PM_CONTENT (MID, CONTENT) ";
+    $sql = "INSERT INTO {$webtag['PREFIX']}PM_CONTENT (MID, CONTENT) ";
     $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
@@ -115,7 +115,7 @@ function pm_add_sentitem($mid)
 
     if (isset($db_pm_add_sentitem_row['AID']) && get_num_attachments($db_pm_add_sentitem_row['AID'])) {
 
-        $sql = "INSERT INTO {$table_prefix}PM_ATTACHMENT_IDS (MID, AID) ";
+        $sql = "INSERT INTO {$webtag['PREFIX']}PM_ATTACHMENT_IDS (MID, AID) ";
         $sql.= "VALUES ($new_mid, '{$db_pm_add_sentitem_row['AID']}')";
 
         $result = db_query($sql, $db_pm_add_sentitem);
@@ -135,16 +135,16 @@ function pm_list_get($folder)
     // Get a list of messages in the specified folder
     // ------------------------------------------------------------
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, AT.AID ";
-    $sql.= "FROM {$table_prefix}PM PM ";
+    $sql.= "FROM {$webtag['PREFIX']}PM PM ";
     $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "LEFT JOIN {$table_prefix}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) WHERE ";
 
     if (($folder == PM_FOLDER_INBOX)) {
         $sql.= "PM.TYPE = PM.TYPE & $folder AND PM.TO_UID = '$uid' ";
@@ -171,10 +171,10 @@ function pm_get_user($mid)
 
     if (!is_numeric($mid)) return false;
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN {$table_prefix}PM PM ON (PM.FROM_UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}PM PM ON (PM.FROM_UID = USER.UID) ";
     $sql.= "WHERE PM.MID = '$mid'";
 
     $result = db_query($sql, $db_pm_get_user);
@@ -205,7 +205,7 @@ function pm_draw_to_dropdown($default_uid)
         }
     }
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT U.UID, U.LOGON, U.NICKNAME, UNIX_TIMESTAMP(U.LAST_LOGON) AS LAST_LOGON ";
     $sql.= "FROM USER U where (U.LOGON <> 'GUEST' AND U.PASSWD <> MD5('GUEST')) ";
@@ -237,15 +237,15 @@ function pm_single_get($mid, $folder, $uid = false)
     // Fetch the single message as specified by the MID
     // ------------------------------------------------------------
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.TO_UID, PM.FROM_UID, PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "PM_CONTENT.CONTENT, AT.AID FROM {$table_prefix}PM PM ";
+    $sql.= "PM_CONTENT.CONTENT, AT.AID FROM {$webtag['PREFIX']}PM PM ";
     $sql.= "LEFT JOIN USER TUSER ON (TUSER.UID = PM.TO_UID) ";
     $sql.= "LEFT JOIN USER FUSER ON (FUSER.UID = PM.FROM_UID) ";
-    $sql.= "LEFT JOIN {$table_prefix}PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN {$table_prefix}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' ";
 
     if (($folder == PM_FOLDER_INBOX)) {
@@ -384,7 +384,7 @@ function draw_pm_message($pm_elements_array)
                     }else {
                             
                         if ($attachment_use_old_method) {
-                            echo "<a href=\"getattachment.php?webtag=$webtag&hash=", $visible_attachments[$i]['hash'], "\"";
+                            echo "<a href=\"getattachment.php?webtag={$webtag['WEBTAG']}&hash=", $visible_attachments[$i]['hash'], "\"";
                         }else {
                             echo "<a href=\"getattachment.php/", $visible_attachments[$i]['hash'], "/", rawurlencode($visible_attachments[$i]['filename']), "\"";
                         }
@@ -424,7 +424,7 @@ function draw_pm_message($pm_elements_array)
         echo "          </table>\n";
         echo "          <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
         echo "            <tr>\n";
-        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
+        echo "              <td align=\"center\"><img src=\"./images/post.png\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag={$webtag['WEBTAG']}&replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
         echo "            </tr>\n";
     }
 
@@ -465,10 +465,10 @@ function pm_save_attachment_id($mid, $aid)
     if (!is_numeric($mid)) return false;
     if (!is_md5($aid)) return false;
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $db_pm_save_attachment_id = db_connect();
-    $sql = "INSERT INTO {$table_prefix}PM_ATTACHMENT_IDS (MID, AID) values ('$mid', '$aid')";
+    $sql = "INSERT INTO {$webtag['PREFIX']}PM_ATTACHMENT_IDS (MID, AID) values ('$mid', '$aid')";
 
     $result = db_query($sql, $db_pm_save_attachment_id);
     return $result;
@@ -480,7 +480,7 @@ function pm_send_message($tuid, $subject, $content)
 
     if (!is_numeric($tuid)) return false;
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     $subject = addslashes($subject);
     $content = addslashes($content);
@@ -491,7 +491,7 @@ function pm_send_message($tuid, $subject, $content)
     // Insert the main PM Data into the database
     // ------------------------------------------------------------
 
-    $sql = "INSERT INTO {$table_prefix}PM";
+    $sql = "INSERT INTO {$webtag['PREFIX']}PM";
     $sql.= " (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED) ";
     $sql.= "VALUES (". PM_NEW. ", '$tuid', '$fuid', '$subject', NOW())";
 
@@ -505,7 +505,7 @@ function pm_send_message($tuid, $subject, $content)
       // Insert the PM Content into the database
       // ------------------------------------------------------------
 
-      $sql = "INSERT INTO {$table_prefix}PM_CONTENT (MID, CONTENT) ";
+      $sql = "INSERT INTO {$webtag['PREFIX']}PM_CONTENT (MID, CONTENT) ";
       $sql.= "VALUES ('$new_mid', '$content')";
 
       if (db_query($sql, $db_pm_send_message)) {
@@ -526,20 +526,20 @@ function pm_edit_message($mid, $subject, $content)
     $subject = addslashes($subject);
     $content = addslashes($content);
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     // ------------------------------------------------------------
     // Update the subject text
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_prefix}PM SET SUBJECT = '$subject' WHERE MID = '$mid'";
+    $sql = "UPDATE {$webtag['PREFIX']}PM SET SUBJECT = '$subject' WHERE MID = '$mid'";
     $result_subject = db_query($sql, $db_pm_edit_messages);
 
     // ------------------------------------------------------------
     // Update the content
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_prefix}PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
+    $sql = "UPDATE {$webtag['PREFIX']}PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
     $result_content = db_query($sql, $db_pm_edit_messages);
 
     return ($result_subject && $result_content);
@@ -554,7 +554,7 @@ function pm_delete_message($mid)
 
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     // ------------------------------------------------------------
     // Get the PM data incase the sendee hasn't got a copy of it
@@ -562,9 +562,9 @@ function pm_delete_message($mid)
     // ------------------------------------------------------------
 
     $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, PAF.FILENAME, AT.AID ";
-    $sql.= "FROM {$table_prefix}PM PM ";
-    $sql.= "LEFT JOIN {$table_prefix}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN {$table_prefix}POST_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
+    $sql.= "FROM {$webtag['PREFIX']}PM PM ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN {$webtag['PREFIX']}POST_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
     $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 
     $result = db_query($sql, $db_delete_pm);
@@ -587,10 +587,10 @@ function pm_delete_message($mid)
         delete_attachment($db_delete_pm_row['FROM_UID'], $db_delete_pm_row['AID'], $db_delete_pm_row['FILENAME']);
     }
 
-    $sql = "DELETE FROM {$table_prefix}PM WHERE MID = '$mid'";
+    $sql = "DELETE FROM {$webtag['PREFIX']}PM WHERE MID = '$mid'";
     $result = db_query($sql, $db_delete_pm);
 
-    $sql = "DELETE FROM {$table_prefix}PM_CONTENT WHERE MID = '$mid'";
+    $sql = "DELETE FROM {$webtag['PREFIX']}PM_CONTENT WHERE MID = '$mid'";
     return db_query($sql, $db_delete_pm);
 
 }
@@ -603,14 +603,14 @@ function pm_archive_message($mid)
 
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     // ------------------------------------------------------------
     // Check to see if the the sender need an item in
     // his Sent Items folder.
     // ------------------------------------------------------------
 
-    $sql = "SELECT PM.TYPE FROM {$table_prefix}PM PM WHERE PM.MID = '$mid'";
+    $sql = "SELECT PM.TYPE FROM {$webtag['PREFIX']}PM PM WHERE PM.MID = '$mid'";
     $result = db_query($sql, $db_pm_archive_message);
     $db_pm_archive_message_row = db_fetch_array($result);
 
@@ -622,7 +622,7 @@ function pm_archive_message($mid)
     // Archive any PM that are in the User's Inbox
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_prefix}PM SET TYPE = ". PM_SAVED_IN. " ";
+    $sql = "UPDATE {$webtag['PREFIX']}PM SET TYPE = ". PM_SAVED_IN. " ";
     $sql.= "WHERE MID = '$mid' AND (TYPE = ". PM_NEW. " OR TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
     $sql.= "AND TO_UID = '$uid'";
 
@@ -632,7 +632,7 @@ function pm_archive_message($mid)
     // Archive any PM that are in the User's Sent Items
     // ------------------------------------------------------------
 
-    $sql = "UPDATE {$table_prefix}PM SET TYPE = ". PM_SAVED_OUT. " ";
+    $sql = "UPDATE {$webtag['PREFIX']}PM SET TYPE = ". PM_SAVED_OUT. " ";
     $sql.= "WHERE MID = '$mid' AND TYPE = ". PM_SENT. " AND FROM_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_archive_message);
@@ -643,13 +643,13 @@ function pm_new_check()
     $db_pm_new_check = db_connect();
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     // ------------------------------------------------------------
     // Check to see if the user has any new PMs
     // ------------------------------------------------------------
 
-    $sql = "SELECT MID FROM {$table_prefix}PM ";
+    $sql = "SELECT MID FROM {$webtag['PREFIX']}PM ";
     $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
@@ -662,7 +662,7 @@ function pm_new_check()
     // the page, so set all NEW messages to UNREAD.
     // ------------------------------------------------------------
     
-    $sql = "UPDATE {$table_prefix}PM SET NOTIFIED = 1 ";
+    $sql = "UPDATE {$webtag['PREFIX']}PM SET NOTIFIED = 1 ";
     $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_new_check);
@@ -675,13 +675,13 @@ function pm_get_unread_count()
     $db_pm_get_unread_count = db_connect();
     $uid = bh_session_get_value('UID');
     
-    $table_prefix = get_webtag(true);
+    $webtag = get_webtag();
 
     // ------------------------------------------------------------
     // Check to see if the user has any new PMs
     // ------------------------------------------------------------
 
-    $sql = "SELECT MID FROM {$table_prefix}PM ";
+    $sql = "SELECT MID FROM {$webtag['PREFIX']}PM ";
     $sql.= "WHERE TYPE = ". PM_NEW. " AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_get_unread_count);

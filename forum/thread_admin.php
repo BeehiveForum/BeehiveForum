@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.30 2004-02-05 22:10:32 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.31 2004-02-22 15:24:33 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -36,6 +36,9 @@ require_once("./include/folder.inc.php");
 require_once("./include/thread.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
+
+if (!isset($allow_post_editing)) $allow_post_editing = true;
+if (!isset($post_edit_time)) $post_edit_time = 0;
 
 if (!bh_session_check()) {
 

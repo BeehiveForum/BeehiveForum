@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.2 2004-01-26 19:40:58 decoyduck Exp $ */
+/* $Id: user.php,v 1.3 2004-02-22 15:24:33 decoyduck Exp $ */
 
 // Frameset for thread list and messages
 
@@ -52,6 +52,7 @@ require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/lang.inc.php");
 
+if (!isset($default_style)) $default_style = "default";
 $stylesheet = "./styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.39 2004-02-05 21:14:20 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.40 2004-02-22 15:24:33 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -54,6 +54,9 @@ require_once("./include/lang.inc.php");
 require_once("./include/pm.inc.php");
 require_once("./include/email.inc.php");
 require_once("./include/attachments.inc.php");
+
+if (!isset($pm_allow_attachments)) $pm_allow_attachments = true;
+if (!isset($$attachments_enabled)) $$attachments_enabled = true;
 
 // Get the Message ID (MID) if any.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.81 2004-02-22 14:27:20 decoyduck Exp $ */
+/* $Id: edit.php,v 1.82 2004-02-22 15:24:33 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -61,6 +61,9 @@ require_once("./include/config.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/htmltools.inc.php");
+
+if (!isset($allow_post_editing)) $allow_post_editing = true;
+if (!isset($post_edit_time)) $post_edit_time = 0;
 
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.54 2003-12-29 20:07:26 decoyduck Exp $ */
+/* $Id: index.php,v 1.55 2004-02-22 15:24:33 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -37,11 +37,16 @@ require_once("./include/session.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/lang.inc.php");
 
+if (!isset($auto_logon)) $auto_logon = true;
+
 header_no_cache();
 
 if (!isset($HTTP_COOKIE_VARS['bh_remember_username'])) {
     bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 }
+
+if (!isset($default_style)) $default_style = "default";
+if (!isset($guest_account_enabled)) $guest_account_enabled = true;
 
 $top_html   = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/top.html";
 $stylesheet = "styles/". (bh_session_get_value('STYLE') ? bh_session_get_value('STYLE') : $default_style). "/style.css";
@@ -50,15 +55,15 @@ if (!file_exists($top_html)) {
     $top_html = "./top.html";
 }
 
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="<?php echo $lang['_textdir']; ?>">
-<head>
-<title><?php echo $forum_name; ?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $lang['_charset']; ?>">
-<link rel="stylesheet" href="<?php echo $stylesheet; ?>" type="text/css" />
-</head>
-<?php
+if (!isset($forum_name)) $forum_name = "A Beehive Forum";
+
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
+echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
+echo "<head>\n";
+echo "<title>{$forum_name}</title>\n";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\">\n";
+echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
+echo "</head>\n";
 
 if (isset($HTTP_GET_VARS['autologon']) && $HTTP_GET_VARS['autologon'] == 0) {
     bh_session_end();

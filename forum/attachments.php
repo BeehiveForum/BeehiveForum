@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.48 2004-02-13 13:20:26 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.49 2004-02-22 15:24:32 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -44,6 +44,8 @@ require_once("./include/config.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/lang.inc.php");
 require_once("./include/format.inc.php");
+
+if (!isset($attachment_dir)) $attachment_dir = "attachments";
 
 // If attachments are disabled then no need to go any further.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.77 2004-01-26 19:41:00 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.78 2004-02-22 15:24:39 decoyduck Exp $ */
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
@@ -121,6 +121,9 @@ function html_message_type_error()
 function html_draw_top()
 {
     global $HTTP_GET_VARS, $HTTP_SERVER_VARS, $forum_name, $default_style, $lang;
+    
+    if (!isset($forum_name)) $forum_name = "A Beehive Forum";
+    if (!isset($default_style)) $default_style = "default";
 
     $onload_array = array();
     $onunload_array = array();

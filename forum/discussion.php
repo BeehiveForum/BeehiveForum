@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.31 2004-01-26 19:40:26 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.32 2004-02-22 15:24:33 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -43,6 +43,8 @@ if (!bh_session_check()) {
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
+
+if (!isset($forum_name)) $forum_name = "A Beehive Forum";
 
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
 echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";

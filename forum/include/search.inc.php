@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.97 2005-03-09 09:15:10 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.98 2005-03-09 09:24:38 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -508,8 +508,10 @@ function search_index_old_post()
 
         $result = db_query($sql, $db_search_index_old_post);
 
-        search_index_post($tid, $pid, $content);
+        return search_index_post($tid, $pid, $content);
     }
+
+    return false;
 }
 
 function search_index_post($tid, $pid, $content)

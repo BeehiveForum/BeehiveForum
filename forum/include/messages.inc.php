@@ -128,37 +128,13 @@ function messages_get($tid, $pid = 1, $limit = 1) // get "all" threads (i.e. mos
     return $messages;
 }
 
-function message_get_content($tid, $pid)
+function message_get_content($tid,$pid)
 {
-    global $HTTP_COOKIE_VARS;
-
     $db_mgc = db_connect();
-
-    //  Modified to fetch attributes to check for "worm" status --SGF 7-25-2002
-    $sql  = "select POST_CONTENT.CONTENT, POST.FROM_UID, ";
-    $sql .= "FUSER.STATUS as FSTATUS from POST_CONTENT, POST ";
-    $sql .= "left join USER FUSER on (POST.from_uid = FUSER.uid) ";
-    $sql .= "where POST_CONTENT.TID = '$tid' and POST_CONTENT.PID = '$pid' ";
-    $sql .= "and POST.TID = '$tid' and POST.PID = '$pid'";
-
-    $result = db_query($sql, $db_mgc);
+    $sql = "select CONTENT from " . forum_table('POST_CONTENT') . " where TID = '$tid' and PID = '$pid'";
+    $result = db_query($sql,$db_mgc);
     $fa = db_fetch_array($result);
-
-    if (!isset($fa['CONTENT'])) {
-        $fa['CONTENT'] = "";
-    }
-
-    if (isset($fa['FSTATUS']) && ($fa['FSTATUS'] & USER_PERM_WORM)) {
-        if  ($fa['FROM_UID'] != $HTTP_COOKIE_VARS['bh_sess_uid']) {
-            $retval = "";
-        } else {
-            $retval = $fa['CONTENT'];
-        }
-    } else {
-        $retval = $fa['CONTENT'];
-    }
-  
-    return $retval;
+    return isset($fa['CONTENT']) ? $fa['CONTENT'] : "";
 }
 
 function messages_top($foldertitle, $threadtitle, $interest_level = 0)

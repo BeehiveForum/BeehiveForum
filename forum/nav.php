@@ -25,6 +25,7 @@ USA
 
 require_once("./include/constants.inc.php");
 require_once("./include/header.inc.php");
+require_once("./include/html.inc.php");
 
 header_no_cache();
 

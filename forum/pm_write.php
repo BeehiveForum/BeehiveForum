@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.26 2003-09-15 19:04:30 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.27 2003-09-20 17:53:35 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -106,7 +106,7 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 
     if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
         $t_content = $HTTP_POST_VARS['t_content'];
-    }else {
+    }elseif ($valid) {
         $error_html = "<h2>{$lang['entercontentformessage']}</h2>\n";
         $valid = false;
     }
@@ -129,15 +129,29 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
                     $t_new_recipient_array['LOGON'][]  = ucfirst(strtolower($to_user['LOGON']));
                     $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                 }
+
+            }elseif ($valid) {
+
+                $error_html = "<h2>{$lang['usernotfound1']} $to_logon {$lang['usernotfound2']}</h2>\n";
+                $valid = false;
             }
         }
 
         $t_recipient_list = implode('; ', $t_new_recipient_array['LOGON']);
 
-        if (sizeof($t_new_recipient_array['TO_UID']) > 10) {
+        if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
             $error_html = "<h2>{$lang['maximumtenrecipientspermessage']}</h2>\n";
             $valid = false;
         }
+
+        if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
+            $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+            $valid = false;
+        }
+
+    }elseif ($valid) {
+        $error_html = "<h2>{$lang['mustspecifyrecipient']}</h2>\n";
+        $valid = false;
     }
 
     if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y") {
@@ -251,7 +265,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 echo "<h1>{$lang['privatemessages']}: {$lang['writepm']}</h1>\n";
 echo "<div align=\"right\"><a href=\"pm.php\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a></div><br />\n";
 
-if ($valid == false) {
+if (!$valid && isset($error_html)) {
     echo $error_html;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.86 2005-02-22 14:21:31 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.87 2005-02-24 12:09:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -124,11 +124,8 @@ function search_execute($argarray, &$urlquery, &$error)
 
         foreach ($keywords_array as $key => $value) {
 
-            if (!in_array($value, $boolean_search_params)) {
-
-                if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3)) || in_array($value, $mysql_fulltext_stopwords)) {
-                    unset($keywords_array[$key]);
-                }
+            if (strlen($value) < intval(forum_get_setting('search_min_word_length', false, 3)) || in_array($value, $mysql_fulltext_stopwords)) {
+                unset($keywords_array[$key]);
             }
         }
 
@@ -243,8 +240,6 @@ function search_execute($argarray, &$urlquery, &$error)
 
         $search_sql.= " LIMIT ". $argarray['sstart']. ", 50";
         $search_sql = preg_replace("/ +/", " ", $search_sql);
-
-        echo $search_sql; exit;
 
         $result = db_query($search_sql, $db_search_execute);
 

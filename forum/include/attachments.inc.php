@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.73 2004-12-03 00:29:49 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.74 2004-12-05 17:58:05 decoyduck Exp $ */
 
 include_once("./include/admin.inc.php");
 include_once("./include/edit.inc.php");
@@ -183,6 +183,7 @@ function delete_attachment_by_aid($aid)
     $result = db_query($sql, $db_delete_attachment_by_aid);
 
     while ($row = db_fetch_array($result)) {
+
         delete_attachment($row['HASH']);
     }
 }
@@ -246,7 +247,7 @@ function delete_attachment($hash)
             // No more attachments connected to the AID, so we can remove it from
             // the PAI database.
 
-            if (db_num_rows($result) == 0) {
+            if (db_num_rows($result) < 1) {
 
                 $sql = "DELETE FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS ";
                 $sql.= "WHERE AID = '{$row['AID']}'";
@@ -281,6 +282,7 @@ function get_free_attachment_space($uid)
     while($row = db_fetch_array($result)) {
 
         if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
+
             $used_attachment_space += filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']);
         }
     }
@@ -416,7 +418,7 @@ function get_attachment_by_hash($hash)
     $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
     $result = db_query($sql, $db_get_attachment_by_hash);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
         return db_fetch_array($result);
     }else {
         return false;
@@ -443,13 +445,10 @@ function attachment_inc_dload_count($hash)
 function attachment_embed_check($content)
 {
     if (forum_get_setting('attachments_allow_embed', 'Y', false)) return false;
+
     $content_check = preg_replace('/\&amp;\#([0-9]+)\;/me', "chr('\\1')", rawurldecode($content));
 
-    if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $content_check)) {
-        return true;
-    }
-
-    return false;
+    return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $content_check);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.92 2004-11-14 16:11:31 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.93 2004-12-05 17:58:04 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -120,10 +120,10 @@ if (!(perm_has_admin_access())) {
 // Friendly display names for column sorting
 
 $sort_by_array = array('USER.UID'        => 'UID',
-                     'USER.LOGON'      => 'LOGON',
-                     'USER.NICKNAME'   => 'NICKNAME',
-                     'USER.STATUS'     => 'STATUS',
-                     'USER.LAST_LOGON' => 'LAST_LOGON');
+                       'USER.LOGON'      => 'LOGON',
+                       'USER.NICKNAME'   => 'NICKNAME',
+                       'USER.STATUS'     => 'STATUS',
+                       'USER.LAST_LOGON' => 'LAST_LOGON');
 
 // Column sorting stuff
 
@@ -246,10 +246,10 @@ if (sizeof($admin_user_array['user_array']) > 0) {
         echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", $user['UID'], "</td>\n";
         echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
 
-        if (!isset($user['LAST_LOGON']) || is_null($user['LAST_LOGON'])) {
-            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
-        }else {
+        if (isset($user['LAST_LOGON']) && $user['LAST_LOGON'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_LOGON'], 1), "</td>\n";
+        }else {
+            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
         }
 
         if (user_is_active($user['UID'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.43 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.44 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -39,11 +39,12 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     if (!$table_data = get_table_prefix()) return array('links_count' => 0,
                                                         'links_array' => array());
 
-    $sql = "SELECT LID FROM {$table_data['PREFIX']}LINKS ";
+    $sql = "SELECT COUNT(LID) AS LINK_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}LINKS ";
     $sql.= "WHERE FID = $fid";
 
     $result = db_query($sql, $db_links_get_in_folder);
-    $links_count = db_num_rows($result);
+    list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
     $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
@@ -271,10 +272,11 @@ function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC"
     if (!$table_data = get_table_prefix()) return array('links_count' => 0,
                                                         'links_array' => array());
 
-    $sql = "SELECT LID FROM {$table_data['PREFIX']}LINKS ";
+    $sql = "SELECT COUNT(LID) AS LINK_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}LINKS ";
 
     $result = db_query($sql, $db_links_get_in_folder);
-    $links_count = db_num_rows($result);
+    list($links_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT LINKS.LID, LINKS.UID, USER.LOGON, USER.NICKNAME, LINKS.URI, LINKS.TITLE, ";
     $sql.= "LINKS.DESCRIPTION, LINKS.VISIBLE, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED, LINKS.CLICKS, ";
@@ -424,7 +426,7 @@ function links_get_comments($lid)
 
     $result = db_query($sql, $db_links_get_comments);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         while ($row = db_fetch_array($result)) {
             $comments[] = $row;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.74 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.75 2004-12-05 17:58:05 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -86,8 +86,11 @@ function email_sendnotification($tuid, $msg, $fuid)
             $header.= "X-Mailer: PHP/". phpversion();
 
             if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+
                 $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
+
             }else {
+
                 $recipient = $to_user['EMAIL'];
             }
 
@@ -162,8 +165,11 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $header.= "X-Mailer: PHP/". phpversion();
 
         if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+
             $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
+
         }else {
+
             $recipient = $to_user['EMAIL'];
         }
 
@@ -231,8 +237,11 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $header.= "X-Mailer: PHP/". phpversion();
 
             if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+
                 $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
+
             }else {
+
                 $recipient = $to_user['EMAIL'];
             }
 
@@ -286,8 +295,11 @@ function email_send_pw_reminder($logon)
             $header.= "X-Mailer: PHP/". phpversion();
 
             if (isset($to_user['NICKNAME']) && strlen(trim($to_user['NICKNAME'])) > 0 && !server_os_mswin()) {
+
                 $recipient = "\"{$to_user['NICKNAME']}\" <{$to_user['EMAIL']}>";
+
             }else {
+
                 $recipient = $to_user['EMAIL'];
             }
 
@@ -324,7 +336,9 @@ function email_get_language($to_uid)
 function server_os_mswin()
 {
     if (defined('PHP_OS')) {
+
         if (stristr(PHP_OS, 'WIN') && !stristr(PHP_OS, 'DARWIN')) {
+
             return true;
         }
     }
@@ -335,8 +349,11 @@ function server_os_mswin()
 function check_mail_variables()
 {
     if (server_os_mswin()) {
+
         if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
+
     }else {
+
         if (!(bool)ini_get('sendmail_path')) return false;
     }
 

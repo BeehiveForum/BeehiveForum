@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.60 2004-12-01 09:25:47 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.61 2004-12-05 17:58:05 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -105,9 +105,9 @@ function db_query ($sql, $connection_id)
 {
     if (@extension_loaded('mysql')) {
 
-        if ($resource_id = mysql_query($sql, $connection_id)) {
+        if ($result = mysql_query($sql, $connection_id)) {
 
-            return $resource_id;
+            return $result;
 
         }else {
 
@@ -118,9 +118,9 @@ function db_query ($sql, $connection_id)
 
     if (@extension_loaded('mysqli')) {
 
-        if ($resource_id = mysqli_query($connection_id, $sql)) {
+        if ($result = mysqli_query($connection_id, $sql)) {
 
-            return $resource_id;
+            return $result;
 
         }else {
 
@@ -140,9 +140,9 @@ function db_unbuffered_query ($sql, $connection_id)
 
         if (function_exists("mysql_unbuffered_query")) {
 
-            if ($resource_id = mysql_unbuffered_query($sql, $connection_id)) {
+            if ($result = mysql_unbuffered_query($sql, $connection_id)) {
 
-                return $resource_id;
+                return $result;
 
             }else {
 
@@ -152,32 +152,32 @@ function db_unbuffered_query ($sql, $connection_id)
 
         }else {
 
-            $resource_id = db_query($sql, $connection_id);
-            return $resource_id;
+            $result = db_query($sql, $connection_id);
+            return $result;
         }
     }
 
     if (@extension_loaded('mysqli')) {
 
-        $resource_id = db_query($sql, $connection_id);
-        return $resource_id;
+        $result = db_query($sql, $connection_id);
+        return $result;
     }
 
     trigger_error("Could not perform query. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
 }
 
 // Returns the number of rows affected by a SELECT query when passed the resource ID
-function db_num_rows ($resource_id)
+function db_num_rows ($result)
 {
     if (@extension_loaded('mysql')) {
 
-        $num_rows = mysql_num_rows($resource_id);
+        $num_rows = mysql_num_rows($result);
         return $num_rows;
     }
 
     if (@extension_loaded('mysqli')) {
 
-        $num_rows = mysqli_num_rows($resource_id);
+        $num_rows = mysqli_num_rows($result);
         return $num_rows;
     }
 
@@ -202,17 +202,17 @@ function db_affected_rows($connection_id)
     trigger_error("Could not obtain affected row count. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
 }
 
-function db_fetch_array ($resource_id, $result_type = DB_RESULT_BOTH)
+function db_fetch_array ($result, $result_type = DB_RESULT_BOTH)
 {
     if (@extension_loaded('mysql')) {
 
-        $results = mysql_fetch_array($resource_id, $result_type);
+        $results = mysql_fetch_array($result, $result_type);
         return $results;
     }
 
     if (@extension_loaded('mysqli')) {
 
-       $results = mysqli_fetch_array($resource_id, $result_type);
+       $results = mysqli_fetch_array($result, $result_type);
        return $results;
     }
 
@@ -220,17 +220,17 @@ function db_fetch_array ($resource_id, $result_type = DB_RESULT_BOTH)
 }
 
 // Seeks to the specified row in a SELECT query (0 based)
-function db_data_seek ($resource_id, $row_number)
+function db_data_seek ($result, $row_number)
 {
     if (@extension_loaded('mysql')) {
 
-        $seek_result = @mysql_data_seek($resource_id, $row_number);
+        $seek_result = @mysql_data_seek($result, $row_number);
         return $seek_result;
     }
 
     if (@extension_loaded('mysqli')) {
 
-        $seek_result = @mysqli_data_seek($resource_id, $row_number);
+        $seek_result = @mysqli_data_seek($result, $row_number);
         return $seek_result;
     }
 
@@ -238,33 +238,33 @@ function db_data_seek ($resource_id, $row_number)
 }
 
 // Returns the AUTO_INCREMENT ID from the last insert statement
-function db_insert_id($resource_id)
+function db_insert_id($result)
 {
     if (@extension_loaded('mysql')) {
 
-        $insert_id = mysql_insert_id($resource_id);
+        $insert_id = mysql_insert_id($result);
         return $insert_id;
     }
 
     if (@extension_loaded('mysqli')) {
 
-        $insert_id = mysqli_insert_id($resource_id);
+        $insert_id = mysqli_insert_id($result);
         return $insert_id;
     }
 
     trigger_error("Could not fetch AUTO_INCREMENT ID. Please check that the PHP MySQL or MySQLi extension is correctly installed", E_USER_ERROR);
 }
 
-function db_error($resource_id)
+function db_error($result)
 {
     if (@extension_loaded('mysql')) {
 
-        return mysql_error($resource_id);
+        return mysql_error($result);
     }
 
     if (@extension_loaded('mysqli')) {
 
-        return mysqli_error($resource_id);
+        return mysqli_error($result);
     }
 
     return "Error unknown";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.30 2004-11-21 14:08:09 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.31 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/html.inc.php");
 include_once("./include/lang.inc.php");
@@ -45,7 +45,7 @@ function get_forum_list()
 
     $result_forums = db_query($sql, $db_get_forum_list);
 
-    if (db_num_rows($result_forums)) {
+    if (db_num_rows($result_forums) > 0) {
 
         while ($forum_data = db_fetch_array($result_forums)) {
 
@@ -54,7 +54,7 @@ function get_forum_list()
 
             $result_forum_name = db_query($sql, $db_get_forum_list);
 
-            if (db_num_rows($result_forum_name)) {
+            if (db_num_rows($result_forum_name) > 0) {
 
                 $row = db_fetch_array($result_forum_name);
                 $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
@@ -69,7 +69,7 @@ function get_forum_list()
             $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
             $result_post_count = db_query($sql, $db_get_forum_list);
 
-            if (db_num_rows($result_post_count)) {
+            if (db_num_rows($result_post_count) > 0) {
 
                 $row = db_fetch_array($result_post_count);
                 $forum_data['MESSAGES'] = $row['POST_COUNT'];
@@ -85,7 +85,7 @@ function get_forum_list()
 
             $result_description = db_query($sql, $db_get_forum_list);
 
-            if (db_num_rows($result_description)) {
+            if (db_num_rows($result_description) > 0) {
 
                 $row = db_fetch_array($result_description);
                 $forum_data['DESCRIPTION'] = $row['SVALUE'];
@@ -125,7 +125,7 @@ function get_my_forums()
 
     $result_forums = db_query($sql, $db_get_my_forums);
 
-    if (db_num_rows($result_forums)) {
+    if (db_num_rows($result_forums) > 0) {
 
         while ($forum_data = db_fetch_array($result_forums)) {
 
@@ -134,7 +134,7 @@ function get_my_forums()
 
             $result_forum_name = db_query($sql, $db_get_my_forums);
 
-            if (db_num_rows($result_forum_name)) {
+            if (db_num_rows($result_forum_name) > 0) {
 
                 $row = db_fetch_array($result_forum_name);
                 $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
@@ -196,11 +196,12 @@ function get_my_forums()
 
             $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
             $sql.= "FROM {$forum_data['WEBTAG']}_VISITOR_LOG ";
-            $sql.= "WHERE UID = '$uid'";
+            $sql.= "WHERE UID = '$uid' AND LAST_LOGON IS NOT NULL ";
+            $sql.= "AND LAST_LOGON > 0";
 
             $result_last_visit = db_query($sql, $db_get_my_forums);
 
-            if (db_num_rows($result_last_visit)) {
+            if (db_num_rows($result_last_visit) > 0) {
 
                 $row = db_fetch_array($result_last_visit);
                 $forum_data['LAST_LOGON'] = $row['LAST_LOGON'];
@@ -218,7 +219,7 @@ function get_my_forums()
 
             $result_description = db_query($sql, $db_get_my_forums);
 
-            if (db_num_rows($result_description)) {
+            if (db_num_rows($result_description) > 0) {
 
                 $row = db_fetch_array($result_description);
                 $forum_data['DESCRIPTION'] = $row['SVALUE'];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.308 2004-11-21 17:26:06 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.309 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -58,7 +58,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "ORDER BY POST.PID ";
     $sql .= "LIMIT 0, $limit";
 
-    $resource_id = db_unbuffered_query($sql, $db_message_get);
+    $result = db_unbuffered_query($sql, $db_message_get);
 
     // Loop through the results and construct an array to return
 
@@ -66,7 +66,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         $messages = array();
 
-        for ($i = 0; $message = db_fetch_array($resource_id); $i++) {
+        for ($i = 0; $message = db_fetch_array($result); $i++) {
 
             $messages[$i]['FID'] = $message['FID'];
             $messages[$i]['PID'] = $message['PID'];
@@ -108,7 +108,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     }else {
 
-        $messages = db_fetch_array($resource_id);
+        $messages = db_fetch_array($result);
 
         if (!isset($messages['VIEWED'])) {
 
@@ -886,7 +886,7 @@ function messages_get_most_recent($uid, $fid = false)
 
     $result = db_query($sql, $db_messages_get_most_recent);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $row = db_fetch_array($result);
 

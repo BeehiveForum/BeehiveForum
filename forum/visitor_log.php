@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.58 2004-11-29 20:32:23 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.59 2004-12-05 17:58:05 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -151,7 +151,13 @@ if (sizeof($user_search_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td class=\"postbody\" align=\"left\"><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$user_search['UID']}, '$webtag')\">", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</a></td>\n";
-        echo "                   <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($user_search['LAST_LOGON']), "&nbsp;</td>\n";
+
+        if (isset($user_search['LAST_LOGON']) && $user_search['LAST_LOGON'] > 0) {
+            echo "                   <td class=\"postbody\" align=\"right\" width=\"200\">", format_time($user_search['LAST_LOGON']), "&nbsp;</td>\n";
+        }else {
+            echo "                   <td class=\"postbody\" align=\"right\" width=\"200\">{$lang['unknown']}&nbsp;</td>\n";
+        }
+
         echo "                 </tr>\n";
     }
 
@@ -164,9 +170,20 @@ if (sizeof($user_search_array['user_array']) > 0) {
     echo "                 <tr>\n";
     echo "                   <td class=\"subhead\" align=\"left\">{$lang['search']}</td>\n";
     echo "                 </tr>\n";
-    echo "                 <tr>\n";
-    echo "                   <td class=\"postbody\" align=\"left\">{$lang['yoursearchdidnotreturnanymatches']}</td>\n";
-    echo "                 </tr>\n";
+
+    if (isset($usersearch) && strlen($usersearch) > 0) {
+
+        echo "                 <tr>\n";
+        echo "                   <td class=\"postbody\" align=\"left\">{$lang['yoursearchdidnotreturnanymatches']}</td>\n";
+        echo "                 </tr>\n";
+
+    }else {
+
+        echo "                 <tr>\n";
+        echo "                   <td class=\"postbody\" align=\"left\">{$lang['nouseraccounts']}</td>\n";
+        echo "                 </tr>\n";
+    }
+
     echo "                 <tr>\n";
     echo "                   <td class=\"postbody\">&nbsp;</td>\n";
     echo "                 </tr>\n";

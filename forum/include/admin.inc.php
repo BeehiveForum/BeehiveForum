@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.47 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.48 2004-12-05 17:58:05 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/perm.inc.php");
@@ -79,10 +79,11 @@ function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_d
     if (!$table_data = get_table_prefix()) return array('admin_log_count' => 0,
                                                         'admin_log_array' => array());
 
-    $sql = "SELECT LOG_ID FROM {$table_data['PREFIX']}ADMIN_LOG ";
+    $sql = "SELECT COUNT(LOG_ID) AS LOG_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ";
 
     $result = db_query($sql, $db_admin_get_log_entries);
-    $admin_log_count = db_num_rows($result);
+    list($admin_log_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
     $sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
@@ -99,7 +100,7 @@ function admin_get_log_entries($offset, $sort_by = 'ADMIN_LOG.LOG_TIME', $sort_d
 
     $result = db_query($sql, $db_admin_get_log_entries);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         while ($row = db_fetch_array($result)) {
 
@@ -187,11 +188,11 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
 
     $user_search_array = array();
 
-    $sql = "SELECT UID FROM USER WHERE (USER.LOGON LIKE '$usersearch%' ";
-    $sql.= "OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
+    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
 
     $result = db_query($sql, $db_user_search);
-    $user_search_count = db_num_rows($result);
+    list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     if ($table_data = get_table_prefix()) {
 
@@ -216,9 +217,12 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
 
     $result = db_query($sql, $db_user_search);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         while ($row = db_fetch_array($result)) {
+
             if (!isset($user_search_array[$row['UID']])) {
+
                 $user_search_array[$row['UID']] = $row;
             }
         }
@@ -243,10 +247,10 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     $user_get_all_array = array();
 
-    $sql = "SELECT UID FROM USER";
+    $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER";
 
     $result = db_query($sql, $db_user_get_all);
-    $user_get_all_count = db_num_rows($result);
+    list($user_get_all_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     if ($table_data = get_table_prefix()) {
 
@@ -270,9 +274,12 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
     $result = db_query($sql, $db_user_get_all);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         while ($row = db_fetch_array($result)) {
+
             if (!isset($user_get_all_array[$row['UID']])) {
+
                 $user_get_all_array[$row['UID']] = $row;
             }
         }
@@ -347,7 +354,7 @@ function admin_get_forum_list()
 
         $result_forum_name = db_query($sql, $db_get_forum_list);
 
-        if (db_num_rows($result_forum_name)) {
+        if (db_num_rows($result_forum_name) > 0) {
 
             $row = db_fetch_array($result_forum_name);
             $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
@@ -365,7 +372,7 @@ function admin_get_forum_list()
 
         $result_description = db_query($sql, $db_get_forum_list);
 
-        if (db_num_rows($result_description)) {
+        if (db_num_rows($result_description) > 0) {
 
             $row = db_fetch_array($result_description);
             $forum_data['DESCRIPTION'] = $row['DESCRIPTION'];
@@ -380,7 +387,7 @@ function admin_get_forum_list()
         $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
         $result_post_count = db_query($sql, $db_get_forum_list);
 
-        if (db_num_rows($result_post_count)) {
+        if (db_num_rows($result_post_count) > 0) {
 
             $row = db_fetch_array($result_post_count);
             $forum_data['MESSAGES'] = $row['POST_COUNT'];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.3 2004-12-05 15:38:38 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.4 2004-12-05 17:58:07 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -600,13 +600,13 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    $sql = "INSERT INTO USER_PREFS_NEW (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL,";
-    $sql.= " EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE,";
-    $sql.= " VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON,";
-    $sql.= " SHOW_STATS) SELECT DISTINCT UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL,";
-    $sql.= " EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE,";
-    $sql.= " STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY,";
-    $sql.= " ANON_LOGON, SHOW_STATS FROM USER_PREFS GROUP BY UID";
+    $sql = "INSERT INTO USER_PREFS_NEW (UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL, ";
+    $sql.= "EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, ";
+    $sql.= "VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ANON_LOGON, ";
+    $sql.= "SHOW_STATS) SELECT DISTINCT UID, FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL, ";
+    $sql.= "EMAIL_NOTIFY, TIMEZONE, DL_SAVING, MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, ";
+    $sql.= "STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ";
+    $sql.= "ANON_LOGON, SHOW_STATS FROM USER_PREFS GROUP BY UID";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -1204,9 +1204,9 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    $sql = "CREATE TABLE VISITOR_LOG (";
+    $sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "  LAST_LOGON DATETIME NOT NULL,";
+    $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
     $sql.= "  PRIMARY KEY (UID)";
     $sql.= ")";
 
@@ -1216,7 +1216,8 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
-    $sql = "INSERT INTO VISITOR_LOG (UID, LAST_LOGON) SELECT UID, LAST_LOGON FROM USER";
+    $sql = "INSERT INTO {$forum_webtag}_VISITOR_LOG (UID, LAST_LOGON) ";
+    $sql.= "SELECT UID, LAST_LOGON FROM USER";
 
     if (!$result = db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.58 2004-11-14 16:11:32 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.59 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/folder.inc.php");
 include_once("./include/forum.inc.php");
@@ -35,16 +35,15 @@ function thread_get_title($tid)
     if (!is_numeric($tid)) return "The Unknown Thread";
 
     $sql = "SELECT TITLE FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
-    $resource_id = db_query($sql, $db_thread_get_title);
+    $result = db_query($sql, $db_thread_get_title);
 
-    if (!db_num_rows($resource_id)) {
-        $threadtitle = "The Unknown Thread";
-    }else {
-        $data = db_fetch_array($resource_id);
-        $threadtitle = $data['TITLE'];
+    if (db_num_rows($result) > 0) {
+
+        list($thread_title) = db_fetch_array($result, DB_FETCH_NUM);
+        return $thread_title;
     }
 
-    return $threadtitle;
+    return "The Unknown Thread";
 }
 
 function thread_get($tid)
@@ -77,13 +76,11 @@ function thread_get($tid)
     $sql.= "AND THREAD.TID = $tid ";
     $sql.= "GROUP BY THREAD.tid";
 
-    $resource_id = db_query($sql, $db_thread_get);
+    $result = db_query($sql, $db_thread_get);
 
-    if (!db_num_rows($resource_id)) {
-        $threaddata = false;
-    }else {
+    if (db_num_rows($result) > 0) {
 
-        $threaddata = db_fetch_array($resource_id);
+        $threaddata = db_fetch_array($result);
 
         if (!isset($threaddata['INTEREST'])) {
             $threaddata['INTEREST'] = 0;
@@ -104,9 +101,11 @@ function thread_get($tid)
         if (!isset($threaddata['CLOSED'])) {
             $threaddata['CLOSED'] = 0;
         }
+
+        return $threaddata;
     }
 
-    return $threaddata;
+    return false;
 }
 
 function thread_get_author($tid)
@@ -141,8 +140,8 @@ function thread_get_folder($tid)
 
     if (db_num_rows($result) > 0) {
 
-        $folder = db_fetch_array($result);
-        return $folder['FID'];
+        list($folder) = db_fetch_array($result, DB_RESULT_NUM);
+        return $folder;
     }
 
     return false;
@@ -159,10 +158,13 @@ function thread_get_length($tid)
     $sql = "SELECT LENGTH FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
     $result = db_query($sql, $db_thread_get_length);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $row = db_fetch_array($result);
         return isset($row['LENGTH']) ? $row['LENGTH'] : 0;
+
     }else {
+
         return 0;
     }
 }
@@ -176,13 +178,18 @@ function thread_get_interest($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT INTEREST FROM {$table_data['PREFIX']}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
+    $sql = "SELECT INTEREST FROM {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+
     $result = db_query($sql, $db_thread_get_interest);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
+
         $row = db_fetch_array($result);
         return isset($row['INTEREST']) ? $row['INTEREST'] : 0;
+
     }else {
+
         return 0;
     }
 }

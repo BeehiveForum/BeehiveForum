@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.51 2004-11-05 18:50:03 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.52 2004-12-05 17:58:06 decoyduck Exp $ */
 
 function perm_is_moderator($fid = 0)
 {
@@ -177,7 +177,7 @@ function perm_get_user_groups()
 
     $result = db_query($sql, $db_perm_get_user_groups);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $user_groups_array = array();
 
@@ -211,7 +211,7 @@ function perm_user_get_groups($uid)
 
     $result = db_query($sql, $db_perm_user_get_groups);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $user_groups_array = array();
 
@@ -299,7 +299,7 @@ function perm_remove_group($gid)
 
     $result = db_query($sql, $db_perm_remove_group);
 
-    if (db_num_rows($result) == 0) {
+    if (db_num_rows($result) < 1) {
 
         $sql = "DELETE FROM {$table_data['PREFIX']}GROUPS WHERE GID = $gid";
         return db_query($sql, $db_perm_remove_group);
@@ -732,11 +732,12 @@ function perm_group_get_users($gid, $offset = 0)
         $group_user_array = array();
         $group_user_count = 0;
 
-        $sql = "SELECT * FROM {$table_data['PREFIX']}GROUP_USERS ";
+        $sql = "SELECT COUNT(UID) AS USER_COUNT ";
+        $sql.= "FROM {$table_data['PREFIX']}GROUP_USERS ";
         $sql.= "WHERE GID = '$gid'";
 
         $result = db_query($sql, $db_perm_group_get_users);
-        $group_user_count = db_num_rows($result);
+        list($group_user_count) = db_fetch_array($result, DB_RESULT_NUM);
 
         $sql = "SELECT GROUP_USERS.UID, USER.LOGON, USER.NICKNAME ";
         $sql.= "FROM {$table_data['PREFIX']}GROUP_USERS GROUP_USERS ";

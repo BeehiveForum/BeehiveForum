@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.4 2004-12-05 15:38:38 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.5 2004-12-05 17:58:07 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -138,6 +138,22 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
+    // Change in the way ANON_LOGON works which makes more
+    // sense. Now instead of checking the user pref value
+    // before deciding to show the LAST_LOGON value we have
+    // bh_update_visitor_log() set the LAST_LOGON column
+    // as NULL if applicable and then check that when we
+    // go to display it.
+
+    $sql = "ALTER TABLE {$forum_webtag}_VISITOR_LOG CHANGE ";
+    $sql.= "LAST_LOGON LAST_LOGON DATETIME DEFAULT NULL ";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // Need to allow Guest access to the folders which is the
     // default behaviour.
 
@@ -222,7 +238,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     $sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";
     $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
-    $sql.= "  LAST_LOGON datetime NOT NULL default '0000-00-00 00:00:00',";
+    $sql.= "  LAST_LOGON datetime DEFAULT NULL,";
     $sql.= "  PRIMARY KEY  (UID)";
     $sql.= ")";
 

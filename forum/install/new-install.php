@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.4 2004-12-05 15:38:38 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.5 2004-12-05 17:58:07 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -1074,7 +1074,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  LAST_LOGON DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+$sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ")";
 

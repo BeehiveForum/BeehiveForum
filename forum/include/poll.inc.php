@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.135 2004-11-05 20:52:49 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.136 2004-12-05 17:58:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
@@ -311,7 +311,7 @@ function poll_get_user_vote($tid)
 
     $result = db_query($sql, $db_poll_get_user_vote);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $userpolldata = array();
 
@@ -1740,7 +1740,7 @@ function poll_is_closed($tid)
     $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = $tid";
     $result = db_query($sql, $db_poll_is_closed);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $polldata = db_fetch_array($result);
         if (isset($polldata['CLOSES']) && $polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0) return true;
@@ -1837,7 +1837,7 @@ function poll_check_tabular_votes($tid, $votes)
 
     $result = db_query($sql, $db_poll_check_tabular_votes);
 
-    if (db_num_rows($result)) {
+    if (db_num_rows($result) > 0) {
 
         $row = db_fetch_array($result);
 

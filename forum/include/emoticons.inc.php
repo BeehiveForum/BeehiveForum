@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.30 2004-11-06 12:39:51 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.31 2004-12-05 17:58:05 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -32,75 +32,80 @@ krsort($emoticon);
 reset($emoticon);
 
 $emoticon_text = array();
+
 foreach ($emoticon as $k => $v) {
-        $emoticon_text[$v][] = $k;
+
+    $emoticon_text[$v][] = $k;
 }
 
 $pattern_array_2 = array();
 $replace_array_2 = array();
 
 $e_keys = array_keys($emoticon);
+
 for ($i=0; $i<count($e_keys); $i++) {
-        for ($j=0; $j<count($e_keys); $j++) {
-                if ($i != $j) {
-                        $pos = strpos(strtolower($e_keys[$j]), strtolower($e_keys[$i]));
-                        if (is_int($pos)) {
-                                $a = $e_keys[$j];
-                                $b = $e_keys[$i];
-                                $v = $emoticon[$a];
-                                $a2 = urlencode($a);
 
-                                $a_f = preg_quote(substr($a, 0, $pos), "/");
-                                $a_m = preg_quote(urlencode(substr($a, $pos, strlen($b))), "/");
-                                $a_e = preg_quote(substr($a, $pos +strlen($b)), "/");
+    for ($j=0; $j<count($e_keys); $j++) {
 
-                                $pattern_array_2[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span><\/span>".$a_e ."/";
-                                $replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span></span>";
-                        }
-                }
+        if ($i != $j) {
+
+            $pos = strpos(strtolower($e_keys[$j]), strtolower($e_keys[$i]));
+
+            if (is_int($pos)) {
+
+                $a = $e_keys[$j];
+                $b = $e_keys[$i];
+                $v = $emoticon[$a];
+                $a2 = urlencode($a);
+
+                $a_f = preg_quote(substr($a, 0, $pos), "/");
+                $a_m = preg_quote(urlencode(substr($a, $pos, strlen($b))), "/");
+                $a_e = preg_quote(substr($a, $pos +strlen($b)), "/");
+
+                $pattern_array_2[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span><\/span>".$a_e ."/";
+                $replace_array_2[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span></span>";
+            }
         }
+    }
 }
 
-function emoticons_convert ($content) {
-//      $content = _htmlentities_decode($content);
+function emoticons_convert ($content)
+{
+    global $emoticon, $pattern_array_2, $replace_array_2;
 
-        global $emoticon, $pattern_array_2, $replace_array_2;
+    if (!is_array($emoticon)) return $content;
 
-        if (!is_array($emoticon)) return $content;
+    foreach ($emoticon as $k => $v) {
 
-        foreach ($emoticon as $k => $v) {
-                $k3 = _htmlentities($k);
-                $k2 = urlencode($k3);
+        $k3 = _htmlentities($k);
+        $k2 = urlencode($k3);
 
-                //$front = ""; //'(?<!<span|title=\")';// "(?<!<span)((>|^)[^<]*?)";
-                //$end = ""; //"(?!<\/span><\/span>)";
+        $front = "(?<=\s|^)";
+        $end = "(?=\s|$)";
 
-                //$front = (preg_match("/^\w/", $k)) ? '\b' : '\B';
-                //$end = (preg_match("/\w$/", $k)) ? '\b' : '\B';
+        if ($k != $k3) {
 
-                $front = "(?<=\s|^)";
-                $end = "(?=\s|$)";
-
-                if ($k != $k3) {
-                        $pattern_array[] = "/$front". preg_quote($k3, "/") ."$end/";
-                        $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
-                }
-
-                $pattern_array[] = "/$front". preg_quote($k, "/") ."$end/";
-                $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
+            $pattern_array[] = "/$front". preg_quote($k3, "/") ."$end/";
+            $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
         }
 
-        if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
-                $content = $new_content;
-        }
+        $pattern_array[] = "/$front". preg_quote($k, "/") ."$end/";
+        $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span></span>";
+    }
 
-        if (@$new_content = preg_replace($pattern_array_2, $replace_array_2, $content)) {
-                $content = $new_content;
-        }
+    if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
 
-        $content = preg_replace_callback("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>(\s|$)/", "emoticons_callback", $content);
+        $content = $new_content;
+    }
 
-        return $content;
+    if (@$new_content = preg_replace($pattern_array_2, $replace_array_2, $content)) {
+
+        $content = $new_content;
+    }
+
+    $content = preg_replace_callback("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>(\s|$)/", "emoticons_callback", $content);
+
+    return $content;
 }
 
 function emoticons_callback ($matches)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.29 2004-04-12 19:44:43 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.30 2004-04-13 14:04:03 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -241,6 +241,41 @@ function admin_session_end($uid)
     $sql.= "AND FID = '{$table_data['FID']}'";
 
     return db_query($sql, $db_admin_session_end);
+}
+
+function admin_get_users_attachments($uid)
+{
+    global $HTTP_SERVER_VARS, $forum_settings;
+
+    $userattachments = false;
+
+    $db_get_users_attachments = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    
+    if (!$table_data = get_table_prefix()) return $userattachments;
+
+    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    $result = db_query($sql, $db_get_users_attachments);
+
+    while($row = db_fetch_array($result)) {
+        
+        if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
+
+            if (!is_array($userattachments)) $userattachments = array();
+
+            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
+                                       "filesize"  => filesize(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
+                                       "filedate"  => filemtime(forum_get_setting('attachment_dir'). '/'. $row['HASH']),
+                                       "aid"       => $row['AID'],
+                                       "hash"      => $row['HASH'],
+                                       "mimetype"  => $row['MIMETYPE'],
+                                       "downloads" => $row['DOWNLOADS'],
+                                       "deleted"   => $row['DELETED']);
+        }
+    }
+
+    return $userattachments;
 }
 
 function admin_get_forum_list()

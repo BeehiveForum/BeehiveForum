@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.62 2004-04-13 00:57:20 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.63 2004-04-13 14:04:04 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -446,6 +446,7 @@ $lang['otherattachmentsincludingpm'] = "Les autres Attachements (y compris PM le
 $lang['totalsize'] = "Taille totale";
 $lang['freespace'] = "Espace libre";
 $lang['attachmentproblem'] = "Il y avait un problème téléchargeant cet attachement. S'il vous plaît essayer encore plus tard.";
+$lang['removefile'] = "Remove File";
 
 // Changing passwords (change_pw.php) ----------------------------------
 

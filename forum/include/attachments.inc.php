@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.56 2004-04-12 19:44:43 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.57 2004-04-13 14:04:03 decoyduck Exp $ */
 
 include_once("./include/perm.inc.php");
 
@@ -33,12 +33,14 @@ function get_attachments($uid, $aid)
 
     $db_get_attachments = db_connect();
 
-    $uid = addslashes($uid);
-    $aid = addslashes($aid);
+    if (!is_numeric($uid)) return false;
+    if (!is_md5($aid)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid' AND AID = '$aid'";
+    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE UID = '$uid' AND AID = '$aid' AND DELETED = 0";
+
     $result = db_query($sql, $db_get_attachments);
 
     while($row = db_fetch_array($result)) {
@@ -53,18 +55,7 @@ function get_attachments($uid, $aid)
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
-                                       "downloads" => $row['DOWNLOADS'],
-                                       "deleted"   => false);
-        }else {
-        
-            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                       "filesize"  => 0,
-                                       "filedate"  => 0,                                       
-                                       "aid"       => $row['AID'],
-                                       "hash"      => $row['HASH'],
-                                       "mimetype"  => $row['MIMETYPE'],
-                                       "downloads" => $row['DOWNLOADS'],
-                                       "deleted"   => true);
+                                       "downloads" => $row['DOWNLOADS']);
         }
     }
 
@@ -79,12 +70,14 @@ function get_all_attachments($uid, $aid)
 
     $db_get_all_attachments = db_connect();
 
-    $uid = addslashes($uid);
-    $aid = addslashes($aid);
+    if (!is_numeric($uid)) return false;
+    if (!is_md5($aid)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid' AND AID <> '$aid'";
+    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE UID = '$uid' AND AID <> '$aid' AND DELETED = 0";
+
     $result = db_query($sql, $db_get_all_attachments);
 
     while($row = db_fetch_array($result)) {
@@ -99,18 +92,7 @@ function get_all_attachments($uid, $aid)
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
-                                       "downloads" => $row['DOWNLOADS'],
-                                       "deleted"   => false);
-        }else {
-        
-            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                       "filesize"  => 0,
-                                       "filedate"  => 0,                                       
-                                       "aid"       => $row['AID'],
-                                       "hash"      => $row['HASH'],
-                                       "mimetype"  => $row['MIMETYPE'],
-                                       "downloads" => $row['DOWNLOADS'],
-                                       "deleted"   => true);
+                                       "downloads" => $row['DOWNLOADS']);
         }
     }
 
@@ -125,17 +107,19 @@ function get_users_attachments($uid)
 
     $db_get_users_attachments = db_connect();
 
-    $uid = addslashes($uid);
+    if (!is_numeric($uid)) return false;
     
     if (!$table_data = get_table_prefix()) return $userattachments;
 
-    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE UID = '$uid' AND DELETED = 0";
+
     $result = db_query($sql, $db_get_users_attachments);
 
     while($row = db_fetch_array($result)) {
 
         if (!is_array($userattachments)) $userattachments = array();
-
+        
         if (@file_exists(forum_get_setting('attachment_dir'). '/'. $row['HASH'])) {
 
             $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
@@ -144,34 +128,23 @@ function get_users_attachments($uid)
                                        "aid"       => $row['AID'],
                                        "hash"      => $row['HASH'],
                                        "mimetype"  => $row['MIMETYPE'],
-                                       "downloads" => $row['DOWNLOADS'],
-                                       "deleted"   => false);
-        }else {
-        
-            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                       "filesize"  => 0,
-                                       "filedate"  => 0,                                       
-                                       "aid"       => $row['AID'],
-                                       "hash"      => $row['HASH'],
-                                       "mimetype"  => $row['MIMETYPE'],
-                                       "downloads" => $row['DOWNLOADS'],
-                                       "deleted"   => true);
+                                       "downloads" => $row['DOWNLOADS']);
         }
     }
 
     return $userattachments;
 }
 
-
 function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
 {
     $db_add_attachment = db_connect();
 
+    if (!is_numeric($uid)) return false;
+    if (!is_md5($aid)) return false;
+
     $hash = md5("$aid$fileid$filename");
     $filename = rawurlencode($filename);
 
-    $uid      = addslashes($uid);
-    $aid      = addslashes($aid);
     $filename = addslashes($filename);
     $mimetype = addslashes($mimetype);
     
@@ -201,14 +174,20 @@ function delete_attachment($uid, $hash)
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
     
     $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE HASH = '$hash' AND UID = $uid";
+    $sql.= "WHERE HASH = '$hash' AND UID = '$uid'";
     
     $result = db_query($sql, $db_delete_attachment);
     
     if ((db_num_rows($result) > 0) || perm_is_moderator()) {
-        if (file_exists("$attachment_dir/$hash")) {
-            return unlink("$attachment_dir/$hash");
-        }
+
+        $sql = "UPDATE {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
+	$sql.= "SET DELETED = 1 WHERE HASH = '$hash'";
+
+	$result = db_query($sql, $db_delete_attachment);
+
+	if (perm_is_moderator()) {
+	    @unlink(forum_get_setting('attachment_dir'). '/'. $hash);
+	}
     }    
 }
 
@@ -220,7 +199,7 @@ function get_free_attachment_space($uid)
 
     $db_get_free_attachment_space = db_connect();
 
-    $uid = addslashes($uid);
+    if (!is_numeric($uid)) return false;
     
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -244,8 +223,8 @@ function get_attachment_id($tid, $pid)
 {
     $db_get_attachment_id = db_connect();
 
-    $tid = addslashes($tid);
-    $pid = addslashes($pid);
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
 
@@ -267,7 +246,7 @@ function get_pm_attachment_id($mid)
 {
     $db_get_pm_attachment_id = db_connect();
 
-    $mid = addslashes($mid);
+    if (!is_numeric($mid)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
 
@@ -289,7 +268,7 @@ function get_message_link($aid)
 {
     $db_get_message_link = db_connect();
 
-    $aid = addslashes($aid);
+    if (!is_md5($aid)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
 
@@ -322,7 +301,7 @@ function get_num_attachments($aid)
 {
     $db_get_num_attachments = db_connect();
 
-    $aid = addslashes($aid);
+    if (!is_md5($aid)) return false;
     
     if (!$table_data = get_table_prefix()) return 0;
 
@@ -335,7 +314,8 @@ function get_num_attachments($aid)
 function get_attachment_by_hash($hash)
 {
     $db_get_attachment_by_hash = db_connect();
-    $hash = addslashes($hash);
+
+    if (!is_md5($hash)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
 
@@ -352,7 +332,8 @@ function get_attachment_by_hash($hash)
 function attachment_inc_dload_count($hash)
 {
     $db_attachment_inc_dload_count = db_connect();
-    $hash = addslashes($hash);
+
+    if (!is_md5($hash)) return false;
     
     if (!$table_data = get_table_prefix()) return false;
 

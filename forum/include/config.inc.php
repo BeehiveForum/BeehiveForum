@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.76 2004-04-11 22:08:52 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.77 2004-04-13 14:04:03 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -58,7 +58,6 @@ $forum_settings = array('forum_name'                => "A Beehive Forum",
                         'search_min_word_length'    => "3",
                         'attachments_enabled'       => "Y",
                         'attachment_dir'            => "attachments",
-                        'attachments_show_deleted'  => "N",
                         'attachment_allow_embed'    => "N",
                         'attachment_use_old_method' => "N",
                         'guest_account_enabled'     => "Y",

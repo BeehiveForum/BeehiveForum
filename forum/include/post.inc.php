@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.73 2004-04-13 09:31:54 tribalonline Exp $ */
+/* $Id: post.inc.php,v 1.74 2004-04-13 14:04:04 decoyduck Exp $ */
 
 include_once("./include/fixhtml.inc.php");
 
@@ -102,7 +102,7 @@ function post_save_attachment_id($tid, $pid, $aid)
         $sql.= "(TID, PID, AID) VALUES ('$tid', '$pid', '$aid')";
     }
 
-    return db_query($sql, db_post_save_attachment_id);
+    return db_query($sql, $db_post_save_attachment_id);
 }
 
 function post_create_thread($fid, $title, $poll = 'N', $sticky = 'N', $closed = false)

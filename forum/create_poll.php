@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.51 2003-09-09 00:23:23 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.52 2003-09-14 20:52:58 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -37,10 +37,8 @@ require_once("./include/html.inc.php");
 require_once("./include/constants.inc.php");
 
 if(!bh_session_check()){
-
     $uri = "./logon.php?final_uri=". urlencode(get_request_uri());
     header_redirect($uri);
-
 }
 
 if(bh_session_get_value('UID') == 0) {
@@ -128,7 +126,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
   }
 
   if ($valid && isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
-    $t_sig = trim($HTTP_POST_VARS['t_message_text']);
+    $t_sig = trim($HTTP_POST_VARS['t_sig']);
     if (preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+getattachment.php.+>/ ", $t_sig) && $t_sig_html == "Y") {
       $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";
       $valid = false;
@@ -157,7 +155,7 @@ if ($valid) {
         $t_message_text = fix_html($t_message_text);
     }
 
-    if(isset($t_sig)) {
+    if (isset($t_sig)) {
         if($t_sig_html == "Y") {
             $t_sig = fix_html($t_sig);
         }
@@ -165,11 +163,11 @@ if ($valid) {
 
 }else {
 
-    if($t_message_html == "Y") {
+    if ($t_message_html == "Y") {
         $t_message_text = _stripslashes($t_message_text);
     }
 
-    if(isset($t_sig)) {
+    if (isset($t_sig)) {
         if($t_sig_html == "Y") {
           $t_sig = _stripslashes($t_sig);
         }
@@ -219,10 +217,10 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
       if($t_message_html != "Y") $t_message_text = make_html($t_message_text);
 
-      if($t_sig) {
+      if ($t_sig) {
 
         if($t_sig_html != "Y") $t_sig = make_html($t_sig);
-        $t_message_text.= "\n<div class=\"sig\">". $t_sig. "</div>";
+        $t_message_text.= "\n<div class=\"sig\">$t_sig</div>";
 
       }
 
@@ -361,8 +359,8 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
       $polldata['CONTENT'] = _stripslashes($t_message_text);
     }
 
-    if($t_sig) {
-      if($t_sig_html != "Y") {
+    if ($t_sig) {
+      if ($t_sig_html != "Y") {
         $preview_sig = make_html($t_sig);
       }else{
         $preview_sig = $t_sig;

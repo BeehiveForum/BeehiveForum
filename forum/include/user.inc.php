@@ -451,6 +451,7 @@ function user_get_forthcoming_birthdays()
     $sql .= "+ 365, 365) AS DAYS_TO_BIRTHDAY ";
     $sql .= "FROM " . forum_table("USER"). " U, ". forum_table("USER_PREFS") . " UP ";
     $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 AND UP.DOB_DISPLAY = 2 ";
+    $sql .= "AND UP.DOB < (NOW() + 2592000) ";
     $sql .= "ORDER BY DAYS_TO_BIRTHDAY ASC ";
     $sql .= "LIMIT 0, 5";
 

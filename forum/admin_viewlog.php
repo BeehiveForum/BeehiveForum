@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.72 2005-02-14 16:03:58 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.73 2005-02-14 21:00:59 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -320,7 +320,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = "{$lang['editedforumlinks']}";
                 break;
             case 36:
-                $action_text = "{$lang['approvedpost'}: $tid.$pid";
+                $action_text = "{$lang['approvedpost']}: $tid.$pid";
             default:
                 $action_text = "{$lang['unknown']}";
                 break;

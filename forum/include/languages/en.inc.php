@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.225 2005-02-14 16:03:58 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.226 2005-02-14 21:01:02 decoyduck Exp $ */
 
 // International English language file
 
@@ -306,7 +306,7 @@ $lang['workerdesc'] = "<b>Workers</b> can edit or delete any post.";
 $lang['wormdesc'] = "<b>Worms</b> can read messages and post as normal, but their messages will appear deleted to all other users.";
 $lang['waspdesc'] = "<b>Wasps</b> can read messages, but cannot reply or post new messages.";
 $lang['splatdesc'] = "<b>Splats</b> cannot access the forum. Use this to ban persistent idiots.";
-$lang['aliasdesc'] = "<b>Possible Aliases</b> is a list of other users who's last recorded IP address match this user.";
+$lang['aliasdesc'] = "This is a list of other posters who match this user's last 20 known IP addresses.";
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
 $lang['manageusersexp_3'] = "To see the last few users to logon, sort the list by LAST_LOGON.";

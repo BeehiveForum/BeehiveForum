@@ -717,6 +717,7 @@ a {
 }
 
 .admin_folder_perms {
+    height: 140px;
     overflow: auto;
     padding: 2px;
 }

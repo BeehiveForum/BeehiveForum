@@ -376,38 +376,31 @@ function threads_mark_all_read()
     
     $sql = "SELECT TID, LENGTH FROM ". forum_table("THREAD");
     $result_threads = db_query($sql, $db_threads_mark_all_read);
-    
-    $sql = "SELECT TID, LAST_READ, INTEREST FROM ". forum_table("USER_THREAD");
-    $sql.= " WHERE UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
-    $result_lastread = db_query($sql, $db_threads_mark_all_read);
-    
+
     while($row = db_fetch_array($result_threads)) {
-      $threads[$row['TID']] = array('TID' => $row['TID'], 'LENGTH' => $row['LENGTH'], 'LAST_READ' => 0, 'INTEREST' => 0);
-    }
-    
-    while($row = db_fetch_array($result_lastread)) {
-      $threads[$row['TID']]['LAST_READ'] = $row['LAST_READ'];
-      $threads[$row['TID']]['INTEREST'] = $row['INTEREST'];
-    }
-    
-    foreach($threads as $thread) {
-    
-      if ($thread['LAST_READ'] == 0) {
-      
-        $sql = "INSERT INTO ".forum_table("USER_THREAD")." (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-        $sql.= "VALUES (". $HTTP_COOKIE_VARS['bh_sess_uid']. ", ". $thread['TID']. ", ". $thread['LENGTH'] .", NOW(), ". $thread['INTEREST']. ")";
+
+      $sql = "SELECT TID, LAST_READ, INTEREST FROM ". forum_table("USER_THREAD");
+      $sql.= " WHERE TID = ". $row['TID']. " AND UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+
+      $result_lastread = db_query($sql, $db_threads_mark_all_read);
+
+      if (!db_num_rows($result_lastread)) {
+
+        $sql = "INSERT INTO ".forum_table("USER_THREAD")." (UID, TID, LAST_READ, LAST_READ_AT) ";
+        $sql.= "VALUES (". $HTTP_COOKIE_VARS['bh_sess_uid']. ", ". $row['TID']. ", ". $row['LENGTH'] .", NOW())";
         db_query($sql, $db_threads_mark_all_read);
-        
-      }elseif ($thread['LENGTH'] > $thread['LAST_READ']) {
-      
+
+      }else {
+
         $sql = "UPDATE LOW_PRIORITY ".forum_table("USER_THREAD");
-    $sql.= " SET LAST_READ = ". $thread['LENGTH']. ", ";
-    $sql.= "LAST_READ_AT = NOW() ";
-        $sql.= "WHERE TID = ". $thread['TID']." and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+        $sql.= " SET LAST_READ = ". $row['LENGTH']. ", ";
+        $sql.= "LAST_READ_AT = NOW() ";
+        $sql.= "WHERE TID = ". $row['TID']." and UID = ". $HTTP_COOKIE_VARS['bh_sess_uid'];
+
         db_query($sql, $db_threads_mark_all_read);
-        
+
       }
-      
+
     }
         
 }

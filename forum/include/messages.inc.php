@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.290 2004-07-08 01:09:52 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.291 2004-07-26 17:48:53 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -73,9 +73,9 @@ function messages_get($tid, $pid = 1, $limit = 1)
             $messages[$i]['TO_UID'] = $message['TO_UID'];
             $messages[$i]['CREATED'] = $message['CREATED'];
             $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
-	    $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
-	    $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
-	    $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
+            $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
+            $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
+            $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : '';
             $messages[$i]['CONTENT'] = '';
             $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
             $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
@@ -192,8 +192,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length'))) && $limit_text) {
-	$cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length')));
-	$cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
+        $cut_msg = substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length')));
+        $cut_msg = preg_replace("/(<[^>]+)?$/", "", $cut_msg);
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "...[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
@@ -217,30 +217,30 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         $message['CONTENT'] = implode('', $message_parts);
     }
 
-	// Little up/down arrows to the left of each message -----------------------
+        // Little up/down arrows to the left of each message -----------------------
 
-	$up_arrow = "";
-	$down_arrow = "";
-	if ($in_list && !$is_preview) {
-		if ($message['PID'] != 1) {
-			$up_arrow = "<a href=\"";
-			if ($message['PID'] == $first_msg) {
-				$up_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] - 1);
-			} else {
-				$up_arrow.= "#a" . $tid . "_" . ($message['PID'] - 1);
-			}
-			$up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" width=\"10\" border=\"0\" title=\"{$lang['prev']}\" /></a> ";
-		}
-		if ($message['PID'] != $msg_count) {
-			$down_arrow = "<a href=\"";
-			if ($first_msg + bh_session_get_value('POSTS_PER_PAGE') - 1 == $message['PID']) {
-				$down_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1);
-			} else {
-				$down_arrow.= "#a" . $tid . "_" . ($message['PID'] + 1);
-			}
-			$down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" title=\"{$lang['next']}\" /></a>";
-		}
-	}
+        $up_arrow = "";
+        $down_arrow = "";
+        if ($in_list && !$is_preview) {
+                if ($message['PID'] != 1) {
+                        $up_arrow = "<a href=\"";
+                        if ($message['PID'] == $first_msg) {
+                                $up_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] - 1);
+                        } else {
+                                $up_arrow.= "#a" . $tid . "_" . ($message['PID'] - 1);
+                        }
+                        $up_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_up.png")."\" width=\"10\" border=\"0\" title=\"{$lang['prev']}\" /></a> ";
+                }
+                if ($message['PID'] != $msg_count) {
+                        $down_arrow = "<a href=\"";
+                        if ($first_msg + bh_session_get_value('POSTS_PER_PAGE') - 1 == $message['PID']) {
+                                $down_arrow.= "messages.php?webtag=$webtag&amp;msg=$tid.". ($message['PID'] + 1);
+                        } else {
+                                $down_arrow.= "#a" . $tid . "_" . ($message['PID'] + 1);
+                        }
+                        $down_arrow.= "\" target=\"_self\"><img src=\"".style_image("message_down.png")."\" width=\"10\" border=\"0\" title=\"{$lang['next']}\" /></a>";
+                }
+        }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
 
@@ -362,28 +362,28 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         echo "&nbsp;</span></td></tr>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-			if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
-				$msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
-				$tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
-				$msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
-				$message['CONTENT'] = "";
-				for ($i=0; $i<count($msg_split); $i++) {
-					if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
-					$message['CONTENT'] .= $msg_split[$i];
-				}
-				$message['CONTENT'] .= "</div>";
-			}
+                        if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
+                                $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
+                                $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split)-1]);
+                                $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
+                                $message['CONTENT'] = "";
+                                for ($i=0; $i<count($msg_split); $i++) {
+                                        if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
+                                        $message['CONTENT'] .= $msg_split[$i];
+                                }
+                                $message['CONTENT'] .= "</div>";
+                        }
         }
 
         echo "<tr><td class=\"postbody\" align=\"left\">{$message['CONTENT']}</td></tr>\n";
 
         if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
-	    echo "<tr><td class=\"postbody\" align=\"left\">\n";
+            echo "<tr><td class=\"postbody\" align=\"left\">\n";
             echo "<p style=\"font-size: 10px\">{$lang['edited_caps']}: ";
-            echo format_time($message['EDITED'], 1, "d/m/y H:i T");
+            echo format_time($message['EDITED'], 1, "d/m/y H:i");
             echo " {$lang['by']} {$message['EDIT_LOGON']}</p>";
-	    echo "</td></tr>\n";
+            echo "</td></tr>\n";
         }
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
@@ -476,10 +476,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
             echo "</td>\n";
-	    echo "<td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
+            echo "<td width=\"25%\" align=\"right\" nowrap=\"nowrap\">";
 
             echo "<a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['pm_reply']}\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
-            
+
             echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.".$message['PID']."\" target=\"_self\" title=\"{$lang['print']}\"><img src=\"".style_image('print.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
             echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$first_msg&amp;markasread=".($message['PID']-1)."\" target=\"_self\" title=\"{$lang['markasunread']}\"><img src=\"".style_image('markasunread.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
@@ -493,12 +493,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"".style_image('admintool.png')."\" height=\"15\" border=\"0\" align=\"middle\" /></a>&nbsp;";
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
-	            echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
-		}else {
-		    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
-		}
+                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
+                }else {
+                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
+                }
 
-	    }else {
+            }else {
                 echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['logged']}&nbsp;</span>";
             }
 
@@ -753,11 +753,11 @@ function messages_set_read($tid, $pid, $uid)
 
         $fa = db_fetch_array($result);
 
-	$sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-	$sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-	$sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
+        $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-	$result = db_query($sql, $db_message_set_read);
+        $result = db_query($sql, $db_message_set_read);
 
     }else {
 

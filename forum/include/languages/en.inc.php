@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.235 2005-03-07 21:32:45 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.236 2005-03-07 22:39:54 decoyduck Exp $ */
 
 // International English language file
 
@@ -1286,6 +1286,7 @@ $lang['wordsshorterthan_1'] = "Words shorter than";
 $lang['wordsshorterthan_2'] = "characters will not be included";
 $lang['additionalcriteria'] = "Additional Criteria";
 $lang['searchbyuser'] = "Search by user (optional)";
+$lang['forumbrackets_s'] = "Forum(s)";
 $lang['folderbrackets_s'] = "Folder(s)";
 $lang['postedfrom'] = "Posted from";
 $lang['postedto'] = "Posted to";
@@ -1352,6 +1353,7 @@ $lang['markasread'] = "Mark as Read";
 $lang['next50discussions'] = "Next 50 discussions";
 $lang['visiblediscussions'] = "Visible discussions";
 $lang['navigate'] = "Navigate";
+$lang['couldnotretrieveforuminformation'] = "There are no forums available.";
 $lang['couldnotretrievefolderinformation'] = "There are no folders available.";
 $lang['nomessagesinthiscategory'] = "No messages in this category. Please select another, or";
 $lang['clickhere'] = "click here";

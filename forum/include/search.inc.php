@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.46 2004-03-15 21:33:32 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.47 2004-03-16 23:46:28 decoyduck Exp $ */
 
 function search_execute($argarray, &$urlquery, &$error)
 {
@@ -433,7 +433,7 @@ function search_draw_user_dropdown($name)
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE (USER.LOGON <> 'GUEST' AND USER.PASSWD <> MD5('GUEST')) ";
-    $sql.= "AND USER.UID <> '$default_uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "AND USER.UID <> '$uid' ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";    
 
     $result = db_query($sql, $db_search_draw_user_dropdown);

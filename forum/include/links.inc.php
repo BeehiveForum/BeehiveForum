@@ -67,6 +67,8 @@ function links_folders_get($invisible = false)
     if (!$invisible) $sql .= "WHERE VISIBLE = 'Y' ";
     $sql .= "ORDER BY FID";
 
+    $folders = false;
+
     $result_id = db_query($sql, $db_links_folders_get);
 
     while ($row = db_fetch_array($result_id)) {
@@ -118,7 +120,8 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
 
     $link_base = $link_base ? $link_base : $HTTP_SERVER_VARS['PHP_SELF'];
 
-    $html = $links ? "<a href=\"$link_base?fid=1\">" . _stripslashes($folders[1]['NAME']) . "</a>" : $folders[1]['NAME'];
+    list($key) = array_keys($folders);
+    $html = $links ? "<a href=\"$link_base?fid=$key\">" . _stripslashes($folders[$key]['NAME']) . "</a>" : $folders[$key]['NAME'];
 
     if (is_array($tree)) {
         while ($val = array_pop($tree)) {

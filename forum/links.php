@@ -25,7 +25,7 @@ USA
 require_once("./include/errorhandler.inc.php");
 
 // Compress the output
-require_once("./include/gzipenc.inc.php");
+//require_once("./include/gzipenc.inc.php");
 
 // Links catalogue thingy
 
@@ -86,10 +86,10 @@ if (isset($HTTP_GET_VARS['fid']) && !isset($fid)) { // default to top level fold
     if (is_array($folders) && array_key_exists($HTTP_GET_VARS['fid'], $folders)) {
         $fid = $HTTP_GET_VARS['fid'];
     } else {
-        $fid = 1;
+        list($fid) = array_keys($folders);
     }
 } elseif (!isset($fid)) {
-    $fid = 1;
+    list($fid) = array_keys($folders);
 }
 
 html_draw_top();

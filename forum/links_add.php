@@ -26,6 +26,7 @@ require_once("./include/links.inc.php");
 require_once("./include/session.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/form.inc.php");
+require_once("./include/perm.inc.php");
 
 if(!bh_session_check()){
     $uri = "./index.php?final_uri=". urlencode(get_request_uri());

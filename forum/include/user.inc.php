@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.84 2003-08-18 14:38:29 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.85 2003-08-20 02:20:45 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -358,7 +358,7 @@ function user_update_sig($uid, $content, $html)
     $result = db_query($sql, $db_user_update_sig);
 
     $sql = "insert into " . forum_table("USER_SIG") . " (UID, CONTENT, HTML)";
-    $sql .= " values ($uid, \"$content\", \"$html\")";
+    $sql .= " values ($uid, '$content', '$html')";
 
     $result = db_query($sql, $db_user_update_sig);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.26 2003-08-18 13:44:01 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.27 2003-08-20 02:20:43 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -53,7 +53,7 @@ echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\
 echo "</head>\n";
 echo "<frameset cols=\"250,*\" border=\"1\">\n";
 
-if (isset($HTTP_GET_VARS['folder']) && folder_is_valid($HTTP_GET_VARS['folder'])) {
+if (isset($HTTP_GET_VARS['folder']) && folder_is_accessible($HTTP_GET_VARS['folder'])) {
 
     $fid = $HTTP_GET_VARS['folder'];
     $msg = messages_get_most_recent(bh_session_get_value('UID'), $fid);

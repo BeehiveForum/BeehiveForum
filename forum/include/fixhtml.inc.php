@@ -39,7 +39,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
         $html = _stripslashes($html);
 		$html_parts = preg_split('/<([^<>]+)>/', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "menu", "meta", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
+		$htmltags = array("a", "abbr", "acronym", "address", "applet", "area", "b", "base", "basefont", "bdo", "big", "blockquote", "body", "br", "button", "caption", "center", "cite", "code", "col", "colgroup", "dd", "del", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "font", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", "i", "iframe", "img", "input", "ins", "isindex", "kbd", "label", "legend", "li", "link", "map", "marquee", "menu", "meta", "noframes", "noscript", "object", "ol", "optgroup", "option", "p", "param", "pre", "q", "quote", "s", "samp", "script", "select", "small", "span", "strike", "strong", "style", "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "tt", "u", "ul", "var");
 
 		for ($i=0;$i<count($html_parts);$i++) {
 			if ($i%2) {
@@ -67,7 +67,7 @@ function fix_html($html, $bad_tags = array("plaintext", "applet", "body", "html"
 							if ($j%2) {
 								if (substr($html_parts[$j], 0, 5) == "/code") {
 									$html_parts[$j] = "/pre";
-									$tmpcode = preg_replace("/([^\n]{80})/", "$1\n", $tmpcode);
+//									$tmpcode = preg_replace("/([^\n]{80})/", "$1\n", $tmpcode);
 									array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
 									$tmpcode = "<closed>";
 									break;

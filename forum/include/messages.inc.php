@@ -136,7 +136,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if($in_list){
         $user_prefs = user_get_prefs($HTTP_COOKIE_VARS['bh_sess_uid']);
         echo "<p class=\"postinfo\">";
-        echo format_time($message['CREATED']);
+        echo format_time($message['CREATED'], 1);
         echo "<br />" . $message['PID'] . " of $msg_count</p>";
     }
     echo "</td></table>\n";

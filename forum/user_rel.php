@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.38 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.39 2004-04-04 21:03:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -124,14 +124,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     // Update the User's Session to save them having to logout and back in
     bh_session_init(bh_session_get_value('UID'));
-    header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg");
+    header_redirect("./messages.php?webtag=$webtag&msg=$msg");
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
     if ($edit_rel) {
-        header_redirect("./edit_relations.php?webtag={$webtag['WEBTAG']}");
+        header_redirect("./edit_relations.php?webtag=$webtag");
     }else {
-        header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=$msg");
+        header_redirect("./messages.php?webtag=$webtag&msg=$msg");
     }
 }
 
@@ -144,7 +144,7 @@ if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
         html_draw_bottom();
         exit;
     }
-    $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile($uid, '{$webtag['WEBTAG']}')\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
+    $uname = "<a href=\"javascript:void(0);\" onclick=\"openProfile($uid, '$webtag')\" target=\"_self\">". format_user_name($user['LOGON'], $user['NICKNAME']) ."</a>";
 }else {
     html_draw_top();
     echo "<h1>{$lang['error']}:</h1>";
@@ -160,7 +160,7 @@ $rel = user_rel_get($my_uid, $uid);
 echo "<h1>{$lang['userrelationship']}: $uname</h1>\n";
 echo "<br />\n";
 echo "<div class=\"postbody\">\n";
-echo "  <form name=\"relationship\" action=\"user_rel.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"relationship\" action=\"user_rel.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "    ", form_input_hidden("uid", $uid), "\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
 echo "    ", form_input_hidden("edit_rel", $edit_rel), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.57 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: delete.php,v 1.58 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,7 +122,7 @@ if (isset($HTTP_POST_VARS['msg']) && validate_msg($HTTP_POST_VARS['msg'])) {
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    $uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=". $msg;
+    $uri = "./discussion.php?webtag=$webtag&msg=". $msg;
     header_redirect($uri);
 }
 
@@ -219,7 +219,7 @@ if ($valid) {
 if (isset($error_html)) echo $error_html;
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"f_delete\" action=\"delete.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"f_delete\" action=\"delete.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "    ", form_input_hidden("msg", $msg), "\n";
 echo "    <p>", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
 echo "  </form>\n";

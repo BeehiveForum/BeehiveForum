@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.88 2004-04-01 16:39:05 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.89 2004-04-04 21:03:41 decoyduck Exp $ */
 
 include_once("./include/db.inc.php");
 include_once("./include/format.inc.php");
@@ -40,7 +40,7 @@ function bh_session_check()
     $db_bh_session_check = db_connect();
     $ipaddress = get_ip_address();
     
-    $webtag = get_webtag();
+    if (!$table_data = get_table_prefix()) return false;
 
     // Current server time.
 
@@ -58,8 +58,8 @@ function bh_session_check()
 	$sql = "SELECT USER_PREFS.*, USER.LOGON, USER.PASSWD, USER_STATUS.STATUS, ";
 	$sql.= "SESSIONS.UID, SESSIONS.SESSID, SESSIONS.TIME, SESSIONS.FID FROM SESSIONS SESSIONS ";
 	$sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-	$sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$webtag['FID']}) ";
-        $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+	$sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = {$table_data['FID']}) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
 	$sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
 	$result = db_query($sql, $db_bh_session_check);
@@ -99,26 +99,26 @@ function bh_session_check()
                     // If the user is not logged into the current forum, we should
                     // do that now for them.
                     
-                    if (strtoupper($user_sess['FID']) <> $webtag['FID']) {
+                    if (strtoupper($user_sess['FID']) <> $table_data['FID']) {
                     
-                        $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' AND FID = '{$webtag['FID']}'";
+                        $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' AND FID = '{$table_data['FID']}'";
                         $result = db_query($sql, $db_bh_session_check);
                         
                         if (db_num_rows($result) == 0) {
                         
                             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-                            $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$webtag['FID']}', ";
+                            $sql.= "VALUES ('$user_hash', '{$user_sess['UID']}', '{$table_data['FID']}', ";
                             $sql.= "'$ipaddress', NOW())";
                         
                             $result = db_query($sql, $db_bh_session_check);
                             
-                            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() WHERE UID = $uid";
+                            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() WHERE UID = '{$user_sess['UID']}'";
                             $result = db_query($sql, $db_bh_session_check);
 
                             if (!db_affected_rows($db_bh_session_check)) {
     
                                 $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-                                $sql.= "VALUES ('$uid', '{$webtag['FID']}', NOW())";
+                                $sql.= "VALUES ('{$user_sess['UID']}', '{$table_data['FID']}', NOW())";
     
                                 $result = db_query($sql, $db_bh_session_check);
                             }
@@ -135,8 +135,8 @@ function bh_session_check()
                         // Update the session
                         
                         $sql = "UPDATE SESSIONS ";
-                        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), FID = '{$webtag['FID']}' ";
-                        $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$webtag['FID']}'";
+                        $sql.= "SET IPADDRESS = '$ipaddress', TIME = NOW(), FID = '{$table_data['FID']}' ";
+                        $sql.= "WHERE SESSID = {$user_sess['SESSID']} AND FID = '{$table_data['FID']}'";
   
                         db_query($sql, $db_bh_session_check);
 
@@ -183,7 +183,7 @@ function bh_session_init($uid)
     $db_bh_session_init = db_connect();
     $ipaddress = get_ip_address();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $session_stamp = time() - intval(forum_get_setting('session_cutoff'));
 
@@ -200,7 +200,7 @@ function bh_session_init($uid)
     $user_hash = md5(uniqid($ipaddress));
 
     $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-    $sql.= "VALUES ('$user_hash', '$uid', '{$webtag['FID']}', ";
+    $sql.= "VALUES ('$user_hash', '$uid', '{$table_data['FID']}', ";
     $sql.= "'$ipaddress', NOW())";
 
     $result = db_query($sql, $db_bh_session_init);
@@ -211,7 +211,7 @@ function bh_session_init($uid)
     if (!db_affected_rows($db_bh_session_init)) {
     
         $sql = "INSERT INTO VISITOR_LOG (UID, FID, LAST_LOGON) ";
-        $sql.= "VALUES ('$uid', '{$webtag['FID']}', NOW())";
+        $sql.= "VALUES ('$uid', '{$table_data['FID']}', NOW())";
     
         $result = db_query($sql, $db_bh_session_init);
     }
@@ -227,7 +227,7 @@ function bh_session_end()
 
     $db_bh_session_end = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     if (isset($HTTP_COOKIE_VARS['bh_sess_hash'])) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: interest.php,v 1.30 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: interest.php,v 1.31 2004-04-04 21:03:39 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -98,7 +98,7 @@ if (isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest']) && is_nu
 if (isset($HTTP_GET_VARS['ret'])) {
     header_redirect($HTTP_GET_VARS['ret']);
 }else {
-    header_redirect("./messages.php?webtag={$webtag['WEBTAG']}");
+    header_redirect("./messages.php?webtag=$webtag");
 }
 
 ?>

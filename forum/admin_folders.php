@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.58 2004-03-27 19:46:59 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.59 2004-04-04 21:03:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -140,7 +140,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 echo "<h1>{$lang['admin']} : {$lang['managefolders']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "<form name=\"f_folders\" action=\"admin_folders.php?webtag={$webtag['WEBTAG']}\" method=\"post\">\n";
+echo "<form name=\"f_folders\" action=\"admin_folders.php?webtag=$webtag\" method=\"post\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -187,7 +187,7 @@ if ($folder_array = folder_get_all()) {
         echo "                  <td align=\"left\">". form_dropdown_array("t_allow[{$folder_array[$i]['FID']}]", $allow_values, $allow_labels, $folder_array[$i]['ALLOWED_TYPES'] ? $folder_array[$i]['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD).form_input_hidden("t_old_allow[{$folder_array[$i]['FID']}]", $folder_array[$i]['ALLOWED_TYPES'])."</td>\n";
 
         if ($folder_array[$i]['ACCESS_LEVEL'] > 0) {
-            echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_folder_access.php?webtag={$webtag['WEBTAG']}&fid={$folder_array[$i]['FID']}'\""), "</td>\n";
+            echo "                  <td align=\"left\">", form_button("permissions", $lang['change'], "onclick=\"document.location.href='admin_folder_access.php?webtag=$webtag&fid={$folder_array[$i]['FID']}'\""), "</td>\n";
         }else {
             echo "                  <td align=\"left\">&nbsp;</td>\n";
         }

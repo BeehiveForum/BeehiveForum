@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.16 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.17 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -162,7 +162,7 @@ echo "<br />\n";
 
 if ($user_peers = user_get_relationships($uid, $start)) {
 
-    echo "<form name=\"prefs\" action=\"edit_relations.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
+    echo "<form name=\"prefs\" action=\"edit_relations.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
     
     if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersearch'])) > 0) {
         echo "  ", form_input_hidden("usersearch", trim($HTTP_POST_VARS['usersearch'])), "\n";
@@ -183,7 +183,7 @@ if ($user_peers = user_get_relationships($uid, $start)) {
     
     foreach ($user_peers as $user_peer) {
         echo "                <tr>\n";    
-        echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
+        echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
         echo "                  <td>\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", ($user_peer['RELATIONSHIP'] & USER_FRIEND)), "<img src=\"", style_image("friend.png"), "\" alt=\"\" title=\"Friend\" />\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($user_peer['RELATIONSHIP'] & USER_FRIEND) && !($user_peer['RELATIONSHIP'] & USER_IGNORED)), "{$lang['normal']}\n";
@@ -209,13 +209,13 @@ if ($user_peers = user_get_relationships($uid, $start)) {
     if (sizeof($user_peers) == 20) {
         if ($start < 20) {
             echo "    <tr>\n";
-            echo "      <td align=\"center\"><p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p></td>\n";
+            echo "      <td align=\"center\"><p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p></td>\n";
             echo "    </tr>\n";
         }elseif ($start >= 20) {
             echo "    <tr>\n";
             echo "      <td align=\"center\">\n";
-            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
-            echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
+            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a>&nbsp;&nbsp;";
+            echo "        <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&page=", ($start / 20) + 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['more']}</a></p>\n";
             echo "      </td>\n";
             echo "    </tr>\n";
         }
@@ -223,7 +223,7 @@ if ($user_peers = user_get_relationships($uid, $start)) {
         if ($start >= 20) {
             echo "    <tr>\n";
             echo "      <td align=\"center\">\n";
-            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag={$webtag['WEBTAG']}&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a></p>\n";
+            echo "        <p><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag&page=", ($start / 20) - 1, "&amp;usersearch=$usersearch\" target=\"_self\">{$lang['back']}</a></p>\n";
             echo "      </td>\n";
             echo "    </td>\n";
         }
@@ -244,7 +244,7 @@ if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersea
 
     $usersearch = trim($HTTP_POST_VARS['usersearch']);
     
-    echo "<form method=\"post\" action=\"edit_relations.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">\n";
+    echo "<form method=\"post\" action=\"edit_relations.php?webtag=$webtag\" target=\"_self\">\n";
     echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "    <tr>\n";
@@ -266,7 +266,7 @@ if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersea
             if ($user['UID'] != $uid) {
         
                 echo "                <tr>\n";
-                echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '{$webtag['WEBTAG']}')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+                echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
                 echo "                  <td>\n";
                 echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", false), "<img src=\"", style_image("friend.png"), "\" alt=\"\" title=\"Friend\" />\n";
                 echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", 0, "", true), "{$lang['normal']}\n";
@@ -306,7 +306,7 @@ if (isset($HTTP_POST_VARS['usersearch']) && strlen(trim($HTTP_POST_VARS['usersea
     echo "</form>\n";   
 }
 
-echo "<form method=\"post\" action=\"edit_relations.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">\n";
+echo "<form method=\"post\" action=\"edit_relations.php?webtag=$webtag\" target=\"_self\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td class=\"posthead\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.36 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.37 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -134,7 +134,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     
     if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-        header_redirect("./admin_wordfilter.php?webtag={$webtag['WEBTAG']}&updated=true");
+        header_redirect("./admin_wordfilter.php?webtag=$webtag&updated=true");
 
     }else {
 
@@ -143,7 +143,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         // Try a Javascript redirect
         echo "<script language=\"javascript\" type=\"text/javascript\">\n";
         echo "<!--\n";
-        echo "document.location.href = './admin_wordfilter.php?webtag={$webtag['WEBTAG']}&updated=true';\n";
+        echo "document.location.href = './admin_wordfilter.php?webtag=$webtag&updated=true';\n";
         echo "//-->\n";
         echo "</script>";
 
@@ -173,7 +173,7 @@ if (isset($HTTP_GET_VARS['updated'])) {
 
 echo "<p>{$lang['wordfilterexp_1']}</p>\n";
 echo "<p>{$lang['wordfilterexp_2']}</p>\n";
-echo "<form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php?webtag={$webtag['WEBTAG']}\">\n";
+echo "<form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php?webtag=$webtag\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

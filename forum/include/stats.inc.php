@@ -25,12 +25,12 @@ function update_stats()
 {
     $db_update_stats = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $num_sessions = get_num_sessions();
     $num_recent_posts = get_recent_post_count();
 
-    $sql = "SELECT * FROM {$webtag['PREFIX']}STATS";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}STATS";
     $result = db_query($sql, $db_update_stats);
 
     if (db_num_rows($result)) {
@@ -39,7 +39,7 @@ function update_stats()
 
         if ($num_sessions > $stats_array['MOST_USERS_COUNT']) {
 
-            $sql = "UPDATE {$webtag['PREFIX']}STATS SET ";
+            $sql = "UPDATE {$table_data['PREFIX']}STATS SET ";
             $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = $num_sessions";
 
             $result = db_query($sql, $db_update_stats);
@@ -47,7 +47,7 @@ function update_stats()
 
         if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
 
-            $sql = "UPDATE {$webtag['PREFIX']}STATS SET ";
+            $sql = "UPDATE {$table_data['PREFIX']}STATS SET ";
             $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = $num_recent_posts";
 
             $result = db_query($sql, $db_update_stats);
@@ -55,7 +55,7 @@ function update_stats()
 
     }else {
 
-        $sql = "INSERT INTO {$webtag['PREFIX']}STATS (MOST_USERS_DATE, ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}STATS (MOST_USERS_DATE, ";
         $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
         $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
 
@@ -70,7 +70,7 @@ function get_num_sessions()
 
     $get_num_sessions = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
@@ -93,7 +93,7 @@ function get_active_users()
 
     $db_get_active_users = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff'));
 
@@ -107,8 +107,8 @@ function get_active_users()
     $sql = "SELECT DISTINCT SESSIONS.UID, SESSIONS.TIME, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PREFS.ANON_LOGON FROM SESSIONS SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
-    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = '{$webtag['FID']}' ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
+    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = '{$table_data['FID']}' ";
     $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
     $result = db_query($sql, $db_get_active_users);
@@ -139,9 +139,9 @@ function get_thread_count()
 {
     $db_get_thread_count = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$webtag['PREFIX']}THREAD THREAD";
+    $sql = "SELECT COUNT(THREAD.TID) AS THREADS FROM {$table_data['PREFIX']}THREAD THREAD";
     $result = db_query($sql, $db_get_thread_count);
 
     if (db_num_rows($result)) {
@@ -156,9 +156,9 @@ function get_post_count()
 {
     $db_get_post_count = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$webtag['PREFIX']}POST POST";
+    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_data['PREFIX']}POST POST";
     $result = db_query($sql, $db_get_post_count);
 
     if (db_num_rows($result)) {
@@ -173,11 +173,11 @@ function get_recent_post_count()
 {
     $db_get_post_count = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $post_stamp = time() - HOUR_IN_SECONDS;
 
-    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$webtag['PREFIX']}POST POST ";
+    $sql = "SELECT COUNT(POST.PID) AS POSTS FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "WHERE CREATED >= FROM_UNIXTIME($post_stamp)";
 
     $result = db_query($sql, $db_get_post_count);
@@ -194,9 +194,9 @@ function get_longest_thread()
 {
     $db_get_longest_thread = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$webtag['PREFIX']}THREAD THREAD ";
+    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "ORDER BY THREAD.LENGTH DESC LIMIT 0, 1";
 
     $result = db_query($sql, $db_get_longest_thread);
@@ -213,10 +213,10 @@ function get_most_users()
 {
     $db_get_most_users = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE ";
-    $sql.= "FROM {$webtag['PREFIX']}STATS";
+    $sql.= "FROM {$table_data['PREFIX']}STATS";
 
     $result = db_query($sql, $db_get_most_users);
 
@@ -232,10 +232,10 @@ function get_most_posts()
 {
     $db_get_most_posts = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
-    $sql.= "FROM {$webtag['PREFIX']}STATS";
+    $sql.= "FROM {$table_data['PREFIX']}STATS";
 
     $result = db_query($sql, $db_get_most_posts);
 
@@ -251,7 +251,7 @@ function get_newest_user()
 {
     $db_get_newest_user = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT UID, LOGON, NICKNAME FROM USER WHERE ";
     $sql.= "LOGON <> 'GUEST' AND PASSWD <> MD5('GUEST') ";

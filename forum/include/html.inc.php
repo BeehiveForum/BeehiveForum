@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.91 2004-03-23 02:41:59 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.92 2004-04-04 21:03:40 decoyduck Exp $ */
 
 include_once("./include/pm.inc.php");
 include_once("./include/session.inc.php");
@@ -34,7 +34,7 @@ function html_guest_error ()
      
      $final_uri = rawurlencode(get_request_uri());
      
-     echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag={$webtag['WEBTAG']}";
+     echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
      echo "&final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
      html_draw_bottom();
 }
@@ -175,7 +175,7 @@ function html_draw_top()
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\">\n";
     
     if ($meta_refresh) {
-        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag={$webtag['WEBTAG']}\">\n";
+        echo "<meta http-equiv=\"refresh\" content=\"$meta_refresh; url=./nav.php?webtag=$webtag\">\n";
     }
 
     if (forum_get_setting('default_style')) {
@@ -210,7 +210,7 @@ function html_draw_top()
     $fontsize = bh_session_get_value('FONT_SIZE');
     
     if ($fontsize && $fontsize != '10') {
-        echo "<style type=\"text/css\">@import \"fontsize.php?webtag={$webtag['WEBTAG']}\";</style>\n";
+        echo "<style type=\"text/css\">@import \"fontsize.php?webtag=$webtag\";</style>\n";
     }
     
     if (isset($HTTP_GET_VARS['fontresize'])) {

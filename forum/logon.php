@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.127 2004-03-27 19:47:00 decoyduck Exp $ */
+/* $Id: logon.php,v 1.128 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -55,15 +55,15 @@ if (isset($HTTP_GET_VARS['final_uri'])) {
 
 }elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
-    $final_uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=". $HTTP_GET_VARS['msg'];
+    $final_uri = "./discussion.php?webtag=$webtag&msg=". $HTTP_GET_VARS['msg'];
 
 }elseif (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
 
-    $final_uri = "./discussion.php?webtag={$webtag['WEBTAG']}&folder=". $HTTP_GET_VARS['folder'];
+    $final_uri = "./discussion.php?webtag=$webtag&folder=". $HTTP_GET_VARS['folder'];
 
 }elseif (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
 
-    $final_uri = "./pm.php?webtag={$webtag['WEBTAG']}&mid=". $HTTP_GET_VARS['pmid'];
+    $final_uri = "./pm.php?webtag=$webtag&mid=". $HTTP_GET_VARS['pmid'];
 }
 
 if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
@@ -131,9 +131,9 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
         if (isset($final_uri)) {
             $final_uri = rawurlencode($final_uri);
-            header_redirect("./index.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri");
+            header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri");
         }else {
-            header_redirect("./index.php?webtag={$webtag['WEBTAG']}");
+            header_redirect("./index.php?webtag=$webtag");
         }
 
     }else {
@@ -146,9 +146,9 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
         if (isset($final_uri)) {
             $final_uri = rawurlencode($final_uri);
-            echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri';\n";
+            echo "document.location.href = './index.php?webtag=$webtag&final_uri=$final_uri';\n";
         }else {
-            echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}';\n";
+            echo "document.location.href = './index.php?webtag=$webtag';\n";
         }
 
         echo "//-->\n";
@@ -178,9 +178,9 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
             if (isset($final_uri)) {
                 $final_uri = rawurlencode($final_uri);
-                header_redirect("./index.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri");
+                header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri");
             }else {
-                header_redirect("./index.php?webtag={$webtag['WEBTAG']}");
+                header_redirect("./index.php?webtag=$webtag");
             }
 
         }else {
@@ -193,9 +193,9 @@ if (isset($HTTP_GET_VARS['deletecookie']) && $HTTP_GET_VARS['deletecookie'] == '
 
             if (isset($final_uri)) {
                 $final_uri = rawurlencode($final_uri);
-                echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}&final_uri=$final_uri';\n";
+                echo "document.location.href = './index.php?webtag=$webtag&final_uri=$final_uri';\n";
             }else {
-                echo "document.location.href = './index.php?webtag={$webtag['WEBTAG']}';\n";
+                echo "document.location.href = './index.php?webtag=$webtag';\n";
             }
 
             echo "//-->\n";

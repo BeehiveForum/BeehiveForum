@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.10 2004-03-20 19:21:30 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.11 2004-04-04 21:03:41 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/session.inc.php");
@@ -38,7 +38,7 @@ function load_wordfilter()
     
     $uid = bh_session_get_value('UID');
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $filter_array = array();
     
@@ -46,7 +46,7 @@ function load_wordfilter()
     
     if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_settings('admin_force_word_filter', 'Y', false)) {
 
-        $sql = "SELECT * FROM {$webtag['PREFIX']}FILTER_LIST WHERE UID = 0";
+        $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
         $result = db_query($sql, $db_load_wordfilter);
         
         while ($row = db_fetch_array($result)) {
@@ -56,7 +56,7 @@ function load_wordfilter()
     
     // Get the user's own filter.
     
-    $sql = "SELECT * FROM {$webtag['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
     $result = db_query($sql, $db_load_wordfilter);
         
     while ($row = db_fetch_array($result)) {

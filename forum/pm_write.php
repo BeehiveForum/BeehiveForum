@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.54 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.55 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -105,7 +105,7 @@ if (isset($HTTP_GET_VARS['replyto']) && is_numeric($HTTP_GET_VARS['replyto'])) {
 // User clicked cancel
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    $uri = (isset($mid)) ? "./pm.php?webtag={$webtag['WEBTAG']}&mid=$mid" : "./pm.php?webtag={$webtag['WEBTAG']}";
+    $uri = (isset($mid)) ? "./pm.php?webtag=$webtag&mid=$mid" : "./pm.php?webtag=$webtag";
     header_redirect($uri);
 }
 
@@ -245,9 +245,9 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
         }
     }
     if (isset($mid)) {
-        $uri = "./pm.php?webtag={$webtag['WEBTAG']}&mid=$mid";
+        $uri = "./pm.php?webtag=$webtag&mid=$mid";
     }else {
-        $uri = "./pm.php?webtag={$webtag['WEBTAG']}";
+        $uri = "./pm.php?webtag=$webtag";
     }
     header_redirect($uri);
 }
@@ -317,7 +317,7 @@ if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['writepm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
@@ -330,7 +330,7 @@ if (!isset($t_post_html) || (isset($t_post_html) && $t_post_html != "Y")) {
     $t_content = isset($t_content) ? _stripslashes($t_content) : "";
 }
 
-echo "<form name=\"f_post\" action=\"pm_write.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"f_post\" action=\"pm_write.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "<table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td>\n";
@@ -359,7 +359,7 @@ echo form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lan
 echo form_submit('cancel', $lang['cancel']);
 
 if (forum_get_setting('attachments_enabled', 'Y', false) && forum_get_setting('pm_allow_attachments', 'Y', false)) {
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '{$webtag['WEBTAG']}')\"");
+    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.12 2004-03-22 12:21:16 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.13 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -51,7 +51,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./llogon.php?webtag={$webtag['WEBTAG']}";
+    $uri = "./llogon.php?webtag=$webtag";
     header_redirect($uri);
 }
 
@@ -67,7 +67,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     if (!strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
 
-        header_redirect("./llogon.php?webtag={$webtag['WEBTAG']}");
+        header_redirect("./llogon.php?webtag=$webtag");
 
     }else { // IIS bug prevents redirect at same time as setting cookies.
 
@@ -83,7 +83,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
 light_html_draw_top();
 
-echo "<form name=\"logon\" action=\"llogout.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_top\">\n";
+echo "<form name=\"logon\" action=\"llogout.php?webtag=$webtag\" method=\"post\" target=\"_top\">\n";
 echo "<p>{$lang['currentlyloggedinas']} ", user_get_logon(bh_session_get_value('UID')), "</p>\n";
 echo "<p>", form_submit("submit", $lang['logout']), "</p>\n";
 

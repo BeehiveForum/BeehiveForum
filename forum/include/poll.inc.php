@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.100 2004-04-01 16:39:05 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.101 2004-04-04 21:03:40 decoyduck Exp $ */
 
 include_once("./include/user_rel.inc.php");
 
@@ -43,9 +43,9 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     if (!is_numeric($show_results)) $show_results = 1;
     if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "INSERT INTO {$webtag['PREFIX']}POLL (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE) ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}POLL (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE) ";
     $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type')";
 
     if (db_query($sql, $db_poll_create)) {
@@ -57,7 +57,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
           $option_name  = addslashes($poll_options[$i]);
           $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
 
-          $sql = "INSERT INTO {$webtag['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
+          $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
           $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
 
           $result = db_query($sql, $db_poll_create);
@@ -89,21 +89,21 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
     $edit_uid = bh_session_get_value('UID');
     $poll_question = addslashes($poll_question);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     // Rename the thread
 
-    $sql = "UPDATE {$webtag['PREFIX']}THREAD SET TITLE = '$poll_question' WHERE TID = $tid";
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$poll_question' WHERE TID = $tid";
     $result = db_query($sql, $db_poll_edit);
 
     // Delete the recorded user votes for this poll
 
-    $sql = "DELETE FROM {$webtag['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
+    $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
 
     // Update the Poll settings
 
-    $sql = "UPDATE {$webtag['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
+    $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
     $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
     $sql.= "VOTETYPE = '$poll_vote_type' ";
     
@@ -120,7 +120,7 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
 
     // Delete the available options for the poll
 
-    $sql = "DELETE FROM {$webtag['PREFIX']}POLL_VOTES WHERE TID = '$tid'";
+    $sql = "DELETE FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid'";
     $result = db_query($sql, $db_poll_edit);
 
     // Insert the new poll options
@@ -132,7 +132,7 @@ function poll_edit($tid, $poll_question, $poll_options, $answer_groups, $closes,
         $option_name  = addslashes($poll_options[$i]);
         $option_group = (isset($answer_groups[$i])) ? $answer_groups[$i] : 1;
 
-        $sql = "INSERT INTO {$webtag['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}POLL_VOTES (TID, OPTION_NAME, GROUP_ID) ";
         $sql.= "VALUES ('$tid', '$option_name', '$option_group')";
 
         $result = db_query($sql, $db_poll_edit);
@@ -150,7 +150,7 @@ function poll_get($tid)
 
     $db_poll_get = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.VIEWED, ";
@@ -159,12 +159,12 @@ function poll_get($tid)
     $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, ";
     $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS ";
-    $sql.= "FROM {$webtag['PREFIX']}POST POST ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}POLL POLL ON (POST.TID = POLL.TID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (POST.TID = POLL.TID) ";
     $sql.= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";    
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.UID = $uid AND USER_PEER.PEER_UID = POST.FROM_UID) ";   
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = 1";
 
@@ -206,10 +206,10 @@ function poll_get_votes($tid)
 
     if (!is_numeric($tid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT OPTION_ID, OPTION_NAME, GROUP_ID ";
-    $sql.= "FROM {$webtag['PREFIX']}POLL_VOTES WHERE TID = '$tid' ";
+    $sql.= "FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid' ";
 
     $result = db_query($sql, $db_poll_get_votes);
 
@@ -226,7 +226,7 @@ function poll_get_votes($tid)
         $option_names[]  = $row['OPTION_NAME'];
         $option_groups[] = $row['GROUP_ID'];
         
-        $sql = "SELECT COUNT(ID) AS VOTES FROM {$webtag['PREFIX']}USER_POLL_VOTES ";
+        $sql = "SELECT COUNT(ID) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
         $sql.= "WHERE OPTION_ID = '{$row['OPTION_ID']}' ";
         $sql.= "AND TID = '$tid'";
         
@@ -250,9 +250,9 @@ function poll_get_total_votes($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT COUNT(ID) AS VOTES FROM {$webtag['PREFIX']}USER_POLL_VOTES ";
+    $sql = "SELECT COUNT(ID) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "GROUP BY OPTION_ID";
 
     $result_get_total_votes = db_query($sql, $db_poll_get_total_votes);
@@ -270,10 +270,10 @@ function poll_get_user_votes($tid, $viewstyle)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($viewstyle)) $viewstyle = 0;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT UP.UID, UP.OPTION_ID FROM {$webtag['PREFIX']}USER_POLL_VOTES UP ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}POLL POLL ON (UP.TID = POLL.TID) ";
+    $sql = "SELECT UP.UID, UP.OPTION_ID FROM {$table_data['PREFIX']}USER_POLL_VOTES UP ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (UP.TID = POLL.TID) ";
     $sql.= "WHERE UP.TID = '$tid' AND POLL.VOTETYPE = 1";
 
     $result = db_query($sql, $db_poll_get_user_vote_hashes);
@@ -302,9 +302,9 @@ function poll_get_user_vote($tid)
 
     $db_poll_get_user_vote = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP FROM {$webtag['PREFIX']}USER_POLL_VOTES ";
+    $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
     $sql.= "WHERE PTUID = MD5($tid.$uid) ORDER BY ID";
 
     $result = db_query($sql, $db_poll_get_user_vote);
@@ -348,7 +348,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata['CONTENT'].= "    <td>\n";
 
     $polldata['CONTENT'].= "      <form method=\"post\" action=\"". $HTTP_SERVER_VARS['PHP_SELF']. "\" target=\"_self\">\n";
-    $polldata['CONTENT'].= "        ". form_input_hidden("webtag", $webtag['WEBTAG']). "\n";
+    $polldata['CONTENT'].= "        ". form_input_hidden("webtag", $webtag). "\n";
     $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "      <table width=\"450\" align=\"center\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
@@ -604,11 +604,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
             if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag={$webtag['WEBTAG']}&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }else {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag={$webtag['WEBTAG']}&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }
           }
@@ -653,11 +653,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
             if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2) {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag={$webtag['WEBTAG']}&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }else {
 
-              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag={$webtag['WEBTAG']}&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+              $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('pollresults.php?webtag=$webtag&tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
 
             }
 
@@ -1150,7 +1150,7 @@ function poll_public_ballot($tid, $viewstyle)
 
                   $polldisplay.= "              <tr>\n";
                   $polldisplay.= "                <td width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-                  $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '{$webtag['WEBTAG']}')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
+                  $polldisplay.= "                <td width=\"150\" class=\"$row_class\"><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '$webtag')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a></td>\n";
                   $polldisplay.= "              </tr>\n";
                 }
               }
@@ -1188,7 +1188,7 @@ function poll_public_ballot($tid, $viewstyle)
 
           $polldisplay.= "            <table width=\"460\" align=\"center\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
           $polldisplay.= "              <tr>\n";
-          $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '{$webtag['WEBTAG']}')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a><h2></td>\n";
+          $polldisplay.= "                <td width=\"150\" class=\"$row_class\" style=\"border-bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javscript:void(0)\" onclick=\"openProfile({$user['UID']}, '$webtag')\">". format_user_name($user['LOGON'], $user['NICKNAME']). "</a><h2></td>\n";
           $polldisplay.= "              </tr>\n";
 
           for ($i = 0; $i < sizeof($optionid_array); $i++) {
@@ -1248,7 +1248,7 @@ function poll_confirm_close($tid)
     poll_display($tid, $threaddata['LENGTH'], 1, false, false, false, true, $show_sigs, true);
 
     echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"POST\" target=\"_self\">";
-    echo form_input_hidden("webtag", $webtag['WEBTAG']);
+    echo form_input_hidden("webtag", $webtag);
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
     echo "<p align=\"center\">", form_submit("pollclose", $lang['endpoll']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p>\n";
@@ -1261,9 +1261,9 @@ function poll_close($tid)
 
     if (!is_numeric($tid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT FROM_UID FROM {$webtag['PREFIX']}POST WHERE TID = $tid AND PID = 1";
+    $sql = "SELECT FROM_UID FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND PID = 1";
     $result = db_query($sql, $db_poll_close);
 
     if (db_num_rows($result) > 0) {
@@ -1272,7 +1272,7 @@ function poll_close($tid)
 
       if(bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator()) {
 
-        $sql = "update {$webtag['PREFIX']}POLL set CLOSES = FROM_UNIXTIME(". gmmktime(). ") where TID = $tid";
+        $sql = "update {$table_data['PREFIX']}POLL set CLOSES = FROM_UNIXTIME(". gmmktime(). ") where TID = $tid";
         $result = db_query($sql, $db_poll_close);
 
       }
@@ -1287,9 +1287,9 @@ function poll_is_closed($tid)
 
     if (!is_numeric($tid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT CLOSES FROM {$webtag['PREFIX']}POLL WHERE TID = $tid";
+    $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = $tid";
     $result = db_query($sql, $db_poll_is_closed);
 
     if (db_num_rows($result)) {
@@ -1310,7 +1310,7 @@ function poll_vote($tid, $vote_array)
 
     $db_poll_vote = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $polldata = poll_get($tid);
     $vote_count = sizeof($vote_array);
@@ -1321,12 +1321,12 @@ function poll_vote($tid, $vote_array)
 
             if ($polldata['VOTETYPE'] == 0) {
 
-                $sql = "insert into {$webtag['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
+                $sql = "insert into {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
                 $sql.= "values ($tid, 0, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
 
             }else {
 
-                $sql = "insert into {$webtag['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
+                $sql = "insert into {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, PTUID, OPTION_ID, TSTAMP) ";
                 $sql.= "values ($tid, $uid, MD5($tid.$uid), $user_vote, FROM_UNIXTIME(". mktime(). "))";
             }
 
@@ -1343,14 +1343,14 @@ function poll_delete_vote($tid)
 
     $uid = bh_session_get_value('UID');
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT OPTION_ID FROM {$webtag['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
+    $sql = "SELECT OPTION_ID FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
     $result = db_query($sql, $db_poll_delete_vote);
 
     if (db_num_rows($result) > 0) {
 
-        $sql = "DELETE FROM {$webtag['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
+        $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE PTUID = MD5($tid.$uid)";
         $result = db_query($sql, $db_poll_delete_vote);
 
     }
@@ -1362,9 +1362,9 @@ function thread_is_poll($tid)
 
     if (!is_numeric($tid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT CLOSES FROM {$webtag['PREFIX']}POLL WHERE TID = $tid";
+    $sql = "SELECT CLOSES FROM {$table_data['PREFIX']}POLL WHERE TID = $tid";
     $result = db_query($sql, $db_thread_is_poll);
 
     if (db_num_rows($result) > 0) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.29 2004-03-22 12:21:16 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.30 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -57,7 +57,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag={$webtag['WEBTAG']}&final_uri=". rawurlencode(get_request_uri());
+    $uri = "./logon.php?webtag=$webtag&final_uri=". rawurlencode(get_request_uri());
     header_redirect($uri);
 }
 
@@ -96,7 +96,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
   if (isset($HTTP_POST_VARS['pollvote'])) {
 
     poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
-    header_redirect("lmessages.php?webtag={$webtag['WEBTAG']}&msg=". $HTTP_POST_VARS['tid']. ".1");
+    header_redirect("lmessages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
 
   }else {
 
@@ -178,7 +178,7 @@ if ($last_pid < $threaddata['LENGTH']) {
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
-echo "<h4><a href=\"lthread_list.php?webtag={$webtag['WEBTAG']}\">{$lang['backtothreadlist']}</a></h4>";
+echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a></h4>";
 
 light_html_draw_bottom();
 

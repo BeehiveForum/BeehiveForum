@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.40 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: email.php,v 1.41 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -92,7 +92,7 @@ if (bh_session_get_value('UID') == 0) {
 }
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    $uri = "./user_profile.php?webtag={$webtag['WEBTAG']}&uid=". $HTTP_POST_VARS['t_to_uid'];
+    $uri = "./user_profile.php?webtag=$webtag&uid=". $HTTP_POST_VARS['t_to_uid'];
     header_redirect($uri);
 }
 
@@ -167,7 +167,7 @@ if (!isset($subject)) $subject = "";
 if (!isset($message)) $message = "";
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"f_email\" action=\"email.php?webtag={$webtag['WEBTAG']}\" method=\"POST\">\n";
+echo "  <form name=\"f_email\" action=\"email.php?webtag=$webtag\" method=\"POST\">\n";
 echo "    ", form_input_hidden("t_to_uid", $to_uid), "\n";
 echo "    <table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "      <tr>\n";

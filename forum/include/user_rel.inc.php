@@ -21,22 +21,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.13 2004-04-01 16:39:05 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.14 2004-04-04 21:03:41 decoyduck Exp $ */
 
 function user_rel_update($uid, $peer_uid, $value)
 {
     $db_user_rel_update = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "UPDATE {$webtag['PREFIX']}USER_PEER SET RELATIONSHIP = '$value' ";
+    $sql = "UPDATE {$table_data['PREFIX']}USER_PEER SET RELATIONSHIP = '$value' ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     $result = db_query($sql, $db_user_rel_update);
 
     if (!db_affected_rows($db_user_rel_update)) {
 
-        $sql = "INSERT INTO {$webtag['PREFIX']}USER_PEER (UID, PEER_UID, RELATIONSHIP) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_PEER (UID, PEER_UID, RELATIONSHIP) ";
         $sql.= "VALUES ('$uid', '$peer_uid', '$value')";
 
         $result = db_query($sql, $db_user_rel_update);
@@ -50,9 +50,9 @@ function user_rel_get($uid, $peer_uid)
 
     $db_user_rel_get = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT RELATIONSHIP FROM {$webtag['PREFIX']}USER_PEER ";
+    $sql = "SELECT RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     $result = db_query($sql, $db_user_rel_get);

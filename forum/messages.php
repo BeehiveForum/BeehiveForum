@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.125 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: messages.php,v 1.126 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -120,7 +120,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
   if (isset($HTTP_POST_VARS['pollvote'])) {
 
     poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
-    header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=". $HTTP_POST_VARS['tid']. ".1");
+    header_redirect("./messages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
 
   }else {
 
@@ -136,7 +136,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
   if (isset($HTTP_POST_VARS['confirm_pollclose'])) {
 
     poll_close($HTTP_POST_VARS['tid']);
-    header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=". $HTTP_POST_VARS['tid']. ".1");
+    header_redirect("./messages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
 
   }else {
 
@@ -150,7 +150,7 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 }elseif (isset($HTTP_POST_VARS['pollchangevote'])) {
 
   poll_delete_vote($HTTP_POST_VARS['tid']);
-  header_redirect("./messages.php?webtag={$webtag['WEBTAG']}&msg=". $HTTP_POST_VARS['tid']. ".1");
+  header_redirect("./messages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
 
 }
 
@@ -227,13 +227,13 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
         $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
       }
       if (sizeof($userpollvotes_array) > 1) {
-        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
+        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
       }else {
-        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
+        echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
       }
     }
   }else {
-    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youhavenotvoted']}</td>\n";
+    echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktovote']}\"><img src=\"", style_image('poll.png'), "\" align=\"middle\" border=\"0\" /></a> {$lang['youhavenotvoted']}</td>\n";
   }
 
 }
@@ -303,7 +303,7 @@ messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
 
 if ($threaddata['POLL_FLAG'] == 'Y') {
-    echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag={$webtag['WEBTAG']}&tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
+    echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('pollresults.php?webtag=$webtag&tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
 }
 
 if (bh_session_get_value('UID') != 0) {

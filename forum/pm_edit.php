@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.29 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.30 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -111,7 +111,7 @@ if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
 // User clicked cancel
 
 if (isset($HTTP_POST_VARS['cancel'])) {
-    header_redirect("./pm.php?webtag={$webtag['WEBTAG']}&folder=2");
+    header_redirect("./pm.php?webtag=$webtag&folder=2");
 }
 
 $valid = true;
@@ -177,7 +177,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
         }         
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
-            header_redirect("pm.php?webtag={$webtag['WEBTAG']}&folder=2");
+            header_redirect("pm.php?webtag=$webtag&folder=2");
         }else {
             $error_html = "<h2>{$lang['errorcreatingpm']}</h2>";
             $valid = false;
@@ -231,7 +231,7 @@ draw_header_pm();
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\" height=\"20\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['editpm']}</b></td>\n";
-echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag={$webtag['WEBTAG']}&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
+echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=1\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&folder=2\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&folder=3\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
@@ -272,11 +272,11 @@ if ($edit_html) {
 }
 
 if ($aid = get_pm_attachment_id($mid)) {
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '{$webtag['WEBTAG']}');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);
 }else {
     $aid = md5(uniqid(rand()));
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '{$webtag['WEBTAG']}');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);
 }
 

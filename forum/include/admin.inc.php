@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.23 2004-03-19 23:06:52 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.24 2004-04-04 21:03:40 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -35,9 +35,9 @@ function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
     $piid   = addslashes($piid);
     $action = addslashes($action);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "INSERT INTO {$webtag['PREFIX']}ADMIN_LOG (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}ADMIN_LOG (LOG_TIME, ADMIN_UID, UID, FID, TID, PID, PSID, PIID, ACTION) ";
     $sql.= "VALUES (NOW(), '$admin_uid', '$uid', '$fid', '$tid', '$pid', '$psid', '$piid', '$action')";
 
     $result = db_query($sql, $db_admin_addlog);
@@ -51,9 +51,9 @@ function admin_clearlog()
 
     if ((bh_session_get_value('STATUS') & USER_PERM_QUEEN)) {
 
-        $webtag = get_webtag();
+        $table_data = get_table_prefix();
         
-        $sql = "DELETE FROM {$webtag['PREFIX']}ADMIN_LOG";
+        $sql = "DELETE FROM {$table_data['PREFIX']}ADMIN_LOG";
 	$result = db_query($sql, $db_admin_clearlog);
     }
 }
@@ -68,19 +68,19 @@ function admin_get_log_entries($offset, $sort_by, $sort_dir)
     if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'ADMIN_LOG.LOG_TIME';
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT ADMIN_LOG.LOG_ID, UNIX_TIMESTAMP(ADMIN_LOG.LOG_TIME) AS LOG_TIME, ADMIN_LOG.ADMIN_UID, ";
     $sql.= "ADMIN_LOG.UID, AUSER.LOGON AS ALOGON, AUSER.NICKNAME AS ANICKNAME, USER.LOGON, USER.NICKNAME, ";
     $sql.= "ADMIN_LOG.FID, ADMIN_LOG.TID, ADMIN_LOG.PID, FOLDER.TITLE AS FOLDER_TITLE, THREAD.TITLE AS THREAD_TITLE, ";
     $sql.= "ADMIN_LOG.PSID, ADMIN_LOG.PIID, PS.NAME AS PS_NAME, PI.NAME AS PI_NAME, ADMIN_LOG.ACTION ";
-    $sql.= "FROM {$webtag['PREFIX']}ADMIN_LOG ADMIN_LOG ";
+    $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ADMIN_LOG ";
     $sql.= "LEFT JOIN USER AUSER ON (AUSER.UID = ADMIN_LOG.ADMIN_UID) ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}PROFILE_SECTION PS ON (PS.PSID = ADMIN_LOG.PSID) ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}PROFILE_ITEM PI ON (PI.PIID = ADMIN_LOG.PIID) ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = ADMIN_LOG.FID) ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}THREAD THREAD ON (THREAD.TID = ADMIN_LOG.TID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_SECTION PS ON (PS.PSID = ADMIN_LOG.PSID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PI ON (PI.PIID = ADMIN_LOG.PIID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = ADMIN_LOG.FID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = ADMIN_LOG.TID) ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     $result = db_query($sql, $db_admin_get_log_entries);
@@ -100,9 +100,9 @@ function admin_get_word_filter()
 {
     $db_admin_get_word_filter = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT * FROM {$webtag['PREFIX']}FILTER_LIST WHERE UID = 0";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
     $result = db_query($sql, $db_admin_get_word_filter);
 
     $filter_array = array();
@@ -120,9 +120,9 @@ function admin_delete_word_filter($id)
 
     $db_user_delete_word_filter = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
-    $sql = "DELETE FROM {$webtag['PREFIX']}FILTER_LIST ";
+    $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE ID = '$id' AND UID = 0";
     
     $result = db_query($sql, $db_user_delete_word_filter);
@@ -132,9 +132,9 @@ function admin_clear_word_filter()
 {
     $db_admin_clear_word_filter = db_connect();
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "DELETE FROM {$webtag['PREFIX']}FILTER_LIST WHERE UID = 0";
+    $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
     return db_query($sql, $db_admin_clear_word_filter);
 }
 
@@ -146,9 +146,9 @@ function admin_add_word_filter($match, $replace, $filter_option)
     $db_admin_add_word_filter = db_connect();
     $uid = bh_session_get_value('UID');    
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "INSERT INTO {$webtag['PREFIX']}FILTER_LIST (MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
     $sql.= "VALUES ('$match', '$replace', '$filter_option')";
 
     $result = db_query($sql, $db_admin_add_word_filter);
@@ -165,12 +165,12 @@ function admin_user_search($usersearch, $sort_by = "VISITOR_LOG.LAST_LOGON", $so
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
@@ -201,12 +201,12 @@ function admin_user_get_all($sort_by = "LAST_LOGON", $sort_dir = "ASC", $offset 
     if (!is_numeric($offset)) $offset = 0;
     if (!in_array($sort_by, $sort_array)) $sort_by = 'LAST_LOGON';
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER_STATUS.STATUS, SESSIONS.SESSID FROM USER USER ";
-    $sql.= "LEFT JOIN {$webtag['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$webtag['FID']}') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_STATUS USER_STATUS ON (USER_STATUS.UID = USER.UID AND USER_STATUS.FID = '{$table_data['FID']}') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
@@ -226,9 +226,9 @@ function admin_session_end($uid)
     
     if (!is_numeric($uid)) return false;
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
-    $sql = "DELETE FROM SESSIONS WHERE UID = '$uid' AND FID = '{$webtag['FID']}'";
+    $sql = "DELETE FROM SESSIONS WHERE UID = '$uid' AND FID = '{$table_data['FID']}'";
     $result = db_query($sql, $db_admin_session_end);
     
     return (db_affected_rows($db_admin_session_end) > 0);

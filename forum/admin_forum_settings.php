@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.14 2004-03-27 21:56:17 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.15 2004-04-04 21:03:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -386,7 +386,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
         
         if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-            header_redirect("./admin_forum_settings.php?webtag={$webtag['WEBTAG']}&updated=true");
+            header_redirect("./admin_forum_settings.php?webtag=$webtag&updated=true");
 
         }else {
 
@@ -395,7 +395,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
             // Try a Javascript redirect
             echo "<script language=\"javascript\" type=\"text/javascript\">\n";
             echo "<!--\n";
-            echo "document.location.href = './admin_forum_settings.php?webtag={$webtag['WEBTAG']}&updated=true';\n";
+            echo "document.location.href = './admin_forum_settings.php?webtag=$webtag&updated=true';\n";
             echo "//-->\n";
             echo "</script>";
 
@@ -426,7 +426,7 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<form name=\"prefs\" action=\"admin_forum_settings.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"prefs\" action=\"admin_forum_settings.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -461,7 +461,7 @@ echo "                  <td>", form_dropdown_array("default_style", $available_s
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"200\">{$lang['defaultemoticons']} ";
-echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','{$webtag['WEBTAG']}')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
+echo "[<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
       
 foreach ($available_emots as $key => $emots) {
     if (strtolower($emots) == strtolower(forum_get_setting('default_emoticons'))) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.67 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: search.php,v 1.68 2004-04-04 21:03:40 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -111,7 +111,7 @@ if (isset($HTTP_POST_VARS['search_string'])) {
     $search_string = $HTTP_GET_VARS['search_string'];
 }else {
     echo "<h1>", $lang['searchmessages'], "</h1>\n";
-    echo "<form method=\"post\" action=\"search.php?webtag={$webtag['WEBTAG']}\" target=\"left\">\n";
+    echo "<form method=\"post\" action=\"search.php?webtag=$webtag\" target=\"left\">\n";
     echo form_input_hidden('sstart', '0'), "\n";
     echo "<table border=\"0\" width=\"550\" align=\"center\">\n";
     echo "  <tr>\n";
@@ -180,13 +180,13 @@ $error = false;
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\">\n";
-echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
-echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['createpoll']}</a><br />\n";
+echo "      <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a><br />\n";
+echo "      <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a><br />\n";
 
 if ($pm_new_count = pm_new_check(false)) {
-    echo "      <img src=\"", style_image('pmnewmessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['pminbox']}</a> <span class=\"adminipdisplay\">[$pm_new_count {$lang['new']}]</span><br />\n";
+    echo "      <img src=\"", style_image('pmnewmessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"adminipdisplay\">[$pm_new_count {$lang['new']}]</span><br />\n";
 }else {
-    echo "      <img src=\"", style_image('pmnomessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['pminbox']}</a><br />\n";
+    echo "      <img src=\"", style_image('pmnomessages.png'), "\" height=\"16\" alt=\"\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a><br />\n";
 }
 
 echo "    </td>\n";
@@ -197,7 +197,7 @@ echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td colspan=\"2\">\n";
 echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
-echo "        ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
+echo "        ", form_input_hidden("webtag", $webtag), "\n";
 
 if (bh_session_get_value('UID') == 0) {
 
@@ -233,7 +233,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"\" />&nbsp;{$lang['found']}: ", sizeof($search_results_array), " {$lang['matches']}<br />\n";
 
     if ($sstart >= 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php?webtag={$webtag['WEBTAG']}&sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
+        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\" />&nbsp;<a href=\"search.php?webtag=$webtag&sstart=", $sstart - 50, $urlquery, "\">{$lang['prevpage']}</a>\n";
     }
 
     echo "<ol start=\"", $sstart + 1, "\">\n";
@@ -283,7 +283,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
         }
 
-        echo "  <li><p><a href=\"messages.php?webtag={$webtag['WEBTAG']}&msg=", $search_result['TID'], ".", $search_result['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />";
+        echo "  <li><p><a href=\"messages.php?webtag=$webtag&msg=", $search_result['TID'], ".", $search_result['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />";
         if (strlen($message['CONTENT']) > 0) echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
         echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></a></p></li>\n";
     }
@@ -291,7 +291,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     echo "</ol>\n";
 
     if (sizeof($search_results_array) == 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?webtag={$webtag['WEBTAG']}&sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
+        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"\">&nbsp;<a href=\"search.php?webtag=$webtag&sstart=", $sstart + 50, $urlquery, "\">{$lang['findmore']}</a>\n";
     }
 
 }else if ($error) {
@@ -319,7 +319,7 @@ echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "    <td class=\"smalltext\">\n";
 echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-echo "        ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
+echo "        ", form_input_hidden("webtag", $webtag), "\n";
 echo "        ", form_input_text('msg', '1.1', 10). "\n";
 echo "        ", form_submit("go",$lang['goexcmark']). "\n";
 echo "      </form>\n";
@@ -329,12 +329,12 @@ echo "</table>\n";
 
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag={$webtag['WEBTAG']}\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "    <td class=\"smalltext\">\n";
-echo "      <form method=\"post\" action=\"search.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">\n";
+echo "      <form method=\"post\" action=\"search.php?webtag=$webtag\" target=\"_self\">\n";
 echo "        ", form_input_text("search_string", "", 20). "\n";
 echo "        ", form_submit("submit", $lang['find']). "\n";
 echo "      </form>\n";

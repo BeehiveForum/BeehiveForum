@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.57 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: nav.php,v 1.58 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -89,30 +89,30 @@ header_no_cache();
 
 html_draw_top("class=navpage");
 
-echo "<a href=\"start.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
-echo "<a href=\"discussion.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"start.php?webtag=$webtag\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"discussion.php?webtag=$webtag\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
 
 if (forum_get_setting('show_links', 'Y', false)) {
-    echo "<a href=\"links.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"links.php?webtag=$webtag\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
 }
 
 $user_sess = bh_session_check();
 
 if (forum_get_setting('show_pms', 'Y', false)) {
-    echo "<a href=\"pm.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
 }
 
-echo "<a href=\"user.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"user.php?webtag=$webtag\" target=\"main\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
 //echo "<a href=\"profile.php\" target=\"main\">{$lang['profile']}</a>&nbsp;|&nbsp;\n";
 
 if (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
-    echo "<a href=\"admin.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"admin.php?webtag=$webtag\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
 }
 
 if (bh_session_get_value('UID') == 0) {
-    echo "<a href=\"logout.php?webtag={$webtag['WEBTAG']}\" target=\"_top\">{$lang['login']}</a>\n";
+    echo "<a href=\"logout.php?webtag=$webtag\" target=\"_top\">{$lang['login']}</a>\n";
 }else {
-    echo "<a href=\"logout.php?webtag={$webtag['WEBTAG']}\" target=\"main\">{$lang['logout']}</a>\n";
+    echo "<a href=\"logout.php?webtag=$webtag\" target=\"main\">{$lang['logout']}</a>\n";
 }
 
 html_draw_bottom();

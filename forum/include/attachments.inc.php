@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.49 2004-03-19 13:53:08 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.50 2004-04-04 21:03:40 decoyduck Exp $ */
 
 include_once("./include/perm.inc.php");
 
@@ -36,9 +36,9 @@ function get_attachments($uid, $aid)
     $uid = addslashes($uid);
     $aid = addslashes($aid);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT DISTINCT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid' AND AID = '$aid'";
+    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid' AND AID = '$aid'";
     $result = db_query($sql, $db_get_attachments);
 
     while($row = db_fetch_array($result)) {
@@ -82,9 +82,9 @@ function get_all_attachments($uid, $aid)
     $uid = addslashes($uid);
     $aid = addslashes($aid);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT DISTINCT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid' AND AID <> '$aid'";
+    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid' AND AID <> '$aid'";
     $result = db_query($sql, $db_get_all_attachments);
 
     while($row = db_fetch_array($result)) {
@@ -127,9 +127,9 @@ function get_users_attachments($uid)
 
     $uid = addslashes($uid);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT DISTINCT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_users_attachments);
 
     while($row = db_fetch_array($result)) {
@@ -175,9 +175,9 @@ function add_attachment($uid, $aid, $fileid, $filename, $mimetype)
     $filename = addslashes($filename);
     $mimetype = addslashes($mimetype);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
-    $sql = "INSERT INTO {$webtag['PREFIX']}POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
+    $sql = "INSERT INTO {$table_data['PREFIX']}POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
     $sql.= "VALUES ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
 
     $result = db_query($sql, $db_add_attachment);
@@ -193,13 +193,13 @@ function delete_attachment($uid, $hash)
     if (!is_md5($hash)) return false;
 
     $db_delete_attachment = db_connect();
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
     
     $hash = addslashes($hash);
     
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
     
-    $sql = "SELECT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "WHERE HASH = '$hash' AND UID = $uid";
     
     $result = db_query($sql, $db_delete_attachment);
@@ -221,11 +221,11 @@ function get_free_attachment_space($uid)
 
     $uid = addslashes($uid);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
     $max_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
 
-    $sql = "SELECT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_free_attachment_space);
 
     while($row = db_fetch_array($result)) {
@@ -246,9 +246,9 @@ function get_attachment_id($tid, $pid)
     $tid = addslashes($tid);
     $pid = addslashes($pid);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT AID FROM {$webtag['PREFIX']}POST_ATTACHMENT_IDS WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "SELECT AID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS WHERE TID = '$tid' AND PID = '$pid'";
     $result = db_query($sql, $db_get_attachment_id);
 
     if (db_num_rows($result) > 0) {
@@ -268,9 +268,9 @@ function get_pm_attachment_id($mid)
 
     $mid = addslashes($mid);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT AID FROM {$webtag['PREFIX']}PM_ATTACHMENT_IDS WHERE MID = '$mid'";
+    $sql = "SELECT AID FROM {$table_data['PREFIX']}PM_ATTACHMENT_IDS WHERE MID = '$mid'";
     $result = db_query($sql, $db_get_pm_attachment_id);
 
     if (db_num_rows($result) > 0) {
@@ -292,25 +292,25 @@ function get_message_link($aid)
 
     $aid = addslashes($aid);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT TID, PID FROM {$webtag['PREFIX']}POST_ATTACHMENT_IDS WHERE AID = '$aid'";
+    $sql = "SELECT TID, PID FROM {$table_data['PREFIX']}POST_ATTACHMENT_IDS WHERE AID = '$aid'";
     $result = db_query($sql, $db_get_message_link);
 
     if (db_num_rows($result) > 0) {
 
         $tidpid = db_fetch_array($result);
-        return "./messages.php?webtag={$webtag['WEBTAG']}&msg=". $tidpid['TID']. ".". $tidpid['PID'];
+        return "./messages.php?webtag=$webtag&msg=". $tidpid['TID']. ".". $tidpid['PID'];
 
     }else{
 
-        $sql = "SELECT MID FROM {$webtag['PREFIX']}PM_ATTACHMENT_IDS WHERE AID = '$aid'";
+        $sql = "SELECT MID FROM {$table_data['PREFIX']}PM_ATTACHMENT_IDS WHERE AID = '$aid'";
         $result = db_query($sql, $db_get_message_link);
 
         if (db_num_rows($result) > 0) {
 
             $mid = db_fetch_array($result);
-            return "./pm.php?webtag={$webtag['WEBTAG']}&mid=". $mid['MID'];
+            return "./pm.php?webtag=$webtag&mid=". $mid['MID'];
         }
     }
 
@@ -323,9 +323,9 @@ function get_num_attachments($aid)
 
     $aid = addslashes($aid);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES WHERE AID = '$aid'";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE AID = '$aid'";
     $result = db_query($sql, $db_get_num_attachments);
 
     return db_num_rows($result);
@@ -336,9 +336,9 @@ function get_attachment_by_hash($hash)
     $db_get_attachment_by_hash = db_connect();
     $hash = addslashes($hash);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "SELECT * FROM {$webtag['PREFIX']}POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
     $result = db_query($sql, $db_get_attachment_by_hash);
 
     if (db_num_rows($result)) {
@@ -353,9 +353,9 @@ function attachment_inc_dload_count($hash)
     $db_attachment_inc_dload_count = db_connect();
     $hash = addslashes($hash);
     
-    $webtag = get_webtag();
+    $table_data = get_table_prefix();
 
-    $sql = "UPDATE LOW_PRIORITY {$webtag['PREFIX']}POST_ATTACHMENT_FILES ";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
     $sql.= "SET DOWNLOADS = DOWNLOADS + 1 WHERE HASH = '$hash'";
 
     $result = db_query($sql, $db_attachment_inc_dload_count);

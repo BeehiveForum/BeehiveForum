@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.7 2004-04-03 20:51:54 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.8 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -129,7 +129,7 @@ echo "              <tr>\n";
 if ($pack != "user") {
 	echo "              <td valign=\"top\" width=\"200\">\n";
 	for ($i=0; $i<count($emot_names); $i++) {
-		echo "                  <p><a href=\"display_emoticons.php?webtag={$webtag['WEBTAG']}&pack=".$available_emots[$i]."\" target=\"_self\">".$emot_names[$i]."</a></p>\n";
+		echo "                  <p><a href=\"display_emoticons.php?webtag=$webtag&pack=".$available_emots[$i]."\" target=\"_self\">".$emot_names[$i]."</a></p>\n";
 	}
 	echo "                </td>\n";
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.54 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.55 2004-04-04 21:03:39 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -123,7 +123,7 @@ $valid = true;
 
 if (isset($HTTP_POST_VARS['cancel'])) {
 
-  $uri = "./discussion.php?webtag={$webtag['WEBTAG']}&msg=$edit_msg";
+  $uri = "./discussion.php?webtag=$webtag&msg=$edit_msg";
   header_redirect($uri);
 
 }elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
@@ -279,7 +279,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
   }  
   
-  header_redirect("./discussion.php?webtag={$webtag['WEBTAG']}&msg=$tid.1");
+  header_redirect("./discussion.php?webtag=$webtag&msg=$tid.1");
 
 }else {
 
@@ -390,7 +390,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 if (isset($error_html)) echo $error_html;
 
-echo "<form name=\"f_edit_poll\" action=\"edit_poll.php?webtag={$webtag['WEBTAG']}\" method=\"POST\" target=\"_self\">\n";
+echo "<form name=\"f_edit_poll\" action=\"edit_poll.php?webtag=$webtag\" method=\"POST\" target=\"_self\">\n";
 echo form_input_hidden("t_msg", $edit_msg);
 echo "<p>{$lang['editpollwarning']}</p>\n";
 
@@ -615,11 +615,11 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
   echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
   if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '{$webtag['WEBTAG']}');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);
   }else {
     $aid = md5(uniqid(rand()));
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '{$webtag['WEBTAG']}');\"");
+    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);
   }
 

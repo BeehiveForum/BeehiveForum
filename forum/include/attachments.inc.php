@@ -24,28 +24,27 @@ USA
 require_once("./include/db.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
+require_once("./include/config.inc.php");
 
 function get_attachments($uid, $aid) {
 
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $attachment_dir;
 
     $userattachments = '';
-    
-    $attachments_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid;
 
     $db = db_connect();
     
     $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = $uid and AID = '$aid'";
-    $result = db_query($sql, $db) or die(mysql_error());
+    $result = db_query($sql, $db);
     
     while($row = db_fetch_array($result)) {
     
       if (!is_array($userattachments)) $userattachments = array();
       
-      if (file_exists($attachments_dir. '/'. md5($aid. $row['FILENAME']))) {
+      if (file_exists($attachment_dir. '/'. md5($row['AID']. $row['FILENAME']))) {
       
         $userattachments[] = array("filename" => $row['FILENAME'],
-                                   "filesize" => filesize($attachments_dir. '/'. md5($aid. $row['FILENAME'])),
+                                   "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. $row['FILENAME'])),
                                    "aid"      => $row['AID'],
                                    "hash"     => $row['HASH']);
       }
@@ -58,25 +57,23 @@ function get_attachments($uid, $aid) {
 
 function get_all_attachments($uid, $aid) {
 
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $attachment_dir;
 
     $userattachments = '';
     
     $db = db_connect();
     
     $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = $uid and AID <> '$aid'";
-    $result = db_query($sql, $db) or die(mysql_error());
-    
-    $attachments_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments';    
+    $result = db_query($sql, $db);
     
     while($row = db_fetch_array($result)) {
     
       if (!is_array($userattachments)) $userattachments = array();
       
-      if (file_exists($attachments_dir. '/'. $row['AID']. '/'. md5($row['AID']. $row['FILENAME']))) {
+      if (file_exists($attachment_dir. '/'. md5($row['AID']. $row['FILENAME']))) {
     
         $userattachments[] = array("filename" => $row['FILENAME'],
-                                   "filesize" => filesize($attachments_dir. '/'. $row['AID']. '/'. md5($row['AID']. $row['FILENAME'])),
+                                   "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. $row['FILENAME'])),
                                    "aid"      => $row['AID'],
                                    "hash"     => $row['HASH']);
       }
@@ -96,7 +93,7 @@ function add_attachment($uid, $aid, $filename, $mimetype) {
     $sql = "insert into ". forum_table("POST_ATTACHMENT_FILES"). " (ID, AID, UID, FILENAME, MIMETYPE, HASH) ";
     $sql.= "values ('', '$aid', '$uid', '$filename', '$mimetype', '$hash')";
     
-    $result = db_query($sql, $db) or die(mysql_error());
+    $result = db_query($sql, $db);
     
     return $result;
     
@@ -108,29 +105,36 @@ function delete_attachment($uid, $aid, $filename) {
     
     $sql = "delete from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = $uid ";
     $sql.= "and AID = '$aid' AND FILENAME = '$filename'";
+    $result = db_query($sql, $db);
     
-    $result = db_query($sql, $db) or die(mysql_error());
+    $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where AID = '$aid'";
+    $result = db_query($sql, $db);
     
+    if (db_num_rows($result) == 0) {
+    
+      $sql = "delete from ". forum_table("POST_ATTACHMENT_IDS"). " where AID = '$aid'";
+      $result = db_query($sql, $db);
+      
+    }
+
     return $result;
     
 }
 
 function get_free_attachment_space($uid) {
 
-    global $HTTP_SERVER_VARS;
+    global $HTTP_SERVER_VARS, $attachment_dir;
 
     $db = db_connect();
     
     $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where UID = $uid";
     $result = db_query($sql, $db) or die(mysql_error());
     
-    $attachments_dir = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments';    
-    
     while($row = db_fetch_array($result)) {
     
-      if (file_exists($attachments_dir. '/'. $row['AID']. '/'. md5($row['AID']. $row['FILENAME']))) {
+      if (file_exists($attachment_dir. '/'. md5($row['AID']. $row['FILENAME']))) {
     
-        $used_attachment_space += filesize($attachments_dir. '/'. $row['AID']. '/'. md5($row['AID']. $row['FILENAME']));
+        $used_attachment_space += filesize($attachment_dir. '/'. md5($row['AID']. $row['FILENAME']));
         
       }
       

@@ -49,7 +49,11 @@ $maximum_post_length = 6226;	// maximum character-length of posts
 
 
 // Attachment stuff ----------------------------------------------------
-if(isset($HTTP_SERVER_VARS['PATH_TRANSLATED'])){
+
+// Hopefully won't need this from now on, as the attachments now use a
+// relative path rather than the DOCUMENT_ROOT / SCRIPT_FILENAME;
+
+/*if(isset($HTTP_SERVER_VARS['PATH_TRANSLATED'])){
     $path = dirname($HTTP_SERVER_VARS['PATH_TRANSLATED']);
 } else if(isset($HTTP_SERVER_VARS['SCRIPT_FILENAME'])){
     $path = dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']);
@@ -57,9 +61,9 @@ if(isset($HTTP_SERVER_VARS['PATH_TRANSLATED'])){
     $path = dirname($HTTP_ENV_VARS['PATH_TRANSLATED']);
 } else {
     $path = ".";
-}
+} */
 
-$attachment_dir = "$path/attachments";
+$attachment_dir = 'attachments';
 
 // ---------------------------------------------------------------------
 

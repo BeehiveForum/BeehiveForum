@@ -30,52 +30,54 @@ if(!bh_session_check()){
     $uri = "http://".$HTTP_SERVER_VARS['HTTP_HOST'];
     $uri.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
     $uri.= "/logon.php?final_uri=";
-    $uri.= urlencode(get_request_uri());
+    $uri.= urlencode($HTTP_SERVER_VARS['REQUEST_URI']);
 
     header_redirect($uri);
 }
 
+require_once("./include/config.inc.php");
 require_once("./include/html.inc.php");
 require_once("./include/form.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/attachments.inc.php");
 require_once("./include/format.inc.php");
 
-$userinfo = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+html_draw_top();
+
+
+// Some variables
+$users_free_space = get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']);
 $total_attachment_size = 0;
 $aid = $HTTP_GET_VARS['aid'];
 
-html_draw_top();
 
-if (!is_dir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments')) mkdir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments', 0777);
-if (!is_dir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid)) mkdir(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid, 0777);
+// Make sure the attachments directory exists
+if (!is_dir('attachments')) {
+  mkdir('attachments', 0755);
+  chmod('attachments', 0777);
+}
 
+
+// Do the requested action
 if ($HTTP_POST_VARS['submit'] == 'Del') {
 
-  if (isset($HTTP_POST_VARS['old_aid'])) {
-
-    unlink(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $HTTP_POST_VARS['old_aid']. '/'. md5($HTTP_POST_VARS['old_aid']. $HTTP_POST_VARS['userfile']));
-    delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['old_aid'], $HTTP_POST_VARS['userfile']);
+  @unlink($attachment_dir. '/'. md5($HTTP_POST_VARS['aid']. $HTTP_POST_VARS['userfile']));
+  delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_POST_VARS['aid'], $HTTP_POST_VARS['userfile']);
     
-  }else{
-  
-    unlink(dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid. '/'. md5($aid. $HTTP_POST_VARS['userfile']));
-    delete_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_VARS['userfile']);
-    
-  }
-  
 }elseif ($HTTP_POST_VARS['submit'] == 'Upload') {
 
   if (!empty($HTTP_POST_FILES['userfile']['tmp_name'])) {
 
-    if (get_free_attachment_space($HTTP_COOKIE_VARS['bh_sess_uid']) < filesize($HTTP_POST_FILES['userfile']['tmp_name'])) {
+    if ($users_free_space < filesize($HTTP_POST_FILES['userfile']['tmp_name'])) {
 
       echo "<p>Sorry, you do not have enough free attachment space. Please free some space and try again.</p>";
       unlink($HTTP_POST_FILES['userfile']['tmp_name']);
     
     }else {
     
-      move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], dirname($HTTP_SERVER_VARS['SCRIPT_FILENAME']). '/attachments/'. $aid. '/'. md5($aid. $HTTP_POST_FILES['userfile']['name']));
+      move_uploaded_file($HTTP_POST_FILES['userfile']['tmp_name'], $attachment_dir. '/'. md5($aid. $HTTP_POST_FILES['userfile']['name']));
+      unlink($HTTP_POST_FILES['userfile']['tmp_name']);
+      
       add_attachment($HTTP_COOKIE_VARS['bh_sess_uid'], $aid, $HTTP_POST_FILES['userfile']['name'], $HTTP_POST_FILES['userfile']['type']);
       echo "<p>Successfully Uploaded: ". $HTTP_POST_FILES['userfile']['name']. "</p>\n";    
   
@@ -148,6 +150,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $aid. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
+      echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);      
       echo "        ". form_submit('submit', 'Del'). "\n";
       echo "      </form>\n";
       echo "    </td>\n";
@@ -214,7 +217,7 @@ if ($HTTP_POST_VARS['submit'] == 'Del') {
       echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
       echo "      <form method=\"post\" action=\"attachments.php?aid=". $aid. "\">\n";
       echo "        ". form_input_hidden('userfile', $attachments[$i]['filename']);
-      echo "        ". form_input_hidden('old_aid', $attachments[$i]['aid']);
+      echo "        ". form_input_hidden('aid', $attachments[$i]['aid']);
       echo "        ". form_submit('submit', 'Del'). "\n";
       echo "      </form>\n";
       echo "    </td>\n";

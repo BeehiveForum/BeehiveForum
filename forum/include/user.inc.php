@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.123 2004-03-01 23:41:15 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.124 2004-03-02 00:27:04 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -789,7 +789,7 @@ function user_get_relationships($uid, $offset = 0)
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP FROM ". forum_table("USER"). " USER ";
     $sql.= "LEFT JOIN ". forum_table("USER_PEER"). " USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' ORDER BY USER.LOGON ASC ";    
+    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.RELATIONSHIP <> 0 ORDER BY USER.LOGON ASC ";    
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_get_relationships);

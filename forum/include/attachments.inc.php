@@ -38,13 +38,13 @@ function get_attachments($uid, $aid) {
     $result = db_query($sql, $db);
     
     while($row = db_fetch_array($result)) {
-    
-      if (!is_array($userattachments)) $userattachments = array();
       
-      if (file_exists($attachment_dir. '/'. md5($row['AID']. $row['FILENAME']))) {
+      if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
       
-        $userattachments[] = array("filename" => $row['FILENAME'],
-                                   "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. $row['FILENAME'])),
+        if (!is_array($userattachments)) $userattachments = array();
+      
+        $userattachments[] = array("filename" => rawurldecode($row['FILENAME']),
+                                   "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
                                    "aid"      => $row['AID'],
                                    "hash"     => $row['HASH']);
       }
@@ -67,13 +67,13 @@ function get_all_attachments($uid, $aid) {
     $result = db_query($sql, $db);
     
     while($row = db_fetch_array($result)) {
-    
-      if (!is_array($userattachments)) $userattachments = array();
       
-      if (file_exists($attachment_dir. '/'. md5($row['AID']. $row['FILENAME']))) {
-    
-        $userattachments[] = array("filename" => $row['FILENAME'],
-                                   "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. $row['FILENAME'])),
+      if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
+      
+        if (!is_array($userattachments)) $userattachments = array();
+      
+        $userattachments[] = array("filename" => rawurldecode($row['FILENAME']),
+                                   "filesize" => filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME']))),
                                    "aid"      => $row['AID'],
                                    "hash"     => $row['HASH']);
       }
@@ -133,9 +133,9 @@ function get_free_attachment_space($uid) {
     
     while($row = db_fetch_array($result)) {
     
-      if (file_exists($attachment_dir. '/'. md5($row['AID']. $row['FILENAME']))) {
+      if (file_exists($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])))) {
     
-        $used_attachment_space += filesize($attachment_dir. '/'. md5($row['AID']. $row['FILENAME']));
+        $used_attachment_space += filesize($attachment_dir. '/'. md5($row['AID']. rawurldecode($row['FILENAME'])));
         
       }
       

@@ -42,11 +42,8 @@ require_once("./include/config.inc.php");
 
 if (isset($HTTP_GET_VARS['hash'])) {
   
-  $aid  = substr($HTTP_GET_VARS['hash'], 0, 32);
-  $hash = substr($HTTP_GET_VARS['hash'], 32);
-  
   $db = db_connect();
-  $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash' and AID = '$aid'";
+  $sql = "select * from ". forum_table("POST_ATTACHMENT_FILES"). " where HASH = '$hash'";
   
   $result = db_query($sql, $db);
   
@@ -54,24 +51,24 @@ if (isset($HTTP_GET_VARS['hash'])) {
       
     $attachmentdetails = db_fetch_array($result);
     
-    if (file_exists($attachment_dir. '/'. $attachmentdetails['HASH'])) {    
+    if (file_exists($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])))) {    
         
       if(isset($HTTP_GET_VARS['download'])) {
   
         header("Content-Type: application/x-ms-download");
-        header("Content-Length: ". filesize($attachment_dir. '/'. $attachmentdetails['HASH']));
+        header("Content-Length: ". filesize($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']))));
         header("Content-disposition: filename=". $attachmentdetails['FILENAME']);
         header("Content-Transfer-Encoding: binary");
         header("Pragma: no-cache");
         header("Expires: 0");
  
-        readfile($attachment_dir. '/'. $attachmentdetails['HASH']);
+        readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
         exit;
       
       }else {
     
         header("Content-Type: ". $attachmentdetails['MIMETYPE']);
-        header("Content-Length: ". filesize($attachment_dir. '/'. $attachmentdetails['HASH']));
+        header("Content-Length: ". filesize($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME']))));
         header("Content-disposition: filename=". $attachmentdetails['FILENAME']);        
         
         if($attachmentdetails['MIMETYPE'] == 'application/octet-stream') {
@@ -83,7 +80,7 @@ if (isset($HTTP_GET_VARS['hash'])) {
         header("Pragma: no-cache");
         header("Expires: 0");
           
-        readfile($attachment_dir. '/'. $attachmentdetails['HASH']);
+        readfile($attachment_dir. '/'. md5($attachmentdetails['AID']. rawurldecode($attachmentdetails['FILENAME'])));
         exit;          
   
       }

@@ -275,7 +275,7 @@ echo "            <tr>\n";
 echo "              <td>&nbsp;</td>\n";
 echo "              <td>";
 
-echo form_checkbox("remember_user", "Y", "Remember password", ($HTTP_COOKIE_VARS['bh_remember_password'][0] != str_repeat(chr(255), 4)));
+echo form_checkbox("remember_user", "Y", "Remember password", ($HTTP_COOKIE_VARS['bh_remember_password'][0] != str_repeat(chr(255), 4)) && strlen($HTTP_COOKIE_VARS['bh_remember_password'][0]) > 0);
 
 echo "</td>\n";
 echo "            </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.137 2005-01-01 20:58:28 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.138 2005-01-17 17:12:23 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -394,6 +394,11 @@ if (isset($_POST['cancel'])) {
 
     if ($valid && $t_poll_type == 2 && $t_change_vote == 2) {
         $error_html = "<h2>{$lang['nomultivotetabulars']}</h2>";
+        $valid = false;
+    }
+
+    if ($valid && $t_poll_vote_type == 1 && $t_change_vote == 2) {
+        $error_html = "<h2>{$lang['nomultivotepublic']}</h2>";
         $valid = false;
     }
 

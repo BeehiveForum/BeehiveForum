@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.5 2004-12-27 00:20:51 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.6 2005-01-17 17:12:43 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
@@ -127,12 +127,26 @@ if (!$result = db_query($sql, $db_install)) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
-    // Move the attachment records into a global PMI table
+    // Move the attachment file records into a global PAF table
+
+    $sql = "INSERT INTO POST_ATTACHMENT_FILES (AID, UID, FILENAME, ";
+    $sql.= "MIMETYPE, HASH, DOWNLOADS, DELETED) SELECT AID, UID, ";
+    $sql.= "FILENAME, MIMETYPE, HASH, DOWNLOADS, DELETED ";
+    $sql.= "FROM {$forum_webtag}_POST_ATTACHMENT_FILES ";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Move the attachment records into a global PAI table
     // along with the forum FID.
 
-    $sql = "INSERT INTO POST_ATTACHMENT_FILES (FID, TID, PID, AID) ";
+    $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
     $sql.= "SELECT $forum_fid, TID, PID, AID ";
-    $sql.= "FROM {$forum_webtag}_POST_ATTACHMENT_FILES ";
+    $sql.= "FROM {$forum_webtag}_POST_ATTACHMENT_IDS ";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -270,7 +284,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Get rid of the old POST table
 
-    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_POST_NEW";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_POST";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -282,6 +296,38 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Rename our new POST table
 
     $sql = "ALTER TABLE {$forum_webtag}_POST_NEW RENAME {$forum_webtag}_POST";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    // Reformat the USER_POLL_VOTES table to be less resource intensive
+    // Unfortunatly this means purging the results because I don't think
+    // it would make sense to try and reverse the MD5 hashing in the
+    // PTUID, at least not with modern servers ;)
+
+    $sql = "DELETE FROM {$forum_webtag}_default_user_poll_votes";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_POLL_VOTES DROP PTUID";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $error_html.= "<h2>MySQL said:". db_error($db_install). "</h2>\n";
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_POLL_VOTES DROP PRIMARY KEY, ADD PRIMARY KEY (ID)";
 
     if (!$result = db_query($sql, $db_install)) {
 

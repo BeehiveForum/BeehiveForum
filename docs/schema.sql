@@ -4,9 +4,9 @@
 #
 # Schema generated using phpMyAdmin
 # (http://phpmyadmin.sourceforge.net)
-# Generation Time: Mar 16, 2004 at 19:29
+# Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.60 2004-03-16 23:55:33 decoyduck Exp $
+# $Id: schema.sql,v 1.61 2004-03-17 00:08:15 decoyduck Exp $
 #
 # --------------------------------------------------------
 
@@ -320,7 +320,7 @@ CREATE TABLE POST (
 # Dumping data for table `POST`
 #
 
-INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, EDITED, EDITED_BY, IPADDRESS) VALUES (1, 1, 0, 1, 0, NULL, '2004-03-16 19:18:46', 0, NULL, 0, '');
+INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, EDITED, EDITED_BY, IPADDRESS) VALUES (1, 1, 0, 1, 0, NULL, NOW(), 0, NULL, 0, '');
 
 # --------------------------------------------------------
 
@@ -503,7 +503,7 @@ CREATE TABLE THREAD (
 # Dumping data for table `THREAD`
 #
 
-INSERT INTO THREAD (TID, FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) VALUES (1, 1, 1, 'Welcome', 1, 'N', '2003-01-19 23:28:06', NULL, 'N', NULL, '0000-00-00 00:00:00');
+INSERT INTO THREAD (TID, FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) VALUES (1, 1, 1, 'Welcome', 1, 'N', NOW(), NULL, 'N', NULL, '0000-00-00 00:00:00');
 
 # --------------------------------------------------------
 

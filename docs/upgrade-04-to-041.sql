@@ -1,10 +1,10 @@
 # Beehive Forum Database Creation
-# version 0.3 to 0.4 Upgrade
+# version 0.4 to 0.4.1 Upgrade
 # http://beehiveforum.sourceforge.net/
 #
-# Generation Time: Nov 09, 2003 at 03:58 PM
+# Generation Time: Mar 16, 2004 at 00:17
 #
-# $Id: upgrade-04-to-041.sql,v 1.11 2004-03-17 00:01:10 decoyduck Exp $
+# $Id: upgrade-04-to-041.sql,v 1.12 2004-03-17 00:08:15 decoyduck Exp $
 #
 # --------------------------------------------------------#
 

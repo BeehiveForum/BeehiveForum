@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.19 2004-03-27 21:56:18 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.20 2004-04-03 14:12:02 tribalonline Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -46,6 +46,7 @@ include_once("./include/logon.inc.php");
 include_once("./include/post.inc.php");
 include_once("./include/session.inc.php");
 include_once("./include/user.inc.php");
+include_once("./include/htmltools.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
@@ -108,6 +109,20 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $t_sig_html = "N";
     }
 
+	// Check the signature code to see if it needs running through fix_html
+	if ($t_sig_html == "Y") {
+		$t_sig_content = fix_html($t_sig_content);
+
+	}else {
+		$t_sig_content = _stripslashes($t_sig_content);
+	}
+
+	// If nothing's changed, don't update
+	if (isset($HTTP_POST_VARS['sig_content_old']) && $t_sig_content == $HTTP_POST_VARS['sig_content_old'] &&
+		isset($HTTP_POST_VARS['sig_html_old']) && $t_sig_html == $HTTP_POST_VARS['sig_html_old']) {
+		$valid = false;
+	}
+
     if (attachment_embed_check($t_sig_content) && $t_sig_html == "Y") {
         $error_html.= "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
         $valid = false;
@@ -118,14 +133,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
         // User's UID for updating with.
 
         $uid = bh_session_get_value('UID');
-
-        // Check the signature code to see if it needs running through fix_html
-
-        if ($t_sig_html == "Y") {
-            $t_sig_content = fix_html($t_sig_content);
-        }else {
-            $t_sig_content = _stripslashes($t_sig_content);
-        }
 
         // Update USER_SIG
 
@@ -170,7 +177,7 @@ user_get_sig(bh_session_get_value('UID'), $user_sig['SIG_CONTENT'], $user_sig['S
 
 // Start Output Here
 
-html_draw_top();
+html_draw_top("htmltools.js");
 
 echo "<h1>{$lang['editsignature']}</h1>\n";
 
@@ -182,9 +189,11 @@ if (!empty($error_html)) {
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 }
 
+$tools = new TextAreaHTML("prefs");
+
 echo "<br />\n";
 echo "<form name=\"prefs\" action=\"edit_signature.php?webtag={$webtag['WEBTAG']}\" method=\"post\" target=\"_self\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\">\n";
@@ -195,10 +204,30 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\">{$lang['signature']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_textarea("sig_content", (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)) : _htmlentities(_stripslashes($user_sig['SIG_CONTENT']))), 4, 60), "</td>\n";
+echo "                  <td>\n";
+
+echo $tools->toolbar();
+
+$sig_code = (isset($t_sig_content) ? _htmlentities(_stripslashes($t_sig_content)) : _htmlentities(_stripslashes($user_sig['SIG_CONTENT'])));
+
+echo $tools->textarea("sig_content", $sig_code, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."</td>\n";
+
+echo form_input_hidden("sig_content_old", $sig_code)."\n";
+
+echo $tools->js();
+
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"right\">", form_checkbox("sig_html", "Y", $lang['containsHTML'], (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y")), "</td>\n";
+echo "                  <td align=\"right\">\n";
+
+$sig_html = (isset($t_sig_html) && $t_sig_html == "Y") ? true : ($user_sig['SIG_HTML'] == "Y");
+echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
+
+echo form_input_hidden("sig_html_old", ($sig_html == true) ? "Y" : "N")."\n";
+
+echo $tools->assign_checkbox("sig_html");
+
+echo "					</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

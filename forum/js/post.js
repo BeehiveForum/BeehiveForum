@@ -29,51 +29,6 @@ function launchAttachWin (aid, webtag) {
 	attachwin = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
 }
 
-function clearFocus() {
-	document.f_post.t_content.caretPos = "";
-	document.f_post.t_sig.caretPos = "";
-}
-
 function checkToRadio(num) {
 	document.f_post.to_radio[num].checked=true;
-}
-
-function tools_feedback () {
-	if (document.f_post.t_post_html[0].checked == true) {
-		document.f_post.t_post_html[1].checked = true;
-	}
-}
-
-function activate_tools () {
-	show_hide('toolbar', 'block');
-	document.f_post.t_content.focus();
-	active_text(document.f_post.t_content);
-}
-
-function showContent (type) {
-	if (type == "correct" && document.f_post.current_t_content.value != "correct") {
-		var temp = document.f_post.t_content.value;
-		document.f_post.t_content.value = document.f_post.old_t_content.value;
-		document.f_post.old_t_content.value = temp;
-		document.f_post.current_t_content.value = "correct";
-	} else if (type == "submit" && document.f_post.current_t_content.value != "submit") {
-		var temp = document.f_post.t_content.value;
-		document.f_post.t_content.value = document.f_post.old_t_content.value;
-		document.f_post.old_t_content.value = temp;
-		document.f_post.current_t_content.value = "submit";
-	}
-}
-
-function showSig (type) {
-	if (type == "correct" && document.f_post.current_t_sig.value != "correct") {
-		var temp = document.f_post.t_sig.value;
-		document.f_post.t_sig.value = document.f_post.old_t_sig.value;
-		document.f_post.old_t_sig.value = temp;
-		document.f_post.current_t_sig.value = "correct";
-	} else if (type == "submit" && document.f_post.current_t_sig.value != "submit") {
-		var temp = document.f_post.t_sig.value;
-		document.f_post.t_sig.value = document.f_post.old_t_sig.value;
-		document.f_post.old_t_sig.value = temp;
-		document.f_post.current_t_sig.value = "submit";
-	}
 }

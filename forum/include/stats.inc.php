@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.31 2004-07-09 18:05:02 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.32 2004-07-09 18:08:06 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -34,7 +34,9 @@ function update_stats()
     $num_sessions = get_num_sessions();
     $num_recent_posts = get_recent_post_count();
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}STATS";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}STATS ";
+    $sql.= "ORDER BY ID DESC LIMIT 0, 1";
+
     $result = db_query($sql, $db_update_stats);
 
     if (db_num_rows($result)) {

@@ -490,7 +490,7 @@ if(!$newthread) {
 
     echo "<p>In reply to:</p>\n";
 
-    if ($threaddata['POLL_FLAG'] == 'Y') {
+    if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
     
       poll_display($reply_to_tid,$reply_message,0,0,false,false,false);
       

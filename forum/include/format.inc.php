@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.47 2003-08-30 00:40:08 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.48 2003-08-30 01:48:01 decoyduck Exp $ */
 
 require_once("./include/constants.inc.php");
 
@@ -182,7 +182,7 @@ function _stripslashes($string)
 
 function _addslashes($string)
 {
-    if (!get_magic_quotes_gpc()) {
+    if (get_magic_quotes_gpc()) {
         return addslashes($string);
     }else {
         return $string;

@@ -62,6 +62,7 @@ $emoticon['}:->'] = "evil_cheeky";
 $emoticon[':O)'] = "smile_big_nose";
 $emoticon['>.<'] = "cringe";
 $emoticon['^.^'] = "happy";
+$emoticon['<_<'] = "sidelook";
 
 // Trillian emoticons by Jay Graham
 $emoticon[':-<'] = "anglesad";

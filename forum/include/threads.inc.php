@@ -354,7 +354,7 @@ function threads_mark_all_read()
             $sql = "insert into ".forum_table("USER_THREAD")." (UID,TID,LAST_READ,LAST_READ_AT,INTEREST) ";
             $sql.= "values ($uid, ".$row[$j]['TID'].", ".$row[$j]['LENGTH'].",NOW(),0)";
         } else {
-            $sql = "update  ".forum_table("USER_THREAD");
+            $sql = "update low_priority ".forum_table("USER_THREAD");
             $sql.= " set LAST_READ = ".$row[$j]['LENGTH'].", ";
             $sql.= "LAST_READ_AT = NOW() ";
             $sql.= "where TID = ".$row[$j]['TID']." and UID = $uid";

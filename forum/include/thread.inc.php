@@ -97,7 +97,7 @@ function thread_set_interest($tid, $interest, $new = false)
     	
     } else {
     
-        $sql = "update ". forum_table("USER_THREAD"). " set INTEREST = $interest where UID = $uid and TID = $tid";
+        $sql = "update low_priority ". forum_table("USER_THREAD"). " set INTEREST = $interest where UID = $uid and TID = $tid";
         
     }
     

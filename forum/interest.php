@@ -35,7 +35,7 @@ if(isset($HTTP_POST_VARS['tid']) && isset($HTTP_POST_VARS['interest'])){
     $uid = $HTTP_COOKIE_VARS['bh_sess_uid'];
 
     $db = db_connect();
-    $sql = "update ".forum_table("USER_THREAD")." set INTEREST = $interest where TID = $tid and UID = $uid";
+    $sql = "update low_priority ".forum_table("USER_THREAD")." set INTEREST = $interest where TID = $tid and UID = $uid";
 
     db_query($sql,$db);
 

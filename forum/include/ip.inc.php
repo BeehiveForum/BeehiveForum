@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.11 2003-09-09 10:36:25 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.12 2003-09-09 11:43:42 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -113,8 +113,8 @@ function get_ip_address()
         $ipaddress = $HTTP_SERVER_VARS['REMOTE_ADDR'];
     }
 
-    if (preg_match("/^(((([1-9])|([1,2][\d])|((1[\d]{2})|(2[0-4][\d])|(25[0-4])))(\.(([\d])|([1,2][\d])|((1[\d]{2})|(2[0-4][\d])|(25[0-4])))){3})|(0(\.0){3}))/", $ipaddress, $matches)) {
-        $ipaddress = $matches[1];
+    if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $ipaddress, $matches)) {
+        $ipaddress = $matches[0];
     }else {
         $ipaddress = "0.0.0.0";
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.139 2004-05-25 14:11:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.140 2004-05-25 15:40:11 decoyduck Exp $ */
 
 // International English language file
 
@@ -742,6 +742,7 @@ $lang['reducemessagelength'] = "Message length must be under 65,535 characters (
 $lang['reducesiglength'] = "Signature length must be under 65,535 characters (currently: ";
 $lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
 $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
+$lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
 
 // Message display (messages.php) --------------------------------------
 

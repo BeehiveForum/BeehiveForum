@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.14 2004-05-25 14:11:24 decoyduck Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.15 2004-05-25 15:40:12 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -293,10 +293,7 @@ $lang['addremoveusers'] = "Add/Remove Users";
 $lang['addtogroup'] = "Add to group";
 $lang['nousersingroup'] = "There are no users in this group";
 $lang['deletegroups'] = "Delete Groups";
-$lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder";
-$lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
-$lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
-$lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
+
 $lang['useringroups'] = "This user is a member of the following groups";
 $lang['usernotinanygroups'] = "This user is not in any user groups";
 $lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
@@ -740,6 +737,11 @@ $lang['notallowedembedattachmentpost'] = "Can't embed attachments in yo posts he
 $lang['notallowedembedattachmentsignature'] = "You ain't allowed to embed no attachments in yo signature.";
 $lang['reducemessagelength'] = "Message length must be under 65,535 characters (currently: ";
 $lang['reducesiglength'] = "Signature length must be under 65,535 characters (currently: ";
+$lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder";
+$lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
+$lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
+$lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
+$lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
 
 // Message display (messages.php) --------------------------------------
 

@@ -49,6 +49,8 @@ $show_friendly_errors = true; // Should Beehive replace PHP's default
                               // turning this option off to see if it
                               // goes away.
 
+// ---------------------------------------------------------------------
+
 // Cookie options ------------------------------------------------------
 
 $cookie_domain = ""; // Specifies the domain name that the cookies set

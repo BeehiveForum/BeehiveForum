@@ -34,10 +34,10 @@ function post_update($tid,$pid,$content)
     $db = db_connect();
 
     $content = mysql_escape_string($content);
-
+    
     $sql = "update " . forum_table("POST") . " set CONTENT = \"$content\" ";
     $sql .= "where TID = $tid and PID = $pid";
-    
+
     $result = db_query($sql,$db);
     
     $return = ($result) ? true : false;

@@ -43,44 +43,57 @@ require_once("./include/edit.inc.php");
 
 $valid = true;
 
-if(isset($HTTP_GET_VARS['msg'])){
-    $edit_msg = $HTTP_GET_VARS['msg'];
-    $msg_bits = explode(".",$edit_msg);
-} else if(isset($HTTP_POST_VARS['t_msg'])){
-    $edit_msg = $HTTP_POST_VARS['t_msg'];
-    $msg_bits = explode(".",$edit_msg);
-} else {
-    $valid = false;
-    $error_html = "<h2>No message specified for editing</h2>";
-}
 
-if($msg_bits){
-    $ema = messages_get($msg_bits[0],$msg_bits[1],1);
-    if(count($ema) > 0){
-        $edit_message = $ema[0];
-        if(!isset($HTTP_POST_VARS['edithtml'])){
-            $edit_message['CONTENT'] = strip_tags($edit_message['CONTENT']);
-        }
-    } else {
-        $valid = false;
-        $error_html = "<h2>Message " . $HTTP_GET_VARS['msg'] . " was not found</h2>";
-    }
-    unset($ema);
-} else if(isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])){
+if(isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])){
+    $to_uid = $HTTP_POST_VARS['t_to_uid'];
+    $from_uid = $HTTP_POST_VARS['t_from_uid'];
+    $edit_msg = $HTTP_POST_VARS['t_msg'];
+    $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");
+    $msg_bits = explode(".",$edit_msg);
     if(isset($HTTP_POST_VARS['t_content'])){
-        $t_content = $HTTP_POST_VARS['t_content'];
+        $t_content = stripslashes($HTTP_POST_VARS['t_content']);
+        if($t_post_html == "Y"){
+            $t_content = fix_html($t_content);
+        } else {
+            $t_content = make_html($t_content);
+        }
+        $preview_message['CONTENT'] = $t_content;
     } else {
         $error_html = "<h2>You must enter some content for the post</h2>";
         $valid = false;
     }
 } else {
-    $valid = false;
-}
-
-if($valid){
-    if($t_post_html == "Y"){
-        $t_content = fix_html($t_content);
+    if(isset($HTTP_GET_VARS['msg'])){
+        $edit_msg = $HTTP_GET_VARS['msg'];
+        $msg_bits = explode(".",$edit_msg);
+    } else if(isset($HTTP_POST_VARS['t_msg'])){
+        $edit_msg = $HTTP_POST_VARS['t_msg'];
+        $msg_bits = explode(".",$edit_msg);
+    } else {
+        $valid = false;
+        $error_html = "<h2>No message specified for editing</h2>";
     }
+    if($msg_bits){
+        $reply_to_tid = $msg_bits[0];
+        $ema = messages_get($msg_bits[0],$msg_bits[1],1);
+        if(count($ema) > 0){
+            $edit_message = $ema[0];
+            $preview_message['CONTENT'] = $edit_message['CONTENT'];
+            $to_uid = $edit_message['TO_UID'];
+            $from_uid = $edit_message['FROM_UID'];
+            if(!isset($HTTP_POST_VARS['b_edit_html'])){
+                $t_content = strip_tags($edit_message['CONTENT']);
+                $t_content = ereg_replace("\n+","\n",$t_content);
+            } else {
+                $t_content = htmlentities($edit_message['CONTENT']);
+            }
+        } else {
+            $valid = false;
+            $error_html = "<h2>Message " . $HTTP_GET_VARS['msg'] . " was not found</h2>";
+        }
+        unset($ema);
+    }
+    $edit_html = isset($HTTP_POST_VARS['b_edit_html']);
 }
 
 html_draw_top();
@@ -93,12 +106,9 @@ echo "</table>"; */
 
 if($valid){
     if(isset($HTTP_POST_VARS['submit'])){
-        if($t_post_html != "Y"){
-            $t_content = make_html($t_content);
-        }
         $t_content .= "<p><font size=\"1\">EDITED: " . date("d/m/y H:i");
         $t_content .= " by " . user_get_logon($HTTP_COOKIE_VARS['bh_sess_uid']);
-        $updated = post_update($t_tid,$t_pid,$t_content);
+        $updated = post_update($msg_bits[0],$msg_bits[1],$t_content);
         if($updated){
             echo "<p>&nbsp;</p>";
             echo "<p>&nbsp;</p>";
@@ -110,27 +120,27 @@ if($valid){
             html_draw_bottom();
             exit;
         } else {
-            $error_html = "<h2>Error creating post</h2>";
+            $error_html = "<h2>Error updating post</h2>";
         }
     }
 
     echo "<h2>Message Preview:</h2>";
-    if($edit_message['TO_UID'] == 0){
+    if($to_uid == 0){
         $preview_message['TLOGON'] = "ALL";
         $preview_message['TNICK'] = "ALL";
     } else {
-        $preview_tuser = user_get($edit_message['TO_UID']);
+        $preview_tuser = user_get($to_uid);
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
     }
-    $preview_tuser = user_get($edit_message['FROM_UID']);
+    $preview_tuser = user_get($from_uid);
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
-    if($t_post_html != "Y"){
+    /*if($t_post_html != "Y"){
         $preview_message['CONTENT'] = make_html($t_content);
     } else {
         $preview_message['CONTENT'] = $t_content;
-    }
+    }*/
     message_display(0,$preview_message,0,0,false);
 }
 
@@ -140,8 +150,10 @@ if(isset($error_html)){
     echo $error_html;
 }
 echo "<form name=\"f_edit\" action=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "\" method=\"POST\">";
-echo "<h2>" . thread_get_title($reply_to_tid) . "</h2>";
+echo "<h2>" . thread_get_title($msg_bits[0]) . "</h2>";
 echo "<input type=\"hidden\" name=\"t_msg\" value=\"$edit_msg\">";
+echo "<input type=\"hidden\" name=\"t_to_uid\" value=\"$to_uid\">";
+echo "<input type=\"hidden\" name=\"t_from_uid\" value=\"$from_uid\">";
 echo "<table><tr><td>";
 echo "<textarea name=\"t_content\" cols=\"60\" rows=\"10\" wrap=\"VIRTUAL\">";
 if(isset($t_content)){
@@ -152,9 +164,9 @@ if(isset($t_content)){
     }
 }
 echo "</textarea></td></tr></table>";
-echo "<input name=\"submit\" type=\"submit\" value=\"Submit\">";
+echo "<input name=\"submit\" type=\"submit\" value=\"Apply\">";
 echo "&nbsp;&nbsp;<input name=\"preview\" type=\"submit\" value=\"Preview\">";
-if(isset($HTTP_POST_VARS['b_edit_html'])){
+if($edit_html){
     echo "&nbsp;&nbsp;<input name=\"b_edit_text\" type=\"submit\" value=\"Edit text\">";
     echo "<input type=\"hidden\" name=\"t_post_html\" value=\"Y\">";
 } else {

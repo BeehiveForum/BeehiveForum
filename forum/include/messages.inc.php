@@ -139,9 +139,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     if($in_list){
         echo "<tr><td align=\"center\"><p class=\"postresponse\" style=\"text-align:center\">";
         echo "<a href=\"post.php?replyto=$tid.".$message['PID']."\" target=\"main\">Reply</a>";
-        if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_admin()){
-            echo "<a href=\"delete.php?msg=$tid.".$message['PID']."\" target=\"main\">Delete</a>";
-            echo "<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"main\">Edit</a>";
+        if($HTTP_COOKIE_VARS['bh_sess_uid'] == $message['FROM_UID'] || perm_is_moderator()){
+            echo "&nbsp;&nbsp;<a href=\"delete.php?msg=$tid.".$message['PID']."\" target=\"main\">Delete</a>";
+            echo "&nbsp;&nbsp;<a href=\"edit.php?msg=$tid.".$message['PID']."\" target=\"main\">Edit</a>";
         }
         echo "</p></td></tr>";
     }

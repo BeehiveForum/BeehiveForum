@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade_script.php,v 1.21 2004-09-08 21:56:56 decoyduck Exp $ */
+/* $Id: upgrade_script.php,v 1.22 2004-09-14 17:42:16 decoyduck Exp $ */
 
 if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
 
@@ -442,6 +442,8 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
     $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
     $sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  PM_AUTO_PRUNE CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  PM_AUTO_PRUNE_LENGTH CHAR(3) NOT NULL DEFAULT '60',";
     $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
     $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
     $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
@@ -512,6 +514,18 @@ foreach($forum_webtag_array as $forum_webtag) {
         return mysql_error();
     }
 
+    $sql = "UPDATE USER_PREFS_NEW SET PM_AUTO_PRUNE = 'N' WHERE 1";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
+    }
+
+    $sql = "UPDATE USER_PREFS_NEW SET PM_AUTO_PRUNE_LENGTH = '60' WHERE 1";
+
+    if (!$result = mysql_query($sql, $db_install)) {
+        return mysql_error();
+    }
+
     $sql = "UPDATE USER_PREFS_NEW SET IMAGES_TO_LINKS = 'N' WHERE IMAGES_TO_LINKS != 'Y'";
 
     if (!$result = mysql_query($sql, $db_install)) {
@@ -571,6 +585,8 @@ foreach($forum_webtag_array as $forum_webtag) {
     $sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
     $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
     $sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  PM_AUTO_PRUNE CHAR(1) NOT NULL DEFAULT 'N',";
+    $sql.= "  PM_AUTO_PRUNE_LENGTH CHAR(3) NOT NULL DEFAULT '60',";
     $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
     $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
     $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.90 2004-09-14 08:28:59 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.91 2004-09-14 17:42:15 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -946,6 +946,8 @@ function pm_user_prune_folders($uid = false)
 {
     $db_pm_prune_folders = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+
     if (!$uid) $uid = bh_session_get_value('UID');
 
     $user_prefs = user_get_prefs($uid);
@@ -956,10 +958,10 @@ function pm_user_prune_folders($uid = false)
 
             $pm_prune_length = time() - ($user_prefs['PM_PRUNE_LENGTH'] * DAY_IN_SECONDS);
 
-            $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
-            $sql.= "((PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. " AND PM.TO_UID = '$uid') ";
-            $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. " AND PM.FROM_UID = '$uid') ";
-            $sql.= "AND PM.CREATED < FROM_UNIXTIME('$pm_prune_length')";
+            $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}PM WHERE ";
+            $sql.= "((TYPE = TYPE & ". PM_INBOX_ITEMS. " AND TO_UID = '$uid') ";
+            $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid') ";
+            $sql.= "AND CREATED < FROM_UNIXTIME('$pm_prune_length')";
 
             $result = db_query($sql, $db_pm_prune_folders);
         }
@@ -973,18 +975,26 @@ function pm_system_prune_folders()
 {
     $db_pm_prune_folders = db_connect();
 
-    if (forum_get_setting('pm_auto_prune', false, 'N') == 'Y') {
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (forum_get_setting('pm_auto_prune', 'Y', false)) {
 
         $pm_prune_length = time() - forum_get_setting('pm_auto_prune_length', false, 60);
 
-        $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
-        $sql.= "(PM.TYPE = PM.TYPE & ". PM_INBOX_ITEMS. ") ";
-        $sql.= "OR (PM.TYPE = PM.TYPE & ". PM_SENT_ITEMS. ") ";
-        $sql.= "AND PM.CREATED < FROM_UNIXTIME('$pm_prune_length')";
+        $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}PM WHERE ";
+        $sql.= "((TYPE = TYPE & ". PM_INBOX_ITEMS. ") ";
+        $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. ")) ";
+        $sql.= "AND CREATED < FROM_UNIXTIME('$pm_prune_length')";
 
         $result = db_query($sql, $db_pm_prune_folders);
     }
 }
+
+// This function is purely just for the display of the
+// warning icon on the PM folders pages. It should not
+// be used for anything else as it is not designed to
+// distinguish between the prune setting being one set
+// by the user or the system.
 
 function pm_auto_prune_enabled()
 {

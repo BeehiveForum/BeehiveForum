@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.54 2004-09-13 12:06:56 tribalonline Exp $ */
+/* $Id: pm_edit.php,v 1.55 2004-09-14 17:42:17 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -121,6 +121,11 @@ if (bh_session_get_value('UID') == 0) {
 $page_prefs = bh_session_get_post_page_prefs();
 
 
+// Prune old messages for the current user
+
+pm_user_prune_folders();
+
+
 // Get the Message ID (MID)
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -158,7 +163,7 @@ if (isset($_POST['t_post_emots'])) {
                 $emots_enabled = true;
         }
 } else {
-		$emots_enabled = true;
+                $emots_enabled = true;
 }
 if (isset($_POST['t_post_links'])) {
         if ($_POST['t_post_links'] == "enabled") {
@@ -167,7 +172,7 @@ if (isset($_POST['t_post_links'])) {
                 $links_enabled = false;
         }
 } else {
-		$links_enabled = false;
+                $links_enabled = false;
 }
 
 $post_html = 0;
@@ -184,16 +189,16 @@ if (isset($_POST['t_post_html'])) {
 
 } else {
 
-	if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-		$post_html = 1;
-	} else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-		$post_html = 2;
-	} else {
-		$post_html = 0;
-	}
+        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+                $post_html = 1;
+        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+                $post_html = 2;
+        } else {
+                $post_html = 0;
+        }
 
-	$emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-	$links_enabled = ($page_prefs & POST_AUTO_LINKS);
+        $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+        $links_enabled = ($page_prefs & POST_AUTO_LINKS);
 }
 
 $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
@@ -290,16 +295,16 @@ if ($valid && isset($_POST['preview'])) {
         $t_to_uid = 0;
     }
     if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
-		$t_recipient_list = $_POST['t_recipient_list'];
-	}
+                $t_recipient_list = $_POST['t_recipient_list'];
+        }
 
-	$page_prefs ^= POST_EMOTICONS_DISPLAY;
+        $page_prefs ^= POST_EMOTICONS_DISPLAY;
 
-	user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+        user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
 
-	$pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX);
+        $pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX);
 
-	$fix_html = false;
+        $fix_html = false;
 
 } else {
 
@@ -314,14 +319,14 @@ if ($valid && isset($_POST['preview'])) {
 
         $parsed_message = new MessageTextParse(pm_get_content($mid), $emots_enabled, $links_enabled);
 
-		$emots_enabled = $parsed_message->getEmoticons();
-		$links_enabled = $parsed_message->getLinks();
-		$t_content = $parsed_message->getMessage();
-		$post_html = $parsed_message->getMessageHTML();
+                $emots_enabled = $parsed_message->getEmoticons();
+                $links_enabled = $parsed_message->getLinks();
+                $t_content = $parsed_message->getMessage();
+                $post_html = $parsed_message->getMessageHTML();
 
         $post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
 
-		$post->diff = false;
+                $post->diff = false;
 
         $t_content = $post->getContent();
         $t_subject = $pm_elements_array['SUBJECT'];
@@ -412,10 +417,10 @@ $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
-		echo "        <tr>\n";
-		echo "          <td>&nbsp;</td>\n";
-		echo "        </tr>\n";
-		echo "        <tr>\n";
+                echo "        <tr>\n";
+                echo "          <td>&nbsp;</td>\n";
+                echo "        </tr>\n";
+                echo "        <tr>\n";
         echo "          <td><table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "            <tr>\n";
         echo "              <td class=\"subhead\">\n";
@@ -436,7 +441,7 @@ if ($emot_prev != "") {
         echo "              </td>\n";
         echo "            </tr>\n";
         echo "          </table></td>\n";
-		echo "        </tr>\n";
+                echo "        </tr>\n";
 }
 
 echo "      </table>\n";
@@ -452,7 +457,7 @@ $tools = new TextAreaHTML("f_post");
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-	echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
+        echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 }
 
 echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
@@ -474,23 +479,23 @@ echo "          <td>\n";
 
 if ($allow_html == true) {
 
-	echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
-	$tph_radio = $post->getHTML();
+        $tph_radio = $post->getHTML();
 
-	echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
-	echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
-	echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
+        echo form_radio("t_post_html", "disabled", $lang['disabled'], $tph_radio == 0, "tabindex=\"6\"")." \n";
+        echo form_radio("t_post_html", "enabled_auto", $lang['enabledwithautolinebreaks'], $tph_radio == 1)." \n";
+        echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
-	if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-		echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
-	}
+        if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+                echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+        }
 
-	echo "<br /><br />\n";
+        echo "<br /><br />\n";
 
 } else {
 
-	echo form_input_hidden("t_post_html", "disabled");
+        echo form_input_hidden("t_post_html", "disabled");
 }
 
 echo form_submit('submit', $lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');

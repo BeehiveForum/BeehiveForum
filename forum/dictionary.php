@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.20 2005-03-25 20:45:43 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.21 2005-04-05 19:27:51 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,6 +175,9 @@ if (isset($_POST['cancel'])) {
     html_draw_top();
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "  if (window.opener.auto_check_spell_started) {\n";
+    echo "    window.opener.auto_check_spell_started = false;";
+    echo "  }\n";
     echo "  window.close();\n";
     echo "</script>\n";
 

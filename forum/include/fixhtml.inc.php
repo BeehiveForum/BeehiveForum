@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.101 2005-04-05 02:10:43 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.102 2005-04-05 19:27:51 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1032,12 +1032,12 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
     if ($tidymce) {
         $html = preg_replace_callback("/<code([^>]*)>([^,]*)<\/code>/", "tidy_html_callback_2", $html);
-        $html = preg_replace("/<quote([^>]*)>/", "&lt;<em>quote</em>$1&gt;", $html);
-        $html = str_replace("</quote>", "&lt;<em>/quote</em>&gt;", $html);
-        $html = str_replace("<spoiler>", "&lt;<em>spoiler</em>&gt;", $html);
-        $html = str_replace("</spoiler>", "&lt;<em>/spoiler</em>&gt;", $html);
-        $html = str_replace("<noemots>", "&lt;<em>noemots</em>&gt;", $html);
-        $html = str_replace("</noemots>", "&lt;<em>/noemots</em>&gt;", $html);
+        $html = preg_replace("/<quote([^>]*)>/", "[quote$1]", $html);
+        $html = str_replace("</quote>", "[/quote]", $html);
+        $html = str_replace("<spoiler>", "[spoiler]", $html);
+        $html = str_replace("</spoiler>", "[/spoiler]", $html);
+        $html = str_replace("<noemots>", "[noemots]", $html);
+        $html = str_replace("</noemots>", "[/noemots]", $html);
     }
 
     return $html;
@@ -1061,25 +1061,25 @@ function tidy_html_callback ($matches)
 */
 function tidy_html_callback_2 ($matches)
 {
-    return "&lt;<em>code</em>{$matches[1]}&gt;". _htmlentities($matches[2]). "&lt;<em>/code</em>&gt;";
+    return "[code {$matches[1]}]". _htmlentities($matches[2]). "[/code]";
 }
 
 /**
-* I SHOULDN'T NEED TO DO THIS.
+* Turns TidyMCE [quote] etc. tags into HTML <quote> etc. tags
 *
 * @return string
-* @param string $html HTML THAT SHOULDN'T NEED TOUCHING.
+* @param string $html HTML submitted from TinyMCE editor.
 */
 function tidy_tinymce ($html)
 {
 
-    $html = preg_replace_callback("/&lt;<em>code<\/em>(.*)&gt;(.*)&lt;<em>\/code<\/em>&gt;/sU", "tidy_tinymce_code_callback", $html);
-    $html = preg_replace_callback("/&lt;<em>quote<\/em>(.*)&gt;/sU", "tidy_tinymce_quote_callback", $html);
-    $html = str_replace("&lt;<em>/quote</em>&gt;", "</quote>", $html);
-    $html = str_replace("&lt;<em>spoiler</em>&gt;", "<spoiler>", $html);
-    $html = str_replace("&lt;<em>/spoiler</em>&gt;", "</spoiler>", $html);
-    $html = str_replace("&lt;<em>noemots</em>&gt;", "<noemots>", $html);
-    $html = str_replace("&lt;<em>/noemots</em>&gt;", "</noemots>", $html);
+    $html = preg_replace_callback("/\[code(.*)\](.*)\[\/code\]/sU", "tidy_tinymce_code_callback", $html);
+    $html = preg_replace_callback("/\[quote(.*)\]/sU", "tidy_tinymce_quote_callback", $html);
+    $html = str_replace("[/quote]", "</quote>", $html);
+    $html = str_replace("[spoiler]", "<spoiler>", $html);
+    $html = str_replace("[/spoiler]", "</spoiler>", $html);
+    $html = str_replace("[noemots]", "<noemots>", $html);
+    $html = str_replace("[/noemots]", "</noemots>", $html);
 
     return $html;
 }

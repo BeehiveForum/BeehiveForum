@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.81 2004-01-26 19:41:14 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.82 2004-01-27 21:34:04 decoyduck Exp $ */
 
 // Author: Matt Beale
 
@@ -348,15 +348,15 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 	    if ($pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]] > 1) {
 
               $polldata['CONTENT'].= "        <tr>\n";
-              $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"15\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-              $polldata['CONTENT'].= "          <td class=\"postbody\" width=\"435\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
               $polldata['CONTENT'].= "        </tr>\n";
 
 	    }else {
 
               $polldata['CONTENT'].= "        <tr>\n";
-              $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"15\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-              $polldata['CONTENT'].= "          <td class=\"postbody\" width=\"435\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
+              $polldata['CONTENT'].= "          <td class=\"postbody\">". $pollresults['OPTION_NAME'][$i]. "</td>\n";
               $polldata['CONTENT'].= "        </tr>\n";
 	    }
 

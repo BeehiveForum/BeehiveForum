@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.36 2004-01-26 19:40:30 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.37 2004-01-27 21:34:04 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -143,7 +143,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
           if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
               $poll_answers_array[$key] = fix_html($answer_text);
           }else {
-              $poll_answers_array[$key] = make_html($answer_text);
+              $poll_answers_array[$key] = make_html($answer_text, true);
           }
 
           srand((double)microtime()*1000000);
@@ -232,7 +232,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
       $HTTP_POST_VARS['answers'][$i] = fix_html($HTTP_POST_VARS['answers'][$i]);
     }else {
-      $HTTP_POST_VARS['answers'][$i] = make_html($HTTP_POST_VARS['answers'][$i]);
+      $HTTP_POST_VARS['answers'][$i] = make_html($HTTP_POST_VARS['answers'][$i], true);
     }
   }
 

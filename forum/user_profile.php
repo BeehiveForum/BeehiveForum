@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.43 2003-12-18 21:25:52 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.44 2003-12-18 21:29:38 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -63,7 +63,7 @@ $user = user_get($uid);
 
 $title = format_user_name($user['LOGON'], $user['NICKNAME']);
 
-html_draw_top("title=$title", "openprofile.js");
+html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
 
 if (!$profile_sections = profile_sections_get()) {
     echo "<h1>{$lang['error']}:</h1>";
@@ -138,7 +138,7 @@ for ($i = 0; $i < sizeof($profile_sections); $i++) {
     echo "    <td width=\"25%\" align=\"center\">";
 
     if ($profile_sections[$i]['PSID'] != $psid) {
-        echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&psid=" . $profile_sections[$i]['PSID'] . "\">";
+        echo "<a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&psid=" . $profile_sections[$i]['PSID'] . "\" target=\"_self\">";
         echo _stripslashes($profile_sections[$i]['NAME']) . "</a></td>\n";
     } else {
         echo "<b>" . _stripslashes($profile_sections[$i]['NAME']) . "</b></td>\n";
@@ -200,14 +200,14 @@ echo "                </tr>\n";
 if ($uid == bh_session_get_value('UID')) {
 
     echo "                <tr>\n";
-    echo "                  <td><a href=\"javascript:void(0)\" onclick=\"launchAttachProfileWin();\">{$lang['editmyattachments']}</a></td>\n";
+    echo "                  <td><a href=\"javascript:void(0)\" onclick=\"launchAttachProfileWin();\" target=\"_self\">{$lang['editmyattachments']}</a></td>\n";
     echo "                </tr>\n";
 }
 
 if (bh_session_get_value('UID') != 0) {
 
     echo "                <tr>\n";
-    echo "                  <td><a href=\"email.php?uid=$uid\">{$lang['sendemail']}</a></td>\n";
+    echo "                  <td><a href=\"email.php?uid=$uid\" target=\"_self\">{$lang['sendemail']}</a></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td><a href=\"./index.php?final_uri=", rawurlencode("./pm_write.php?uid=$uid"), "\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
@@ -224,7 +224,7 @@ if (bh_session_get_value('UID') != 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td>\n";
+        echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
 
         if ($relationship & USER_IGNORED) {
@@ -236,7 +236,7 @@ if (bh_session_get_value('UID') != 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\">$text</a></td>\n";
+        echo "                  <td><a href=\"" . $HTTP_SERVER_VARS['PHP_SELF'] . "?uid=$uid&setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                </tr>\n";
     }
 }

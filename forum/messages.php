@@ -174,6 +174,10 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
 
+if (isset($HTTP_GET_VARS['search_string']) && strlen($HTTP_GET_VARS['search_string']) > 0) {
+    $highlight = explode(' ', $HTTP_GET_VARS['search_string']);
+}
+
 if($msg_count > 0) {
 
     $first_msg = $messages[0]['PID'];
@@ -197,19 +201,19 @@ if($msg_count > 0) {
 
           if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, true);
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $closed, true, true, true, false, $highlight);
             $last_pid = $message['PID'];
 
           }else {
 
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, true, $show_sigs);
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, true, $show_sigs, false, $highlight);
             $last_pid = $message['PID'];
 
           }
 
         }else {
 
-          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, false, $show_sigs);
+          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $closed, true, false, $show_sigs, false, $highlight);
           $last_pid = $message['PID'];
 
         }

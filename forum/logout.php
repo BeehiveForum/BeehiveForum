@@ -25,6 +25,7 @@ require_once("./include/html.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/constants.inc.php");
 require_once("./include/session.inc.php");
+require_once("./include/form.inc.php");
 
 $logged_off = false;
 

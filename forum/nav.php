@@ -47,6 +47,6 @@ if($HTTP_COOKIE_VARS['bh_sess_ustatus'] & USER_PERM_SOLDIER){
 <?
 }
 ?>
-        <a href="#">Logout</a>
+        <a href="logout.php" target="main">Logout</a>
     </body>
 </html>

@@ -4,8 +4,18 @@
 #
 # Schema generated using phpMyAdmin
 # (http://phpmyadmin.sourceforge.net)
-# Generation Time: Aug 10, 2002 at 09:19 AM
-# --------------------------------------------------------#
+# Generation Time: Jan 19, 2003 at 11:28 PM
+# --------------------------------------------------------
+
+#
+# Table structure for table `BANNED_IP`
+#
+
+CREATE TABLE BANNED_IP (
+  IP char(15) NOT NULL default ''
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
 
 #
 # Table structure for table `DEDUPE`
@@ -20,15 +30,6 @@ CREATE TABLE DEDUPE (
 # --------------------------------------------------------
 
 #
-# Table structure for table `BANNED_IP`
-#
-
-CREATE TABLE BANNED_IP (
-  IP char(15) NOT NULL default ''
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
 # Table structure for table `FOLDER`
 #
 
@@ -40,10 +41,79 @@ CREATE TABLE FOLDER (
 ) TYPE=MyISAM;
 
 #
-# Dumping data for table `FOLDER`
+# Dumping data for table `folder`
 #
 
-INSERT INTO FOLDER VALUES (1, 'General', 0);
+INSERT INTO FOLDER (FID, TITLE, ACCESS_LEVEL) VALUES (1, 'General', 0);
+# --------------------------------------------------------
+
+#
+# Table structure for table `LINKS`
+#
+
+CREATE TABLE LINKS (
+  LID smallint(5) unsigned NOT NULL auto_increment,
+  FID smallint(5) unsigned NOT NULL default '0',
+  UID mediumint(8) unsigned NOT NULL default '0',
+  URI varchar(255) NOT NULL default '',
+  TITLE varchar(64) NOT NULL default '',
+  DESCRIPTION text NOT NULL,
+  CREATED datetime NOT NULL default '0000-00-00 00:00:00',
+  VISIBLE char(1) NOT NULL default 'N',
+  CLICKS mediumint(8) unsigned NOT NULL default '0',
+  PRIMARY KEY  (LID),
+  KEY FID (FID)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `LINKS_COMMENT`
+#
+
+CREATE TABLE LINKS_COMMENT (
+  CID smallint(5) unsigned NOT NULL auto_increment,
+  LID smallint(5) unsigned NOT NULL default '0',
+  UID mediumint(8) unsigned NOT NULL default '0',
+  CREATED datetime NOT NULL default '0000-00-00 00:00:00',
+  COMMENT text NOT NULL,
+  PRIMARY KEY  (CID),
+  KEY LID (LID)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `LINKS_FOLDERS`
+#
+
+CREATE TABLE LINKS_FOLDERS (
+  FID smallint(5) unsigned NOT NULL auto_increment,
+  PARENT_FID smallint(5) unsigned default '1',
+  NAME varchar(32) NOT NULL default '',
+  VISIBLE char(1) NOT NULL default '',
+  PRIMARY KEY  (FID)
+) TYPE=MyISAM;
+
+#
+# Dumping data for table `LINKS_FOLDERS`
+#
+
+INSERT INTO LINKS_FOLDERS (FID, PARENT_FID, NAME, VISIBLE) VALUES (1, NULL, 'Top Level', 'Y');
+# --------------------------------------------------------
+
+#
+# Table structure for table `LINKS_VOTE`
+#
+
+CREATE TABLE LINKS_VOTE (
+  LID smallint(5) unsigned NOT NULL default '0',
+  UID mediumint(8) unsigned NOT NULL default '0',
+  RATING smallint(5) unsigned NOT NULL default '0',
+  TSTAMP datetime NOT NULL default '0000-00-00 00:00:00',
+  KEY LID (LID)
+) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #
@@ -56,9 +126,8 @@ CREATE TABLE POLL (
   CHANGEVOTE tinyint(1) NOT NULL default '1',
   POLLTYPE tinyint(1) NOT NULL default '0',
   SHOWRESULTS tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (TID)
+  KEY TID (TID)
 ) TYPE=MyISAM;
-
 
 # --------------------------------------------------------
 
@@ -71,7 +140,7 @@ CREATE TABLE POLL_VOTES (
   OPTION_ID mediumint(8) unsigned NOT NULL auto_increment,
   OPTION_NAME char(255) NOT NULL default '',
   VOTES mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (TID, OPTION_ID)
+  PRIMARY KEY  (TID,OPTION_ID)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -97,7 +166,7 @@ CREATE TABLE POST (
 # Dumping data for table `POST`
 #
 
-INSERT INTO POST VALUES (1, 1, 0, 1, 0, NULL, NOW(), 0);
+INSERT INTO POST (TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS) VALUES (1, 1, 0, 1, 0, NULL, '2003-01-19 23:28:05', 0);
 # --------------------------------------------------------
 
 #
@@ -116,6 +185,7 @@ CREATE TABLE POST_ATTACHMENT_FILES (
   KEY AID (AID),
   KEY HASH (HASH)
 ) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #
@@ -129,6 +199,7 @@ CREATE TABLE POST_ATTACHMENT_IDS (
   KEY AID (AID),
   KEY ix_pattid_1 (TID,PID)
 ) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #
@@ -147,7 +218,7 @@ CREATE TABLE POST_CONTENT (
 # Dumping data for table `POST_CONTENT`
 #
 
-INSERT INTO POST_CONTENT VALUES (1, 1, 'Welcome to your new Beehive Forum');
+INSERT INTO POST_CONTENT (TID, PID, CONTENT) VALUES (1, 1, 'Welcome to your new Beehive Forum');
 # --------------------------------------------------------
 
 #
@@ -165,12 +236,12 @@ CREATE TABLE PROFILE_ITEM (
 # Dumping data for table `PROFILE_ITEM`
 #
 
-INSERT INTO PROFILE_ITEM VALUES (1, 1, 'Location');
-INSERT INTO PROFILE_ITEM VALUES (2, 1, 'Age');
-INSERT INTO PROFILE_ITEM VALUES (3, 1, 'Gender');
-INSERT INTO PROFILE_ITEM VALUES (4, 1, 'Quote');
-INSERT INTO PROFILE_ITEM VALUES (5, 1, 'Occupation');
-INSERT INTO PROFILE_ITEM VALUES (6, 1, 'Birthday (DD/MM)');
+INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (1, 1, 'Location');
+INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (2, 1, 'Age');
+INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (3, 1, 'Gender');
+INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (4, 1, 'Quote');
+INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (5, 1, 'Occupation');
+INSERT INTO PROFILE_ITEM (PIID, PSID, NAME) VALUES (6, 1, 'Birthday (DD/MM)');
 # --------------------------------------------------------
 
 #
@@ -187,7 +258,7 @@ CREATE TABLE PROFILE_SECTION (
 # Dumping data for table `PROFILE_SECTION`
 #
 
-INSERT INTO PROFILE_SECTION VALUES (1, 'Personal');
+INSERT INTO PROFILE_SECTION (PSID, NAME) VALUES (1, 'Personal');
 # --------------------------------------------------------
 
 #
@@ -212,7 +283,7 @@ CREATE TABLE THREAD (
 # Dumping data for table `THREAD`
 #
 
-INSERT INTO THREAD VALUES (1, 1, 1, 'Welcome', 1, 'N', NOW(), NULL);
+INSERT INTO THREAD (TID, FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED) VALUES (1, 1, 1, 'Welcome', 1, 'N', '2003-01-19 23:28:06', NULL);
 # --------------------------------------------------------
 
 #
@@ -227,16 +298,16 @@ CREATE TABLE USER (
   EMAIL varchar(80) default NULL,
   STATUS int(16) default NULL,
   LAST_LOGON timestamp(14) NOT NULL,
-  LOGON_FROM char(15) NOT NULL default '',
+  LOGON_FROM varchar(15) default NULL,
   PRIMARY KEY  (UID)
 ) TYPE=MyISAM;
 
 #
-# Dumping data for table `USER`
+# Dumping data for table `user`
 #
 
-INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('ADMIN', MD5('honey'), 'Administrator', 'your@email.com', 56, NOW());
-INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON) VALUES ('GUEST', MD5('guest'), 'Guest', 'guest@email.com', 0, NOW());
+INSERT INTO USER (UID, LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON, LOGON_FROM) VALUES (1, 'ADMIN', 'b60eb83bf533eecf1bde65940925a981', 'Administrator', 'your@email.com', 56, 20030119232806, NULL);
+INSERT INTO USER (UID, LOGON, PASSWD, NICKNAME, EMAIL, STATUS, LAST_LOGON, LOGON_FROM) VALUES (2, 'GUEST', '084e0343a0486ff05530df6c705c8bb4', 'Guest', 'guest@email.com', 0, 20030119232806, NULL);
 # --------------------------------------------------------
 
 #
@@ -250,6 +321,7 @@ CREATE TABLE USER_FOLDER (
   ALLOWED tinyint(4) default '0',
   KEY UID (UID)
 ) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #
@@ -262,6 +334,22 @@ CREATE TABLE USER_PEER (
   RELATIONSHIP tinyint(4) default NULL,
   KEY UID (UID)
 ) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `USER_POLL_VOTES`
+#
+
+CREATE TABLE USER_POLL_VOTES (
+  ID mediumint(8) unsigned NOT NULL auto_increment,
+  TID mediumint(8) unsigned NOT NULL default '0',
+  PTUID varchar(32) NOT NULL default '',
+  OPTION_ID mediumint(8) unsigned NOT NULL default '0',
+  TSTAMP timestamp(14) NOT NULL,
+  PRIMARY KEY  (ID,TID,PTUID)
+) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #
@@ -286,18 +374,6 @@ CREATE TABLE USER_PREFS (
   KEY STYLE (STYLE),
   KEY UID (UID)
 ) TYPE=MyISAM;
-#---------------------------------------------------------
-
-#
-# Table structure for table `USER_POLL_VOTES`
-#
-
-CREATE TABLE USER_POLL_VOTES (
-  TID mediumint(8) unsigned NOT NULL default '0',
-  UID mediumint(8) unsigned NOT NULL default '0',
-  OPTION_ID mediumint(8) unsigned NOT NULL default '0',
-  TSTAMP timestamp(14) NOT NULL
-) TYPE=MyISAM;
 
 # --------------------------------------------------------
 
@@ -310,6 +386,7 @@ CREATE TABLE USER_PROFILE (
   PIID mediumint(8) unsigned default NULL,
   ENTRY varchar(255) default NULL
 ) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #
@@ -322,6 +399,7 @@ CREATE TABLE USER_SIG (
   HTML char(1) default NULL,
   KEY ix_user_sig (UID)
 ) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #
@@ -335,71 +413,5 @@ CREATE TABLE USER_THREAD (
   LAST_READ_AT datetime default NULL,
   INTEREST tinyint(4) default NULL,
   UNIQUE KEY ix_user_thread_1 (UID,TID)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `LINKS`
-#
-
-DROP TABLE IF EXISTS LINKS;
-CREATE TABLE LINKS (
-  LID smallint(5) unsigned NOT NULL auto_increment,
-  FID smallint(5) unsigned NOT NULL default '0',
-  UID mediumint(8) unsigned NOT NULL default '0',
-  URI varchar(255) NOT NULL default '',
-  TITLE varchar(64) NOT NULL default '',
-  DESCRIPTION text NOT NULL,
-  CREATED datetime NOT NULL default '0000-00-00 00:00:00',
-  VISIBLE char(1) NOT NULL default 'N',
-  CLICKS mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (LID),
-  KEY FID (FID)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `LINKS_COMMENT`
-#
-
-DROP TABLE IF EXISTS LINKS_COMMENT;
-CREATE TABLE LINKS_COMMENT (
-  CID smallint(5) unsigned NOT NULL auto_increment,
-  LID smallint(5) unsigned NOT NULL default '0',
-  UID mediumint(8) unsigned NOT NULL default '0',
-  CREATED datetime NOT NULL default '0000-00-00 00:00:00',
-  COMMENT text NOT NULL,
-  PRIMARY KEY  (CID),
-  KEY LID (LID)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `LINKS_FOLDERS`
-#
-
-DROP TABLE IF EXISTS LINKS_FOLDERS;
-CREATE TABLE LINKS_FOLDERS (
-  FID smallint(5) unsigned NOT NULL auto_increment,
-  PARENT_FID smallint(5) unsigned default '1',
-  NAME varchar(32) NOT NULL default '',
-  VISIBLE char(1) NOT NULL default '',
-  PRIMARY KEY  (fid)
-) TYPE=MyISAM;
-
-INSERT INTO LINKS_FOLDERS (FID, PARENT_FID, NAME, VISIBLE) VALUES (1, NULL, 'Top Level', 'Y');
-# --------------------------------------------------------
-
-#
-# Table structure for table `LINKS_VOTE`
-#
-
-DROP TABLE IF EXISTS LINKS_VOTE;
-CREATE TABLE LINKS_VOTE (
-  LID smallint(5) unsigned NOT NULL default '0',
-  UID mediumint(8) unsigned NOT NULL default '0',
-  RATING smallint(5) unsigned NOT NULL default '0',
-  TSTAMP datetime NOT NULL default '0000-00-00 00:00:00',
-  KEY LID (LID)
 ) TYPE=MyISAM;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.75 2003-11-28 19:49:13 decoyduck Exp $ */
+/* $Id: edit.php,v 1.76 2003-12-07 23:41:10 tribalonline Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -582,7 +582,7 @@ if ($edit_type == "html") {
 		echo form_radio("msg_code", "submit", $lang['submittedcode'], false, "onClick=\"showContent('submit');\"")."\n";
 		echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
 
-		echo form_input_hidden("old_t_content", htmlentities($old_t_content));
+		echo form_input_hidden("old_t_content", _stripslashes(htmlentities($old_t_content)));
 		echo form_input_hidden("current_t_content", "correct");
 
 		echo "<br /><br />\n";
@@ -640,7 +640,7 @@ if ($sig_html_changes == true) {
     echo form_radio("sig_code", "submit", $lang['submittedcode'], false, "onClick=\"showSig('submit');\"")."\n";
     echo "&nbsp;[<a href=\"#\" target=\"_self\" onclick=\"alert('".$lang['fixhtmlexplanation']."');\">?</a>]\n";
 
-    echo form_input_hidden("old_t_sig", htmlentities($old_t_sig));
+    echo form_input_hidden("old_t_sig", _stripslashes(htmlentities($old_t_sig)));
     echo form_input_hidden("current_t_sig", "correct");
 }
 

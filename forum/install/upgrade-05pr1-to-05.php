@@ -21,13 +21,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.3 2004-12-04 22:08:57 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.4 2004-12-05 15:38:38 decoyduck Exp $ */
 
-if (basename($_SERVER['PHP_SELF']) == "upgrade_script.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05pr1-to-05.php") {
 
     header("Request-URI: ./install.php");
     header("Content-Location: ./install.php");
     header("Location: ./install.php");
+    exit;
+
+}else if (!isset($_SERVER['PHP_SELF'])) {
+
+    echo "To install BeehiveForums 0.5 please visit install.php in your browser";
     exit;
 }
 
@@ -133,12 +138,24 @@ foreach($forum_webtag_array as $forum_webtag) {
         return;
     }
 
+    // Need to allow Guest access to the folders which is the
+    // default behaviour.
+
+    $sql = "UPDATE {$forum_webtag}_GROUP_PERMS ";
+    $sql.= "SET PERM = PERM & 8192 WHERE GID = 0 AND FID > 0";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // Need to recreate the THREAD table so we reuse the BY_UID column
     // that was removed in 0.4. This is designed as a measure to combat
     // server load introduced by the ignore completely option making
     // use of the POST table.
 
-    $sql = "CREATE TABLE DEFAULT_THREAD_NEW (";
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_NEW (";
     $sql.= "  TID mediumint(8) unsigned NOT NULL auto_increment,";
     $sql.= "  FID mediumint(8) unsigned default NULL,";
     $sql.= "  BY_UID mediumint(8) unsigned default NULL,";
@@ -165,8 +182,15 @@ foreach($forum_webtag_array as $forum_webtag) {
     // Insert the old threads into the new table along with the FROM_UID
     // of the POST table as the BY_UID column.
 
-    $sql = "INSERT INTO DEFAULT_THREAD_NEW (TID, FID, BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-    $sql.= "SELECT THREAD.TID, THREAD.FID, POST.FROM_UID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.MODIFIED, THREAD.CLOSED, THREAD.STICKY, THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK FROM DEFAULT_THREAD THREAD LEFT JOIN DEFAULT_POST POST ON (POST.TID = THREAD.TID AND POST.PID = 1)";
+    $sql = "INSERT INTO {$forum_webtag}_THREAD_NEW (TID, FID, ";
+    $sql.= "BY_UID, TITLE, LENGTH, POLL_FLAG, MODIFIED, CLOSED, ";
+    $sql.= "STICKY, STICKY_UNTIL, ADMIN_LOCK) SELECT THREAD.TID, ";
+    $sql.= "THREAD.FID, POST.FROM_UID, THREAD.TITLE, THREAD.LENGTH, ";
+    $sql.= "THREAD.POLL_FLAG, THREAD.MODIFIED, THREAD.CLOSED, ";
+    $sql.= "THREAD.STICKY, THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK ";
+    $sql.= "FROM {$forum_webtag}_THREAD THREAD ";
+    $sql.= "LEFT JOIN {$forum_webtag}_POST POST ON ";
+    $sql.= "(POST.TID = THREAD.TID AND POST.PID = 1)";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -176,7 +200,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // DROP the old THREAD table
 
-    $sql = "DROP TABLE DEFAULT_THREAD";
+    $sql = "DROP TABLE {$forum_webtag}_THREAD";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -186,7 +210,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Rename our new THREAD table
 
-    $sql = "ALTER TABLE DEFAULT_THREAD_NEW RENAME DEFAULT_THREAD";
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -196,7 +220,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Visitor log has been changed to per-forum table.
 
-    $sql = "CREATE TABLE DEFAULT_VISITOR_LOG (";
+    $sql = "CREATE TABLE {$forum_webtag}_VISITOR_LOG (";
     $sql.= "  UID mediumint(8) unsigned NOT NULL default '0',";
     $sql.= "  LAST_LOGON datetime NOT NULL default '0000-00-00 00:00:00',";
     $sql.= "  PRIMARY KEY  (UID)";
@@ -251,7 +275,8 @@ foreach($forum_webtag_array as $forum_webtag) {
     // Bug in the timezone preference meant it was impossible
     // to set your timezone beyond -9.9 GMT
 
-    $sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE TIMEZONE DECIMAL(3,1) DEFAULT '0.0' NOT NULL";
+    $sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE ";
+    $sql.= "TIMEZONE DECIMAL(3,1) DEFAULT '0.0' NOT NULL";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -340,7 +365,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Drop the per-forum PM_NOTIFY column from USER_PREFS
 
-    $sql = "ALTER TABLE DEFAULT_USER_PREFS DROP PM_NOTIFY";
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_NOTIFY";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -350,7 +375,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Drop the per-forum PM_NOTIFY_EMAIL column from USER_PREFS
 
-    $sql = "ALTER TABLE DEFAULT_USER_PREFS DROP PM_NOTIFY_EMAIL";
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_NOTIFY_EMAIL";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -360,7 +385,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Drop the per-forum PM_SAVE_SENT_ITEM column from USER_PREFS
 
-    $sql = "ALTER TABLE DEFAULT_USER_PREFS DROP PM_SAVE_SENT_ITEM";
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_SAVE_SENT_ITEM";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -370,7 +395,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Drop the per-forum PM_INCLUDE_REPLY column from USER_PREFS
 
-    $sql = "ALTER TABLE DEFAULT_USER_PREFS DROP PM_INCLUDE_REPLY";
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_INCLUDE_REPLY";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -380,7 +405,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Drop the per-forum PM_AUTO_PRUNE column from USER_PREFS
 
-    $sql = "ALTER TABLE DEFAULT_USER_PREFS DROP PM_AUTO_PRUNE";
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_AUTO_PRUNE";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -390,7 +415,7 @@ foreach($forum_webtag_array as $forum_webtag) {
 
     // Drop the per-forum PM_AUTO_PRUNE_LENGTH column from USER_PREFS
 
-    $sql = "ALTER TABLE DEFAULT_USER_PREFS DROP PM_AUTO_PRUNE_LENGTH";
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS DROP PM_AUTO_PRUNE_LENGTH";
 
     if (!$result = db_query($sql, $db_install)) {
 

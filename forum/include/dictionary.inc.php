@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.10 2004-12-04 22:01:36 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.11 2004-12-05 15:38:38 decoyduck Exp $ */
 
 require_once('./include/db.inc.php');
 require_once('./include/session.inc.php');
@@ -169,8 +169,8 @@ class dictionary {
 
         // Fetch the current word and generate it's metaphone value
 
-        $word = addslashes($this->get_current_word);
-        $metaphone = addslashes($this->word_get_metaphone);
+        $word = addslashes($this->get_current_word());
+        $metaphone = addslashes($this->word_get_metaphone());
 
         // The current user's UID
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.15 2004-12-04 22:17:12 decoyduck Exp $ */
+/* $Id: install.php,v 1.16 2004-12-05 15:38:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -537,7 +537,7 @@ if (!defined('BEEHIVE_INSTALLED')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Hostname:</td>\n";
-    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : ""), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
+    echo "                  <td width=\"250\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : "localhost"), "\" size=\"36\" maxlength=\"64\" dir=\"ltr\" /></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"250\">Database Name:</td>\n";

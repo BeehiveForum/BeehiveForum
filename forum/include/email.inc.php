@@ -21,18 +21,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.60 2004-04-17 17:39:29 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.61 2004-04-23 12:51:43 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
-{  
+{
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
 
     $db_email_sendnotification = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
-    
+
     $forum_settings = get_forum_settings();
     $webtag = get_webtag();
 
@@ -49,12 +49,12 @@ function email_sendnotification($tuid, $msg, $fuid)
         $mailto = db_fetch_array($result);
 
 	// Validate the email address before we continue.
-	
+
 	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
         if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != '') {
 
-            $sql = "SELECT LOGON, NICKNAME FROM {$table_data['PREFIX']}USER WHERE UID = '$fuid'";
+            $sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$fuid'";
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
@@ -63,11 +63,11 @@ function email_sendnotification($tuid, $msg, $fuid)
 
              // get the right language for the email
             $lang = email_get_language($tuid);
-            
+
             $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-            
-            $subject = "{$lang['msgnotification_subject']} $forum_name";                    
+
+            $subject = "{$lang['msgnotification_subject']} $forum_name";
 
             $message = format_user_name($mailfrom['LOGON'], $mailfrom['NICKNAME']);
             $message.= " {$lang['msgnotificationemail_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
@@ -104,15 +104,15 @@ function email_sendnotification($tuid, $msg, $fuid)
 }
 
 function email_sendsubscription($tuid, $msg, $fuid)
-{    
+{
     if (!check_mail_variables()) return false;
-    
+
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
 
     $db_email_sendsubscription = db_connect();
 
     list($tid, $pid) = explode('.', $msg);
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = get_forum_settings();
@@ -134,10 +134,10 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $mailto = db_fetch_array($result);
 
 	// Validate the email address before we continue.
-	
+
 	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
-        $sql = "SELECT LOGON, NICKNAME FROM {$table_data['PREFIX']}USER WHERE UID = '$fuid'";
+        $sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$fuid'";
         $resultfrom = db_query($sql, $db_email_sendsubscription);
         $mailfrom = db_fetch_array($resultfrom);
         $thread = thread_get($tid);
@@ -147,8 +147,8 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
         $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-        
-        $subject = "{$lang['subnotification_subject']} $forum_name";        
+
+        $subject = "{$lang['subnotification_subject']} $forum_name";
 
         $message = format_user_name($mailfrom['LOGON'], $mailfrom['NICKNAME']);
         $message.= " {$lang['subnotification_1']}\n";
@@ -189,9 +189,9 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid) || !is_numeric($fuid) || !is_numeric($mid)) return false;
-    
+
     $db_email_sendnotification = db_connect();
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = get_forum_settings();
@@ -208,12 +208,12 @@ function email_send_pm_notification($tuid, $mid, $fuid)
         $mailto = db_fetch_array($result);
 
 	// Validate the email address before we continue.
-	
+
 	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
         if ($mailto['PM_NOTIFY_EMAIL'] == 'Y' && $mailto['EMAIL'] != '') {
 
-            $sql = "SELECT LOGON, NICKNAME FROM {$table_data['PREFIX']}USER WHERE UID = '$fuid'";
+            $sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$fuid'";
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
@@ -221,10 +221,10 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
              // get the right language for the email
             $lang = email_get_language($tuid);
-            
+
             $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-            
+
             $subject = "{$lang['pmnotification_subject']} $forum_name";
 
             $message = format_user_name($mailfrom['LOGON'], $mailfrom['NICKNAME']);
@@ -266,16 +266,16 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 function email_send_pw_reminder($logon)
 {
     if (!check_mail_variables()) return false;
-    
+
     $db_email_send_pw_reminder = db_connect();
     $logon = addslashes($logon);
-    
+
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = get_forum_settings();
     $webtag = get_webtag();
 
-    $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM {$table_data['PREFIX']}USER WHERE LOGON = '$logon'";
+    $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);
 
     if (db_num_rows($result)) {
@@ -283,17 +283,17 @@ function email_send_pw_reminder($logon)
         $mailto = db_fetch_array($result);
 
 	// Validate the email address before we continue.
-	
+
 	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
 	if (isset($mailto['UID']) && isset($mailto['EMAIL']) && isset($mailto['PASSWD'])) {
 
             // get the right language for the email
             $lang = email_get_language($mailto['UID']);
-            
+
             $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
             $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
-            
+
             $subject = "{$lang['passwdresetrequest']} - $forum_name";
 
 	    $message = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
@@ -329,7 +329,7 @@ function email_send_pw_reminder($logon)
 function email_get_language($to_uid)
 {
     $forum_settings = get_forum_settings();
-    
+
     $prefs = user_get_prefs($to_uid);
 
      // if the user has expressed a preference for language, use it
@@ -356,7 +356,7 @@ function server_os_mswin()
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -367,7 +367,7 @@ function check_mail_variables()
     }else {
         if (!(bool)ini_get('sendmail_path')) return false;
     }
-    
+
     return true;
 }
 

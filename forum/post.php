@@ -11,7 +11,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-BeehiveForum is distributed in the hope that it will be useful, 
+BeehiveForum is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.182 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: post.php,v 1.183 2004-04-23 12:51:43 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -60,36 +60,36 @@ include_once("./include/user.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
-	    html_draw_top();
+
+        html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
             echo "<div align=\"center\">\n";
-	    echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+        echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
 
             $request_uri = get_request_uri();
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
             foreach($_POST as $key => $value) {
-	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
+            form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
-	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
+        echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
-	    echo "</form>\n";
-	    
-	    html_draw_bottom();
-	    exit;
-	}
+        echo "</form>\n";
+
+        html_draw_bottom();
+        exit;
+    }
 
     }else {
         html_draw_top();
         draw_logon_form(false);
-	html_draw_bottom();
-	exit;
+    html_draw_bottom();
+    exit;
     }
 }
 
@@ -125,7 +125,18 @@ if (isset($_POST['cancel'])) {
 }
 
 // Check if the user is viewing signatures.
+
 $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+
+// Fetch the current user's sig
+
+user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
+
+if ($t_sig_html != "N") {
+    $sig_html = 2;
+}
+
+// Assume everything is A-OK!
 
 $valid = true;
 
@@ -134,6 +145,7 @@ $newthread = false;
 $t_to_uid_others = "";
 
 if (isset($_POST['to_radio'])) {
+
     $to_radio = $_POST['to_radio'];
 
     if ($to_radio == "others") {
@@ -160,6 +172,7 @@ if (isset($_POST['to_radio'])) {
 }
 
 if (isset($_POST['t_newthread'])) {
+
     $newthread = true;
 
     if (isset($_POST['t_threadtitle']) && trim($_POST['t_threadtitle']) != "") {
@@ -182,47 +195,60 @@ if (isset($_POST['t_newthread'])) {
     }
 
 } else if (!isset($_POST['t_tid'])) {
-	$valid = false;
+    $valid = false;
 }
-
-$post_html = 0;
-$sig_html = 0;
 
 if (isset($_POST['t_post_html'])) {
+
     $t_post_html = $_POST['t_post_html'];
+
     if ($t_post_html == "enabled_auto") {
-		$post_html = 1;
-    } else if ($t_post_html == "enabled") {
-		$post_html = 2;
+        $post_html = 1;
+    }else if ($t_post_html == "enabled") {
+        $post_html = 2;
     }
 }
+
 if (isset($_POST['t_sig_html'])) {
-	$t_sig_html = $_POST['t_sig_html'];
-	if ($t_sig_html != "N") {
-		$sig_html = 1;
-	}
+
+    $t_sig_html = $_POST['t_sig_html'];
+
+    if ($t_sig_html != "N") {
+        $sig_html = 2;
+    }
 }
 
-$t_content = "";
-$t_sig = "";
+if (!isset($post_html)) $post_html = 0;
+if (!isset($sig_html)) $sig_html = 0;
+
 if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
-	$t_content = $_POST['t_content'];
 
-	if ($post_html && attachment_embed_check($t_content)) {
-		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
-		$valid = false;
-	}
-}else if (isset($_POST['submit']) || isset($_POST['preview'])){
-	$error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-	$valid = false;
+    $t_content = $_POST['t_content'];
+
+    if ($post_html && attachment_embed_check($t_content)) {
+
+        $error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
+        $valid = false;
+    }
+
+}else if (isset($_POST['submit']) || isset($_POST['preview'])) {
+
+    $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+    $valid = false;
 }
+
 if (isset($_POST['t_sig'])) {
-	$t_sig = $_POST['t_sig'];
-	if ($sig_html && attachment_embed_check($t_sig)) {
-		$error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
-		$valid = false;
-	}
+
+    $t_sig = $_POST['t_sig'];
+
+    if ($sig_html && attachment_embed_check($t_sig)) {
+        $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
+        $valid = false;
+    }
 }
+
+if (!isset($t_content)) $t_content = "";
+if (!isset($t_sig)) $t_sig = "";
 
 $post = new MessageText($post_html, $t_content);
 $sig = new MessageText($sig_html, $t_sig);
@@ -231,14 +257,14 @@ $t_content = $post->getContent();
 $t_sig = $sig->getContent();
 
 if (strlen($t_content) >= 65535) {
-	$error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-	$valid = false;
-}
-if (strlen($t_sig) >= 65535) {
-	$error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-	$valid = false;
+    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+    $valid = false;
 }
 
+if (strlen($t_sig) >= 65535) {
+    $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+    $valid = false;
+}
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
@@ -275,27 +301,8 @@ if (!$newthread) {
 
     if (((user_get_status($reply_message['FROM_UID']) & USER_PERM_WORM) && !perm_is_moderator()) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y')) {
 
-        /*html_draw_top();
-
-        echo "<h1 style=\"width: 99%\">".$lang['postmessage']."</h1>\n";
-        echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
-
-        echo "<table class=\"posthead\" width=\"720\">\n";
-        echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
-        echo "<tr><td>\n"; */
-
         $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
-	$valid = false;
-
-        /*echo "</td></tr>\n";
-
-        echo "<tr><td align=\"center\">\n";
-        echo form_submit('cancel', $lang['cancel']);
-        echo "</td></tr>\n";
-        echo "</table></form>\n";
-
-        html_draw_bottom();
-        exit; */
+        $valid = false;
     }
 }
 
@@ -304,28 +311,28 @@ if ($valid && isset($_POST['submit'])) {
     if (check_ddkey($_POST['t_dedupe'])) {
 
         if ($newthread) {
-        
+
             $folderdata = folder_get($t_fid);
-            
+
             if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($t_fid) && !perm_is_moderator()) {
-        
+
                 html_draw_top();
-                
+
                 echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
                 echo "<table class=\"posthead\" width=\"720\">\n";
                 echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
                 echo "<tr><td>\n";
                 echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
                 echo "</td></tr>\n";
- 
+
                 echo "<tr><td align=\"center\">\n";
                 echo form_submit('cancel', $lang['cancel']);
                 echo "</td></tr>\n";
                 echo "</table></form>\n";
- 
+
                 html_draw_bottom();
                 exit;
-            }        
+            }
 
             if (isset($_POST['t_closed'])) $t_closed = $_POST['t_closed'];
             if (isset($_POST['old_t_closed'])) $old_t_closed = $_POST['old_t_closed'];
@@ -347,11 +354,11 @@ if ($valid && isset($_POST['submit'])) {
 
             $t_tid = $_POST['t_tid'];
             $t_rpid = $_POST['t_rpid'];
-            
+
             if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!(bh_session_get_value('STATUS') & PERM_CHECK_WORKER))) {
 
                 html_draw_top();
-                
+
                 echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
                 echo "<table class=\"posthead\" width=\"720\">\n";
                 echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
@@ -360,8 +367,8 @@ if ($valid && isset($_POST['submit'])) {
                 echo "</td></tr>\n";
 
                 echo "<tr><td align=\"center\">\n";
-				echo form_input_hidden('t_tid', $t_tid);
-				echo form_input_hidden('t_rpid', $t_rpid);
+                echo form_input_hidden('t_tid', $t_tid);
+                echo form_input_hidden('t_rpid', $t_rpid);
                 echo form_submit('cancel', $lang['cancel']);
                 echo "</td></tr>\n";
                 echo "</table></form>\n";
@@ -405,16 +412,16 @@ if ($valid && isset($_POST['submit'])) {
                 email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
                 email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
             }
-            
+
             if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
                 if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($t_tid, $new_pid, $_POST['aid']);
-            }             
-        }      
+            }
+        }
 
     }else {
 
         $new_pid = 0;
-        
+
         if ($newthread) {
 
             $t_tid  = 0;
@@ -536,13 +543,6 @@ if (!$newthread) {
     }else {
         $t_to_uid = $_POST['t_to_uid'];
     }
-
-}
-
-if (!isset($t_sig)) {
-    $has_sig = user_get_sig(bh_session_get_value('UID'), $t_sig, $t_sig_html);
-}else{
-    $has_sig = true;
 }
 
 if (isset($error_html)) {
@@ -573,10 +573,6 @@ if ($newthread) {
 
 echo "</td></tr>\n";
 echo "<tr>\n";
-
-
-// ======================================
-// =========== OPTIONS COLUMN ===========
 echo "<td valign=\"top\" width=\"210\">\n";
 echo "<table class=\"posthead\" width=\"210\">\n";
 echo "<tr><td>\n";
@@ -618,15 +614,16 @@ echo form_input_text("t_to_uid_others", "", 0, 0, "style=\"width: 190px\" onClic
 
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
+
 if ($emot_prev != "") {
-	echo "<h2>".$lang['emoticons'].":</h2>\n";
-	echo $emot_prev."<br />\n";
+
+    echo "<h2>".$lang['emoticons'].":</h2>\n";
+    echo $emot_prev."<br />\n";
 }
 
 if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
 
     echo "<h2>".$lang['admin'].":</h2>\n";
-
     echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false);
     echo "<br />".form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."</p>\n";
     echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
@@ -636,14 +633,6 @@ if (bh_session_get_value("STATUS") & PERM_CHECK_WORKER) {
 echo "</td></tr>\n";
 echo "</table>\n";
 echo "</td>\n";
-// ======================================
-
-
-//echo "<td valign=\"top\" width=\"1\">&nbsp;</td>\n";
-
-
-// ======================================
-// =========== MESSAGE COLUMN ===========
 echo "<td valign=\"top\" width=\"500\">\n";
 echo "<table class=\"posthead\" width=\"500\">\n";
 echo "<tr><td>\n";
@@ -657,13 +646,12 @@ $tools = new TextAreaHTML("f_post");
 echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 
 $t_content = $post->getTidyContent();
+
 echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
-
-
 
 if ($post->isDiff()) {
 
-	echo $tools->compare_original("t_content", $post->getOriginalContent());
+    echo $tools->compare_original("t_content", $post->getOriginalContent());
 
     echo "<br /><br />\n";
 }
@@ -690,11 +678,9 @@ if (forum_get_setting('attachments_enabled', 'Y', false)) {
     echo form_input_hidden("aid", $aid);
 }
 
-
-// ---- SIGNATURE ----
 echo "<br /><br /><h2>". $lang['signature'] .":</h2>\n";
 
-$t_sig = $sig->getTidyContent();
+//$t_sig = $sig->getTidyContent();
 
 echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
@@ -702,16 +688,13 @@ echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
 if ($sig->isDiff()) {
 
-	echo $tools->compare_original("t_sig", $sig->getOriginalContent());
+    echo $tools->compare_original("t_sig", $sig->getOriginalContent());
 
 }
 
 echo "</td></tr>\n";
 echo "</table>";
 echo "</td>\n";
-// ======================================
-
-
 echo "</tr>\n";
 echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";

@@ -26,22 +26,4 @@ define("MAX_ATTACHMENT_SIZE", 1048576);
 define("SEARCH_USER_NOT_FOUND", 1);
 define("SEARCH_NO_KEYWORDS", 2);
 
-// Constants for Admin Logging
-
-define("ADMIN_USER_PERMS", 1);
-define("ADMIN_USER_BAN", 2);
-
-define("ADMIN_FOLDER_ADD", 4);
-define("ADMIN_FOLDER_DEL", 8);
-define("ADMIN_FOLDER_ACC", 16);
-
-define("ADMIN_PROFILE_ADD_SECT", 32);
-define("ADMIN_PROFILE_REM_SECT", 64);
-
-define("ADMIN_PROFILE_ADD_ITEM", 128);
-define("ADMIN_PROFILE_REM_ITEM", 256);
-
-define("ADMIN_START_PAGE", 512);
-define("ADMIN_CREATE_STYLE", 1024);
-
 ?>

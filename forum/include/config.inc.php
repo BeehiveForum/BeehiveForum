@@ -35,8 +35,8 @@ $db_database = "beehiveforum";  // the name of your MySQL database
 
 // Forum-specific ------------------------------------------------------
 
-$forum_name  = "Beehive Development Forum"; // the name of your forum
-$forum_email = "me@mattbeale.plus.com"; // admin email
+$forum_name  = "A Beehive Forum"; // the name of your forum
+$forum_email = "root@localhost"; // admin email
 $default_style = "default"; // the default forum style directory name
 
 // ---------------------------------------------------------------------

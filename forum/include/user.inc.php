@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.79 2003-08-04 13:16:49 hodcroftcj Exp $ */
+/* $Id: user.inc.php,v 1.80 2003-08-04 22:44:54 decoyduck Exp $ */
 
 require_once("./include/db.inc.php");
 require_once("./include/forum.inc.php");
@@ -124,18 +124,25 @@ function user_update_folders($uid, $folders)
 {
     $db_user_update_folders = db_connect();
 
-    $sql = "UPDATE ". forum_table("USER_FOLDER"). " SET ALLOWED = 0 ";
-    $sql.= "WHERE UID = $uid";
+    for ($i = 0; $i < sizeof($folders); $i++) {
 
-    if (db_query($sql, $db_user_update_folders)) {
+        $sql = "SELECT ALLOWED FROM ". forum_table("USER_FOLDER"). " ";
+        $sql.= "WHERE UID = $uid AND FID = {$folders[$i]['fid']}";
 
-        for ($i = 0; $i < sizeof($folders); $i++) {
+        $result = db_query($sql, $db_user_update_folders);
 
-	    $sql = "UPDATE ". forum_table("USER_FOLDER"). " SET ALLOWED = 1 ";
-	    $sql.= "WHERE UID = $uid AND FID = {$folders[$i]['fid']}";
+        if (db_num_rows($result)) {
 
-	    $result = db_query($sql, $db_user_update_folders);
-	}
+            $sql = "UPDATE ". forum_table("USER_FOLDER"). " SET ALLOWED = {$folders[$i]['allowed']} ";
+            $sql.= "WHERE UID = $uid AND FID = {$folders[$i]['fid']}";
+
+        }else {
+
+            $sql = "INSERT INTO ". forum_table("USER_FOLDER"). " (UID, FID, ALLOWED) ";
+            $sql.= "VALUES ($uid, {$folders[$i]['fid']}, {$folders[$i]['allowed']})";
+        }
+
+        $result = db_query($sql, $db_user_update_folders);
     }
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.20 2003-07-27 12:42:04 hodcroftcj Exp $ */
+/* $Id: errorhandler.inc.php,v 1.21 2003-08-04 22:44:54 decoyduck Exp $ */
 
 // Error Handler
 
@@ -72,7 +72,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             echo "<form name=\"f_error\" method=\"post\" action=\"", $HTTP_SERVER_VARS['PHP_SELF'], "?$getvars\" target=\"_self\">\n";
 
             foreach ($HTTP_POST_VARS as $key => $value) {
-                echo form_input_hidden($key, _htmlentities(_stripslashes($value))), "\n";
+                form_input_hidden_array($key, $value);
             }
 
             echo form_submit(md5(uniqid(rand())), $lang['retry']);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.233 2005-03-26 18:16:47 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.234 2005-03-26 23:49:10 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -340,33 +340,33 @@ function user_get_prefs($uid)
                            'DOB'                  => '',
                            'HOMEPAGE_URL'         => '',
                            'PIC_URL'              => '',
-                           'EMAIL_NOTIFY'         => 'Y',
-                           'TIMEZONE'             => '0',
-                           'DL_SAVING'            => 'N',
-                           'MARK_AS_OF_INT'       => 'Y',
-                           'POSTS_PER_PAGE'       => '20',
-                           'FONT_SIZE'            => '10',
+                           'EMAIL_NOTIFY'         => '',
+                           'TIMEZONE'             => '',
+                           'DL_SAVING'            => '',
+                           'MARK_AS_OF_INT'       => '',
+                           'POSTS_PER_PAGE'       => '',
+                           'FONT_SIZE'            => '',
                            'STYLE'                => '',
-                           'VIEW_SIGS'            => 'Y',
-                           'START_PAGE'           => '0',
+                           'VIEW_SIGS'            => '',
+                           'START_PAGE'           => '',
                            'LANGUAGE'             => '',
-                           'PM_NOTIFY'            => 'Y',
-                           'PM_NOTIFY_EMAIL'      => 'Y',
-                           'PM_SAVE_SENT_ITEM'    => 'Y',
-                           'PM_INCLUDE_REPLY'     => 'Y',
-                           'PM_AUTO_PRUNE'        => '-60',
-                           'DOB_DISPLAY'          => 'Y',
-                           'ANON_LOGON'           => 'N',
-                           'SHOW_STATS'           => 'Y',
-                           'SHOW_THUMBS'          => '2',
-                           'ENABLE_WIKI_WORDS'    => 'Y',
-                           'IMAGES_TO_LINKS'      => 'N',
-                           'USE_WORD_FILTER'      => 'N',
-                           'USE_ADMIN_FILTER'     => 'N',
+                           'PM_NOTIFY'            => '',
+                           'PM_NOTIFY_EMAIL'      => '',
+                           'PM_SAVE_SENT_ITEM'    => '',
+                           'PM_INCLUDE_REPLY'     => '',
+                           'PM_AUTO_PRUNE'        => '',
+                           'DOB_DISPLAY'          => '',
+                           'ANON_LOGON'           => '',
+                           'SHOW_STATS'           => '',
+                           'SHOW_THUMBS'          => '',
+                           'ENABLE_WIKI_WORDS'    => '',
+                           'IMAGES_TO_LINKS'      => '',
+                           'USE_WORD_FILTER'      => '',
+                           'USE_ADMIN_FILTER'     => '',
                            'EMOTICONS'            => '',
-                           'ALLOW_EMAIL'          => 'Y',
-                           'ALLOW_PM'             => 'Y',
-                           'POST_PAGE'            => '0');
+                           'ALLOW_EMAIL'          => '',
+                           'ALLOW_PM'             => '',
+                           'POST_PAGE'            => '');
 
     $forum_prefs = array();
 

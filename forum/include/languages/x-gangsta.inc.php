@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-gangsta.inc.php,v 1.55 2004-11-27 01:33:45 tribalonline Exp $ */
+/* $Id: x-gangsta.inc.php,v 1.56 2004-12-04 17:49:13 decoyduck Exp $ */
 
 // Gangsta language file
 
@@ -332,6 +332,8 @@ $lang['postasignature'] = "Post a signature";
 
 $lang['editforumlinks'] = "Edit Forum Links";
 $lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list displayed in the top-right of the forum frameset. If no links are set, the drop-down list will not be displayed.";
+
+$lang['allowguestaccess'] = "Allow Guest Access";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 
@@ -778,6 +780,8 @@ $lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
 $lang['cannotcreatethreadinfolder'] = "You cannot create new threads in this folder";
 $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
+$lang['cannotcreatenewthreads'] = "You cannot create new threads.";
+$lang['automaticallycheckspelling'] = "Automatically check spelling";
 
 // Message display (messages.php) --------------------------------------
 

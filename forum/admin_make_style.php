@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.21 2003-11-13 20:44:40 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.22 2003-11-17 22:02:11 decoyduck Exp $ */
 
 // Concept and Original code: Andrew Holgate
 // Beehive-fitter-iner and dogs body: Matt Beale
@@ -85,7 +85,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
                     chmod("./styles/$stylename", 0777);
 
                     $fp = fopen("./styles/$stylename/desc.txt", "w");
-                    fwrite($fp, (isset($HTTP_POST_VARS['styledesc']) && strlen($HTTP_POST_VARS['styledesc']) > 0) ? $HTTP_POST_VARS['styledesc'] : $stylename);
+                    fwrite($fp, (isset($HTTP_POST_VARS['styledesc']) && strlen(trim($HTTP_POST_VARS['styledesc'])) > 0) ? trim($HTTP_POST_VARS['styledesc']) : $stylename);
                     fclose($fp);
 
                     $stylesheet = implode('', file("./styles/make_style.css"));

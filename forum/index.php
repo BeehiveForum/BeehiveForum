@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.48 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: index.php,v 1.49 2003-11-17 22:02:11 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -81,11 +81,11 @@ if (bh_session_check()) {
 
       echo "<frame src=\"./discussion.php?msg=". $HTTP_GET_VARS['msg']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-    }else if (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
+    }else if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
 
       echo "<frame src=\"./discussion.php?folder=". $HTTP_GET_VARS['folder']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-    }else if (isset($HTTP_GET_VARS['pmid']) && is_int($HTTP_GET_VARS['pmid'])) {
+    }else if (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['pmid'])) {
 
       echo "<frame src=\"./pm.php?mid=". $HTTP_GET_VARS['pmid']. "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
@@ -152,11 +152,11 @@ if (bh_session_check()) {
 
             echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?msg=". $HTTP_GET_VARS['msg']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-        }else if (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
+        }else if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
 
             echo "<frame src=\"./logon.php?final_uri=". urlencode("./discussion.php?folder=". $HTTP_GET_VARS['folder']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
-        }else if (isset($HTTP_GET_VARS['pmid']) && is_int($HTTP_GET_VARS['folder'])) {
+        }else if (isset($HTTP_GET_VARS['pmid']) && is_numeric($HTTP_GET_VARS['folder'])) {
 
             echo "<frame src=\"./logon.php?final_uri=". urlencode("./pm.php?mid=". $HTTP_GET_VARS['pmid']). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 

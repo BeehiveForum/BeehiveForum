@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.21 2003-11-13 20:44:41 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.22 2003-11-17 22:02:11 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -70,20 +70,20 @@ if (!isset($HTTP_GET_VARS['mode'])) {
             $mode = 0;
         }
     }else {
-        $mode = (is_int($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
+        $mode = (is_numeric($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
     }
 } else {
-    $mode = (is_int($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
+    $mode = (is_numeric($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
 }
 
-if (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
+if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
     $folder = $HTTP_GET_VARS['folder'];
     $mode = 0;
 }
 
 bh_setcookie('bh_thread_mode', $mode);
 
-if (isset($HTTP_GET_VARS['start_from']) && is_int($HTTP_GET_VARS['start_form'])) {
+if (isset($HTTP_GET_VARS['start_from']) && is_numeric($HTTP_GET_VARS['start_form'])) {
     $start_from = $HTTP_GET_VARS['start_from'];
 }else {
     $start_from = 0;
@@ -228,7 +228,7 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
     list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
     list(,$selectedfolder) = thread_get($tid);
-}elseif (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
+}elseif (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
     $selectedfolder = $HTTP_GET_VARS['folder'];
 }else {
     $selectedfolder = 0;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_folder.php,v 1.9 2003-11-16 22:10:08 decoyduck Exp $ */
+/* $Id: user_folder.php,v 1.10 2003-11-17 22:02:11 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -39,7 +39,7 @@ if (!bh_session_check()) {
 }
 
 if (bh_session_get_value('UID') > 0) {
-    if (isset($HTTP_GET_VARS['fid']) && is_int($HTTP_GET_VARS['fid']) && isset($HTTP_GET_VARS['interest']) && is_int($HTTP_GET_VARS['interest'])) {
+    if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid']) && isset($HTTP_GET_VARS['interest']) && is_numeric($HTTP_GET_VARS['interest'])) {
         user_set_folder_interest($HTTP_GET_VARS['fid'], $HTTP_GET_VARS['interest']);
     }
 }

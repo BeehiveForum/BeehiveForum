@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.94 2003-11-16 22:10:09 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.95 2003-11-17 22:02:12 decoyduck Exp $ */
 
 // Included functions for displaying threads in the left frameset.
 
@@ -608,7 +608,7 @@ function threads_process_list($resource_id) // Arrange the results of a query in
 
         global $HTTP_GET_VARS;
 
-        if (isset($HTTP_GET_VARS['folder']) && is_int($HTTP_GET_VARS['folder'])) {
+        if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
             $folder_order[] = $HTTP_GET_VARS['folder'];
         }
 

@@ -256,6 +256,11 @@ a                          { background-color: transparent; color: #$text_colour
 
 .banned_dropdown           { width: 250px; height: 100px }
 
+.links_dropdown            { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 9pt; color: #000000;
+                             background-color: #FFFFFF; border-top-width: 1px; border-right-width: 1px;
+                             border-bottom-width: 1px; border-left-width: 1px; padding-left: 2px; 
+                             border-style: inset; width: 290px }
+
 .admin_startpage_textarea  { font-family: monospace }
 
 .dictionary_pretty_content { height: 200px; overflow: auto }

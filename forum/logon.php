@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.122 2004-03-17 22:21:21 decoyduck Exp $ */
+/* $Id: logon.php,v 1.123 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -214,14 +214,27 @@ if (isset($HTTP_POST_VARS['submit'])) {
                     array_unshift($password_array, "");
                     array_unshift($passhash_array, "");
                 }
+                
+                if ($luid == 12) {
+                
+                    echo "Debug for Quig (STOP BREAKING THE COOKIES :@):";
+                    echo "<pre>\n";
+                    print_r($username_array);
+                    print_r($password_array);
+                    print_r($passhash_array);
+                    echo "</pre>\n";
+                    exit;
 
-                // set / update the username and password cookies
+                }else {
+
+                    // set / update the username and password cookies
         
-                for ($i = 0; $i < sizeof($username_array); $i++) {
+                    for ($i = 0; $i < sizeof($username_array); $i++) {
 
-                    bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
-                    bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
-                    bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
+                        bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
+                        bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
+                        bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
+                    }
                 }
 
                 // set / update the cookie that remembers if the user
@@ -469,6 +482,13 @@ echo "  <hr width=\"350\" />\n";
 echo "  <h2>{$lang['usingaPDA']}</h2>\n";
 echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag={$webtag['WEBTAG']}\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
 echo "</div>\n";
+
+echo "Debug for Quig (STOP BREAKING THE COOKIES :@):";
+echo "<pre>\n";
+print_r($username_array);
+print_r($password_array);
+print_r($passhash_array);
+echo "</pre>\n";
 
 html_draw_bottom();
 

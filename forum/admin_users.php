@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.61 2004-03-20 22:33:32 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.62 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -304,8 +304,10 @@ if (sizeof($user_array) == 20) {
     }
 }
 
-echo "<form action=\"admin_users.php?webtag={$webtag['WEBTAG']}\" method=\"get\">\n";
-echo "  ", form_input_hidden('sort_by', $sort_by), form_input_hidden('sort_dir', $sort_dir), "\n";
+echo "<form action=\"admin_users.php\" method=\"get\">\n";
+echo "  ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
+echo "  ", form_input_hidden("sort_by", $sort_by), "\n";
+echo "  ", form_input_hidden("sort_dir", $sort_dir), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

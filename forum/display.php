@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.35 2004-03-17 22:21:20 decoyduck Exp $ */
+/* $Id: display.php,v 1.36 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -119,11 +119,10 @@ if ($message) {
 
 messages_end_panel();
 echo "<table width=\"96%\" border=\"0\"><tr><td align=\"center\">\n";
-echo "<form name=\"display\" method=\"get\" action=\"messages.php?webtag={$webtag['WEBTAG']}\" target=\"_self\">\n";
-echo form_input_hidden("msg", "$tid.$pid");
-echo form_submit("submit", $lang['back']);
-echo "&nbsp;";
-echo form_button("print", $lang['print'], "onclick=\"window.print()\"");
+echo "<form name=\"display\" method=\"get\" action=\"messages.php\" target=\"_self\">\n";
+echo form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
+echo form_input_hidden("msg", "$tid.$pid"), "\n";
+echo form_submit("submit", $lang['back']), "&nbsp;", form_button("print", $lang['print'], "onclick=\"window.print()\"");
 echo "</form>\n";
 echo "</td></tr></table>\n";
 

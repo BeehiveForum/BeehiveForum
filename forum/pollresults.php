@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pollresults.php,v 1.47 2004-03-19 11:58:42 decoyduck Exp $ */
+/* $Id: pollresults.php,v 1.48 2004-03-21 20:00:01 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -100,7 +100,8 @@ if ($polldata['VOTETYPE'] == 1) {
     echo "<table cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"center\" class=\"postbody\">\n";
-    echo "      <form name=\"f_mode\" method=\"get\" action=\"pollresults.php?webtag={$webtag['WEBTAG']}\">\n";
+    echo "      <form name=\"f_mode\" method=\"get\" action=\"pollresults.php\">\n";
+    echo "        ", form_input_hidden("webtag", $webtag['WEBTAG']), "\n";
     echo "        ", form_input_hidden("tid", $tid), "\n";
     echo "        View Style: ", form_dropdown_array("viewstyle", range(0, 1), array('By option', 'By user'), $viewstyle, "onchange=\"submit()\""), "&nbsp;", form_submit('go', $lang['goexcmark']), "\n";
     echo "      </form>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.34 2004-03-13 00:00:21 decoyduck Exp $ */
+/* $Id: logout.php,v 1.35 2004-03-13 19:13:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -43,7 +43,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    $uri = "./logon.php?webtag=$webtag");
+    $uri = "./logon.php?webtag=$webtag";
     header_redirect($uri);
 }
 
@@ -51,56 +51,81 @@ if (!$user_sess = bh_session_check()) {
 
 $user_wordfilter = load_wordfilter();
 
-// Disable caching when showing logon page
-include_once("./include/header.inc.php");
-
-if (!bh_session_get_value('UID')) {
-    header_no_cache();
-}
-
 // User was a guest that now wants to logon
 
 if (bh_session_get_value('UID') == 0) {
+
     if (isset($HTTP_GET_VARS['final_uri'])) {
         $uri = "./index.php?webtag=$webtag&final_uri=". $HTTP_GET_VARS['final_uri'];
     }else {
         $uri = "./index.php?webtag=$webtag";
     }
+    
     bh_session_end();
     bh_setcookie("bh_logon", '1', time() + YEAR_IN_SECONDS);
     header_redirect($uri);
 }
 
-$logged_off = false;
-
 // Where are we going after we've logged off?
 
 if (isset($HTTP_POST_VARS['submit'])) {
-    bh_session_end();
-    header_redirect("./index.php?webtag=$webtag");
-    $logged_off = true;
-}
 
+    bh_session_end();
+    
+    if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+    
+        header_redirect("./index.php?webtag=$webtag");
+
+    }else {
+    
+        html_draw_top();
+
+        // Try a Javascript redirect
+        echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+        echo "<!--\n";
+        echo "document.location.href = './index.php?webtag=$webtag';\n";
+        echo "//-->\n";
+        echo "</script>";
+
+        // If they're still here, Javascript's not working. Give up, give a link.
+        echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
+        echo "<p>{$lang['youhaveloggedout']}</p>";
+
+        form_quick_button("./index.php", $lang['continue'], "webtag", $webtag, "_top");
+
+        echo "</div>\n";
+        html_draw_bottom();
+        exit;
+    }
+}
 
 html_draw_top();
 
-echo "<p>&nbsp;</p>\n<div align=\"center\">\n";
-echo "<form name=\"logon\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_top\">\n";
-echo "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n";
-echo "<table class=\"subhead\" width=\"100%\"><tr><td align=\"left\">\n";
-echo "{$lang['logout']}:\n";
-echo "</td></tr></table>\n";
-echo "<table class=\"posthead\" width=\"100%\">\n";
-if ($logged_off) {
-    echo "<tr><td>{$lang['youhaveloggedout']}</td></tr>\n";
-    echo "<tr><td>&nbsp;</td></tr>";
-} else {
-    echo "<tr><td>{$lang['currentlyloggedinas']} ". user_get_logon(bh_session_get_value('UID')). "</td></tr>\n";
-    echo "<tr><td>&nbsp;</td></tr>";
-    echo "<tr><td align=\"center\">".form_submit("submit", $lang['logout']);
-}
-echo "</td></tr></table>\n";
-echo "</td></tr></table>\n";
+echo "<p>&nbsp;</p>\n";
+echo "<div align=\"center\">\n";
+echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"_top\">\n";
+echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"subhead\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\">{$lang['logout']}:</td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "        <table class=\"posthead\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td>{$lang['currentlyloggedinas']} ", user_get_logon(bh_session_get_value('UID')), "</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td align=\"center\">", form_submit("submit", $lang['logout']), "</td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "</form></div>\n";
 
 html_draw_bottom();

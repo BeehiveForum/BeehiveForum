@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.67 2004-04-17 18:41:01 decoyduck Exp $ */
+/* $Id: nav.php,v 1.68 2004-04-19 20:44:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -31,6 +31,8 @@ include_once("./include/errorhandler.inc.php");
 
 // Multiple forum support
 include_once("./include/forum.inc.php");
+
+$forum_settings = get_forum_settings();
 
 include_once("./include/config.inc.php");
 include_once("./include/constants.inc.php");
@@ -54,7 +56,7 @@ if ($webtag) {
 
     echo "<a href=\"start.php?webtag=$webtag\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"discussion.php?webtag=$webtag\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
-    
+
     if (forum_get_setting('show_links', 'Y', false)) {
         echo "<a href=\"links.php?webtag=$webtag\" target=\"main\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
     }

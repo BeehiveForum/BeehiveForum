@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.11 2004-04-17 20:21:47 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.12 2004-04-19 20:44:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -52,9 +52,9 @@ include_once("./include/session.inc.php");
 if (!$user_sess = bh_session_check()) {
 
     if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        
+
         if (perform_logon(false)) {
-	    
+
 	    html_draw_top();
 
             echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
@@ -72,7 +72,7 @@ if (!$user_sess = bh_session_check()) {
 	    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
             echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
 	    echo "</form>\n";
-	    
+
 	    html_draw_bottom();
 	    exit;
 	}
@@ -84,6 +84,10 @@ if (!$user_sess = bh_session_check()) {
 	exit;
     }
 }
+
+// Check we have a webtag
+
+$webtag = get_webtag();
 
 html_draw_top();
 
@@ -109,9 +113,9 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['t_webtag_new']) && strlen(trim($_POST['t_webtag_new'])) > 0) {
-	       
+
         $new_webtag = strtoupper(trim(_stripslashes($_POST['t_webtag_new'])));
-        
+
         if (!preg_match("/^[A-Z0-9_-]+$/", $new_webtag)) {
             $message_html.= "<h2>{$lang['webtaginvalidchars']}</h2>\n";
             $valid = false;
@@ -122,7 +126,7 @@ if (isset($_POST['submit'])) {
 	}else {
 	    $new_name = "";
 	}
-        
+
 	if (isset($_POST['t_access_new']) && is_numeric($_POST['t_access_new'])) {
 	    $new_access = $_POST['t_access_new'];
 	}else {
@@ -141,11 +145,11 @@ if (isset($_POST['submit'])) {
 }elseif (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
     list($fid) = array_keys($_POST['t_delete']);
-    
+
     echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+    echo "<form name=\"f_folders\" action=\"admin_forums.php?webtag=$webtag\" method=\"post\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -176,7 +180,7 @@ if (isset($_POST['submit'])) {
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("t_confirm_delete[$fid]", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-    echo "    </tr>\n";     
+    echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
@@ -185,7 +189,7 @@ if (isset($_POST['submit'])) {
     exit;
 
 }elseif (isset($_POST['t_confirm_delete'])) {
-    
+
     list($fid) = array_keys($_POST['t_confirm_delete']);
     forum_delete($fid);
 
@@ -209,7 +213,7 @@ $forums_array = admin_get_forum_list();
 
 if (sizeof($forums_array) > 0) {
 
-    echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+    echo "  <form name=\"f_folders\" action=\"admin_forums.php?webtag=$webtag\" method=\"post\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -268,13 +272,13 @@ if (sizeof($forums_array) > 0) {
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['savechanges']), "</td>\n";
-    echo "    </tr>\n";  
+    echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
     echo "  <br />\n";
 }
 
-echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+echo "  <form name=\"f_folders\" action=\"admin_forums.php?webtag=$webtag\" method=\"post\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -310,7 +314,7 @@ echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['add']), "</td>\n";
-echo "    </tr>\n";  
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";;
 echo "</div>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.125 2004-03-22 15:17:46 decoyduck Exp $ */
+/* $Id: logon.php,v 1.126 2004-03-22 16:20:16 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -233,7 +233,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
                     bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
                         
-                    if (isset($password_array[$i]) && isset($passhash_array[$i]) {
+                    if (isset($password_array[$i]) && isset($passhash_array[$i])) {
                         
                         bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
                         bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);

@@ -21,7 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.17 2004-02-20 22:04:25 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.18 2004-03-06 13:45:50 decoyduck Exp $ */
+
+// Light Mode Detection
+define("BEEHIVEMODE_LIGHT", true);
+
+// Compress the output
+require_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");

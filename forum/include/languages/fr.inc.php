@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr.inc.php,v 1.32 2004-03-05 21:37:55 decoyduck Exp $ */
+/* $Id: fr.inc.php,v 1.33 2004-03-06 13:45:49 decoyduck Exp $ */
 
 // French language file Ver 0.3
 // By Mark Krywonos and Endo
@@ -499,6 +499,7 @@ $lang['usernameandpasswdrequired'] = "Un username et le mot de passe est exigé";
 $lang['welcometolight'] = "Bienvenu pour Suivre un régime la Ruche!";
 $lang['pleasereenterpasswd'] = "S'il vous plaît revient dans votre mot de passe et essaie encore.";
 $lang['rememberpasswds'] = "Se souvenir des mots de passe";
+$lang['rememberpassword'] = "Se souvenir des mots de passe";
 $lang['enterasa'] = "Entrer comme un";
 $lang['donthaveanaccount'] = "Ne pas avoir un compte?";
 $lang['problemsloggingon'] = "Les problèmes effectuant une procédure d'entrée?";

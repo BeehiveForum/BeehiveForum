@@ -23,7 +23,13 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.23 2004-02-02 23:21:38 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.24 2004-03-06 13:45:50 decoyduck Exp $ */
+
+// Light Mode Detection
+define("BEEHIVEMODE_LIGHT", true);
+
+// Compress the output
+require_once("./include/gzipenc.inc.php");
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");

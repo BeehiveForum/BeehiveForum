@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.262 2004-04-12 03:11:38 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.263 2004-04-12 23:51:58 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -730,6 +730,10 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     // Check for existing entry in USER_THREAD
     
     if (!$table_data = get_table_prefix()) return false;
+
+    // Guest users' can't mark as read!
+    
+    if ($uid == 0) return false;
 
     $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD WHERE UID = '$uid' AND TID = '$tid'";
     $result = db_query($sql, $db_message_update_read);

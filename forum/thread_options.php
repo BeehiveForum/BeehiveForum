@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.5 2004-04-12 21:08:12 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.6 2004-04-12 23:51:58 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -94,6 +94,13 @@ if (!$user_sess = bh_session_check()) {
 if (!$webtag = get_webtag()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?final_uri=$request_uri");
+}
+
+// Guests can't use this
+
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 // Check that required variables are set

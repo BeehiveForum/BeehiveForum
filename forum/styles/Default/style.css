@@ -5,7 +5,7 @@ BODY		{
 		margin-left: 05px;
 		margin-right: 05px;
 		font-family: Verdana, Arial, Helvetica, sans-serif;
-                font-size: $FONTSIZE;
+                font-size: 10pt;
 		}
 		
 .navpage        {
@@ -23,7 +23,7 @@ P, H1, H2,  .form	{
 
 P		{
 		color: #000000;
-		font-size: $FONTSIZE;
+		font-size: 10pt;
 		}
 
 H1		{
@@ -31,7 +31,7 @@ H1		{
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		text-decoration: none;
 		color: #000000;
-		font-size: $FONTSIZE;
+		font-size: 10pt;
 		font-weight:bold;
 		margin: 0px;
 		padding: 2px;
@@ -43,7 +43,7 @@ H2		{
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		text-decoration: none;
 		color: #000000;
-		font-size: $FONTSIZE;
+		font-size: 10pt;
 		font-weight:bold;
 		margin-top: 05px;
 		margin-bottom: 05px;
@@ -89,7 +89,7 @@ A		{
 		border-left-width:01px;
 		border-right-width:01px;
 		border-color:#999999;
-		font-size:$FONTSIZE;
+		font-size:10pt;
 		margin-left:05px;
 		margin-right:05px;
 }
@@ -101,7 +101,7 @@ A		{
 
 .threads {
           font-style: normal;
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           background-color: #C8D7E6;
           margin-top: 4px;
           margin-right: 4px;
@@ -133,7 +133,7 @@ A		{
 }
 
 .threadname {
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           padding-left: 0px;
 }
 
@@ -149,7 +149,7 @@ A		{
 
 .foldername {
           font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           font-style: normal;
           font-weight: bold;
           text-decoration: none;
@@ -162,13 +162,13 @@ A		{
 
 .posthead {
           background-color: #C8D7E6;
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           border: none;
           padding: 0px;
 }
 
 .postbody {
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           padding-top: 2px;
           padding-right: 2px;
           padding-bottom: 2px;
@@ -178,28 +178,28 @@ A		{
 
 .postnumber {
           text-align: right;
-          font-size: $FONTSIZE
+          font-size: 10pt
 }
 
 .postinfo {
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           text-align: right;
           float: right
 }
 
 .posttofromlabel {
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           text-align: right;
 }
 
 .posttofrom {
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           text-align: left;
 }
 
 .postresponse {
           font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           font-style: normal;
           color: #000000;
           text-align: center
@@ -207,7 +207,7 @@ A		{
 
 .messagefoot {
           font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           font-style: normal;
           background-color: #C8D7E6;
           border-width: 0px;
@@ -223,7 +223,7 @@ A		{
           border-left-width: 1px;
           width: 200px;
           font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           font-weight: bold;
           color: #009900;
           float: right;
@@ -266,7 +266,7 @@ A		{
 
 .subhead {
           font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: $FONTSIZE;
+          font-size: 10pt;
           'font-weight: bold;'
           color: #FFFFFF;
           background-color: #A6BED7;

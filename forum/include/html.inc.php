@@ -44,52 +44,65 @@ function html_poll_edit_error ()
 function _html_draw_top1($title = false)
 {
 
-    global $HTTP_COOKIE_VARS, $forum_name;
+    global $HTTP_COOKIE_VARS, $HTTP_GET_VARS, $forum_name, $default_style;
 
-    if(!$title){
-        $title = $forum_name;
+    if(!$title) $title = $forum_name;
+
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
+    echo "<head>\n";
+    echo "<title>$title</title>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" />\n";
+
+    if (isset($default_style)) {
+
+        $user_style = empty($HTTP_COOKIE_VARS['bh_sess_style']) ? $default_style : $HTTP_COOKIE_VARS['bh_sess_style'];
+
+        if (is_dir("./styles/$user_style")) {
+            $stylesheet = "styles/$user_style/style.css";
+        }else {
+	    $stylesheet = "styles/style.css";
+        }
+
+    }else {
+        $stylesheet = "styles/style.css";
     }
-    
-    $fontsize = isset($HTTP_COOKIE_VARS['bh_sess_fontsize']) ? $HTTP_COOKIE_VARS['bh_sess_fontsize'] : 9;
 
-    header_no_cache(); // Hopefully this will stop Opera from caching the PHP pages, but I doubt it.
+    echo "<link rel=\"stylesheet\" href=\"", $stylesheet, "\" type=\"text/css\" />\n";
 
-	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
-	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n";
-	echo "\t<head>\n";
-	echo "\t\t<title>$title</title>\n";
-	echo "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\n";
-	echo "\t\t<link rel=\"stylesheet\" href=\"styles.php?fontsize=$fontsize&". md5(uniqid(rand())). "\" type=\"text/css\"/>\n";
+    if ($HTTP_COOKIE_VARS['bh_sess_fontsize'] != '10') {
+        echo "<link rel=\"stylesheet\" href=\"fontsize.php\" type=\"text/css\" />\n";
+    }
+
 }
 
 function _html_draw_top2($body_class = false)
 {
-	echo "\t</head>\n";
-	echo "<body";
-	if ($body_class) {
-		echo " class=\"$body_class\"";
-	}
-	echo ">\n";
+    echo "</head>\n\n";
+    echo "<body";
+    if ($body_class) {
+        echo " class=\"$body_class\"";
+    }
+    echo ">\n";
 }
 
 function _html_draw_top_script()
 {
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-    echo "<!--\n";
-    echo "function openProfile(uid)\n";
-    echo "{\n";
-    echo "window.open('user_profile.php?uid=' + uid, uid,'width=400, height=400, toolbars=no');\n";
-    echo "}\n";
+    echo "<!--\n\n";
+    echo "function openProfile(uid) {\n";
+    echo "  window.open('user_profile.php?uid=' + uid, uid,'width=400, height=400, toolbars=no');\n";
+    echo "}\n\n";
     echo "-->\n";
     echo "</script>\n";
-	echo "<base target=\"_blank\" />\n";
+    echo "<base target=\"_blank\" />\n";
 }
 
 function _html_draw_post_top2()
 {
-	echo "\t</head>\n";
-	echo "<body onLoad=\"self.focus();document.f_post.t_content.focus();\">\n";
+    echo "</head>\n";
+    echo "<body onLoad=\"self.focus();document.f_post.t_content.focus();\">\n";
 }
 
 
@@ -116,20 +129,20 @@ function html_draw_top_post_script($title = false)
 function html_draw_bottom ()
 {
     echo "</body>\n";
-	echo "</html>\n";
+    echo "</html>\n";
 }
 
 function style_image($img)
 {
     global $HTTP_COOKIE_VARS, $default_style;
 
-	$file = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/images/$img";
+    $file = "./styles/".(isset($HTTP_COOKIE_VARS['bh_sess_style']) ? $HTTP_COOKIE_VARS['bh_sess_style'] : $default_style) . "/images/$img";
 
-	if (file_exists($file)) {
-	    return $file;
-	} else {
-		return "./images/$img";
-	}
+    if (file_exists($file)) {
+        return $file;
+    } else {
+        return "./images/$img";
+    }
 }
 
 ?>

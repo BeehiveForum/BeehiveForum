@@ -33,7 +33,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
     if(isset($HTTP_POST_VARS['uid']) && isset($HTTP_POST_VARS['pw']) && isset($HTTP_POST_VARS['cpw']) && isset($HTTP_POST_VARS['key'])) {
 
         if($HTTP_POST_VARS['pw'] == $HTTP_POST_VARS['cpw']){
-            
+
             $newpass = md5($HTTP_POST_VARS['pw']);
 
             $conn = db_connect();
@@ -64,8 +64,6 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $error_html = "<h2>All fields a required</h2>";
     }
 
-    $error_html = "<h2>A valid username is required</h2>";
-    
 } else if(!isset($HTTP_GET_VARS['u']) || !isset($HTTP_GET_VARS['h'])){
     html_draw_top();
     echo "<h1>Invalid Access</h1>\n";

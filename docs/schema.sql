@@ -6,7 +6,7 @@
 # (http://phpmyadmin.sourceforge.net)
 # Generation Time: Mar 17, 2004 at 00:17
 #
-# $Id: schema.sql,v 1.64 2004-03-19 15:27:30 decoyduck Exp $
+# $Id: schema.sql,v 1.65 2004-03-21 19:04:52 tribalonline Exp $
 #
 # --------------------------------------------------------
 
@@ -109,6 +109,7 @@ CREATE TABLE FORUM_SETTINGS (
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_name', 'A Beehive Forum');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'forum_email', 'admin@abeehiveforum.net');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_style', 'default');
+INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_emoticons', 'default');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'default_language', 'en');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'show_friendly_errors', 'Y');
 INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES (1, 'cookie_domain', '');
@@ -588,6 +589,7 @@ CREATE TABLE USER_PREFS (
   POSTS_PER_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,
   FONT_SIZE TINYINT(3) UNSIGNED DEFAULT NULL,
   STYLE VARCHAR(255) DEFAULT NULL,
+  EMOTICONS VARCHAR(255) DEFAULT NULL,
   VIEW_SIGS CHAR(1) DEFAULT NULL,
   START_PAGE TINYINT(3) UNSIGNED DEFAULT NULL,
   LANGUAGE VARCHAR(32) DEFAULT NULL,

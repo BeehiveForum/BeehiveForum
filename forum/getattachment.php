@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.77 2004-08-04 23:46:34 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.78 2004-11-14 00:45:32 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -165,7 +165,7 @@ if (isset($hash) && is_md5($hash)) {
                     $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
 
                     if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-                        $remote_etag = substr(stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+                        $remote_etag = substr(_stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
                     }else {
                         $remote_etag = false;
                     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.62 2004-11-01 23:58:42 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.63 2004-11-14 00:45:31 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -122,23 +122,58 @@ if (!(perm_has_admin_access())) {
 
 if (isset($_POST['submit'])) {
 
-    if (isset($_POST['t_psid'])) {
+    $valid = true;
+
+    if (isset($_POST['t_psid']) && is_array($_POST['t_psid'])) {
 
         foreach($_POST['t_psid'] as $psid => $value) {
 
-            if (($_POST['t_name'][$psid] != $_POST['t_old_name'][$psid]) || ($_POST['t_position'][$psid] != $_POST['t_old_position'][$psid])) {
+            if (isset($_POST['t_name'][$psid]) && strlen(trim(_stripslashes($_POST['t_name'][$psid]))) > 0) {
+                $t_new_name = trim(_stripslashes($_POST['t_name'][$psid]));
+            }else {
+                $valid = false;
+            }
 
-                $new_name = (trim($_POST['t_name'][$psid]) != "") ? $_POST['t_name'][$psid] : $_POST['t_old_name'][$psid];
-                profile_section_update($_POST['t_psid'][$psid], $_POST['t_position'][$psid], $new_name);
-                admin_addlog(0, 0, 0, 0, $_POST['t_psid'][$psid], 0, 10);
+            if (isset($_POST['t_position'][$psid]) && is_numeric($_POST['t_position'][$psid])) {
+                $t_new_position = $_POST['t_position'][$psid];
+            }else {
+                $valid = false;
+            }
+
+            if ($valid) {
+
+                profile_section_update($psid, $t_new_position, $t_new_name);
+                admin_addlog(0, 0, 0, 0, $psid, 0, 10);
             }
         }
 
     }
 
-    if (trim($_POST['t_name_new']) != "" && trim($_POST['t_name_new']) != $lang['newsection']) {
+    if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
 
-        $new_psid = profile_section_create(trim($_POST['t_name_new']), (isset($_POST['t_psid']) ? sizeof($_POST['t_psid']) : 1));
+        if (trim(_stripslashes($_POST['t_name_new'])) != $lang['newsection']) {
+
+            $t_name_new = trim(_stripslashes($_POST['t_name_new']));
+
+        }else {
+
+            $valid = false;
+        }
+
+    }else {
+
+        $valid = false;
+    }
+
+    if (isset($_POST['t_psid']) && is_array($_POST['t_psid'])) {
+        $t_position_new = sizeof($_POST['t_psid']);
+    }else {
+        $t_position_new = 1;
+    }
+
+    if ($valid) {
+
+        $new_psid = profile_section_create($t_name_new, $t_position_new);
         admin_addlog(0, 0, 0, 0, $new_psid, 0, 11);
 
     }

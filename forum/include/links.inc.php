@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.41 2004-04-28 20:38:57 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.42 2004-11-14 00:45:32 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 
@@ -61,15 +61,14 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 20";
 
-    $result_id = db_query($sql, $db_links_get_in_folder);
+    $result = db_query($sql, $db_links_get_in_folder);
 
-    while ($row = db_fetch_array($result_id)) {
+    while ($row = db_fetch_array($result)) {
         $links_array[$row['LID']] = $row;
     }
 
     return array('links_count' => $links_count,
                  'links_array' => $links_array);
-
 }
 
 function links_folders_get($invisible = false)
@@ -78,16 +77,29 @@ function links_folders_get($invisible = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql  = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
-    if (!$invisible) $sql .= "WHERE VISIBLE = 'Y' ";
-    $sql .= "ORDER BY FID";
+    if ($invisible) {
+
+        $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
+        $sql.= "ORDER BY FID";
+
+    }else {
+
+        $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
+        $sql.= "WHERE VISIBLE = 'Y' ORDER BY FID";
+    }
 
     $folders = false;
 
-    $result_id = db_query($sql, $db_links_folders_get);
+    $result = db_query($sql, $db_links_folders_get);
 
-    while ($row = db_fetch_array($result_id)) {
-        $folders[$row['FID']] =  $row;
+    if (db_num_rows($result) > 0) {
+
+        $folders = array();
+
+        while ($row = db_fetch_array($result)) {
+
+            $folders[$row['FID']] =  $row;
+        }
     }
 
     return $folders;
@@ -97,6 +109,10 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 {
     if (!is_numeric($fid)) return false;
     if (!is_numeric($uid)) return false;
+
+    $uri = addslashes($uri);
+    $title = addslashes($title);
+    $description = addslashes($description);
 
     $db_links_add = db_connect();
 
@@ -113,6 +129,8 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 function links_add_folder($fid, $name, $visible = false)
 {
     if (!is_numeric($fid)) return false;
+
+    $name = addslashes($name);
 
     $db_links_add_folder = db_connect();
 
@@ -136,6 +154,7 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     list($key) = array_keys($folders);
 
     while ($tree_fid != $key) {
+
           $tree[] = $tree_fid;
           $tree_fid = $folders[$tree_fid]['PARENT_FID'];
     }
@@ -149,7 +168,9 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
     }
 
     if (is_array($tree)) {
+
         while ($val = array_pop($tree)) {
+
             if (($val != $fid && $links) || $link_last_too) {
                 $html .= "&nbsp;>&nbsp;<a href=\"$link_base&amp;fid=$val\">" . _stripslashes($folders[$val]['NAME']) . "</a>";
             } else {
@@ -163,11 +184,12 @@ function links_display_folder_path($fid, $folders, $links = true, $link_last_too
 
 function links_get_subfolders($fid, $folders)
 {
-
     $subfolders = array();
 
     if (is_array($folders)) {
+
         while (list($key, $val) = each($folders)) {
+
             if (isset($val['PARENT_FID']) && $val['PARENT_FID'] == $fid && $key != 1) $subfolders[] = $key;
         }
     }
@@ -197,12 +219,12 @@ function links_click($lid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS SET CLICKS = CLICKS + 1 WHERE LID = '$lid'";
-    $result_id = db_query($sql, $db_links_click);
+    $result = db_query($sql, $db_links_click);
 
     $sql = "SELECT URI FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
-    $result_id = db_query($sql, $db_links_click);
+    $result = db_query($sql, $db_links_click);
 
-    $uri = db_fetch_array($result_id);
+    $uri = db_fetch_array($result);
     header_redirect($uri['URI']);
 }
 
@@ -224,10 +246,10 @@ function links_get_single($lid)
     $sql .= "WHERE LINKS.LID = '$lid' ";
     $sql .= "GROUP BY LINKS_VOTE.LID";
 
-    $result_id = db_query($sql, $db_links_get_single);
+    $result = db_query($sql, $db_links_get_single);
 
-    if ($result_id) {
-        $link = db_fetch_array($result_id);
+    if ($result) {
+        $link = db_fetch_array($result);
         return $link;
     } else {
         return false;
@@ -269,9 +291,10 @@ function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC"
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 20";
 
-    $result_id = db_query($sql, $db_links_get_in_folder);
+    $result = db_query($sql, $db_links_get_in_folder);
 
-    while ($row = db_fetch_array($result_id)) {
+    while ($row = db_fetch_array($result)) {
+
         $links_array[$row['LID']] = $row;
     }
 
@@ -304,18 +327,18 @@ function links_folder_delete($fid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT MIN(FID) AS FID FROM {$table_data['PREFIX']}LINKS";
-    $result_id = db_query($sql, $db_links_folder_delete);
+    $result = db_query($sql, $db_links_folder_delete);
 
-    $link_array = db_fetch_array($result_id);
+    $link_array = db_fetch_array($result);
     if (isset($link_array['FID']) && $link_array['FID'] == $fid) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}LINKS SET FID = '{$folders[$fid]['PARENT_FID']}' WHERE FID = '$fid'";
-    $result_id = db_query($sql, $db_links_folder_delete);
+    $result = db_query($sql, $db_links_folder_delete);
 
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_FOLDERS WHERE FID = $fid";
-    $result_id = db_query($sql, $db_links_folder_delete);
+    $result = db_query($sql, $db_links_folder_delete);
 
-    return $result_id;
+    return $result;
 }
 
 function links_get_vote($lid, $uid)
@@ -328,10 +351,10 @@ function links_get_vote($lid, $uid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT RATING FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = $lid AND UID = $uid";
-    $result_id = db_query($sql, $db_links_get_vote);
+    $result = db_query($sql, $db_links_get_vote);
 
-    if ($result_id) {
-        $vote = db_fetch_array($result_id);
+    if ($result) {
+        $vote = db_fetch_array($result);
         return $vote['RATING'];
     } else {
         return false;
@@ -374,6 +397,8 @@ function links_add_comment($lid, $uid, $comment)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($uid))  return false;
 
+    $comment = addslashes($comment);
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_COMMENT (LID, UID, COMMENT, CREATED) ";
@@ -397,11 +422,11 @@ function links_get_comments($lid)
     $sql .= "ON (LINKS_COMMENT.UID = USER.UID) ";
     $sql .= "WHERE LINKS_COMMENT.LID = '$lid' ORDER BY CREATED ASC";
 
-    $result_id = db_query($sql, $db_links_get_comments);
+    $result = db_query($sql, $db_links_get_comments);
 
-    if (db_num_rows($result_id)) {
+    if (db_num_rows($result)) {
 
-        while ($row = db_fetch_array($result_id)) {
+        while ($row = db_fetch_array($result)) {
             $comments[] = $row;
         }
 
@@ -415,10 +440,13 @@ function links_get_comments($lid)
 function links_folder_dropdown($default_fid, $folders)
 {
     while (list($key, $val) = each($folders)) {
+
         $values[] = $key;
         $labels[] = links_display_folder_path($key, $folders, false);
+
         if ($key == $default_fid) $default_value = $key;
     }
+
     return form_dropdown_array("fid", $values, $labels, $default_value);
 }
 
@@ -426,37 +454,43 @@ function links_delete_comment($cid)
 {
     $db_links_delete_comment = db_connect();
 
+    if (!is_numeric($cid)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = $cid";
-    $result_id = db_query($sql, $db_links_delete_comment);
-    return $result_id;
+    $result = db_query($sql, $db_links_delete_comment);
+    return $result;
 }
 
 function links_delete($lid)
 {
     $db_links_delete = db_connect();
 
-    if (!is_numeric($lid))  return false;
+    if (!is_numeric($lid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
-    $result_id = db_query($sql, $db_links_delete);
+    $result = db_query($sql, $db_links_delete);
 
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE LID = '$lid'";
-    $result_id = db_query($sql, $db_links_delete);
+    $result = db_query($sql, $db_links_delete);
 
     $sql = "DELETE FROM {$table_data['PREFIX']}LINKS_VOTE WHERE LID = '$lid'";
-    $result_id = db_query($sql, $db_links_delete);
+    $result = db_query($sql, $db_links_delete);
 }
 
 function links_update($lid, $fid, $title, $uri, $description)
 {
     $db_links_update = db_connect();
 
-    if (!is_numeric($lid))  return false;
-    if (!is_numeric($fid))  return false;
+    if (!is_numeric($lid)) return false;
+    if (!is_numeric($fid)) return false;
+
+    $title = addslashes($title);
+    $uri = addslashes($uri);
+    $description = addslashes($description);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -475,9 +509,9 @@ function links_get_creator_uid($lid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS WHERE LID = '$lid'";
-    $result_id = db_query($sql, $db_links_get_creator_uid);
+    $result = db_query($sql, $db_links_get_creator_uid);
 
-    return db_fetch_array($result_id);
+    return db_fetch_array($result);
 }
 
 function links_get_comment_uid($cid)
@@ -489,9 +523,9 @@ function links_get_comment_uid($cid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT UID FROM {$table_data['PREFIX']}LINKS_COMMENT WHERE CID = '$cid'";
-    $result_id = db_query($sql, $db_links_get_comment_uid);
+    $result = db_query($sql, $db_links_get_comment_uid);
 
-    return db_fetch_array($result_id);
+    return db_fetch_array($result);
 }
 
 ?>

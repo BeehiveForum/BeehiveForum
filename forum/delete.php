@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.61 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: delete.php,v 1.62 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -53,7 +53,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -67,7 +67,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -108,14 +108,14 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
-if (isset($HTTP_POST_VARS['msg']) && validate_msg($HTTP_POST_VARS['msg'])) {
+if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
-    $msg = $HTTP_POST_VARS['msg'];
+    $msg = $_POST['msg'];
     list($tid, $pid) = explode(".", $msg);
 
-}elseif (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $msg = $HTTP_GET_VARS['msg'];
+    $msg = $_GET['msg'];
     list($tid, $pid) = explode(".", $msg);
 
 }else {
@@ -127,7 +127,7 @@ if (isset($HTTP_POST_VARS['msg']) && validate_msg($HTTP_POST_VARS['msg'])) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
     $uri = "./discussion.php?webtag=$webtag&msg=". $msg;
     header_redirect($uri);
 }
@@ -168,7 +168,7 @@ html_draw_top("openprofile.js", "basetarget=_blank");
 
 if ($valid) {
 
-    if (isset($HTTP_POST_VARS['submit']) && is_numeric($tid) && is_numeric($pid)) {
+    if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
 
         if (post_delete($tid, $pid)) {
 

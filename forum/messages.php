@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.134 2004-04-13 18:09:06 tribalonline Exp $ */
+/* $Id: messages.php,v 1.135 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -53,7 +53,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -67,7 +67,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -100,8 +100,8 @@ $user_wordfilter = load_wordfilter();
 
 // Check that required variables are set
 // default to display most recent discussion for user
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-    $msg = $HTTP_GET_VARS['msg'];
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    $msg = $_GET['msg'];
 }else {
     $msg = messages_get_most_recent(bh_session_get_value('UID'));
 }
@@ -121,12 +121,12 @@ if (!thread_can_view($tid, bh_session_get_value('UID'))) {
 
 // Poll stuff
 
-if (isset($HTTP_POST_VARS['pollsubmit'])) {
+if (isset($_POST['pollsubmit'])) {
 
-  if (isset($HTTP_POST_VARS['pollvote'])) {
+  if (isset($_POST['pollvote'])) {
 
-    poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
-    header_redirect("./messages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
+    poll_vote($_POST['tid'], $_POST['pollvote']);
+    header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
 
   }else {
 
@@ -137,26 +137,26 @@ if (isset($HTTP_POST_VARS['pollsubmit'])) {
 
   }
 
-}elseif (isset($HTTP_POST_VARS['pollclose'])) {
+}elseif (isset($_POST['pollclose'])) {
 
-  if (isset($HTTP_POST_VARS['confirm_pollclose'])) {
+  if (isset($_POST['confirm_pollclose'])) {
 
-    poll_close($HTTP_POST_VARS['tid']);
-    header_redirect("./messages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
+    poll_close($_POST['tid']);
+    header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
 
   }else {
 
     html_draw_top("openprofile.js");
-    poll_confirm_close($HTTP_POST_VARS['tid']);
+    poll_confirm_close($_POST['tid']);
     html_draw_bottom();
     exit;
 
   }
 
-}elseif (isset($HTTP_POST_VARS['pollchangevote'])) {
+}elseif (isset($_POST['pollchangevote'])) {
 
-  poll_delete_vote($HTTP_POST_VARS['tid']);
-  header_redirect("./messages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
+  poll_delete_vote($_POST['tid']);
+  header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
 
 }
 
@@ -199,8 +199,8 @@ $msg_count = count($messages);
 
 $highlight = array();
 
-if (isset($HTTP_GET_VARS['search_string']) && strlen(trim($HTTP_GET_VARS['search_string'])) > 0) {
-    $highlight = explode(' ', rawurldecode($HTTP_GET_VARS['search_string']));
+if (isset($_GET['search_string']) && strlen(trim($_GET['search_string'])) > 0) {
+    $highlight = explode(' ', rawurldecode($_GET['search_string']));
 }
 
 if (sizeof($highlight) > 0) {
@@ -242,7 +242,7 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
 echo "  </tr>\n";
 
-if (isset($HTTP_GET_VARS['markasread'])) {
+if (isset($_GET['markasread'])) {
 
     echo "  <tr>\n";
     echo "    <td><h2>{$lang['threareadstatusupdated']}</h2></td>\n";
@@ -296,7 +296,7 @@ if ($msg_count > 0) {
 
 unset($messages, $message);
 
-if ($msg_count > 0 && bh_session_get_value('UID') != 0 && !isset($HTTP_GET_VARS['markasread'])) {
+if ($msg_count > 0 && bh_session_get_value('UID') != 0 && !isset($_GET['markasread'])) {
     messages_update_read($tid, $last_pid, bh_session_get_value('UID'));
 }
 

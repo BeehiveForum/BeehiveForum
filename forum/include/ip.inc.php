@@ -21,12 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ip.inc.php,v 1.24 2004-04-05 20:54:47 decoyduck Exp $ */
+/* $Id: ip.inc.php,v 1.25 2004-04-17 17:39:29 decoyduck Exp $ */
 
 function ip_check()
 {
-    global $HTTP_SERVER_VARS;
-
     $db_ip_banned = db_connect();
 
     if ($ipaddress = get_ip_address()) {
@@ -97,42 +95,40 @@ function ip_is_banned($ipaddress)
 
 function get_ip_address()
 {
-    global $HTTP_SERVER_VARS;
-
     // Proxy server client IP detection.
     // HTTP_VIA is a special case, in that the client IP
     // address may be reversed by the proxy server
     // (identifiable by -R in the proxy server's version
     // string.)
 
-    if (isset($HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'])) {
-        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_X_FORWARDED_FOR'], $matches)) {
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($HTTP_SERVER_VARS['HTTP_X_FORWARDED'])) {
-        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_X_FORWARDED'], $matches)) {
+    }elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $_SERVER['HTTP_X_FORWARDED'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($HTTP_SERVER_VARS['HTTP_FORWARDED_FOR'])) {
-        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_FORWARDED_FOR'], $matches)) {
+    }elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $_SERVER['HTTP_FORWARDED_FOR'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($HTTP_SERVER_VARS['HTTP_FORWARDED'])) {
-        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_FORWARDED'], $matches)) {
+    }elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $_SERVER['HTTP_FORWARDED'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($HTTP_SERVER_VARS['HTTP_X_COMING_FROM'])) {
-        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_X_COMING_FROM'], $matches)) {
+    }elseif (isset($_SERVER['HTTP_X_COMING_FROM'])) {
+        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $_SERVER['HTTP_X_COMING_FROM'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($HTTP_SERVER_VARS['HTTP_COMING_FROM'])) {
-        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_COMING_FROM'], $matches)) {
+    }elseif (isset($_SERVER['HTTP_COMING_FROM'])) {
+        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $_SERVER['HTTP_COMING_FROM'], $matches)) {
             return $matches[0];
         }
-    }elseif (isset($HTTP_SERVER_VARS['HTTP_VIA'])) {
-        if (isset($HTTP_SERVER_VARS['HTTP_CLIENT_IP'])) {
-            if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['HTTP_CLIENT_IP'], $matches)) {
-                if (strstr($HTTP_SERVER_VARS['HTTP_VIA'], "-R")) {
+    }elseif (isset($_SERVER['HTTP_VIA'])) {
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $_SERVER['HTTP_CLIENT_IP'], $matches)) {
+                if (strstr($_SERVER['HTTP_VIA'], "-R")) {
                     return join('.', array_reverse(explode('.', $matches[0])));
                 }else {
                     return $matches[0];
@@ -144,8 +140,8 @@ function get_ip_address()
     // No proxy server or client IP not accessible.
     // Resort to using the REMOTE_ADDR variable.
 
-    if (isset($HTTP_SERVER_VARS['REMOTE_ADDR'])) {
-        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $HTTP_SERVER_VARS['REMOTE_ADDR'], $matches)) {
+    if (isset($_SERVER['REMOTE_ADDR'])) {
+        if (ereg("^([0-9]{1,3}\.){3,3}[0-9]{1,3}", $_SERVER['REMOTE_ADDR'], $matches)) {
             return $matches[0];
         }
     }

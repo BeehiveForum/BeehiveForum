@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.30 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.31 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/emoticons.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -116,90 +116,90 @@ $available_langs_labels = array_merge(array($lang['browsernegotiation']), $avail
 array_unshift($available_langs, "");
 
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     // Optional fields
 
-    if (isset($HTTP_POST_VARS['timezone'])) {
-        $user_prefs['TIMEZONE'] = _stripslashes(trim($HTTP_POST_VARS['timezone']));
+    if (isset($_POST['timezone'])) {
+        $user_prefs['TIMEZONE'] = _stripslashes(trim($_POST['timezone']));
     }else {
         $user_prefs['TIMEZONE'] = 0;
     }    
 
-    if (isset($HTTP_POST_VARS['dl_saving']) && $HTTP_POST_VARS['dl_saving'] == "Y") {
+    if (isset($_POST['dl_saving']) && $_POST['dl_saving'] == "Y") {
         $user_prefs['DL_SAVING'] = "Y";
     }else {
         $user_prefs['DL_SAVING'] = "";
     }
     
-    if (isset($HTTP_POST_VARS['language'])) {
-        $user_prefs['LANGUAGE'] = _stripslashes(trim($HTTP_POST_VARS['language']));
+    if (isset($_POST['language'])) {
+        $user_prefs['LANGUAGE'] = _stripslashes(trim($_POST['language']));
     }else {
         $user_prefs['LANGUAGE'] = "";
     }    
 
-    if (isset($HTTP_POST_VARS['view_sigs']) && $HTTP_POST_VARS['view_sigs'] == "Y") {
+    if (isset($_POST['view_sigs']) && $_POST['view_sigs'] == "Y") {
         $user_prefs['VIEW_SIGS'] = "Y";
     }else {
         $user_prefs['VIEW_SIGS'] = "";
     }
     
-    if (isset($HTTP_POST_VARS['pm_notify']) && $HTTP_POST_VARS['pm_notify'] == "Y") {
+    if (isset($_POST['pm_notify']) && $_POST['pm_notify'] == "Y") {
         $user_prefs['PM_NOTIFY'] = "Y";
     }else {
         $user_prefs['PM_NOTIFY'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['mark_as_of_int']) && $HTTP_POST_VARS['mark_as_of_int'] == "Y") {
+    if (isset($_POST['mark_as_of_int']) && $_POST['mark_as_of_int'] == "Y") {
         $user_prefs['MARK_AS_OF_INT'] = "Y";
     }else {
         $user_prefs['MARK_AS_OF_INT'] = "";
     }
     
-    if (isset($HTTP_POST_VARS['images_to_links']) && $HTTP_POST_VARS['images_to_links'] == "Y") {
+    if (isset($_POST['images_to_links']) && $_POST['images_to_links'] == "Y") {
         $user_prefs['IMAGES_TO_LINKS'] = "Y";
     }else {
         $user_prefs['IMAGES_TO_LINKS'] = "";
     }
     
-    if (isset($HTTP_POST_VARS['use_word_filter']) && $HTTP_POST_VARS['use_word_filter'] == "Y") {
+    if (isset($_POST['use_word_filter']) && $_POST['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
     }else {
         $user_prefs['USE_WORD_FILTER'] = "";
     }     
 
-    if (isset($HTTP_POST_VARS['show_stats']) && $HTTP_POST_VARS['show_stats'] == "Y") {
+    if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $user_prefs['SHOW_STATS'] = 1;
     }else {
         $user_prefs['SHOW_STATS'] = 0;
     }
 
-    if (isset($HTTP_POST_VARS['posts_per_page'])) {
-        $user_prefs['POSTS_PER_PAGE'] = _stripslashes(trim($HTTP_POST_VARS['posts_per_page']));
+    if (isset($_POST['posts_per_page'])) {
+        $user_prefs['POSTS_PER_PAGE'] = _stripslashes(trim($_POST['posts_per_page']));
     }else {
         $user_prefs['POSTS_PER_PAGE'] = 10;
     }
 
-    if (isset($HTTP_POST_VARS['font_size'])) {
-        $user_prefs['FONT_SIZE'] = _stripslashes(trim($HTTP_POST_VARS['font_size']));
+    if (isset($_POST['font_size'])) {
+        $user_prefs['FONT_SIZE'] = _stripslashes(trim($_POST['font_size']));
     }else {
         $user_prefs['FONT_SIZE'] = 10;
     }
 
-    if (isset($HTTP_POST_VARS['style'])) {
-        $user_prefs['STYLE'] = _stripslashes(trim($HTTP_POST_VARS['style']));
+    if (isset($_POST['style'])) {
+        $user_prefs['STYLE'] = _stripslashes(trim($_POST['style']));
     }else {
         $user_prefs['STYLE'] = forum_get_setting('default_style');
     }
 
-    if (isset($HTTP_POST_VARS['emoticons'])) {
-        $user_prefs['EMOTICONS'] = _stripslashes(trim($HTTP_POST_VARS['emoticons']));
+    if (isset($_POST['emoticons'])) {
+        $user_prefs['EMOTICONS'] = _stripslashes(trim($_POST['emoticons']));
     }else {
         $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons');
     }
 
-    if (isset($HTTP_POST_VARS['start_page'])) {
-        $user_prefs['START_PAGE'] = _stripslashes(trim($HTTP_POST_VARS['start_page']));
+    if (isset($_POST['start_page'])) {
+        $user_prefs['START_PAGE'] = _stripslashes(trim($_POST['start_page']));
     }else {
         $user_prefs['START_PAGE'] = 0;
     }
@@ -218,7 +218,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     // IIS bug prevents redirect at same time as setting cookies.
 
-    if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+    if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
         header_redirect("./forum_options.php?webtag=$webtag&updated=true");
 
@@ -258,7 +258,7 @@ echo "<h1>{$lang['forumoptions']}</h1>\n";
 
 if (!empty($error_html)) {
     echo $error_html;
-}else if (isset($HTTP_GET_VARS['updated'])) {
+}else if (isset($_GET['updated'])) {
 
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 

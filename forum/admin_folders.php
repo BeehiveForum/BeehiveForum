@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.62 2004-04-11 21:13:12 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.63 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -50,7 +50,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -64,7 +64,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -105,36 +105,36 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 }
 
 // Do updates
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
-    if (isset($HTTP_POST_VARS['t_fid'])) {
+    if (isset($_POST['t_fid'])) {
 
-        foreach($HTTP_POST_VARS['t_fid'] as $fid => $value) {
+        foreach($_POST['t_fid'] as $fid => $value) {
                 
-            $new_title  = trim(_stripslashes($HTTP_POST_VARS['t_title'][$fid]));
-            $new_desc   = trim(_stripslashes($HTTP_POST_VARS['t_desc'][$fid]));
+            $new_title  = trim(_stripslashes($_POST['t_title'][$fid]));
+            $new_desc   = trim(_stripslashes($_POST['t_desc'][$fid]));
 
-	    $new_access = (is_numeric($HTTP_POST_VARS['t_access'][$fid]))   ? $HTTP_POST_VARS['t_access'][$fid]   : 0;
-            $new_allow  = (is_numeric($HTTP_POST_VARS['t_allow'][$fid]))    ? $HTTP_POST_VARS['t_allow'][$fid]    : 0;
-	    $new_pos    = (is_numeric($HTTP_POST_VARS['t_position'][$fid])) ? $HTTP_POST_VARS['t_position'][$fid] : 0;
+	    $new_access = (is_numeric($_POST['t_access'][$fid]))   ? $_POST['t_access'][$fid]   : 0;
+            $new_allow  = (is_numeric($_POST['t_allow'][$fid]))    ? $_POST['t_allow'][$fid]    : 0;
+	    $new_pos    = (is_numeric($_POST['t_position'][$fid])) ? $_POST['t_position'][$fid] : 0;
 
-            folder_update($HTTP_POST_VARS['t_fid'][$fid], $new_title, $new_access, $new_desc, $new_allow, $new_pos);
-            admin_addlog(0, $HTTP_POST_VARS['t_fid'][$fid], 0, 0, 0, 0, 7);
+            folder_update($_POST['t_fid'][$fid], $new_title, $new_access, $new_desc, $new_allow, $new_pos);
+            admin_addlog(0, $_POST['t_fid'][$fid], 0, 0, 0, 0, 7);
 
-            if ($HTTP_POST_VARS['t_fid'][$fid] != $HTTP_POST_VARS['t_move'][$fid]) {
-                folder_move_threads($HTTP_POST_VARS['t_fid'][$fid], $HTTP_POST_VARS['t_move'][$fid]);
-                admin_addlog(0, $HTTP_POST_VARS['t_fid'][$fid], 0, 0, 0, 0, 8);
+            if ($_POST['t_fid'][$fid] != $_POST['t_move'][$fid]) {
+                folder_move_threads($_POST['t_fid'][$fid], $_POST['t_move'][$fid]);
+                admin_addlog(0, $_POST['t_fid'][$fid], 0, 0, 0, 0, 8);
             }
         }
     }
 
-    if (strlen(trim(_stripslashes($HTTP_POST_VARS['t_title_new']))) > 0 && trim(_stripslashes($HTTP_POST_VARS['t_title_new'])) != $lang['newfolder']) {
+    if (strlen(trim(_stripslashes($_POST['t_title_new']))) > 0 && trim(_stripslashes($_POST['t_title_new'])) != $lang['newfolder']) {
 
-        $new_title  = trim(_stripslashes($HTTP_POST_VARS['t_title_new']));
-	$new_desc   = trim(_stripslashes($HTTP_POST_VARS['t_desc_new']));
-        $new_access = (is_numeric($HTTP_POST_VARS['t_access_new'])) ? $HTTP_POST_VARS['t_access_new'] : 0;
-	$new_allow  = (is_numeric($HTTP_POST_VARS['t_allow_new'])) ? $HTTP_POST_VARS['t_allow_new'] : 0;
-	$new_pos    = (isset($HTTP_POST_VARS['t_fid'])) ? sizeof($HTTP_POST_VARS['t_fid']) : 1;
+        $new_title  = trim(_stripslashes($_POST['t_title_new']));
+	$new_desc   = trim(_stripslashes($_POST['t_desc_new']));
+        $new_access = (is_numeric($_POST['t_access_new'])) ? $_POST['t_access_new'] : 0;
+	$new_allow  = (is_numeric($_POST['t_allow_new'])) ? $_POST['t_allow_new'] : 0;
+	$new_pos    = (isset($_POST['t_fid'])) ? sizeof($_POST['t_fid']) : 1;
         
         $new_fid = folder_create($new_title, $new_access, $new_desc, $new_allow, $new_pos );
         admin_addlog(0, $new_fid, 0, 0, 0, 0, 9);

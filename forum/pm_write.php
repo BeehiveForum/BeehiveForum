@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.62 2004-04-15 18:31:59 tribalonline Exp $ */
+/* $Id: pm_write.php,v 1.63 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -51,7 +51,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -65,7 +65,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -103,15 +103,15 @@ if (bh_session_get_value('UID') == 0) {
 
 // Get the Message ID (MID) if any.
 
-if (isset($HTTP_GET_VARS['replyto']) && is_numeric($HTTP_GET_VARS['replyto'])) {
-    $mid = $HTTP_GET_VARS['replyto'];
-}elseif (isset($HTTP_POST_VARS['replyto']) && is_numeric($HTTP_POST_VARS['replyto'])) {
-    $mid = $HTTP_POST_VARS['replyto'];
+if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
+    $mid = $_GET['replyto'];
+}elseif (isset($_POST['replyto']) && is_numeric($_POST['replyto'])) {
+    $mid = $_POST['replyto'];
 }
 
 // User clicked cancel
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
     $uri = (isset($mid)) ? "./pm.php?webtag=$webtag&mid=$mid" : "./pm.php?webtag=$webtag";
     header_redirect($uri);
 }
@@ -121,7 +121,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 if (isset($mid)) {
     $t_recipient_list = pm_get_user($mid);
     if ($pm_data = pm_single_get($mid, PM_FOLDER_INBOX)) {
-        if (!isset($HTTP_POST_VARS['t_subject']) || trim($HTTP_POST_VARS['t_subject']) == "") {
+        if (!isset($_POST['t_subject']) || trim($_POST['t_subject']) == "") {
             $t_subject = $pm_data['SUBJECT'];
             if (strtoupper(substr($t_subject, 0, 3)) != "RE:") {
                 $t_subject = "Re:". $t_subject;
@@ -142,29 +142,29 @@ $t_content = "";
 
 // User clicked the submit button - check the data that was submitted
 
-if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
+if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
     $error_html = "";
     
-    if (isset($HTTP_POST_VARS['t_subject']) && trim($HTTP_POST_VARS['t_subject']) != "") {
-        $t_subject = _htmlentities(trim($HTTP_POST_VARS['t_subject']));
+    if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
+        $t_subject = _htmlentities(trim($_POST['t_subject']));
     }else {
         $error_html.= "<h2>{$lang['entersubjectformessage']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
-        $t_content = $HTTP_POST_VARS['t_content'];
+    if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+        $t_content = $_POST['t_content'];
     }elseif ($valid) {
         $error_html.= "<h2>{$lang['entercontentformessage']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_recipient_list']) && trim($HTTP_POST_VARS['t_recipient_list']) != "") {
+    if (isset($_POST['t_recipient_list']) && trim($_POST['t_recipient_list']) != "") {
 
         if ($valid) {
 
-            $t_recipient_array = preg_split("/[;|,]/", trim($HTTP_POST_VARS['t_recipient_list']));
+            $t_recipient_array = preg_split("/[;|,]/", trim($_POST['t_recipient_list']));
 
             $t_new_recipient_array['TO_UID'] = array();
             $t_new_recipient_array['LOGON']  = array();
@@ -205,7 +205,7 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 
         }else {
 
-            $t_recipient_list = $HTTP_POST_VARS['t_recipient_list'];
+            $t_recipient_list = $_POST['t_recipient_list'];
         }
 
         if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
@@ -225,8 +225,8 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 }
 
 $post_html = 0;
-if (isset($HTTP_POST_VARS['t_post_html'])) {
-    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+if (isset($_POST['t_post_html'])) {
+    $t_post_html = $_POST['t_post_html'];
     if ($t_post_html == "enabled_auto") {
 		$post_html = 1;
     } else if ($t_post_html == "enabled") {
@@ -245,14 +245,14 @@ if (strlen($t_content) >= 65535) {
 
 // Send the PM
 
-if ($valid && isset($HTTP_POST_VARS['submit'])) {
+if ($valid && isset($_POST['submit'])) {
 
-    if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
+    if (check_ddkey($_POST['t_dedupe'])) {
 
         foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
             if ($new_mid = pm_send_message($t_to_uid, $t_subject, $t_content)) {
-                if (isset($HTTP_POST_VARS['aid']) && get_num_attachments($HTTP_POST_VARS['aid']) > 0) {
-                    pm_save_attachment_id($new_mid, $HTTP_POST_VARS['aid']);
+                if (isset($_POST['aid']) && get_num_attachments($_POST['aid']) > 0) {
+                    pm_save_attachment_id($new_mid, $_POST['aid']);
                 }
                 email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
             }else {
@@ -274,15 +274,15 @@ draw_header_pm();
 
 // Attachment Unique ID
 
-if (!isset($HTTP_POST_VARS['aid'])) {
+if (!isset($_POST['aid'])) {
   $aid = md5(uniqid(rand()));
 }else{
-  $aid = $HTTP_POST_VARS['aid'];
+  $aid = $_POST['aid'];
 }
 
 // preview message
 
-if ($valid && isset($HTTP_POST_VARS['preview'])) {
+if ($valid && isset($_POST['preview'])) {
 
     echo "<h1>{$lang['privatemessages']}: {$lang['messagepreview']}</h1>\n";
     echo "<br />\n";
@@ -312,9 +312,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 // PM link from profile
 
-if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
-    $to_user = user_get($HTTP_GET_VARS['uid']);
+    $to_user = user_get($_GET['uid']);
     $t_recipient_list = $to_user['LOGON'];
 }
 
@@ -386,8 +386,8 @@ if (forum_get_setting('attachments_enabled', 'Y', false) && forum_get_setting('p
 
 echo $tools->js();
 
-if (isset($HTTP_POST_VARS['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);
+if (isset($_POST['t_dedupe'])) {
+    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else{
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.46 2004-04-15 11:43:06 decoyduck Exp $ */
+/* $Id: email.php,v 1.47 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,7 +47,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -61,7 +61,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -97,15 +97,15 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['cancel'])) {
-    $uri = "./user_profile.php?webtag=$webtag&uid=". $HTTP_POST_VARS['t_to_uid'];
+if (isset($_POST['cancel'])) {
+    $uri = "./user_profile.php?webtag=$webtag&uid=". $_POST['t_to_uid'];
     header_redirect($uri);
 }
 
-if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
-    $to_uid = $HTTP_GET_VARS['uid'];
-}else if (isset($HTTP_POST_VARS['t_to_uid']) && is_numeric($HTTP_POST_VARS['t_to_uid'])) {
-    $to_uid = $HTTP_POST_VARS['t_to_uid'];
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+    $to_uid = $_GET['uid'];
+}else if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+    $to_uid = $_POST['t_to_uid'];
 }else {
     html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
@@ -117,21 +117,21 @@ if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
 $to_user = user_get($to_uid);
 $from_user = user_get(bh_session_get_value('UID'));
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     $valid = true;
     
-    $message = _stripslashes($HTTP_POST_VARS['t_message']);
+    $message = _stripslashes($_POST['t_message']);
 
-    if (isset($HTTP_POST_VARS['t_subject']) && strlen(trim(_stripslashes($HTTP_POST_VARS['t_subject']))) > 0) {
-        $subject = trim(_stripslashes($HTTP_POST_VARS['t_subject']));
+    if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
+        $subject = trim(_stripslashes($_POST['t_subject']));
     }else {
         $error = "<h2>{$lang['entersubjectformessage']}:</h2>";
         $valid = false;
     }
     
-    if (isset($HTTP_POST_VARS['t_message']) && strlen(trim(_stripslashes($HTTP_POST_VARS['t_message']))) > 0) {
-        $message = trim(_stripslashes($HTTP_POST_VARS['t_message']));
+    if (isset($_POST['t_message']) && strlen(trim(_stripslashes($_POST['t_message']))) > 0) {
+        $message = trim(_stripslashes($_POST['t_message']));
     }else {
         $error = "<h2>{$lang['entercontentformessage']}:</h2>";
         $valid = false;

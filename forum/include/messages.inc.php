@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.271 2004-04-15 21:02:27 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.272 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/config.inc.php");
@@ -155,7 +155,7 @@ function messages_bottom()
 
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight = array())
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
     
@@ -402,7 +402,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                         echo "<a href=\"getattachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
                     }
 
-                    if (isset($HTTP_SERVER_VARS['PHP_SELF']) && basename($HTTP_SERVER_VARS['PHP_SELF']) == 'post.php') {
+                    if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'post.php') {
                         echo " target=\"_blank\"";
                     }else {
                         echo " target=\"_self\"";
@@ -501,6 +501,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 function message_display_deleted($tid,$pid)
 {
     global $lang;
+    
     echo "<br /><div align=\"center\">";
     echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
     echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
@@ -616,7 +617,7 @@ function mess_nav_range($from,$to)
 
 function messages_interest_form($tid,$pid)
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
     
@@ -637,7 +638,7 @@ function messages_interest_form($tid,$pid)
 
 function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky = false, $sticky_until = false, $locked = false)
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
 
@@ -694,7 +695,7 @@ function messages_admin_form($fid, $tid, $pid, $title, $closed = false, $sticky 
 
 function messages_edit_thread($fid, $tid, $pid, $title)
 {
-    global $HTTP_SERVER_VARS, $lang;
+    global $lang;
 
     $webtag = get_webtag();
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.193 2004-04-12 03:11:38 tribalonline Exp $ */
+/* $Id: thread_list.php,v 1.194 2004-04-17 17:39:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -52,7 +52,7 @@ include_once("./include/word_filter.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -66,7 +66,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -102,16 +102,16 @@ if (bh_session_get_value('UID') == 0) {
 
     $uid = 0; // default to UID 0 if no other UID specified
 
-    if (isset($HTTP_GET_VARS['mode']) && is_numeric($HTTP_GET_VARS['mode'])) {
+    if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
         // non-logged in users can only display "All" threads or those in the past x days, since the other options would be impossible
-        if ($HTTP_GET_VARS['mode'] == 0 || $HTTP_GET_VARS['mode'] == 3 || $HTTP_GET_VARS['mode'] == 4 || $HTTP_GET_VARS['mode'] == 5) {
-            $mode = $HTTP_GET_VARS['mode'];
+        if ($_GET['mode'] == 0 || $_GET['mode'] == 3 || $_GET['mode'] == 4 || $_GET['mode'] == 5) {
+            $mode = $_GET['mode'];
         }else {
             $mode = 0;
         }
     }else {
-        if (isset($HTTP_COOKIE_VARS['bh_thread_mode']) && is_numeric($HTTP_COOKIE_VARS['bh_thread_mode']) && !isset($HTTP_GET_VARS['msg'])) {
-            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+        if (isset($_COOKIE['bh_thread_mode']) && is_numeric($_COOKIE['bh_thread_mode']) && !isset($_GET['msg'])) {
+            $mode = $_COOKIE['bh_thread_mode'];
         }else{
             $mode = 0;
         }
@@ -121,22 +121,22 @@ if (bh_session_get_value('UID') == 0) {
 
     $uid = bh_session_get_value('UID');
 
-    if (isset($HTTP_GET_VARS['markread'])) {
+    if (isset($_GET['markread'])) {
        
-        if ($HTTP_GET_VARS['markread'] == 2 && isset($HTTP_GET_VARS['tid_array']) && is_array($HTTP_GET_VARS['tid_array'])) {
-            threads_mark_read($HTTP_GET_VARS['tid_array']);
-        }elseif ($HTTP_GET_VARS['markread'] == 0) {
+        if ($_GET['markread'] == 2 && isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
+            threads_mark_read($_GET['tid_array']);
+        }elseif ($_GET['markread'] == 0) {
             threads_mark_all_read();
-        }elseif ($HTTP_GET_VARS['markread'] == 1) {
+        }elseif ($_GET['markread'] == 1) {
             threads_mark_50_read();
         }
     }
 
-    if (isset($HTTP_GET_VARS['mode']) && is_numeric($HTTP_GET_VARS['mode'])) {
-        $mode = $HTTP_GET_VARS['mode'];
+    if (isset($_GET['mode']) && is_numeric($_GET['mode'])) {
+        $mode = $_GET['mode'];
     }else {
-        if (isset($HTTP_COOKIE_VARS['bh_thread_mode']) && is_numeric($HTTP_COOKIE_VARS['bh_thread_mode']) && !isset($HTTP_GET_VARS['msg'])) {
-            $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+        if (isset($_COOKIE['bh_thread_mode']) && is_numeric($_COOKIE['bh_thread_mode']) && !isset($_GET['msg'])) {
+            $mode = $_COOKIE['bh_thread_mode'];
         }else{
             if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
                 $mode = 1;
@@ -147,15 +147,15 @@ if (bh_session_get_value('UID') == 0) {
     }
 }
 
-if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
-    $folder = $HTTP_GET_VARS['folder'];
+if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+    $folder = $_GET['folder'];
     $mode = 0;
 }
 
 bh_setcookie('bh_thread_mode', $mode);
 
-if (isset($HTTP_GET_VARS['start_from']) && is_numeric($HTTP_GET_VARS['start_from'])) {
-    $start_from = $HTTP_GET_VARS['start_from'];
+if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
+    $start_from = $_GET['start_from'];
 }else {
     $start_from = 0;
 }
@@ -302,11 +302,11 @@ if (!is_array($folder_order)) $folder_order = array();
 
 // Sort the folders and threads correctly as per the URL query for the TID
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $threadvisible = false;
     
-    list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+    list($tid, $pid) = explode('.', $_GET['msg']);
 
     if (thread_can_view($tid, bh_session_get_value('UID'))) {
 
@@ -352,17 +352,17 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 
 if (bh_session_get_value('UID') > 0) {
 
-    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+        list($tid, $pid) = explode('.', $_GET['msg']);
 
         if (thread_can_view($tid, bh_session_get_value('UID'))) {
             list(,$selectedfolder) = thread_get($tid);
         }
 
-    }elseif (isset($HTTP_GET_VARS['folder'])) {
+    }elseif (isset($_GET['folder'])) {
 
-        $selectedfolder = $HTTP_GET_VARS['folder'];
+        $selectedfolder = $_GET['folder'];
 
     }else {
 
@@ -512,7 +512,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             $latest_post = 1;
 
-                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }else {
@@ -525,7 +525,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
                             $number = "[".$new_posts."&nbsp;{$lang['new']}&nbsp;{$lang['of']}&nbsp;".$thread['length']."]";
                             $latest_post = $thread['last_read'] + 1;
 
-                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             }else {
@@ -542,7 +542,7 @@ while (list($key1, $folder_number) = each($folder_order)) {
 
                             $latest_post = 1;
 
-                            if (!isset($first_thread) && isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+                            if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
                                 $first_thread = $thread['tid'];
                                 echo "<img src=\"".style_image('current_thread.png')."\" name=\"t".$thread['tid']."\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" border=\"0\" />";
                             } else {

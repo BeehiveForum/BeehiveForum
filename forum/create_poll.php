@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.94 2004-04-15 18:31:59 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.95 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -53,7 +53,7 @@ include_once("./include/thread.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -67,7 +67,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -132,16 +132,16 @@ $t_sig_html = "N";
 $post_html = 0;
 $sig_html = 0;
 
-if (isset($HTTP_POST_VARS['t_message_html'])) {
-    $t_message_html = $HTTP_POST_VARS['t_message_html'];
+if (isset($_POST['t_message_html'])) {
+    $t_message_html = $_POST['t_message_html'];
     if ($t_message_html == "enabled_auto") {
 		$post_html = 1;
     } else if ($t_message_html == "enabled") {
 		$post_html = 2;
     }
 }
-if (isset($HTTP_POST_VARS['t_sig_html'])) {
-	$t_sig_html = $HTTP_POST_VARS['t_sig_html'];
+if (isset($_POST['t_sig_html'])) {
+	$t_sig_html = $_POST['t_sig_html'];
 	if ($t_sig_html != "N") {
 		$sig_html = 2;
 	}
@@ -150,47 +150,47 @@ if (isset($HTTP_POST_VARS['t_sig_html'])) {
 $post = new MessageText($post_html);
 $sig = new MessageText($sig_html);
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
 
   $uri = "./discussion.php?webtag=$webtag";
   header_redirect($uri);
 
-}elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
+}elseif (isset($_POST['preview']) || isset($_POST['submit'])) {
 
   $valid = true;
 
-  if (strlen(trim($HTTP_POST_VARS['question'])) == 0) {
+  if (strlen(trim($_POST['question'])) == 0) {
     $error_html = "<h2>{$lang['mustenterpollquestion']}</h2>";
     $valid = false;
   }
 
-  if ($valid && !isset($HTTP_POST_VARS['t_fid'])) {
+  if ($valid && !isset($_POST['t_fid'])) {
     $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
     $valid = false;
   }
 
-  if ($valid && !folder_thread_type_allowed($HTTP_POST_VARS['t_fid'], FOLDER_ALLOW_POLL_THREAD)) {
+  if ($valid && !folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_POLL_THREAD)) {
       $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
       $valid = false;
   }
 
-  if ($valid && strlen(trim($HTTP_POST_VARS['answers'][0])) == 0) {
+  if ($valid && strlen(trim($_POST['answers'][0])) == 0) {
     $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
     $valid = false;
   }
 
-  if ($valid && strlen(trim($HTTP_POST_VARS['answers'][1])) == 0) {
+  if ($valid && strlen(trim($_POST['answers'][1])) == 0) {
     $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
     $valid = false;
   }
 
-  if ($valid && $HTTP_POST_VARS['pollvotetype'] == 1 && $HTTP_POST_VARS['changevote']  == 2) {
+  if ($valid && $_POST['pollvotetype'] == 1 && $_POST['changevote']  == 2) {
     $error_html = "<h2>{$lang['cannotcreatemultivotepublicballot']}</h2>";
     $valid = false;
   }
 
-  if (isset($HTTP_POST_VARS['t_message_text']) && strlen(trim($HTTP_POST_VARS['t_message_text'])) > 0) {
-    $t_message_text = trim($HTTP_POST_VARS['t_message_text']);
+  if (isset($_POST['t_message_text']) && strlen(trim($_POST['t_message_text'])) > 0) {
+    $t_message_text = trim($_POST['t_message_text']);
 	$post->setContent($t_message_text);
 	$t_message_text = $post->getContent();
 
@@ -205,8 +205,8 @@ if (isset($HTTP_POST_VARS['cancel'])) {
     }
   }
 
-  if (isset($HTTP_POST_VARS['t_sig']) && strlen(trim($HTTP_POST_VARS['t_sig'])) > 0) {
-    $t_sig = trim($HTTP_POST_VARS['t_sig']);
+  if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+    $t_sig = trim($_POST['t_sig']);
 	$sig->setContent($t_sig);
 	$t_sig = $sig->getContent();
 
@@ -223,25 +223,25 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
   $answer_group_check = array();
 
-  for ($i = 0; $i < sizeof($HTTP_POST_VARS['answer_groups']); $i++) {
-      if (!in_array($HTTP_POST_VARS['answer_groups'][$i], $answer_group_check)) {
-          $answer_group_check[] = $HTTP_POST_VARS['answer_groups'][$i];
+  for ($i = 0; $i < sizeof($_POST['answer_groups']); $i++) {
+      if (!in_array($_POST['answer_groups'][$i], $answer_group_check)) {
+          $answer_group_check[] = $_POST['answer_groups'][$i];
       }
   }
 
-  if ($valid && (sizeof($answer_group_check) >= sizeof($HTTP_POST_VARS['answers']))) {
+  if ($valid && (sizeof($answer_group_check) >= sizeof($_POST['answers']))) {
     $error_html = "<h2>{$lang['groupcountmustbelessthananswercount']}</h2>";
     $valid = false;
   }
 }
 
-if ($valid && isset($HTTP_POST_VARS['submit'])) {
+if ($valid && isset($_POST['submit'])) {
 
-  if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
+  if (check_ddkey($_POST['t_dedupe'])) {
   
-     $folderdata = folder_get($HTTP_POST_VARS['t_fid']);
+     $folderdata = folder_get($_POST['t_fid']);
      
-     if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($HTTP_POST_VARS['t_fid']) && !perm_is_moderator()) {
+     if ($folderdata['ACCESS_LEVEL'] == 2 && !folder_is_accessible($_POST['t_fid']) && !perm_is_moderator()) {
         
        html_draw_top();
                 
@@ -263,40 +263,40 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
     // Work out when the poll will close.
 
-    if ($HTTP_POST_VARS['closepoll'] == 0) {
+    if ($_POST['closepoll'] == 0) {
       $poll_closes = gmmktime() + DAY_IN_SECONDS;
-    }elseif ($HTTP_POST_VARS['closepoll'] == 1) {
+    }elseif ($_POST['closepoll'] == 1) {
       $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
-    }elseif ($HTTP_POST_VARS['closepoll'] == 2) {
+    }elseif ($_POST['closepoll'] == 2) {
       $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
-    }elseif ($HTTP_POST_VARS['closepoll'] == 3) {
+    }elseif ($_POST['closepoll'] == 3) {
       $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
-    }elseif ($HTTP_POST_VARS['closepoll'] == 4) {
+    }elseif ($_POST['closepoll'] == 4) {
       $poll_closes = false;
     }
 
     // Check HTML tick box, innit.
 	$answers = array();
 	$ans_h = 0;
-	if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
+	if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
 		$ans_h = 2;
 	}
-    for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
-		$answers[$i] = new MessageText($ans_h, $HTTP_POST_VARS['answers'][$i]);
-        $HTTP_POST_VARS['answers'][$i] = $answers[$i]->getContent();
+    for ($i = 0; $i < sizeof($_POST['answers']); $i++) {
+		$answers[$i] = new MessageText($ans_h, $_POST['answers'][$i]);
+        $_POST['answers'][$i] = $answers[$i]->getContent();
     }
 
-    $HTTP_POST_VARS['question'] = trim($HTTP_POST_VARS['question']);
+    $_POST['question'] = trim($_POST['question']);
 
     // Create the poll thread with the poll_flag set to Y and sticky flag set to N
 
-    $t_tid = post_create_thread($HTTP_POST_VARS['t_fid'], $HTTP_POST_VARS['question'], 'Y', 'N');
+    $t_tid = post_create_thread($_POST['t_fid'], $_POST['question'], 'Y', 'N');
     $t_pid = post_create($t_tid, 0, bh_session_get_value('UID'), 0, '');
 
-    poll_create($t_tid, $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
+    poll_create($t_tid, $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
 
-    if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-        if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($t_tid, $t_pid, $HTTP_POST_VARS['aid']);
+    if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
+        if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($t_tid, $t_pid, $_POST['aid']);
     }
 
     if (strlen($t_message_text) > 0) {
@@ -328,13 +328,13 @@ html_draw_top("basetarget=_blank", "openprofile.js", "post.js", "htmltools.js");
 
 echo "<h1>{$lang['createpoll']}</h1>\n";
 
-if (!isset($HTTP_POST_VARS['aid'])) {
+if (!isset($_POST['aid'])) {
   $aid = md5(uniqid(rand()));
 }else{
-  $aid = $HTTP_POST_VARS['aid'];
+  $aid = $_POST['aid'];
 }
 
-if ($valid && isset($HTTP_POST_VARS['preview'])) {
+if ($valid && isset($_POST['preview'])) {
 
   echo "<h2>{$lang['preview']}:</h2>";
 
@@ -353,7 +353,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    <td>\n";
   $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
   $polldata['CONTENT'].= "        <tr>\n";
-  $polldata['CONTENT'].= "          <td><h2>". _stripslashes($HTTP_POST_VARS['question']). "</h2></td>\n";
+  $polldata['CONTENT'].= "          <td><h2>". _stripslashes($_POST['question']). "</h2></td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
@@ -365,11 +365,11 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $optioncount = 0;
 
   $ans_h = 0;
-  if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
+  if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
 	  $ans_h = 2;
   }
 
-  foreach($HTTP_POST_VARS['answers'] as $key => $answer_text) {
+  foreach($_POST['answers'] as $key => $answer_text) {
 
 		if (strlen(trim($answer_text)) > 0) {
 			$answer_tmp = new MessageText($ans_h, $answer_text);
@@ -386,12 +386,12 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
       }else {
 
-          unset($HTTP_POST_VARS['answers'][$key]);
-          unset($HTTP_POST_VARS['answer_groups'][$key]);
+          unset($_POST['answers'][$key]);
+          unset($_POST['answer_groups'][$key]);
       }
   }
 
-  $poll_groups_array = $HTTP_POST_VARS['answer_groups'];
+  $poll_groups_array = $_POST['answer_groups'];
 
   // Construct the pollresults array that will be used to display the graph
   // Modified to handle the new Group ID.
@@ -401,7 +401,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
                        'GROUP_ID'    => $poll_groups_array,
                        'VOTES'       => $poll_votes_array);
 
-  if ($HTTP_POST_VARS['polltype'] == 1) {
+  if ($_POST['polltype'] == 1) {
 
     $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
 
@@ -421,9 +421,9 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">";
 
-  if ($HTTP_POST_VARS['changevote'] == 1) {
+  if ($_POST['changevote'] == 1) {
     $polldata['CONTENT'].= $lang['abletochangevote'];
-  }elseif ($HTTP_POST_VARS['changevote'] == 2) {
+  }elseif ($_POST['changevote'] == 2) {
     $polldata['CONTENT'].= $lang['abletovotemultiple'];
   }else {
     $polldata['CONTENT'].= $lang['notabletochangevote'];
@@ -452,16 +452,16 @@ if (isset($error_html)) echo $error_html. "\n";
 
 echo "<form name=\"f_poll\" action=\"create_poll.php?webtag=$webtag\" method=\"post\" target=\"_self\">\n";
 
-if (isset($HTTP_POST_VARS['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", $HTTP_POST_VARS['t_dedupe']);
+if (isset($_POST['t_dedupe'])) {
+    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else{
     echo form_input_hidden("t_dedupe", date("YmdHis"));
 }
 
-if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
-    $t_fid = $HTTP_GET_VARS['fid'];
-}elseif (isset($HTTP_POST_VARS['t_fid']) && is_numeric($HTTP_POST_VARS['t_fid'])) {
-    $t_fid = $HTTP_POST_VARS['t_fid'];
+if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+    $t_fid = $_GET['fid'];
+}elseif (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
+    $t_fid = $_POST['t_fid'];
 }else {
     $t_fid = 1;
 }
@@ -478,7 +478,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
       <td><h2><?php echo $lang['pollquestion']; ?></h2></td>
     </tr>
     <tr>
-      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : '', 30, 64); ?>&nbsp;</bdo><?php echo form_submit("submit", $lang['post']); ?></td>
+      <td><?php echo form_input_text("question", isset($_POST['question']) ? _htmlentities(_stripslashes($_POST['question'])) : '', 30, 64); ?>&nbsp;</bdo><?php echo form_submit("submit", $lang['post']); ?></td>
     </tr>
     <tr>
       <td>&nbsp;</td>
@@ -502,7 +502,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
               <table border="0" class="posthead" cellpadding="0" cellspacing="5">
                 <tr>
                   <td>&nbsp;</td>
-                  <td><?php echo $lang['numberanswers'].": ".form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), isset($HTTP_POST_VARS['answercount']) ? $HTTP_POST_VARS['answercount'] : 0), " ", form_submit("changecount", $lang['change'])  ?></td>
+                  <td><?php echo $lang['numberanswers'].": ".form_dropdown_array('answercount', range(0, 3), array('5', '10', '15', '20'), isset($_POST['answercount']) ? $_POST['answercount'] : 0), " ", form_submit("changecount", $lang['change'])  ?></td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
                 </tr>
@@ -522,8 +522,8 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
 
                   $available_answers = array(5, 10, 15, 20);
 
-                  if (isset($HTTP_POST_VARS['answercount'])) {
-                    $answercount = $available_answers[$HTTP_POST_VARS['answercount']];
+                  if (isset($_POST['answercount'])) {
+                    $answercount = $available_answers[$_POST['answercount']];
                   }else {
                     $answercount = 5;
                   }
@@ -532,8 +532,8 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
 
                     echo "<tr>\n";
                     echo "  <td>", $i + 1, ". </td>\n";
-                    echo "  <td>", form_input_text("answers[]", isset($HTTP_POST_VARS['answers'][$i]) ? _htmlentities(_stripslashes($HTTP_POST_VARS['answers'][$i])) : '', 40, 255), "</td>\n";
-                    echo "  <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), (isset($HTTP_POST_VARS['answer_groups'][$i])) ? $HTTP_POST_VARS['answer_groups'][$i] : 1), "</td>\n";
+                    echo "  <td>", form_input_text("answers[]", isset($_POST['answers'][$i]) ? _htmlentities(_stripslashes($_POST['answers'][$i])) : '', 40, 255), "</td>\n";
+                    echo "  <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), (isset($_POST['answer_groups'][$i])) ? $_POST['answer_groups'][$i] : 1), "</td>\n";
                     echo "  <td>&nbsp;</td>\n";
                     echo "</tr>\n";
 
@@ -542,7 +542,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
                 ?>
                 <tr>
                   <td>&nbsp;</td>
-                  <td><?php echo form_checkbox("t_post_html", "Y", $lang['answerscontainHTML'], (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
+                  <td><?php echo form_checkbox("t_post_html", "Y", $lang['answerscontainHTML'], (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y")); ?></td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
                 </tr>
@@ -562,9 +562,9 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
             <td>
               <table border="0" width="500">
                 <tr>
-                  <td width="25%"><?php echo form_radio('changevote', '1', $lang['yes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : true); ?></td>
-                  <td width="25%"><?php echo form_radio('changevote', '0', $lang['no'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : false); ?></td>
-                  <td><?php echo form_radio('changevote', '2', $lang['allowmultiplevotes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 2 : false); ?></td>
+                  <td width="25%"><?php echo form_radio('changevote', '1', $lang['yes'], isset($_POST['changevote']) ? $_POST['changevote'] == 1 : true); ?></td>
+                  <td width="25%"><?php echo form_radio('changevote', '0', $lang['no'], isset($_POST['changevote']) ? $_POST['changevote'] == 0 : false); ?></td>
+                  <td><?php echo form_radio('changevote', '2', $lang['allowmultiplevotes'], isset($_POST['changevote']) ? $_POST['changevote'] == 2 : false); ?></td>
                 </tr>
               </table>
             </td>
@@ -582,8 +582,8 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
             <td>
               <table border="0" width="400">
                 <tr>
-                  <td width="50%"><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : true); ?></td>
-                  <td width="50%"><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : false); ?></td>
+                  <td width="50%"><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 0 : true); ?></td>
+                  <td width="50%"><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 1 : false); ?></td>
                 </tr>
               </table>
             </td>
@@ -601,8 +601,8 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
             <td>
               <table border="0" width="400">
                 <tr>
-                  <td width="50%"><?php echo form_radio('pollvotetype', '0', $lang['pollvoteanon'], isset($HTTP_POST_VARS['pollvotetype']) ? $HTTP_POST_VARS['pollvotetype'] == 0 : true); ?></td>
-                  <td width="50%"><?php echo form_radio('pollvotetype', '1', $lang['pollvotepub'], isset($HTTP_POST_VARS['pollvotetype']) ? $HTTP_POST_VARS['pollvotetype'] == 1 : false); ?></td>
+                  <td width="50%"><?php echo form_radio('pollvotetype', '0', $lang['pollvoteanon'], isset($_POST['pollvotetype']) ? $_POST['pollvotetype'] == 0 : true); ?></td>
+                  <td width="50%"><?php echo form_radio('pollvotetype', '1', $lang['pollvotepub'], isset($_POST['pollvotetype']) ? $_POST['pollvotetype'] == 1 : false); ?></td>
                 </tr>
               </table>
             </td>
@@ -620,8 +620,8 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
             <td>
               <table border="0" width="400">
                 <tr>
-                  <td width="50%"><?php echo form_radio('showresults', '1', $lang['yes'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : true); ?></td>
-                  <td width="50%"><?php echo form_radio('showresults', '0', $lang['no'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : false); ?></td>
+                  <td width="50%"><?php echo form_radio('showresults', '1', $lang['yes'], isset($_POST['showresults']) ? $_POST['showresults'] == 1 : true); ?></td>
+                  <td width="50%"><?php echo form_radio('showresults', '0', $lang['no'], isset($_POST['showresults']) ? $_POST['showresults'] == 0 : false); ?></td>
                 </tr>
               </table>
             </td>
@@ -633,7 +633,7 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
             <td><?php echo $lang['whenlikepollclose']; ?></td>
           </tr>
           <tr>
-            <td><?php echo form_dropdown_array('closepoll', range(0, 4), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never']), isset($HTTP_POST_VARS['closepoll']) ? $HTTP_POST_VARS['closepoll'] : 4); ?></td>
+            <td><?php echo form_dropdown_array('closepoll', range(0, 4), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never']), isset($_POST['closepoll']) ? $_POST['closepoll'] : 4); ?></td>
           </tr>
           <tr>
             <td><hr /></td>

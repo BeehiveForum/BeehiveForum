@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.115 2004-04-16 09:19:45 tribalonline Exp $ */
+/* $Id: edit.php,v 1.116 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -56,7 +56,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -70,7 +70,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -106,15 +106,15 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-  $edit_msg = $HTTP_GET_VARS['msg'];
-  list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+  $edit_msg = $_GET['msg'];
+  list($tid, $pid) = explode('.', $_GET['msg']);
 
-}elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
+}elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
 
-  $edit_msg = $HTTP_POST_VARS['t_msg'];
-  list($tid, $pid) = explode('.', $HTTP_POST_VARS['t_msg']);
+  $edit_msg = $_POST['t_msg'];
+  list($tid, $pid) = explode('.', $_POST['t_msg']);
 
 }else {
 
@@ -168,23 +168,23 @@ if (thread_is_poll($tid) && $pid == 1) {
 
     $uri = "./edit_poll.php?webtag=$webtag";
 
-    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-        $uri.= "&msg=". $HTTP_GET_VARS['msg'];
-    }elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
-        $uri.= "&msg=". $HTTP_POST_VARS['t_msg'];
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+        $uri.= "&msg=". $_GET['msg'];
+    }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
+        $uri.= "&msg=". $_POST['t_msg'];
     }
 
     header_redirect($uri);
 }
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
 
     $uri = "./discussion.php?webtag=$webtag";
 
-    if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-        $uri.= "&msg=". $HTTP_GET_VARS['msg'];
-    }elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
-        $uri.= "&msg=". $HTTP_POST_VARS['t_msg'];
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+        $uri.= "&msg=". $_GET['msg'];
+    }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
+        $uri.= "&msg=". $_POST['t_msg'];
     }
 
     header_redirect($uri);
@@ -203,16 +203,16 @@ $t_sig = "";
 $post_html = 0;
 $sig_html = 2;
 
-if (isset($HTTP_POST_VARS['t_post_html'])) {
-    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+if (isset($_POST['t_post_html'])) {
+    $t_post_html = $_POST['t_post_html'];
     if ($t_post_html == "enabled_auto") {
 		$post_html = 1;
     } else if ($t_post_html == "enabled") {
 		$post_html = 2;
     }
 }
-if (isset($HTTP_POST_VARS['t_sig_html'])) {
-	$t_sig_html = $HTTP_POST_VARS['t_sig_html'];
+if (isset($_POST['t_sig_html'])) {
+	$t_sig_html = $_POST['t_sig_html'];
 	if ($t_sig_html != "N") {
 		$sig_html = 1;
 	}
@@ -221,8 +221,8 @@ if (isset($HTTP_POST_VARS['t_sig_html'])) {
 $post = new MessageText($post_html);
 $sig = new MessageText($sig_html);
 
-if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
-	$t_content = $HTTP_POST_VARS['t_content'];
+if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+	$t_content = $_POST['t_content'];
 	
 	if ($post_html && attachment_embed_check($t_content)) {
 		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
@@ -237,8 +237,8 @@ if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) !=
 		$valid = false;
 	}
 }
-if (isset($HTTP_POST_VARS['t_sig']) && trim($HTTP_POST_VARS['t_sig']) != "") {
-	$t_sig = $HTTP_POST_VARS['t_sig'];
+if (isset($_POST['t_sig']) && trim($_POST['t_sig']) != "") {
+	$t_sig = $_POST['t_sig'];
 
 	if (attachment_embed_check($t_sig)) {
 		$error_html = "<h2>{$lang['notallowedembedattachmentpost']}</h2>\n";
@@ -254,18 +254,18 @@ if (isset($HTTP_POST_VARS['t_sig']) && trim($HTTP_POST_VARS['t_sig']) != "") {
 	}
 }
 
-if (isset($HTTP_POST_VARS['preview'])) {
+if (isset($_POST['preview'])) {
     $preview_message = messages_get($tid, $pid, 1);
 
-    if (isset($HTTP_POST_VARS['t_to_uid'])) {
-        $to_uid = $HTTP_POST_VARS['t_to_uid'];
+    if (isset($_POST['t_to_uid'])) {
+        $to_uid = $_POST['t_to_uid'];
     }else {
         $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_from_uid'])) {
-        $from_uid = $HTTP_POST_VARS['t_from_uid'];
+    if (isset($_POST['t_from_uid'])) {
+        $from_uid = $_POST['t_from_uid'];
     }else {
         $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
         $valid = false;
@@ -287,7 +287,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
         }else{
 
-            $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
+            $preview_tuser = user_get($_POST['t_to_uid']);
             $preview_message['TLOGON'] = $preview_tuser['LOGON'];
             $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
             $preview_message['TO_UID'] = $preview_tuser['UID'];
@@ -300,18 +300,18 @@ if (isset($HTTP_POST_VARS['preview'])) {
         $preview_message['FROM_UID'] = $from_uid;
     }
 
-} else if (isset($HTTP_POST_VARS['submit'])) {
+} else if (isset($_POST['submit'])) {
     $editmessage = messages_get($tid, $pid, 1);
 
-    if (isset($HTTP_POST_VARS['t_to_uid'])) {
-        $to_uid = $HTTP_POST_VARS['t_to_uid'];
+    if (isset($_POST['t_to_uid'])) {
+        $to_uid = $_POST['t_to_uid'];
     }else {
         $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_from_uid'])) {
-        $from_uid = $HTTP_POST_VARS['t_from_uid'];
+    if (isset($_POST['t_from_uid'])) {
+        $from_uid = $_POST['t_from_uid'];
     }else {
         $error_html = "<h2>{$lang['invalidusername']}</h2>\n";
         $valid = false;
@@ -354,11 +354,11 @@ if (isset($HTTP_POST_VARS['preview'])) {
         
             post_add_edit_text($tid, $pid);
             
-            if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-                if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
+            if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
+                if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($tid, $pid, $_POST['aid']);
             }
 
-            if (perm_is_moderator() && ($HTTP_POST_VARS['t_from_uid'] != bh_session_get_value('UID'))) {
+            if (perm_is_moderator() && ($_POST['t_from_uid'] != bh_session_get_value('UID'))) {
                 admin_addlog(0, 0, $tid, $pid, 0, 0, 23);
             }
 
@@ -465,7 +465,7 @@ if (isset($HTTP_POST_VARS['preview'])) {
 
     }else{
         $valid = false;
-        $error_html = "<h2>{$lang['message']} ". $HTTP_GET_VARS['msg']. " {$lang['wasnotfound']}</h2>";
+        $error_html = "<h2>{$lang['message']} ". $_GET['msg']. " {$lang['wasnotfound']}</h2>";
     }
 
     unset($editmessage);
@@ -485,7 +485,7 @@ if (isset($error_html)) {
 
 $threaddata = thread_get($tid);
 
-if ($valid && isset($HTTP_POST_VARS['preview'])) {
+if ($valid && isset($_POST['preview'])) {
     echo "<table class=\"posthead\" width=\"720\">\n";
     echo "<tr><td class=\"subhead\">{$lang['messagepreview']}</td></tr>";
 

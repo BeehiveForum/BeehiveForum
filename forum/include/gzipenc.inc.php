@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.28 2004-03-18 23:22:51 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.29 2004-04-17 17:39:29 decoyduck Exp $ */
 
 include_once("./include/config.inc.php");
 
 function bh_check_gzip()
 {
-    global $HTTP_SERVER_VARS, $forum_settings;
+    $forum_settings = get_forum_settings();
 
     // check that no headers have already been sent
     // and that gzip compression is actually enabled.
@@ -39,14 +39,14 @@ function bh_check_gzip()
     // Only enable gzip compression for HTTP/1.1 and
     // browsers that aren't coming via a proxy server.
 
-    if (isset($HTTP_SERVER_VARS['HTTP_VIA'])) return false;
-    if (strpos($HTTP_SERVER_VARS['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
+    if (isset($_SERVER['HTTP_VIA'])) return false;
+    if (strpos($_SERVER['SERVER_PROTOCOL'], 'HTTP/1.0') !== false) return false;
 
     // determine which gzip encoding the client asked for
     // (x-gzip = IE; gzip = everything else).
 
-    if (strpos($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) return "x-gzip";
-    if (strpos($HTTP_SERVER_VARS['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) return "gzip";
+    if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) return "x-gzip";
+    if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) return "gzip";
 
     // if everything else false prevent
     // compression just to be safe.
@@ -56,7 +56,7 @@ function bh_check_gzip()
 
 function bh_gzhandler($contents)
 {
-    global $forum_settings;
+    $forum_settings = get_forum_settings();
 
     // check that the encoding is possible.
     // and fetch the client's encoding method.

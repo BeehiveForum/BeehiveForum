@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: change_pw.php,v 1.32 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: change_pw.php,v 1.33 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,37 +48,37 @@ include_once("./include/lang.inc.php");
 include_once("./include/logon.inc.php");
 include_once("./include/user.inc.php");
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     $valid = true;
     $error_html = "";
 
-    if (isset($HTTP_POST_VARS['uid']) && is_numeric($HTTP_POST_VARS['uid'])) {
+    if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
     
-        if (isset($HTTP_POST_VARS['key']) && is_md5($HTTP_POST_VARS['key'])) {
+        if (isset($_POST['key']) && is_md5($_POST['key'])) {
         
-            if (isset($HTTP_POST_VARS['pw']) && isset($HTTP_POST_VARS['cpw'])) {
+            if (isset($_POST['pw']) && isset($_POST['cpw'])) {
 
-                if (trim($HTTP_POST_VARS['pw']) == trim($HTTP_POST_VARS['cpw'])) {
+                if (trim($_POST['pw']) == trim($_POST['cpw'])) {
         
-                    if (_htmlentities(trim($HTTP_POST_VARS['pw'])) != trim($HTTP_POST_VARS['pw'])) {
+                    if (_htmlentities(trim($_POST['pw'])) != trim($_POST['pw'])) {
                         $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
                         $valid = false;
                     }
        
-                    if (!preg_match("/^[a-z0-9_-]+$/i", trim($HTTP_POST_VARS['pw']))) {
+                    if (!preg_match("/^[a-z0-9_-]+$/i", trim($_POST['pw']))) {
                         $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
                         $valid = false;
                     }      
       
-                    if (strlen(trim($HTTP_POST_VARS['pw'])) < 6) {
+                    if (strlen(trim($_POST['pw'])) < 6) {
                         $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
                         $valid = false;
                     }
             
                     if ($valid) {
 
-                        if (user_change_pw($HTTP_POST_VARS['uid'], trim($HTTP_POST_VARS['pw']), $HTTP_POST_VARS['key'])) {
+                        if (user_change_pw($_POST['uid'], trim($_POST['pw']), $_POST['key'])) {
 
                             html_draw_top();
  
@@ -121,12 +121,12 @@ if (isset($HTTP_POST_VARS['submit'])) {
     }
 }
 
-if (isset($HTTP_GET_VARS['u']) && is_numeric($HTTP_GET_VARS['u']) && isset($HTTP_GET_VARS['h']) && is_md5($HTTP_GET_VARS['h'])) {
-    $uid = $HTTP_GET_VARS['u'];
-    $key = $HTTP_GET_VARS['h'];
-}elseif (isset($HTTP_POST_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid']) && isset($HTTP_POST_VARS['key']) && is_md5($HTTP_GET_VARS['key'])) {
-    $uid = $HTTP_POST_VARS['uid'];
-    $key = $HTTP_POST_VARS['key'];
+if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($_GET['h'])) {
+    $uid = $_GET['u'];
+    $key = $_GET['h'];
+}elseif (isset($_POST['uid']) && is_numeric($_GET['uid']) && isset($_POST['key']) && is_md5($_GET['key'])) {
+    $uid = $_POST['uid'];
+    $key = $_POST['key'];
 }else {
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";

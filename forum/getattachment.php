@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: getattachment.php,v 1.65 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: getattachment.php,v 1.66 2004-04-17 17:39:27 decoyduck Exp $ */
 
 //Multiple forum support
 include_once("./include/forum.inc.php");
@@ -41,7 +41,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -55,7 +55,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -94,16 +94,16 @@ if (forum_get_setting('attachments_enabled', 'N', false)) {
 }
 
 if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-    if (isset($HTTP_GET_VARS['hash'])) {
-        $hash = $HTTP_GET_VARS['hash'];
+    if (isset($_GET['hash'])) {
+        $hash = $_GET['hash'];
     }
 }else {
-    if (strstr($HTTP_SERVER_VARS['PHP_SELF'], 'getattachment.php')) {
-        if (preg_match("/\/getattachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data)) {
+    if (strstr($_SERVER['PHP_SELF'], 'getattachment.php')) {
+        if (preg_match("/\/getattachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data)) {
             $hash = $attachment_data[1];
         }
     }else {
-        if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $HTTP_SERVER_VARS['PHP_SELF'], $attachment_data)) {
+        if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data)) {
             $hash = $attachment_data[1];
         }
     }
@@ -129,7 +129,7 @@ if (isset($hash) && is_md5($hash)) {
 
             // Are we viewing or downloading the attachment?           
 
-            if (isset($HTTP_GET_VARS['download']) || strstr(@$HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+            if (isset($_GET['download']) || strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
                 header("Content-Type: application/x-ms-download", true);
             }else {
                 header("Content-Type: ". $attachmentdetails['MIMETYPE'], true);
@@ -145,8 +145,8 @@ if (isset($hash) && is_md5($hash)) {
                 // Etag Header for cache control
                 $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
 
-                if (isset($HTTP_SERVER_VARS['HTTP_IF_NONE_MATCH'])) {
-                    $remote_etag = substr(stripslashes($HTTP_SERVER_VARS['HTTP_IF_NONE_MATCH']), 1, -1);
+                if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+                    $remote_etag = substr(stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
                 }else {
                     $remote_etag = false;
                 }
@@ -154,8 +154,8 @@ if (isset($hash) && is_md5($hash)) {
                 // Last Modified Header for cache control
                 $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT";
 
-                if (isset($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE'])) {
-                    $remote_last_modified = _stripslashes($HTTP_SERVER_VARS['HTTP_IF_MODIFIED_SINCE']);
+                if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+                    $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
                 }else {
                     $remote_last_modified = false;
                 }

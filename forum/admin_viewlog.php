@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.49 2004-04-13 18:12:10 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.50 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -104,12 +104,12 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
 
 // Column sorting stuff
 
-if (isset($HTTP_GET_VARS['sort_by'])) {
-    if ($HTTP_GET_VARS['sort_by'] == "LOG_TIME") {
+if (isset($_GET['sort_by'])) {
+    if ($_GET['sort_by'] == "LOG_TIME") {
         $sort_by = "ADMIN_LOG.LOG_TIME";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "ADMIN_UID") {
+    } elseif ($_GET['sort_by'] == "ADMIN_UID") {
         $sort_by = "ADMIN_LOG.ADMIN_UID";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "ACTION") {
+    } elseif ($_GET['sort_by'] == "ACTION") {
         $sort_by = "ADMIN_LOG.ACTION";
     } else {
         $sort_by = "ADMIN_LOG.LOG_TIME";
@@ -118,8 +118,8 @@ if (isset($HTTP_GET_VARS['sort_by'])) {
     $sort_by = "ADMIN_LOG.LOG_TIME";
 }
 
-if (isset($HTTP_GET_VARS['sort_dir'])) {
-    if ($HTTP_GET_VARS['sort_dir'] == "DESC") {
+if (isset($_GET['sort_dir'])) {
+    if ($_GET['sort_dir'] == "DESC") {
         $sort_dir = "DESC";
     } else {
         $sort_dir = "ASC";
@@ -128,15 +128,15 @@ if (isset($HTTP_GET_VARS['sort_dir'])) {
     $sort_dir = "DESC";
 }
 
-if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
-    $start = floor($HTTP_GET_VARS['page'] - 1) * 20;
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $start = floor($_GET['page'] - 1) * 20;
 }else {
     $start = 0;
 }
 
 // Clear the admin log.
 
-if (isset($HTTP_POST_VARS['clear'])) {
+if (isset($_POST['clear'])) {
     admin_clearlog();
 }
 

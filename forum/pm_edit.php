@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.35 2004-04-15 18:31:59 tribalonline Exp $ */
+/* $Id: pm_edit.php,v 1.36 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -51,7 +51,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -65,7 +65,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -103,10 +103,10 @@ if (bh_session_get_value('UID') == 0) {
 
 // Get the Message ID (MID)
 
-if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
-    $mid = $HTTP_GET_VARS['mid'];
-}elseif (isset($HTTP_POST_VARS['mid']) && is_numeric($HTTP_POST_VARS['mid'])) {
-    $mid = $HTTP_POST_VARS['mid'];
+if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
+    $mid = $_GET['mid'];
+}elseif (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
+    $mid = $_POST['mid'];
 }else {
     html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
@@ -117,7 +117,7 @@ if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
 
 // User clicked cancel
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
     header_redirect("./pm.php?webtag=$webtag&folder=3");
 }
 
@@ -126,8 +126,8 @@ $valid = true;
 $t_content = "";
 $post_html = 0;
 
-if (isset($HTTP_POST_VARS['t_post_html'])) {
-    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+if (isset($_POST['t_post_html'])) {
+    $t_post_html = $_POST['t_post_html'];
     if ($t_post_html == "enabled_auto") {
 		$post_html = 1;
     } else if ($t_post_html == "enabled") {
@@ -137,16 +137,16 @@ if (isset($HTTP_POST_VARS['t_post_html'])) {
 
 $post = new MessageText($post_html);
 
-if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
-    if (isset($HTTP_POST_VARS['t_subject']) && trim($HTTP_POST_VARS['t_subject']) != "") {
-        $t_subject = trim($HTTP_POST_VARS['t_subject']);
+if (isset($_POST['submit']) || isset($_POST['preview'])) {
+    if (isset($_POST['t_subject']) && trim($_POST['t_subject']) != "") {
+        $t_subject = trim($_POST['t_subject']);
     }else {
         $error_html = "<h2>{$lang['entersubjectformessage']}</h2>";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_content']) && trim($HTTP_POST_VARS['t_content']) != "") {
-        $t_content = $HTTP_POST_VARS['t_content'];
+    if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+        $t_content = $_POST['t_content'];
 		$post->setContent($t_content);
 		$t_content = $post->getContent();
 
@@ -162,9 +162,9 @@ if (isset($HTTP_POST_VARS['submit']) || isset($HTTP_POST_VARS['preview'])) {
 
 // Update the PM
 
-if ($valid && isset($HTTP_POST_VARS['preview'])) {
+if ($valid && isset($_POST['preview'])) {
 
-    $edit_html = ($HTTP_POST_VARS['t_post_html'] == "Y");
+    $edit_html = ($_POST['t_post_html'] == "Y");
 
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
         $pm_elements_array['CONTENT'] = $t_content;
@@ -179,14 +179,14 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
         exit;
     }
 
-}else if ($valid && isset($HTTP_POST_VARS['submit'])) {
+}else if ($valid && isset($_POST['submit'])) {
 
     if ($pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX, bh_session_get_value('UID'))) {
 
         $t_subject = _htmlentities($t_subject);
                 
-        if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-            if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) pm_save_attachment_id($mid, $HTTP_POST_VARS['aid']);
+        if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
+            if (get_num_attachments($_POST['aid']) > 0) pm_save_attachment_id($mid, $_POST['aid']);
         }         
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {

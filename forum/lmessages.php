@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.33 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.34 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -73,8 +73,8 @@ $user_wordfilter = load_wordfilter();
 // Check that required variables are set
 // default to display most recent discussion for user
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-    $msg = $HTTP_GET_VARS['msg'];
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    $msg = $_GET['msg'];
 }else {
     if (bh_session_get_value('UID')) {
         $msg = messages_get_most_recent(bh_session_get_value('UID'));
@@ -96,12 +96,12 @@ if (!thread_can_view($tid, bh_session_get_value('UID'))) {
 
 // Poll stuff
 
-if (isset($HTTP_POST_VARS['pollsubmit'])) {
+if (isset($_POST['pollsubmit'])) {
 
-  if (isset($HTTP_POST_VARS['pollvote'])) {
+  if (isset($_POST['pollvote'])) {
 
-    poll_vote($HTTP_POST_VARS['tid'], $HTTP_POST_VARS['pollvote']);
-    header_redirect("lmessages.php?webtag=$webtag&msg=". $HTTP_POST_VARS['tid']. ".1");
+    poll_vote($_POST['tid'], $_POST['pollvote']);
+    header_redirect("lmessages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
 
   }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.59 2004-04-14 17:15:37 tribalonline Exp $ */
+/* $Id: edit_poll.php,v 1.60 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/thread.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -101,15 +101,15 @@ if (forum_get_setting('allow_polls', 'N', false)) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-  list($edit_msg) = explode(' ', rawurldecode($HTTP_GET_VARS['msg']));
+  list($edit_msg) = explode(' ', rawurldecode($_GET['msg']));
   list($tid, $pid) = explode('.', $edit_msg);
 
-}elseif (isset($HTTP_POST_VARS['t_msg']) && validate_msg($HTTP_POST_VARS['t_msg'])) {
+}elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
 
-  list($edit_msg) = explode(' ', rawurldecode($HTTP_POST_VARS['t_msg']));
-  list($tid, $pid) = explode('.', $HTTP_POST_VARS['t_msg']);
+  list($edit_msg) = explode(' ', rawurldecode($_POST['t_msg']));
+  list($tid, $pid) = explode('.', $_POST['t_msg']);
 
 }else {
 
@@ -129,19 +129,19 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
 
   $uri = "./discussion.php?webtag=$webtag&msg=$edit_msg";
   header_redirect($uri);
 
-}elseif (isset($HTTP_POST_VARS['preview']) || isset($HTTP_POST_VARS['submit'])) {
+}elseif (isset($_POST['preview']) || isset($_POST['submit'])) {
 
-  if ($valid && strlen(trim($HTTP_POST_VARS['answers'][0])) == 0) {
+  if ($valid && strlen(trim($_POST['answers'][0])) == 0) {
     $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
     $valid = false;
   }
 
-  if ($valid && strlen(trim($HTTP_POST_VARS['answers'][1])) == 0) {
+  if ($valid && strlen(trim($_POST['answers'][1])) == 0) {
     $error_html = "<h2>{$lang['mustspecifyvalues1and2']}</h2>";
     $valid = false;
   }
@@ -150,7 +150,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
 
 html_draw_top("basetarget=_blank", "openprofile.js", "post.js");
 
-if ($valid && isset($HTTP_POST_VARS['preview'])) {
+if ($valid && isset($_POST['preview'])) {
 
   $polldata['TLOGON'] = "ALL";
   $polldata['TNICK'] = "ALL";
@@ -167,7 +167,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "    <td>\n";
   $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
   $polldata['CONTENT'].= "        <tr>\n";
-  $polldata['CONTENT'].= "          <td><h2>". (isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid)). "</h2></td>\n";
+  $polldata['CONTENT'].= "          <td><h2>". (isset($_POST['question']) ? _htmlentities(_stripslashes($_POST['question'])) : thread_get_title($tid)). "</h2></td>\n";
   $polldata['CONTENT'].= "        </tr>\n";
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
@@ -183,11 +183,11 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $optioncount = 0;
 
   $ans_h = 0;
-  if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
+  if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
 	  $ans_h = 2;
   }
 
-  foreach($HTTP_POST_VARS['answers'] as $key => $answer_text) {
+  foreach($_POST['answers'] as $key => $answer_text) {
 
       if (strlen(trim($answer_text)) > 0) {
 			$answer_tmp = new MessageText($ans_h, $answer_text);
@@ -204,12 +204,12 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
       }else {
 
-          unset($HTTP_POST_VARS['answers'][$key]);
-          unset($HTTP_POST_VARS['answer_groups'][$key]);
+          unset($_POST['answers'][$key]);
+          unset($_POST['answer_groups'][$key]);
       }
   }
 
-  $poll_groups_array = $HTTP_POST_VARS['answer_groups'];
+  $poll_groups_array = $_POST['answer_groups'];
 
   // Construct the pollresults array that will be used to display the graph
   // Modified to handle the new Group ID.
@@ -219,7 +219,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
                        'GROUP_ID'    => $poll_groups_array,
                        'VOTES'       => $poll_votes_array);
 
-  if ($HTTP_POST_VARS['polltype'] == 1) {
+  if ($_POST['polltype'] == 1) {
 
     $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
 
@@ -239,7 +239,7 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "        <tr>\n";
   $polldata['CONTENT'].= "          <td class=\"postbody\">";
 
-  if ($HTTP_POST_VARS['changevote'] == 1) {
+  if ($_POST['changevote'] == 1) {
     $polldata['CONTENT'].= "{$lang['abletochangevote']}";
   }else {
     $polldata['CONTENT'].= "{$lang['notabletochangevote']}";
@@ -253,19 +253,19 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
   $polldata['CONTENT'].= "</table>\n";
   $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
-}elseif ($valid && isset($HTTP_POST_VARS['submit'])) {
+}elseif ($valid && isset($_POST['submit'])) {
 
   // Work out when the poll will close.
 
-  if ($HTTP_POST_VARS['closepoll'] == 0) {
+  if ($_POST['closepoll'] == 0) {
     $poll_closes = gmmktime() + DAY_IN_SECONDS;
-  }elseif ($HTTP_POST_VARS['closepoll'] == 1) {
+  }elseif ($_POST['closepoll'] == 1) {
     $poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
-  }elseif ($HTTP_POST_VARS['closepoll'] == 2) {
+  }elseif ($_POST['closepoll'] == 2) {
     $poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
-  }elseif ($HTTP_POST_VARS['closepoll'] == 3) {
+  }elseif ($_POST['closepoll'] == 3) {
     $poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
-  }elseif ($HTTP_POST_VARS['closepoll'] == 4) {
+  }elseif ($_POST['closepoll'] == 4) {
     $poll_closes = -1;
   }else {
     $poll_closes = false;
@@ -274,19 +274,19 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
     // Check HTML tick box, innit.
 	$answers = array();
 	$ans_h = 0;
-	if (isset($HTTP_POST_VARS['t_post_html']) && $HTTP_POST_VARS['t_post_html'] == 'Y') {
+	if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == 'Y') {
 		$ans_h = 2;
 	}
-    for ($i = 0; $i < sizeof($HTTP_POST_VARS['answers']); $i++) {
-		$answers[$i] = new MessageText($ans_h, $HTTP_POST_VARS['answers'][$i]);
-        $HTTP_POST_VARS['answers'][$i] = $answers[$i]->getContent();
+    for ($i = 0; $i < sizeof($_POST['answers']); $i++) {
+		$answers[$i] = new MessageText($ans_h, $_POST['answers'][$i]);
+        $_POST['answers'][$i] = $answers[$i]->getContent();
     }
 
-  poll_edit($tid, $HTTP_POST_VARS['question'], $HTTP_POST_VARS['answers'], $HTTP_POST_VARS['answer_groups'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults'], $HTTP_POST_VARS['pollvotetype']);
+  poll_edit($tid, $_POST['question'], $_POST['answers'], $_POST['answer_groups'], $poll_closes, $_POST['changevote'], $_POST['polltype'], $_POST['showresults'], $_POST['pollvotetype']);
   post_add_edit_text($tid, 1);
 
-  if (isset($HTTP_POST_VARS['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-    if (get_num_attachments($HTTP_POST_VARS['aid']) > 0) post_save_attachment_id($tid, $pid, $HTTP_POST_VARS['aid']);
+  if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
+    if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($tid, $pid, $_POST['aid']);
   }  
   
   header_redirect("./discussion.php?webtag=$webtag&msg=$tid.1");
@@ -410,7 +410,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
       <td><h2><?php echo $lang['pollquestion'] ?></h2></td>
     </tr>
     <tr>
-      <td><?php echo form_input_text("question", isset($HTTP_POST_VARS['question']) ? _htmlentities(_stripslashes($HTTP_POST_VARS['question'])) : thread_get_title($tid), 30, 64); ?></td>
+      <td><?php echo form_input_text("question", isset($_POST['question']) ? _htmlentities(_stripslashes($_POST['question'])) : thread_get_title($tid), 30, 64); ?></td>
     </tr>
     <tr>
       <td>&nbsp;</td>
@@ -430,9 +430,9 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
 
                   $available_answers = array(5, 10, 15, 20);
 
-                  if (isset($HTTP_POST_VARS['answercount'])) {
-                    $answercount = $available_answers[$HTTP_POST_VARS['answercount']];
-                    $answerselection = $HTTP_POST_VARS['answercount'];
+                  if (isset($_POST['answercount'])) {
+                    $answercount = $available_answers[$_POST['answercount']];
+                    $answerselection = $_POST['answercount'];
                   }else {
                     if (sizeof($pollresults['OPTION_ID']) <= 5) {
                       $answercount = 5;
@@ -472,8 +472,8 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
 
                   $t_post_html = false;
                   
-                  if (isset($HTTP_POST_VARS['t_post_html'])) {
-                    if ($HTTP_POST_VARS['t_post_html'] == "Y") {
+                  if (isset($_POST['t_post_html'])) {
+                    if ($_POST['t_post_html'] == "Y") {
                       $t_post_html = true;
                     }else {
                       $t_post_html = false;
@@ -486,13 +486,13 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                     echo "  <td>", ($i + 1), ". </td>\n";
                     echo "  <td>";
 
-                    if (isset($HTTP_POST_VARS['answers'][$i])) {
-                      echo form_input_text("answers[$i]", _htmlentities(clean_emoticons(_stripslashes($HTTP_POST_VARS['answers'][$i]))), 40, 255);
+                    if (isset($_POST['answers'][$i])) {
+                      echo form_input_text("answers[$i]", _htmlentities(clean_emoticons(_stripslashes($_POST['answers'][$i]))), 40, 255);
                     }else {
                       if (isset($pollresults['OPTION_NAME'][$i])) {
 						  $pollresults['OPTION_NAME'][$i] = clean_emoticons(_stripslashes($pollresults['OPTION_NAME'][$i]));
                         if (strip_tags($pollresults['OPTION_NAME'][$i]) != $pollresults['OPTION_NAME'][$i]) {
-                          if (!isset($HTTP_POST_VARS['t_post_html'])) $t_post_html = true;
+                          if (!isset($_POST['t_post_html'])) $t_post_html = true;
                           echo form_input_text("answers[$i]", _htmlentities($pollresults['OPTION_NAME'][$i]), 40, 255);
                         }else {
                           echo form_input_text("answers[$i]", $pollresults['OPTION_NAME'][$i], 40, 255);
@@ -505,8 +505,8 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
                     echo "  </td>\n";
                     echo "  <td align=\"center\">";
 
-                    if (isset($HTTP_POST_VARS['answer_groups'][$i])) {
-                      echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), $HTTP_POST_VARS['answer_groups'][$i]), "</td>\n";
+                    if (isset($_POST['answer_groups'][$i])) {
+                      echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), $_POST['answer_groups'][$i]), "</td>\n";
                     }else {
                       if (isset($pollresults['GROUP_ID'][$i])) {
                         echo form_dropdown_array("answer_groups[]", range(1, $answercount), range(1, $answercount), $pollresults['GROUP_ID'][$i]), "</td>\n";
@@ -541,9 +541,9 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td>
               <table border="0" width="500">
                 <tr>
-                  <td width="25%"><?php echo form_radio('changevote', '1', $lang['yes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 1 : $polldata['CHANGEVOTE'] == 1); ?></td>
-                  <td width="25%"><?php echo form_radio('changevote', '0', $lang['no'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 0 : $polldata['CHANGEVOTE'] == 0); ?></td>
-                  <td><?php echo form_radio('changevote', '2', $lang['allowmultiplevotes'], isset($HTTP_POST_VARS['changevote']) ? $HTTP_POST_VARS['changevote'] == 2 : $polldata['CHANGEVOTE'] == 2); ?></td>
+                  <td width="25%"><?php echo form_radio('changevote', '1', $lang['yes'], isset($_POST['changevote']) ? $_POST['changevote'] == 1 : $polldata['CHANGEVOTE'] == 1); ?></td>
+                  <td width="25%"><?php echo form_radio('changevote', '0', $lang['no'], isset($_POST['changevote']) ? $_POST['changevote'] == 0 : $polldata['CHANGEVOTE'] == 0); ?></td>
+                  <td><?php echo form_radio('changevote', '2', $lang['allowmultiplevotes'], isset($_POST['changevote']) ? $_POST['changevote'] == 2 : $polldata['CHANGEVOTE'] == 2); ?></td>
                 </tr>
               </table>
             </td>
@@ -561,8 +561,8 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td>
               <table border="0" width="400">
                 <tr>
-                  <td width="50%"><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 0 : $polldata['POLLTYPE'] == 0); ?></td>
-                  <td width="50%"><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($HTTP_POST_VARS['polltype']) ? $HTTP_POST_VARS['polltype'] == 1 : $polldata['POLLTYPE'] == 1); ?></td>
+                  <td width="50%"><?php echo form_radio('polltype', '0', $lang['horizgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 0 : $polldata['POLLTYPE'] == 0); ?></td>
+                  <td width="50%"><?php echo form_radio('polltype', '1', $lang['vertgraph'], isset($_POST['polltype']) ? $_POST['polltype'] == 1 : $polldata['POLLTYPE'] == 1); ?></td>
                 </tr>
               </table>
             </td>
@@ -580,8 +580,8 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td>
               <table border="0" width="400">
                 <tr>
-                  <td width="50%"><?php echo form_radio('pollvotetype', '0', $lang['pollvoteanon'], isset($HTTP_POST_VARS['pollvotetype']) ? $HTTP_POST_VARS['pollvotetype'] == 0 : $polldata['VOTETYPE'] == 0); ?></td>
-                  <td width="50%"><?php echo form_radio('pollvotetype', '1', $lang['pollvotepub'], isset($HTTP_POST_VARS['pollvotetype']) ? $HTTP_POST_VARS['pollvotetype'] == 1 : $polldata['VOTETYPE'] == 1); ?></td>
+                  <td width="50%"><?php echo form_radio('pollvotetype', '0', $lang['pollvoteanon'], isset($_POST['pollvotetype']) ? $_POST['pollvotetype'] == 0 : $polldata['VOTETYPE'] == 0); ?></td>
+                  <td width="50%"><?php echo form_radio('pollvotetype', '1', $lang['pollvotepub'], isset($_POST['pollvotetype']) ? $_POST['pollvotetype'] == 1 : $polldata['VOTETYPE'] == 1); ?></td>
                 </tr>
               </table>
             </td>
@@ -599,8 +599,8 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td>
               <table border="0" width="300">
                 <tr>
-                  <td width="50%"><?php echo form_radio('showresults', '1', $lang['yes'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 1 : $polldata['SHOWRESULTS'] == 1); ?></td>
-                  <td width="50%"><?php echo form_radio('showresults', '0', $lang['no'], isset($HTTP_POST_VARS['showresults']) ? $HTTP_POST_VARS['showresults'] == 0 : $polldata['SHOWRESULTS'] == 0); ?></td>
+                  <td width="50%"><?php echo form_radio('showresults', '1', $lang['yes'], isset($_POST['showresults']) ? $_POST['showresults'] == 1 : $polldata['SHOWRESULTS'] == 1); ?></td>
+                  <td width="50%"><?php echo form_radio('showresults', '0', $lang['no'], isset($_POST['showresults']) ? $_POST['showresults'] == 0 : $polldata['SHOWRESULTS'] == 0); ?></td>
                 </tr>
               </table>
             </td>
@@ -612,7 +612,7 @@ echo "<p>{$lang['editpollwarning']}</p>\n";
             <td><?php echo $lang['changewhenpollcloses']; ?></td>
           </tr>
           <tr>
-            <td><?php echo form_dropdown_array('closepoll', range(0, 5), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($HTTP_POST_VARS['closepoll']) ? $HTTP_POST_VARS['closepoll'] : 5); ?></td>
+            <td><?php echo form_dropdown_array('closepoll', range(0, 5), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never'], $lang['nochange']), isset($_POST['closepoll']) ? $_POST['closepoll'] : 5); ?></td>
           </tr>
           <tr>
             <td>&nbsp;</td>

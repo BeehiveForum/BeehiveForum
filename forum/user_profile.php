@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.64 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.65 2004-04-17 17:39:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/user_rel.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -93,12 +93,12 @@ if (!$webtag = get_webtag()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
-    $uid = $HTTP_GET_VARS['uid'];
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+    $uid = $_GET['uid'];
 }
 
-if (isset($HTTP_GET_VARS['psid']) && is_numeric($HTTP_GET_VARS['psid'])) {
-    $psid = $HTTP_GET_VARS['psid'];
+if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
+    $psid = $_GET['psid'];
 }
 
 if (!isset($uid)) {
@@ -128,8 +128,8 @@ if ($uid != bh_session_get_value('UID')) $relationship = user_rel_get(bh_session
 
 // user has chosen to modify their relationship
 
-if (isset($HTTP_GET_VARS['setrel']) && ($uid != bh_session_get_value('UID')) && bh_session_get_value('UID') > 0) {
-    $relationship = ($relationship & (~ (USER_FRIEND | USER_IGNORED)) | $HTTP_GET_VARS['setrel']);
+if (isset($_GET['setrel']) && ($uid != bh_session_get_value('UID')) && bh_session_get_value('UID') > 0) {
+    $relationship = ($relationship & (~ (USER_FRIEND | USER_IGNORED)) | $_GET['setrel']);
     user_rel_update(bh_session_get_value('UID'),$uid,$relationship);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.72 2004-04-11 21:13:15 decoyduck Exp $ */
+/* $Id: search.php,v 1.73 2004-04-17 17:39:28 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -56,7 +56,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -70,7 +70,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -101,20 +101,20 @@ if (!$webtag = get_webtag()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
-    $mode = $HTTP_COOKIE_VARS['bh_thread_mode'];
+if (isset($_COOKIE['bh_thread_mode'])) {
+    $mode = $_COOKIE['bh_thread_mode'];
 }else{
     $mode = 0;
 }
 
 html_draw_top();
 
-if (isset($HTTP_POST_VARS['search_string'])) {
-    $search_arguments = $HTTP_POST_VARS;
-    $search_string = $HTTP_POST_VARS['search_string'];
-}elseif (isset($HTTP_GET_VARS['sstart'])) {
-    $search_arguments = $HTTP_GET_VARS;
-    $search_string = $HTTP_GET_VARS['search_string'];
+if (isset($_POST['search_string'])) {
+    $search_arguments = $_POST;
+    $search_string = $_POST['search_string'];
+}elseif (isset($_GET['sstart'])) {
+    $search_arguments = $_GET;
+    $search_string = $_GET['search_string'];
 }else {
     echo "<h1>", $lang['searchmessages'], "</h1>\n";
     echo "<form method=\"post\" action=\"search.php?webtag=$webtag\" target=\"left\">\n";

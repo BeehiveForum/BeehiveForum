@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.45 2004-04-12 13:56:38 decoyduck Exp $ */
+/* $Id: pm.php,v 1.46 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -103,26 +103,26 @@ if (bh_session_get_value('UID') == 0) {
 
 // Delete Messages
 
-if (isset($HTTP_POST_VARS['deletemessages'])) {
-    if (isset($HTTP_POST_VARS['process']) && is_array($HTTP_POST_VARS['process'])) {
-        for ($i = 0; $i < sizeof($HTTP_POST_VARS['process']); $i++) {
-            pm_delete_message($HTTP_POST_VARS['process'][$i]);
+if (isset($_POST['deletemessages'])) {
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        for ($i = 0; $i < sizeof($_POST['process']); $i++) {
+            pm_delete_message($_POST['process'][$i]);
         }
     }
 }
 
 // Archive Messages
 
-if (isset($HTTP_POST_VARS['savemessages'])) {
-    if (isset($HTTP_POST_VARS['process']) && is_array($HTTP_POST_VARS['process'])) {
-        for ($i = 0; $i < sizeof($HTTP_POST_VARS['process']); $i++) {
-            pm_archive_message($HTTP_POST_VARS['process'][$i]);
+if (isset($_POST['savemessages'])) {
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        for ($i = 0; $i < sizeof($_POST['process']); $i++) {
+            pm_archive_message($_POST['process'][$i]);
         }
     }
 }
 
-if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
-    $start = floor($HTTP_GET_VARS['page'] - 1) * 10;
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $start = floor($_GET['page'] - 1) * 10;
 }else {
     $start = 0;
 }
@@ -131,23 +131,23 @@ if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
 
 $folder = PM_FOLDER_INBOX;
 
-if (isset($HTTP_GET_VARS['folder'])) {
+if (isset($_GET['folder'])) {
         
-    if ($HTTP_GET_VARS['folder'] == PM_FOLDER_SENT) {
+    if ($_GET['folder'] == PM_FOLDER_SENT) {
         $folder = PM_FOLDER_SENT;
-    }else if ($HTTP_GET_VARS['folder'] == PM_FOLDER_OUTBOX) {
+    }else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
         $folder = PM_FOLDER_OUTBOX;
-    }else if ($HTTP_GET_VARS['folder'] == PM_FOLDER_SAVED) {
+    }else if ($_GET['folder'] == PM_FOLDER_SAVED) {
         $folder = PM_FOLDER_SAVED;
     }
 
-}elseif (isset($HTTP_POST_VARS['folder'])) {
+}elseif (isset($_POST['folder'])) {
 
-    if ($HTTP_POST_VARS['folder'] == PM_FOLDER_SENT) {
+    if ($_POST['folder'] == PM_FOLDER_SENT) {
         $folder = PM_FOLDER_SENT;
-    }else if ($HTTP_POST_VARS['folder'] == PM_FOLDER_OUTBOX) {
+    }else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
         $folder = PM_FOLDER_OUTBOX;
-    }else if ($HTTP_POST_VARS['folder'] == PM_FOLDER_SAVED) {
+    }else if ($_POST['folder'] == PM_FOLDER_SAVED) {
         $folder = PM_FOLDER_SAVED;
     }
 }
@@ -199,11 +199,11 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<p>&nbsp;</p>\n";
 
-if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
+if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $pm_elements_array = array();
 
-    if ($pm_elements_array = pm_single_get($HTTP_GET_VARS['mid'], $folder)) {
+    if ($pm_elements_array = pm_single_get($_GET['mid'], $folder)) {
         $pm_elements_array['FOLDER'] = $folder;
         draw_pm_message($pm_elements_array);
         echo "<p>&nbsp;</p>\n";
@@ -240,8 +240,8 @@ if (is_array($pm_messages_array) && sizeof($pm_messages_array) > 0) {
         echo "    <tr>\n";
         echo "      <td class=\"postbody\">";
 
-        if (isset($HTTP_GET_VARS['mid']) && is_numeric($HTTP_GET_VARS['mid'])) {
-            $mid = $HTTP_GET_VARS['mid'];
+        if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
+            $mid = $_GET['mid'];
         }else {
             $mid = NULL;
         }

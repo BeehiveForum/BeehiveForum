@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.81 2004-04-14 19:34:44 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.82 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -56,7 +56,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -70,7 +70,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -101,15 +101,15 @@ if (!$webtag = get_webtag()) {
 
 $user_wordfilter = load_wordfilter();
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-    $ret = "./messages.php?webtag=$webtag&msg={$HTTP_GET_VARS['msg']}";
-}elseif (isset($HTTP_POST_VARS['ret'])) {
-    $ret = $HTTP_POST_VARS['ret'];
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    $ret = "./messages.php?webtag=$webtag&msg={$_GET['msg']}";
+}elseif (isset($_POST['ret'])) {
+    $ret = $_POST['ret'];
 }else {
     $ret = "./admin_users.php?webtag=$webtag";
 }
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
     header_redirect($ret);
 }
 
@@ -122,10 +122,10 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['uid']) && is_numeric($HTTP_GET_VARS['uid'])) {
-    $uid = $HTTP_GET_VARS['uid'];
-}else if (isset($HTTP_POST_VARS['uid']) && is_numeric($HTTP_POST_VARS['uid'])) {
-    $uid = $HTTP_POST_VARS['uid'];
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+    $uid = $_GET['uid'];
+}else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+    $uid = $_POST['uid'];
 }else {
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<p>{$lang['nouserspecified']}</p>\n";
@@ -144,16 +144,16 @@ echo "<h1>{$lang['admin']} : {$lang['manageuser']} : {$user['LOGON']}</h1>\n";
 
 // Do updates
 
-if (isset($HTTP_POST_VARS['del'])) {
+if (isset($_POST['del'])) {
 
-    if (isset($HTTP_POST_VARS['hash']) && is_md5($HTTP_POST_VARS['hash'])) {
+    if (isset($_POST['hash']) && is_md5($_POST['hash'])) {
 
-        delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['hash']);
+        delete_attachment(bh_session_get_value('UID'), $_POST['hash']);
     }
 
-}elseif (isset($HTTP_POST_VARS['submit'])) {
+}elseif (isset($_POST['submit'])) {
 
-    if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
+    if (isset($_POST['t_confirm_delete_posts'])) {
 
         if ($user_post_array = get_user_posts($uid)) {
 
@@ -166,13 +166,13 @@ if (isset($HTTP_POST_VARS['del'])) {
 
         echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";        
     
-    }elseif (!isset($HTTP_POST_VARS['t_delete_posts']) || (isset($HTTP_POST_VARS['t_delete_posts']) && $HTTP_POST_VARS['t_delete_posts'] = "")) {
+    }elseif (!isset($_POST['t_delete_posts']) || (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] = "")) {
 
-        $t_soldier = (isset($HTTP_POST_VARS['t_soldier'])) ? $HTTP_POST_VARS['t_soldier'] : 0;
-        $t_worker  = (isset($HTTP_POST_VARS['t_worker']))  ? $HTTP_POST_VARS['t_worker']  : 0;
-        $t_worm    = (isset($HTTP_POST_VARS['t_worm']))    ? $HTTP_POST_VARS['t_worm']    : 0;
-        $t_wasp    = (isset($HTTP_POST_VARS['t_wasp']))    ? $HTTP_POST_VARS['t_wasp']    : 0;
-        $t_splat   = (isset($HTTP_POST_VARS['t_splat']))   ? $HTTP_POST_VARS['t_splat']   : 0;
+        $t_soldier = (isset($_POST['t_soldier'])) ? $_POST['t_soldier'] : 0;
+        $t_worker  = (isset($_POST['t_worker']))  ? $_POST['t_worker']  : 0;
+        $t_worm    = (isset($_POST['t_worm']))    ? $_POST['t_worm']    : 0;
+        $t_wasp    = (isset($_POST['t_wasp']))    ? $_POST['t_wasp']    : 0;
+        $t_splat   = (isset($_POST['t_splat']))   ? $_POST['t_splat']   : 0;
 
         $new_status = $t_worker | $t_worm | $t_wasp | $t_splat;
 
@@ -200,10 +200,10 @@ if (isset($HTTP_POST_VARS['del'])) {
 
 	$uf = array();
 
-	if (isset($HTTP_POST_VARS['t_fallow'])) {
+	if (isset($_POST['t_fallow'])) {
 
-	    for ($i = 0; $i < sizeof($HTTP_POST_VARS['t_fallow']); $i++) {
-	        $uf[$i]['fid'] = $HTTP_POST_VARS['t_fallow'][$i];
+	    for ($i = 0; $i < sizeof($_POST['t_fallow']); $i++) {
+	        $uf[$i]['fid'] = $_POST['t_fallow'][$i];
 	        $uf[$i]['allowed'] = 1;
 	    }
 	}
@@ -215,16 +215,16 @@ if (isset($HTTP_POST_VARS['del'])) {
 
         // IP Addresses to be banned
 
-        if (isset($HTTP_POST_VARS['t_ban_ipaddress']) && is_array($HTTP_POST_VARS['t_ban_ipaddress'])) {
-            $t_ban_ipaddress = $HTTP_POST_VARS['t_ban_ipaddress'];
+        if (isset($_POST['t_ban_ipaddress']) && is_array($_POST['t_ban_ipaddress'])) {
+            $t_ban_ipaddress = $_POST['t_ban_ipaddress'];
         }else {
             $t_ban_ipaddress = array();
         }
         
         // Already banned IPs for the selected user.
         
-        if (isset($HTTP_POST_VARS['t_ip_banned']) && is_array($HTTP_POST_VARS['t_ip_banned'])) {
-            $t_ip_banned = $HTTP_POST_VARS['t_ip_banned'];
+        if (isset($_POST['t_ip_banned']) && is_array($_POST['t_ip_banned'])) {
+            $t_ip_banned = $_POST['t_ip_banned'];
         }else {
             $t_ip_banned = array();
         }
@@ -273,7 +273,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\">{$lang['userstatus']}</td>\n";
 echo "                </tr>\n";
 
-if (isset($HTTP_POST_VARS['t_delete_posts'])) {
+if (isset($_POST['t_delete_posts'])) {
 
     echo "                <tr>\n";
     echo "                  <td><h2>{$lang['warning_caps']}</h2></td>\n";
@@ -299,7 +299,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "  </table>\n";
     echo "  ", form_input_hidden("ret", "admin_user.php?webtag=$webtag&uid=$uid"), "\n";
 
-}else if (isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
+}else if (isset($_POST['t_confirm_delete_posts'])) {
 
     echo "                <tr>\n";
     echo "                  <td>{$lang['postssuccessfullydeleted']}</td>\n";
@@ -584,7 +584,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
     echo "  ", form_input_hidden("ret", $ret), "\n";
 }
 
-if (!isset($HTTP_POST_VARS['t_delete_posts']) && !isset($HTTP_POST_VARS['t_confirm_delete_posts'])) {
+if (!isset($_POST['t_delete_posts']) && !isset($_POST['t_confirm_delete_posts'])) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";

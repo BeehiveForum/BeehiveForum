@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.76 2004-04-11 21:13:13 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.77 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -113,7 +113,7 @@ if (!$attachment_dir = forum_get_setting('attachment_dir')) {
 
 // If not AID we must stop.
 
-if (!isset($HTTP_GET_VARS['aid']) || !is_md5($HTTP_GET_VARS['aid'])) {
+if (!isset($_GET['aid']) || !is_md5($_GET['aid'])) {
   html_draw_top();
   echo "<h1>{$lang['invalidop']}</h1>\n";
   echo "<h2>{$lang['aidnotspecified']}</h2>\n";
@@ -157,21 +157,21 @@ $upload_failure = array();
 
 // Start Stuff
 
-if (isset($HTTP_POST_VARS['upload'])) {
+if (isset($_POST['upload'])) {
 
-    $aid = $HTTP_GET_VARS['aid'];
+    $aid = $_GET['aid'];
 
-    if (isset($HTTP_POST_FILES['userfile']) && is_array($HTTP_POST_FILES['userfile'])) {
+    if (isset($_FILES['userfile']) && is_array($_FILES['userfile'])) {
 
-        for ($i = 0; $i < sizeof($HTTP_POST_FILES['userfile']); $i++) {
+        for ($i = 0; $i < sizeof($_FILES['userfile']); $i++) {
 
-            if (isset($HTTP_POST_FILES['userfile']['name'][$i]) && strlen(trim($HTTP_POST_FILES['userfile']['name'][$i])) > 0) {
+            if (isset($_FILES['userfile']['name'][$i]) && strlen(trim($_FILES['userfile']['name'][$i])) > 0) {
 
-                $filesize = $HTTP_POST_FILES['userfile']['size'][$i];
-                $tempfile = $HTTP_POST_FILES['userfile']['tmp_name'][$i];
-                $filetype = $HTTP_POST_FILES['userfile']['type'][$i];
+                $filesize = $_FILES['userfile']['size'][$i];
+                $tempfile = $_FILES['userfile']['tmp_name'][$i];
+                $filetype = $_FILES['userfile']['type'][$i];
 
-                $filename = _stripslashes(trim($HTTP_POST_FILES['userfile']['name'][$i]));
+                $filename = _stripslashes(trim($_FILES['userfile']['name'][$i]));
 
                 if ($users_free_space < $filesize) {
 
@@ -208,14 +208,14 @@ if (isset($HTTP_POST_VARS['upload'])) {
         }
     }
 
-}elseif (isset($HTTP_POST_VARS['del'])) {
+}elseif (isset($_POST['del'])) {
 
-    if (isset($HTTP_POST_VARS['hash']) && is_md5($HTTP_POST_VARS['hash'])) {
+    if (isset($_POST['hash']) && is_md5($_POST['hash'])) {
 
-        delete_attachment(bh_session_get_value('UID'), $HTTP_POST_VARS['hash']);
+        delete_attachment(bh_session_get_value('UID'), $_POST['hash']);
     }
 
-}elseif (isset($HTTP_POST_VARS['complete'])) {
+}elseif (isset($_POST['complete'])) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
@@ -225,8 +225,8 @@ if (isset($HTTP_POST_VARS['upload'])) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['filecount']) && is_numeric($HTTP_POST_VARS['filecount'])) {
-    $filecount = $HTTP_POST_VARS['filecount'];
+if (isset($_POST['filecount']) && is_numeric($_POST['filecount'])) {
+    $filecount = $_POST['filecount'];
 }else {
     $filecount = 1;
 }
@@ -240,7 +240,7 @@ if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failur
 }
 
 echo "<h1>{$lang['uploadattachment']}</h1>\n";
-echo "<form name=\"f_attach\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php?webtag=$webtag&aid={$HTTP_GET_VARS['aid']}\">\n";
+echo "<form name=\"f_attach\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php?webtag=$webtag&aid={$_GET['aid']}\">\n";
 echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"620\">\n";
 echo "  <tr>\n";
 echo "    <td width=\"220\" class=\"postbody\" valign=\"top\">1. {$lang['enterfilenamestoupload']} :</td>\n";
@@ -280,7 +280,7 @@ echo "    <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
 echo "    <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
 echo "  </tr>\n";
 
-if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'])) {
+if ($attachments = get_attachments(bh_session_get_value('UID'), $_GET['aid'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
@@ -322,7 +322,7 @@ if ($attachments = get_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['
 
             echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
             echo "    <td align=\"right\" width=\"100\" class=\"postbody\">\n";
-            echo "      <form method=\"post\" action=\"attachments.php?webtag=$webtag&aid=". $HTTP_GET_VARS['aid']. "\">\n";
+            echo "      <form method=\"post\" action=\"attachments.php?webtag=$webtag&aid=". $_GET['aid']. "\">\n";
             echo "        ", form_input_hidden('filecount', $filecount), "\n";
             echo "        ", form_input_hidden('hash', $attachments[$i]['hash']), "\n";
             echo "        ", form_submit('del', $lang['del']), "\n";
@@ -373,7 +373,7 @@ echo "    <td width=\"200\" class=\"postbody\">&nbsp;</td>\n";
 echo "    <td width=\"100\" class=\"postbody\">&nbsp;</td>\n";
 echo "  </tr>\n";
 
-if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VARS['aid'])) {
+if ($attachments = get_all_attachments(bh_session_get_value('UID'), $_GET['aid'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
@@ -421,7 +421,7 @@ if ($attachments = get_all_attachments(bh_session_get_value('UID'), $HTTP_GET_VA
 
             echo "    <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachments[$i]['filesize']). "</td>\n";
             echo "    <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\">\n";
-            echo "      <form method=\"post\" action=\"attachments.php?webtag=$webtag&aid=". $HTTP_GET_VARS['aid']. "\">\n";
+            echo "      <form method=\"post\" action=\"attachments.php?webtag=$webtag&aid=". $_GET['aid']. "\">\n";
             echo "        ". form_input_hidden('hash', $attachments[$i]['hash']);
             echo "        ". form_submit('del', $lang['del']). "\n";
             echo "      </form>\n";

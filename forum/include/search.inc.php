@@ -21,12 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.52 2004-04-05 21:12:36 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.53 2004-04-17 17:39:29 decoyduck Exp $ */
 
 function search_execute($argarray, &$urlquery, &$error)
 {
-    global $forum_settings;
-    
     // Ensure the bare minimum of variables are set
     
     if (!isset($argarray['method'])) $argarray['method'] = 1;    
@@ -43,6 +41,8 @@ function search_execute($argarray, &$urlquery, &$error)
     $db_search_execute = db_connect();
     
     if (!$table_data = get_table_prefix()) return false;
+    
+    $forum_settings = get_forum_settings();
 
     $searchsql = "SELECT THREAD.FID, THREAD.TID, THREAD.TITLE, POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
     $searchsql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";

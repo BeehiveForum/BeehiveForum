@@ -21,12 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.59 2004-04-15 11:28:31 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.60 2004-04-17 17:39:29 decoyduck Exp $ */
 
 function email_sendnotification($tuid, $msg, $fuid)
 {  
-    global $HTTP_SERVER_VARS, $forum_settings;
-
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
@@ -34,7 +32,8 @@ function email_sendnotification($tuid, $msg, $fuid)
     $db_email_sendnotification = db_connect();
     
     if (!$table_data = get_table_prefix()) return false;
-
+    
+    $forum_settings = get_forum_settings();
     $webtag = get_webtag();
 
     $sql = "SELECT PREFS.EMAIL_NOTIFY, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
@@ -55,7 +54,7 @@ function email_sendnotification($tuid, $msg, $fuid)
 
         if ($mailto['EMAIL_NOTIFY'] == 'Y' && $mailto['EMAIL'] != '') {
 
-            $sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$fuid'";
+            $sql = "SELECT LOGON, NICKNAME FROM {$table_data['PREFIX']}USER WHERE UID = '$fuid'";
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
@@ -74,16 +73,16 @@ function email_sendnotification($tuid, $msg, $fuid)
             $message.= " {$lang['msgnotificationemail_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
             $message.= "{$lang['msgnotificationemail_2']}:  ". _htmlentities_decode(_stripslashes($thread['TITLE'])). "\n\n";
             $message.= "{$lang['msgnotificationemail_3']}:\n";
-            $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+            $message.= "http://". $_SERVER['HTTP_HOST'];
 
-            if (isset($HTTP_SERVER_VARS['PHP_SELF']) && dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
-              $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+            if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
+              $message.= dirname($_SERVER['PHP_SELF']);
             }
 
             $message.= "/?webtag=$webtag&msg=$msg\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['msgnotificationemail_4']}\n";
-            $message.= "{$lang['msgnotificationemail_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['msgnotificationemail_6']}\n";
+            $message.= "{$lang['msgnotificationemail_5']} http://". $_SERVER['HTTP_HOST']. dirname($_SERVER['PHP_SELF']). "/, {$lang['msgnotificationemail_6']}\n";
             $message.= "{$lang['msgnotificationemail_7']}\n";
 
             $header = "From: \"$forum_name\" <$forum_email>\n";
@@ -106,8 +105,6 @@ function email_sendnotification($tuid, $msg, $fuid)
 
 function email_sendsubscription($tuid, $msg, $fuid)
 {    
-    global $HTTP_SERVER_VARS, $forum_settings;
-
     if (!check_mail_variables()) return false;
     
     if (!is_numeric($tuid) || !is_numeric($fuid) || !validate_msg($msg)) return false;
@@ -118,6 +115,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
     
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_settings = get_forum_settings();
     $webtag = get_webtag();
 
     $sql = "SELECT USER.UID, USER.NICKNAME, USER.EMAIL FROM ";
@@ -139,7 +137,7 @@ function email_sendsubscription($tuid, $msg, $fuid)
 	
 	if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $mailto['EMAIL'])) return false;
 
-        $sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$fuid'";
+        $sql = "SELECT LOGON, NICKNAME FROM {$table_data['PREFIX']}USER WHERE UID = '$fuid'";
         $resultfrom = db_query($sql, $db_email_sendsubscription);
         $mailfrom = db_fetch_array($resultfrom);
         $thread = thread_get($tid);
@@ -157,16 +155,16 @@ function email_sendsubscription($tuid, $msg, $fuid)
         $message.= "{$lang['subnotification_2']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
         $message.= "{$lang['subnotification_3']}:  ". _htmlentities_decode(_stripslashes($thread['TITLE'])). "\n\n";
         $message.= "{$lang['subnotification_4']}:\n";
-        $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+        $message.= "http://". $_SERVER['HTTP_HOST'];
 
-        if (isset($HTTP_SERVER_VARS['PHP_SELF']) && dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
-          $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+        if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
+          $message.= dirname($_SERVER['PHP_SELF']);
         }
 
         $message.= "/?webtag=$webtag&msg=$msg\n\n";
         $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
         $message.= "{$lang['subnotification_5']}\n";
-        $message.= "{$lang['subnotification_6']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/?msg=$msg,\n";
+        $message.= "{$lang['subnotification_6']} http://". $_SERVER['HTTP_HOST']. dirname($_SERVER['PHP_SELF']). "/?msg=$msg,\n";
         $message.= "{$lang['subnotification_7']}\n";
 
         $header = "From: \"$forum_name\" <$forum_email>\n";
@@ -188,8 +186,6 @@ function email_sendsubscription($tuid, $msg, $fuid)
 
 function email_send_pm_notification($tuid, $mid, $fuid)
 {
-    global $HTTP_SERVER_VARS, $forum_settings;
-
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid) || !is_numeric($fuid) || !is_numeric($mid)) return false;
@@ -198,6 +194,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_settings = get_forum_settings();
     $webtag = get_webtag();
 
     $sql = "SELECT PREFS.PM_NOTIFY_EMAIL, PROFILE.NICKNAME, PROFILE.EMAIL FROM ";
@@ -216,7 +213,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
         if ($mailto['PM_NOTIFY_EMAIL'] == 'Y' && $mailto['EMAIL'] != '') {
 
-            $sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$fuid'";
+            $sql = "SELECT LOGON, NICKNAME FROM {$table_data['PREFIX']}USER WHERE UID = '$fuid'";
             $resultfrom = db_query($sql, $db_email_sendnotification);
             $mailfrom = db_fetch_array($resultfrom);
 
@@ -234,16 +231,16 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $message.= " {$lang['pmnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
             $message.= "{$lang['pmnotification_2']}:  ". _htmlentities_decode(_stripslashes($pm_message['SUBJECT'])). "\n\n";
             $message.= "{$lang['pmnotification_3']}:\n";
-            $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+            $message.= "http://". $_SERVER['HTTP_HOST'];
 
-            if (isset($HTTP_SERVER_VARS['PHP_SELF']) && dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
-              $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+            if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
+              $message.= dirname($_SERVER['PHP_SELF']);
             }
 
             $message.= "/?webtag=$webtag&pmid=$mid\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['pmnotification_4']}\n";
-            $message.= "{$lang['pmnotification_5']} http://". $HTTP_SERVER_VARS['HTTP_HOST']. dirname($HTTP_SERVER_VARS['PHP_SELF']). "/, {$lang['pmnotification_6']}\n";
+            $message.= "{$lang['pmnotification_5']} http://". $_SERVER['HTTP_HOST']. dirname($_SERVER['PHP_SELF']). "/, {$lang['pmnotification_6']}\n";
             $message.= "{$lang['pmnotification_7']}\n";
 
             $header = "From: \"$forum_name\" <$forum_email>\n";
@@ -268,8 +265,6 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
 function email_send_pw_reminder($logon)
 {
-    global $HTTP_SERVER_VARS, $forum_settings;
-
     if (!check_mail_variables()) return false;
     
     $db_email_send_pw_reminder = db_connect();
@@ -277,9 +272,10 @@ function email_send_pw_reminder($logon)
     
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_settings = get_forum_settings();
     $webtag = get_webtag();
 
-    $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM USER WHERE LOGON = '$logon'";
+    $sql = "SELECT UID, PASSWD, NICKNAME, EMAIL FROM {$table_data['PREFIX']}USER WHERE LOGON = '$logon'";
     $result = db_query($sql, $db_email_send_pw_reminder);
 
     if (db_num_rows($result)) {
@@ -302,10 +298,10 @@ function email_send_pw_reminder($logon)
 
 	    $message = "{$lang['forgotpwemail_1']} $forum_name {$lang['forgotpwemail_2']}\n\n";
             $message.= "{$lang['forgotpwemail_3']}:\n\n";
-            $message.= "http://". $HTTP_SERVER_VARS['HTTP_HOST'];
+            $message.= "http://". $_SERVER['HTTP_HOST'];
 
-            if (isset($HTTP_SERVER_VARS['PHP_SELF']) && dirname($HTTP_SERVER_VARS['PHP_SELF']) != '/') {
-                $message.= dirname($HTTP_SERVER_VARS['PHP_SELF']);
+            if (isset($_SERVER['PHP_SELF']) && dirname($_SERVER['PHP_SELF']) != '/') {
+                $message.= dirname($_SERVER['PHP_SELF']);
             }
 
             $message.= "/change_pw.php?webtag=$webtag&u={$mailto['UID']}&h={$mailto['PASSWD']}";
@@ -332,7 +328,7 @@ function email_send_pw_reminder($logon)
 
 function email_get_language($to_uid)
 {
-    global $forum_settings;
+    $forum_settings = get_forum_settings();
     
     $prefs = user_get_prefs($to_uid);
 

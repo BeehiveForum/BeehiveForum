@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.23 2004-04-12 15:34:48 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.24 2004-04-17 17:39:26 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -47,7 +47,7 @@ include_once("./include/user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -61,7 +61,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -97,40 +97,40 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
-    if (isset($HTTP_POST_VARS['allow_email']) && $HTTP_POST_VARS['allow_email'] == "Y") {
+    if (isset($_POST['allow_email']) && $_POST['allow_email'] == "Y") {
         $user_prefs['ALLOW_EMAIL'] = "Y";
     }else {
         $user_prefs['ALLOW_EMAIL'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['allow_pm']) && $HTTP_POST_VARS['allow_pm'] == "Y") {
+    if (isset($_POST['allow_pm']) && $_POST['allow_pm'] == "Y") {
         $user_prefs['ALLOW_PM'] = "Y";
     }else {
         $user_prefs['ALLOW_PM'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['email_notify']) && $HTTP_POST_VARS['email_notify'] == "Y") {
+    if (isset($_POST['email_notify']) && $_POST['email_notify'] == "Y") {
         $user_prefs['EMAIL_NOTIFY'] = "Y";
     }else {
         $user_prefs['EMAIL_NOTIFY'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['pm_notify_email']) && $HTTP_POST_VARS['pm_notify_email'] == "Y") {
+    if (isset($_POST['pm_notify_email']) && $_POST['pm_notify_email'] == "Y") {
         $user_prefs['PM_NOTIFY_EMAIL'] = "Y";
     }else {
         $user_prefs['PM_NOTIFY_EMAIL'] = "";
     }
 
-    if (isset($HTTP_POST_VARS['anon_logon']) && $HTTP_POST_VARS['anon_logon'] == "Y") {
+    if (isset($_POST['anon_logon']) && $_POST['anon_logon'] == "Y") {
         $user_prefs['ANON_LOGON'] = 1;
     }else {
         $user_prefs['ANON_LOGON'] = 0;
     }
 
-    if (isset($HTTP_POST_VARS['dob_display'])) {
-        $user_prefs['DOB_DISPLAY'] = _stripslashes(trim($HTTP_POST_VARS['dob_display']));
+    if (isset($_POST['dob_display'])) {
+        $user_prefs['DOB_DISPLAY'] = _stripslashes(trim($_POST['dob_display']));
     }else {
         $user_prefs['DOB_DISPLAY'] = 0;
     }
@@ -149,7 +149,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
 
     // IIS bug prevents redirect at same time as setting cookies.
 
-    if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+    if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
         header_redirect("./edit_email.php?webtag=$webtag&updated=true");
 
@@ -191,7 +191,7 @@ echo "<h1>{$lang['emailandprivacy']}</h1>\n";
 
 if (!empty($error_html)) {
     echo $error_html;
-}else if (isset($HTTP_GET_VARS['updated'])) {
+}else if (isset($_GET['updated'])) {
     echo "<h2>{$lang['preferencesupdated']}</h2>\n";
 }
 

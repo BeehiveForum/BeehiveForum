@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.43 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.44 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -68,40 +68,40 @@ $user_wordfilter = load_wordfilter();
 
 $user = bh_session_get_value('UID');
 
-if (isset($HTTP_GET_VARS['markread'])) {
+if (isset($_GET['markread'])) {
 
-    if ($HTTP_GET_VARS['markread'] == 2 && isset($HTTP_GET_VARS['tids']) && is_array($HTTP_GET_VARS['tids'])) {
-        threads_mark_read(explode(',', $HTTP_GET_VARS['tids']));
-    }elseif ($HTTP_GET_VARS['markread'] == 0) {
+    if ($_GET['markread'] == 2 && isset($_GET['tids']) && is_array($_GET['tids'])) {
+        threads_mark_read(explode(',', $_GET['tids']));
+    }elseif ($_GET['markread'] == 0) {
         threads_mark_all_read();
-    }elseif ($HTTP_GET_VARS['markread'] == 1) {
+    }elseif ($_GET['markread'] == 1) {
         threads_mark_50_read();
     }
 }
 
-if (!isset($HTTP_GET_VARS['mode'])) {
-    if (!isset($HTTP_COOKIE_VARS['bh_thread_mode'])) {
+if (!isset($_GET['mode'])) {
+    if (!isset($_COOKIE['bh_thread_mode'])) {
         if (threads_any_unread()) { // default to "Unread" messages for a logged-in user, unless there aren't any
             $mode = 1;
         }else {
             $mode = 0;
         }
     }else {
-        $mode = (is_numeric($HTTP_COOKIE_VARS['bh_thread_mode'])) ? $HTTP_COOKIE_VARS['bh_thread_mode'] : 0;
+        $mode = (is_numeric($_COOKIE['bh_thread_mode'])) ? $_COOKIE['bh_thread_mode'] : 0;
     }
 }else {
-    $mode = (is_numeric($HTTP_GET_VARS['mode'])) ? $HTTP_GET_VARS['mode'] : 0;
+    $mode = (is_numeric($_GET['mode'])) ? $_GET['mode'] : 0;
 }
 
-if (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
-    $folder = $HTTP_GET_VARS['folder'];
+if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+    $folder = $_GET['folder'];
     $mode = 0;
 }
 
 bh_setcookie('bh_thread_mode', $mode);
 
-if (isset($HTTP_GET_VARS['start_from']) && is_numeric($HTTP_GET_VARS['start_form'])) {
-    $start_from = $HTTP_GET_VARS['start_from'];
+if (isset($_GET['start_from']) && is_numeric($_GET['start_form'])) {
+    $start_from = $_GET['start_from'];
 }else {
     $start_from = 0;
 }
@@ -203,11 +203,11 @@ if (!is_array($folder_order)) $folder_order = array();
 
 // Sort the folders and threads correctly as per the URL query for the TID
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $threadvisible = false;
 
-    list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+    list($tid, $pid) = explode('.', $_GET['msg']);
 
     if (thread_can_view($tid, bh_session_get_value('UID'))) {
 
@@ -243,11 +243,11 @@ if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
 // Work out if any folders have no messages and add them.
 // Seperate them by INTEREST level
 
-if (isset($HTTP_GET_VARS['msg']) && validate_msg($HTTP_GET_VARS['msg'])) {
-    list($tid, $pid) = explode('.', $HTTP_GET_VARS['msg']);
+if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    list($tid, $pid) = explode('.', $_GET['msg']);
     list(,$selectedfolder) = thread_get($tid);
-}elseif (isset($HTTP_GET_VARS['folder']) && is_numeric($HTTP_GET_VARS['folder'])) {
-    $selectedfolder = $HTTP_GET_VARS['folder'];
+}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+    $selectedfolder = $_GET['folder'];
 }else {
     $selectedfolder = 0;
 }

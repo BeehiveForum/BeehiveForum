@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.49 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: logout.php,v 1.50 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -60,8 +60,8 @@ $user_wordfilter = load_wordfilter();
 
 if (bh_session_get_value('UID') == 0) {
 
-    if (isset($HTTP_GET_VARS['final_uri'])) {
-        $uri = "./index.php?webtag=$webtag&final_uri=". $HTTP_GET_VARS['final_uri'];
+    if (isset($_GET['final_uri'])) {
+        $uri = "./index.php?webtag=$webtag&final_uri=". $_GET['final_uri'];
     }else {
         $uri = "./index.php?webtag=$webtag";
     }
@@ -73,11 +73,11 @@ if (bh_session_get_value('UID') == 0) {
 
 // Where are we going after we've logged off?
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
     bh_session_end();
     
-    if (isset($HTTP_SERVER_VARS['SERVER_SOFTWARE']) && !strstr($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+    if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
     
         header_redirect("./index.php");
 

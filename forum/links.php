@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.48 2004-04-14 20:39:12 decoyduck Exp $ */
+/* $Id: links.php,v 1.49 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -48,7 +48,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -62,7 +62,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -100,19 +100,19 @@ if (forum_get_setting('show_links', 'N', false)) {
     exit;
 }
 
-if (isset($HTTP_GET_VARS['action'])) {
-    if (perm_is_moderator() && $HTTP_GET_VARS['action'] == "folderhide") {
-        links_folder_change_visibility($HTTP_GET_VARS['fid'], false);
-        $fid = $HTTP_GET_VARS['new_fid'];
-    } elseif (perm_is_moderator() && $HTTP_GET_VARS['action'] == "foldershow") {
-        links_folder_change_visibility($HTTP_GET_VARS['fid'], true);
-        $fid = $HTTP_GET_VARS['new_fid'];
-    } elseif (perm_is_moderator() && $HTTP_GET_VARS['action'] == "folderdel") {
+if (isset($_GET['action'])) {
+    if (perm_is_moderator() && $_GET['action'] == "folderhide") {
+        links_folder_change_visibility($_GET['fid'], false);
+        $fid = $_GET['new_fid'];
+    } elseif (perm_is_moderator() && $_GET['action'] == "foldershow") {
+        links_folder_change_visibility($_GET['fid'], true);
+        $fid = $_GET['new_fid'];
+    } elseif (perm_is_moderator() && $_GET['action'] == "folderdel") {
         $folders = links_folders_get(perm_is_moderator());
-        if (count(links_get_subfolders($HTTP_GET_VARS['fid'], $folders)) == 0) links_folder_delete($HTTP_GET_VARS['fid']);
-        $fid = $HTTP_GET_VARS['new_fid'];
-    } elseif ($HTTP_GET_VARS['action'] == "go") {
-        links_click($HTTP_GET_VARS['lid']);
+        if (count(links_get_subfolders($_GET['fid'], $folders)) == 0) links_folder_delete($_GET['fid']);
+        $fid = $_GET['new_fid'];
+    } elseif ($_GET['action'] == "go") {
+        links_click($_GET['lid']);
         exit;
     }
 }
@@ -126,9 +126,9 @@ if (!is_array($folders)) {
   $folders = links_folders_get(perm_is_moderator());
 }
 
-if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid']) && !isset($fid)) { // default to top level folder if no other valid folder specified
-    if (is_array($folders) && array_key_exists($HTTP_GET_VARS['fid'], $folders)) {
-        $fid = $HTTP_GET_VARS['fid'];
+if (isset($_GET['fid']) && is_numeric($_GET['fid']) && !isset($fid)) { // default to top level folder if no other valid folder specified
+    if (is_array($folders) && array_key_exists($_GET['fid'], $folders)) {
+        $fid = $_GET['fid'];
     } else {
         list($fid) = array_keys($folders);
     }
@@ -136,14 +136,14 @@ if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid']) && !isset(
     list($fid) = array_keys($folders);
 }
 
-if (isset($HTTP_GET_VARS['viewmode']) && is_numeric($HTTP_GET_VARS['viewmode']) && $HTTP_GET_VARS['viewmode'] == 1) {
-    $viewmode = $HTTP_GET_VARS['viewmode'];
+if (isset($_GET['viewmode']) && is_numeric($_GET['viewmode']) && $_GET['viewmode'] == 1) {
+    $viewmode = $_GET['viewmode'];
 }else {
     $viewmode = 0;
 }
 
-if (isset($HTTP_GET_VARS['page']) && is_numeric($HTTP_GET_VARS['page'])) {
-    $start = floor($HTTP_GET_VARS['page'] - 1) * 20;
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $start = floor($_GET['page'] - 1) * 20;
 }else {
     $start = 0;
 }
@@ -199,18 +199,18 @@ if ($viewmode == 0) {
     echo "<p>{$lang['listviewcannotaddfolders']}</p>\n";
 }
 
-if (isset($HTTP_GET_VARS['sort_by'])) { // this seems slightly wasteful, but it's for security - just passing $HTTP_GET_VARS['sort_by'] straight to the SQL query is not a good idea (what might happen if you tried to search by "TITLE; DROP DATABASE beehive;"?)
-    if ($HTTP_GET_VARS['sort_by'] == "TITLE") {
+if (isset($_GET['sort_by'])) { // this seems slightly wasteful, but it's for security - just passing $_GET['sort_by'] straight to the SQL query is not a good idea (what might happen if you tried to search by "TITLE; DROP DATABASE beehive;"?)
+    if ($_GET['sort_by'] == "TITLE") {
         $sort_by = "TITLE";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "DESCRIPTION") {
+    } elseif ($_GET['sort_by'] == "DESCRIPTION") {
         $sort_by = "DESCRIPTION";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "NICKNAME") {
+    } elseif ($_GET['sort_by'] == "NICKNAME") {
         $sort_by = "NICKNAME";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "CREATED") {
+    } elseif ($_GET['sort_by'] == "CREATED") {
         $sort_by = "CREATED";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "CLICKS") {
+    } elseif ($_GET['sort_by'] == "CLICKS") {
         $sort_by = "CLICKS";
-    } elseif ($HTTP_GET_VARS['sort_by'] == "RATING") {
+    } elseif ($_GET['sort_by'] == "RATING") {
         $sort_by = "RATING";
     }
 } else {
@@ -221,8 +221,8 @@ if (isset($HTTP_GET_VARS['sort_by'])) { // this seems slightly wasteful, but it'
     }
 }
 
-if (isset($HTTP_GET_VARS['sort_dir'])) {
-    if ($HTTP_GET_VARS['sort_dir'] == "DESC") {
+if (isset($_GET['sort_dir'])) {
+    if ($_GET['sort_dir'] == "DESC") {
         $sort_dir = "DESC";
     } else {
         $sort_dir = "ASC";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.52 2004-04-11 21:13:12 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.53 2004-04-17 17:39:25 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -49,7 +49,7 @@ include_once("./include/session.inc.php");
 
 if (!$user_sess = bh_session_check()) {
 
-    if (isset($HTTP_SERVER_VARS["REQUEST_METHOD"]) && $HTTP_SERVER_VARS["REQUEST_METHOD"] == "POST") {
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (perform_logon(false)) {
 	    
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 
             echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
 
-            foreach($HTTP_POST_VARS as $key => $value) {
+            foreach($_POST as $key => $value) {
 	        form_input_hidden($key, _htmlentities(_stripslashes($value)));
             }
 
@@ -102,17 +102,17 @@ if (!(bh_session_get_value('STATUS') & USER_PERM_SOLDIER)) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
     header_redirect('./admin_prof_sect.php');
 }
 
-if (isset($HTTP_GET_VARS['psid']) && is_numeric($HTTP_GET_VARS['psid'])) {
+if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
-  $psid = $HTTP_GET_VARS['psid'];
+  $psid = $_GET['psid'];
 
-}elseif (isset($HTTP_POST_VARS['t_psid']) && is_numeric($HTTP_POST_VARS['t_psid'])) {
+}elseif (isset($_POST['t_psid']) && is_numeric($_POST['t_psid'])) {
 
-  $psid = $HTTP_POST_VARS['t_psid'];
+  $psid = $_POST['t_psid'];
 
 }else {
 
@@ -124,28 +124,28 @@ if (isset($HTTP_GET_VARS['psid']) && is_numeric($HTTP_GET_VARS['psid'])) {
 
 }
 
-if (isset($HTTP_POST_VARS['submit'])) {
+if (isset($_POST['submit'])) {
 
-    if (isset($HTTP_POST_VARS['t_piid'])) {
+    if (isset($_POST['t_piid'])) {
 
-        foreach($HTTP_POST_VARS['t_piid'] as $piid => $value) {
+        foreach($_POST['t_piid'] as $piid => $value) {
 
-            if (($HTTP_POST_VARS['t_name'][$piid] != $HTTP_POST_VARS['t_old_name'][$piid]) || ($HTTP_POST_VARS['t_move'][$piid] != $psid) || ($HTTP_POST_VARS['t_position'][$piid] != $HTTP_POST_VARS['t_old_position'][$piid]) || ($HTTP_POST_VARS['t_type'][$piid] != $HTTP_POST_VARS['t_old_type'][$piid])) {
-                $new_name = (trim($HTTP_POST_VARS['t_name'][$piid]) != "") ? trim($HTTP_POST_VARS['t_name'][$piid]) : $HTTP_POST_VARS['t_old_name'][$piid];
-                profile_item_update($HTTP_POST_VARS['t_piid'][$piid], $HTTP_POST_VARS['t_move'][$piid], $HTTP_POST_VARS['t_position'][$piid], $HTTP_POST_VARS['t_type'][$piid], $new_name);
-                admin_addlog(0, 0, 0, 0, $psid, $HTTP_POST_VARS['t_piid'][$piid], 13);
+            if (($_POST['t_name'][$piid] != $_POST['t_old_name'][$piid]) || ($_POST['t_move'][$piid] != $psid) || ($_POST['t_position'][$piid] != $_POST['t_old_position'][$piid]) || ($_POST['t_type'][$piid] != $_POST['t_old_type'][$piid])) {
+                $new_name = (trim($_POST['t_name'][$piid]) != "") ? trim($_POST['t_name'][$piid]) : $_POST['t_old_name'][$piid];
+                profile_item_update($_POST['t_piid'][$piid], $_POST['t_move'][$piid], $_POST['t_position'][$piid], $_POST['t_type'][$piid], $new_name);
+                admin_addlog(0, 0, 0, 0, $psid, $_POST['t_piid'][$piid], 13);
             }
         }
     }
 
-    if (trim($HTTP_POST_VARS['t_name_new']) != "" && trim($HTTP_POST_VARS['t_name_new']) != $lang['newitem']) {
-        $new_piid = profile_item_create($psid, trim($HTTP_POST_VARS['t_name_new']), (isset($HTTP_POST_VARS['t_piid']) ? sizeof($HTTP_POST_VARS['t_piid']) : 1), $HTTP_POST_VARS['t_type_new']);
+    if (trim($_POST['t_name_new']) != "" && trim($_POST['t_name_new']) != $lang['newitem']) {
+        $new_piid = profile_item_create($psid, trim($_POST['t_name_new']), (isset($_POST['t_piid']) ? sizeof($_POST['t_piid']) : 1), $_POST['t_type_new']);
         admin_addlog(0, 0, 0, 0, $psid, $new_piid, 14);
     }
 
-}elseif (isset($HTTP_POST_VARS['t_delete'])) {
+}elseif (isset($_POST['t_delete'])) {
 
-    list($piid) = array_keys($HTTP_POST_VARS['t_delete']);
+    list($piid) = array_keys($_POST['t_delete']);
     profile_item_delete($piid);
     admin_addlog(0, 0, 0, 0, 0, $piid, 15);
 }

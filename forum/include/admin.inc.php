@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.33 2004-04-14 19:34:44 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.34 2004-04-17 17:39:28 decoyduck Exp $ */
 
 function admin_addlog($uid, $fid, $tid, $pid, $psid, $piid, $action)
 {
@@ -283,8 +283,6 @@ function admin_session_end($uid)
 
 function admin_get_users_attachments($uid)
 {
-    global $HTTP_SERVER_VARS, $forum_settings;
-
     $userattachments = false;
 
     $db_get_users_attachments = db_connect();
@@ -292,6 +290,8 @@ function admin_get_users_attachments($uid)
     if (!is_numeric($uid)) return false;
     
     if (!$table_data = get_table_prefix()) return $userattachments;
+    
+    $forum_settings = get_forum_settings();
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES WHERE UID = '$uid'";
     $result = db_query($sql, $db_get_users_attachments);

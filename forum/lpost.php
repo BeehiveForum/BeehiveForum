@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.39 2004-04-11 21:13:14 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.40 2004-04-17 17:39:27 decoyduck Exp $ */
 
 // Light Mode Detection
 define("BEEHIVEMODE_LIGHT", true);
@@ -85,14 +85,14 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
     exit;
 }
 
-if (isset($HTTP_POST_VARS['cancel'])) {
+if (isset($_POST['cancel'])) {
 
     $uri = "./lthread_list.php?webtag=$webtag";
 
-    if (isset($HTTP_POST_VARS['t_tid']) && isset($HTTP_POST_VARS['t_rpid'])) {
-        $uri.= "?msg={$HTTP_POST_VARS['t_tid']}.{$HTTP_POST_VARS['t_rpid']}";
-    }elseif (isset($HTTP_GET_VARS['replyto'])) {
-        $uri.= "?msg={$HTTP_GET_VARS['replyto']}";
+    if (isset($_POST['t_tid']) && isset($_POST['t_rpid'])) {
+        $uri.= "?msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
+    }elseif (isset($_GET['replyto'])) {
+        $uri.= "?msg={$_GET['replyto']}";
     }
 
     header_redirect($uri);
@@ -105,17 +105,17 @@ $valid = true;
 
 $newthread = false;
 
-if (isset($HTTP_POST_VARS['t_post_html'])) {
-    $t_post_html = $HTTP_POST_VARS['t_post_html'];
+if (isset($_POST['t_post_html'])) {
+    $t_post_html = $_POST['t_post_html'];
 }
 
-if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0, 2) == "U:") {
+if (isset($_POST['t_to_uid']) && substr($_POST['t_to_uid'], 0, 2) == "U:") {
 
-  $u_login = substr($HTTP_POST_VARS['t_to_uid'], 2);
+  $u_login = substr($_POST['t_to_uid'], 2);
 
   if ($touser = user_get($u_login)) {
 
-    $HTTP_POST_VARS['t_to_uid'] = $touser['UID'];
+    $_POST['t_to_uid'] = $touser['UID'];
     $t_to_uid = $touser['UID'];
 
   }else {
@@ -127,20 +127,20 @@ if (isset($HTTP_POST_VARS['t_to_uid']) && substr($HTTP_POST_VARS['t_to_uid'], 0,
 
 }
 
-if (isset($HTTP_POST_VARS['t_newthread'])) {
+if (isset($_POST['t_newthread'])) {
 
     $newthread = true;
 
-    if (isset($HTTP_POST_VARS['t_threadtitle']) && trim($HTTP_POST_VARS['t_threadtitle']) != "") {
-        $t_threadtitle = trim($HTTP_POST_VARS['t_threadtitle']);
+    if (isset($_POST['t_threadtitle']) && trim($_POST['t_threadtitle']) != "") {
+        $t_threadtitle = trim($_POST['t_threadtitle']);
     }else {
         $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_fid'])) {
-        if (folder_thread_type_allowed($HTTP_POST_VARS['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
-            $t_fid = $HTTP_POST_VARS['t_fid'];
+    if (isset($_POST['t_fid'])) {
+        if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+            $t_fid = $_POST['t_fid'];
         } else {
             $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
             $valid = false;
@@ -150,29 +150,29 @@ if (isset($HTTP_POST_VARS['t_newthread'])) {
         $valid = false;
     }
 
-    if (isset($HTTP_POST_VARS['t_content'])) {
-        $t_content = $HTTP_POST_VARS['t_content'];
+    if (isset($_POST['t_content'])) {
+        $t_content = $_POST['t_content'];
     }else {
         $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
         $valid = false;
     }
 
-    $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
-    $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "";
+    $t_sig = (isset($_POST['t_sig'])) ? $_POST['t_sig'] : "";
+    $t_sig_html = (isset($_POST['t_sig_html'])) ? $_POST['t_sig_html'] : "";
 
 }else {
 
-    if (isset($HTTP_POST_VARS['t_tid'])) {
+    if (isset($_POST['t_tid'])) {
 
-        if (isset($HTTP_POST_VARS['t_content']) && strlen($HTTP_POST_VARS['t_content']) > 0) {
-            $t_content = $HTTP_POST_VARS['t_content'];
+        if (isset($_POST['t_content']) && strlen($_POST['t_content']) > 0) {
+            $t_content = $_POST['t_content'];
         }else {
             $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
             $valid = false;
         }
 
-        $t_sig = (isset($HTTP_POST_VARS['t_sig'])) ? $HTTP_POST_VARS['t_sig'] : "";
-        $t_sig_html = (isset($HTTP_POST_VARS['t_sig_html'])) ? $HTTP_POST_VARS['t_sig_html'] : "N";
+        $t_sig = (isset($_POST['t_sig'])) ? $_POST['t_sig'] : "";
+        $t_sig_html = (isset($_POST['t_sig_html'])) ? $_POST['t_sig_html'] : "N";
 
     }else {
 
@@ -206,9 +206,9 @@ if ($valid) {
     }
 }
 
-if ($valid && isset($HTTP_POST_VARS['submit'])) {
+if ($valid && isset($_POST['submit'])) {
 
-    if (check_ddkey($HTTP_POST_VARS['t_dedupe'])) {
+    if (check_ddkey($_POST['t_dedupe'])) {
 
         if ($newthread) {
 
@@ -217,8 +217,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         }else {
 
-            $t_tid = $HTTP_POST_VARS['t_tid'];
-            $t_rpid = $HTTP_POST_VARS['t_rpid'];
+            $t_tid = $_POST['t_tid'];
+            $t_rpid = $_POST['t_rpid'];
 
         }
 
@@ -235,12 +235,12 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
             }
 
-            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $HTTP_POST_VARS['t_to_uid'], $t_content);
+            $new_pid = post_create($t_tid, $t_rpid, bh_session_get_value('UID'), $_POST['t_to_uid'], $t_content);
 
             if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_interest($t_tid, 1, $newthread);
 
-            email_sendnotification($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
-            email_sendsubscription($HTTP_POST_VARS['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
+            email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
+            email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", bh_session_get_value('UID'));
         }
 
     }else {
@@ -254,8 +254,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
         }else {
 
-            $t_tid = $HTTP_POST_VARS['t_tid'];
-            $t_rpid = $HTTP_POST_VARS['t_rpid'];
+            $t_tid = $_POST['t_tid'];
+            $t_rpid = $_POST['t_rpid'];
 
         }
     }
@@ -285,24 +285,24 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
 light_html_draw_top();
 
-if (!isset($HTTP_POST_VARS['aid'])) {
+if (!isset($_POST['aid'])) {
   $aid = md5(uniqid(rand()));
 }else {
-  $aid = $HTTP_POST_VARS['aid'];
+  $aid = $_POST['aid'];
 }
 
-if ($valid && isset($HTTP_POST_VARS['preview'])) {
+if ($valid && isset($_POST['preview'])) {
 
     echo "<h2>{$lang['messagepreview']}:</h2>";
 
-    if ($HTTP_POST_VARS['t_to_uid'] == 0) {
+    if ($_POST['t_to_uid'] == 0) {
 
       $preview_message['TLOGON'] = "ALL";
       $preview_message['TNICK'] = "ALL";
 
     }else {
 
-      $preview_tuser = user_get($HTTP_POST_VARS['t_to_uid']);
+      $preview_tuser = user_get($_POST['t_to_uid']);
       $preview_message['TLOGON'] = $preview_tuser['LOGON'];
       $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
       $preview_message['TO_UID'] = $preview_tuser['UID'];
@@ -349,36 +349,36 @@ if ($valid && isset($HTTP_POST_VARS['preview'])) {
 
 }
 
-if ($valid && isset($HTTP_POST_VARS['convert_html'])) {
+if ($valid && isset($_POST['convert_html'])) {
 
    $t_content = nl2br(_htmlentities(_stripslashes($t_content)));
    $t_post_html = "Y";
 
 }
 
-if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto'])) {
+if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
-    $replyto = $HTTP_GET_VARS['replyto'];
+    $replyto = $_GET['replyto'];
     list($reply_to_tid, $reply_to_pid) = explode(".", $replyto);
     $newthread = false;
 
-}elseif (isset($HTTP_POST_VARS['t_tid'])) {
+}elseif (isset($_POST['t_tid'])) {
 
-    $reply_to_tid = $HTTP_POST_VARS['t_tid'];
-    $reply_to_pid = $HTTP_POST_VARS['t_rpid'];
+    $reply_to_tid = $_POST['t_tid'];
+    $reply_to_pid = $_POST['t_rpid'];
     $newthread = false;
 
 }else {
 
     $newthread = true;
 
-    if (isset($HTTP_GET_VARS['fid']) && is_numeric($HTTP_GET_VARS['fid'])) {
+    if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
-        $t_fid = $HTTP_GET_VARS['fid'];
+        $t_fid = $_GET['fid'];
 
-    }elseif (isset($HTTP_POST_VARS['t_fid']) && is_numeric($HTTP_POST_VARS['t_fid'])) {
+    }elseif (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
 
-        $t_fid = $HTTP_POST_VARS['t_fid'];
+        $t_fid = $_POST['t_fid'];
 
     }else {
 
@@ -388,10 +388,10 @@ if (isset($HTTP_GET_VARS['replyto']) && validate_msg($HTTP_GET_VARS['replyto']))
 
 if (!$newthread) {
 
-    if (!isset($HTTP_POST_VARS['t_to_uid'])) {
+    if (!isset($_POST['t_to_uid'])) {
         $t_to_uid = message_get_user($reply_to_tid,$reply_to_pid);
     }else {
-        $t_to_uid = $HTTP_POST_VARS['t_to_uid'];
+        $t_to_uid = $_POST['t_to_uid'];
     }
 }
 
@@ -465,8 +465,8 @@ echo "</p>";
 
 echo "&nbsp;".light_form_submit("convert_html", $lang['converttoHTML']);
 
-if (isset($HTTP_POST_VARS['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe",$HTTP_POST_VARS['t_dedupe']);
+if (isset($_POST['t_dedupe'])) {
+    echo form_input_hidden("t_dedupe",$_POST['t_dedupe']);
 }else {
     echo form_input_hidden("t_dedupe",date("YmdHis"));
 }

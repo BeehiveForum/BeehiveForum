@@ -51,8 +51,11 @@ class TextAreaHTML {
 	// Returns the HTML for the toolbar
 	// ----------------------------------------------------
 	function toolbar ($emoticons = true, $custom_html = "") {
+		
 		global $lang;
-		global $webtag;
+		
+		$forum_settings = get_forum_settings();
+		$webtag = get_webtag();
 
 		$this->tbs++;
 
@@ -179,6 +182,7 @@ class TextAreaHTML {
 	//		$text = 'original' code submitted to fixhtml
 	// ----------------------------------------------------
 	function compare_original ($ta, $text) {
+		
 		global $lang;
 
 		$str = form_radio("co_".$ta."_rb", "correct", $lang['correctedcode'], true, "onClick=\"co_".$ta."_show('correct');\"")."\n";

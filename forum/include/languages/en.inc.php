@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.170 2004-09-08 21:56:55 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.171 2004-09-12 11:46:38 decoyduck Exp $ */
 
 // International English language file
 
@@ -506,7 +506,7 @@ $lang['uploadnewattachment'] = "Upload New Attachment";
 $lang['waitdotdot'] = "wait..";
 $lang['attachmentnospace'] = "Sorry, you do not have enough free attachment space. Please free some space and try again.";
 $lang['successfullyuploaded'] = "Successfully Uploaded";
-$lang['uploadfailed'] = "Upload Failed";
+$lang['failedtoupload'] = "Failed to upload:";
 $lang['errorfilesizeis0'] = "Error: Filesize must be greater than 0 bytes";
 $lang['complete'] = "Complete";
 $lang['uploadattachment'] = "Upload a file for attachment to the message";

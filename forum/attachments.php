@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.91 2004-08-04 23:46:33 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.92 2004-09-12 11:46:38 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -177,7 +177,7 @@ if (isset($_POST['upload'])) {
 
     if (isset($_FILES['userfile']) && is_array($_FILES['userfile'])) {
 
-        for ($i = 0; $i < sizeof($_FILES['userfile']); $i++) {
+        for ($i = 0; $i < sizeof($_FILES['userfile']['name']); $i++) {
 
             if (isset($_FILES['userfile']['name'][$i]) && strlen(trim($_FILES['userfile']['name'][$i])) > 0) {
 
@@ -245,11 +245,11 @@ if (isset($_POST['filecount']) && is_numeric($_POST['filecount'])) {
 }
 
 if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
-    echo "<h2>{$lang['successfullyuploaded']}: ", implode(",", $upload_success), "</h2>\n";
+    echo "<h2>{$lang['successfullyuploaded']}:<br />", implode(",<br />", $upload_success), ".</h2><br />\n";
 }
 
 if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
-    echo "<h2>{$lang['uploadfailed']}: ", implode(",", $upload_failure), "</h2>\n";
+    echo "<h2>{$lang['failedtoupload']}:<br />", implode(",<br />", $upload_failure), ".</h2><br />\n";
 }
 
 echo "<h1>{$lang['uploadattachment']}</h1>\n";

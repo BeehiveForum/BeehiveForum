@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.105 2004-12-22 22:21:10 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.106 2005-01-30 00:23:32 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
@@ -608,37 +608,9 @@ function draw_pm_message($pm_elements_array)
 
             foreach($attachments_array as $attachment) {
 
-                echo "<img src=\"", style_image('attach.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
-
-                if (forum_get_setting('attachment_use_old_method', 'Y', false)) {
-                    echo "<a href=\"get_attachment.php?webtag=$webtag&amp;hash=", $attachment['hash'], "\"";
-                }else {
-                    echo "<a href=\"get_attachment.php/", $attachment['hash'], "/", rawurlencode($attachment['filename']), "?webtag=$webtag\"";
-                }
-
-                if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == 'pm_write.php') {
-                    echo " target=\"_blank\"";
-                }else {
-                    echo " target=\"_self\"";
-                }
-
-                echo " title=\"";
-
-                if ($imageinfo = @getimagesize(forum_get_setting('attachment_dir'). '/'. md5($attachment['aid']. rawurldecode($attachment['filename'])))) {
-                    echo "{$lang['dimensions']}: ". $imageinfo[0]. " x ". $imageinfo[1]. ", ";
-                }
-
-                echo "{$lang['size']}: ". format_file_size($attachment['filesize']). ", ";
-                echo "{$lang['downloaded']}: ". $attachment['downloads'];
-
-                if ($attachment['downloads'] == 1) {
-                    echo " {$lang['time']}";
-                }else {
-                    echo " {$lang['times']}";
-                }
-
-                echo "\">{$attachment['filename']}</a><br />";
+                echo attachment_make_link($attachment), "<br />\n";
             }
+
             echo "</td></tr>\n";
         }
     }

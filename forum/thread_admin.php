@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_admin.php,v 1.27 2004-01-07 20:11:43 decoyduck Exp $ */
+/* $Id: thread_admin.php,v 1.28 2004-01-07 20:35:36 decoyduck Exp $ */
 
 // Enable the error handler
 require_once("./include/errorhandler.inc.php");
@@ -31,6 +31,7 @@ require_once("./include/forum.inc.php");
 require_once("./include/header.inc.php");
 require_once("./include/admin.inc.php");
 require_once("./include/messages.inc.php");
+require_once("./include/edit.inc.php");
 require_once("./include/folder.inc.php");
 require_once("./include/thread.inc.php");
 require_once("./include/constants.inc.php");
@@ -60,7 +61,17 @@ if (isset($HTTP_POST_VARS['rename']) && isset($HTTP_POST_VARS['t_tid']) && is_nu
     
     if (perm_is_moderator() || $threaddata['FROM_UID'] == bh_session_get_value('UID')) {
 
+        // Rename the thread
+        
         thread_change_title($tid, $name);
+        
+        // Apply an edit stamp to the first post in the thread
+        
+        $post_content = message_get_content($tid, 1);
+        post_update($tid, 1, $post_content);
+        
+        // If the user is a moderator log their action in the admin log.
+        
         if (perm_is_moderator()) admin_addlog(0, 0, $tid, 0, 0, 0, 21);
     }
 

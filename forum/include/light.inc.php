@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.66 2005-01-30 00:23:32 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.67 2005-01-30 17:27:50 decoyduck Exp $ */
 
 include_once("./include/forum.inc.php");
 include_once("./include/html.inc.php");
@@ -769,7 +769,14 @@ function light_attachment_make_link($attachment)
 
     $webtag = get_webtag($webtag_search);
 
-    return "<a href=\"get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}\">{$attachment['filename']}</a>";
+    $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
+
+    $attachment_link = "<img src=\"";
+    $attachment_link.= style_image('attach.png');
+    $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" />";
+    $attachment_link.= "<a href=\"$href\" target=\"_blank\">{$attachment['filename']}</a>";
+
+    return $attachment_link;
 }
 
 ?>

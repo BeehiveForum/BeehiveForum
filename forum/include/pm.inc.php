@@ -21,11 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.84 2004-08-14 21:40:36 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.85 2004-09-02 21:16:46 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/forum.inc.php");
 include_once("./include/lang.inc.php");
+include_once("./include/user.inc.php");
 
 function pm_markasread($mid)
 {
@@ -476,8 +477,14 @@ function pm_single_get($mid, $folder)
         // ------------------------------------------------------------
 
         if (($db_pm_list_get_row['TO_UID'] == $uid) && ($db_pm_list_get_row['TYPE'] == PM_UNREAD)) {
+
             pm_markasread($db_pm_list_get_row['MID']);
-            pm_add_sentitem($db_pm_list_get_row['MID']);
+
+            $user_prefs = user_get_prefs($db_pm_list_get_row['FROM_UID']);
+
+            if (!isset($user_prefs['PM_SAVE_SENT_ITEM']) || $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+                pm_add_sentitem($db_pm_list_get_row['MID']);
+            }
         }
 
         return $db_pm_list_get_row;
@@ -802,8 +809,14 @@ function pm_delete_message($mid)
     // ------------------------------------------------------------
 
     if (($db_delete_pm_row['TO_UID'] == $uid) && ($db_delete_pm_row['TYPE'] == PM_UNREAD)) {
+
         pm_markasread($mid);
-        pm_add_sentitem($mid);
+
+        $user_prefs = user_get_prefs($db_pm_list_get_row['FROM_UID']);
+
+        if (!isset($user_prefs['PM_SAVE_SENT_ITEM']) || $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+            pm_add_sentitem($mid);
+        }
     }
 
     // ------------------------------------------------------------
@@ -845,8 +858,14 @@ function pm_archive_message($mid)
     $db_pm_archive_message_row = db_fetch_array($result);
 
     if (($db_pm_archive_message_row['TO_UID'] == $uid) && ($db_pm_archive_message_row['TYPE'] == PM_UNREAD)) {
+
         pm_markasread($mid);
-        pm_add_sentitem($mid);
+
+        $user_prefs = user_get_prefs($db_pm_list_get_row['FROM_UID']);
+
+        if (!isset($user_prefs['PM_SAVE_SENT_ITEM']) || $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+            pm_add_sentitem($mid);
+        }
     }
 
     // ------------------------------------------------------------

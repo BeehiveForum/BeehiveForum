@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.166 2004-08-29 18:06:20 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.167 2004-09-02 21:16:43 decoyduck Exp $ */
 
 // International English language file
 
@@ -953,6 +953,8 @@ $lang['automaticallyparseurlsbydefault'] = "Automatically parse URLs in messages
 $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-linebreaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
+$lang['privatemessageoptions'] = "Private Message Options";
+$lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
 
 // Polls (create_poll.php, pollresults.php) ---------------------------------------------
 

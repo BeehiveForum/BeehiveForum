@@ -204,7 +204,7 @@ while (list($key1, $folder) = each($folder_order)) {
 		echo "<tr><td class=\"threads\" style=\"border-top: 0;\">";
 	}
 	echo "</td></tr>\n";
-	$thread_info = "";
+	reset($thread_info);
 }
 
 echo "</table>\n";

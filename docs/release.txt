@@ -26,7 +26,7 @@ What's new in 0.3
         - Guest access is now optional.
         - Other changes to polls, such as the ability to post an explanatory
           message at the same time as you post the poll.
-        - Various new UI stuff - friend / attatchment icons in the thread list,
+        - Various new UI stuff - friend / attachment icons in the thread list,
           link back to the voting form in a poll thread, etc.
         - Polls are now slightly more anonymous (at least, it's not trivial for
           someone with database access to see how you voted, but neither is it

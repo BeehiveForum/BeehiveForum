@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.80 2004-04-13 14:16:45 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.81 2004-04-14 19:34:44 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -537,14 +537,12 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
                 echo $attachment['filename']. "</a></td>\n";
             }
 
-            if ($messagelink = get_message_link($attachment['aid']) && $attachment['deleted'] == 0) {
+            if ($messagelink = get_message_link($attachment['aid'])) {
                 if (strstr($messagelink, 'messages.php')) {
                     echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\"><a href=\"", $messagelink, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
                 }else {
                     echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
                 }
-            }elseif ($attachment['deleted'] == 1) {
-                echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\">{$lang['deleted']}</td>\n";
             }else {
                 echo "                        <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
 	    }
@@ -552,13 +550,7 @@ if (isset($HTTP_POST_VARS['t_delete_posts'])) {
             echo "                        <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachment['filesize']). "</td>\n";
             echo "                        <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
             echo "                          ", form_input_hidden('hash', $attachment['hash']), "\n";
-
-	    if ($attachment['deleted'] == 1) {
-                echo "                          ", form_submit('del', $lang['removefile']), "\n";
-	    }else {
-                echo "                          ", form_submit('del', $lang['delete']), "\n";
-	    }
-
+            echo "                          ", form_submit('del', $lang['delete']), "\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.59 2004-04-14 19:21:26 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.60 2004-04-14 19:34:44 decoyduck Exp $ */
 
 include_once("./include/edit.inc.php");
 include_once("./include/perm.inc.php");
@@ -40,7 +40,7 @@ function get_attachments($uid, $aid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE UID = '$uid' AND AID = '$aid' AND DELETED = 0";
+    $sql.= "WHERE UID = '$uid' AND AID = '$aid'";
 
     $result = db_query($sql, $db_get_attachments);
 
@@ -77,7 +77,7 @@ function get_all_attachments($uid, $aid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE UID = '$uid' AND AID <> '$aid' AND DELETED = 0";
+    $sql.= "WHERE UID = '$uid' AND AID <> '$aid'";
 
     $result = db_query($sql, $db_get_all_attachments);
 
@@ -113,7 +113,7 @@ function get_users_attachments($uid)
     if (!$table_data = get_table_prefix()) return $userattachments;
 
     $sql = "SELECT DISTINCT * FROM {$table_data['PREFIX']}POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE UID = '$uid' AND DELETED = 0";
+    $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_get_users_attachments);
 

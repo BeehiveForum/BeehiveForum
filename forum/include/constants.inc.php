@@ -1,7 +1,7 @@
 <?php
 // Beehive Constants
 
-define("BEEHIVE_VERSION", "0.4.1-dev9");
+define("BEEHIVE_VERSION", "0.4.1/0.5-alpha");
 
 define("YEAR_IN_SECONDS",31536000);
 define("DAY_IN_SECONDS", 86400);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.60 2004-03-20 19:21:30 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.61 2004-03-20 22:33:32 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -238,7 +238,7 @@ if (sizeof($user_array) > 0) {
         
         echo "</td>\n";
         
-        if (is_null($user['LAST_LOGON'])) {
+        if (!isset($user['LAST_LOGON']) || is_null($user['LAST_LOGON'])) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
         }else {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_LOGON'], 1), "</td>\n";

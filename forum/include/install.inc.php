@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.18 2004-12-14 08:33:29 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.19 2004-12-17 16:04:44 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once("./include/config.inc.php");
@@ -136,7 +136,7 @@ function install_incomplete()
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <form method=\"get\" action=\"./install.php\">\n";
+    echo "  <form method=\"get\" action=\"./install.php\" target=\"_top\">\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "      <tr>\n";
     echo "        <td width=\"500\">&nbsp;</td>\n";

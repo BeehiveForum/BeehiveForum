@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.60 2004-12-11 14:37:29 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.61 2004-12-17 16:04:48 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -151,7 +151,7 @@ if (isset($_POST['submit'])) {
     }
 
     if (isset($_POST['sig']) && is_numeric($_POST['sig'])) {
-        $t_rel+= $_POST['rel'];
+        $t_rel+= $_POST['sig'];
     }else {
         $t_rel+= 0;
     }

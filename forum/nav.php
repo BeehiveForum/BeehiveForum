@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.41 2004-01-15 00:17:21 decoyduck Exp $ */
+/* $Id: nav.php,v 1.42 2004-01-15 13:29:36 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -43,7 +43,7 @@ bh_session_check();
 
 header_no_cache();
 
-html_draw_top("class=navpage", "refresh=60");
+html_draw_top("class=navpage");
 
 echo "<a href=\"start.php\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
 echo "<a href=\"discussion.php\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
@@ -54,19 +54,12 @@ if ($show_links) {
 
 bh_session_check();
 
-//if (bh_session_get_value('UID') > 0) {
+if ($show_pms) {
+    echo "<a href=\"pm.php\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
+}
 
-    if ($show_pms) {
-        if (bh_session_get_value('UID') > 0 && pm_new_check(false)) {
-            echo "<a href=\"pm.php\" target=\"main\">{$lang['pminbox']}</a> <img src=\"", style_image("pmnew.png"), "\" />&nbsp;|&nbsp;\n";
-        }else {
-            echo "<a href=\"pm.php\" target=\"main\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
-        }
-    }
-
-    echo "<a href=\"prefs.php\" target=\"main\">{$lang['preferences']}</a>&nbsp;|&nbsp;\n";
-    echo "<a href=\"profile.php\" target=\"main\">{$lang['profile']}</a>&nbsp;|&nbsp;\n";
-//}
+echo "<a href=\"prefs.php\" target=\"main\">{$lang['preferences']}</a>&nbsp;|&nbsp;\n";
+echo "<a href=\"profile.php\" target=\"main\">{$lang['profile']}</a>&nbsp;|&nbsp;\n";
 
 if (bh_session_get_value('STATUS') & USER_PERM_SOLDIER) {
     echo "<a href=\"admin.php\" target=\"main\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";

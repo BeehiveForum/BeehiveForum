@@ -32,7 +32,7 @@ function post_update($tid,$pid,$content)
     }
     $db_post_update = db_connect();
 
-    $content = mysql_escape_string($content);
+    $content = addslashes($content);
 
     $sql = "update " . forum_table("POST_CONTENT") . " set CONTENT = \"$content\" ";
     $sql .= "where TID = $tid and PID = $pid";

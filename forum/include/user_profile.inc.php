@@ -27,7 +27,7 @@ require_once("./include/db.inc.php");
 function user_profile_create($uid,$piid,$entry)
 {
     $db_user_profile_create = db_connect();
-    $entry = mysql_escape_string($entry);
+    $entry = addslashes($entry);
     $sql = "insert into " . forum_table("USER_PROFILE") . " (UID,PIID,ENTRY) ";
     $sql.= "values ($uid,$piid,\"". htmlspecialchars($entry). "\")";
     $result = db_query($sql, $db_user_profile_create);
@@ -37,7 +37,7 @@ function user_profile_create($uid,$piid,$entry)
 function user_profile_update($uid,$piid,$entry)
 {
     $db_user_profile_update = db_connect();
-    $entry = mysql_escape_string($entry);
+    $entry = addslashes($entry);
     $sql = "update " . forum_table("USER_PROFILE") . " ";
     $sql.= "set ENTRY = \"". htmlspecialchars($entry) ."\" ";
     $sql.= "where UID = $uid ";

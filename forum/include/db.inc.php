@@ -85,6 +85,13 @@ function db_num_rows ($resource_id)
     return $num_rows;
 }
 
+// Returns the number of rows affected by a query when passed the resource ID
+function db_affected_rows ($resource_id)
+{
+    $results = mysql_affected_rows($conn);
+    return $results;
+}
+
 // Returns a result array when passed the resource ID - this is superior to mysql_fetch_row(), and can be used in exactly the same way
 function db_fetch_array ($resource_id)
 {

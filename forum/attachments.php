@@ -160,9 +160,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
 <?php
 
-  $attachments = get_attachments($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid']);
-
-  if (is_array($attachments)) {
+  if ($attachments = get_attachments($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 
@@ -250,9 +248,7 @@ if (isset($HTTP_POST_VARS['submit'])) {
   </tr>
 <?php
 
-  $attachments = get_all_attachments($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid']);
-
-  if (is_array($attachments)) {
+  if ($attachments = get_all_attachments($HTTP_COOKIE_VARS['bh_sess_uid'], $HTTP_GET_VARS['aid'])) {
 
     for ($i = 0; $i < sizeof($attachments); $i++) {
 

@@ -37,7 +37,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
     $searchsql.= "THREAD.FID in ($folders) ";
   }
   
-  $searchsql.= search_date_range($argarray['date_from'], $argarray['date_to']);
+  $daterange.= search_date_range($argarray['date_from'], $argarray['date_to']);
   
   if (!empty($argarray['search_string'])) {
   
@@ -66,7 +66,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
         
       }else {
       
-        $searchsql.= " AND (". $threadtitle. ") OR (". $postcontent. ") ";
+        $searchsql.= " AND (". $threadtitle. " ". $daterange. ") OR (". $postcontent. " ". $daterange. ") ";
         
       }
       
@@ -95,7 +95,7 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
         
       }else {
       
-        $searchsql.= "AND (". $threadtitle. ") OR (". $postcontent. ") ";
+        $searchsql.= " AND (". $threadtitle. " ". $daterange. ") OR (". $postcontent. " ". $daterange. ") ";
         
       }
     
@@ -105,6 +105,10 @@ function search_construct_query($argarray, &$searchsql, &$urlquery)
       $searchsql.= "OR POST_CONTENT.CONTENT LIKE '%". $argarray['search_string']. "%') ";
 
     }
+    
+  }else {
+  
+    $searchsql.= $daterange;
     
   }
   
@@ -271,8 +275,8 @@ function search_date_range($from, $to)
       
     }
     
-    if (isset($from_timestamp)) $range = "AND POST.CREATED >= FROM_UNIXTIME($from_timestamp) ";
-    if (isset($to_timestamp)) $range.= "AND POST.CREATED <= FROM_UNIXTIME($to_timestamp) ";
+    if (isset($from_timestamp)) $range = "AND POST.CREATED >= FROM_UNIXTIME($from_timestamp)";
+    if (isset($to_timestamp)) $range.= " AND POST.CREATED <= FROM_UNIXTIME($to_timestamp)";
     
     return $range;
     

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.12 2004-12-19 17:22:26 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.13 2004-12-22 19:11:46 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -431,7 +431,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
+$sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_FILES (";
 $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -451,7 +451,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE POST_ATTACHMENT_IDS (";
+$sql = "CREATE TABLE {$forum_webtag}_POST_ATTACHMENT_IDS (";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -930,21 +930,26 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$dictionary_words = file('./install/english.dic');
+if (@$fp = fopen('./install/english.dic', 'r')) {
 
-foreach($dictionary_words as $word) {
+    while (!feof($fp)) {
 
-    $metaphone = addslashes(metaphone(trim($word)));
-    $word = addslashes(trim($word));
+        $word = fgets($fp, 100);
 
-    $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
-    $sql.= "VALUES ('$word', '$metaphone', 0)";
+        $metaphone = addslashes(metaphone(trim($word)));
+        $word = addslashes(trim($word));
 
-    if (!$result = db_query($sql, $db_install)) {
+        $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
+        $sql.= "VALUES ('$word', '$metaphone', 0)";
 
-        $valid = false;
-        return;
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
+
+    fclose($fp);
 }
 
 ?>

@@ -54,7 +54,7 @@ if (isset($HTTP_GET_VARS['action'])) {
         $fid = $HTTP_GET_VARS['new_fid'];
     } elseif (perm_is_moderator() && $HTTP_GET_VARS['action'] == "folderdel") {
         $folders = links_folders_get(perm_is_moderator());
-        if (count(links_get_subfolders($val, $folders)) == 0) links_folder_delete($HTTP_GET_VARS['fid']);
+        if (count(links_get_subfolders($HTTP_GET_VARS['fid'], $folders)) == 0) links_folder_delete($HTTP_GET_VARS['fid']);
         $fid = $HTTP_GET_VARS['new_fid'];
     } elseif ($HTTP_GET_VARS['action'] == "go") {
         links_click($HTTP_GET_VARS['lid']);

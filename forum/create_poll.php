@@ -76,7 +76,7 @@ if (isset($HTTP_POST_VARS['cancel'])) {
   }
   
 }
-  
+
 if ($valid && isset($HTTP_POST_VARS['submit'])) {
 
   $db = db_connect();
@@ -134,6 +134,8 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
     $pid = post_create($tid, 0, $HTTP_COOKIE_VARS['bh_sess_uid'], 0, '');    
     poll_create($tid, $HTTP_POST_VARS['answers'], $poll_closes, $HTTP_POST_VARS['changevote'], $HTTP_POST_VARS['polltype'], $HTTP_POST_VARS['showresults']);
     
+    if ($HTTP_COOKIE_VARS['bh_sess_markread']) thread_set_interest($tid, 1, true);
+    
   }
     
   $uri = "./discussion.php?msg=$tid.1";   
@@ -144,8 +146,67 @@ if ($valid && isset($HTTP_POST_VARS['submit'])) {
 html_draw_top();
 
 if ($valid && isset($HTTP_POST_VARS['preview'])) {
+
+  echo "<h2>Preview:</h2>";
+
+  $polldata['TLOGON'] = "ALL";
+  $polldata['TNICK'] = "ALL";
   
-  // draw the preview
+  $preview_tuser = user_get($HTTP_COOKIE_VARS['bh_sess_uid']);
+  
+  $polldata['FLOGON'] = $preview_tuser['LOGON'];
+  $polldata['FNICK'] = $preview_tuser['NICKNAME'];
+  $polldata['FROM_UID'] = $preview_tuser['UID'];  
+
+  $polldata['CONTENT'] = "<br>\n";
+  $polldata['CONTENT'].= "<table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"475\">\n";
+  $polldata['CONTENT'].= "  <tr>\n";
+  $polldata['CONTENT'].= "    <td>\n";
+  $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";  
+  $polldata['CONTENT'].= "        <tr>\n";
+  $polldata['CONTENT'].= "          <td><h2>". stripslashes($HTTP_POST_VARS['question']). "</h2></td>\n";
+  $polldata['CONTENT'].= "        </tr>\n";
+  $polldata['CONTENT'].= "        <tr>\n";
+  $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
+  $polldata['CONTENT'].= "            <ul>\n";
+  
+  for ($i = 0; $i < 5; $i++) {
+    if (!empty($HTTP_POST_VARS['answers'][$i])) {
+      if ($HTTP_POST_VARS['t_post_html'] == 'Y') {
+        $polldata['CONTENT'].= "          <li>". fix_html(stripslashes($HTTP_POST_VARS['answers'][$i])). "</li>\n";
+      }else {
+        $polldata['CONTENT'].= "          <li>". make_html(stripslashes($HTTP_POST_VARS['answers'][$i])). "</li>\n";
+      }
+    }
+  }
+  
+  $polldata['CONTENT'].= "            </ul>\n";  
+  $polldata['CONTENT'].= "          </td>\n";
+  $polldata['CONTENT'].= "        </tr>\n";
+  $polldata['CONTENT'].= "      </table>\n";    
+  $polldata['CONTENT'].= "    </td>\n"; 
+  $polldata['CONTENT'].= "  </tr>\n"; 
+  $polldata['CONTENT'].= "  <tr>\n";
+  $polldata['CONTENT'].= "    <td>";
+  $polldata['CONTENT'].= "      <table width=\"95%\" align=\"center\">\n";
+  $polldata['CONTENT'].= "        <tr>\n";
+  $polldata['CONTENT'].= "          <td class=\"postbody\">";
+  
+  if ($HTTP_POST_VARS['changevote'] == 1) {
+    $polldata['CONTENT'].= "You will be able to change your vote.";
+  }else {
+    $polldata['CONTENT'].= "You will not be able to change your vote.";
+  }
+  
+  $polldata['CONTENT'].= "          </td>";
+  $polldata['CONTENT'].= "        </tr>\n";
+  $polldata['CONTENT'].= "      </table>\n";
+  $polldata['CONTENT'].= "    </td>";
+  $polldata['CONTENT'].= "  </tr>\n";
+  $polldata['CONTENT'].= "</table>\n";
+  $polldata['CONTENT'].= "<br><br>\n";
+  
+  message_display(0, $polldata, 0, 0, false, false, false);
     
 }
 
@@ -208,7 +269,7 @@ if(isset($HTTP_POST_VARS['t_dedupe'])) {
             <td>5. <?php echo form_input_text("answers[]", htmlspecialchars(stripslashes($HTTP_POST_VARS['answers'][4])), 40, 64); ?></td>
           </tr>
           <tr>
-            <td><?php echo form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", ($t_post_html == "Y")); ?></td>
+            <td><?php echo form_checkbox("t_post_html", "Y", "Contains HTML (not including signature)", ($HTTP_POST_VARS['t_post_html'] == "Y")); ?></td>
           </tr>           
           <tr>
             <td>&nbsp;</td>

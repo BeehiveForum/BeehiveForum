@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.5 2004-02-27 22:00:13 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.6 2004-03-04 20:30:35 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -259,133 +259,132 @@ if (!empty($error_html)) {
 }
 
 echo "<br />\n";
-echo "<div class=\"postbody\">\n";
-echo "  <form name=\"prefs\" action=\"forum_options.php\" method=\"post\" target=\"_self\">\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"box\">\n";
-echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
-echo "                <table class=\"posthead\" width=\"500\">\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['timezone']}</td>\n";
+echo "<form name=\"prefs\" action=\"forum_options.php\" method=\"post\" target=\"_self\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"500\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['timezone']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"250\">{$lang['timezonefromGMT']}:</td>\n";
+echo "                  <td>", form_dropdown_array("timezone", $timezones_data, $timezones, (isset($user_prefs['TIMEZONE']) ? $user_prefs['TIMEZONE'] : 0)), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) ? $user_prefs['DL_SAVING'] : 0)), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"500\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['language']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"250\">{$lang['preferredlang']}:</td>\n";
+echo "                  <td>", form_dropdown_array("language", $available_langs, $available_langs_labels, (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"500\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['display']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("view_sigs", "Y", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "Y") ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y") ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("images_to_links", "Y", $lang['convertimagestolinks'], (isset($user_prefs['IMAGES_TO_LINKS']) && $user_prefs['IMAGES_TO_LINKS'] == "Y") ? true : false), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == 1) ? true : false), "</td>\n";
 echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td width=\"250\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                    <td>", form_dropdown_array("timezone", $timezones_data, $timezones, (isset($user_prefs['TIMEZONE']) ? $user_prefs['TIMEZONE'] : 0)), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) ? $user_prefs['DL_SAVING'] : 0)), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\">&nbsp;</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "    <br />\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"box\">\n";
-echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
-echo "                <table class=\"posthead\" width=\"500\">\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['language']}</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td width=\"250\">{$lang['preferredlang']}:</td>\n";
-echo "                    <td>", form_dropdown_array("language", $available_langs, $available_langs_labels, (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\">&nbsp;</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "    <br />\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"box\">\n";
-echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
-echo "                <table class=\"posthead\" width=\"500\">\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['display']}</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("view_sigs", "Y", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "Y") ? true : false), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("pm_notify", "Y", $lang['notifyofnewpm'], (isset($user_prefs['PM_NOTIFY']) && $user_prefs['PM_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y") ? true : false), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("images_to_links", "Y", $lang['convertimagestolinks'], (isset($user_prefs['IMAGES_TO_LINKS']) && $user_prefs['IMAGES_TO_LINKS'] == "Y") ? true : false), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == 1) ? true : false), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\">&nbsp;</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "    <br />\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table class=\"box\">\n";
-echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
-echo "                <table class=\"posthead\" width=\"500\">\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\" class=\"subhead\">{$lang['style']}</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td width=\"250\">{$lang['postsperpage']}:</td>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"500\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['style']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"250\">{$lang['postsperpage']}:</td>\n";
 
 if (isset($user_prefs['POSTS_PER_PAGE'])) {
-    echo "                    <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), $user_prefs['POSTS_PER_PAGE']), "</td>\n";
+    echo "                  <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), $user_prefs['POSTS_PER_PAGE']), "</td>\n";
 }else {
-    echo "                    <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), 10), "</td>\n";
+    echo "                  <td>", form_dropdown_array("posts_per_page", array(5,10,20), array(5,10,20), 10), "</td>\n";
 }
 
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td width=\"250\">{$lang['fontsize']}:</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"250\">{$lang['fontsize']}:</td>\n";
 
 if (isset($user_prefs['FONT_SIZE'])) {
     if ($user_prefs['FONT_SIZE'] == '') {
-        echo "                    <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), '10pt'), "</td>\n";
+        echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), '10pt'), "</td>\n";
     }else{
-        echo "                    <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE']), "</td>\n";
+        echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), $user_prefs['FONT_SIZE']), "</td>\n";
     }
 }else {
-    echo "                    <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), '10pt'), "</td>\n";
+    echo "                  <td>", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), '10pt'), "</td>\n";
 }
 
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td width=\"250\">{$lang['forumstyle']}:</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"250\">{$lang['forumstyle']}:</td>\n";
 
 if (_in_array($user_prefs['STYLE'], $available_styles)) {
     $selected_style = $user_prefs['STYLE'];
@@ -402,37 +401,39 @@ foreach ($available_styles as $key => $style) {
 reset($available_styles);
       
 if (isset($key)) {
-    echo "                    <td>", form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]), "</td>\n";
+    echo "                  <td>", form_dropdown_array("style", $available_styles, $style_names, $available_styles[$key]), "</td>\n";
 }else {
-    echo "                    <td>", form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]), "</td>\n";
+    echo "                  <td>", form_dropdown_array("style", $available_styles, $style_names, $available_styles[0]), "</td>\n";
 }
 
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td width=\"250\">{$lang['startpage']}:</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"250\">{$lang['startpage']}:</td>\n";
 
 if (isset($user_prefs['START_PAGE'])) {
-    echo "                    <td>", form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), $user_prefs['START_PAGE']), "</td>\n";
+    echo "                  <td>", form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), $user_prefs['START_PAGE']), "</td>\n";
 }else {
-    echo "                    <td>", form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), 0), "</td>\n";
+    echo "                  <td>", form_dropdown_array("start_page", range(0, 2), array($lang['start'], $lang['messages'], $lang['pminbox']), 0), "</td>\n";
 }
 
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td colspan=\"2\">&nbsp;</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "      <tr>\n";
-echo "        <td align=\"center\"><p>", form_submit("submit", $lang['save']), "</p></td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "  </form>\n";
-echo "</div>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.15 2004-01-31 21:53:12 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.16 2004-03-04 20:30:35 decoyduck Exp $ */
 
 // Compress the output
 require_once("./include/gzipenc.inc.php");
@@ -56,6 +56,8 @@ require_once("./include/profile.inc.php");
 
 html_draw_top();
 
+echo "<h1>{$lang['editprofile']}</h1>\n";
+
 $uid = bh_session_get_value('UID');
 
 // Do updates
@@ -67,19 +69,14 @@ if (isset($HTTP_POST_VARS['submit'])) {
         $entry = trim($HTTP_POST_VARS['t_entry'][$i]);
         user_profile_update($uid, $HTTP_POST_VARS['t_piid'][$i], $entry);
     }
-
-    echo "<h1>{$lang['editprofile']}</h1>\n";
-    echo "<p>{$lang['profileupdated']}</p>";
-
-}else {
-
-    echo "<h1>{$lang['editprofile']}</h1>\n";
-    echo "<br />\n";
+    
+    echo "<h2>{$lang['profileupdated']}</h2>";
 }
 
 if ($profile_values = profile_get_user_values($uid)) {
 
     // Draw the form
+    echo "<br />\n";
     echo "<form name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
@@ -149,9 +146,12 @@ if ($profile_values = profile_get_user_values($uid)) {
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\"><p>", form_submit("submit", $lang['save']), "</p></td>\n";
-    echo "    </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td>&nbsp;</td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+    echo "      </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
 

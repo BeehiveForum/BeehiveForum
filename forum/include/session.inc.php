@@ -21,13 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.48 2003-09-21 13:36:36 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.49 2003-09-21 13:44:00 decoyduck Exp $ */
 
 require_once("./include/forum.inc.php");
 require_once("./include/config.inc.php");
 require_once("./include/user.inc.php");
 require_once("./include/format.inc.php");
 require_once("./include/ip.inc.php");
+require_once("./include/html.inc.php");
 
 // Updates the sessions. Removes stale sessions and checks the stats
 
@@ -199,6 +200,18 @@ function bh_session_init($uid)
 
 function bh_session_end()
 {
+    // Delete the session data from the database
+
+    $db_bh_session_end = db_connect();
+
+    $uid = bh_session_get_value('UID');
+    $ipaddress = get_ip_address();
+
+    $sql = "DELETE FROM ". forum_table("SESSIONS"). " WHERE UID = $uid ";
+    $sql.= "AND IPADDRESS = '$ipaddress'";
+
+    $result = db_query($sql, $db_bh_session_end);
+
     // Session cookies
 
     bh_setcookie("bh_sess_data", "", time() - YEAR_IN_SECONDS);

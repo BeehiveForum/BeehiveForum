@@ -21,25 +21,33 @@ USA
 ======================================================================*/
 
 // fix_html - process html to prevent it breaking the forum
+//            (e.g. close open tags, filter certain tags)
 
 // "$bad_tags" is an array of tags to be filtered
 function fix_html($html, $bad_tags = array("plaintext"))
 {
+	$opentags = array();
+	$last_tag = array();
+	$single_tags = array("br","img","hr","!--");
+	$no_nest = array("p");
+
+	$html_parts = array();
+	//$html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
+
 	$open_pos = strpos($html, "<");
 	$next_open_pos = strpos($html, "<", $open_pos+1);
 	$close_pos = strpos($html, ">");
 
-	$html_parts = array();
-
+	// Split by < and >
 	while(is_integer($open_pos) || is_integer($close_pos)){
 		if(substr($html, $open_pos+1, 3) == "!--"){
 			$end_comment = strpos($html, "-->", $open_pos);
 			if(!is_integer($end_comment)){
-				$html = substr($html, 0, $open_pos+4)." -->".substr($html, $open_pos+4);
+				$html = substr_replace($html, " -->", $open_pos+4, 0);
 				$end_comment = $open_pos+5;
 			}
 			if(substr($html, $open_pos+4, 1) != " "){
-				$html = substr($html, 0, $open_pos+4)." ".substr($html, $open_pos+4);
+				$html = substr_replace($html, " ", $open_pos+4, 0);
 				$end_comment++;
 			}
 
@@ -50,19 +58,20 @@ function fix_html($html, $bad_tags = array("plaintext"))
 
 		} else if(!is_integer($open_pos) || $close_pos < $open_pos){
 			// > by itself
-			$html = substr($html, 0, $close_pos)."&gt;".substr($html, $close_pos+1);
+			$html = substr_replace($html, "&gt;", $close_pos, 1);
 
 		} else if(!is_integer($close_pos)){
 			// < by itself
-			$html = substr($html, 0, $open_pos)."&lt;".substr($html, $open_pos+1);
+			$html = substr_replace($html, "&lt;", $open_pos, 1);
 
 		} else if($next_open_pos < $close_pos && is_integer($next_open_pos)){
 			// < inside <..>
-			$html = substr($html, 0, $open_pos)."&lt;".substr($html, $open_pos+1);
+			$html = substr_replace($html, "&lt;", $open_pos, 1);
 
 		} else if($open_pos+1 == $close_pos || substr($html, $open_pos+1, 1) == " "){
 			// empty tag < >
-			$html = substr($html, 0, $open_pos)."&lt;".substr($html, $open_pos+1, $close_pos-$open_pos-1)."&gt;". substr($html, $close_pos+1);
+			$html = substr_replace($html, "&lt;", $open_pos, 1);
+			$html = substr_replace($html, "&gt;", $close_pos+3, 1);
 
 		} else {
 			// normal <..>
@@ -86,13 +95,7 @@ function fix_html($html, $bad_tags = array("plaintext"))
 
 	$html_parts[count($html_parts)] .= $html;
 
-	//$html_parts = split('<[[:space:]]*|[[:space:]]*>', $html);
-
-	$opentags = array();
-	$last_tag = array();
-	$single_tags = array("br","img","hr","!--");
-	$no_nest = array("p");
-
+	// Analyse
 	for($i=0; $i<count($html_parts); $i++){
 		if($i%2){
 			if(substr($html_parts[$i],0,1) == "/"){ // closing tag
@@ -148,7 +151,7 @@ function fix_html($html, $bad_tags = array("plaintext"))
 					array_push($last_tag, $tag);
 
 					// make sure certain tags can't nest within themselves, e.g. <p><p>
-					if(in_array($tag, $no_nest) && $opentags[$tag] > 1){
+					if(in_array($tag, $no_nest) && $opentags[$tag] > (1 + $opentags["table"])){
 
 						for($j=count($last_tag)-2;$j>=0;$j--){
 							if($last_tag[$j] == $tag){

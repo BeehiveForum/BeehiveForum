@@ -241,7 +241,7 @@ class TextAreaHTML {
         $str.= form_input_hidden("co_{$ta}_old", _htmlentities($text))."\n";
         $str.= form_input_hidden("co_{$ta}_current", "correct")."\n";;
 
-        $str.= "<script language=\"Javascript\">\n";
+        $str.= "<script language=\"Javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
         $str.= "    function co_{$ta}_show (type) {\n";
         $str.= "      if (type == \"correct\" && document.{$this->form}.co_{$ta}_current.value != \"correct\") {\n";
@@ -275,7 +275,7 @@ class TextAreaHTML {
 
     function assign_checkbox($a, $b = "") {
 
-        $str = "<script language=\"Javascript\">\n";
+        $str = "<script language=\"Javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
         $str.= "    function tools_feedback () {\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.40 2004-09-08 01:50:01 tribalonline Exp $ */
+/* $Id: edit_signature.php,v 1.41 2004-11-02 19:24:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -274,7 +274,7 @@ if (isset($t_sig_content)) {
         $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($user_sig['SIG_CONTENT'], false) : $user_sig['SIG_CONTENT']);
 }
 
-echo $tools->textarea("sig_content", $sig_code, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."</td>\n";
+echo $tools->textarea("sig_content", $sig_code, 5, 75, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."</td>\n";
 
 echo $tools->js();
 

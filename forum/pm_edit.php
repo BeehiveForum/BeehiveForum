@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.55 2004-09-14 17:42:17 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.56 2004-11-02 19:24:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -460,7 +460,7 @@ if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
         echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 
 echo "          <td>\n";
 echo "        </tr>\n";
@@ -499,7 +499,7 @@ if ($allow_html == true) {
 }
 
 echo form_submit('submit', $lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
-echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
+echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
 if (forum_get_setting('attachments_enabled', 'Y', false)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.24 2004-09-14 08:28:59 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.25 2004-11-02 19:24:22 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -183,20 +183,26 @@ function emoticons_preview ($set, $width=190, $height=100, $num = 35) {
                 array_multisort($emot_match, SORT_DESC, $emot_text, $emot_image);
 
                 $str.= "<div style=\"width:".$width."px; height:".$height."px\" class=\"emoticon_preview\">\n";
+
                 for ($i=0; $i<min(count($emot_match), $num); $i++) {
+
                         $tmp_t = "";
+
                         for ($j=1; $j<count($emot_match[$i]); $j++) {
                                 $tmp_t.= " ".$emot_match[$i][$j];
                         }
+
                         $tmp_i = $emot_image[$i];
                         $tmp_ts = $emot_match[$i][0];
 
-                        $str.= "<img src=\"$path/". $tmp_i ."\" title=\"". $tmp_ts.$tmp_t ."\" onclick=\"add_text(' ". str_replace("'", "\\'", $tmp_ts) ." ');\" /> ";
+                        $str.= "<img src=\"$path/{$tmp_i}\" alt=\"". rawurlencode("{$tmp_ts}{$tmp_t}"). "\" title=\"". rawurlencode("{$tmp_ts}{$tmp_t}"). "\" onclick=\"add_text(' ". rawurlencode(str_replace("'", "\\'", $tmp_ts)) ." ');\" /> ";
 
                 }
+
                 if ($num < count($emot_match)) {
                         $str.= " <b><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openEmoticons('user','$webtag');\">{$lang['more']}</a></b>";
                 }
+
                 $str.= "</div>";
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.152 2004-10-08 19:53:07 decoyduck Exp $ */
+/* $Id: edit.php,v 1.153 2004-11-02 19:24:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -494,7 +494,7 @@ if (isset($_POST['preview'])) {
                     admin_addlog(0, $t_fid, $tid, $pid, 0, 0, 23);
                         }
 
-            echo "<script language=\"Javascript\">\n";
+            echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
             echo "  <!--\n";
             echo "    function clearFocus() {\n";
             echo "      return;\n";
@@ -811,7 +811,7 @@ if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
         echo $tools->toolbar(false, form_submit('submit', $lang['post'], 'onclick="closeAttachWin(); clearFocus()"'));
 }
 
-echo $tools->textarea("t_content", $t_content, 20, 0, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
+echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "style=\"width: 480px\" tabindex=\"1\"")."\n";
 
 if ($post->isDiff() && $fix_html) {
 
@@ -839,7 +839,7 @@ if ($allow_html == true) {
 
 echo "<br /><br />\n";
 echo form_submit('submit',$lang['apply'], 'tabindex="2" onclick="closeAttachWin(); clearFocus()"');
-echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
+echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
 if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
@@ -872,7 +872,7 @@ if ($allow_sig == true) {
                 echo "  <tr>\n";
                 echo "    <td colspan=\"2\">\n";
 
-                echo $tools->textarea("t_sig", $t_sig, 5, 0, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
+                echo $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\" style=\"width: 480px\"")."\n";
 
                 echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.82 2004-10-08 19:53:07 decoyduck Exp $ */
+/* $Id: delete.php,v 1.83 2004-11-02 19:24:21 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -255,7 +255,6 @@ if ($valid) {
             echo "  </tr>\n";
             echo "</table>\n";
 
-            echo "</div>";
             html_draw_bottom();
             exit;
 

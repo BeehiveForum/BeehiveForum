@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.299 2004-10-24 13:25:57 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.300 2004-10-29 19:54:16 decoyduck Exp $ */
 
 include_once("./include/attachments.inc.php");
 include_once("./include/fixhtml.inc.php");
@@ -1124,6 +1124,25 @@ function messages_forum_stats($tid, $pid)
             echo "            <td width=\"35\">&nbsp;</td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
+
+            if (isset($GLOBALS['queries']) && is_array($GLOBALS['queries'])) {
+
+                echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+                echo "          <tr>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
+                echo "            <td>\n";
+
+                foreach ($GLOBALS['queries'] as $sql => $querytime) {
+
+                    echo "              <p>$sql => $querytime</p>\n";
+                }
+
+                echo "            </td>\n";
+                echo "            <td width=\"35\">&nbsp;</td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+            }
+
             echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             echo "          <tr>\n";
             echo "            <td width=\"35\">&nbsp;</td>\n";

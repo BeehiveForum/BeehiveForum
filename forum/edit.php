@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.128 2004-05-17 15:56:59 decoyduck Exp $ */
+/* $Id: edit.php,v 1.129 2004-05-25 15:51:15 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -239,24 +239,36 @@ $post_html = 0;
 $sig_html = 2;
 
 if (isset($_POST['t_post_html'])) {
+
     $t_post_html = $_POST['t_post_html'];
+
     if ($t_post_html == "enabled_auto") {
 		$post_html = 1;
     } else if ($t_post_html == "enabled") {
 		$post_html = 2;
     }
 }
+
 if (isset($_POST['t_sig_html'])) {
+
 	$t_sig_html = $_POST['t_sig_html'];
+
 	if ($t_sig_html != "N") {
 		$sig_html = 1;
 	}
+}
+
+if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+    $aid = $_POST['aid'];
+}else{
+    $aid = md5(uniqid(rand()));
 }
 
 $post = new MessageText($post_html);
 $sig = new MessageText($sig_html);
 
 if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
+
 	$t_content = $_POST['t_content'];
 
 	if ($post_html && attachment_embed_check($t_content)) {
@@ -273,6 +285,7 @@ if (isset($_POST['t_content']) && trim($_POST['t_content']) != "") {
 	}
 }
 if (isset($_POST['t_sig']) && trim($_POST['t_sig']) != "") {
+
 	$t_sig = $_POST['t_sig'];
 
 	if (attachment_embed_check($t_sig)) {
@@ -290,6 +303,7 @@ if (isset($_POST['t_sig']) && trim($_POST['t_sig']) != "") {
 }
 
 if (isset($_POST['preview'])) {
+
     $preview_message = messages_get($tid, $pid, 1);
 
     if (isset($_POST['t_to_uid'])) {
@@ -306,12 +320,18 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-	if (trim($t_content) == "") {
-		$error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-		$valid = false;
-	}
+    if (strlen(trim($t_content)) == 0) {
+        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+        $valid = false;
+    }
+
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+        $valid = false;
+    }
 
     if ($valid) {
+
         $preview_message['CONTENT'] = $t_content;
         $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
 
@@ -336,6 +356,7 @@ if (isset($_POST['preview'])) {
     }
 
 } else if (isset($_POST['submit'])) {
+
     $editmessage = messages_get($tid, $pid, 1);
 
     if (isset($_POST['t_to_uid'])) {
@@ -352,10 +373,15 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-	if (trim($t_content) == "") {
-		$error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
-		$valid = false;
-	}
+    if (strlen(trim($t_content)) == 0) {
+        $error_html = "<h2>{$lang['mustenterpostcontent']}</h2>";
+        $valid = false;
+    }
+
+    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+        $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
+        $valid = false;
+    }
 
     if (((forum_get_setting('allow_post_editing', 'N', false)) || (bh_session_get_value('UID') != $editmessage['FROM_UID']) || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time')) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time')) != 0)) && !perm_is_moderator()) {
 
@@ -381,6 +407,7 @@ if (isset($_POST['preview'])) {
     $preview_message = $editmessage;
 
     if ($valid) {
+
         $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
 
         $updated = post_update($tid, $pid, $t_content_tmp);
@@ -389,8 +416,8 @@ if (isset($_POST['preview'])) {
 
             post_add_edit_text($tid, $pid);
 
-            if (isset($_POST['aid']) && forum_get_setting('attachments_enabled', 'Y', false)) {
-                if (get_num_attachments($_POST['aid']) > 0) post_save_attachment_id($tid, $pid, $_POST['aid']);
+            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y', false)) {
+                if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
             }
 
             if (perm_is_moderator() && ($_POST['t_from_uid'] != bh_session_get_value('UID'))) {
@@ -524,6 +551,7 @@ if (isset($error_html)) {
 $threaddata = thread_get($tid);
 
 if ($valid && isset($_POST['preview'])) {
+
     echo "<table class=\"posthead\" width=\"720\">\n";
     echo "<tr><td class=\"subhead\">{$lang['messagepreview']}</td></tr>";
 
@@ -617,13 +645,16 @@ echo form_submit('submit',$lang['apply'], 'tabindex="2" onclick="closeAttachWin(
 echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onClick="clearFocus()"');
 echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
-if ($aid = get_attachment_id($tid, $pid)) {
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
-    echo form_input_hidden('aid', $aid);
-}else {
-    $aid = md5(uniqid(rand()));
-    echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
-    echo form_input_hidden('aid', $aid);
+if (forum_get_setting('attachments_enabled', 'Y', false) && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS)) {
+
+    if ($aid = get_attachment_id($tid, $pid)) {
+        echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
+        echo form_input_hidden('aid', $aid);
+    }else {
+        $aid = md5(uniqid(rand()));
+        echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$aid', '$webtag');\"");
+        echo form_input_hidden('aid', $aid);
+    }
 }
 
 // ---- SIGNATURE ----

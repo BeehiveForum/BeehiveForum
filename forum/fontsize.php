@@ -31,29 +31,32 @@ require_once("./include/gzipenc.inc.php");
 
 require_once("./include/header.inc.php");
 require_once("./include/config.inc.php");
+require_once("./include/session.inc.php");
 
 header("Content-Type: text/css");
 
 if (bh_session_get_value('FONT_SIZE') != '10') {
 
-    echo "BODY               { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo "P                  { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo "H1                 { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo "H2                 { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".thread_list_mode  { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".threads           { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".threadname        { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".foldername        { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".posthead          { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".postbody          { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".postnumber        { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".postinfo          { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".posttofromlabel   { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".posttofrom        { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".postresponse      { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".messagefoot       { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".notifier          { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
-    echo ".subhead           { font-size: ", bh_session_get_value('FONT_SIZE'), "pt }\n";
+    $fontsize = bh_session_get_value('FONT_SIZE');
+
+    echo "BODY               { font-size: ", $fontsize, "pt }\n";
+    echo "P                  { font-size: ", $fontsize, "pt }\n";
+    echo "H1                 { font-size: ", $fontsize, "pt }\n";
+    echo "H2                 { font-size: ", $fontsize, "pt }\n";
+    echo ".thread_list_mode  { font-size: ", $fontsize, "pt }\n";
+    echo ".threads           { font-size: ", $fontsize, "pt }\n";
+    echo ".threadname        { font-size: ", $fontsize, "pt }\n";
+    echo ".foldername        { font-size: ", $fontsize, "pt }\n";
+    echo ".posthead          { font-size: ", $fontsize, "pt }\n";
+    echo ".postbody          { font-size: ", $fontsize, "pt }\n";
+    echo ".postnumber        { font-size: ", $fontsize, "pt }\n";
+    echo ".postinfo          { font-size: ", $fontsize, "pt }\n";
+    echo ".posttofromlabel   { font-size: ", $fontsize, "pt }\n";
+    echo ".posttofrom        { font-size: ", $fontsize, "pt }\n";
+    echo ".postresponse      { font-size: ", $fontsize, "pt }\n";
+    echo ".messagefoot       { font-size: ", $fontsize, "pt }\n";
+    echo ".notifier          { font-size: ", $fontsize, "pt }\n";
+    echo ".subhead           { font-size: ", $fontsize, "pt }\n";
 
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.5 2004-08-08 00:49:02 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.6 2004-08-08 12:03:37 decoyduck Exp $ */
 
 // Compress the output
 include_once("./include/gzipenc.inc.php");
@@ -288,7 +288,7 @@ if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
     echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['searchresults']}</td>\n";
     echo "                </tr>\n";
 
-    $user_search_array = user_search($usersearch, $start_search);
+    $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', $start_search);
 
     if (sizeof($user_search_array['user_array']) > 0) {
 

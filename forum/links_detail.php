@@ -37,7 +37,11 @@ if(!bh_session_check()){
 $error = false;
 if (isset($HTTP_POST_VARS['submit']) && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) {
     if ($HTTP_POST_VARS['type'] == "vote") {
-        links_vote($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['vote'], $HTTP_COOKIE_VARS['bh_sess_uid']);
+        if (isset($HTTP_POST_VARS['vote'])) {
+            links_vote($HTTP_POST_VARS['lid'], $HTTP_POST_VARS['vote'], $HTTP_COOKIE_VARS['bh_sess_uid']);
+        } else {
+            $error = "<b>You must choose a rating!</b>";
+        }
         $lid = $HTTP_POST_VARS['lid'];
     } elseif ($HTTP_POST_VARS['type'] == "comment") {
         if ($HTTP_POST_VARS['comment'] != "") {
@@ -90,7 +94,7 @@ $folders = links_folders_get(perm_is_moderator());
 
 html_draw_top();
 echo "<h1>Links: " . links_display_folder_path($link['FID'], $folders, true, true, "links.php") . "&nbsp;:&nbsp;<a href=\"links.php?lid=$lid&action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
-if (isset($HTTP_POST_VARS['type']) && $HTTP_POST_VARS['type'] == "vote" && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0) echo "<h2>Your vote has been recorded.</h2>\n";
+if (isset($HTTP_POST_VARS['type']) && $HTTP_POST_VARS['type'] == "vote" && $HTTP_COOKIE_VARS['bh_sess_uid'] != 0 && isset($HTTP_POST_VARS['vote'])) echo "<h2>Your vote has been recorded.</h2>\n";
 $error = $error ? $error : "&nbsp;";
 echo "<p>$error</p>\n";
 echo "<table class=\"box\" cellpadding=\"5\" cellspacing=\"2\" align=\"center\">\n";

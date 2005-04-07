@@ -23,6 +23,7 @@ USA
 
 // htmltools.inc.php : wysiwyg toolbar functions
 
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -78,21 +79,21 @@ function TinyMCE() {
 
     $str.= "    function autoCheckSpell() {\n";
     $str.= "        var form_obj;\n\n";
-	$str.= "        if (document.getElementsByName) {\n";
-	$str.= "            form_obj = document.getElementsByName('t_check_spelling')[0];\n";
-	$str.= "        }else if (document.all) {\n";
-	$str.= "            form_obj = document.all.t_check_spelling;\n";
-	$str.= "        }else if (document.layer) {\n";
-	$str.= "            form_obj = document.t_check_spelling;\n";
-	$str.= "        }else {\n";
-	$str.= "            return true;\n";
-	$str.= "        }\n\n";
-	$str.= "        if (tinyMCE.getContent('mce_editor_0').length == 0) return true;\n\n";
-	$str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
-	$str.= "            auto_check_spell_started = true;\n";
-	$str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=mce_editor_0', 'spellcheck','width=450, height=550, scrollbars=1');\n";
-	$str.= "    		return false;\n";
-	$str.= "        }\n";
+    $str.= "        if (document.getElementsByName) {\n";
+    $str.= "            form_obj = document.getElementsByName('t_check_spelling')[0];\n";
+    $str.= "        }else if (document.all) {\n";
+    $str.= "            form_obj = document.all.t_check_spelling;\n";
+    $str.= "        }else if (document.layer) {\n";
+    $str.= "            form_obj = document.t_check_spelling;\n";
+    $str.= "        }else {\n";
+    $str.= "            return true;\n";
+    $str.= "        }\n\n";
+    $str.= "        if (tinyMCE.getContent('mce_editor_0').length == 0) return true;\n\n";
+    $str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
+    $str.= "            auto_check_spell_started = true;\n";
+    $str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=mce_editor_0', 'spellcheck','width=450, height=550, scrollbars=1');\n";
+    $str.= "    		return false;\n";
+    $str.= "        }\n";
     $str.= "    }\n\n";
 
     $str.= "    function add_text(text) {\n";
@@ -139,7 +140,10 @@ class TextAreaHTML {
     function TextAreaHTML ($form) {
         $this->form = $form;
         if (@file_exists("./tiny_mce/tiny_mce.js")) {
-            $this->tinymce = true;
+            $page_prefs = bh_session_get_post_page_prefs();
+            if ($page_prefs & POST_TINYMCE_DISPLAY) {
+                $this->tinymce = true;
+            }
         }
     }
 
@@ -174,7 +178,7 @@ class TextAreaHTML {
     // ----------------------------------------------------
     function toolbar ($emoticons = true, $custom_html = "") {
 
-        if ($this->tinymce) return;
+        if ($this->tinymce || $this->tbs >= $this->allowed_toolbars) return;
 
         $lang = load_language_file();
 
@@ -267,9 +271,9 @@ class TextAreaHTML {
 
         $str = '';
 
-        if ($this->tbs < $this->allowed_toolbars) {
+        if ($this->tinymce) {
 
-            if ($this->tinymce) {
+            if ($this->tbs < $this->allowed_toolbars) {
 
                 $this->tbs++;
 
@@ -278,13 +282,13 @@ class TextAreaHTML {
                 }
                 $custom_html.= ' mce_editable="true"';
 
-            } else {
-
-                $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
-
-                $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
             }
 
+        } else {
+
+            $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
+
+            $str = "<div style=\"display: none\">&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;&#9999;</div>";
         }
 
         $str.= form_textarea($name, $value, $rows, $cols, $wrap, $custom_html, $class);

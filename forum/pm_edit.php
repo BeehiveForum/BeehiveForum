@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.68 2005-04-06 22:14:30 tribalonline Exp $ */
+/* $Id: pm_edit.php,v 1.69 2005-04-07 16:17:09 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -471,7 +471,14 @@ $tools = new TextAreaHTML("f_post");
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
-if ($allow_html && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+$tool_type = 0;
+if ($page_prefs & POST_TOOLBAR_DISPLAY) {
+    $tool_type = 1;
+} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+    $tool_type = 2;
+}
+
+if ($allow_html == true && $tool_type != 0) {
     echo $tools->toolbar(false, form_submit('submit', $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
 
 } else {

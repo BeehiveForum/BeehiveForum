@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.54 2005-04-06 22:14:30 tribalonline Exp $ */
+/* $Id: edit_signature.php,v 1.55 2005-04-07 16:17:08 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -275,7 +275,14 @@ echo "                  <td>\n";
 
 $page_prefs = bh_session_get_post_page_prefs();
 
-if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+$tool_type = 0;
+if ($page_prefs & POST_TOOLBAR_DISPLAY) {
+    $tool_type = 1;
+} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+    $tool_type = 2;
+}
+
+if ($tool_type != 0) {
     echo $tools->toolbar();
 } else {
     $tools->setTinyMCE(false);

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.inc.php,v 1.1 2005-04-07 01:24:29 rowan_hill Exp $ */
+/* $Id: mods_list.inc.php,v 1.2 2005-04-07 11:03:57 rowan_hill Exp $ */
 
 /**
 * Fucntions related to generating the folder moderators lists
@@ -42,19 +42,20 @@ function mods_list_get_mods($fid)
     
     $forum_fid = $table_data['FID'];
     
-    $sql = "SELECT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
+    $sql = "SELECT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS STATUS, GROUP_PERMS.FID ";
+    $sql.= "FROM GROUP_PERMS GROUP_PERMS ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_PERMS.FID IN (0, '$fid') ";
+    $sql.= "WHERE GROUP_PERMS.FID = $fid ";
     $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
-    $sql.= "GROUP BY GROUP_USERS.UID "; 
+    $sql.= "GROUP BY GROUP_USERS.UID, GROUP_PERMS.FID "; 
     $sql.= "ORDER BY GROUP_PERMS.PERM DESC ";   
 
     $result = db_query($sql, $db_get_mods);
     
     if (db_num_rows($result) > 0) {
+    
         while($row = db_fetch_array($result)) {
-            $row = db_fetch_array($result);
-             
+        
             $user_status = $row['STATUS'];
 
 	    $modstatus = USER_PERM_FOLDER_MODERATE | USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS;
@@ -64,7 +65,7 @@ function mods_list_get_mods($fid)
         }
     }
     
-    if (isset($mod_uid)) {       
+    if (isset($mod_uid)) {    
         return $mod_uid;
     } else {
         return false;

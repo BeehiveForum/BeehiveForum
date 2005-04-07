@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05pr1-to-05.php,v 1.23 2005-03-25 20:45:44 decoyduck Exp $ */
+/* $Id: upgrade-05pr1-to-05.php,v 1.24 2005-04-07 14:54:03 tribalonline Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -195,6 +195,17 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
     $sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE ";
     $sql.= "TIMEZONE DECIMAL(3,1) DEFAULT '0.0' NOT NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Increasing the post_page length in USER_PREFS
+
+    $sql = "ALTER TABLE USER_PREFS CHANGE POST_PAGE ";
+    $sql.= "POST_PAGE CHAR(4) DEFAULT '0' NOT NULL";
 
     if (!$result = @db_query($sql, $db_install)) {
 

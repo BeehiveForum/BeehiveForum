@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.45 2005-04-04 17:29:33 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.46 2005-04-07 14:54:02 tribalonline Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -777,6 +777,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
+
+    $sql = "ALTER TABLE USER_PREFS CHANGE POST_PAGE POST_PAGE CHAR(4) DEFAULT '0' NOT NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD SHOW_THUMBS CHAR(2) DEFAULT '2' NOT NULL";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.28 2005-03-29 18:25:58 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.29 2005-04-07 14:54:01 tribalonline Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -569,7 +569,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
-        $sql.= "  POST_PAGE CHAR(3) NOT NULL DEFAULT '0',";
+        $sql.= "  POST_PAGE CHAR(4) NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY (UID)";
         $sql.= ") TYPE=MYISAM";
 

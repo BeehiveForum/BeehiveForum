@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.52 2005-04-05 22:09:53 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.53 2005-04-07 14:54:01 tribalonline Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1044,7 +1044,7 @@ $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  ALLOW_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  POST_PAGE CHAR(3) DEFAULT '0',";
+$sql.= "  POST_PAGE CHAR(4) DEFAULT '0',";
 $sql.= "  SHOW_THUMBS CHAR(2) NOT NULL DEFAULT '2',";
 $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PRIMARY KEY (UID)";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.37 2005-04-06 17:34:55 decoyduck Exp $ */
+/* $Id: install.php,v 1.38 2005-04-07 19:22:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -213,10 +213,6 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
                     $config_file = str_replace('{db_password}', $db_password, $config_file);
                     $config_file = str_replace('{db_database}', $db_database, $config_file);
 
-                    // Constant that says we're installed.
-
-                    $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
-
                     if (@$fp = fopen("./include/config.inc.php", "w")) {
 
                         fwrite($fp, $config_file);
@@ -241,6 +237,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
                     if ($config_saved) {
 
                         echo "<form method=\"post\" action=\"./install.php\">\n";
+                        echo "  <input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td width=\"500\">\n";
@@ -278,6 +275,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
                     }else {
 
                         echo "<form method=\"post\" action=\"install.php\">\n";
+                        echo "  <input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
                         echo "      <td width=\"500\">\n";
@@ -289,18 +287,15 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
                         echo "                  <td class=\"subhead\">Database Setup Completed</td>\n";
                         echo "                </tr>\n";
                         echo "                <tr>\n";
-                        echo "                  <td>Your database has been succesfully setup for use with Beehive. However we were unable to apply the changes to your config.inc.php.</td>\n";
+                        echo "                  <td>Your database has been succesfully setup for use with Beehive. However we were unable to automatically apply the changes to your config.inc.php.</td>\n";
                         echo "                <tr>\n";
                         echo "                  <td>&nbsp;</td>\n";
                         echo "                </tr>\n";
                         echo "                <tr>\n";
-                        echo "                  <td>Don't worry this is can be perfectly normal on some systems. In order to complete the installation you will need to download the config data by clicking the 'Download Config' button below to save the config.inc.php to your hard disk drive. From there you will need to upload it to your server, into Beehive's 'include' folder. Once this is done you can click the Continue button below to start using your Beehive Forum.</td>\n";
+                        echo "                  <td>In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. Once this is done you can click the Continue button below to start using your Beehive Forum.</td>\n";
                         echo "                </tr>\n";
                         echo "                <tr>\n";
                         echo "                  <td>&nbsp;</td>\n";
-                        echo "                </tr>\n";
-                        echo "                <tr>\n";
-                        echo "                  <td><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"install_remove_files\" id=\"install_remove_files\" value=\"Y\" checked=\"checked\"><label for=\"install_remove_files\">Attempt automatic removal of installation files (recommended)</label></span></td>\n";
                         echo "                </tr>\n";
                         echo "              </table>\n";
                         echo "            </td>\n";
@@ -360,7 +355,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
         }
     }
 
-}elseif (isset($_POST['download_config']) && !defined('BEEHIVE_INSTALLED')) {
+}elseif (isset($_POST['download_config']) && (!@file_exists('./include/config.inc.php') || $force_install)) {
 
     $config_file = "";
 
@@ -398,10 +393,6 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
             $config_file = str_replace('{db_username}', $db_username, $config_file);
             $config_file = str_replace('{db_password}', $db_password, $config_file);
 
-            // Constant that says we're installed.
-
-            $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
-
             header("Content-Type: text/plain; name=\"config.inc.php\"");
             header("Content-disposition: attachment; filename=\"config.inc.php\"");
 
@@ -416,10 +407,6 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
             $config_file = str_replace('{db_database}', "", $config_file);
             $config_file = str_replace('{db_username}', "", $config_file);
             $config_file = str_replace('{db_password}', "", $config_file);
-
-            // Constant that says we're installed.
-
-            $config_file = str_replace("// define('BEEHIVE_INSTALLED', 1);", "define('BEEHIVE_INSTALLED', 1);", $config_file);
 
             echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
@@ -485,6 +472,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
             echo "  </tr>\n";
             echo "</table>\n";
             echo "<form method=\"post\" action=\"./install.php\">\n";
+            echo "  <input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "    <tr>\n";
             echo "      <td width=\"500\">&nbsp;</td>\n";
@@ -528,7 +516,7 @@ echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/instal
 echo "</head>\n";
 echo "<body>\n";
 
-if (!defined('BEEHIVE_INSTALLED') || $force_install) {
+if (!@file_exists('./include/config.inc.php') || $force_install) {
 
     echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
     echo "<input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";

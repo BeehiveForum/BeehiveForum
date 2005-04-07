@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.153 2005-04-06 22:14:21 tribalonline Exp $ */
+/* $Id: create_poll.php,v 1.154 2005-04-07 16:17:06 tribalonline Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -934,7 +934,14 @@ $tools = new TextAreaHTML("f_poll");
 
 $t_message_text = $post->getTidyContent();
 
-if ($allow_html == true && ($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
+$tool_type = 0;
+if ($page_prefs & POST_TOOLBAR_DISPLAY) {
+    $tool_type = 1;
+} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+    $tool_type = 2;
+}
+
+if ($allow_html == true && $tool_type != 0) {
         echo "          <tr>\n";
         echo "            <td>", $tools->toolbar(), "</td>\n";
         echo "          </tr>\n";

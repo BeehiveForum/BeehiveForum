@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.74 2005-03-27 13:02:39 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.75 2005-04-07 16:17:09 tribalonline Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -343,8 +343,17 @@ if (isset($_POST['submit'])) {
 
     // toolbar_toggle emots_toggle emots_disable  post_html
 
-    if (isset($_POST['toolbar_toggle']) && $_POST['toolbar_toggle'] == "Y") {
-        $user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
+    if (isset($_POST['toolbar_toggle'])) {
+
+        if ($_POST['toolbar_toggle'] == 1) {
+
+            $user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
+
+        }else if ($_POST['toolbar_toggle'] == 2) {
+
+            $user_prefs['POST_PAGE'] |= POST_TINYMCE_DISPLAY;
+
+        }
     }
 
     if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
@@ -620,8 +629,18 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['postpage']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_checkbox("toolbar_toggle", "Y", $lang['displayhtmltoolbar'], $user_prefs['POST_PAGE'] & POST_TOOLBAR_DISPLAY), "</td>\n";
+echo "                  <td>", form_radio("toolbar_toggle", "0", $lang['nohtmltoolbar'], $user_prefs['POST_PAGE'] ^ POST_TOOLBAR_DISPLAY && $user_prefs['POST_PAGE'] ^ POST_TINYMCE_DISPLAY), "</td>\n";
 echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_radio("toolbar_toggle", "1", $lang['displaysimpletoolbar'], $user_prefs['POST_PAGE'] & POST_TOOLBAR_DISPLAY), "</td>\n";
+echo "                </tr>\n";
+
+if (@file_exists("./tiny_mce/tiny_mce.js")) {
+    echo "                <tr>\n";
+    echo "                  <td>", form_radio("toolbar_toggle", "2", $lang['displaytinymcetoolbar'], $user_prefs['POST_PAGE'] & POST_TINYMCE_DISPLAY), "</td>\n";
+    echo "                </tr>\n";
+}
+
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("emots_toggle", "Y", $lang['displayemoticonspanel'], $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISPLAY), "</td>\n";
 echo "                </tr>\n";

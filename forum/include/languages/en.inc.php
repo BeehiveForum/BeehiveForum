@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.264 2005-04-07 11:03:56 rowan_hill Exp $ */
+/* $Id: en.inc.php,v 1.265 2005-04-07 16:17:12 tribalonline Exp $ */
 
 // International English language file
 
@@ -1225,7 +1225,9 @@ $lang['includeadminfilter'] = "Include admin word filter in my list.";
 $lang['setforallforums'] = "Set for all forums?";
 $lang['containsinvalidchars'] = "contained invalid characters!";
 $lang['postpage'] = "Post Page";
-$lang['displayhtmltoolbar'] = "Display HTML toolbar";
+$lang['nohtmltoolbar'] = "No HTML toolbar";
+$lang['displaysimpletoolbar'] = "Display simple HTML toolbar";
+$lang['displaytinymcetoolbar'] = "Display WYSIWYG HTML toolbar";
 $lang['displayemoticonspanel'] = "Display emoticons panel";
 $lang['displaysignature'] = "Display signature";
 $lang['disableemoticonsinpostsbydefault'] = "Disable emoticons in messages by default";

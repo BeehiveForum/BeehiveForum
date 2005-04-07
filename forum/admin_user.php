@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.144 2005-04-05 21:55:28 rowan_hill Exp $ */
+/* $Id: admin_user.php,v 1.145 2005-04-07 19:32:25 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
-* 
+*
 * Generates the forms relating to user management (kicking and permissions, etc), and handles their sumbission.
 */
 
@@ -169,7 +169,7 @@ if (isset($_POST['t_confirm_delete_posts'])) {
 if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_delete_posts'] != "Y")) {
 
     $valid = true;
-    
+
     // User details
     if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
 
@@ -179,11 +179,11 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
             $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
             $valid = false;
-            
+
         } else {
-        
+
             user_update_nickname($uid, $user_details['NICKNAME']);
-            
+
         }
 
     }else {
@@ -856,12 +856,6 @@ if (isset($_POST['t_delete_posts'])) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>{$lang['aliasdesc']}</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td>&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
         echo "                        <td>{$lang['nomatches']}</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
@@ -894,7 +888,8 @@ if (isset($_POST['t_delete_posts'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_delete_posts", "Y", $lang['deleteallusersposts'], false), "</td>\n";
+    echo "                        <td width=\"250\">{$lang['deleteallusersposts']}:</td>\n";
+    echo "                        <td>", form_radio("t_delete_posts", "Y", $lang['yes'], false), "&nbsp;", form_radio("t_delete_posts", "N", $lang['no'], true), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

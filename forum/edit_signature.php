@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.55 2005-04-07 16:17:08 tribalonline Exp $ */
+/* $Id: edit_signature.php,v 1.56 2005-04-07 19:22:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -84,29 +84,35 @@ if (!forum_check_access_level()) {
 }
 
 if (isset($_GET['siguid'])) {
+
     if (is_numeric($_GET['siguid'])) {
-        $siguid = $_GET['siguid'];
+        $uid = $_GET['siguid'];
     } else {
         echo "<h1>{$lang['invalidop']}</h1>\n";
         echo "<h2>{$lang['nouserspecified']}</h2>\n";
         html_draw_bottom();
         exit;
     }
+
 } elseif (isset($_POST['siguid'])) {
+
     if (is_numeric($_POST['siguid'])) {
-        $siguid = $_POST['siguid'];
+        $uid = $_POST['siguid'];
     } else {
         echo "<h1>{$lang['invalidop']}</h1>\n";
         echo "<h2>{$lang['nouserspecified']}</h2>\n";
         html_draw_bottom();
         exit;
     }
+
 } else {
+
     if (bh_session_get_value('UID') == 0) {
         html_guest_error();
         exit;
     }
-    $siguid = bh_session_get_value('UID');
+
+    $uid = bh_session_get_value('UID');
 }
 
 $valid = true;
@@ -141,7 +147,7 @@ if (isset($_POST['submit'])) {
 
         // Update USER_SIG
 
-        user_update_sig($siguid, $t_sig_content, $t_sig_html);
+        user_update_sig($uid, $t_sig_content, $t_sig_html);
 
         // Reinitialize the User's Session to save them having to logout and back in
 
@@ -151,7 +157,7 @@ if (isset($_POST['submit'])) {
 
         if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
 
-            header_redirect("./edit_signature.php?webtag=$webtag&updated=true&siguid=$siguid");
+            header_redirect("./edit_signature.php?webtag=$webtag&updated=true&siguid=$uid");
 
         }else {
 
@@ -160,7 +166,7 @@ if (isset($_POST['submit'])) {
             // Try a Javascript redirect
             echo "<script language=\"javascript\" type=\"text/javascript\">\n";
             echo "<!--\n";
-            echo "document.location.href = './edit_signature.php?webtag=$webtag&amp;updated=true&siguid=$siguid';\n";
+            echo "document.location.href = './edit_signature.php?webtag=$webtag&amp;updated=true&siguid=$uid';\n";
             echo "//-->\n";
             echo "</script>";
 
@@ -168,7 +174,7 @@ if (isset($_POST['submit'])) {
             echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
             echo "<p>{$lang['preferencesupdated']}</p>";
 
-            echo form_quick_button("./edit_signature.php&siguid=$siguid", $lang['continue'], false, false, "_top");
+            echo form_quick_button("./edit_signature.php&siguid=$uid", $lang['continue'], false, false, "_top");
 
             html_draw_bottom();
             exit;
@@ -178,13 +184,14 @@ if (isset($_POST['submit'])) {
 
 // Get the User's Signature
 
-user_get_sig($siguid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML']);
+user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML']);
 
 // Start Output Here
 
 html_draw_top("onUnload=clearFocus()", "dictionary.js", "htmltools.js");
 
 if (!(perm_has_admin_access()) && ($uid != bh_session_get_value('UID'))) {
+
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -198,7 +205,7 @@ if (isset($_POST['preview'])) {
         $preview_message['TLOGON'] = "ALL";
         $preview_message['TNICK'] = "ALL";
 
-        $preview_tuser = user_get($siguid);
+        $preview_tuser = user_get($uid);
 
         $preview_message['FLOGON']   = $preview_tuser['LOGON'];
         $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
@@ -259,7 +266,7 @@ $tools = new TextAreaHTML("prefs");
 echo "<br />\n";
 echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('siguid', $siguid), "\n";
+echo "  ", form_input_hidden('siguid', $uid), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -295,7 +302,7 @@ echo $tools->js();
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"right\">\n";
-  
+
 if ($tools->getTinyMCE()) {
 
     echo form_input_hidden("sig_html", "Y");
@@ -303,7 +310,7 @@ if ($tools->getTinyMCE()) {
 
     echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
 }
-  
+
 echo $tools->assign_checkbox("sig_html");
 
 echo "                                  </td>\n";

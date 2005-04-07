@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.24 2005-03-15 21:30:03 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.25 2005-04-07 19:22:14 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -58,18 +58,15 @@ function perform_logon($logon_main)
         $passhash_array = array();
     }
 
-    if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
+    if (isset($_POST['guest_logon'])) {
 
-        if (strtoupper($_POST['user_logon']) == 'GUEST' && strtoupper($_POST['user_password']) == 'GUEST') {
+        if (user_guest_enabled()) {
 
-            if (user_guest_enabled()) {
-
-                bh_session_init(0);
-                return true;
-            }
-
-            return false;
+            bh_session_init(0);
+            return true;
         }
+
+    }else if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
         if (preg_match("/^ +$/", _stripslashes($_POST['user_password']))) {
 
@@ -319,7 +316,7 @@ function draw_logon_form($logon_main)
     echo "                    <td>", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false)), "</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
-    echo "                    <td align=\"center\" colspan=\"2\">", form_submit(md5(uniqid(rand())), $lang['logon'], 'onclick="has_clicked = true"'), "</td>\n";
+    echo "                    <td align=\"center\" colspan=\"2\">", form_submit(uniqid('bh'), $lang['logon'], 'onclick="has_clicked = true"'), "</td>\n";
     echo "                  </tr>\n";
     echo "                </table>\n";
     echo "              </td>\n";

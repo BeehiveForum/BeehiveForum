@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.53 2005-04-07 14:54:01 tribalonline Exp $ */
+/* $Id: new-install.php,v 1.54 2005-04-07 19:22:14 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -58,8 +58,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
                           'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
                           'STATS',         'THREAD',          'USER_FOLDER',
                           'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
-                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
-                          'VISITOR_LOG');
+                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD');
 
     $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
                            'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
@@ -67,7 +66,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
                            'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SEARCH_KEYWORDS',
                            'SEARCH_MATCH', 'SEARCH_POSTS',        'SESSIONS',
                            'USER',         'USER_FORUM',          'USER_PREFS',
-                           'USER_TRACK');
+                           'USER_TRACK',   'VISITOR_LOG');
 
     foreach ($forum_tables as $forum_table) {
 

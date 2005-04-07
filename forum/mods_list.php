@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.1 2005-04-07 01:24:30 rowan_hill Exp $ */
+/* $Id: mods_list.php,v 1.2 2005-04-07 11:03:57 rowan_hill Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -51,6 +51,7 @@ $forum_settings = forum_get_settings();
 
 
 include_once(BH_INCLUDE_PATH. "mods_list.inc.php");
+include_once(BH_INCLUDE_PATH. "threads.inc.php");
 
 // Check we're logged in correctly
 
@@ -93,14 +94,16 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
     
 }
 
-html_draw_top("title={$lang['moderatorlist']}", "openprofile.js");
-
 if ($valid) {
 
-    if ($mods = mods_list_get_mods($fid)) {
+    $folder_info = threads_get_folders();
+    $folder = $folder_info[$fid];
+   
+    html_draw_top("title={$lang['moderatorlist']} {$folder['TITLE']}", "openprofile.js");
     
-        $folder_info = threads_get_folders();
-        $folder = $folder_info[$fid];
+    echo "<div align =\"center\">\n";
+   
+    if ($mods_forum = mods_list_get_mods(0) | $mods_folder = mods_list_get_mods($fid)) {
     	
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
@@ -110,25 +113,53 @@ if ($valid) {
         echo "            <td class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['modsforfolder']} {$folder['TITLE']}</td>\n";
+        echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['modsforfolder']} '{$folder['TITLE']}'</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td>\n";
         
-            
-        foreach ($mods as $uid) {
-        	$user = user_get($uid);
-            echo "                      <tr>\n";
-            echo "                        <td>";
-        	echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a>";
-            echo "</td>\n";
-            echo "                      </tr>\n";
-        
-        
+        if (is_array($mods_forum)) {
+            echo "<h2>{$lang['forumlevelmods']}</h2>\n";
+            echo "<ul>\n";
+            print_r($mods_forum);
+            foreach ($mods_forum as $uid) {
+                $user = user_get($uid);
+                echo "<li><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
+                echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a></li>\n";
+            }
+            echo "</ul>\n";
+        } elseif ($mods_forum != false) {
+            echo "<h2>{$lang['forumlevelmods']}</h2>\n";
+            echo "<ul>\n";
+            $user = user_get($mods_forum);
+            echo "<li><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
+            echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a></li>\n";
+            echo "</ul>\n";
         }
         
+        if ($mods_folder) {
+            echo "<h2>{$lang['folderlevelmods']}</h2>";
+            echo "<ul>\n";
+            foreach ($mods_folder as $uid) {
+                $user = user_get($uid);
+                echo "<li><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
+                echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a></li>\n";
+            }
+            echo "</ul>\n";
+        } elseif ($mods_folder != false) {
+            echo "<h2>{$lang['folderlevelmods']}</h2>\n";
+            echo "<ul>\n";
+            $user = user_get($mods_folder);
+            echo "<li><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
+            echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a></li>\n";
+            echo "</ul>\n";
+        }
+        
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
@@ -153,7 +184,7 @@ if ($valid) {
         echo "            <td class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['modsforfolder']} {$folder['TITLE']}</td>\n";
+        echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['modsforfolder']}' {$folder['TITLE']}'</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td>{$lang['nomodsfound']}</td>\n";
@@ -172,8 +203,7 @@ if ($valid) {
     }
     	
     	
-    
-    
+    echo "</div>\n";    
     
     html_draw_bottom();
     exit;

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.253 2005-04-07 16:17:10 tribalonline Exp $ */
+/* $Id: post.php,v 1.254 2005-04-08 18:18:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -360,7 +360,10 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
         $page_prefs ^= POST_SIGNATURE_DISPLAY;
     }
 
-    user_update_prefs($uid, array('POST_PAGE' => $page_prefs));
+    $user_prefs['POST_PAGE'] = $page_prefs;
+    $user_prefs_global['POST_PAGE'] = false;
+
+    user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
     $fix_html = false;
 }

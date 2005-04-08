@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.36 2005-03-31 19:30:58 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.37 2005-04-08 18:18:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -129,25 +129,12 @@ function get_my_forums()
 
         while ($forum_data = db_fetch_array($result_forums)) {
 
-            $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
-            $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
+            $forum_fid = $forum_data['FID'];
 
-            $result_forum_name = db_query($sql, $db_get_my_forums);
+            $forum_settings = forum_get_settings($forum_fid);
 
-            if (db_num_rows($result_forum_name) > 0) {
-
-                $row = db_fetch_array($result_forum_name);
-                $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
-
-            }else {
-
-                $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
-            }
-
-            // Make sure the Forum Interest Level is set.
-
-            if (!isset($forum_data['INTEREST'])) {
-                $forum_data['INTEREST'] = 0;
+            foreach($forum_settings as $key => $value) {
+                $forum_data[strtoupper($key)] = $value;
             }
 
             // Get any unread messages
@@ -198,10 +185,9 @@ function get_my_forums()
 
             // Get Last Visited
 
-            $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
-            $sql.= "FROM {$forum_data['WEBTAG']}_VISITOR_LOG ";
-            $sql.= "WHERE UID = '$uid' AND LAST_LOGON IS NOT NULL ";
-            $sql.= "AND LAST_LOGON > 0";
+            $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG ";
+            $sql.= "WHERE UID = '$uid' AND FORUM = $forum_fid ";
+            $sql.= "AND LAST_LOGON IS NOT NULL AND LAST_LOGON > 0";
 
             $result_last_visit = db_query($sql, $db_get_my_forums);
 
@@ -215,27 +201,12 @@ function get_my_forums()
                 $forum_data['LAST_LOGON'] = 0;
             }
 
-            // Get Forum Description
+            if (isset($forum_data['INTEREST']) && $forum_data['INTEREST'] == 1) {
 
-            $sql = "SELECT SVALUE FROM FORUM_SETTINGS WHERE ";
-            $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
-            $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
-
-            $result_description = db_query($sql, $db_get_my_forums);
-
-            if (db_num_rows($result_description) > 0) {
-
-                $row = db_fetch_array($result_description);
-                $forum_data['DESCRIPTION'] = $row['SVALUE'];
-
-            }else{
-
-                $forum_data['DESCRIPTION'] = "";
-            }
-
-            if ($forum_data['INTEREST'] == 1) {
                 $get_my_forums_array['FAV_FORUMS'][] = $forum_data;
+
             }else {
+
                 if ($forum_data['LAST_LOGON'] > 0) {
                     $get_my_forums_array['RECENT_FORUMS'][] = $forum_data;
                 }else {

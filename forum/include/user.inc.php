@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.241 2005-04-08 17:38:40 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.242 2005-04-08 18:18:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -390,8 +390,7 @@ function user_get_prefs($uid)
         $global_prefs[$key.'_GLOBAL'] = true;
     }
 
-    // Merge them all together, with forum prefs overriding
-    // global prefs overriding default prefs
+    // Merge them all together, with forum prefs overriding global prefs
 
     $prefs_array = array_merge($global_prefs, $forum_prefs);
 
@@ -420,8 +419,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     if (!is_numeric($uid)) return false;
     if (!is_array($prefs_array)) return false;
-    if (!$prefs_global_setting_array) $prefs_global_setting_array = array();
-    if (!is_array($prefs_global_setting_array)) return false;
+    if (!is_array($prefs_global_setting_array)) $prefs_global_setting_array = array();
 
     // names of preferences that can be set globally
 

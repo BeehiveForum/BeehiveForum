@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.254 2005-04-08 18:18:55 decoyduck Exp $ */
+/* $Id: post.php,v 1.255 2005-04-08 18:36:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -160,10 +160,13 @@ if (isset($_POST['to_radio'])) {
             $error_html = "<h2>{$lang['invalidusername']}</h2>";
             $valid = false;
         }
-    } else if ($to_radio == "in_thread") {
+    }else if ($to_radio == "in_thread") {
+
         $t_to_uid = $_POST['t_to_uid_in_thread'];
         $_POST['t_to_uid'] = $t_to_uid;
-    } else {
+
+    }else {
+
         $t_to_uid = $_POST['t_to_uid_recent'];
         $_POST['t_to_uid'] = $t_to_uid;
     }
@@ -181,87 +184,106 @@ if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['pr
     }
 
     if (isset($_POST['t_fid'])) {
+
         if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+
             $t_fid = $_POST['t_fid'];
-        } else {
+
+        }else {
+
             $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
             $valid = false;
         }
-    } else if ($valid) {
+
+    }else if ($valid) {
+
         $error_html = "<h2>{$lang['pleaseselectfolder']}</h2>";
         $valid = false;
     }
 
-} else if (!isset($_POST['t_tid'])) {
+}else if (!isset($_POST['t_tid'])) {
+
     $valid = false;
 }
 
 if (isset($_POST['t_post_emots'])) {
-        if ($_POST['t_post_emots'] == "disabled") {
-                $emots_enabled = false;
-        } else {
-                $emots_enabled = true;
-        }
-} else {
+
+    if ($_POST['t_post_emots'] == "disabled") {
+        $emots_enabled = false;
+    }else {
         $emots_enabled = true;
+    }
+
+}else {
+
+    $emots_enabled = true;
 }
 
 if (isset($_POST['t_check_spelling'])) {
-        if ($_POST['t_check_spelling'] == "enabled") {
-                $spelling_enabled = true;
-        } else {
-                $spelling_enabled = false;
-        }
-} else {
+
+    if ($_POST['t_check_spelling'] == "enabled") {
+        $spelling_enabled = true;
+    }else {
         $spelling_enabled = false;
+    }
+
+}else {
+
+    $spelling_enabled = false;
 }
 
 if (isset($_POST['t_post_links'])) {
-        if ($_POST['t_post_links'] == "enabled") {
-                $links_enabled = true;
-        } else {
-                $links_enabled = false;
-        }
-} else {
+
+    if ($_POST['t_post_links'] == "enabled") {
+        $links_enabled = true;
+    }else {
         $links_enabled = false;
+    }
+
+}else {
+
+    $links_enabled = false;
 }
 
 if (isset($_POST['t_post_interest'])) {
-                if ($_POST['t_post_interest'] == "high") {
-                                $high_interest = true;
-                } else {
-                                $high_interest = false;
-                }
-} else {
+
+    if ($_POST['t_post_interest'] == "high") {
+        $high_interest = true;
+    }else {
         $high_interest = false;
+    }
+
+}else {
+
+    $high_interest = false;
 }
 
 if (isset($_POST['t_post_html'])) {
 
-        $t_post_html = $_POST['t_post_html'];
+    $t_post_html = $_POST['t_post_html'];
 
-        if ($t_post_html == "enabled_auto") {
-                $post_html = 1;
-        } else if ($t_post_html == "enabled") {
-                $post_html = 2;
-        } else {
-                $post_html = 0;
-        }
+    if ($t_post_html == "enabled_auto") {
+        $post_html = 1;
+    }else if ($t_post_html == "enabled") {
+        $post_html = 2;
+    }else {
+        $post_html = 0;
+    }
 
-} else {
+}else {
 
-        if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-                $post_html = 1;
-        } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-                $post_html = 2;
-        } else {
-                $post_html = 0;
-        }
+    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+        $post_html = 1;
+    }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+        $post_html = 2;
+    }else {
+        $post_html = 0;
+    }
 
-        $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
-        $links_enabled = ($page_prefs & POST_AUTO_LINKS);
-        $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
-        $high_interest = bh_session_get_value('MARK_AS_OF_INT');
+    $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
+    $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+    $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
+    $high_interest = bh_session_get_value('MARK_AS_OF_INT');
 }
 
 if (isset($_POST['t_sig_html'])) {
@@ -274,7 +296,7 @@ if (isset($_POST['t_sig_html'])) {
 
     $fetched_sig = false;
 
-} else {
+}else {
 
     // Fetch the current user's sig
     user_get_sig($uid, $t_sig, $t_sig_html);
@@ -378,12 +400,15 @@ $t_content = $post->getContent();
 $t_sig = $sig->getContent();
 
 if (strlen($t_content) >= 65535) {
-        $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
-        $valid = false;
+
+    $error_html = "<h2>{$lang['reducemessagelength']} ".number_format(strlen($t_content)).")</h2>";
+    $valid = false;
 }
+
 if (strlen($t_sig) >= 65535) {
-        $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
-        $valid = false;
+
+    $error_html = "<h2>{$lang['reducesiglength']} ".number_format(strlen($t_sig)).")</h2>";
+    $valid = false;
 }
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
@@ -508,23 +533,27 @@ $allow_html = true;
 $allow_sig = true;
 
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
-        $allow_html = false;
+    $allow_html = false;
 }
+
 if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
-        $allow_sig = false;
+    $allow_sig = false;
 }
 
 if ($allow_html == false) {
-        if ($post->getHTML() > 0) {
-                $post->setHTML(false);
-                $t_content = $post->getContent();
-        }
-        if ($sig->getHTML() > 0) {
-                $sig->setHTML(false);
-                $t_sig = $sig->getContent();
-        }
-}
 
+    if ($post->getHTML() > 0) {
+
+        $post->setHTML(false);
+        $t_content = $post->getContent();
+    }
+
+    if ($sig->getHTML() > 0) {
+
+        $sig->setHTML(false);
+        $t_sig = $sig->getContent();
+    }
+}
 
 if (!$newthread) {
 
@@ -553,9 +582,12 @@ if ($valid && isset($_POST['submit'])) {
                 if (isset($_POST['old_t_sticky'])) $old_t_sticky = $_POST['old_t_sticky'];
 
                 if (perm_is_moderator($t_fid)) {
+
                     $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
                     $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
-                } else {
+
+                }else {
+
                     $t_closed = false;
                     $t_sticky = "N";
                 }
@@ -599,12 +631,13 @@ if ($valid && isset($_POST['submit'])) {
 
                     if (isset($t_closed) && isset($old_t_closed) && $t_closed != $old_t_closed && $t_closed == "Y") {
                         thread_set_closed($t_tid, true);
-                    } elseif ((!isset($t_closed) || (isset($t_closed) && $t_closed != "Y")) && $old_t_closed == "Y") {
+                    }elseif ((!isset($t_closed) || (isset($t_closed) && $t_closed != "Y")) && $old_t_closed == "Y") {
                         thread_set_closed($t_tid, false);
                     }
+
                     if (isset($t_sticky) && isset($old_t_sticky) && $t_sticky != $old_t_sticky && $t_sticky == "Y") {
                         thread_set_sticky($t_tid, true);
-                    } elseif ((!isset($t_sticky) || (isset($t_sticky) && $t_sticky != "Y")) && $old_t_sticky == "Y") {
+                    }elseif ((!isset($t_sticky) || (isset($t_sticky) && $t_sticky != "Y")) && $old_t_sticky == "Y") {
                         thread_set_sticky($t_tid, false);
                     }
                 }
@@ -614,21 +647,18 @@ if ($valid && isset($_POST['submit'])) {
 
                 if ($allow_sig == true && trim($t_sig) != "") {
                     $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
-
                 }
 
                 if ($newthread) {
-
                     $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $uid, $_POST['t_to_uid'], $t_content);
-
                 }else {
-
                     $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
                 }
 
                 if ($high_interest) thread_set_high_interest($t_tid, 1, $newthread);
 
                 if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
+
                     email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
                     if (!$newthread) email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
                 }
@@ -663,11 +693,8 @@ if ($valid && isset($_POST['submit'])) {
             }else {
 
                 if ($t_tid > 0 && $t_rpid > 0) {
-
                     $uri = "./discussion.php?webtag=$webtag&msg=$t_tid.$t_rpid";
-
                 }else{
-
                     $uri = "./discussion.php?webtag=$webtag";
                 }
             }
@@ -716,10 +743,12 @@ if (!$newthread) {
         echo "<tr><td>\n";
 
         if (perm_is_moderator($t_fid)) {
+
             echo "<h2>".$lang['moderatorthreadclosed']."</h2>\n";
             echo "</td></tr>\n";
 
-        } else {
+        }else {
+
             echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
             echo "</td></tr>\n";
 
@@ -872,25 +901,25 @@ $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
 
-        echo "<br />\n";
-        echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-        echo "  <tr>\n";
-        echo "    <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
+    echo "<br />\n";
+    echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
 
-        if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
+    if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
-            echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td colspan=\"2\">{$emot_prev}</td>\n";
-
-        }else {
-
-            echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
-        }
-
+        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
         echo "  </tr>\n";
-        echo "</table>\n";
+        echo "  <tr>\n";
+        echo "    <td colspan=\"2\">{$emot_prev}</td>\n";
+
+    }else {
+
+        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
+    }
+
+    echo "  </tr>\n";
+    echo "</table>\n";
 }
 
 echo "</td></tr>\n";
@@ -907,15 +936,16 @@ echo "<h2>". $lang['message'] .":</h2>\n";
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 $tool_type = 0;
+
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
     $tool_type = 1;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+}else if ($page_prefs & POST_TINYMCE_DISPLAY) {
     $tool_type = 2;
 }
 
 if ($allow_html == true && $tool_type != 0) {
     echo $tools->toolbar(false, form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
-} else {
+}else {
     $tools->setTinyMCE(false);
 }
 
@@ -927,7 +957,7 @@ if ($post->isDiff() && $fix_html) {
 
     if ($tools->getTinyMCE()) {
         echo "<br />\n";
-    } else {
+    }else {
         echo "<br /><br />\n";
     }
 }
@@ -938,7 +968,7 @@ if ($allow_html == true) {
 
         echo form_input_hidden("t_post_html", "enabled");
 
-    } else {
+    }else {
 
         echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
 
@@ -949,11 +979,11 @@ if ($allow_html == true) {
         echo form_radio("t_post_html", "enabled", $lang['enabled'], $tph_radio == 2)." \n";
 
         if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
-                echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
+            echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
         }
     }
 
-} else {
+}else {
 
         echo form_input_hidden("t_post_html", "disabled");
 }
@@ -962,7 +992,7 @@ if ($allow_html == true) {
 
 if ($tools->getTinyMCE()) {
     echo "<br />\n";
-} else {
+}else {
     echo "<br /><br />\n";
 }
 echo form_submit("submit", $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
@@ -1030,12 +1060,11 @@ if (!$newthread && $reply_to_pid > 0) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-      poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, $show_sigs, true);
+        poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, $show_sigs, true);
 
     }else {
 
-      message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
-
+        message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
     }
 
     echo "<br /></td></tr>\n";

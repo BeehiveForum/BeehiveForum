@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.77 2005-04-08 18:18:54 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.78 2005-04-08 18:36:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -663,7 +663,7 @@ echo "                <tr>\n";
 echo "                  <td>", form_checkbox("post_links", "Y", $lang['automaticallyparseurlsbydefault'], $user_prefs['POST_PAGE'] & POST_AUTO_LINKS), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_radio("post_html", "0", $lang['postinplaintextbydefault'], ((!$user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0 && (!$user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0)), "</td>\n";
+echo "                  <td>", form_radio("post_html", "0", $lang['postinplaintextbydefault'], ($user_prefs['POST_PAGE'] & POST_TEXT_DEFAULT) > 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_radio("post_html", "1", $lang['postinhtmlwithautolinebreaksbydefault'], ($user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0), "</td>\n";

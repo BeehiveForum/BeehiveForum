@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.176 2005-04-03 22:28:21 rowan_hill Exp $ */
+/* $Id: messages.php,v 1.177 2005-04-08 18:46:08 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -164,19 +164,17 @@ if (isset($_POST['pollsubmit'])) {
 
 }
 
-if (bh_session_get_value('POSTS_PER_PAGE')) {
+if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
 
-    $ppp = bh_session_get_value('POSTS_PER_PAGE');
-
-    if ($ppp < 10) $ppp = 10;
-    if ($ppp > 30) $ppp = 30;
+    if ($posts_per_page < 10) $posts_per_page = 10;
+    if ($posts_per_page > 30) $posts_per_page = 30;
 
 }else {
 
-    $ppp = 20;
+    $posts_per_page = 20;
 }
 
-if (!$messages = messages_get($tid, $pid, $ppp)) {
+if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
     html_draw_top();
     echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
@@ -380,7 +378,7 @@ echo "</table>\n";
 echo "</div>\n";
 
 messages_start_panel();
-messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
+messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $posts_per_page);
 
 if ($threaddata['POLL_FLAG'] == 'Y') {
     echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";

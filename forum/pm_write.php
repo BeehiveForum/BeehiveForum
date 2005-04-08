@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.114 2005-04-07 16:17:10 tribalonline Exp $ */
+/* $Id: pm_write.php,v 1.115 2005-04-08 18:18:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -223,9 +223,12 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['emots_toggle_y'])) {
 
     $page_prefs ^= POST_EMOTICONS_DISPLAY;
 
-    user_update_prefs(bh_session_get_value('UID'), array('POST_PAGE' => $page_prefs));
+    $user_prefs['POST_PAGE'] = $page_prefs;
+    $user_prefs_global['POST_PAGE'] = false;
 
-        $fix_html = false;
+    user_update_prefs($uid, $user_prefs, $user_prefs_global);
+
+    $fix_html = false;
 }
 
 // User clicked the submit button - check the data that was submitted

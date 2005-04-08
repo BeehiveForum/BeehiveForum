@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.129 2005-03-28 23:45:13 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.130 2005-04-08 18:18:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -250,14 +250,15 @@ function forum_check_password($forum_data)
     return true;
 }
 
-function forum_get_settings($current_only = false)
+function forum_get_settings($forum_fid = 0, $current_only = false)
 {
     static $forum_get_settings = false;
 
     static $forum_settings = array();
     static $default_forum_settings = array();
 
-    if (!is_bool($current_only)) return false;
+    if (!is_bool($current_only)) $current_only = false;
+    if (!is_numeric($forum_fid)) $fid = 0;
 
     if (!$forum_get_settings) {
 
@@ -274,11 +275,18 @@ function forum_get_settings($current_only = false)
             }
         }
 
-        if ($table_data = get_table_prefix()) {
+        if ($forum_fid == 0) {
+
+            if ($table_data = get_table_prefix()) {
+                $forum_fid = $table_data['FID'];
+            }
+        }
+
+        if ($forum_fid > 0) {
 
             $forum_settings['fid'] = $table_data['FID'];
 
-            $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = '{$table_data['FID']}'";
+            $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = $forum_fid";
             $result = db_query($sql, $db_forum_get_settings);
 
             list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
@@ -286,7 +294,7 @@ function forum_get_settings($current_only = false)
             $forum_settings['webtag'] = $webtag;
             $forum_settings['access_level'] = $access_level;
 
-            $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '{$table_data['FID']}'";
+            $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = $forum_fid";
             $result = db_query($sql, $db_forum_get_settings);
 
             while ($row = db_fetch_array($result)) {
@@ -1343,35 +1351,12 @@ function forum_search($search_string)
 
             while ($forum_data = db_fetch_array($result)) {
 
-                $forum_data['FORUM_NAME'] = $lang['unnamedforum'];
-                $forum_data['DESCRIPTION'] = "";
+                $forum_fid = $forum_data['FID'];
 
-                $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS ";
-                $sql.= "WHERE FID = '{$forum_data['FID']}' ";
-                $sql.= "AND (SNAME = 'forum_name' OR ";
-                $sql.= "SNAME = 'forum_desc')";
+                $forum_settings = forum_get_settings($forum_fid);
 
-                $result_forum_settings = db_query($sql, $db_forum_search);
-
-                if (db_num_rows($result_forum_settings) > 0) {
-
-                    while ($row = db_fetch_array($result_forum_settings)) {
-
-                        if ($row['SNAME'] == 'forum_name') {
-
-                            $forum_data['FORUM_NAME'] = $row['SVALUE'];
-
-                        }elseif ($row['SNAME'] == 'forum_desc') {
-
-                            $forum_data['DESCRIPTION'] = $row['SVALUE'];
-                        }
-                    }
-                }
-
-                // Make sure the Forum Interest Level is set.
-
-                if (!isset($forum_data['INTEREST'])) {
-                    $forum_data['INTEREST'] = 0;
+                foreach($forum_settings as $key => $value) {
+                    $forum_data[strtoupper($key)] = $value;
                 }
 
                 // Get any unread messages
@@ -1407,10 +1392,9 @@ function forum_search($search_string)
 
                 // Get Last Visited
 
-                $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
-                $sql.= "FROM {$forum_data['WEBTAG']}_VISITOR_LOG ";
-                $sql.= "WHERE UID = '$uid' AND LAST_LOGON IS NOT NULL ";
-                $sql.= "AND LAST_LOGON > 0";
+                $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG ";
+                $sql.= "WHERE UID = '$uid' AND FORUM = $forum_fid ";
+                $sql.= "AND LAST_LOGON IS NOT NULL AND LAST_LOGON > 0";
 
                 $result_last_visit = db_query($sql, $db_forum_search);
 

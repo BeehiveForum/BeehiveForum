@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.113 2005-04-06 21:03:29 decoyduck Exp $ */
+/* $Id: register.php,v 1.114 2005-04-08 18:18:56 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -384,6 +384,10 @@ if (isset($_POST['submit'])) {
     $new_user['ALLOW_EMAIL'] = "Y";
     $new_user['ALLOW_PM'] = "Y";
 
+    foreach ($new_user as $key => $value) {
+        $new_user_global[$key] = true;
+    }
+
     if ($valid) {
 
         if ($new_user['PW'] != $new_user['CPW']) {
@@ -413,7 +417,7 @@ if (isset($_POST['submit'])) {
 
             $email_confirm_result = true;
 
-            user_update_prefs($new_uid, $new_user);
+            user_update_prefs($new_uid, $new_user, $new_user_global);
             user_update_sig($new_uid, $new_user['SIG_CONTENT'], $new_user['SIG_HTML']);
 
             if (forum_get_setting('require_email_confirmation', 'Y')) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.76 2005-04-08 17:38:39 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.77 2005-04-08 18:18:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -264,6 +264,12 @@ if (isset($_POST['submit'])) {
         $user_prefs['ENABLE_WIKI_WORDS'] = "Y";
     }else {
         $user_prefs['ENABLE_WIKI_WORDS'] = "N";
+    }
+
+    if (isset($_POST['enable_wiki_words_global'])) {
+        $user_prefs_global['ENABLE_WIKI_WORDS'] = ($_POST['enable_wiki_words_global'] == "Y") ? true : false;
+    }else {
+        $user_prefs_global['ENABLE_WIKI_WORDS'] = false;
     }
 
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
@@ -551,7 +557,7 @@ echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("enable_wiki_words", "Y", $lang['enablewikiintegration'], (isset($user_prefs['ENABLE_WIKI_WORDS']) && $user_prefs['ENABLE_WIKI_WORDS'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("ENABLE_WIKI_WORDS_GLOBAL", "Y", $lang['setforallforums'], (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("enable_wiki_words_global", "Y", $lang['setforallforums'], (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == "Y") ? true : false), "</td>\n";

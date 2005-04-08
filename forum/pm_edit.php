@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.69 2005-04-07 16:17:09 tribalonline Exp $ */
+/* $Id: pm_edit.php,v 1.70 2005-04-08 18:18:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -316,7 +316,10 @@ if ($valid && isset($_POST['preview'])) {
 
     $page_prefs ^= POST_EMOTICONS_DISPLAY;
 
-    user_update_prefs($uid, array('POST_PAGE' => $page_prefs));
+    $user_prefs['POST_PAGE'] = $page_prefs;
+    $user_prefs_global['POST_PAGE'] = false;
+
+    user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
     $pm_elements_array = pm_single_get($mid, PM_FOLDER_OUTBOX);
 

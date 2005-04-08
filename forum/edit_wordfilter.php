@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.47 2005-03-26 18:16:43 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.48 2005-04-08 18:18:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,17 +132,21 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['use_admin_filter']) && $_POST['use_admin_filter'] == "Y") {
         $user_prefs['USE_ADMIN_FILTER'] = "Y";
+        $user_prefs_global['USE_ADMIN_FILTER'] = false;
     }else {
         $user_prefs['USE_ADMIN_FILTER'] = "N";
+        $user_prefs_global['USE_ADMIN_FILTER'] = false;
     }
 
     if (isset($_POST['use_word_filter']) && $_POST['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
+        $user_prefs_global['USE_WORD_FILTER'] = false;
     }else {
         $user_prefs['USE_WORD_FILTER'] = "N";
+        $user_prefs_global['USE_WORD_FILTER'] = false;
     }
 
-    user_update_prefs($uid, $user_prefs);
+    user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
     if (!isset($status_text)) $status_text = "<p><b>{$lang['wordfilterupdated']}</b></p>";
 

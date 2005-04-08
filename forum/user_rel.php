@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.68 2005-04-04 01:01:17 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.69 2005-04-08 17:38:39 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -290,8 +290,8 @@ if (isset($peer_uid)) {
 }
 
 echo "                <tr>\n";
-echo "                  <td width=\"200\" valign=\"top\">", form_checkbox("view_sigs", "N", $lang['globallyignored'], $user_prefs['VIEW_SIGS'] == 'N'), "</td>\n";
-echo "                  <td width=\"400\">: {$lang['globallyignoredsig_exp']}<br />&nbsp;(", form_checkbox("view_sigs_global", "Y", $lang['setforallforums'], $user_prefs['VIEW_SIGS_GLOBAL']) ,")</td>\n";
+echo "                  <td width=\"200\" valign=\"top\">", form_checkbox("view_sigs", "N", $lang['globallyignored'], isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == 'N'), "</td>\n";
+echo "                  <td width=\"400\">: {$lang['globallyignoredsig_exp']}<br />&nbsp;(", form_checkbox("view_sigs_global", "Y", $lang['setforallforums'], (isset($user_prefs['VIEW_SIGS_GLOBAL']) ? $user_prefs['VIEW_SIGS_GLOBAL'] : false)) ,")</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

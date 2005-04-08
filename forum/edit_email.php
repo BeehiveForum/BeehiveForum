@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.43 2005-03-27 13:02:39 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.44 2005-04-08 17:38:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -212,11 +212,11 @@ echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['emailsetting
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("email_notify_global", "Y", $lang['setforallforums'], $user_prefs['EMAIL_NOTIFY_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("email_notify_global", "Y", $lang['setforallforums'], (isset($user_prefs['EMAIL_NOTIFY_GLOBAL']) ? $user_prefs['EMAIL_NOTIFY_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_notify_email_global", "Y", $lang['setforallforums'], $user_prefs['PM_NOTIFY_EMAIL_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_notify_email_global", "Y", $lang['setforallforums'], (isset($user_prefs['PM_NOTIFY_EMAIL']) ? $user_prefs['PM_NOTIFY_EMAIL_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
@@ -242,26 +242,20 @@ echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['privacysetti
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['ageanddob']}:</td>\n";
-
-if (isset($user_prefs['DOB_DISPLAY']) && is_numeric($user_prefs['DOB_DISPLAY'])) {
-    echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), $user_prefs['DOB_DISPLAY']), "</td>\n";
-}else {
-    echo "                    <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), 0), "</td>\n";
-}
-
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("dob_display_global","Y",$lang['setforallforums'],$user_prefs['DOB_DISPLAY_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), (isset($user_prefs['DOB_DISPLAY']) && is_numeric($user_prefs['DOB_DISPLAY']) ? $user_prefs['DOB_DISPLAY'] : 0)), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("dob_display_global", "Y", $lang['setforallforums'], (isset($user_prefs['DOB_DISPLAY_GLOBAL']) ? $user_prefs['DOB_DISPLAY_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">", form_checkbox("allow_email", "Y", $lang['allowemails'], (isset($user_prefs['ALLOW_EMAIL']) && $user_prefs['ALLOW_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_email_global","Y",$lang['setforallforums'],$user_prefs['ALLOW_EMAIL_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_email_global", "Y", $lang['setforallforums'], (isset($user_prefs['ALLOW_EMAIL_GLOBAL']) ? $user_prefs['ALLOW_EMAIL_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">", form_checkbox("allow_pm", "Y", $lang['allowpersonalmessages'], (isset($user_prefs['ALLOW_PM']) && $user_prefs['ALLOW_PM'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_pm_global","Y",$lang['setforallforums'],$user_prefs['ALLOW_PM_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_pm_global", "Y", $lang['setforallforums'], (isset($user_prefs['ALLOW_PM_GLOBAL']) ? $user_prefs['ALLOW_PM_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("anon_logon_global","Y",$lang['setforallforums'],$user_prefs['ANON_LOGON_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("anon_logon_global", "Y", $lang['setforallforums'], (isset($user_prefs['ANON_LOGON_GLOBAL']) ? $user_prefs['ANON_LOGON_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

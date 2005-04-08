@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.68 2005-04-03 16:08:58 rowan_hill Exp $ */
+/* $Id: admin_forum_settings.php,v 1.69 2005-04-08 17:38:36 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
-* 
+*
 * Generates the forms relating to the local forum settings, and handles their sumbission.
 * For global options see admin_default_forum_settings.php
 *
@@ -742,23 +742,18 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['guestaccount']}</td>\n";
+echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['guestaccess']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['enableguestaccount']}:</td>\n";
+echo "                        <td width=\"220\">{$lang['allowguestaccess']}:</td>\n";
 echo "                        <td>", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($current_forum_settings['guest_account_enabled']) && $current_forum_settings['guest_account_enabled'] == "Y")), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($current_forum_settings['guest_account_enabled']) && $current_forum_settings['guest_account_enabled'] == "N") || !isset($current_forum_settings['guest_account_enabled'])), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['autologinguests']}:</td>\n";
-echo "                        <td>", form_radio("auto_logon", "Y", $lang['yes'], (isset($current_forum_settings['auto_logon']) && $current_forum_settings['auto_logon'] == "Y")), "&nbsp;", form_radio("auto_logon", "N", $lang['no'], (isset($current_forum_settings['auto_logon']) && $current_forum_settings['auto_logon'] == "N") || !isset($current_forum_settings['auto_logon'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_21']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

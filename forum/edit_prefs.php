@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.42 2005-03-14 13:27:18 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.43 2005-04-08 17:38:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -223,21 +223,13 @@ if (isset($_POST['submit'])) {
 if (!isset($uid)) $uid = bh_session_get_value('UID');
 
 // Get User Prefs
-if (isset($user_prefs)) {
-        $user_prefs = array_merge(user_get_prefs($uid), $user_prefs);
-}else {
-        $user_prefs = user_get_prefs($uid);
-}
+$user_prefs = user_get_prefs($uid);
 
 // Get user information
-if (isset($user_info)) {
-        $user_info = array_merge(user_get($uid), $user_info);
-}else {
-        $user_info = user_get($uid);
-}
+$user_info = user_get($uid);
 
 // Split the DOB into usable variables.
-if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_prefs['DOB'])) {
+if (isset($user_prefs['DOB']) && preg_match("/\d{4, }-\d{2, }-\d{2, }/", $user_prefs['DOB'])) {
     if (!isset($dob['YEAR']) || !isset($dob['MONTH']) || !isset($dob['DAY'])) {
         list($dob['YEAR'], $dob['MONTH'], $dob['DAY']) = explode('-', $user_prefs['DOB']);
     }
@@ -306,12 +298,12 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['homepageURL']}:&nbsp;</td>\n";
 echo "                  <td>", form_field("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? $user_prefs['HOMEPAGE_URL'] : ""), 45, 255), "&nbsp;</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("homepage_url_global","Y",$lang['setforallforums'],$user_prefs['HOMEPAGE_URL_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("homepage_url_global", "Y", $lang['setforallforums'], (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['pictureURL']}:&nbsp;</td>\n";
 echo "                  <td>", form_field("pic_url", (isset($user_prefs['PIC_URL']) ? $user_prefs['PIC_URL'] : ""), 45, 255), "&nbsp;</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pic_url_global","Y",$lang['setforallforums'],$user_prefs['PIC_URL_GLOBAL']), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pic_url_global", "Y", $lang['setforallforums'], (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\">&nbsp;</td>\n";

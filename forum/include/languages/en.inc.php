@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.265 2005-04-07 16:17:12 tribalonline Exp $ */
+/* $Id: en.inc.php,v 1.266 2005-04-08 17:38:40 decoyduck Exp $ */
 
 // International English language file
 
@@ -648,6 +648,8 @@ $lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['autologinguests'] = "Automatically Login Guests";
+$lang['guestaccess'] = "Guest Access";
+$lang['allowguestaccess'] = "Allow Guest Access";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.2 2005-04-07 11:03:57 rowan_hill Exp $ */
+/* $Id: mods_list.php,v 1.3 2005-04-08 17:38:39 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -86,25 +86,24 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
     $fid = $_GET['fid'];
 
-} else {
+}else {
 
     $valid = false;
-    $error_html .= "<h2>{$lang['cantdisplaymods']}</h2>\n";
-    $error_html .= "{$lang['mustprovidefolderid']}\n";
-    
+    $error_html.= "<h2>{$lang['cantdisplaymods']}</h2>\n";
+    $error_html.= "{$lang['mustprovidefolderid']}\n";
 }
 
 if ($valid) {
 
     $folder_info = threads_get_folders();
     $folder = $folder_info[$fid];
-   
+
     html_draw_top("title={$lang['moderatorlist']} {$folder['TITLE']}", "openprofile.js");
-    
+
     echo "<div align =\"center\">\n";
-   
+
     if ($mods_forum = mods_list_get_mods(0) | $mods_folder = mods_list_get_mods($fid)) {
-    	
+
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
         echo "      <td>\n";
@@ -120,44 +119,57 @@ if ($valid) {
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
         echo "                        <td>\n";
-        
+
         if (is_array($mods_forum)) {
+
             echo "<h2>{$lang['forumlevelmods']}</h2>\n";
             echo "<ul>\n";
-            print_r($mods_forum);
+
             foreach ($mods_forum as $uid) {
                 $user = user_get($uid);
                 echo "<li><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
                 echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a></li>\n";
             }
+
             echo "</ul>\n";
-        } elseif ($mods_forum != false) {
+
+        }elseif ($mods_forum != false) {
+
             echo "<h2>{$lang['forumlevelmods']}</h2>\n";
             echo "<ul>\n";
+
             $user = user_get($mods_forum);
+
             echo "<li><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
             echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a></li>\n";
             echo "</ul>\n";
         }
-        
+
         if ($mods_folder) {
+
             echo "<h2>{$lang['folderlevelmods']}</h2>";
             echo "<ul>\n";
+
             foreach ($mods_folder as $uid) {
                 $user = user_get($uid);
                 echo "<li><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
                 echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a></li>\n";
             }
+
             echo "</ul>\n";
-        } elseif ($mods_folder != false) {
+
+        }elseif ($mods_folder != false) {
+
             echo "<h2>{$lang['folderlevelmods']}</h2>\n";
             echo "<ul>\n";
+
             $user = user_get($mods_folder);
+
             echo "<li><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
             echo format_user_name($user['LOGON'], $user['NICKNAME']), "</a></li>\n";
             echo "</ul>\n";
         }
-        
+
         echo "                        </td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
@@ -173,9 +185,9 @@ if ($valid) {
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
-    
-    } else {
-    
+
+    }else {
+
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
         echo "      <td>\n";
@@ -198,43 +210,19 @@ if ($valid) {
         echo "        </table>\n";
         echo "      </td>\n";
         echo "    </tr>\n";
-        echo "  </table>\n";    
-    
+        echo "  </table>\n";
     }
-    	
-    	
-    echo "</div>\n";    
-    
+
+    echo "</div>\n";
+
     html_draw_bottom();
     exit;
-    
-   
 
-} else {
+}else {
 
     echo $error_html;
     html_draw_bottom();
     exit;
-    
 }
 
-
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

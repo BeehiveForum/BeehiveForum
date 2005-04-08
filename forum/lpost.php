@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.71 2005-03-29 21:48:36 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.72 2005-04-08 18:46:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -118,15 +118,13 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 // Get the user's post page preferences.
 
-$page_prefs = bh_session_get_value('POST_PAGE');
+if (!$page_prefs = bh_session_get_value('POST_PAGE')) {
+    $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
+}
 
 // Get the user's UID
 
 $uid = bh_session_get_value('UID');
-
-if ($page_prefs == 0) {
-    $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
-}
 
 $valid = true;
 

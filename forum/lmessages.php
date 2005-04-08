@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.52 2005-03-28 19:43:32 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.53 2005-04-08 18:46:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -133,15 +133,17 @@ if (isset($_POST['pollsubmit'])) {
 // Output XHTML header
 light_html_draw_top();
 
-if (bh_session_get_value('POSTS_PER_PAGE')) {
-    $ppp = bh_session_get_value('POSTS_PER_PAGE');
-    if ($ppp < 10) $ppp = 10;
-    if ($ppp > 30) $ppp = 30;
+if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
+
+    if ($posts_per_page < 10) $posts_per_page = 10;
+    if ($posts_per_page > 30) $posts_per_page = 30;
+
 }else {
-    $ppp = 20;
+
+    $posts_per_page = 20;
 }
 
-$messages = messages_get($tid,$pid,$ppp);
+$messages = messages_get($tid,$pid,$posts_per_page);
 $threaddata = thread_get($tid);
 $foldertitle = folder_get_title($threaddata['FID']);
 
@@ -201,7 +203,7 @@ if ($last_pid < $threaddata['LENGTH']) {
     echo form_quick_button("./lmessages.php", $lang['keepreading'], "msg", "$tid.$npid");
 }
 
-light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $ppp);
+light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $posts_per_page);
 
 echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></p>\n";
 

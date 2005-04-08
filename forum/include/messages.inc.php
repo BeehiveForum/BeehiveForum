@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.347 2005-04-04 11:54:51 rowan_hill Exp $ */
+/* $Id: messages.inc.php,v 1.348 2005-04-08 18:46:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -413,7 +413,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     $webtag = get_webtag($webtag_search);
 
     $uid = bh_session_get_value('UID');
-    $posts_per_page = bh_session_get_value('POST_PER_PAGE');
+
+    if (!$posts_per_page = bh_session_get_value('POST_PER_PAGE')) {
+        $posts_per_page = 20;
+    }
 
     if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
 

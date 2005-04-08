@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.170 2005-04-06 17:35:11 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.171 2005-04-08 18:46:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -481,10 +481,7 @@ function get_request_uri($rawurlencode = false)
 
 function bh_session_get_post_page_prefs()
 {
-    $page_prefs = bh_session_get_value('POST_PAGE');
-
-    if (!($page_prefs > 0)) {
-
+    if (!$page_prefs = bh_session_get_value('POST_PAGE')) {
         $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
     }
 

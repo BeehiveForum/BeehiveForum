@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.148 2005-04-07 19:22:12 decoyduck Exp $ */
+/* $Id: logon.php,v 1.149 2005-04-08 18:46:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -81,25 +81,28 @@ if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
     unset($final_uri);
 }
 
-if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
+if ($user_sess = bh_session_check()) {
 
-    // Load language file
+    if (bh_session_get_value('UID') > 0) {
 
-    $lang = load_language_file();
+        // Load language file
 
-    html_draw_top();
-    echo "<div align=\"center\">\n";
-    echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
+        $lang = load_language_file();
 
-    if (isset($final_uri)) {
-        echo form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
-    }else {
-        echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+        html_draw_top();
+        echo "<div align=\"center\">\n";
+        echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
+
+        if (isset($final_uri)) {
+            echo form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
+        }else {
+            echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
+        }
+
+        echo "</div>\n";
+        html_draw_bottom();
+        exit;
     }
-
-    echo "</div>\n";
-    html_draw_bottom();
-    exit;
 }
 
 // Load language file

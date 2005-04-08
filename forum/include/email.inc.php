@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.90 2005-03-29 18:25:55 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.91 2005-04-08 17:38:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -53,7 +53,7 @@ function email_sendnotification($tuid, $msg, $fuid)
 
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
 
-        if ($to_user_prefs['EMAIL_NOTIFY'] == 'Y') {
+        if (isset($to_user_prefs['EMAIL_NOTIFY']) && $to_user_prefs['EMAIL_NOTIFY'] == 'Y') {
 
             list($tid, $pid) = explode('.', $msg);
 
@@ -211,7 +211,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
 
-        if ($to_user_prefs['PM_NOTIFY_EMAIL'] == 'Y') {
+        if (isset($to_user_prefs['EMAIL_NOTIFY']) && $to_user_prefs['PM_NOTIFY_EMAIL'] == 'Y') {
 
             if (!$pm_subject = pm_get_subject($mid, $tuid)) return false;
 
@@ -436,7 +436,7 @@ function email_get_language($to_uid)
 
     if ($user_prefs = user_get_prefs($to_uid)) {
 
-        if (@file_exists("./include/languages/{$user_prefs['LANGUAGE']}.inc.php")) {
+        if (isset($user_prefs['LANGUAGE']) && @file_exists("./include/languages/{$user_prefs['LANGUAGE']}.inc.php")) {
 
              require("./include/languages/{$user_prefs['LANGUAGE']}.inc.php");
              return $lang;

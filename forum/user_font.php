@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.43 2005-03-14 13:27:23 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.44 2005-04-08 17:38:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,7 +88,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (isset($_GET['fontsize']) && is_numeric($_GET['fontsize']) && $_GET['fontsize'] > 4 && $_GET['fontsize'] < 16 && $uid > 0) {
 
-    $user_prefs = user_get_prefs(bh_session_get_value('UID'));
+    $user_prefs = user_get_prefs($uid);
     $user_prefs['FONT_SIZE'] = $_GET['fontsize'];
 
     user_update_prefs($uid, $user_prefs);

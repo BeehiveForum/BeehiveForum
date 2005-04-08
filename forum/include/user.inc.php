@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.240 2005-04-06 17:35:12 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.241 2005-04-08 17:38:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -346,51 +346,15 @@ function user_get_prefs($uid)
 
     if (!is_numeric($uid)) return false;
 
-    // There are three sources of preferences:
-    // 1. The defaults, set here:
-
-    $default_prefs = array('FIRSTNAME'            => '',
-                           'LASTNAME'             => '',
-                           'DOB'                  => '',
-                           'HOMEPAGE_URL'         => '',
-                           'PIC_URL'              => '',
-                           'EMAIL_NOTIFY'         => '',
-                           'TIMEZONE'             => '',
-                           'DL_SAVING'            => '',
-                           'MARK_AS_OF_INT'       => '',
-                           'POSTS_PER_PAGE'       => '',
-                           'FONT_SIZE'            => '',
-                           'STYLE'                => '',
-                           'VIEW_SIGS'            => '',
-                           'START_PAGE'           => '',
-                           'LANGUAGE'             => '',
-                           'PM_NOTIFY'            => '',
-                           'PM_NOTIFY_EMAIL'      => '',
-                           'PM_SAVE_SENT_ITEM'    => '',
-                           'PM_INCLUDE_REPLY'     => '',
-                           'PM_AUTO_PRUNE'        => '',
-                           'DOB_DISPLAY'          => '',
-                           'ANON_LOGON'           => '',
-                           'SHOW_STATS'           => '',
-                           'SHOW_THUMBS'          => '',
-                           'ENABLE_WIKI_WORDS'    => '',
-                           'IMAGES_TO_LINKS'      => '',
-                           'USE_WORD_FILTER'      => '',
-                           'USE_ADMIN_FILTER'     => '',
-                           'EMOTICONS'            => '',
-                           'ALLOW_EMAIL'          => '',
-                           'ALLOW_PM'             => '',
-                           'POST_PAGE'            => '');
-
     $forum_prefs = array();
 
     // 2. The user's global prefs, in USER_PREFS:
 
-    $sql  = "SELECT FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, ";
-    $sql .= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, ";
-    $sql .= "PM_NOTIFY_EMAIL, PM_SAVE_SENT_ITEM, PM_INCLUDE_REPLY, PM_AUTO_PRUNE, DOB_DISPLAY, ANON_LOGON, ";
-    $sql .= "SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ";
-    $sql .= "ALLOW_PM, POST_PAGE, SHOW_THUMBS, ENABLE_WIKI_WORDS FROM USER_PREFS WHERE UID = $uid";
+    $sql = "SELECT FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, ";
+    $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, ";
+    $sql.= "PM_NOTIFY_EMAIL, PM_SAVE_SENT_ITEM, PM_INCLUDE_REPLY, PM_AUTO_PRUNE, DOB_DISPLAY, ANON_LOGON, ";
+    $sql.= "SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ";
+    $sql.= "ALLOW_PM, POST_PAGE, SHOW_THUMBS, ENABLE_WIKI_WORDS FROM USER_PREFS WHERE UID = $uid";
 
     $result = db_query($sql, $db_user_get_prefs);
 
@@ -400,11 +364,11 @@ function user_get_prefs($uid)
 
     if ($table_data = get_table_prefix()) {
 
-        $sql  = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, ";
-        $sql .= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, ";
-        $sql .= "DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
-        $sql .= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ENABLE_WIKI_WORDS FROM ";
-        $sql .= "{$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+        $sql = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, ";
+        $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, ";
+        $sql.= "DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
+        $sql.= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ENABLE_WIKI_WORDS FROM ";
+        $sql.= "{$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
 
         $result = db_query($sql, $db_user_get_prefs);
         $forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, DB_RESULT_ASSOC) : array();
@@ -418,10 +382,6 @@ function user_get_prefs($uid)
 
     // Add keys to indicate whether the preference is set globally or not
 
-    foreach ($default_prefs as $key => $value) {
-        $default_prefs[$key.'_GLOBAL'] = true;
-    }
-
     foreach ($forum_prefs as $key => $value) {
         $forum_prefs[$key.'_GLOBAL'] = false;
     }
@@ -433,7 +393,7 @@ function user_get_prefs($uid)
     // Merge them all together, with forum prefs overriding
     // global prefs overriding default prefs
 
-    $prefs_array = array_merge($default_prefs, $global_prefs, $forum_prefs);
+    $prefs_array = array_merge($global_prefs, $forum_prefs);
 
     return $prefs_array;
 }
@@ -700,6 +660,8 @@ function user_get_global_sig($uid)
 
 function user_guest_enabled()
 {
+    $forum_settings = forum_get_settings();
+
     if (forum_get_setting('guest_account_enabled', 'N')) {
         return false;
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.27 2005-04-06 21:03:29 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.28 2005-04-08 17:38:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -511,7 +511,7 @@ echo "                        <td width=\"270\">{$lang['textcaptchakey']}:</td>\
 echo "                        <td>", form_input_text("text_captcha_key", (isset($default_forum_settings['text_captcha_key'])) ? $default_forum_settings['text_captcha_key'] : md5(uniqid(rand())), 35, 255), "</td>\n";
 echo "                      </tr>\n";
 
-if ($default_forum_settings['text_captcha_enabled'] == "Y") {
+if (isset($default_forum_settings['text_captcha_enabled']) && $default_forum_settings['text_captcha_enabled'] == "Y") {
 
     if ($text_captcha->generate_keys() && !$text_captcha->make_image()) {
 
@@ -709,11 +709,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['enableguestaccount']}:</td>\n";
-echo "                        <td>", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($default_forum_settings['guest_account_enabled']) && $default_forum_settings['guest_account_enabled'] == 'Y')), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($default_forum_settings['guest_account_enabled']) && $default_forum_settings['guest_account_enabled'] == 'N') || !isset($default_forum_settings['guest_account_enabled'])), "</td>\n";
+echo "                        <td>", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($default_forum_settings['guest_account_enabled']) && $default_forum_settings['guest_account_enabled'] == 'Y') || !isset($default_forum_settings['guest_account_enabled'])), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($default_forum_settings['guest_account_enabled']) && $default_forum_settings['guest_account_enabled'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['autologinguests']}:</td>\n";
-echo "                        <td>", form_radio("auto_logon", "Y", $lang['yes'], (isset($default_forum_settings['auto_logon']) && $default_forum_settings['auto_logon'] == 'Y')), "&nbsp;", form_radio("auto_logon", "N", $lang['no'], (isset($default_forum_settings['auto_logon']) && $default_forum_settings['auto_logon'] == 'N') || !isset($default_forum_settings['auto_logon'])), "</td>\n";
+echo "                        <td>", form_radio("auto_logon", "Y", $lang['yes'], (isset($default_forum_settings['auto_logon']) && $default_forum_settings['auto_logon'] == 'Y') || !isset($default_forum_settings['auto_logon'])), "&nbsp;", form_radio("auto_logon", "N", $lang['no'], (isset($default_forum_settings['auto_logon']) && $default_forum_settings['auto_logon'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

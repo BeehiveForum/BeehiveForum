@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.83 2005-04-04 16:02:19 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.84 2005-04-08 17:38:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -49,7 +49,6 @@ function format_user_name($u_logon, $u_nickname)
 
 function format_file_size($size)
 {
-
     $megabyte = 1024 * 1024;
 
     if ($size >= $megabyte) {
@@ -67,49 +66,62 @@ function format_time($time, $verbose = false, $custom_format = false)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
-    // Calculate $time in local timezone and current local time (the cookie bh_sess_tz = hours difference from GMT, West = negative)
-    $local_time = $time + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
-    $local_time_now = time() + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
+    if (!$timezone = bh_session_get_value('TIMEZONE')) {
+        $timezone = forum_get_setting('forum_timezone', false, 0);
+    }
 
+    if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
+        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
+    }
+
+    // Calculate $time in local timezone and current local time
+
+    $local_time = $time + ($timezone * HOUR_IN_SECONDS);
+    $local_time_now = time() + ($timezone * HOUR_IN_SECONDS);
 
     // Amend times for daylight saving if necessary (using critera for British Summer Time)
-    if (bh_session_get_value('DL_SAVING')) {
+
+    if ($dl_saving == "Y") {
+
         $local_time = timestamp_amend_bst($local_time);
         $local_time_now = timestamp_amend_bst($local_time_now);
     }
 
     if (gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) {
-        // time not this year
+
         if ($verbose) {
-            $fmt = gmdate("j M Y", $local_time); // display day, month, and year
+            $fmt = gmdate("j M Y", $local_time);
         } else {
-            $fmt = gmdate("M Y", $local_time); // display month and year
+            $fmt = gmdate("M Y", $local_time);
         }
-    } elseif ((gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {
-        // time this year, but not today
+
+    }elseif ((gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {
+
         if ($verbose) {
+
             if (gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) {
-                $fmt = gmdate("j M Y H:i", $local_time); // display day, date, year, hours, and minutes
+                $fmt = gmdate("j M Y H:i", $local_time);
             }else {
-                $fmt = gmdate("j M H:i", $local_time); // display day, date, hours, and minutes
+                $fmt = gmdate("j M H:i", $local_time);
             }
-        } else {
-            $fmt = gmdate("j M", $local_time); // display day and date only
+
+        }else {
+
+            $fmt = gmdate("j M", $local_time);
         }
-    } else {
-        // time is today
-        $fmt = gmdate("H:i", $local_time); // display hours and minutes
+
+    }else {
+
+        $fmt = gmdate("H:i", $local_time);
     }
 
-    // Apply the custom format if any.
-
     if ($custom_format) {
+
         $fmt = gmdate($custom_format, $local_time);
     }
 
     return $fmt;
 }
-
 
 function timestamp_to_date($timestamp)
 {
@@ -241,10 +253,18 @@ function is_md5($hash)
 
 function get_local_time()
 {
-    if (bh_session_get_value('DL_SAVING')) {
-        $local_time = timestamp_amend_bst(time() + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS));
-    } else {
-        $local_time = time() + (bh_session_get_value('TIMEZONE') * HOUR_IN_SECONDS);
+    if (!$timezone = bh_session_get_value('TIMEZONE')) {
+        $timezone = forum_get_setting('forum_timezone', false, 0);
+    }
+
+    if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
+        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
+    }
+
+    if ($dl_saving == "Y") {
+        $local_time = timestamp_amend_bst(time() + ($timezone * HOUR_IN_SECONDS));
+    }else {
+        $local_time = time() + ($timezone * HOUR_IN_SECONDS);
     }
 
     return $local_time;
@@ -253,6 +273,7 @@ function get_local_time()
 function format_age($dob) // $dob is a MySQL-type DATE field (YYYY-MM-DD)
 {
     $local_time = get_local_time();
+
     $todays_date = date("j", $local_time);
     $todays_month = date("n", $local_time);
     $todays_year = date("Y", $local_time);

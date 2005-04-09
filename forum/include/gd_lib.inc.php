@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gd_lib.inc.php,v 1.1 2005-04-04 11:56:25 decoyduck Exp $ */
+/* $Id: gd_lib.inc.php,v 1.2 2005-04-09 18:44:57 decoyduck Exp $ */
 
 /**
 * gd_lib.inc.php - GD image library functions
@@ -44,12 +44,11 @@ USA
 
 function get_gd_info()
 {
-    $get_gd_info = array('GD Version'         => false, 'FreeType Support' => 0,
-                         'FreeType Support'   => 0,     'FreeType Linkage' => "",
-                         'T1Lib Support'      => 0,     'GIF Read Support' => 0,
-                         'GIF Create Support' => 0,     'JPG Support'      => 0,
-                         'PNG Support'        => 0,     'WBMP Support'     => 0,
-                         'XBM Support'        => 0);
+    $get_gd_info = array('GD Version'       => false, 'FreeType Support'   => 0,
+                         'FreeType Linkage' => "",    'T1Lib Support'      => 0,
+                         'GIF Read Support' => 0,     'GIF Create Support' => 0,
+                         'JPG Support'      => 0,     'PNG Support'        => 0,
+                         'WBMP Support'     => 0,     'XBM Support'        => 0);
     $gif_support = 0;
 
     ob_start();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.4 2005-04-06 21:03:31 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.5 2005-04-09 18:44:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -158,7 +158,7 @@ class captcha {
 
         if ($text_captcha_gd_info = get_gd_info()) {
 
-            if ($text_captcha_gd_info['GD Version'] !== false) {
+            if ($text_captcha_gd_info['GD Version'] !== false && $text_captcha_gd_info['FreeType Support'] > 0) {
 
                 $image = imagecreate($this->image_x, $this->image_y);
                 $this->allocate_colours($image);
@@ -231,6 +231,11 @@ class captcha {
 
                 @imagejpeg($image, $this->get_image_filename());
                 return @file_exists($this->get_image_filename());
+
+            }else {
+
+                $this->error = TEXT_CAPTCHA_GD_ERROR;
+                return false;
             }
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.54 2005-04-07 19:22:14 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.55 2005-04-09 18:45:04 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -162,7 +162,7 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  TITLE VARCHAR(32) DEFAULT NULL,";
 $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL,";
 $sql.= "  ALLOWED_TYPES TINYINT(3) DEFAULT NULL,";
-$sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
+$sql.= "  POSITION MEDIUMINT(8) UNSIGNED DEFAULT '0',";
 $sql.= "  PRIMARY KEY (FID)";
 $sql.= ") TYPE=MYISAM";
 
@@ -302,7 +302,8 @@ $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY (GID)";
+$sql.= "  PRIMARY KEY (GID),";
+$sql.= "  KEY FORUM (FORUM)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -765,8 +766,8 @@ $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  START_PAGE CHAR(3) NOT NULL DEFAULT '0',";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
-$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
@@ -1036,8 +1037,8 @@ $sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  PM_AUTO_PRUNE CHAR(3) NOT NULL DEFAULT '-60',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
-$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT '1',";
+$sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_ADMIN_FILTER CHAR(1) NOT NULL DEFAULT 'N',";

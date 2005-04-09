@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.64 2005-04-07 14:54:01 tribalonline Exp $ */
+/* $Id: constants.inc.php,v 1.65 2005-04-09 18:44:57 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -216,5 +216,6 @@ define("REMOVE_BANNED_EMAIL", 51);
 define("TEXT_CAPTCHA_NO_FONTS", 1);
 define("TEXT_CAPTCHA_KEY_ERROR", 2);
 define("TEXT_CAPTCHA_DIR_ERROR", 3);
+define("TEXT_CAPTCHA_GD_ERROR", 4);
 
 ?>

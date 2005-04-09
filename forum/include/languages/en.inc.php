@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.266 2005-04-08 17:38:40 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.267 2005-04-09 18:44:57 decoyduck Exp $ */
 
 // International English language file
 
@@ -462,6 +462,7 @@ $lang['textcaptchakey'] = "Text captcha key";
 $lang['textcaptchafonterror_1'] = "Text Captcha has been disabled automatically because there are no truetype fonts available for it to use. Please upload some truetype fonts to";
 $lang['textcaptchafonterror_2'] = "on your server.";
 $lang['textcaptchadirerror'] = "Text Captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the webserver / PHP process.";
+$lang['textcaptchagderror'] = "Text Captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text captcha support.";
 
 $lang['textcaptchadirsnotwritable'] = "Text captcha directory must be writable by webserver / PHP process!";
 $lang['textcaptchadirblank'] = "Text captcha directory is blank!";

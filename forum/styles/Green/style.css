@@ -772,6 +772,10 @@ A {
     width: 290px;
 }
 
+.register_dropdown {
+    width: 228px;
+}
+
 .admin_startpage_textarea {
     font-family: monospace;
     width: 580px;

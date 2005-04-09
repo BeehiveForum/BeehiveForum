@@ -647,7 +647,7 @@ function autoCheckSpell(webtag) {
     }
 
     if (active_field.value.length == 0) return true;
-alert(form_obj);
+
     if (form_obj.checked == true && !auto_check_spell_started) {
 
         auto_check_spell_started = true;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.46 2005-04-07 14:54:02 tribalonline Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.47 2005-04-09 20:51:37 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -983,7 +983,54 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_POLL ADD QUESTION VARCHAR(64) DEFAULT NULL;";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_POLL_NEW";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "CREATE TABLE {$forum_webtag}_POLL_NEW (";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  QUESTION VARCHAR(64) DEFAULT NULL,";
+    $sql.= "  CLOSES DATETIME DEFAULT NULL,";
+    $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
+    $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
+    $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
+    $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY (TID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "INSERT INTO DEFAULT_POLL_NEW SELECT POLL.TID, THREAD.TITLE, ";
+    $sql.= "POLL.CLOSES, POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, ";
+    $sql.= "POLL.VOTETYPE, POLL.OPTIONTYPE FROM {$forum_webtag}_POLL POLL ";
+    $sql.= "LEFT JOIN {$forum_webtag}_THREAD THREAD ON (THREAD.TID = POLL.TID)";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "DROP TABLE {$forum_webtag}_POLL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Rename our new THREAD table
+
+    $sql = "ALTER TABLE {$forum_webtag}_POLL_NEW RENAME {$forum_webtag}_POLL";
 
     if (!$result = db_query($sql, $db_install)) {
 

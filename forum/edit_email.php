@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.45 2005-04-10 19:44:21 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.46 2005-04-10 20:02:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,12 +132,6 @@ if (isset($_POST['submit'])) {
         $user_prefs['PM_NOTIFY_EMAIL'] = "N";
     }
 
-    if (isset($_POST['pm_notify_email_global'])) {
-        $user_prefs_global['PM_NOTIFY_EMAIL'] = ($_POST['pm_notify_email_global'] == "Y") ? true : false;
-    } else {
-        $user_prefs_global['PM_NOTIFY_EMAIL'] = false;
-    }
-
     if (isset($_POST['anon_logon']) && $_POST['anon_logon'] == "Y") {
         $user_prefs['ANON_LOGON'] = "Y";
     }else {
@@ -216,7 +210,7 @@ echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "                  <td>", form_input_hidden("pm_notify_email_global", "Y"), "&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

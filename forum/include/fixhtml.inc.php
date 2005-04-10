@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.103 2005-04-10 16:36:14 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.104 2005-04-10 17:10:21 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -141,7 +141,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $html_parts[$j] = "/pre";
 
-                                        $code_highlighter->set_source(utf8_decode($tmpcode));
+                                        $code_highlighter->set_source($tmpcode);
 
                                         $lang_geshi = $code_highlighter->get_language_name_from_extension(strtolower($lang));
                                         if (strlen($lang_geshi) > 0) {
@@ -1105,7 +1105,7 @@ function tidy_tinymce_quote_callback ($matches)
     return "<quote". _htmlentities_decode($matches[1]) .">";
 }
 
-/** 
+/**
 * 'Cleans' inline styles
 *
 * Called by clean_attributes function, this function prevents absolute CSS positioning and

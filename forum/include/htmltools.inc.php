@@ -56,10 +56,12 @@ function TinyMCE() {
 
     $str.= "    plugins : \"beehive,searchreplace,table\",\n";
 
+    $str.= "    force_br_newlines : true,\n";
+
 	$str.= "    theme : \"advanced\",\n";
     $str.= "    theme_advanced_toolbar_location : \"top\",\n";
     $str.= "    theme_advanced_toolbar_align : \"left\",\n";
-    $str.= "    theme_advanced_path_location : \"bottom\",\n";
+//  $str.= "    theme_advanced_path_location : \"bottom\",\n";
 
 	// separator,rowseparator,spacer
     $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,separator,formatselect,fontselect,fontsizeselect\",\n";

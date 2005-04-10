@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.105 2005-04-10 19:05:47 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.106 2005-04-10 23:27:38 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1033,13 +1033,13 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
     $html = $html_left.$html_right;
 
     if ($tidymce) {
-        $html = preg_replace_callback("/<code([^>]*)>([^,]*)<\/code>/", "tidy_html_callback_2", $html);
-        $html = preg_replace("/<quote([^>]*)>/", "[quote$1]", $html);
-        $html = str_replace("</quote>", "[/quote]", $html);
-        $html = str_replace("<spoiler>", "[spoiler]", $html);
-        $html = str_replace("</spoiler>", "[/spoiler]", $html);
-        $html = str_replace("<noemots>", "[noemots]", $html);
-        $html = str_replace("</noemots>", "[/noemots]", $html);
+        $html = preg_replace_callback("/<code([^>]*)>([^<]*)<\/code>/", "tidy_html_callback_2", $html);
+        $html = preg_replace("/<quote([^>]*)>/", "&lt;quote$1&gt;", $html);
+        $html = str_replace("</quote>", "&lt;/quote&gt;", $html);
+        $html = str_replace("<spoiler>", "&lt;spoiler&gt;", $html);
+        $html = str_replace("</spoiler>", "&lt;/spoiler&gt;", $html);
+        $html = str_replace("<noemots>", "&lt;noemots&gt;", $html);
+        $html = str_replace("</noemots>", "&lt;/noemots&gt;", $html);
     }
 
     return $html;
@@ -1063,11 +1063,11 @@ function tidy_html_callback ($matches)
 */
 function tidy_html_callback_2 ($matches)
 {
-    return "[code {$matches[1]}]". _htmlentities($matches[2]). "[/code]";
+    return "&lt;code {$matches[1]}&gt;". _htmlentities($matches[2]). "&lt;/code&gt;";
 }
 
 /**
-* Turns TidyMCE [quote] etc. tags into HTML <quote> etc. tags
+* TinyMCE's <quote> etc. tags are actually &lt;quote&gt; - this fixes that
 *
 * @return string
 * @param string $html HTML submitted from TinyMCE editor.
@@ -1075,13 +1075,13 @@ function tidy_html_callback_2 ($matches)
 function tidy_tinymce ($html)
 {
 
-    $html = preg_replace_callback("/\[code(.*)\](.*)\[\/code\]/sU", "tidy_tinymce_code_callback", $html);
-    $html = preg_replace_callback("/\[quote(.*)\]/sU", "tidy_tinymce_quote_callback", $html);
-    $html = str_replace("[/quote]", "</quote>", $html);
-    $html = str_replace("[spoiler]", "<spoiler>", $html);
-    $html = str_replace("[/spoiler]", "</spoiler>", $html);
-    $html = str_replace("[noemots]", "<noemots>", $html);
-    $html = str_replace("[/noemots]", "</noemots>", $html);
+    $html = preg_replace_callback("/&lt;code(.*?)&gt;(.*?)&lt;\/code&gt;/s", "tidy_tinymce_code_callback", $html);
+    $html = preg_replace_callback("/&lt;quote(.*?)&gt;/s", "tidy_tinymce_quote_callback", $html);
+    $html = str_replace("&lt;/quote&gt;", "</quote>", $html);
+    $html = str_replace("&lt;spoiler&gt;", "<spoiler>", $html);
+    $html = str_replace("&lt;/spoiler&gt;", "</spoiler>", $html);
+    $html = str_replace("&lt;noemots&gt;", "<noemots>", $html);
+    $html = str_replace("&lt;/noemots&gt;", "</noemots>", $html);
 
     return $html;
 }

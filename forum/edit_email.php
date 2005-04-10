@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.44 2005-04-08 17:38:39 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.45 2005-04-10 19:44:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -216,7 +216,7 @@ echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>", form_checkbox("pm_notify_email", "Y", $lang['notifyofnewpmemail'], (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("pm_notify_email_global", "Y", $lang['setforallforums'], (isset($user_prefs['PM_NOTIFY_EMAIL']) ? $user_prefs['PM_NOTIFY_EMAIL_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                  <td>", form_input_hidden("pm_notify_email_global", "Y"), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";

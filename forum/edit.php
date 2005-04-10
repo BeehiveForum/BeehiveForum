@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.170 2005-04-08 18:18:54 decoyduck Exp $ */
+/* $Id: edit.php,v 1.171 2005-04-10 16:38:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -840,7 +840,6 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 
 if ($allow_html == true && $tool_type != 0) {
     echo $tools->toolbar(false, form_submit("submit", $lang['apply'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""));
-
 } else {
     $tools->setTinyMCE(false);
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.82 2005-03-22 21:47:45 decoyduck Exp $ */
+/* $Id: pm.php,v 1.83 2005-04-10 16:38:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -251,7 +251,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         echo "</td>\n";
 
         echo "      <td class=\"postbody\">";
-        echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid=".$message['MID']."\" target=\"_self\">{$message['SUBJECT']}</a>";
+        echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
 
         if (isset($message['AID'])) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";

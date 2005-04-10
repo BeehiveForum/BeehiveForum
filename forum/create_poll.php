@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.155 2005-04-08 18:18:45 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.156 2005-04-10 21:05:58 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -266,9 +266,10 @@ if (isset($_POST['cancel'])) {
         $error_html = "<h2>{$lang['mustenterthreadtitle']}</h2>";
         $valid = false;
     }
+
     if (isset($_POST['question']) && strlen(trim(_stripslashes($_POST['question']))) > 0) {
         $t_question = trim(_stripslashes($_POST['question']));
-    }else {
+    }elseif (isset($t_threadtitle)) {
         $t_question = $t_threadtitle;
     }
 
@@ -301,6 +302,8 @@ if (isset($_POST['cancel'])) {
     }
 
     if (isset($_POST['answers']) && is_array($_POST['answers'])) {
+
+        $t_answers = array();
 
         foreach($_POST['answers'] as $t_answer) {
 
@@ -583,10 +586,12 @@ if ($valid && isset($_POST['submit'])) {
     }
 }
 
-if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-    $t_fid = $_GET['fid'];
-}else {
-    $t_fid = 1;
+if (!isset($t_fid)) {
+    if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+        $t_fid = $_GET['fid'];
+    }else {
+        $t_fid = 1;
+    }
 }
 
 if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_POLL_THREAD, "", "post_folder_dropdown")) {

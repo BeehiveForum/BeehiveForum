@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.145 2005-04-07 19:32:25 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.146 2005-04-10 14:36:19 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -330,7 +330,7 @@ echo "<form name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("uid", $uid), "\n";
 
-if (isset($_POST['t_delete_posts'])) {
+if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
@@ -997,7 +997,7 @@ if (isset($_POST['t_delete_posts'])) {
                 echo "                              <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachment['filesize']). "</td>\n";
                 echo "                              <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
                 echo "                                ", form_input_hidden('hash', $attachment['hash']), "\n";
-                echo "                                ", form_submit('del', $lang['delete']), "\n";
+                echo "                                ", form_submit('delete', $lang['delete']), "\n";
                 echo "                              </td>\n";
                 echo "                            </tr>\n";
             }

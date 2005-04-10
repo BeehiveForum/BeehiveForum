@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.172 2005-04-09 20:51:37 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.173 2005-04-10 14:36:20 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -132,7 +132,7 @@ function bh_session_check($show_session_fail = true)
 
             if ($user_sess['FID'] != $forum_fid) {
 
-                bh_update_visitor_log($user_sess['UID'], __LINE__);
+                bh_update_visitor_log($user_sess['UID']);
             }
 
             // Everything checks out OK. If the user's session is older
@@ -262,7 +262,7 @@ function bh_session_check($show_session_fail = true)
             $result = db_query($sql, $db_bh_session_check);
         }
 
-        bh_update_visitor_log(0, __LINE__);
+        bh_update_visitor_log(0);
 
         search_index_old_post();
 
@@ -327,7 +327,7 @@ function bh_remove_stale_sessions()
 
 // Updates the visitor log for the current user
 
-function bh_update_visitor_log($uid, $line)
+function bh_update_visitor_log($uid)
 {
     if (!is_numeric($uid)) return false;
 
@@ -432,7 +432,7 @@ function bh_session_init($uid, $update_visitor_log = true)
         $result = db_query($sql, $db_bh_session_init);
     }
 
-    if ($update_visitor_log) bh_update_visitor_log($uid, __LINE__);
+    if ($update_visitor_log) bh_update_visitor_log($uid);
 
     bh_setcookie('bh_sess_hash', $user_hash);
 }

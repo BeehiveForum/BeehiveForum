@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.104 2005-04-10 17:10:21 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.105 2005-04-10 19:05:47 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -144,16 +144,18 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                         $code_highlighter->set_source($tmpcode);
 
                                         $lang_geshi = $code_highlighter->get_language_name_from_extension(strtolower($lang));
+
                                         if (strlen($lang_geshi) > 0) {
                                             $code_highlighter->set_language($lang_geshi);
                                         } else {
                                             $code_highlighter->set_language(strtolower($lang));
                                         }
 
-                                        // preg_replace for the HTML geshi wraps it's output with by default
-                                        $tmpcode = preg_replace("/(^<pre>)|(\s*(&nbsp;)?<\/pre>$)/", "", $code_highlighter->parse_code());
+                                        // Fix for Geshi doing something weird with &nbsp;
+                                        // Don't ask me why it does it, it just seems very weird.
 
-                                        //echo "<xmp>___".$tmpcode."___</xmp>";
+                                        $tmpcode = strip_tags($code_highlighter->parse_code(), "<span>");
+                                        $tmpcode = preg_replace("/^&nbsp;/", "", $tmpcode);
 
                                         array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
 

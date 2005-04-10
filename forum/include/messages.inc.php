@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.350 2005-04-09 21:27:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.351 2005-04-10 16:36:14 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -173,9 +173,9 @@ function message_get_content($tid, $pid)
 * @return string
 * @param string $content Message HTML
 * @param boolean $emoticons Toggle to add emoticons (default true)
-* @param boolean $sig Toggle to display signature (default true)
+* @param boolean $sig Toggle to ignore signature (default false)
 */
-function message_split_fiddle($content, $emoticons = true, $sig = true)
+function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
 {
     $webtag = get_webtag($webtag_search);
 
@@ -376,7 +376,7 @@ function message_split_fiddle($content, $emoticons = true, $sig = true)
                 }
             }
 
-            if ($sig == true) {
+            if ($ignore_sig == false) {
 
                 $message_parts = preg_split('/<([^<>]+)>/', $sig, -1, PREG_SPLIT_DELIM_CAPTURE);
 

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.102 2005-04-05 19:27:51 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.103 2005-04-10 16:36:14 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1482,8 +1482,8 @@ function make_links ($html)
     $html = " ".$html;
 
     // URL:
-    $html = preg_replace("/\b(\w+:\/\/([^:\s]+:?[^@\s]+@)?((\w+-?)+\.?)*\w+(:\d+)?([\/?#]\S*[^)\s])?)/i", "<a href=\"$1\">$1</a>", $html);
-    $html = preg_replace("/\b(www\.((\w+-?)+\.?)*\w+(:\d+)?([\/?#]\S*[^)\s])?)/i", "<a href=\"http://$1\">$1</a>", $html);
+    $html = preg_replace("/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?((\w+-?)+\.?)*\w+(:\d+)?([\/?#]\S*[^)\s])?)/i", "$1<a href=\"$2\">$2</a>", $html);
+    $html = preg_replace("/(\s|\()(www\.((\w+-?)+\.?)*\w+(:\d+)?([\/?#]\S*[^)\s])?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
 
     // MAIL:
     $html = preg_replace("/\b(mailto:)?(((\w+-?)+\.?)*\w+@((\w+-?)+\.)+\w+)/i", "<a href=\"mailto:$2\">$1$2</a>", $html);

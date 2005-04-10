@@ -21,11 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.123 2005-04-06 17:35:10 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.124 2005-04-10 16:36:14 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content)
 {
@@ -476,7 +477,9 @@ class MessageText {
     var $tinymce = false;
 
     function MessageText ($html = 0, $content = "", $emoticons = true, $links = true) {
-        if (@file_exists("./tiny_mce/tiny_mce.js")) {
+
+        $post_prefs = bh_session_get_post_page_prefs();
+        if ($post_prefs & POST_TINYMCE_DISPLAY) {
             $this->tinymce = true;
         }
         $this->diff = false;

@@ -733,27 +733,6 @@ a {
     margin: 5px;
 }
 
-.logon_dropdown {
-    width: 135px;
-}
-
-.search_dropdown {
-    width: 175px;
-}
-
-.banned_dropdown {
-    width: 250px;
-    height: 100px;
-}
-
-.links_dropdown {
-    width: 290px;
-}
-
-.register_dropdown {
-    width: 228px;
-}
-
 .admin_startpage_textarea {
     font-family: monospace;
     width: 580px;
@@ -781,10 +760,6 @@ a {
     width: 90%;
 }
 
-.post_folder_dropdown {
-    width: 190px;
-}
-
 .thread_title {
     width: 190px;
 }
@@ -795,6 +770,35 @@ a {
 
 .post_content {
     width: 480px;
+}
+
+.install_dropdown {
+    width: 234px;
+}
+
+.logon_dropdown {
+    width: 135px;
+}
+
+.search_dropdown {
+    width: 175px;
+}
+
+.banned_dropdown {
+    width: 250px;
+    height: 100px;
+}
+
+.links_dropdown {
+    width: 290px;
+}
+
+.register_dropdown {
+    width: 228px;
+}
+
+.post_folder_dropdown {
+    width: 190px;
 }
 
 .to_uid_dropdown {

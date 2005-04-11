@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.50 2005-03-15 21:30:07 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.51 2005-04-11 20:09:21 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -112,8 +112,9 @@ function get_active_users()
 
     $sql = "SELECT SESSIONS.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, ";
-    $sql.= "USER_PREFS.ANON_LOGON FROM SESSIONS SESSIONS ";
+    $sql.= "USER_PREFS.ANON_LOGON, USER_PEER.RELATIONSHIP FROM SESSIONS SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = $uid) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = '{$table_data['FID']}' ";
@@ -123,29 +124,31 @@ function get_active_users()
 
     while ($row = db_fetch_array($result)) {
 
-        $anon_logon = "N";
+        $anon_logon = 0;
 
-        if (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] == "Y") {
-
-            $anon_logon = "Y";
+        if (isset($row['ANON_LOGON']) && $row['ANON_LOGON'] > 0) {
+            $anon_logon = $row['ANON_LOGON'];
         }
 
-        if (isset($row['ANON_LOGON_GLOBAL']) && $row['ANON_LOGON_GLOBAL'] == "Y") {
-
-            $anon_logon = "Y";
+        if (isset($row['ANON_LOGON_GLOBAL']) && $row['ANON_LOGON_GLOBAL'] > 0) {
+            $anon_logon = $row['ANON_LOGON_GLOBAL'];
         }
 
         if ($row['UID'] == 0) {
 
             $stats['GUESTS']++;
 
-        }else if ($anon_logon == "Y") {
+        }else if ($anon_logon > 0) {
 
             $stats['AUSERS']++;
 
         }else {
 
             $stats['NUSERS']++;
+        }
+
+        if ($anon_logon == 0 || $row['UID'] == $uid || (($row['RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == 2)) {
+
             $stats['USERS'][$row['UID']] = array('UID'      => $row['UID'],
                                                  'LOGON'    => $row['LOGON'],
                                                  'NICKNAME' => $row['NICKNAME']);

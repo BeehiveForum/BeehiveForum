@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.46 2005-04-10 20:02:13 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.47 2005-04-11 20:08:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,10 +132,10 @@ if (isset($_POST['submit'])) {
         $user_prefs['PM_NOTIFY_EMAIL'] = "N";
     }
 
-    if (isset($_POST['anon_logon']) && $_POST['anon_logon'] == "Y") {
-        $user_prefs['ANON_LOGON'] = "Y";
+    if (isset($_POST['anon_logon']) && is_numeric($_POST['anon_logon'])) {
+        $user_prefs['ANON_LOGON'] = $_POST['anon_logon'];
     }else {
-        $user_prefs['ANON_LOGON'] = "N";
+        $user_prefs['ANON_LOGON'] = 0;
     }
 
     if (isset($_POST['anon_logon_global'])) {
@@ -205,6 +205,14 @@ echo "                <tr>\n";
 echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['emailsettings']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
+echo "                  <td>", form_checkbox("allow_email", "Y", $lang['allowemails'], (isset($user_prefs['ALLOW_EMAIL']) && $user_prefs['ALLOW_EMAIL'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_email_global", "Y", $lang['setforallforums'], (isset($user_prefs['ALLOW_EMAIL_GLOBAL']) ? $user_prefs['ALLOW_EMAIL_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>", form_checkbox("allow_pm", "Y", $lang['allowpersonalmessages'], (isset($user_prefs['ALLOW_PM']) && $user_prefs['ALLOW_PM'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_pm_global", "Y", $lang['setforallforums'], (isset($user_prefs['ALLOW_PM_GLOBAL']) ? $user_prefs['ALLOW_PM_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
 echo "                  <td>", form_checkbox("email_notify", "Y", $lang['notifybyemail'], (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("email_notify_global", "Y", $lang['setforallforums'], (isset($user_prefs['EMAIL_NOTIFY_GLOBAL']) ? $user_prefs['EMAIL_NOTIFY_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
@@ -232,26 +240,56 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"550\">\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['privacysettings']}</td>\n";
+echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['birthdayanddateofbirth']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>{$lang['ageanddob']}:</td>\n";
-echo "                  <td>", form_dropdown_array("dob_display", range(0, 2), array($lang['neitheragenordob'], $lang['showonlyage'], $lang['showageanddob']), (isset($user_prefs['DOB_DISPLAY']) && is_numeric($user_prefs['DOB_DISPLAY']) ? $user_prefs['DOB_DISPLAY'] : 0)), "</td>\n";
+echo "                  <td colspan=\"2\">", form_radio("dob_display", 0, $lang['donotshowmyageordobtoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 0) ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("dob_display_global", "Y", $lang['setforallforums'], (isset($user_prefs['DOB_DISPLAY_GLOBAL']) ? $user_prefs['DOB_DISPLAY_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_checkbox("allow_email", "Y", $lang['allowemails'], (isset($user_prefs['ALLOW_EMAIL']) && $user_prefs['ALLOW_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_email_global", "Y", $lang['setforallforums'], (isset($user_prefs['ALLOW_EMAIL_GLOBAL']) ? $user_prefs['ALLOW_EMAIL_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                  <td colspan=\"2\">", form_radio("dob_display", 1, $lang['showonlymyagetoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 1) ? true : false), "</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_checkbox("allow_pm", "Y", $lang['allowpersonalmessages'], (isset($user_prefs['ALLOW_PM']) && $user_prefs['ALLOW_PM'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("allow_pm_global", "Y", $lang['setforallforums'], (isset($user_prefs['ALLOW_PM_GLOBAL']) ? $user_prefs['ALLOW_PM_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                  <td colspan=\"2\">", form_radio("dob_display", 2, $lang['showmyageanddobtoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 2) ? true : false), "</td>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_checkbox("anon_logon", "Y", $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == "Y") ? true : false), "</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"550\">\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['forumanonymity']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">", form_radio("anon_logon", 0, $lang['listmeontheactiveusersdisplay'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 0) ? true : false), "</td>\n";
 echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("anon_logon_global", "Y", $lang['setforallforums'], (isset($user_prefs['ANON_LOGON_GLOBAL']) ? $user_prefs['ANON_LOGON_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
+echo "                  <td colspan=\"2\">", form_radio("anon_logon", 1, $lang['browseanonymously'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 1) ? true : false), "</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">", form_radio("anon_logon", 2, $lang['allowfriendstoseemeasonline'], (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == 2) ? true : false), "</td>\n";
+echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";

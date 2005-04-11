@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.115 2005-04-08 18:18:54 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.116 2005-04-11 18:32:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -545,7 +545,7 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['FROM_UID'] = $preview_fuser['UID'];
 
     $pm_preview_array['SUBJECT'] = $t_subject;
-    $pm_preview_array['CREATED'] = gmmktime();
+    $pm_preview_array['CREATED'] = mktime();
     $pm_preview_array['AID'] = $aid;
 
     $pm_preview_array['FOLDER'] = PM_FOLDER_OUTBOX;
@@ -772,7 +772,7 @@ echo $tools->js();
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else{
-    echo form_input_hidden("t_dedupe", gmmktime());
+    echo form_input_hidden("t_dedupe", mktime());
 }
 
 if (isset($t_rmid)) echo form_input_hidden("replyto", $t_rmid), "\n";

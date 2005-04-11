@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.117 2005-04-07 23:35:02 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.118 2005-04-11 18:32:16 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -233,9 +233,9 @@ function search_execute($argarray, &$urlquery, &$error)
 
 function search_date_range($from, $to)
 {
-    $year  = date('Y', gmmktime());
-    $month = date('n', gmmktime());
-    $day   = date('j', gmmktime());
+    $year  = date('Y', mktime());
+    $month = date('n', mktime());
+    $day   = date('j', mktime());
 
     $range = "";
 
@@ -243,57 +243,57 @@ function search_date_range($from, $to)
 
       case 1:  // Today
 
-        $from_timestamp = gmmktime(0, 0, 0, $month, $day, $year);
+        $from_timestamp = mktime(0, 0, 0, $month, $day, $year);
         break;
 
       case 2:  // Yesterday
 
-        $from_timestamp = gmmktime(0, 0, 0, $month, $day - 1, $year);
+        $from_timestamp = mktime(0, 0, 0, $month, $day - 1, $year);
         break;
 
       case 3:  // Day before yesterday
 
-        $from_timestamp = gmmktime(0, 0, 0, $month, $day - 2, $year);
+        $from_timestamp = mktime(0, 0, 0, $month, $day - 2, $year);
         break;
 
       case 4:  // 1 week ago
 
-        $from_timestamp = gmmktime(0, 0, 0, $month, $day - 7, $year);
+        $from_timestamp = mktime(0, 0, 0, $month, $day - 7, $year);
         break;
 
       case 5:  // 2 weeks ago
 
-        $from_timestamp = gmmktime(0, 0, 0, $month, $day - 14, $year);
+        $from_timestamp = mktime(0, 0, 0, $month, $day - 14, $year);
         break;
 
       case 6:  // 3 weeks ago
 
-        $from_timestamp = gmmktime(0, 0, 0, $month, $day - 21, $year);
+        $from_timestamp = mktime(0, 0, 0, $month, $day - 21, $year);
         break;
 
       case 7:  // 1 month ago
 
-        $from_timestamp = gmmktime(0, 0, 0, $month - 1, $day, $year);
+        $from_timestamp = mktime(0, 0, 0, $month - 1, $day, $year);
         break;
 
       case 8:  // 2 months ago
 
-        $from_timestamp = gmmktime(0, 0, 0, $month - 2, $day, $year);
+        $from_timestamp = mktime(0, 0, 0, $month - 2, $day, $year);
         break;
 
       case 9:  // 3 months ago
 
-        $from_timestamp = gmmktime(0, 0, 0, $month - 3, $day, $year);
+        $from_timestamp = mktime(0, 0, 0, $month - 3, $day, $year);
         break;
 
       case 10: // 6 months ago
 
-        $from_timestamp = gmmktime(0, 0, 0, $month - 6, $day, $year);
+        $from_timestamp = mktime(0, 0, 0, $month - 6, $day, $year);
         break;
 
       case 11: // 1 year ago
 
-        $from_timestamp = gmmktime(0, 0, 0, $month, $day, $year - 1);
+        $from_timestamp = mktime(0, 0, 0, $month, $day, $year - 1);
         break;
 
     }
@@ -302,62 +302,62 @@ function search_date_range($from, $to)
 
       case 1:  // Now
 
-        $to_timestamp = gmmktime();
+        $to_timestamp = mktime();
         break;
 
       case 2:  // Today
 
-        $to_timestamp = gmmktime(23, 59, 59, $month, $day, $year);
+        $to_timestamp = mktime(23, 59, 59, $month, $day, $year);
         break;
 
       case 3:  // Yesterday
 
-        $to_timestamp = gmmktime(23, 59, 59, $month, $day - 1, $year);
+        $to_timestamp = mktime(23, 59, 59, $month, $day - 1, $year);
         break;
 
       case 4:  // Day before yesterday
 
-        $to_timestamp = gmmktime(23, 59, 59, $month, $day - 2, $year);
+        $to_timestamp = mktime(23, 59, 59, $month, $day - 2, $year);
         break;
 
       case 5:  // 1 week ago
 
-        $to_timestamp = gmmktime(23, 59, 59, $month, $day - 7, $year);
+        $to_timestamp = mktime(23, 59, 59, $month, $day - 7, $year);
         break;
 
       case 6:  // 2 weeks ago
 
-        $to_timestamp = gmmktime(23, 59, 59, $month, $day - 14, $year);
+        $to_timestamp = mktime(23, 59, 59, $month, $day - 14, $year);
         break;
 
       case 7:  // 3 weeks ago
 
-        $to_timestamp = gmmktime(23, 59, 59, $month, $day - 21, $year);
+        $to_timestamp = mktime(23, 59, 59, $month, $day - 21, $year);
         break;
 
       case 8:  // 1 month ago
 
-        $to_timestamp = gmmktime(23, 59, 59, $month - 1, $day, $year);
+        $to_timestamp = mktime(23, 59, 59, $month - 1, $day, $year);
         break;
 
       case 9:  // 2 months ago
 
-        $to_timestamp = gmmktime(23, 59, 59, $month - 2, $day, $year);
+        $to_timestamp = mktime(23, 59, 59, $month - 2, $day, $year);
         break;
 
       case 10: // 3 months ago
 
-        $to_timestamp = gmmktime(23, 59, 59, $month - 3, $day, $year);
+        $to_timestamp = mktime(23, 59, 59, $month - 3, $day, $year);
         break;
 
       case 11: // 6 months ago
 
-        $to_timestamp = gmmktime(23, 59, 59, $month - 6, $day, $year);
+        $to_timestamp = mktime(23, 59, 59, $month - 6, $day, $year);
         break;
 
       case 12: // 1 year ago
 
-        $to_timestamp = gmmktime(23, 59, 59, $month, $day, $year - 1);
+        $to_timestamp = mktime(23, 59, 59, $month, $day, $year - 1);
         break;
 
     }

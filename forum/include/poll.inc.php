@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.148 2005-04-04 00:35:35 rowan_hill Exp $ */
+/* $Id: poll.inc.php,v 1.149 2005-04-11 18:32:15 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -52,7 +52,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     if (!is_numeric($show_results)) $show_results = 1;
     if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
     if (!is_numeric($option_type)) $option_type = 0;
-    
+
     $question  = addslashes(_htmlentities($question));
 
     if (!$table_data = get_table_prefix()) return false;
@@ -109,7 +109,7 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_g
         $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES WHERE TID = '$tid'";
         $result = db_query($sql, $db_poll_edit);
     }
-    
+
     $poll_question = addslashes($poll_question);
 
     $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
@@ -348,7 +348,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
     $polldata     = poll_get($tid);
     $pollresults  = poll_get_votes($tid);
     $user_poll_data = poll_get_user_vote($tid);
-    
+
     if (isset($polldata['QUESTION']) && trim(_stripslashes($polldata['QUESTION']) != "")) {
         $question = $polldata['QUESTION'];
     } else {
@@ -384,7 +384,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     if ($in_list) {
 
-        if (((!is_array($user_poll_data) || $polldata['CHANGEVOTE'] == 2) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime()) && !$is_preview) {
+        if (((!is_array($user_poll_data) || $polldata['CHANGEVOTE'] == 2) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > mktime()) && !$is_preview) {
 
             $polldata['CONTENT'].= "          <tr>\n";
             $polldata['CONTENT'].= "            <td>\n";
@@ -465,7 +465,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
         }else {
 
-            if ($polldata['SHOWRESULTS'] == 1 || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < gmmktime())) {
+            if ($polldata['SHOWRESULTS'] == 1 || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < mktime())) {
 
                 if ($polldata['POLLTYPE'] == 0) {
 
@@ -564,25 +564,25 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         $totalvotes = poll_get_total_votes($tid);
         $poll_group_count = sizeof($group_array);
 
-        if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
+        if ($totalvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
 
             $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>";
 
-        }else if ($totalvotes == 0 && ($polldata['CLOSES'] > gmmktime() || $polldata['CLOSES'] == 0)) {
+        }else if ($totalvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
 
             $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>";
 
-        }else if ($totalvotes == 1 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
+        }else if ($totalvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
 
             $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>";
 
-        }else if ($totalvotes == 1 && ($polldata['CLOSES'] > gmmktime() || $polldata['CLOSES'] == 0)) {
+        }else if ($totalvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
 
             $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>";
 
         }else {
 
-            if ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0) {
+            if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
 
                 $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplevoted']}</b>";
 
@@ -600,7 +600,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
         $polldata['CONTENT'].= "                    <td colspan=\"2\">&nbsp;</td>\n";
         $polldata['CONTENT'].= "                </tr>\n";
 
-        if (($polldata['CLOSES'] <= gmmktime()) && $polldata['CLOSES'] != 0) {
+        if (($polldata['CLOSES'] <= mktime()) && $polldata['CLOSES'] != 0) {
 
             $polldata['CONTENT'].= "                <tr>\n";
             $polldata['CONTENT'].= "                    <td colspan=\"2\" class=\"postbody\">{$lang['pollhasended']}.</td>\n";
@@ -1745,7 +1745,7 @@ function poll_close($tid)
 
         if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($t_fid)) {
 
-            $timestamp = gmmktime();
+            $timestamp = mktime();
 
             $sql = "UPDATE {$table_data['PREFIX']}POLL SET ";
             $sql.= "CLOSES = FROM_UNIXTIME($timestamp) WHERE TID = $tid";
@@ -1769,7 +1769,7 @@ function poll_is_closed($tid)
     if (db_num_rows($result) > 0) {
 
         $polldata = db_fetch_array($result);
-        if (isset($polldata['CLOSES']) && $polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0) return true;
+        if (isset($polldata['CLOSES']) && $polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) return true;
     }
 
     return false;
@@ -1789,7 +1789,7 @@ function poll_vote($tid, $vote_array)
     $polldata = poll_get($tid);
     $vote_count = sizeof($vote_array);
 
-    $timestamp = gmmktime();
+    $timestamp = mktime();
 
     if (!poll_get_user_vote($tid) || $polldata['CHANGEVOTE'] == 2) {
 

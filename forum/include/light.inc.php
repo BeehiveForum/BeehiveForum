@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.82 2005-04-04 17:29:23 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.83 2005-04-11 18:32:15 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -643,7 +643,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
     if ($in_list) {
 
-      if ((!is_array($userpolldata) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > gmmktime())) {
+      if ((!is_array($userpolldata) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > mktime())) {
 
         for ($i = 0; $i < sizeof($pollresults['OPTION_ID']); $i++) {
 
@@ -744,25 +744,25 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
       $polldata['CONTENT'] .= "<p>";
 
-      if ($totalvotes == 0 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
+      if ($totalvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
 
         $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>";
 
-      }elseif ($totalvotes == 0 && ($polldata['CLOSES'] > gmmktime() || $polldata['CLOSES'] == 0)) {
+      }elseif ($totalvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
 
         $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>";
 
-      }elseif ($totalvotes == 1 && ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0)) {
+      }elseif ($totalvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
 
         $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>";
 
-      }elseif ($totalvotes == 1 && ($polldata['CLOSES'] > gmmktime() || $polldata['CLOSES'] == 0)) {
+      }elseif ($totalvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
 
         $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>";
 
       }else {
 
-        if ($polldata['CLOSES'] <= gmmktime() && $polldata['CLOSES'] != 0) {
+        if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
 
           $polldata['CONTENT'].= "<b>". $totalvotes. " {$lang['peoplevoted']}</b>";
 
@@ -776,7 +776,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
       $polldata['CONTENT'].= "</p>\n";
 
-      if (($polldata['CLOSES'] <= gmmktime()) && $polldata['CLOSES'] != 0) {
+      if (($polldata['CLOSES'] <= mktime()) && $polldata['CLOSES'] != 0) {
 
         $polldata['CONTENT'].= "<p>{$lang['pollhasended']}</p>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.156 2005-04-10 21:05:58 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.157 2005-04-11 18:32:13 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -507,19 +507,19 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($t_close_poll == 0) {
 
-                $t_poll_closes = gmmktime() + DAY_IN_SECONDS;
+                $t_poll_closes = mktime() + DAY_IN_SECONDS;
 
             }elseif ($t_close_poll == 1) {
 
-                $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
+                $t_poll_closes = mktime() + (DAY_IN_SECONDS * 3);
 
             }elseif ($t_close_poll == 2) {
 
-                $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
+                $t_poll_closes = mktime() + (DAY_IN_SECONDS * 7);
 
             }elseif ($t_close_poll == 3) {
 
-                $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
+                $t_poll_closes = mktime() + (DAY_IN_SECONDS * 30);
 
             }elseif ($t_close_poll == 4) {
 
@@ -728,7 +728,7 @@ echo form_input_hidden('webtag', $webtag), "\n";
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else{
-    echo form_input_hidden("t_dedupe", gmmktime());
+    echo form_input_hidden("t_dedupe", mktime());
 }
 
 echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";

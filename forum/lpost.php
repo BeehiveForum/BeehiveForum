@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.72 2005-04-08 18:46:08 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.73 2005-04-11 18:32:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -605,7 +605,7 @@ echo "</p>";
 if (isset($_POST['t_dedupe'])) {
     echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
 }else {
-    echo form_input_hidden("t_dedupe", gmmktime());
+    echo form_input_hidden("t_dedupe", mktime());
 }
 
 echo "</form>\n";

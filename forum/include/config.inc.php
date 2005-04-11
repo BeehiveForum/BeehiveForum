@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.123 2005-04-07 20:07:00 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.124 2005-04-11 18:56:26 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -29,9 +29,9 @@ define("BEEHIVE_INSTALL_NOWARN", 1);
 
 // Database stuff ------------------------------------------------------
 
-$db_server   = "localhost";     // the address of your MySQL server
+$db_server   = "localhost";    // the address of your MySQL server
 $db_username = "beehiveforum";  // your MySQL username
-$db_password = "password";      // your MySQL password
+$db_password = "password";  // your MySQL password
 $db_database = "beehiveforum";  // the name of your MySQL database
 
 // ---------------------------------------------------------------------

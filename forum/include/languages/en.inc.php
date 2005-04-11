@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.268 2005-04-11 18:56:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.269 2005-04-11 20:08:06 decoyduck Exp $ */
 
 // International English language file
 
@@ -1214,16 +1214,20 @@ $lang['startpage'] = "Start page";
 $lang['containsHTML'] = "Contains HTML";
 $lang['preferredlang'] = "Preferred language";
 $lang['ageanddob'] = "Age and date of birth";
-$lang['neitheragenordob'] = "Do not show to others";
-$lang['showonlyage'] = "Show only age to others";
-$lang['showageanddob'] = "Show to others";
+$lang['donotshowmyageordobtoothers'] = "Do not show my age or date of birth to others";
+$lang['showonlymyagetoothers'] = "Show only my age to others";
+$lang['showmyageanddobtoothers'] = "Show both my age and date of birth to others";
+$lang['listmeontheactiveusersdisplay'] = "List me on the active users display";
 $lang['browseanonymously'] = "Browse forum anonymously";
+$lang['allowfriendstoseemeasonline'] = "Browse anonymously, but allow friends to see me as online";
 $lang['showforumstats'] = "Show forum stats at bottom of message pane";
 $lang['usewordfilter'] = "Enable word filter.";
 $lang['forceadminwordfilter'] = "Force use of admin word filter on all users (inc. guests)";
 $lang['timezone'] = "Time Zone";
 $lang['language'] = "Language";
-$lang['emailsettings'] = "Email Settings";
+$lang['emailsettings'] = "Email and contact settings";
+$lang['forumanonymity'] = "Forum anonymity settings";
+$lang['birthdayanddateofbirth'] = "Birthday and date of birth display";
 $lang['privacysettings'] = "Privacy Settings";
 $lang['includeadminfilter'] = "Include admin word filter in my list.";
 $lang['setforallforums'] = "Set for all forums?";

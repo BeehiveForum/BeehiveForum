@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.174 2005-04-11 18:11:50 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.175 2005-04-11 20:09:20 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -341,7 +341,7 @@ function bh_update_visitor_log($uid)
 
         $user_prefs = user_get_prefs($uid);
 
-        if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == "Y") {
+        if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] > 0) {
 
             $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NULL ";
             $sql.= "WHERE UID = $uid";

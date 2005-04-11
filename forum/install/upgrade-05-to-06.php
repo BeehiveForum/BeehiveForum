@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.47 2005-04-09 20:51:37 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.48 2005-04-11 20:09:23 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -936,38 +936,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'N' WHERE SHOW_STATS = 0;";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "UPDATE {$forum_webtag}_USER_PREFS SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'Y' WHERE ANON_LOGON = 1;";
-
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'N' WHERE ANON_LOGON = 0;";
 
     if (!$result = db_query($sql, $db_install)) {
 

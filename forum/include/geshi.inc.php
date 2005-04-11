@@ -36,6 +36,7 @@ if (file_exists('./geshi/geshi.php')) {
 
     $code_highlighter = new GeSHi('//', 'php', $path);
     $code_highlighter->set_link_target('_blank');
+    $code_highlighter->set_encoding('UTF-8');
 
     /* To save speed/bandwidth, several highlighting features can be disabled/limited.
     See: http://qbnz.com/highlighter/geshi-doc.html#disabling-lexics

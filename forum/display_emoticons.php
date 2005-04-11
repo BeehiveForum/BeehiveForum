@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.37 2005-04-04 02:32:54 tribalonline Exp $ */
+/* $Id: display_emoticons.php,v 1.38 2005-04-11 22:35:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -204,7 +204,7 @@ if (@$fp = fopen("$path/style.css", "r")) {
 
             foreach ($emot['matches'] as $emot_match) {
 
-                echo htmlentities($emot_match), " &nbsp; ";
+                echo _htmlentities($emot_match), " &nbsp; ";
             }
 
             echo "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.267 2005-04-09 18:44:57 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.268 2005-04-11 18:56:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -868,6 +868,7 @@ $lang['request'] = "Request";
 
 $lang['emailconfirmation'] = "Email confirmation";
 $lang['emailconfirmationcomplete'] = "Thank you for confirming your email address. You may now login and start posting immediatly.";
+$lang['emailconfirmationfailed'] = "Email confirmation has failed, please try again later. If you encounter this error multiple times please contact the forum owner or a moderator for assistance.";
 
 // Frameset things (index.php) -----------------------------------------
 

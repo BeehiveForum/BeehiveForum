@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.43 2005-04-04 17:29:22 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.44 2005-04-11 18:11:49 decoyduck Exp $ */
 
 function bh_check_gzip()
 {
@@ -73,6 +73,8 @@ function bh_gzhandler($contents)
 
     if ($gzip_compress_level > 9) $gzip_compress_level = 9;
     if ($gzip_compress_level < 1) $gzip_compress_level = 1;
+
+    //header("Content-Type: UTF-8", true);
 
     // check that the encoding is possible.
     // and fetch the client's encoding method.

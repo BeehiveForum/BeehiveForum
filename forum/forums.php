@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.42 2005-04-08 18:18:54 decoyduck Exp $ */
+/* $Id: forums.php,v 1.43 2005-04-11 18:11:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -128,7 +128,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
                 }
 
-                echo "                  <td width=\"30%\" valign=\"top\">{$forum['DESCRIPTION']}</td>\n";
+                echo "                  <td width=\"30%\" valign=\"top\">{$forum['FORUM_DESC']}</td>\n";
 
                 if ($forum['UNREAD_TO_ME'] > 0) {
                     echo "                  <td width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</a></td>\n";
@@ -250,7 +250,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                     echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
                 }
 
-                echo "                  <td width=\"30%\" valign=\"top\">{$forum['DESCRIPTION']}</td>\n";
+                echo "                  <td width=\"30%\" valign=\"top\">{$forum['FORUM_DESC']}</td>\n";
 
                 if ($forum['UNREAD_TO_ME'] > 0) {
                     echo "                  <td width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</a></td>\n";
@@ -327,7 +327,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             }
 
             echo "                  </td>\n";
-            echo "                  <td width=\"30%\" valign=\"top\">{$forum['DESCRIPTION']}</td>\n";
+            echo "                  <td width=\"30%\" valign=\"top\">{$forum['FORUM_DESC']}</td>\n";
             echo "                  <td width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['MESSAGES']} {$lang['messages']}</a></td>\n";
             echo "                  <td width=\"20%\" valign=\"top\">&nbsp;</td>\n";
             echo "                </tr>\n";

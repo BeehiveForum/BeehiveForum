@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.86 2005-04-10 17:10:21 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.87 2005-04-11 18:11:49 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -299,7 +299,7 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
         $year = date("Y", $local_time) + 1;
     }
 
-    return date("j M", gmmktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
+    return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.242 2005-04-08 18:18:57 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.243 2005-04-11 18:11:50 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -487,7 +487,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             }
 
             $sql = "UPDATE USER_PREFS SET ";
-            $sql.= implode(",", $values);
+            $sql.= implode(", ", $values);
             $sql.= " WHERE UID = $uid";
 
         }else {
@@ -678,13 +678,17 @@ function user_get_forthcoming_birthdays()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql  = "SELECT U.UID, U.LOGON, U.NICKNAME, UP.DOB, DAYOFMONTH(UP.DOB) AS BDAY, MONTH(UP.DOB) AS BMONTH ";
-    $sql .= "FROM USER U, USER_PREFS UP ";
-    $sql .= "WHERE U.UID = UP.UID AND UP.DOB > 0 AND UP.DOB_DISPLAY = 2 ";
-    $sql .= "AND ((MONTH(UP.DOB) = MONTH(NOW()) AND DAYOFMONTH(UP.DOB) >= DAYOFMONTH(NOW())) ";
-    $sql .= "OR MONTH(UP.DOB) > MONTH(NOW())) ";
-    $sql .= "ORDER BY BMONTH ASC, BDAY ASC ";
-    $sql .= "LIMIT 0, 5";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PREFS.DOB, ";
+    $sql.= "DAYOFMONTH(USER_PREFS.DOB) AS BDAY, MONTH(USER_PREFS.DOB) AS BMONTH ";
+    $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_GLOBAL ";
+    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) WHERE USER_PREFS.DOB > 0 ";
+    $sql.= "AND (USER_PREFS.DOB_DISPLAY = 2 OR USER_PREFS_GLOBAL.DOB_DISPLAY = 2) ";
+    $sql.= "AND ((MONTH(USER_PREFS.DOB) = MONTH(NOW()) ";
+    $sql.= "AND DAYOFMONTH(USER_PREFS.DOB) >= DAYOFMONTH(NOW())) ";
+    $sql.= "OR MONTH(USER_PREFS.DOB) > MONTH(NOW())) ";
+    $sql.= "ORDER BY BMONTH ASC, BDAY ASC ";
+    $sql.= "LIMIT 0, 5";
 
     $result = db_query($sql, $db_user_get_forthcoming_birthdays);
 
@@ -872,6 +876,7 @@ function users_get_recent($offset, $limit)
             }
 
             $users_get_recent_array[] = $visitor_array;
+            $users_get_recent_count++;
         }
     }
 

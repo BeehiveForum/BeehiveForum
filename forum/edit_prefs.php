@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.43 2005-04-08 17:38:39 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.44 2005-04-11 18:11:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -229,12 +229,18 @@ $user_prefs = user_get_prefs($uid);
 $user_info = user_get($uid);
 
 // Split the DOB into usable variables.
-if (isset($user_prefs['DOB']) && preg_match("/\d{4, }-\d{2, }-\d{2, }/", $user_prefs['DOB'])) {
+
+if (isset($user_prefs['DOB']) && preg_match("/\d{4,}-\d{2,}-\d{2,}/", $user_prefs['DOB'])) {
+
     if (!isset($dob['YEAR']) || !isset($dob['MONTH']) || !isset($dob['DAY'])) {
+
         list($dob['YEAR'], $dob['MONTH'], $dob['DAY']) = explode('-', $user_prefs['DOB']);
     }
+
     $dob['BLANK_FIELDS'] = ($dob['YEAR'] == 0 || $dob['MONTH'] == 0 || $dob['DAY'] == 0) ? true : false;
+
 }else {
+
     $dob['YEAR']  = 0;
     $dob['MONTH'] = 0;
     $dob['DAY']   = 0;

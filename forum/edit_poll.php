@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.95 2005-04-03 23:09:19 tribalonline Exp $ */
+/* $Id: edit_poll.php,v 1.96 2005-04-11 18:32:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -416,19 +416,19 @@ if ($valid && isset($_POST['preview'])) {
 
     if ($t_close_poll == 0) {
 
-        $t_poll_closes = gmmktime() + DAY_IN_SECONDS;
+        $t_poll_closes = mktime() + DAY_IN_SECONDS;
 
     }elseif ($t_close_poll == 1) {
 
-        $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 3);
+        $t_poll_closes = mktime() + (DAY_IN_SECONDS * 3);
 
     }elseif ($t_close_poll == 2) {
 
-        $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 7);
+        $t_poll_closes = mktime() + (DAY_IN_SECONDS * 7);
 
     }elseif ($t_close_poll == 3) {
 
-        $t_poll_closes = gmmktime() + (DAY_IN_SECONDS * 30);
+        $t_poll_closes = mktime() + (DAY_IN_SECONDS * 30);
 
     }elseif ($t_close_poll == 4) {
 

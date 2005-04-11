@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.106 2005-04-10 23:27:38 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.107 2005-04-11 23:49:11 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1063,7 +1063,7 @@ function tidy_html_callback ($matches)
 */
 function tidy_html_callback_2 ($matches)
 {
-    return "&lt;code {$matches[1]}&gt;". _htmlentities($matches[2]). "&lt;/code&gt;";
+    return "&lt;code {$matches[1]}&gt;". nl2br(_htmlentities($matches[2])). "&lt;/code&gt;";
 }
 
 /**
@@ -1094,6 +1094,7 @@ function tidy_tinymce ($html)
 */
 function tidy_tinymce_code_callback ($matches)
 {
+    $matches[2] = str_replace("<br />", "\n", $matches[2]);
     return "<code". _htmlentities_decode($matches[1]) .">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
 }
 /**

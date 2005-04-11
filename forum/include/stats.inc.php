@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.51 2005-04-11 20:09:21 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.52 2005-04-11 22:35:42 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -138,20 +138,23 @@ function get_active_users()
 
             $stats['GUESTS']++;
 
-        }else if ($anon_logon > 0) {
-
-            $stats['AUSERS']++;
-
         }else {
 
-            $stats['NUSERS']++;
-        }
+            if ($anon_logon > 0) {
 
-        if ($anon_logon == 0 || $row['UID'] == $uid || (($row['RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == 2)) {
+                $stats['AUSERS']++;
 
-            $stats['USERS'][$row['UID']] = array('UID'      => $row['UID'],
-                                                 'LOGON'    => $row['LOGON'],
-                                                 'NICKNAME' => $row['NICKNAME']);
+            }else {
+
+                $stats['NUSERS']++;
+            }
+
+            if ($anon_logon == 0 || $row['UID'] == $uid || (($row['RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == 2)) {
+
+                $stats['USERS'][$row['UID']] = array('UID'      => $row['UID'],
+                                                     'LOGON'    => $row['LOGON'],
+                                                     'NICKNAME' => $row['NICKNAME']);
+            }
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.24 2005-04-01 13:17:12 rowan_hill Exp $ */
+/* $Id: user_rel.inc.php,v 1.25 2005-04-11 22:35:42 decoyduck Exp $ */
 
 /**
 * User relation functions
@@ -29,6 +29,8 @@ USA
 
 /**
 */
+
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 function user_rel_update($uid, $peer_uid, $value)
@@ -59,10 +61,10 @@ function user_rel_update($uid, $peer_uid, $value)
 
 /**
 * Gets relationship between two users
-* 
-* Gets relationships set by $uid of $peer_uid. For example, 
-* if someone of UID 2 has set the admin (UID 1) as a friend 
-* (not the other way round), calling user_rel_get(2, 1) 
+*
+* Gets relationships set by $uid of $peer_uid. For example,
+* if someone of UID 2 has set the admin (UID 1) as a friend
+* (not the other way round), calling user_rel_get(2, 1)
 * will return USER_FRIEND. Note: This has no bearing on
 * what user_rel_get(1, 2) will return.
 *

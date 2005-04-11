@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.87 2005-04-11 18:11:49 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.88 2005-04-11 22:35:42 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -160,26 +160,10 @@ function timestamp_amend_bst($timestamp)
 
 // Lazy htmlentities function which ensures the use of
 // unicode for all character code sets.
-//
-// NOTE: Requires PHP/4.1.0 or higher to support unicode
 
 function _htmlentities($text)
 {
-    return htmlspecialchars($text);
-
-    // This bit below doesn't appear to work with
-    // all PHP versions (?) and causes strangeness
-    // with some character sets and non-alphanumeric
-    // characters including the euro and pound (£)
-    // sign.
-
-    /*$lang = load_language_file();
-
-    if (phpversion() >= "4.1.0") {
-        return htmlentities($text, ENT_COMPAT, strtoupper($lang['_charset']));
-    }else {
-        return htmlentities($text, ENT_COMPAT);
-    }*/
+    return htmlentities($text, ENT_QUOTES, 'UTF-8');
 }
 
 // Lazy reversal of _htmlentities
@@ -187,7 +171,7 @@ function _htmlentities($text)
 
 function _htmlentities_decode($text)
 {
-    $trans_tbl = get_html_translation_table(HTML_ENTITIES);
+    $trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
     $trans_tbl = array_flip($trans_tbl);
 
     $ret = strtr($text, $trans_tbl);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.115 2005-04-09 18:44:56 decoyduck Exp $ */
+/* $Id: register.php,v 1.116 2005-04-12 17:23:17 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -330,7 +330,7 @@ if (isset($_POST['submit'])) {
         $new_user['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
     }
 
-    if (isset($_POST['STYLE']) && _in_array($_POST['STYLE'], $available_styles)) {
+    if (isset($_POST['STYLE']) && _in_array($_POST['STYLE'], array_keys($available_styles))) {
         $new_user['STYLE'] = $_POST['STYLE'];
     }else {
         $new_user['STYLE'] = forum_get_setting('default_style', false, 'default');

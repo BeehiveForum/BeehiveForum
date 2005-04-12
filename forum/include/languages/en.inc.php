@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.269 2005-04-11 20:08:06 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.270 2005-04-12 17:23:18 decoyduck Exp $ */
 
 // International English language file
 
@@ -98,6 +98,7 @@ $lang['interested'] = "Interested";
 $lang['subscribe'] = "Subscribe";
 $lang['apply'] = "Apply";
 $lang['submit'] = "Submit";
+$lang['download'] = "Download";
 $lang['save'] = "Save";
 $lang['savechanges'] = "Save Changes";
 $lang['update'] = "Update";
@@ -262,6 +263,8 @@ $lang['forumsettings'] = "Forum Settings";
 $lang['globalforumsettings'] = "Global Forum Settings";
 $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['startpage'] = "Start Page";
+$lang['startpageerror_1'] = "Your startpage could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
+$lang['startpageerror_2'] = "folder. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
 $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";
 $lang['forumlinks'] = "Forum Links";

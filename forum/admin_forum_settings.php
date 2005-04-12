@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.69 2005-04-08 17:38:36 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.70 2005-04-12 17:26:06 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -160,15 +160,9 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['forum_keywords'] = "";
     }
 
-    if (isset($_POST['default_style']) && strlen(trim(_stripslashes($_POST['default_style']))) > 0) {
+    if (isset($_POST['default_style']) && in_array($_POST['default_style'], array_keys($available_styles))) {
 
-        $new_forum_settings['default_style'] = trim(_stripslashes($_POST['default_style']));
-
-        if (!style_exists($new_forum_settings['default_style'])) {
-
-            $error_html = "<h2>{$lang['unknownstylename']}</h2>\n";
-            $valid = false;
-        }
+        $new_forum_settings['default_style'] = $_POST['default_style'];
 
     }else {
 
@@ -191,15 +185,9 @@ if (isset($_POST['changepermissions'])) {
         $valid = false;
     }
 
-    if (isset($_POST['default_language']) && strlen(trim(_stripslashes($_POST['default_language']))) > 0) {
+    if (isset($_POST['default_language']) && in_array($_POST['default_language'], array_keys($available_langs))) {
 
-        $new_forum_settings['default_language'] = trim(_stripslashes($_POST['default_language']));
-
-        if (!_in_array($new_forum_settings['default_language'], $available_langs)) {
-
-            $error_html = "<h2>{$lang['unknownlanguage']}</h2>\n";
-            $valid = false;
-        }
+        $new_forum_settings['default_language'] = $_POST['default_language'];
 
     }else {
 

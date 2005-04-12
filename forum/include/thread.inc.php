@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.69 2005-03-21 15:36:06 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.70 2005-04-12 23:34:52 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -102,7 +102,7 @@ function thread_get($tid)
     return false;
 }
 
-function thread_get_author($tid)
+function thread_get_by_uid($tid)
 {
     $db_thread_get_author = db_connect();
 
@@ -110,13 +110,14 @@ function thread_get_author($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT U.LOGON, U.NICKNAME FROM USER U, {$table_data['PREFIX']}POST P ";
-    $sql.= "WHERE U.UID = P.FROM_UID AND P.TID = $tid and P.PID = 1";
+    $sql = "SELECT BY_UID FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "WHERE TID = $tid";
 
     $result = db_query($sql, $db_thread_get_author);
-    $author = db_fetch_array($result);
 
-    return format_user_name($author['LOGON'], $author['NICKNAME']);
+    list($by_uid) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $by_uid;
 }
 
 function thread_get_folder($tid)

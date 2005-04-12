@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.55 2005-03-28 19:43:34 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.56 2005-04-12 23:34:52 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "search.inc.php");
 
 function post_update($fid, $tid, $pid, $content)
 {
@@ -41,6 +42,16 @@ function post_update($fid, $tid, $pid, $content)
     $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
     $result = db_query($sql, $db_post_update);
+
+    $sql = "DELETE FROM SEARCH_POSTS WHERE TID = $tid ";
+    $sql.= "AND PID = $pid";
+
+    $result = db_query($sql, $db_post_delete);
+
+    $sql = "DELETE FROM SEARCH_MATCH WHERE TID = $tid ";
+    $sql.= "AND PID = $pid";
+
+    $result = db_query($sql, $db_post_delete);
 
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL) && !perm_is_moderator($fid)) {
 
@@ -92,6 +103,11 @@ function post_delete($tid, $pid)
     $result = db_query($sql, $db_post_delete);
 
     $sql = "DELETE FROM SEARCH_POSTS WHERE TID = $tid ";
+    $sql.= "AND PID = $pid";
+
+    $result = db_query($sql, $db_post_delete);
+
+    $sql = "DELETE FROM SEARCH_MATCH WHERE TID = $tid ";
     $sql.= "AND PID = $pid";
 
     $result = db_query($sql, $db_post_delete);

@@ -24,6 +24,7 @@ USA
 // htmltools.inc.php : wysiwyg toolbar functions
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -35,14 +36,14 @@ function TinyMCE() {
 
     $str = "<!-- tinyMCE -->\n";
     $str.= "<script language=\"javascript\" type=\"text/javascript\" src=\"./tiny_mce/tiny_mce.js\"></script>\n";
-	$str.= "<script language=\"javascript\" type=\"text/javascript\">\n";
-	$str.= "tinyMCE.init({\n";
+    $str.= "<script language=\"javascript\" type=\"text/javascript\">\n";
+    $str.= "tinyMCE.init({\n";
 
-	$str.= "    mode : \"specific_textareas\",\n";
+    $str.= "    mode : \"specific_textareas\",\n";
 
     if ($pref_language = bh_session_get_value("LANGUAGE")) {
         if (@file_exists("./tiny_mce/langs/{$pref_language}.js")) {
-        	$str.= "    language : \"{$pref_language}\",\n";
+                $str.= "    language : \"{$pref_language}\",\n";
         }
     }
 
@@ -58,21 +59,21 @@ function TinyMCE() {
 
     $str.= "    force_br_newlines : true,\n";
 
-	$str.= "    theme : \"advanced\",\n";
+    $str.= "    theme : \"advanced\",\n";
     $str.= "    theme_advanced_toolbar_location : \"top\",\n";
     $str.= "    theme_advanced_toolbar_align : \"left\",\n";
 //  $str.= "    theme_advanced_path_location : \"bottom\",\n";
 
-	// separator,rowseparator,spacer
+        // separator,rowseparator,spacer
     $str.= "    theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,separator,formatselect,fontselect,fontsizeselect\",\n";
     $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols,separator,search,replace,bhspellcheck\",\n";
     $str.= "    theme_advanced_buttons3 : \"removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,hr,separator,bhquote,bhcode,bhspoiler,separator,bhnoemots\",\n";
 
-	$str.= "    extended_valid_elements : \"bh,marquee,span\",\n";
+    $str.= "    extended_valid_elements : \"bh,marquee,span[class|title]\",\n";
 
     $str.= "    invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\"\n";
 
-	$str.= "   });\n\n";
+    $str.= "   });\n\n";
 
     $str.= "    var webtag = \"$webtag\";\n";
     $str.= "    var auto_check_spell_started = false;\n\n";
@@ -94,17 +95,52 @@ function TinyMCE() {
     $str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
     $str.= "            auto_check_spell_started = true;\n";
     $str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=mce_editor_0', 'spellcheck','width=450, height=550, scrollbars=1');\n";
-    $str.= "    		return false;\n";
+    $str.= "                    return false;\n";
     $str.= "        }\n";
     $str.= "    }\n\n";
 
-    $str.= "    function add_text(text) {\n";
-    $str.= "        tinyMCE.execCommand('mceFocus',false,'mce_editor_0');\n";
-    $str.= "        tinyMCE.execCommand('mceInsertContent',false,unescape(text));\n";
+    // Javascript doesn't have a trim function? :|
+
+    $str.= "    function trim(str) {\n";
+    $str.= "        return str.replace(/^\s*|\s*$/g,\"\");\n";
     $str.= "    }\n";
 
-	$str.= "</script>\n";
-	$str.= "<!-- /tinyMCE -->\n";
+    $emoticons = new Emoticons();
+    $emoticon_text_array = $emoticons->get_text_array();
+
+    $emot_keys = "";
+    $emot_values = "";
+
+    $key_count = 0;
+
+    foreach ($emoticon_text_array as $key => $value) {
+        $emot_keys.= "emot_keys[$key_count] = \"$key\";\n        ";
+        $emot_values.= "emot_values[$key_count] = \"{$value[0]}\";\n        ";
+        $key_count++;
+    }
+
+    $str.= "    function emoticon_construct(text) {\n\n";
+    $str.= "        text = unescape(text);\n\n";
+    $str.= "        var emot_keys = new Array();\n";
+    $str.= "        var emot_values = new Array();\n";
+    $str.= "        $emot_keys\n";
+    $str.= "        $emot_values\n";
+    $str.= "        for (var i = 0; i < emot_values.length - 1; i++) {\n";
+    $str.= "            if (emot_values[i] == trim(text)) {\n";
+    $str.= "                return '<span class=\"e_' + emot_keys[i] + '\" title=\"' + trim(text) + '\"><span class=\"e__\">' + trim(text) + '</span></span>';\n";
+    $str.= "            }\n";
+    $str.= "        }\n";
+    $str.= "    }\n";
+
+    $str.= "    function add_text(text) {\n";
+    $str.= "        text = emoticon_construct(text);\n";
+    $str.= "        alert(text);\n";
+    $str.= "        tinyMCE.execCommand('mceFocus', false, 'mce_editor_0');\n";
+    $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
+    $str.= "    }\n";
+
+    $str.= "</script>\n";
+    $str.= "<!-- /tinyMCE -->\n";
 
     return $str;
 }
@@ -280,13 +316,15 @@ class TextAreaHTML {
                 $this->tbs++;
 
                 if ($rows < 7) {
-                    $rows += 7;
+                    $rows = 7;
                 }
+
+                $rows += 5;
                 $custom_html.= ' mce_editable="true"';
 
             }
 
-        } else {
+        }else {
 
             $custom_html.= " onkeypress=\"active_text(this);\" onkeydown=\"active_text(this);\" onkeyup=\"active_text(this);\" onclick=\"active_text(this);\" onchange=\"active_text(this);\" onselect=\"active_text(this);\" ondblclick=\"active_text(this, true);\"";
 
@@ -343,7 +381,7 @@ class TextAreaHTML {
             }
             $str.= "        return;\n";
             $str.= "    }\n";
-            
+
         } else {
 
             $str.= "    function clearFocus() {\n";

@@ -25,7 +25,8 @@ A list of changes since previous Beehive versions can be found in release.txt.
     1.3.2    Images
     1.3.3    The top frame
     1.3.4    Emoticons
-    1.3.5    Beautifier
+    1.3.5    GeSHi
+    1.3.6    TinyMCE
   1.4    Upgrading 0.4 to 0.5
     1.4.1    Make a back up of your database
     1.4.2    Back up your files
@@ -84,21 +85,21 @@ presented with a directory that looks a bit like this:
 |  |
 |  |- forum
 |  |  |- attachments
-|  |  |- beautifier
-|  |  |  |- Beautifier
-|  |  |  |  |- Context.php
+|  |  |
+|  |  |- geshi
+|  |  |  |- contrib
+|  |  |  |  |- cssgen.php
+|  |  |  |  |- example.php
+|  |  |  |
+|  |  |  |- docs
+|  |  |  |  |- BUGS
 |  |  |  |  |- ...
 |  |  |  |
-|  |  |  |- HFile
-|  |  |  |  |- HFile_javascript.php
+|  |  |  |- geshi
+|  |  |  |  |- actionscript.php
 |  |  |  |  |- ...
 |  |  |  |
-|  |  |  |- Output
-|  |  |  |  |- Output_css.php
-|  |  |  |  |- Output_HTML.php
-|  |  |  |
-|  |  |  |- COPYING
-|  |  |  |- ...
+|  |  |  |- geshi.php
 |  |  | 
 |  |  |  |- emoticons
 |  |  |  |  |- boughton
@@ -106,6 +107,7 @@ presented with a directory that looks a bit like this:
 |  |  |  |  |  |  |- angry.png
 |  |  |  |  |  |  |- ...
 |  |  |  |  |  |
+|  |  |  |  |  |- definitions.php
 |  |  |  |  |  |- desc.txt
 |  |  |  |  |  |- style.css
 |  |  |  |  |
@@ -114,6 +116,7 @@ presented with a directory that looks a bit like this:
 |  |  |  |  |  |  |- alien.png
 |  |  |  |  |  |  |- ...
 |  |  |  |  |  |
+|  |  |  |  |  |- definitions.php
 |  |  |  |  |  |- desc.txt
 |  |  |  |  |  |- style.css
 |  |  |  |  |
@@ -124,7 +127,7 @@ presented with a directory that looks a bit like this:
 |  |  |  |  |- text
 |  |  |  |  |  |- desc.txt
 |  |  |  |  |
-|  |  |  |  |- emoticon_definitions.inc.php
+|  |  |  |  |- README
 |  |  |
 |  |  |- forums
 |  |  |  |- default
@@ -161,6 +164,23 @@ presented with a directory that looks a bit like this:
 |  |  |  |  |  |- attach.png
 |  |  |  |  |- style.css
 |  |  |  |  |- top.html
+|  |  |
+|  |  |- tiny_mce
+|  |  |  |- langs
+|  |  |  |  |- ar.js
+|  |  |  |  |- ...
+|  |  |  |
+|  |  |  |- plugins
+|  |  |  |  |- beehive
+|  |  |  |  |- searchreplace
+|  |  |  |  |- table
+|  |  |  |  |- readme.txt
+|  |  |  |
+|  |  |  |- themes
+|  |  |  |  |- advanced
+|  |  |  |
+|  |  |  |- blank.htm
+|  |  |  |- ...
 
 
 As you can see the main distribution contains a docs and forum folder. The main
@@ -325,19 +345,18 @@ Just keep it 60 pixels high or under.
 
 Beehive uses CSS-styled emoticons. This allows the end-user to have great control,
 being able to choose from options such as completely invisible, text-only, and the
-range of graphic sets which can be installed. All this comes with no extra server
-processing load, as the emoticon code is added at post-time, rather than each time
-a message is displayed. The compromise for this functionality, however, is quite a
-complicated method to create new emoticon sets.
+range of graphic sets which can be installed. 
 
-In brief, there exists a file emoticon_definitions.inc.php in the /emoticons
-directory. This file contains the textual pattern definitions of the emoticons. For
-example, to add a ':-)' emoticon, one would add the following line:
+To create an emoticon pack first add a subdirectory (named whatever you like - for 
+example's sake I'll choose 'mypack') in the /emoticons directory. In this directory 
+create a file definitions.php. This file contains the textual pattern definitions 
+of the emoticons. For example, to add a ':-)' emoticon, one would add the following 
+line:
 
 $emoticon[':-)'] = "smile";
 
-Then, in your new emoticon set's directory (we'll call it /emoticons/test) you will
-need to create a file desc.txt (which has the name of the set on one line) and a
+Once you have finished adding your pattern definitions you need to create a file 
+desc.txt (which contains one line describing your pack, e.g. "My Pack") and a
 style.css file. To add your ':-)' emoticon you will need CSS code similar to this:
 
 .e_smile {
@@ -352,30 +371,44 @@ style.css file. To add your ':-)' emoticon you will need CSS code similar to thi
 }
 
 Notice the class name 'e_smile' - this is the word you associated with the ':-)'
-pattern in emoticon_definitions.inc.php ("smile") prefixed by 'e_'. Be careful
-not to use the same associated word for different emoticons (it's fine to use the
-same word for, for example, both ':)' and ':-)', however). Also note that every
-.e_NAME class must also have the .e_NAME span { ... } class.
+pattern in definitions.php ("smile") prefixed by 'e_'. Be careful not to use the 
+same associated word for different emoticons (it's fine to use the same word for, 
+for example, both ':)' and ':-)', however). Also note that every .e_NAME class must 
+also have the .e_NAME span { ... } class.
 
 
-1.3.5 Beautifier
-================
+1.3.5 GeSHi
+===========
 
 Beehive uses several 'custom' HTML tags, including the <code> tag. This tag now 
 accepts a 'language' attribute (<code language="...">) which will highlight your 
-code, thanks to the open-source software 'Beautifier' (http://www.beautifier.org/). 
-By default Beehive includes Javascript, PHP and HTML modules, and you can add others 
-to your install by downloading the modules from the Beautifier website and adding 
-them to the /beautifier/HFile directory in your forum install. You must then edit 
-/beautifier/language_definitions.inc.php and add the filename (minus the .php suffix)
-to a 'nickname', e.g.:
+code, thanks to the open-source software 'GeSHi' (http://qbnz.com/highlighter/). 
+To include GeSHi syntax highlighting with your Beehive install simply download 
+the latest version of GeSHi (tested with v1.0.6) and upload it to a subdirectory 
+'geshi' in your main forum folder (if your forum was at www.site.com/forum/, 
+upload to www.site.com/forum/geshi/).
 
-$beaut_langs['html'] = 'HFile_xhtml10';
+Note: GeSHi is not created by the Beehive developers.
 
-By then using <code language="html">...</code> Beautifier will highlight your code
-syntax.
 
-Note: Beautifier is created by Mike Jewell, not the Beehive developers.
+1.3.6 TinyMCE
+=============
+
+Beehive has a simple HTML toolbar built in, but also allows the use of the open-
+source WYSIWYG TinyMCE toolbar (http://tinymce.moxiecode.com/) by Moxiecode Systems. 
+To include TinyMCE in your Beehive install download the latest version (tested with 
+v1.43). Within the compressed source there should be a directory:
+  tinymce/jscripts/tiny_mce/
+Simply copy everything from that tiny_mce directory into a subdirectory 'tiny_mce' in
+your main forum folder (if your forum was at www.site.com/forum/, upload it to 
+www.site.com/forum/tiny_mce/). 
+
+There is a Beehive plugin for TinyMCE which should have already been in your forum's 
+tiny_mce directory, under the subdirectory plugins/beehive. If this is not the case 
+copy the directory tiny_mce/plugins/beehive from a fresh download of Beehive to your 
+forum.
+
+Note: TinyMCE is not created by the Beehive developers.
 
 
 1.4 Upgrading from 0.4 to 0.5

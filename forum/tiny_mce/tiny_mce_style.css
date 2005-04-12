@@ -13,3 +13,19 @@ pre {
 	font-family: monospace;
     font-size: 9pt;
 }
+
+.e_wink {
+    padding-left: 19px;
+    height: 19px;
+    font-size: 19px;
+    background-image: url("../emoticons/default/images/wink.png");
+    background-repeat: no-repeat;
+}
+
+.e__ {
+	display: none;
+}
+
+.e_wink span {
+	display: none;
+}

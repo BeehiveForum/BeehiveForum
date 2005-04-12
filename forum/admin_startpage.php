@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.66 2005-03-28 23:45:10 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.67 2005-04-12 17:23:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,12 +113,49 @@ if (isset($_POST['submit'])) {
 
     }else {
 
-        $length = strlen($content);
+        html_draw_top();
 
-        header("Content-Type: application/x-ms-download", true);
-        header("Content-Length: $length", true);
-        header("Content-disposition: attachment; filename=\"start_main.php\"", true);
-        echo $content;
+        $forum_path = dirname($_SERVER['PHP_SELF']);
+        $forum_path.= "/forums/$webtag/";
+
+        echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['editstartpage']}</h1>\n";
+        echo "<br />\n";
+
+        echo "<div align=\"center\">\n";
+        echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
+        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\">{$lang['startpage']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>{$lang['startpageerror_1']} $forum_path {$lang['startpageerror_2']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("download", $lang['download']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+
+        html_draw_bottom();
         exit;
     }
 
@@ -150,6 +187,34 @@ if (isset($_POST['submit'])) {
             $status_text = "<h2>{$lang['uploadfailed']}: {$_FILES['userfile']['name']}</h2>\n";
         }
     }
+
+}elseif (isset($_POST['download'])) {
+
+    if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
+        $content = trim(_stripslashes($_POST['content']));
+    }else {
+        $content = "";
+    }
+
+    $length = strlen($content);
+
+    header("Content-Type: application/x-ms-download", true);
+    header("Content-Length: $length", true);
+    header("Content-disposition: attachment; filename=\"start_main.php\"", true);
+    echo $content;
+    exit;
+
+}elseif (isset($_POST['cancel'])) {
+
+    if (isset($_POST['content']) && strlen(trim(_stripslashes($_POST['content']))) > 0) {
+        $content = trim(_stripslashes($_POST['content']));
+    }else {
+        $content = "";
+    }
+
+}else {
+
+    $content = forum_load_start_page();
 }
 
 html_draw_top("dictionary.js", "htmltools.js");
@@ -157,7 +222,7 @@ html_draw_top("dictionary.js", "htmltools.js");
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['editstartpage']}</h1>\n";
 echo "<br />\n";
 
-$content = forum_load_start_page();
+
 
 if (isset($status_text)) echo $status_text;
 

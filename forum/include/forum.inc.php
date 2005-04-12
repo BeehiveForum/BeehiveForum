@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.130 2005-04-08 18:18:57 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.131 2005-04-12 08:33:44 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -660,6 +660,7 @@ function forum_create($webtag, $forum_name, $access)
 
         $sql = "CREATE TABLE {$webtag}_POLL (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  QUESTION VARCHAR(64) DEFAULT NULL,";
         $sql.= "  CLOSES DATETIME DEFAULT NULL,";
         $sql.= "  CHANGEVOTE TINYINT(1) NOT NULL DEFAULT '1',";
         $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
@@ -873,7 +874,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  START_PAGE CHAR(1) NOT NULL DEFAULT '0',";
         $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '',";
         $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2',";
-        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0',";
         $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  IMAGES_TO_LINKS CHAR(1) NOT NULL DEFAULT 'N',";
         $sql.= "  USE_WORD_FILTER CHAR(1) NOT NULL DEFAULT 'N',";
@@ -897,6 +898,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  PRIVACY TINYINT(3) DEFAULT 0,";
         $sql.= "  PRIMARY KEY  (UID,PIID)";
         $sql.= ") TYPE=MYISAM";
 

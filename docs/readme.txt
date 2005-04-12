@@ -388,6 +388,8 @@ the latest version of GeSHi (tested with v1.0.6) and upload it to a subdirectory
 'geshi' in your main forum folder (if your forum was at www.site.com/forum/, 
 upload to www.site.com/forum/geshi/).
 
+To change any GeSHi settings edit the file include/geshi.inc.php.
+
 Note: GeSHi is not created by the Beehive developers.
 
 
@@ -407,6 +409,9 @@ There is a Beehive plugin for TinyMCE which should have already been in your for
 tiny_mce directory, under the subdirectory plugins/beehive. If this is not the case 
 copy the directory tiny_mce/plugins/beehive from a fresh download of Beehive to your 
 forum.
+
+To change any TinyMCE settings edit the file include/htmltools.inc.php, looking for 
+the function TinyMCE().
 
 Note: TinyMCE is not created by the Beehive developers.
 

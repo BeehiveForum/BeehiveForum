@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.352 2005-04-11 20:09:18 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.353 2005-04-13 19:36:59 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -920,6 +920,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                     echo "<a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a>&nbsp;";
                 }
+            }
+
+            if (perm_has_admin_access()) {
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
@@ -939,9 +942,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
             }else {
 
-                if ($uid == $message['FROM_UID']) {
+                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
-                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
+                    if ($uid == $message['FROM_UID']) {
+
+                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
+
+                    }else {
+
+                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['logged']}&nbsp;</span>";
+                    }
 
                 }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.131 2005-04-12 08:33:44 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.132 2005-04-13 07:15:08 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -250,9 +250,9 @@ function forum_check_password($forum_data)
     return true;
 }
 
-function forum_get_settings($forum_fid = 0, $current_only = false)
+function forum_get_settings($fid = 0, $current_only = false)
 {
-    static $forum_get_settings = false;
+    static $forum_fid = false;
 
     static $forum_settings = array();
     static $default_forum_settings = array();
@@ -260,7 +260,7 @@ function forum_get_settings($forum_fid = 0, $current_only = false)
     if (!is_bool($current_only)) $current_only = false;
     if (!is_numeric($forum_fid)) $fid = 0;
 
-    if (!$forum_get_settings) {
+    if (!$forum_fid || $forum_fid != $fid) {
 
         $db_forum_get_settings = db_connect();
 
@@ -271,7 +271,7 @@ function forum_get_settings($forum_fid = 0, $current_only = false)
 
             while ($row = db_fetch_array($result)) {
                 $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
-                $forum_get_settings = true;
+                $forum_fid = $fid;
             }
         }
 
@@ -284,7 +284,7 @@ function forum_get_settings($forum_fid = 0, $current_only = false)
 
         if ($forum_fid > 0) {
 
-            $forum_settings['fid'] = $table_data['FID'];
+            $forum_settings['fid'] = $forum_fid;
 
             $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = $forum_fid";
             $result = db_query($sql, $db_forum_get_settings);
@@ -299,7 +299,7 @@ function forum_get_settings($forum_fid = 0, $current_only = false)
 
             while ($row = db_fetch_array($result)) {
                 $forum_settings[$row['SNAME']] = $row['SVALUE'];
-                $forum_get_settings = true;
+                $forum_fid = $fid;
             }
         }
     }
@@ -1358,7 +1358,9 @@ function forum_search($search_string)
                 $forum_settings = forum_get_settings($forum_fid);
 
                 foreach($forum_settings as $key => $value) {
-                    $forum_data[strtoupper($key)] = $value;
+                    if (!isset($forum_data[strtoupper($key)])) {
+                        $forum_data[strtoupper($key)] = $value;
+                    }
                 }
 
                 // Get any unread messages

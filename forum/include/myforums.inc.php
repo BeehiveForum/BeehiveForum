@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.38 2005-04-12 08:33:44 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.39 2005-04-13 07:15:08 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -54,7 +54,9 @@ function get_forum_list()
             $forum_settings = forum_get_settings($forum_fid);
 
             foreach($forum_settings as $key => $value) {
-                $forum_data[strtoupper($key)] = $value;
+                if (!isset($forum_data[strtoupper($key)])) {
+                    $forum_data[strtoupper($key)] = $value;
+                }
             }
 
             // Get number of messages on forum
@@ -113,7 +115,9 @@ function get_my_forums()
             $forum_settings = forum_get_settings($forum_fid);
 
             foreach($forum_settings as $key => $value) {
-                $forum_data[strtoupper($key)] = $value;
+                if (!isset($forum_data[strtoupper($key)])) {
+                    $forum_data[strtoupper($key)] = $value;
+                }
             }
 
             // Get any unread messages

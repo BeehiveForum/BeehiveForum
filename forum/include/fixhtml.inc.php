@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.107 2005-04-11 23:49:11 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.108 2005-04-13 01:06:44 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -884,8 +884,13 @@ function clean_attributes ($tag)
 */
 function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 {
-    if ($tidymce == true) {
-        $linebreaks = false;
+    if ($tidymce) {
+        $html = str_replace("<noemots>", "<span class=\"noemots\">", $html);
+        $html = str_replace("</noemots>", "</span>", $html);
+
+        $html = preg_replace_callback("/<pre class=\"code\">(.*?)<\/pre>/is", "tidy_html_callback_2", $html);
+
+        return $html;
     }
 
     // turn <br /> and <p>...</p> back into linebreaks
@@ -907,20 +912,20 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
     // make <code>..</code> tag, and html_entity_decode
 
-    $html = preg_replace_callback("/<div class=\"quotetext\" id=\"code-([^\"]*)\"><b>.*?<\/b><\/div>\s*<pre class=\"code\">(.*?)<\/pre>/is", "tidy_html_callback", $html);
+    $html = preg_replace_callback("/<div class=\"quotetext\" id=\"code-([^\"]*)\">.*?<\/div>.*?<pre class=\"code\">(.*?)<\/pre>/is", "tidy_html_callback", $html);
 
     // make <quote source=".." url="..">..</quote> tag
 
     $html_left = "";
     $html_right = $html;
 
-    while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"quote\"><b>")) > -1) {
+    while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"quote\">")) > -1) {
 
         $html_left .= substr($html_right, 0, $pos);
 
         $matches = array();
 
-        if (preg_match("/^<div class=\"quotetext\" id=\"quote\"><b>.*?<\/b>(<a href=\"([^\"]*)\">)?([^<]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is", substr($html_right, $pos), $matches)) {
+        if (preg_match("/^<div class=\"quotetext\" id=\"quote\">.+?(<a href=\"([^\"]*)\">)?([^<>]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is", substr($html_right, $pos), $matches)) {
 
             $html_left .= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
 
@@ -976,11 +981,11 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
     $html_left = "";
     $html_right = $html;
 
-    while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"spoiler\"><b>")) > -1) {
+    while (($pos = strpos($html_right, "<div class=\"quotetext\" id=\"spoiler\">")) > -1) {
 
         $html_left .= substr($html_right, 0, $pos);
 
-        if (preg_match("/^<div class=\"quotetext\" id=\"spoiler\"><b>.*?<\/b><\/div>\s*<div class=\"spoiler\">.*<\/div>/is", substr($html_right, $pos))) {
+        if (preg_match("/^<div class=\"quotetext\" id=\"spoiler\">.+?<\/div>.*?<div class=\"spoiler\">.*<\/div>/is", substr($html_right, $pos))) {
 
             $html_left .= "<spoiler>";
 
@@ -1032,16 +1037,6 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
     $html = $html_left.$html_right;
 
-    if ($tidymce) {
-        $html = preg_replace_callback("/<code([^>]*)>([^<]*)<\/code>/", "tidy_html_callback_2", $html);
-        $html = preg_replace("/<quote([^>]*)>/", "&lt;quote$1&gt;", $html);
-        $html = str_replace("</quote>", "&lt;/quote&gt;", $html);
-        $html = str_replace("<spoiler>", "&lt;spoiler&gt;", $html);
-        $html = str_replace("</spoiler>", "&lt;/spoiler&gt;", $html);
-        $html = str_replace("<noemots>", "&lt;noemots&gt;", $html);
-        $html = str_replace("</noemots>", "&lt;/noemots&gt;", $html);
-    }
-
     return $html;
 }
 
@@ -1063,8 +1058,9 @@ function tidy_html_callback ($matches)
 */
 function tidy_html_callback_2 ($matches)
 {
-    return "&lt;code {$matches[1]}&gt;". nl2br(_htmlentities($matches[2])). "&lt;/code&gt;";
+    return "<pre class=\"code\">". strip_tags($matches[1]). "</pre>";
 }
+
 
 /**
 * TinyMCE's <quote> etc. tags are actually &lt;quote&gt; - this fixes that
@@ -1074,14 +1070,70 @@ function tidy_html_callback_2 ($matches)
 */
 function tidy_tinymce ($html)
 {
+    // make <code>..</code> tag, and html_entity_decode
 
-    $html = preg_replace_callback("/&lt;code(.*?)&gt;(.*?)&lt;\/code&gt;/s", "tidy_tinymce_code_callback", $html);
-    $html = preg_replace_callback("/&lt;quote(.*?)&gt;/s", "tidy_tinymce_quote_callback", $html);
-    $html = str_replace("&lt;/quote&gt;", "</quote>", $html);
-    $html = str_replace("&lt;spoiler&gt;", "<spoiler>", $html);
-    $html = str_replace("&lt;/spoiler&gt;", "</spoiler>", $html);
-    $html = str_replace("&lt;noemots&gt;", "<noemots>", $html);
-    $html = str_replace("&lt;/noemots&gt;", "</noemots>", $html);
+    $html = preg_replace_callback("/<div [^>]*?class=\"quotetext\"[^>]*?>(.+?)<\/div>.*?<pre class=\"code\">(.*?)<\/pre>/is", "tidy_tinymce_code_callback", $html);
+
+    // make <noemots>..</noemots> tag
+
+    $html_left = "";
+    $html_right = $html;
+
+    while (($pos = strpos($html_right, "<span class=\"noemots\">")) > -1) {
+
+        $html_left .= substr($html_right, 0, $pos);
+
+        if (preg_match("/^<span class=\"noemots\">.*<\/span>/is", substr($html_right, $pos))) {
+
+            $html_left .= "<noemots>";
+
+            $search = "class=\"noemots\"";
+
+            $j = strpos($html_right, $search);
+
+            $first = $j + strlen($search) + 1;
+
+            $open_num = 1;
+
+            while (1 != 2) {
+
+                $open = strpos($html_right, "<span", $j);
+                $close = strpos($html_right, "</span>", $j);
+
+                if (!is_integer($open)) {
+
+                    $open = $close+1;
+                }
+
+                if ($close < $open && $open_num == 1) {
+
+                    $j = $close;
+                    break;
+
+                }else if ($close < $open) {
+
+                    $open_num--;
+                    $open = $close;
+
+                }else {
+
+                    $open_num++;
+                }
+
+                $j = $open+1;
+            }
+
+            $html_left .= tidy_tinymce(substr($html_right, $first, $j-$first))."</noemots>";
+            $html_right = substr($html_right, $j + strlen("</span>"));
+
+        }else {
+
+            $html_left .= substr($html_right, $pos, 1);
+            $html_right = substr($html_right, $pos + 1);
+        }
+    }
+
+    $html = $html_left.$html_right;
 
     return $html;
 }
@@ -1094,18 +1146,21 @@ function tidy_tinymce ($html)
 */
 function tidy_tinymce_code_callback ($matches)
 {
-    $matches[2] = str_replace("<br />", "\n", $matches[2]);
-    return "<code". _htmlentities_decode($matches[1]) .">". _htmlentities_decode(strip_tags($matches[2])). "</code>";
-}
-/**
-* Used by tidy_tinymce to convert <quote> tags
-*
-* @return string
-* @param array $matches Array returned by preg_replace_callback
-*/
-function tidy_tinymce_quote_callback ($matches)
-{
-    return "<quote". _htmlentities_decode($matches[1]) .">";
+    // the <code>*****</code> bit
+    $matches[2] = preg_replace("/<br( [^>]*)?>(\n)?/i", "\n", $matches[2]);
+    $matches[2] = preg_replace("/<p( [^>]*)?>/i", "", $matches[2]);
+    $matches[2] = preg_replace("/<\/p( [^>]*)?>/i", "\n\n", $matches[2]);
+
+    // the <code language="*****"> bit
+    $matches[1] = strip_tags($matches[1]);
+    $matches[1] = explode(" ", $matches[1]);
+    if (count($matches[1]) > 1) {
+        $lang = $matches[1][0];
+    } else {
+        $lang = "";
+    }
+
+    return "<code language=\"$lang\">". _htmlentities_decode(strip_tags(trim($matches[2]))) ."</code>";
 }
 
 /**

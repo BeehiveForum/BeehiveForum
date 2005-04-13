@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.270 2005-04-12 17:23:18 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.271 2005-04-13 17:35:09 decoyduck Exp $ */
 
 // International English language file
 
@@ -265,6 +265,7 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect al
 $lang['startpage'] = "Start Page";
 $lang['startpageerror_1'] = "Your startpage could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
 $lang['startpageerror_2'] = "folder. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
+$lang['uploadfailed'] = "Your new startpage could not be uploaded to the server because permission was denied. Please check that the webserver / PHP process is able to write to the %s folder on your server.";
 $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";
 $lang['forumlinks'] = "Forum Links";
@@ -1476,6 +1477,7 @@ $lang['forthcomingbirthdays'] = "Forthcoming Birthdays";
 
 $lang['editstartpage_help'] = "You can edit this page from the admin interface";
 $lang['uploadstartpage'] = "Upload Start Page (*.txt, *.php, *.htm)";
+$lang['invalidfiletypeerror'] = "File type not supported. You can only use *.txt, *.php and *.htm files as your start page.";
 
 // Thread navigation (thread_list.php) ---------------------------------
 

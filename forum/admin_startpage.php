@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.67 2005-04-12 17:23:16 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.68 2005-04-13 17:35:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -90,7 +90,6 @@ if (!(perm_has_admin_access())) {
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
-
 }
 
 $allowed_file_exts = array('html', 'htm', 'shtml', 'cgi', 'pl', 'php', 'php3', 'phtml', 'txt');
@@ -110,6 +109,51 @@ if (isset($_POST['submit'])) {
         $status_text.= "{$lang['viewupdatedstartpage']}</a></p>";
 
         admin_add_log_entry(EDITED_START_PAGE);
+
+    }elseif (isset($_POST['uploaded']) && $_POST['uploaded'] == "yes") {
+
+        html_draw_top();
+
+        $forum_path = dirname($_SERVER['PHP_SELF']);
+        $forum_path.= "/forums/$webtag/";
+
+        echo "<div align=\"center\">\n";
+        echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
+        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
+        echo "  ", form_input_hidden('uploaded', "yes"), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\">{$lang['startpage']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>", sprintf($lang['uploadfailed'], $forum_path), "</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("submit", $lang['retry']), "&nbsp;", form_submit("cancel_upload", $lang['cancel']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+
+        html_draw_bottom();
+        exit;
 
     }else {
 
@@ -163,7 +207,7 @@ if (isset($_POST['submit'])) {
 
     if (isset($_FILES['userfile']['tmp_name']) && strlen(trim($_FILES['userfile']['tmp_name'])) > 0) {
 
-        $path_parts = pathinfo($_FILES['userfile']['tmp_name']);
+        $path_parts = pathinfo($_FILES['userfile']['name']);
 
         if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_file_exts)) {
 
@@ -179,12 +223,55 @@ if (isset($_POST['submit'])) {
 
             }else {
 
-                $status_text = "<h2>{$lang['uploadfailed']}: {$_FILES['userfile']['name']}</h2>\n";
+                html_draw_top();
+
+                $forum_path = dirname($_SERVER['PHP_SELF']);
+                $forum_path.= "/forums/$webtag/";
+
+                $content = implode('', file($_FILES['userfile']['tmp_name']));
+
+                echo "<div align=\"center\">\n";
+                echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
+                echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                echo "  ", form_input_hidden('content', _htmlentities($content)), "\n";
+                echo "  ", form_input_hidden('uploaded', "yes"), "\n";
+                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                echo "    <tr>\n";
+                echo "      <td>\n";
+                echo "        <table class=\"box\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td class=\"posthead\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td class=\"subhead\">{$lang['startpage']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td>", sprintf($lang['uploadfailed'], $forum_path), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+                echo "      </td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td>&nbsp;</td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit("submit", $lang['retry']), "&nbsp;", form_submit("cancel_upload", $lang['cancel']), "</td>\n";
+                echo "    </tr>\n";
+                echo "  </table>\n";
+
+                html_draw_bottom();
+                exit;
             }
 
         }else {
 
-            $status_text = "<h2>{$lang['uploadfailed']}: {$_FILES['userfile']['name']}</h2>\n";
+            $status_text = "<h2>{$lang['invalidfiletypeerror']}</h2>\n";
         }
     }
 
@@ -211,20 +298,21 @@ if (isset($_POST['submit'])) {
     }else {
         $content = "";
     }
+}
 
-}else {
-
+if (!isset($content)) {
     $content = forum_load_start_page();
 }
 
 html_draw_top("dictionary.js", "htmltools.js");
 
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['editstartpage']}</h1>\n";
-echo "<br />\n";
 
-
-
-if (isset($status_text)) echo $status_text;
+if (isset($status_text)) {
+    echo $status_text;
+}else {
+    echo "<br />\n";
+}
 
 $tools = new TextAreaHTML("startpage");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.168 2005-03-27 13:02:59 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.169 2005-04-13 17:35:11 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -871,6 +871,8 @@ function threads_mark_read($tidarray)
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_array($tidarray)) return false;
+
+    $uid = bh_session_get_value('UID');
 
     foreach($tidarray as $ctid) {
 

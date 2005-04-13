@@ -49,7 +49,7 @@ function TinyMCE() {
 
     $str.= "    directionality : \"{$lang['_textdir']}\",\n";
 
-    $str.= "    content_css : \"tiny_mce/tiny_mce_style.css\",\n";
+    $str.= "    content_css : \"tiny_mce/plugins/beehive/tiny_mce_style.css\",\n";
 
 //  $str.= "    auto_focus : \"mce_editor_0\",\n";
 
@@ -69,7 +69,7 @@ function TinyMCE() {
     $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols,separator,search,replace,bhspellcheck\",\n";
     $str.= "    theme_advanced_buttons3 : \"removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,hr,separator,bhquote,bhcode,bhspoiler,separator,bhnoemots\",\n";
 
-    $str.= "    extended_valid_elements : \"bh,marquee,span[class|title]\",\n";
+    $str.= "    extended_valid_elements : \"marquee,span[class|align|title],div[class|align|id]\",\n";
 
     $str.= "    invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\"\n";
 
@@ -99,42 +99,7 @@ function TinyMCE() {
     $str.= "        }\n";
     $str.= "    }\n\n";
 
-    // Javascript doesn't have a trim function? :|
-
-    $str.= "    function trim(str) {\n";
-    $str.= "        return str.replace(/^\s*|\s*$/g,\"\");\n";
-    $str.= "    }\n";
-
-    $emoticons = new Emoticons();
-    $emoticon_text_array = $emoticons->get_text_array();
-
-    $emot_keys = "";
-    $emot_values = "";
-
-    $key_count = 0;
-
-    foreach ($emoticon_text_array as $key => $value) {
-        $emot_keys.= "emot_keys[$key_count] = \"$key\";\n        ";
-        $emot_values.= "emot_values[$key_count] = \"{$value[0]}\";\n        ";
-        $key_count++;
-    }
-
-    $str.= "    function emoticon_construct(text) {\n\n";
-    $str.= "        text = unescape(text);\n\n";
-    $str.= "        var emot_keys = new Array();\n";
-    $str.= "        var emot_values = new Array();\n";
-    $str.= "        $emot_keys\n";
-    $str.= "        $emot_values\n";
-    $str.= "        for (var i = 0; i < emot_values.length - 1; i++) {\n";
-    $str.= "            if (emot_values[i] == trim(text)) {\n";
-    $str.= "                return '<span class=\"e_' + emot_keys[i] + '\" title=\"' + trim(text) + '\"><span class=\"e__\">' + trim(text) + '</span></span>';\n";
-    $str.= "            }\n";
-    $str.= "        }\n";
-    $str.= "    }\n";
-
     $str.= "    function add_text(text) {\n";
-    $str.= "        text = emoticon_construct(text);\n";
-    $str.= "        alert(text);\n";
     $str.= "        tinyMCE.execCommand('mceFocus', false, 'mce_editor_0');\n";
     $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
     $str.= "    }\n";

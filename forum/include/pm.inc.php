@@ -21,11 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.120 2005-03-29 18:25:56 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.121 2005-04-13 11:34:20 tribalonline Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function pm_markasread($mid)
@@ -581,19 +582,10 @@ function pm_display($pm_elements_array)
     $pm_elements_array['CONTENT'] = apply_wordfilter($pm_elements_array['CONTENT']);
     $pm_elements_array['SUBJECT'] = apply_wordfilter($pm_elements_array['SUBJECT']);
 
-    // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
+    // Add emoticons/wikilinks -------------------------------------------------
 
-    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+    $pm_elements_array['CONTENT'] = message_split_fiddle($pm_elements_array['CONTENT']);
 
-        if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari")) {
-
-            $pm_elements_array['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1&nbsp;</span>", $pm_elements_array['CONTENT']);
-
-        }elseif (stristr($_SERVER['HTTP_USER_AGENT'], "gecko")) {
-
-            $pm_elements_array['CONTENT'] = preg_replace("/(<span class=\"e_[^\"]+\" title=\"[^\"]+\"><span[^>]*>[^<]+<\/span>)<\/span>/", "$1</span> ", $pm_elements_array['CONTENT']);
-        }
-    }
 
     echo "          </tr>\n";
     echo "          <tr>\n";

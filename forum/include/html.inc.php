@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.161 2005-04-07 16:17:11 tribalonline Exp $ */
+/* $Id: html.inc.php,v 1.162 2005-04-14 22:45:29 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -130,7 +130,34 @@ function html_get_style_sheet()
         }
     }
 
-    return "styles/style.css";
+    if (@is_dir("./styles") && @file_exists("./styles/style.css")) {
+        return "styles/style.css";
+    }
+
+    return false;
+}
+
+function html_get_emoticon_style_sheet()
+{
+    $webtag = get_webtag($webtag_search);
+
+    $forum_settings = forum_get_settings();
+
+    if ($user_emots = bh_session_get_value('EMOTICONS')) {
+
+        if (@is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
+            return "emoticons/$user_emots/style.css";
+        }
+    }
+
+    if ($default_emoticons = forum_get_setting('default_emoticons')) {
+
+        if (@is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
+            return "emoticons/$default_emoticons/style.css";
+        }
+    }
+
+    return false;
 }
 
 function html_get_forum_keywords()
@@ -336,18 +363,12 @@ function html_draw_top()
     echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} RSS Feed\" href=\"threads_rss.php\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 
-    $stylesheet = html_get_style_sheet();
+    if ($stylesheet = html_get_style_sheet()) {
+        echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
+    }
 
-    echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
-
-    if (forum_get_setting('default_emoticons', false, 'default')) {
-
-        $user_emots = bh_session_get_value('EMOTICONS');
-        $user_emots = $user_emots ? $user_emots : forum_get_setting('default_emoticons', false, 'default');
-
-        if (@is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
-            echo "<link rel=\"stylesheet\" href=\"emoticons/$user_emots/style.css\" type=\"text/css\" />\n";
-        }
+    if ($emoticon_style_sheet = html_get_emoticon_style_sheet()) {
+        echo "<link rel=\"stylesheet\" href=\"$emoticon_style_sheet\" type=\"text/css\" />\n";
     }
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";

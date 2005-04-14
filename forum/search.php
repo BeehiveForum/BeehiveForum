@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.110 2005-03-24 20:42:08 decoyduck Exp $ */
+/* $Id: search.php,v 1.111 2005-04-14 18:26:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -105,13 +105,81 @@ if (!$folder_dropdown = folder_search_dropdown()) {
 
 html_draw_top("robots=noindex,nofollow");
 
-if (isset($_POST['search_string'])) {
-    $search_arguments = $_POST;
-    $search_string = $_POST['search_string'];
-}elseif (isset($_GET['sstart'])) {
-    $search_arguments = $_GET;
-    $search_string = $_GET['search_string'];
-}else {
+$search_arguments = array();
+
+if (isset($_POST['search_string']) && strlen(trim($_POST['search_string'])) > 0) {
+    $search_arguments['search_string'] = $_POST['search_string'];
+}else if (isset($_GET['search_string']) && strlen(trim($_GET['search_string'])) > 0) {
+    $search_arguments['search_string'] = $_GET['search_string'];
+}
+
+if (isset($_POST['method']) && is_numeric($_POST['method'])) {
+    $search_arguments['method'] = $_POST['method'];
+}else if (isset($_GET['method']) && is_numeric($_GET['method'])) {
+    $search_arguments['method'] = $_GET['method'];
+}
+
+if (isset($_POST['username']) && strlen(trim($_POST['username'])) > 0) {
+    $search_arguments['username'] = $_POST['username'];
+}else if (isset($_GET['username']) && strlen(trim($_GET['username'])) > 0) {
+    $search_arguments['username'] = $_GET['username'];
+}
+
+if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
+    $search_arguments['user_include'] = $_POST['user_include'];
+}else if (isset($_GET['user_include']) && is_numeric($_GET['user_include'])) {
+    $search_arguments['user_include'] = $_GET['user_include'];
+}
+
+if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+    $search_arguments['fid'] = $_POST['fid'];
+}else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+    $search_arguments['fid'] = $_GET['fid'];
+}
+
+if (isset($_POST['date_from']) && is_numeric($_POST['date_from'])) {
+    $search_arguments['date_from'] = $_POST['date_from'];
+}else if (isset($_GET['date_from']) && is_numeric($_GET['date_from'])) {
+    $search_arguments['date_from'] = $_GET['date_from'];
+}
+
+if (isset($_POST['date_to']) && is_numeric($_POST['date_to'])) {
+    $search_arguments['date_to'] = $_POST['date_to'];
+}else if (isset($_GET['date_to']) && is_numeric($_GET['date_to'])) {
+    $search_arguments['date_to'] = $_GET['date_to'];
+}
+
+if (isset($_POST['order_by']) && is_numeric($_POST['order_by'])) {
+    $search_arguments['order_by'] = $_POST['order_by'];
+}else if (isset($_GET['order_by']) && is_numeric($_GET['order_by'])) {
+    $search_arguments['order_by'] = $_GET['order_by'];
+}
+
+if (isset($_POST['group_by_thread']) && strlen(trim($_POST['group_by_thread'])) > 0) {
+    $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
+}else if (isset($_GET['group_by_thread']) && strlen(trim($_GET['group_by_thread'])) > 0) {
+    $search_arguments['group_by_thread'] = $_GET['group_by_thread'];
+}
+
+if (isset($_POST['sstart']) && is_numeric($_POST['sstart'])) {
+    $search_arguments['sstart'] = $_POST['sstart'];
+}else if (isset($_GET['sstart']) && is_numeric($_GET['sstart'])) {
+    $search_arguments['sstart'] = $_GET['sstart'];
+}
+
+if (isset($_POST['include']) && is_numeric($_POST['include'])) {
+    $search_arguments['include'] = $_POST['include'];
+}else if (isset($_GET['include']) && is_numeric($_GET['include'])) {
+    $search_arguments['include'] = $_GET['include'];
+}
+
+if (isset($_POST['sstart']) && is_numeric($_POST['sstart'])) {
+    $search_arguments['sstart'] = $_POST['sstart'];
+}else if (isset($_GET['sstart']) && is_numeric($_GET['sstart'])) {
+    $search_arguments['sstart'] = $_GET['sstart'];
+}
+
+if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
 
     echo "<h1>{$lang['searchmessages']}</h1>\n";
     echo "<br />\n";
@@ -263,15 +331,18 @@ echo "</table>\n";
 
 if ($search_results_array = search_execute($search_arguments, $urlquery, $error)) {
 
-    echo "<h1>{$lang['searchresults']}</h1>\n";
-
-    if (isset($search_arguments['sstart'])) {
+    if (isset($search_arguments['sstart']) && is_numeric($search_arguments['sstart'])) {
         $sstart = $search_arguments['sstart'];
     }else {
         $sstart = 0;
     }
 
-    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: ", sizeof($search_results_array), " {$lang['matches']}<br />\n";
+    if (!isset($search_arguments['search_string'])) {
+        $search_arguments['search_string'] = "";
+    }
+
+    echo "<h1>{$lang['searchresults']}</h1>\n";
+    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['match_count']} {$lang['matches']}<br />\n";
 
     if ($sstart >= 20) {
         echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart - 20, $urlquery, "\">{$lang['prevpage']}</a>\n";
@@ -279,9 +350,9 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
     echo "<ol start=\"", $sstart + 1, "\">\n";
 
-    foreach ($search_results_array as $search_result) {
+    foreach ($search_results_array['match_array'] as $search_result) {
 
-        $message = messages_get($search_result['TID'], $search_result['PID']);
+        $message = messages_get($search_result['TID'], $search_result['PID'], 1);
         $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
 
         $threaddata = thread_get($search_result['TID']);
@@ -306,43 +377,47 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
             $message['TITLE'] = substr($message['TITLE'], 0, 20);
 
-            if ($schar = strrpos($message['TITLE'], ' ')) {
-                $message['TITLE'] = substr($message['TITLE'], 0, $schar);
+            if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
+
+                $message['TITLE'] = substr($message['TITLE'], 0, $pos);
+
             }else {
+
                 $message['TITLE'] = substr($message['TITLE'], 0, 17). "&hellip;";
             }
-
         }
 
         if (strlen($message['CONTENT']) > 35) {
 
             $message['CONTENT'] = substr($message['CONTENT'], 0, 35);
 
-            if ($schar = strrpos($message['CONTENT'], ' ')) {
-                $message['CONTENT'] = substr($message['CONTENT'], 0, $schar);
+            if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
+
+                $message['CONTENT'] = substr($message['CONTENT'], 0, $pos);
+
             }else {
+
                 $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "&hellip;";
             }
-
         }
 
         if (strlen($message['CONTENT']) > 0) {
 
-            echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg=", $search_result['TID'], ".", $search_result['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b><br />";
+            echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
             echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
-            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></p></li>\n";
+            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($search_result['CREATED'], 1). "</span></p></li>\n";
 
         }else {
 
-            echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg=", $search_result['TID'], ".", $search_result['PID'], "&amp;search_string=", rawurlencode(trim($search_string)), "\" target=\"right\"><b>", $message['TITLE'], "</b></a><br />";
-            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($message['CREATED'], 1). "</span></p></li>\n";
+            echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($search_result['CREATED'], 1). "</span></p></li>\n";
         }
     }
 
     echo "</ol>\n";
 
-    if (sizeof($search_results_array) == 50) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 20, $urlquery, "\">{$lang['findmore']}</a>\n";
+    if ($search_results_array['match_count'] >  (sizeof($search_results_array['match_array']) + $sstart)) {
+        echo "<img src=\"", style_image('current_thread.png'), "\" height=\"15\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 20, $urlquery, "\">{$lang['findmore']}</a>\n";
     }
 
 }else if ($error) {

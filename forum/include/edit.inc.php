@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.56 2005-04-12 23:34:52 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.57 2005-04-14 18:26:47 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -46,12 +46,12 @@ function post_update($fid, $tid, $pid, $content)
     $sql = "DELETE FROM SEARCH_POSTS WHERE TID = $tid ";
     $sql.= "AND PID = $pid";
 
-    $result = db_query($sql, $db_post_delete);
+    $result = db_query($sql, $db_post_update);
 
     $sql = "DELETE FROM SEARCH_MATCH WHERE TID = $tid ";
     $sql.= "AND PID = $pid";
 
-    $result = db_query($sql, $db_post_delete);
+    $result = db_query($sql, $db_post_update);
 
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL) && !perm_is_moderator($fid)) {
 

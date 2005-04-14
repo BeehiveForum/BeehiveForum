@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.118 2005-04-11 18:32:16 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.119 2005-04-14 18:26:47 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -131,7 +131,7 @@ function search_execute($argarray, &$urlquery, &$error)
         }
     }
 
-    if (strlen(trim($argarray['search_string'])) > 0) {
+    if (isset($argarray['search_string']) && strlen(trim($argarray['search_string'])) > 0) {
 
         // Filter the input so the user can't do anything dangerous with it
 
@@ -204,25 +204,34 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $limit_sql = "LIMIT {$argarray['sstart']}, 20";
 
+    // Find out how many matches we have first
+
     $sql = preg_replace("/ +/", " ", "$select_sql $from_sql $join_sql $where_sql $group_sql $order_sql");
     $result = db_query($sql, $db_search_execute);
 
-    $uriquery = "";
+    $match_count = db_num_rows($result);
 
-    foreach($argarray as $key => $value) {
-        $uriquery.= "&amp;$key=$value";
-    }
+    if ($match_count > 0) {
 
-    if (db_num_rows($result) > 0) {
+        $sql = preg_replace("/ +/", " ", "$select_sql $from_sql $join_sql $where_sql $group_sql $order_sql $limit_sql");
+        $result = db_query($sql, $db_search_execute);
 
-        $search_results_array = array();
+        $urlquery = "";
 
-        while ($row = db_fetch_array($result)) {
-
-            $search_results_array[] = $row;
+        foreach($argarray as $key => $value) {
+            if (!in_array($key, array('webtag', 'sstart'))) {
+                $urlquery.= "&amp;$key=$value";
+            }
         }
 
-        return $search_results_array;
+        $match_array = array();
+
+        while ($search_match = db_fetch_array($result)) {
+            $match_array[] = $search_match;
+        }
+
+        return array('match_count' => $match_count,
+                     'match_array' => $match_array);
 
     }else {
 

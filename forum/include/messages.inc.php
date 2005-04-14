@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.353 2005-04-13 19:36:59 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.354 2005-04-14 18:26:47 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -119,7 +119,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
         if (!isset($messages['APPROVED'])) $messages['APPROVED'] = 0;
-        if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
+        if (!isset($messages['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
         if (!isset($messages['APPROVED_LOGON'])) $messages['APPROVED_LOGON'] = 0;
         if (!isset($messages['EDITED'])) $messages['EDITED'] = 0;
         if (!isset($messages['EDIT_LOGON'])) $messages['EDIT_LOGON'] = 0;
@@ -535,7 +535,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
-        $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+        $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {

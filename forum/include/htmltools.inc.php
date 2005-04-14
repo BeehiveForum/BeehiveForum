@@ -101,7 +101,7 @@ function TinyMCE() {
 
     $str.= "    function add_text(text) {\n";
     $str.= "        tinyMCE.execCommand('mceFocus', false, 'mce_editor_0');\n";
-    $str.= "        tinyMCE.execCommand('mceInsertContent', false, text);\n";
+    $str.= "        tinyMCE.execCommand('mceInsertContent', false, unescape(text));\n";
     $str.= "    }\n";
 
     $str.= "</script>\n";

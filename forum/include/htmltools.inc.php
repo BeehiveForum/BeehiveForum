@@ -131,6 +131,9 @@ function TinyMCE() {
        each emoticon pack that has the paths differently than in
        the main style.css.
 
+       Work around #3. Use document.styleSheets DOM to load
+       the user's emoticon stylesheet in a plugin for TinyMCE maybe?
+
     $str.= "    function trim(str) {\n";
     $str.= "        return str.replace(/^\s*|\s*$/g,\"\");\n";
     $str.= "    }\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.75 2005-04-13 19:37:01 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.76 2005-04-15 21:19:34 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -51,7 +51,7 @@ function perm_is_moderator($fid = 0)
 
         $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
         $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-        $sql.= "WHERE GROUP_USERS.UID = $uid AND GROUP_PERMS.FID = '$fid' ";
+        $sql.= "WHERE GROUP_USERS.UID = $uid AND GROUP_PERMS.FID IN (0, $fid) ";
         $sql.= "AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
         $sql.= "ORDER BY GROUP_PERMS.PERM DESC";
 
@@ -63,11 +63,7 @@ function perm_is_moderator($fid = 0)
         $user_status = $row['STATUS'];
     }
 
-    if (($user_status & USER_PERM_FOLDER_MODERATE) > 0) return true;
-    if (($user_status & USER_PERM_ADMIN_TOOLS) > 0)     return true;
-    if (($user_status & USER_PERM_FORUM_TOOLS) > 0)     return true;
-
-    return false;
+    return ($user_status & USER_PERM_FOLDER_MODERATE) > 0;
 }
 
 function perm_has_admin_access($uid = false)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.172 2005-04-15 15:03:55 rendle Exp $ */
+/* $Id: edit.php,v 1.173 2005-04-15 15:20:03 rendle Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -471,7 +471,7 @@ if (isset($_POST['preview'])) {
 
     if (((forum_get_setting('allow_post_editing', 'N')) 
         || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
-        || ((bh_session_get_value('UID') == $editmessage['FROM_UID']) && (perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
+        || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
         || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !perm_is_moderator($t_fid)) {
 
         echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
@@ -608,7 +608,7 @@ if (isset($_POST['preview'])) {
 
             if (((forum_get_setting('allow_post_editing', 'N')) 
                 || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
-                || ((bh_session_get_value('UID') == $editmessage['FROM_UID']) && (perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
+                || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
                 || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !perm_is_moderator($t_fid)) {
 
                 echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";

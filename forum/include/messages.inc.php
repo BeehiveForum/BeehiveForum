@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.356 2005-04-15 14:26:38 rendle Exp $ */
+/* $Id: messages.inc.php,v 1.357 2005-04-15 15:20:56 rendle Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -876,13 +876,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\">{$lang['reply']}</a>";
             }
 
-            if (($uid == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_DELETE)) || $perm_is_moderator) {
-
+            if (($uid == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_DELETE) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED))
+                || $perm_is_moderator) {
                 echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
             }
 
-            if ((( ($uid == $message['FROM_UID'] && !($from_user_permissions & USER_PERM_PILLORIED)) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED))
+            if ((( (!(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED))
                 && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && (((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) 
                 || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')))) || $perm_is_moderator) {
 

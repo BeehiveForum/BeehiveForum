@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.3 2005-03-15 21:29:45 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.4 2005-04-15 18:23:02 decoyduck Exp $ */
 
 // banned.inc.php contains functions for checking the ban data
 // against the user credentials.
@@ -43,6 +43,10 @@ function ban_check($user_sess, $show_error = true)
     $nickname_ban_count = 0;
     $email_ban_count = 0;
 
+    $logon = addslashes($user_sess['LOGON']);
+    $nickname = addslashes($user_sess['NICKNAME']);
+    $email = addslashes($user_sess['EMAIL']);
+
     if ($ipaddress = get_ip_address()) {
 
         $sql = "SELECT COUNT(*) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
@@ -55,7 +59,7 @@ function ban_check($user_sess, $show_error = true)
     if (isset($user_sess['LOGON']) && strlen(trim($user_sess['LOGON'])) > 0) {
 
         $sql = "SELECT COUNT(*) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
-        $sql.= "WHERE '{$user_sess['LOGON']}' LIKE LOGON";
+        $sql.= "WHERE '$logon' LIKE LOGON";
 
         $result = db_query($sql, $db_ban_check);
         list($logon_ban_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -64,7 +68,7 @@ function ban_check($user_sess, $show_error = true)
     if (isset($user_sess['NICKNAME']) && strlen(trim($user_sess['NICKNAME'])) > 0) {
 
         $sql = "SELECT COUNT(*) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
-        $sql.= "WHERE '{$user_sess['NICKNAME']}' LIKE NICKNAME";
+        $sql.= "WHERE '$nickname' LIKE NICKNAME";
 
         $result = db_query($sql, $db_ban_check);
         list($nickname_ban_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -73,7 +77,7 @@ function ban_check($user_sess, $show_error = true)
     if (isset($user_sess['EMAIL']) && strlen(trim($user_sess['EMAIL'])) > 0) {
 
         $sql = "SELECT COUNT(*) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
-        $sql.= "WHERE '{$user_sess['EMAIL']}' LIKE EMAIL";
+        $sql.= "WHERE '$email' LIKE EMAIL";
 
         $result = db_query($sql, $db_ban_check);
         list($email_ban_count) = db_fetch_array($result, DB_RESULT_NUM);

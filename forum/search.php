@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.111 2005-04-14 18:26:47 decoyduck Exp $ */
+/* $Id: search.php,v 1.112 2005-04-15 18:23:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,9 +107,9 @@ html_draw_top("robots=noindex,nofollow");
 
 $search_arguments = array();
 
-if (isset($_POST['search_string']) && strlen(trim($_POST['search_string'])) > 0) {
+if (isset($_POST['search_string'])) {
     $search_arguments['search_string'] = $_POST['search_string'];
-}else if (isset($_GET['search_string']) && strlen(trim($_GET['search_string'])) > 0) {
+}else if (isset($_GET['search_string'])) {
     $search_arguments['search_string'] = $_GET['search_string'];
 }
 
@@ -167,19 +167,13 @@ if (isset($_POST['sstart']) && is_numeric($_POST['sstart'])) {
     $search_arguments['sstart'] = $_GET['sstart'];
 }
 
-if (isset($_POST['include']) && is_numeric($_POST['include'])) {
-    $search_arguments['include'] = $_POST['include'];
-}else if (isset($_GET['include']) && is_numeric($_GET['include'])) {
-    $search_arguments['include'] = $_GET['include'];
-}
-
 if (isset($_POST['sstart']) && is_numeric($_POST['sstart'])) {
     $search_arguments['sstart'] = $_POST['sstart'];
 }else if (isset($_GET['sstart']) && is_numeric($_GET['sstart'])) {
     $search_arguments['sstart'] = $_GET['sstart'];
 }
 
-if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
+if (!isset($search_arguments)) {
 
     echo "<h1>{$lang['searchmessages']}</h1>\n";
     echo "<br />\n";

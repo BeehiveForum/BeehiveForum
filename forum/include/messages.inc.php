@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.357 2005-04-15 15:20:56 rendle Exp $ */
+/* $Id: messages.inc.php,v 1.358 2005-04-15 21:19:33 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -483,7 +483,9 @@ function messages_bottom()
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
     $lang = load_language_file();
+
     $perm_is_moderator = perm_is_moderator($message['FID']);
+    $perm_has_admin_access = perm_has_admin_access();
 
     $webtag = get_webtag($webtag_search);
 
@@ -883,7 +885,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             }
 
             if ((( (!(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED))
-                && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && (((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) 
+                && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && (((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS)
                 || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')))) || $perm_is_moderator) {
 
                 if ($is_poll && $message['PID'] == 1) {
@@ -913,12 +915,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['relationship']}\"><img src=\"", style_image('enemy.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" /></a>&nbsp;";
             }
 
+            if ($perm_has_admin_access) {
+
+                echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"", style_image('admintool.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a>&nbsp;";
+            }
+
             if ($perm_is_moderator) {
-
-                if (perm_has_admin_access()) {
-
-                    echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"", style_image('admintool.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a>&nbsp;";
-                }
 
                 if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
 
@@ -926,7 +928,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 }
             }
 
-            if (perm_has_admin_access()) {
+            if ($perm_has_admin_access) {
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 

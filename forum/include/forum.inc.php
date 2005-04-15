@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.132 2005-04-13 07:15:08 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.133 2005-04-15 18:34:30 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -1131,6 +1131,8 @@ function forum_delete_tables($webtag)
 
     if (perm_has_forumtools_access()) {
 
+        $db_forum_delete_tables = db_connect();
+
         $table_array = array('ADMIN_LOG', 'BANNED', 'FILTER_LIST',
                              'FOLDER', 'FORUM_LINKS', 'GROUPS',
                              'GROUP_PERMS', 'GROUP_USERS', 'LINKS',
@@ -1145,7 +1147,7 @@ function forum_delete_tables($webtag)
         foreach ($table_array as $table_name) {
 
             $sql = "DROP TABLE IF EXISTS {$webtag}_{$table_name}";
-            $result = db_query($sql, $db_forum_delete);
+            $result = db_query($sql, $db_forum_delete_tables);
         }
     }
 

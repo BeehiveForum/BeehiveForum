@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.148 2005-04-15 21:23:26 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.149 2005-04-15 21:26:51 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -230,7 +230,8 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $t_all_admin_tools = (double) (isset($_POST['t_all_admin_tools'])) ? $_POST['t_all_admin_tools'] : 0;
     $t_all_forum_tools = (double) (isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;
-    $t_all_forum_mod   = (double) (isset($_POST['t_all_forum_mod']))   ? $_POST['t_all_forum_mod']   : 0;
+    $t_all_folder_mod  = (double) (isset($_POST['t_all_folder_mod']))  ? $_POST['t_all_folder_mod']  : 0;
+    $t_all_links_mod   = (double) (isset($_POST['t_all_links_mod']))   ? $_POST['t_all_links_mod']   : 0;
 
     if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] != 'cancel') {
         $t_confirm_email = (double) USER_PERM_EMAIL_CONFIRM;
@@ -238,7 +239,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
         $t_confirm_email = (double) 0;
     }
 
-    $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_forum_mod | $t_confirm_email;
+    $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_confirm_email;
 
     if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 1) {
 
@@ -527,7 +528,10 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        <td>", form_checkbox("t_all_forum_tools", USER_PERM_FORUM_TOOLS, $lang['usercanaccessforumtools'], $global_user_perm & USER_PERM_FORUM_TOOLS), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>", form_checkbox("t_all_forum_mod", USER_PERM_FOLDER_MODERATE, $lang['usercanmodallfoldersonallforums'], $global_user_perm & USER_PERM_FOLDER_MODERATE), "</td>\n";
+        echo "                        <td>", form_checkbox("t_all_folder_mod", USER_PERM_FOLDER_MODERATE, $lang['usercanmodallfoldersonallforums'], $global_user_perm & USER_PERM_FOLDER_MODERATE), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>", form_checkbox("t_all_links_mod", USER_PERM_LINKS_MODERATE, $lang['usercanmodlinkssectiononallforums'], $global_user_perm & USER_PERM_LINKS_MODERATE), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.273 2005-04-15 21:23:27 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.274 2005-04-15 21:26:51 decoyduck Exp $ */
 
 // International English language file
 
@@ -414,6 +414,7 @@ $lang['successfullydeletedgroup'] = "Successfully deleted group";
 
 $lang['usercanaccessforumtools'] = "User can access forum tools and can create, delete and edit forums";
 $lang['usercanmodallfoldersonallforums'] = "User can moderate <b>all folders</b> on <b>all forums</b>";
+$lang['usercanmodlinkssectiononallforums'] = "User can moderate links section on <b>all forums</b>";
 
 $lang['emailconfirmationrequired'] = "Email confirmation required";
 $lang['cancelemailconfirmation'] = "Cancel email confirmation and allow user to start posting";

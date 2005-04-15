@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.78 2005-04-08 18:36:56 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.79 2005-04-15 18:53:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -490,7 +490,7 @@ echo "                  <td>", form_dropdown_array("timezone", $timezones_data, 
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) && $user_prefs['DL_SAVING'] == 'Y') ? true : forum_get_setting('forum_dl_saving', false, false)), "</td>\n";
+echo "                  <td>", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) && $user_prefs['DL_SAVING'] == 'Y') ? true : forum_get_setting('forum_dl_saving', 'Y')), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"2\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.176 2005-04-12 21:55:42 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.177 2005-04-15 18:53:56 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -130,10 +130,7 @@ function bh_session_check($show_session_fail = true)
             // If the user isn't currently in the same forum
             // we should make it look like they've visited it.
 
-            if ($user_sess['FID'] != $forum_fid) {
-
-                bh_update_visitor_log($user_sess['UID']);
-            }
+            bh_update_visitor_log($user_sess['UID']);
 
             // Everything checks out OK. If the user's session is older
             // then 5 minutes we should update it.
@@ -347,17 +344,19 @@ function bh_update_visitor_log($uid)
             $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NULL ";
             $sql.= "WHERE UID = $uid";
 
+            $result = db_query($sql, $db_bh_update_visitor_log);
+
         }else {
 
             $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
-            $sql.= "WHERE UID = $uid";
+            $sql.= "WHERE UID = $uid AND FORUM = $forum_fid";
 
             $result = db_query($sql, $db_bh_update_visitor_log);
 
             if (db_num_rows($result) > 0) {
 
                 $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-                $sql.= "WHERE UID = $uid";
+                $sql.= "WHERE UID = $uid AND FORUM = $forum_fid";
 
                 $result = db_query($sql, $db_bh_update_visitor_log);
 

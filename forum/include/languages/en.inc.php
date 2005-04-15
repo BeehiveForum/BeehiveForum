@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.271 2005-04-13 17:35:09 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.272 2005-04-15 15:01:16 rendle Exp $ */
 
 // International English language file
 
@@ -428,6 +428,7 @@ $lang['usercanmoderatelinkssection'] = "User can moderate Links section";
 
 $lang['userisbanned'] = "User is banned";
 $lang['useriswormed'] = "User is wormed";
+$lang['userispilloried'] = "User is pilloried";
 
 $lang['usercanignoreadmin'] = "User can ignore administrators";
 

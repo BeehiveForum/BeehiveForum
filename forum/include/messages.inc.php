@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.359 2005-04-16 09:30:00 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.360 2005-04-16 09:36:23 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -934,9 +934,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                     echo "<a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" height=\"15\" border=\"0\" align=\"middle\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a>&nbsp;";
                 }
-            }
 
-            if ($perm_has_admin_access) {
+                if (ip_is_banned($message['IPADDRESS'])) {
+
+                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['banned']}&nbsp;</span>";
+
+                }else {
+
+                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
+                }
+
+            }else if ($perm_has_admin_access) {
 
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 

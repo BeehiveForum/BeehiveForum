@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.358 2005-04-15 21:19:33 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.359 2005-04-16 09:30:00 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -483,6 +483,14 @@ function messages_bottom()
 function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
     $lang = load_language_file();
+
+    if (!isset($message['FID']) || !is_numeric($message['FID'])) {
+
+        if (!$message['FID'] = thread_get_folder($tid)) {
+
+            $message['FID'] = 0;
+        }
+    }
 
     $perm_is_moderator = perm_is_moderator($message['FID']);
     $perm_has_admin_access = perm_has_admin_access();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.244 2005-04-11 20:09:21 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.245 2005-04-16 09:30:02 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -849,9 +849,12 @@ function users_get_recent($offset, $limit)
     if (!$table_data = get_table_prefix()) return array('user_count' => 0,
                                                         'user_array' => array());
 
+    $forum_fid = $table_data['FID'];
+
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0";
+    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+    $sql.= "AND VISITOR_LOG.FORUM = $forum_fid";
 
     $result = db_query($sql, $db_users_get_recent);
     list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -860,7 +863,7 @@ function users_get_recent($offset, $limit)
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "AND VISITOR_LOG.FORUM = $forum_fid ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, $limit";
 
     $result = db_query($sql, $db_users_get_recent);

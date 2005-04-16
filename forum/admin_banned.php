@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.11 2005-03-28 23:45:06 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.12 2005-04-16 21:05:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -396,7 +396,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td>", form_input_text('add_banned_logon', '', 28, 15), "&nbsp;", form_submit("add_logon", $lang['add']), "</td>\n";
+echo "                              <td>", form_input_text('add_banned_logon', '', 28, 32), "&nbsp;", form_submit("add_logon", $lang['add']), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";
@@ -453,7 +453,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td>", form_input_text('add_banned_nickname', '', 28, 15), "&nbsp;", form_submit("add_nickname", $lang['add']), "</td>\n";
+echo "                              <td>", form_input_text('add_banned_nickname', '', 28, 32), "&nbsp;", form_submit("add_nickname", $lang['add']), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";
@@ -506,7 +506,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td>", form_input_text('add_banned_email', '', 28, 15), "&nbsp;", form_submit("add_email", $lang['add']), "</td>\n";
+echo "                              <td>", form_input_text('add_banned_email', '', 28, 80), "&nbsp;", form_submit("add_email", $lang['add']), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";

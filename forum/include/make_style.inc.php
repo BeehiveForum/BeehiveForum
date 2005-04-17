@@ -21,20 +21,104 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: make_style.inc.php,v 1.8 2004-12-21 22:49:45 decoyduck Exp $ */
+/* $Id: make_style.inc.php,v 1.9 2005-04-17 17:15:18 decoyduck Exp $ */
 
-// Concept and Original code: Andrew Holgate
-// Beehive-fitter-iner and dogs body: Matt Beale
+/**
+* make_style.inc.php - attachment upload handling
+*
+* Contains functions for creating forum styles. Concept and original code by Andrew Holgate
+*/
+
+/**
+*
+*/
+
+/**
+* Saves the forum style
+*
+* Saves the named forum style to the server.
+*
+* @return bool
+* @param string $stylename - name of the style to use as the filename
+* @param array $styledesc - description of the style to place in desc.txt
+*/
+
+function forum_save_style($stylename, $styledesc, $stylesheet, &$error)
+{
+    $webtag = get_webtag($webtag_search);
+
+    // Replace invalid characters in the stylename
+
+    $stylename = strtolower(str_replace(" ", "_", $stylename));
+    $stylename = preg_replace("/[^a-z|0-9|'_']/", "", $stylename);
+
+    // Check to see if the style name is already in use.
+
+    clearstatcache();
+
+    if (!@file_exists("./forums/$webtag/styles/$stylename/style.css")) {
+
+        // Check that the directory structure exists
+
+        if (@!is_dir("forums")) {
+
+            @mkdir("forums", 0755);
+            @chmod("forums", 0777);
+        }
+
+        if (@!is_dir("forums/$webtag")) {
+
+            @mkdir("forums/$webtag", 0755);
+            @chmod("forums/$webtag", 0777);
+        }
+
+        if (@!is_dir("forums/$webtag/styles")) {
+
+            @mkdir("forums/$webtag/styles", 0755);
+            @chmod("forums/$webtag/styles", 0777);
+        }
+
+        if (@!is_dir("forums/$webtag/styles/$stylename")) {
+
+            @mkdir("forums/$webtag/styles/$stylename", 0755);
+            @chmod("forums/$webtag/styles/$stylename", 0777);
+        }
+
+        // Save the style desc.txt file
+
+        if ($fp = @fopen("./forums/$webtag/styles/$stylename/desc.txt", "w")) {
+
+            fwrite($fp, $styledesc);
+            fclose($fp);
+
+            // Save the style.css file
+
+            if ($fp = @fopen("./forums/$webtag/styles/$stylename/style.css", "w")) {
+
+                fwrite($fp, $stylesheet);
+                fclose($fp);
+
+                admin_add_log_entry(CREATED_NEW_STYLE, $stylename);
+
+                return true;
+            }
+        }
+
+        $error = STYLE_WRITE_ERROR;
+        return false;
+    }
+
+    $error = STYLE_ALREADY_EXISTS;
+    return false;
+}
 
 // Function to convert decimal RGB values to their Hex equivelent.
 
 function decToHex ($r, $g, $b)
 {
-
     return (str_pad(dechex($r), 2, '0', STR_PAD_RIGHT).
             str_pad(dechex($g), 2, '0', STR_PAD_RIGHT).
             str_pad(dechex($b), 2, '0', STR_PAD_RIGHT));
-
 }
 
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.79 2005-04-11 18:32:13 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.80 2005-04-17 17:15:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -91,153 +91,213 @@ if (!perm_has_admin_access()) {
 
 // Save the style
 
-$success = false;
-
 if (isset($_POST['submit'])) {
 
+    $valid = true;
+
     if (isset($_POST['stylename']) && strlen(trim(_stripslashes($_POST['stylename']))) > 0) {
-
-        // Get the style filename
-
         $stylename = trim(_stripslashes($_POST['stylename']));
-        $stylename = strtolower(str_replace(" ", "_", $stylename));
-        $stylename = preg_replace("/[^a-z|0-9|'_']/", "", $stylename);
+    }else {
+        $valid = false;
+        $result_html = "<h2>{$lang['stylenofilename']}</h2>\n";
+    }
 
-        // Get the style desc - if no description use the filename.
+    if (isset($_POST['styledesc']) && strlen(trim(_stripslashes($_POST['styledesc']))) > 0) {
+        $styledesc = trim(_stripslashes($_POST['styledesc']));
+    }else {
+        $styledesc = $stylename;
+    }
 
-        if (isset($_POST['styledesc']) && strlen(trim(_stripslashes($_POST['styledesc']))) > 0) {
-            $styledesc = trim(_stripslashes($_POST['styledesc']));
-        }else {
-            $styledesc = $stylename;
-        }
+    if (isset($_POST['stylesheet']) && strlen(trim(_stripslashes($_POST['stylesheet']))) > 0) {
 
-        clearstatcache();
+        $stylesheet = trim(_stripslashes($_POST['stylesheet']));
 
-        // Read in the master style sheet.
+    }elseif (isset($_POST['elements']) && is_array($_POST['elements'])) {
 
-        if (@$fp = fopen("./styles/make_style.css", "r")) {
+        if (@file_exists("./styles/make_style.css")) {
 
-            $stylesheet = fread($fp, filesize("./styles/make_style.css"));
-
-            fclose($fp);
-
-            // Modify it with the colours specified by the post data.
+            $stylesheet = implode('', file("./styles/make_style.css"));
 
             foreach ($_POST['elements'] as $key => $value) {
-
                 $stylesheet = str_replace("\$elements[$key]", strtoupper($value), $stylesheet);
                 $stylesheet = str_replace("\$text_colour[$key]", strtoupper(contrastFont($value)), $stylesheet);
             }
 
-            // Save the style sheet
+            reset($_POST);
 
-            if (!@file_exists("./forums/$webtag/styles/$stylename/style.css")) {
+        }else {
 
-                // Create the directory structure we need
-                // Beehive defaults to setting permissions to 0777
-                // so that the folders are writable via FTP / SSH
-                // if the user later requires them to be.
+            $valid = false;
+            $result_html = "<h2>{$lang['failedtoopenmasterstylesheet']}</h2>\n";
+        }
 
-                if (@!is_dir("forums")) {
+    }else {
 
-                    @mkdir("forums", 0755);
-                    @chmod("forums", 0777);
-                }
+        $valid = false;
+        $result_html = "<h2>{$lang['stylenodatasubmitted']}</h2>\n";
+    }
 
-                if (@!is_dir("forums/$webtag")) {
+    if ($valid) {
 
-                    @mkdir("forums/$webtag", 0755);
-                    @chmod("forums/$webtag", 0777);
-                }
+        if (isset($_POST['savefailed']) && $_POST['savefailed'] == "yes") {
 
-                if (@!is_dir("forums/$webtag/styles")) {
+            $success = forum_save_style($stylename, $styledesc, $stylesheet, $error_code);
 
-                    @mkdir("forums/$webtag/styles", 0755);
-                    @chmod("forums/$webtag/styles", 0777);
-                }
+            if (!$success) {
 
-                if (@!is_dir("forums/$webtag/styles/$stylename")) {
+                if ($error_code == STYLE_ALREADY_EXISTS) {
 
-                    @mkdir("forums/$webtag/styles/$stylename", 0755);
-                    @chmod("forums/$webtag/styles/$stylename", 0777);
-                }
+                    $valid = false;
+                    $result_html = "<h2>{$lang['stylealreadyexists']}</h2>\n";
 
-                // Save the style desc.txt file
+                }else {
 
-                if (@$fp = fopen("./forums/$webtag/styles/$stylename/desc.txt", "w")) {
+                    html_draw_top();
 
-                    fwrite($fp, $styledesc);
-                    fclose($fp);
+                    $style_path = dirname($_SERVER['PHP_SELF']);
+                    $style_path.= "/forums/$webtag/styles/$stylename/";
 
-                    // Save the style.css file
+                    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['createforumstyle']}</h1>\n";
+                    echo "<br />\n";
 
-                    if (@$fp = fopen("./forums/$webtag/styles/$stylename/style.css", "w")) {
+                    echo "<div align=\"center\">\n";
+                    echo "<form method=\"post\" action=\"admin_make_style.php\">\n";
+                    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                    echo "  ", form_input_hidden('stylesheet', _htmlentities($stylesheet)), "\n";
+                    echo "  ", form_input_hidden('stylename', $stylename), "\n";
+                    echo "  ", form_input_hidden('styledesc', $styledesc), "\n";
 
-                        fwrite($fp, $stylesheet);
-                        fclose($fp);
-
-                        $success = true;
-
-                        admin_add_log_entry(CREATED_NEW_STYLE, $stylename);
-
-                        $error_html = "<h2>{$lang['newstyle']} \"$stylename\" {$lang['successfullycreated']}</h2>\n";
+                    foreach ($_POST['elements'] as $key => $value) {
+                        echo "  ", form_input_hidden("elements[$key]", $value), "\n";
                     }
-                }
 
-                // We failed to save the style locally, so send it to the user
-                // so they can then upload it to the server via FTP.
+                    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                    echo "    <tr>\n";
+                    echo "      <td>\n";
+                    echo "        <table class=\"box\" width=\"100%\">\n";
+                    echo "          <tr>\n";
+                    echo "            <td class=\"posthead\">\n";
+                    echo "              <table class=\"posthead\" width=\"100%\">\n";
+                    echo "                <tr>\n";
+                    echo "                  <td class=\"subhead\">{$lang['createforumstyle']}</td>\n";
+                    echo "                </tr>\n";
+                    echo "                <tr>\n";
+                    echo "                  <td>{$lang['makestyleerror_1']} $style_path {$lang['makestyleerror_2']}</td>\n";
+                    echo "                </tr>\n";
+                    echo "                <tr>\n";
+                    echo "                  <td>&nbsp;</td>\n";
+                    echo "                </tr>\n";
+                    echo "              </table>\n";
+                    echo "            </td>\n";
+                    echo "          </tr>\n";
+                    echo "        </table>\n";
+                    echo "      </td>\n";
+                    echo "    </tr>\n";
+                    echo "    <tr>\n";
+                    echo "      <td>&nbsp;</td>\n";
+                    echo "    </tr>\n";
+                    echo "    <tr>\n";
+                    echo "      <td align=\"center\">", form_submit("download", $lang['download']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+                    echo "    </tr>\n";
+                    echo "  </table>\n";
 
-                if (!$success) {
-
-                    admin_add_log_entry(CREATED_NEW_STYLE, $stylename);
-
-                    $style_download = "/*======================================================================\n";
-                    $style_download.= "Copyright Project BeehiveForum 2002\n\n";
-                    $style_download.= "This file is part of BeehiveForum.\n\n";
-                    $style_download.= "BeehiveForum is free software; you can redistribute it and/or modify\n";
-                    $style_download.= "it under the terms of the GNU General Public License as published by\n";
-                    $style_download.= "the Free Software Foundation; either version 2 of the License, or\n";
-                    $style_download.= "(at your option) any later version.\n\n";
-                    $style_download.= "BeehiveForum is distributed in the hope that it will be useful,\n";
-                    $style_download.= "but WITHOUT ANY WARRANTY; without even the implied warranty of\n";
-                    $style_download.= "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n";
-                    $style_download.= "GNU General Public License for more details.\n\n";
-                    $style_download.= "You should have received a copy of the GNU General Public License\n";
-                    $style_download.= "along with Beehive; if not, write to the Free Software\n";
-                    $style_download.= "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307\n";
-                    $style_download.= "USA\n";
-                    $style_download.= "======================================================================\n\n";
-                    $style_download.= "*** Auto generated by BeehiveForum on ". date('d/m/Y', mktime()). "\n\n";
-                    $style_download.= "*** Beehive was unable to save this style locally to your\n";
-                    $style_download.= "*** server. Please upload this file to your forum styles\n";
-                    $style_download.= "*** folder, creating where neccesary the folder to hold\n";
-                    $style_download.= "*** this style.css file.\n\n";
-                    $style_download.= "======================================================================*/\n\n";
-                    $style_download.= $stylesheet;
-
-                    $length = strlen($style_download);
-
-                    header("Content-Type: application/x-ms-download", true);
-                    header("Content-Length: $length", true);
-                    header("Content-disposition: attachment; filename=\"style.css\"", true);
-                    echo $style_download;
+                    html_draw_bottom();
                     exit;
                 }
 
             }else {
 
-                $error_html = "<h2>{$lang['stylealreadyexists']}</h2>\n";
+                $result_html = "<h2>{$lang['newstyle']} $stylename {$lang['successfullycreated']}</h2>\n";
             }
 
         }else {
 
-            $error_html = "<h2>{$lang['failedtoopenmasterstylesheet']}</h2>\n";
+            $success = forum_save_style($stylename, $styledesc, $stylesheet, $error_code);
+
+            if (!$success) {
+
+                if ($error_code == STYLE_ALREADY_EXISTS) {
+
+                    $valid = false;
+                    $result_html = "<h2>{$lang['stylealreadyexists']}</h2>\n";
+
+                }else {
+
+                    html_draw_top();
+
+                    $forum_path = dirname($_SERVER['PHP_SELF']);
+                    $forum_path.= "/forums/$webtag/styles/";
+
+                    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['createforumstyle']}</h1>\n";
+                    echo "<br />\n";
+                    echo "<div align=\"center\">\n";
+                    echo "<form method=\"post\" action=\"admin_make_style.php\">\n";
+                    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                    echo "  ", form_input_hidden('stylesheet', _htmlentities($stylesheet)), "\n";
+                    echo "  ", form_input_hidden('stylename', $stylename), "\n";
+                    echo "  ", form_input_hidden('styledesc', $styledesc), "\n";
+                    echo "  ", form_input_hidden('savefailed', "yes"), "\n";
+
+                    foreach ($_POST['elements'] as $key => $value) {
+                        echo "  ", form_input_hidden("elements[$key]", $value), "\n";
+                    }
+
+                    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                    echo "    <tr>\n";
+                    echo "      <td>\n";
+                    echo "        <table class=\"box\" width=\"100%\">\n";
+                    echo "          <tr>\n";
+                    echo "            <td class=\"posthead\">\n";
+                    echo "              <table class=\"posthead\" width=\"100%\">\n";
+                    echo "                <tr>\n";
+                    echo "                  <td class=\"subhead\">{$lang['createforumstyle']}</td>\n";
+                    echo "                </tr>\n";
+                    echo "                <tr>\n";
+                    echo "                  <td>", sprintf($lang['makestylefailed'], $forum_path), "</td>\n";
+                    echo "                </tr>\n";
+                    echo "                <tr>\n";
+                    echo "                  <td>&nbsp;</td>\n";
+                    echo "                </tr>\n";
+                    echo "              </table>\n";
+                    echo "            </td>\n";
+                    echo "          </tr>\n";
+                    echo "        </table>\n";
+                    echo "      </td>\n";
+                    echo "    </tr>\n";
+                    echo "    <tr>\n";
+                    echo "      <td>&nbsp;</td>\n";
+                    echo "    </tr>\n";
+                    echo "    <tr>\n";
+                    echo "      <td align=\"center\">", form_submit("submit", $lang['retry']), "&nbsp;", form_submit("cancel_upload", $lang['cancel']), "</td>\n";
+                    echo "    </tr>\n";
+                    echo "  </table>\n";
+
+                    html_draw_bottom();
+                    exit;
+                }
+
+            }else {
+
+                $result_html = "<h2>{$lang['newstyle']} $stylename {$lang['successfullycreated']}</h2>\n";
+            }
         }
-
-    }else {
-
-        $error_html = "<h2>{$lang['stylenofilename']}</h2>\n";
     }
+
+}elseif (isset($_POST['download'])) {
+
+    if (isset($_POST['stylesheet']) && strlen(trim(_stripslashes($_POST['stylesheet']))) > 0) {
+        $stylesheet = trim(_stripslashes($_POST['stylesheet']));
+    }else {
+        $stylesheet = "";
+    }
+
+    $length = strlen($stylesheet);
+
+    header("Content-Type: application/x-ms-download", true);
+    header("Content-Length: $length", true);
+    header("Content-disposition: attachment; filename=\"style.css\"", true);
+    echo $stylesheet;
+    exit;
 }
 
 // Start Here
@@ -246,8 +306,8 @@ html_draw_top();
 
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['createforumstyle']}</h1>\n";
 
-if (isset($error_html) && strlen($error_html) > 0) {
-    echo $error_html;
+if (isset($result_html) && strlen($result_html) > 0) {
+    echo $result_html;
 }
 
 // Check to see if any of the required variables were passed via the URL Query or POST_VARS
@@ -311,9 +371,7 @@ if (isset($_POST['submit'])) {
         echo "                  <td width=\"50\" class=\"posthead\" style=\"background-color: #", $value, "\" align=\"center\">\n";
         echo "                    <a href=\"admin_make_style.php?webtag=$webtag&amp;seed=", $value, "&amp;mode=", $mode, "\" style=\"color: #", contrastFont($value), "\">", strtoupper($value), "</a>\n";
         echo "                  </td>\n";
-
     }
-
 
 }else {
 
@@ -327,11 +385,9 @@ if (isset($_POST['submit'])) {
         list ($r, $g, $b) = hexToDec($colour);
         $colour = changeColour ($r, $g, $b, $max_var, $mode, $steps);
         $steps--;
-
     }
 
     reset($elements);
-
 }
 
 echo "                </tr>\n";
@@ -451,8 +507,9 @@ echo "          <td colspan=\"3\" height=\"20\" style=\"background-color: #{$ele
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
-echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['preferences']}</a>&nbsp;|&nbsp;\n";
-echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['profile']}</a>&nbsp;|&nbsp;\n";
+echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['pminbox']}</a>&nbsp;|&nbsp;\n";
+echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['mycontrols']}</a>&nbsp;|&nbsp;\n";
+echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['myforums']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['admin']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['logout']}</a>\n";
 echo "          </td>\n";
@@ -566,6 +623,20 @@ echo "                  </form>\n";
 echo "                </td>\n";
 echo "              </tr>\n";
 echo "            </table>\n";
+echo "            <table width=\"220\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "              <tr>\n";
+echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" colspan=\"2\" align=\"left\">{$lang['search']} (<a href=\"javascript:void(0)\">{$lang['advanced']}</a>):</td>\n";
+echo "              </tr>\n";
+echo "              <tr>\n";
+echo "                <td>&nbsp;</td>\n";
+echo "                <td class=\"smalltext\" style=\"color: #", contrastFont($elements['body']), "\" align=\"left\">\n";
+echo "                  <form name=\"f_nav\" method=\"get\" action=\"\" onsubmit=\"return false\">\n";
+echo "                    <input type=\"text\" name=\"msg\" class=\"bhinputtext\" value=\"\" size=\"20\" />\n";
+echo "                    <input type=\"submit\" name=\"go\" value=\"{$lang['find']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
+echo "                  </form>\n";
+echo "                </td>\n";
+echo "              </tr>\n";
+echo "            </table>\n";
 echo "          </td>\n";
 echo "          <td bgcolor=\"#FFFFFF\" width=\"2\"></td>\n";
 echo "          <td valign=\"top\">\n";
@@ -613,11 +684,18 @@ echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                    <table width=\"100%\" class=\"postresponse\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\" cellspacing=\"1\" cellpadding=\"0\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">\n";
-echo "                            <img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['reply']}</a>&nbsp;&nbsp;\n";
-echo "                            <img src=\"", style_image('delete.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['delete']}</a>&nbsp;&nbsp;\n";
-echo "                            <img src=\"", style_image('edit.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['edit']}</a>&nbsp;&nbsp;\n";
-echo "                            <img src=\"", style_image('admintool.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['privileges']}</a>\n";
+echo "                        <td width=\"25%\">&nbsp;</td>\n";
+echo "                        <td align=\"center\" width=\"50%\">\n";
+echo "                          <img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['reply']}</a>&nbsp;&nbsp;\n";
+echo "                          <img src=\"", style_image('delete.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['delete']}</a>&nbsp;&nbsp;\n";
+echo "                          <img src=\"", style_image('edit.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['edit']}</a>&nbsp;&nbsp;\n";
+echo "                        </td>\n";
+echo "                        <td align=\"right\" width=\"25%\">\n";
+echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
+echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('print.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
+echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('markasunread.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
+echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('admintool.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
+echo "                          <span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"javascript:void(0)\">127.0.0.1</a></span>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -646,12 +724,12 @@ echo "                  <div align=\"center\">\n";
 echo "                    <table width=\"96%\" class=\"posthead\" style=\"background-color: #{$elements['threads']}; color: #", contrastFont($elements['threads']), "\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"60%\" class=\"smalltext\" align=\"left\">\n";
-echo "                          Beehive Forum &nbsp;|&nbsp;\n";
+echo "                          Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
 echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
 echo "                          <a href=\"javascript:void(0)\" target=\"_blank\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['docs']}</a> &nbsp;|&nbsp;\n";
 echo "                          <a href=\"javascript:void(0)\" target=\"_blank\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['support']}</a>\n";
 echo "                        </td>\n";
-echo "                        <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;", date('Y'), " <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">Project BeehiveForum</a></td>\n";
+echo "                        <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date('Y'), " <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">Project BeehiveForum</a></td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </div>\n";
@@ -659,9 +737,6 @@ echo "                </td>\n";
 echo "              </tr>\n";
 echo "            </table>\n";
 echo "            </div>\n";
-echo "            <p>&nbsp;</p>\n";
-echo "            <h1 style=\"background-color: #{$elements['h1']}; color: #", contrastFont($elements['h1']), "\">{$lang['h1tag']}</h1>\n";
-echo "            <p class=\"subhead\" style=\"background-color: #{$elements['subhead']}; color: #", contrastFont($elements['subhead']), "\">{$lang['subhead']}</p>\n";
 echo "            <p>&nbsp;</p>\n";
 echo "          </td>\n";
 echo "        </tr>\n";

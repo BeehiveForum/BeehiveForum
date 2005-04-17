@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.108 2005-04-13 01:06:44 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.109 2005-04-17 23:20:26 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1544,7 +1544,11 @@ function make_links ($html)
     $html = preg_replace("/(\s|\()(www\.((\w+-?)+\.?)*\w+(:\d+)?([\/?#]\S*[^)\s])?)/i", "$1<a href=\"http://$2\">$2</a>", $html);
 
     // MAIL:
-    $html = preg_replace("/\b(mailto:)?(((\w+-?)+\.?)*\w+@((\w+-?)+\.)+\w+)/i", "<a href=\"mailto:$2\">$1$2</a>", $html);
+    $html = preg_replace("/\b(mailto:)?([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i", "<a href=\"mailto:$2\">$1$2</a>", $html);
+
+    // This one breaks PHP - causes a 30 second page timeout.
+
+    //$html = preg_replace("/\b(mailto:)?(((\w+-?)+\.?)*\w+@((\w+-?)+\.)+\w+)/i", "<a href=\"mailto:$2\">$1$2</a>", $html);
 
     return substr($html, 1);
 }

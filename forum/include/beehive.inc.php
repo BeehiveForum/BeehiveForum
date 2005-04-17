@@ -21,20 +21,38 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: beehive.inc.php,v 1.43 2005-03-24 00:23:12 decoyduck Exp $ */
+/* $Id: beehive.inc.php,v 1.44 2005-04-17 15:42:30 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+
+function get_build_date()
+{
+    if (defined('BEEHIVE_CVS_DATE') && preg_match("/(\d{4,})\/(\d{2,})\/(\d{2,})/", BEEHIVE_CVS_DATE, $matches)) {
+        unset($matches[0]);
+        return implode("-", $matches);
+    }
+
+    return false;
+}
 
 function draw_beehive_bar()
 {
     $lang = load_language_file();
 
+
+
     echo "<div align=\"center\">\n";
     echo "<table width=\"96%\" class=\"posthead\">\n";
     echo "  <tr>\n";
     echo "    <td width=\"60%\" class=\"smalltext\" align=\"left\">\n";
-    echo "      Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
+
+    if ($build_date = get_build_date()) {
+        echo "      Beehive Forum ", BEEHIVE_VERSION, "-$build_date&nbsp;|&nbsp;\n";
+    }else {
+        echo "      Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
+    }
+
     echo "      <a href=\"http://www.beehiveforum.net/faq/\" target=\"_blank\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://sourceforge.net/docman/?group_id=50772\" target=\"_blank\">{$lang['docs']}</a>&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926\" target=\"_blank\">{$lang['support']}</a>&nbsp;|&nbsp;\n";

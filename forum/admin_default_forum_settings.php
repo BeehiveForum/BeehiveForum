@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.30 2005-04-12 17:26:06 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.31 2005-04-18 17:31:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -411,7 +411,7 @@ echo "                        <td width=\"270\">{$lang['minsearchwordlength']}:<
 echo "                        <td>", form_input_text("search_min_word_length", (isset($default_forum_settings['search_min_word_length'])) ? $default_forum_settings['search_min_word_length'] : "", 10, 3), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"270\">{$lang['minsearchfrequency']}:</td>\n";
+echo "                        <td width=\"270\">{$lang['searchfrequency']}:</td>\n";
 echo "                        <td>", form_input_text("search_min_frequency", (isset($default_forum_settings['search_min_frequency'])) ? $default_forum_settings['search_min_frequency'] : "", 10, 3), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.44 2005-04-11 18:11:47 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.45 2005-04-18 17:31:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -274,32 +274,31 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['userinformation']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
+echo "                  <td>{$lang['logon']}:&nbsp;</td>\n";
+echo "                  <td colspan=\"2\">{$user_info['LOGON']}&nbsp;({$lang['userID']}: {$user_info['UID']})</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
 echo "                  <td>{$lang['nickname']}:&nbsp;</td>\n";
-echo "                  <td>", form_field("nickname", (isset($user_info['NICKNAME']) ? $user_info['NICKNAME'] : ""), 45, 32), "&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td colspan=\"2\">", form_field("nickname", (isset($user_info['NICKNAME']) ? $user_info['NICKNAME'] : ""), 45, 32), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['emailaddress']}:&nbsp;</td>\n";
-echo "                  <td>", form_field("email", (isset($user_info['EMAIL']) ? $user_info['EMAIL'] : ""), 45, 80), "&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td colspan=\"2\">", form_field("email", (isset($user_info['EMAIL']) ? $user_info['EMAIL'] : ""), 45, 80), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['firstname']}:&nbsp;</td>\n";
-echo "                  <td>", form_field("firstname", (isset($user_prefs['FIRSTNAME']) ? $user_prefs['FIRSTNAME'] : ""), 45, 32), "&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td colspan=\"2\">", form_field("firstname", (isset($user_prefs['FIRSTNAME']) ? $user_prefs['FIRSTNAME'] : ""), 45, 32), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['lastname']}:&nbsp;</td>\n";
-echo "                  <td>", form_field("lastname", (isset($user_prefs['LASTNAME']) ? $user_prefs['LASTNAME'] : ""), 45, 32), "&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td colspan=\"2\">", form_field("lastname", (isset($user_prefs['LASTNAME']) ? $user_prefs['LASTNAME'] : ""), 45, 32), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['dateofbirth']}:&nbsp;</td>\n";
-echo "                  <td>", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td colspan=\"2\">", form_dob_dropdowns($dob['YEAR'], $dob['MONTH'], $dob['DAY'], $dob['BLANK_FIELDS']), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['homepageURL']}:&nbsp;</td>\n";

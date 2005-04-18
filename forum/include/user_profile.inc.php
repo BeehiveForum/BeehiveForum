@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.42 2005-04-06 17:35:13 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.43 2005-04-18 17:31:52 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -36,6 +36,10 @@ include_once(BH_INCLUDE_PATH. "profile.inc.php");
 function user_profile_update($uid, $piid, $entry, $privacy)
 {
     $db_user_profile_update = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    if (!is_numeric($piid)) return false;
+    if (!is_numeric($privacy)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -72,10 +76,10 @@ function user_get_profile($uid)
     $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$peer_uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = $peer_uid) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
     $sql.= "ON (VISITOR_LOG.UID = USER.UID) ";
-    $sql.= "WHERE USER.UID = '$uid' ";
+    $sql.= "WHERE USER.UID = $uid ";
     $sql.= "GROUP BY USER.UID";
 
     $result = db_query($sql, $db_user_get_profile);
@@ -118,6 +122,9 @@ function user_get_profile_entries($uid, $psid)
 {
     $db_user_get_profile_entries = db_connect();
 
+    if (!is_numeric($uid)) return false;
+    if (!is_numeric($psid)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PI.NAME, PI.TYPE, UP.ENTRY, UP.PRIVACY FROM {$table_data['PREFIX']}PROFILE_ITEM PI ";
@@ -138,6 +145,8 @@ function user_get_profile_image($uid)
 {
     $db_user_get_profile_image = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PIC_URL from {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
@@ -147,16 +156,16 @@ function user_get_profile_image($uid)
 
     if (isset($row['PIC_URL']) && strlen($row['PIC_URL']) > 0) {
         return $row['PIC_URL'];
-    }else {
-        return false;
     }
+
+    return false;
 }
 
 function user_get_post_count($uid)
 {
-    if (!is_numeric($uid)) return 0;
+    if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return 0;
+    if (!$table_data = get_table_prefix()) return false;
 
     $db_user_get_count = db_connect();
 

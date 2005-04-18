@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.110 2005-04-18 19:41:42 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.111 2005-04-18 22:04:39 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -141,6 +141,10 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $html_parts[$j] = "/pre";
 
+                                        // reset these to overcome bug(?) in GeSHi when switching languages
+                                        $code_highlighter->error = false;
+                                        $code_highlighter->strict_mode = false;
+
                                         $code_highlighter->set_source($tmpcode);
 
                                         $lang_geshi = $code_highlighter->get_language_name_from_extension(strtolower($lang));
@@ -151,11 +155,8 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                             $code_highlighter->set_language(strtolower($lang));
                                         }
 
-                                        // Fix for Geshi doing something weird with &nbsp;
-                                        // Don't ask me why it does it, it just seems very weird.
-
-                                        $tmpcode = strip_tags($code_highlighter->parse_code(), "<span>");
-                                        $tmpcode = preg_replace("/^&nbsp;/", "", $tmpcode);
+                                        $tmpcode = $code_highlighter->parse_code();
+                                        $tmpcode = preg_replace("/<\/?pre( [^>]*)?>/", "", $tmpcode);
 
                                         array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
 

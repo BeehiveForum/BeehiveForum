@@ -28,15 +28,15 @@ USA
 // to a subdirectory 'geshi' in your main forum folder (if your forum was
 // at www.site.com/forum/, upload to www.site.com/forum/geshi/).
 
-if (file_exists('./geshi/geshi.php')) {
+if (file_exists("./geshi/geshi.php")) {
 
     include_once("./geshi/geshi.php");
 
-    $path = 'geshi/geshi';
+    $path = "geshi/geshi";
 
-    $code_highlighter = new GeSHi('//', 'php', $path);
-    $code_highlighter->set_link_target('_blank');
-    $code_highlighter->set_encoding('UTF-8');
+    $code_highlighter = new GeSHi("", "", $path);
+    $code_highlighter->set_link_target("_blank");
+    $code_highlighter->set_encoding("UTF-8");
 
     /* To save speed/bandwidth, several highlighting features can be disabled/limited.
     See: http://qbnz.com/highlighter/geshi-doc.html#disabling-lexics
@@ -60,6 +60,10 @@ if (file_exists('./geshi/geshi.php')) {
     class fake_geshi {
 
         var $source = '';
+
+        // these don't get used but need to be set because of a bug in GeSHi
+        var $error = false;
+        var $strict_mode = false;
 
         function fake_geshi() {
             return;

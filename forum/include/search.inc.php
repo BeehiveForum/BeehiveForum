@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.119 2005-04-14 18:26:47 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.120 2005-04-18 17:31:45 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -57,7 +57,6 @@ function search_execute($argarray, &$urlquery, &$error)
     if (!isset($argarray['include']) || !is_numeric($argarray['include'])) $argarray['include'] = 2;
     if (!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) $argarray['username'] = "";
     if (!isset($argarray['user_include']) || !is_numeric($argarray['user_include'])) $argarray['user_include'] = 1;
-    if (!isset($argarray['forums']) || !is_numeric($argarray['forums'])) $argarray['forums'] = $table_data['FID'];
 
     $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
 

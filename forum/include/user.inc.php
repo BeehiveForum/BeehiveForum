@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.245 2005-04-16 09:30:02 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.246 2005-04-18 17:31:48 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -48,41 +48,38 @@ function user_exists($logon)
 
     $logon = addslashes($logon);
 
-    $sql = "SELECT uid FROM USER WHERE logon = '$logon'";
+    $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER WHERE logon = '$logon'";
     $result = db_query($sql, $db_user_exists);
 
-    return (db_num_rows($result) > 0);
+    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return ($user_count > 0);
 }
 
 function user_create($logon, $password, $nickname, $email)
 {
+    $db_user_create = db_connect();
+
     $logon     = addslashes($logon);
     $nickname  = addslashes($nickname);
     $email     = addslashes($email);
     $md5pass   = md5($password);
 
-    if (!$ipaddress = get_ip_address()) {
-        $ipaddress = "";
-    }
-
     $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
     $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email')";
 
-    $db_user_create = db_connect();
-    $result = db_query($sql, $db_user_create);
-
-    if ($result) {
-        $new_uid = db_insert_id($db_user_create);
-    }else {
-        $new_uid = -1;
+    if ($result = db_query($sql, $db_user_create)) {
+        return db_insert_id($db_user_create);
     }
 
-    return $new_uid;
+    return -1;
 }
 
 function user_update($uid, $nickname, $email)
 {
     $db_user_update = db_connect();
+
+    if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -99,6 +96,8 @@ function user_update_nickname($uid, $nickname)
 {
     $db_user_update = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
     $nickname = addslashes(_htmlentities($nickname));
@@ -113,11 +112,13 @@ function user_change_pass($uid, $password, $hash)
 {
     $db_user_change_pass = db_connect();
 
+    if (!is_numeric($uid)) return false;
+
     $password = md5($password);
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!is_bool($hash)) {
+    if (is_md5($hash)) {
 
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid' AND PASSWD = '$hash'";
@@ -135,22 +136,6 @@ function user_change_pass($uid, $password, $hash)
     return false;
 }
 
-function user_get_status($uid, $fid = 0)
-{
-    if (!is_numeric($uid)) return 0;
-
-    if (!$table_data = get_table_prefix()) return 0;
-
-    return 0;
-
-    $db_user_get_status = db_connect();
-
-    $result = db_query($sql, $db_user_get_status);
-    list($status) = db_fetch_array($result);
-
-    return $status;
-}
-
 function user_update_forums($uid, $forums_array)
 {
     $db_user_update_forums = db_connect();
@@ -160,40 +145,40 @@ function user_update_forums($uid, $forums_array)
 
     foreach ($forums_array as $forum) {
 
-        if (is_numeric($forum['allowed']) && is_numeric($forum['fid'])) {
+        if (isset($forum['fid']) && is_numeric($forum['fid'])) {
 
-            $sql = "SELECT UID FROM USER_FORUM ";
-            $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
+            if (isset($forum['allowed']) && is_numeric($forum['allowed'])) {
 
-            $result = db_query($sql, $db_user_update_forums);
-
-            if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
+                $sql = "SELECT UID FROM USER_FORUM ";
                 $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
 
-            }else {
+                $result = db_query($sql, $db_user_update_forums);
 
-                $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-                $sql.= "VALUES ('$uid', '{$forum['fid']}', '{$forum['allowed']}')";
+                if (db_num_rows($result) > 0) {
+
+                    $sql = "UPDATE USER_FORUM SET ALLOWED = '{$forum['allowed']}' ";
+                    $sql.= "WHERE UID = '$uid' AND FID = '{$forum['fid']}'";
+
+                    $result = db_query($sql, $db_user_update_forums);
+
+                }else {
+
+                    $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
+                    $sql.= "VALUES ('$uid', '{$forum['fid']}', '{$forum['allowed']}')";
+
+                    $result = db_query($sql, $db_user_update_forums);
+                }
             }
-
-            $result = db_query($sql, $db_user_update_forums);
         }
     }
 }
 
 function user_logon($logon, $password, $md5hash = false)
 {
-    if ($md5hash) {
-      $md5pass = addslashes($password);
-    }else {
-      $md5pass = md5($password);
-    }
+    $db_user_logon = db_connect();
 
     $logon = addslashes($logon);
-
-    $db_user_logon = db_connect();
+    $md5pass = ($md5hash === true) ? addslashes($password) : md5($password);
 
     if ($table_data = get_table_prefix()) {
 
@@ -620,10 +605,12 @@ function user_check_pref($name, $value)
 
 function user_update_sig($uid, $content, $html)
 {
+    $db_user_update_sig = db_connect();
+
     if (!is_numeric($uid)) return false;
 
     $content = addslashes($content);
-    $db_user_update_sig = db_connect();
+    $html = addslashes($html);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -713,15 +700,14 @@ function user_search($usersearch, $offset = 0)
 {
     $db_user_search = db_connect();
 
-    $user_search_array = array();
-    $user_search_count = 0;
+    if (!is_numeric($offset)) return false;
 
-    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
-                                                        'user_array' => array());
-
-    if (!is_numeric($offset)) $offset = 0;
+    if (!$table_data = get_table_prefix()) return false;
 
     $usersearch = addslashes($usersearch);
+
+    $user_search_array = array();
+    $user_search_count = 0;
 
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
@@ -754,9 +740,9 @@ function user_get_aliases($uid)
 {
     $db_user_get_aliases = db_connect();
 
-    if (!$table_data = get_table_prefix()) return array();
-
     if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
 
     // Initialise arrays
 
@@ -807,9 +793,9 @@ function user_get_ip_addresses($uid)
 {
     $db_user_get_ip_addresses = db_connect();
 
-    if (!$table_data = get_table_prefix()) return array();
-
     if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
 
     $user_ip_addresses_array = array();
 
@@ -836,18 +822,17 @@ function user_get_ip_addresses($uid)
 
 function users_get_recent($offset, $limit)
 {
+    $db_users_get_recent = db_connect();
+
     if (!is_numeric($offset)) $offset = 0;
     if (!is_numeric($limit)) $limit = 20;
+
+    if (!$table_data = get_table_prefix()) return false;
 
     $users_get_recent_array = array();
     $users_get_recent_count = 0;
 
     $lang = load_language_file();
-
-    $db_users_get_recent = db_connect();
-
-    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
-                                                        'user_array' => array());
 
     $forum_fid = $table_data['FID'];
 
@@ -889,16 +874,16 @@ function users_get_recent($offset, $limit)
 
 function users_search_recent($usersearch, $offset)
 {
-    if (!is_numeric($offset)) $offset = 0;
-    $usersearch = addslashes($usersearch);
+    $db_users_search_recent = db_connect();
+
+    if (!is_numeric($offset)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
 
     $user_search_array = array();
     $user_search_count = 0;
 
-    $db_users_search_recent = db_connect();
-
-    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
-                                                        'user_array' => array());
+    $usersearch = addslashes($usersearch);
 
     $forum_fid = $table_data['FID'];
 
@@ -1040,10 +1025,10 @@ function user_get_relationships($uid, $offset = 0)
     $user_get_peers_array = array();
     $user_get_peers_count = 0;
 
-    if (!$table_data = get_table_prefix()) return array('user_count' => 0,
-                                                        'user_array' => array());
+    if (!is_numeric($uid)) return false;
+    if (!is_numeric($offset)) return false;
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = USER.UID) ";
@@ -1119,12 +1104,14 @@ function user_clear_word_filter()
 
 function user_add_word_filter($match, $replace, $filter_option)
 {
-    $match = addslashes($match);
-    $replace = addslashes($replace);
-
     $db_user_save_word_filter = db_connect();
 
+    if (!is_numeric($filter_option)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
+
+    $match = addslashes($match);
+    $replace = addslashes($replace);
 
     $uid = bh_session_get_value('UID');
 
@@ -1136,9 +1123,9 @@ function user_add_word_filter($match, $replace, $filter_option)
 
 function user_delete_word_filter($id)
 {
-    if (!is_numeric($id)) return false;
-
     $db_user_delete_word_filter = db_connect();
+
+    if (!is_numeric($id)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1152,9 +1139,9 @@ function user_delete_word_filter($id)
 
 function user_is_active($uid)
 {
-    if (!is_numeric($uid)) return false;
-
     $db_user_is_active = db_connect();
+
+    if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

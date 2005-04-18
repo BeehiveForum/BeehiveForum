@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.275 2005-04-17 17:15:18 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.276 2005-04-18 17:31:43 decoyduck Exp $ */
 
 // International English language file
 
@@ -639,12 +639,12 @@ $lang['enablewikiintegration'] = "Enable WikiWiki Integration";
 $lang['enablewikiquicklinks'] = "Enable WikiWiki Quick Links";
 $lang['wikiintegrationuri'] = "WikiWiki Location";
 $lang['maximumpostlength'] = "Maximum Post Length";
-$lang['minimumpostfrequency'] = "Minimum Post Frequency";
+$lang['postfrequency'] = "Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['searchoptions'] = "Search Options";
 $lang['minsearchwordlength'] = "Min search word length";
-$lang['minsearchfrequency'] = "Min search frequency";
+$lang['searchfrequency'] = "Search Frequency";
 $lang['sessions'] = "Sessions";
 $lang['sessioncutoffseconds'] = "Session cut off (seconds)";
 $lang['activesessioncutoffseconds'] = "Active session cut off (seconds)";
@@ -710,8 +710,8 @@ $lang['forum_settings_help_35'] = "<b>Closed</b> prevents access for all users, 
 $lang['forum_settings_help_36'] = "<b>Restricted</b> allows to set a list of users who are allowed access to your forum.";
 $lang['forum_settings_help_37'] = "<b>Password Protected</b> allows you to set a password to give out to users so they can access your forum.";
 $lang['forum_settings_help_38'] = "When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
-$lang['forum_settings_help_39'] = "<b>Min search frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";
-$lang['forum_settings_help_40'] = "<b>Minimum Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction.";
+$lang['forum_settings_help_39'] = "<b>Search Frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";
+$lang['forum_settings_help_40'] = "<b>Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction.";
 $lang['forum_settings_help_41'] = "The above options change the default values for the user registration form. Where applicable other settings will use the forum's own default settings.";
 $lang['forum_settings_help_42'] = "<b>Prevent use of duplicate email addresses</b> forces Beehive to check the user accounts against the email address the user is registering with and prompts them to use another if it is already in use.";
 $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enabled will send an email to each new user with a link that can be used to confirm their email address. Until they confirm their email address they will not be able to post unless their user permissions are changed manually by an admin.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.71 2005-04-13 19:14:15 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.72 2005-04-18 17:31:27 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -526,7 +526,7 @@ echo "                        <td width=\"220\">{$lang['maximumpostlength']}:</t
 echo "                        <td>", form_input_text("maximum_post_length", (isset($current_forum_settings['maximum_post_length']) && is_numeric($current_forum_settings['maximum_post_length']) ? $current_forum_settings['maximum_post_length'] : '6226'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['minimumpostfrequency']}:</td>\n";
+echo "                        <td width=\"220\">{$lang['postfrequency']}:</td>\n";
 echo "                        <td>", form_input_text("minimum_post_frequency", (isset($current_forum_settings['minimum_post_frequency']) && is_numeric($current_forum_settings['minimum_post_frequency']) ? $current_forum_settings['minimum_post_frequency'] : '0'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

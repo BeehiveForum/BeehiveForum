@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.70 2005-04-12 23:34:52 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.71 2005-04-18 17:31:47 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -32,7 +32,7 @@ function thread_get_title($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!is_numeric($tid)) return "The Unknown Thread";
+    if (!is_numeric($tid)) return false;
 
     $sql = "SELECT TITLE FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
     $result = db_query($sql, $db_thread_get_title);
@@ -269,14 +269,19 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
     if (!is_numeric($tid)) return false;
 
     if ($sticky) {
+
         $sql  = "UPDATE {$table_data['PREFIX']}THREAD SET STICKY = 'Y' ";
+
         if ($sticky_until) {
             $sql .= ", STICKY_UNTIL = FROM_UNIXTIME($sticky_until) ";
-        } else {
+        }else {
             $sql .= ", STICKY_UNTIL = NULL ";
         }
+
         $sql .= "WHERE TID = $tid";
-    } else {
+
+    }else {
+
         $sql = "UPDATE {$table_data['PREFIX']}THREAD SET STICKY = 'N' WHERE TID = $tid";
     }
 
@@ -293,7 +298,7 @@ function thread_set_closed($tid, $closed = true)
 
     if ($closed) {
         $sql = "UPDATE {$table_data['PREFIX']}THREAD SET CLOSED = NOW() WHERE TID = $tid";
-    } else {
+    }else {
         $sql = "UPDATE {$table_data['PREFIX']}THREAD SET CLOSED = NULL WHERE TID = $tid";
     }
 
@@ -310,7 +315,7 @@ function thread_admin_lock($tid, $locked = true)
 
     if ($locked) {
         $sql = "UPDATE {$table_data['PREFIX']}THREAD SET ADMIN_LOCK = NOW() WHERE TID = $tid";
-    } else {
+    }else {
         $sql = "UPDATE {$table_data['PREFIX']}THREAD SET ADMIN_LOCK = NULL WHERE TID = $tid";
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.52 2005-04-11 22:35:42 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.53 2005-04-18 17:31:47 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -304,6 +304,9 @@ function get_newest_user()
 function get_post_tallys($start_stamp, $end_stamp)
 {
     $db_get_month_post_tallys = db_connect();
+
+    if (!is_numeric($start_stamp)) return false;
+    if (!is_numeric($end_stamp)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

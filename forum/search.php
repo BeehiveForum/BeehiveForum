@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.112 2005-04-15 18:23:02 decoyduck Exp $ */
+/* $Id: search.php,v 1.113 2005-04-19 17:35:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -173,7 +173,7 @@ if (isset($_POST['sstart']) && is_numeric($_POST['sstart'])) {
     $search_arguments['sstart'] = $_GET['sstart'];
 }
 
-if (!isset($search_arguments)) {
+if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
 
     echo "<h1>{$lang['searchmessages']}</h1>\n";
     echo "<br />\n";

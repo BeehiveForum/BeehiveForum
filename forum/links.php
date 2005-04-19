@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.73 2005-03-26 18:16:43 decoyduck Exp $ */
+/* $Id: links.php,v 1.74 2005-04-19 17:35:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -153,10 +153,14 @@ if (isset($_GET['viewmode']) && is_numeric($_GET['viewmode']) && $_GET['viewmode
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $start = floor($_GET['page'] - 1) * 20;
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 }else {
-    $start = 0;
+    $page = 1;
 }
+
+$start = floor($page - 1) * 10;
+
+if ($start < 0) $start = 0;
 
 html_draw_top("robots=noindex,nofollow");
 
@@ -227,7 +231,7 @@ if ($viewmode == 0) {
 }else {
 
     echo "<h2>{$lang['listview']}</h2>\n";
-    echo "<p>{$lang['listviewcannotaddfolders']}</p>\n";
+    echo "<p><span class=\"threadtime\">{$lang['listviewcannotaddfolders']}</span></p>\n";
 }
 
 if (isset($_GET['sort_by'])) {
@@ -279,35 +283,42 @@ if ($viewmode == 0) {
 }
 
 echo "<div align=\"center\">\n";
-echo "<table width=\"95%\">\n";
-echo "  <tr>\n";
+
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"95%\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table width=\"100%\">\n";
+echo "                <tr>\n";
 
 if ($sort_by == "TITLE" && $sort_dir == "ASC") {
-    echo "    <td class=\"posthead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>&nbsp;</td>\n";
 }else {
-    echo "    <td class=\"posthead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
-    echo "    <td class=\"posthead\" width=\"250\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" width=\"250\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>&nbsp;</td>\n";
 }else {
-    echo "    <td class=\"posthead\" width=\"250\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" width=\"250\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
-    echo "    <td class=\"posthead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>&nbsp;</td>\n";
 }else {
-    echo "    <td class=\"posthead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
-    echo "    <td class=\"posthead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>&nbsp;</td>";
+    echo "                  <td class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>&nbsp;</td>";
 }else {
-    echo "    <td class=\"posthead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$start&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>&nbsp;</td>";
+    echo "                  <td class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>&nbsp;</td>";
 }
 
-echo "    <td class=\"posthead\">{$lang['commentsslashvote']}</td>\n";
-echo "  </tr>\n";
+echo "                  <td class=\"subhead\">{$lang['commentsslashvote']}</td>\n";
+echo "                </tr>\n";
 
 if (sizeof($links['links_array']) > 0 ) {
 
@@ -315,45 +326,59 @@ if (sizeof($links['links_array']) > 0 ) {
 
         if ($link['VISIBLE'] == "N") {
 
-            echo "  <tr class=\"link_hidden\">\n";
-            echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links.php?webtag=$webtag&amp;lid=$key&amp;action=go\" target=\"_blank\" class=\"link_hidden\">", _stripslashes($link['TITLE']), "</a></td>\n";
+            echo "                <tr class=\"link_hidden\">\n";
+            echo "                  <td class=\"postbody\" valign=\"top\"><a href=\"links.php?webtag=$webtag&amp;lid=$key&amp;action=go\" target=\"_blank\" class=\"link_hidden\">", _stripslashes($link['TITLE']), "</a></td>\n";
 
         }else {
 
-            echo "  <tr>\n";
-            echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links.php?webtag=$webtag&amp;lid=$key&amp;action=go\" target=\"_blank\">", _stripslashes($link['TITLE']), "</a></td>\n";
+            echo "                <tr>\n";
+            echo "                  <td class=\"postbody\" valign=\"top\"><a href=\"links.php?webtag=$webtag&amp;lid=$key&amp;action=go\" target=\"_blank\">", _stripslashes($link['TITLE']), "</a></td>\n";
         }
 
-        echo "    <td class=\"postbody\" width=\"50%\" valign=\"top\">", _stripslashes($link['DESCRIPTION']), "</td>\n";
-        echo "    <td class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
+        echo "                  <td class=\"postbody\" width=\"50%\" valign=\"top\">", _stripslashes($link['DESCRIPTION']), "</td>\n";
+        echo "                  <td class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
 
         if (isset($link['RATING']) && $link['RATING'] != "") {
-            echo "    <td class=\"postbody\" valign=\"top\">", round($link['RATING'], 1), "</td>\n";
+            echo "                  <td class=\"postbody\" valign=\"top\">", round($link['RATING'], 1), "</td>\n";
         }else {
-            echo "    <td class=\"postbody\" valign=\"top\">&nbsp;</td>\n";
+            echo "                  <td class=\"postbody\" valign=\"top\">&nbsp;</td>\n";
         }
 
-        echo "    <td class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&fid=$fid\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
-        echo "  </tr>\n";
+        echo "                  <td class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&fid=$fid\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
+        echo "                </tr>\n";
     }
 
 }else {
 
-    echo "  <tr>\n";
-    echo "    <td colspan=\"5\" class=\"postbody\">{$lang['nolinksinfolder']}</td>\n";
-    echo "  </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"5\" class=\"postbody\">{$lang['nolinksinfolder']}</td>\n";
+    echo "                </tr>\n";
 }
 
-echo "  <tr>\n";
-echo "    <td class=\"postbody\">&nbsp;</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"5\"><a href=\"links_add.php?webtag=$webtag&amp;mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td class=\"postbody\" colspan=\"5\" align=\"center\">", page_links(get_request_uri(), $start, $links['links_count'], 20), "</td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"postbody\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td width=\"25%\"><a href=\"links_add.php?webtag=$webtag&amp;mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
+echo "            <td width=\"50%\" align=\"center\">", page_links(get_request_uri(), $start, $links['links_count'], 20), "</td>\n";
+echo "            <td width=\"25%\">&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "</div>\n";
 
 html_draw_bottom();

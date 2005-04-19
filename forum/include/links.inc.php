@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.48 2005-03-15 21:30:03 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.49 2005-04-19 17:35:46 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -81,12 +81,12 @@ function links_folders_get($invisible = false)
     if ($invisible) {
 
         $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
-        $sql.= "ORDER BY FID";
+        $sql.= "ORDER BY NAME ASC";
 
     }else {
 
         $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
-        $sql.= "WHERE VISIBLE = 'Y' ORDER BY FID";
+        $sql.= "WHERE VISIBLE = 'Y' ORDER BY NAME ASC";
     }
 
     $folders = false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.276 2005-04-18 17:31:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.277 2005-04-19 23:34:59 decoyduck Exp $ */
 
 // International English language file
 
@@ -198,6 +198,7 @@ $lang['sortasc'] = "Sort Asc";
 $lang['sortdesc'] = "Sort Desc";
 $lang['usage'] = "Usage";
 $lang['show'] = "Show";
+$lang['prefix'] = "Prefix";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -1644,5 +1645,12 @@ $lang['postapprovalrequired'] = "Post approval required";
 // text_captcha.inc.php ------------------------------------------------
 
 $lang['textcaptchanofonts'] = "No fonts available for text captcha. Please upload some truetype fonts into the fonts sub-directory on your server";
+
+// RSS feeds gubbins
+
+$lang['rssfeeds'] = "RSS Feeds";
+$lang['feedlocation'] = "Feed Location";
+$lang['threadprefix'] = "Thread Prefix";
+$lang['updatefrequency'] = "Update Frequency";
 
 ?>

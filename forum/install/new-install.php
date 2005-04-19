@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.57 2005-04-15 12:34:31 rendle Exp $ */
+/* $Id: new-install.php,v 1.58 2005-04-19 23:34:59 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -659,6 +659,37 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+
+$sql = "CREATE TABLE {$forum_webtag}_RSS_FEEDS (";
+$sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  NAME VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  URL VARCHAR(255) DEFAULT NULL,";
+$sql.= "  PREFIX VARCHAR(16) DEFAULT NULL,";
+$sql.= "  FREQUENCY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  LAST_RUN DATETIME DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (RSSID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE {$forum_webtag}_RSS_HISTORY (";
+$sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  LINK VARCHAR(255) DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (RSSID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE {$forum_webtag}_STATS (";
 $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  MOST_USERS_DATE DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
@@ -843,7 +874,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $forum_settings = array('1' => array('forum_name'             => 'A Beehive Forum',
-                                     'forum_email'            => 'admin@abeehiveforum.net',
+                                     'forum_email'            => 'adminabeehiveforum.net',
                                      'forum_desc'             => 'A Beehive Forum',
                                      'forum_keywords'         => 'BeehiveForums, Beehive, Forum, Community',
                                      'default_style'          => 'default',
@@ -1087,7 +1118,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
-    if ($fp = @fopen('./install/english.dic', 'r')) {
+    if ($fp = fopen('./install/english.dic', 'r')) {
 
         while (!feof($fp)) {
 

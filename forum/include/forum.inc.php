@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.134 2005-04-15 18:53:56 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.135 2005-04-19 23:34:58 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -484,8 +484,9 @@ function forum_create($webtag, $forum_name, $access)
                              'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
                              'POLL', 'POLL_VOTES', 'POST',
                              'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
-                             'STATS', 'THREAD', 'USER_FOLDER',
-                             'USER_PEER', 'USER_POLL_VOTES', 'USER_PREFS',
+                             'RSS_FEEDS', 'RSS_HISTORY',  'STATS',
+                             'THREAD', 'USER_FOLDER', 'USER_PEER',
+                             'USER_POLL_VOTES', 'USER_PREFS',
                              'USER_PROFILE', 'USER_SIG', 'USER_THREAD');
 
         // Check to see if any of the Beehive tables already exist.
@@ -762,6 +763,36 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
+
+        $sql = "CREATE TABLE {$webtag}_RSS_FEEDS (";
+        $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  NAME VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  URL VARCHAR(255) DEFAULT NULL,";
+        $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL,";
+        $sql.= "  FREQUENCY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  LAST_RUN DATETIME DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (RSSID)";
+        $sql.= ") TYPE=MYISAM";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            forum_delete_tables($webtag);
+            return false;
+        }
+
+        $sql = "CREATE TABLE {$webtag}_RSS_HISTORY (";
+        $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  LINK VARCHAR(255) DEFAULT NULL";
+        $sql.= "  PRIMARY KEY  (RSSID)";
+        $sql.= ") TYPE=MYISAM";
+
+        if (!$result = db_query($sql, $db_install)) {
 
             forum_delete_tables($webtag);
             return false;

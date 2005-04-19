@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.120 2005-04-18 17:31:45 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.121 2005-04-19 17:35:47 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -45,6 +45,8 @@ function search_execute($argarray, &$urlquery, &$error)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     // Ensure the bare minimum of variables are set
 
     if (!isset($argarray['method']) || !is_numeric($argarray['method'])) $argarray['method'] = 1;
@@ -64,12 +66,6 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $uid = bh_session_get_value('UID');
 
-    $forum_settings = forum_get_settings();
-
-    if ($argarray['forums'] == 0 && $forum_fids = forum_get_all_fids()) {
-        $argarray['forums'] = implode(",", $forum_fids);
-    }
-
     // Base query - the same for all seraches
 
     $select_sql = "SELECT SEARCH_POSTS.FID, SEARCH_POSTS.TID, SEARCH_POSTS.PID, ";
@@ -87,7 +83,7 @@ function search_execute($argarray, &$urlquery, &$error)
     // Modified depending on the joins by the code
     // below.
 
-    $where_sql = "WHERE SEARCH_POSTS.FORUM IN ({$argarray['forums']}) ";
+    $where_sql = "WHERE SEARCH_POSTS.FORUM = $forum_fid ";
     $where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";

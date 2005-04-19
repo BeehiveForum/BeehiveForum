@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.58 2005-04-19 23:34:59 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.59 2005-04-19 23:45:23 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -681,7 +681,7 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "CREATE TABLE {$forum_webtag}_RSS_HISTORY (";
 $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LINK VARCHAR(255) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (RSSID)";
+$sql.= "  KEY RSSID (RSSID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

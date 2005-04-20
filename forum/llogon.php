@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.44 2005-03-28 19:43:31 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.45 2005-04-20 18:36:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,32 +111,13 @@ if (isset($_POST['submit'])) {
                 bh_setcookie("bh_light_remember_password", $_POST['password'], time() + YEAR_IN_SECONDS);
             }
 
-            if (!strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
-
-                if (isset($final_uri)) {
-                    header_redirect($final_uri);
-                }else {
-                    header_redirect("./lthread_list.php?webtag=$webtag");
-                }
-
-            }else { // IIS bug prevents redirect at same time as setting cookies.
-
-                light_html_draw_top();
-
-                echo "<p>{$lang['loggedinsuccessfully']}</p>";
-
-                if (isset($final_uri)) {
-                    echo form_quick_button($final_uri, $lang['continue'], false, false, "_top");
-                }else {
-                    echo form_quick_button("./lthread_list.php", $lang['continue'], false, false, "_top");
-                }
-
-                light_html_draw_bottom();
-                exit;
-
+            if (isset($final_uri)) {
+                header_redirect($final_uri, $lang['loggedinsuccessfully']);
+            }else {
+                header_redirect("./lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
             }
 
-        }else if ($luid == -2) { // User is banned - everybody hide
+        }else if ($luid == -2) {
 
             if (!strstr(php_sapi_name(), 'cgi')) {
                 header("HTTP/1.0 500 Internal Server Error");

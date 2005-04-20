@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.179 2005-04-19 08:43:16 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.180 2005-04-20 18:36:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -233,9 +233,9 @@ function bh_session_check($show_session_fail = true)
             $forum_fid = 0;
         }
 
-        $sql = "SELECT * FROM SESSIONS WHERE UID = '0' ";
-        $sql.= "AND IPADDRESS = '$ipaddress'";
+        $user_hash = md5($ipaddress);
 
+        $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' ";
         $result = db_query($sql, $db_bh_session_check);
 
         if (db_num_rows($result) > 0) {
@@ -245,8 +245,8 @@ function bh_session_check($show_session_fail = true)
             if (($current_time - $user_sess['TIME']) > 300) {
 
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
-                $sql.= "FID = '$forum_fid' WHERE UID = 0 ";
-                $sql.= "AND IPADDRESS = '$ipaddress'";
+                $sql.= "FID = '$forum_fid', IPADDRESS = '$ipaddress' ";
+                $sql.= "WHERE HASH = '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
 
@@ -259,7 +259,7 @@ function bh_session_check($show_session_fail = true)
         }else {
 
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-            $sql.= "VALUES ('', 0, '$forum_fid', '$ipaddress', NOW())";
+            $sql.= "VALUES ('$user_hash', 0, '$forum_fid', '$ipaddress', NOW())";
 
             $result = db_query($sql, $db_bh_session_check);
 
@@ -394,43 +394,18 @@ function bh_session_init($uid, $update_visitor_log = true)
         $forum_fid = 0;
     }
 
-    // Check to see if the user alredy hash a session
-    // and reuse it if we can.
+    $user_hash = md5($ipaddress);
 
-    $sql = "SELECT * FROM SESSIONS WHERE UID = '$uid' ";
-    $sql.= "AND IPADDRESS = '$ipaddress'";
-
+    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
     $result = db_query($sql, $db_bh_session_init);
 
-    if (db_num_rows($result) > 0) {
+    $user_hash = md5(uniqid(rand()));
 
-        $user_sess = db_fetch_array($result);
+    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
+    $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', ";
+    $sql.= "'$ipaddress', NOW())";
 
-        if (isset($user_sess['HASH']) && is_md5($user_sess['HASH'])) {
-
-            $user_hash = $user_sess['HASH'];
-
-        }else {
-
-            $user_hash = md5(uniqid($ipaddress));
-
-            $sql = "UPDATE SESSIONS SET HASH = '$user_hash' ";
-            $sql.= "WHERE UID = '$uid' AND IPADDRESS = '$ipaddress' ";
-            $sql.= "AND FID = '$forum_fid'";
-
-            $result = db_query($sql, $db_bh_session_init);
-        }
-
-    }else {
-
-        $user_hash = md5(uniqid($ipaddress));
-
-        $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-        $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', ";
-        $sql.= "'$ipaddress', NOW())";
-
-        $result = db_query($sql, $db_bh_session_init);
-    }
+    $result = db_query($sql, $db_bh_session_init);
 
     if ($update_visitor_log) bh_update_visitor_log($uid);
 
@@ -441,7 +416,20 @@ function bh_session_init($uid, $update_visitor_log = true)
 
 function bh_session_end()
 {
+    $db_bh_session_end = db_connect();
+
+    $ipaddress = get_ip_address();
+
     // Session cookie
+
+    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
+        $user_hash = $_COOKIE['bh_sess_hash'];
+    }else {
+        $user_hash = md5($ipaddress);
+    }
+
+    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
+    $result = db_query($sql, $db_bh_session_end);
 
     bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
 

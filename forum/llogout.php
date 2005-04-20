@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.30 2005-03-28 19:43:32 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.31 2005-04-20 18:36:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -84,21 +84,7 @@ if (bh_session_get_value('UID') == 0) {
 if (isset($_POST['submit'])) {
 
     bh_session_end();
-
-    if (!strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) { // Not IIS
-
-        header_redirect("./llogon.php");
-
-    }else { // IIS bug prevents redirect at same time as setting cookies.
-
-        light_html_draw_top();
-
-        echo "<p>{$lang['youhaveloggedout']}</p>";
-        echo form_quick_button("./llogon.php", $lang['ok']);
-
-        light_html_draw_bottom();
-        exit;
-    }
+    header_redirect("./llogon.php", $lang['youhaveloggedout']);
 }
 
 light_html_draw_top();

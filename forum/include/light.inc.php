@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.83 2005-04-11 18:32:15 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.84 2005-04-20 18:36:40 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -46,7 +46,7 @@ function light_html_draw_top ($title = false)
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title {$lang['lightmode']}</title>\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\"/>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
 
     $stylesheet = html_get_style_sheet();
     echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";

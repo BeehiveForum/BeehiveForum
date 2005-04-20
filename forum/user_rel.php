@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.69 2005-04-08 17:38:39 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.70 2005-04-20 18:36:40 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -159,9 +159,7 @@ if (isset($_POST['submit'])) {
 
         bh_session_init($uid, false);
 
-        // IIS bug prevents redirect at same time as setting cookies.
-
-        header_redirect_cookie("./messages.php?webtag=$webtag&msg=$msg");
+        header_redirect("./messages.php?webtag=$webtag&msg=$msg", $lang['preferencesupdated']);
     }
 }
 

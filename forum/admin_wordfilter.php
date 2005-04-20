@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.65 2005-04-13 19:50:19 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.66 2005-04-20 18:36:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -141,30 +141,7 @@ if (isset($_POST['submit'])) {
     $uid = bh_session_get_value('UID');
     admin_add_log_entry(EDIT_WORD_FILTER);
 
-    if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
-
-        header_redirect("./admin_wordfilter.php?webtag=$webtag&updated=true");
-
-    }else {
-
-        html_draw_top();
-
-        // Try a Javascript redirect
-        echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-        echo "<!--\n";
-        echo "document.location.href = './admin_wordfilter.php?webtag=$webtag&amp;updated=true';\n";
-        echo "//-->\n";
-        echo "</script>";
-
-        // If they're still here, Javascript's not working. Give up, give a link.
-        echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-        echo "<p>{$lang['forumsettingsupdated']}</p>";
-
-        echo form_quick_button("./admin_wordfilter.php", $lang['continue'], false, false, "_top");
-
-        html_draw_bottom();
-        exit;
-    }
+    header_redirect("./admin_wordfilter.php?webtag=$webtag&updated=true", $lang['wordfilterupdated']);
 
 }elseif (isset($_POST['delete'])) {
 

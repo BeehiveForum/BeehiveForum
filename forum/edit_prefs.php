@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.45 2005-04-18 17:31:28 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.46 2005-04-20 18:36:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -214,9 +214,7 @@ if (isset($_POST['submit'])) {
 
         bh_session_init($uid, false);
 
-        // IIS bug prevents redirect at same time as setting cookies.
-        header_redirect_cookie("./edit_prefs.php?webtag=$webtag&updated=true");
-
+        header_redirect("./edit_prefs.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
     }
 }
 

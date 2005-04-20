@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.8 2005-03-26 18:16:43 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.9 2005-04-20 18:36:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -153,7 +153,7 @@ if (isset($hash) && is_md5($hash)) {
 
             // Are we viewing or downloading the attachment?
 
-            if (isset($_GET['download']) || strstr(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+            if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
                 header("Content-Type: application/x-ms-download", true);
             }else {
                 header("Content-Type: ". $attachment_details['MIMETYPE'], true);

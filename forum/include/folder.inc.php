@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.96 2005-03-21 15:36:06 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.97 2005-04-20 22:10:21 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -85,6 +85,44 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
                         $folders['TITLES'][] = $row['TITLE'];
                     }
                 }
+            }
+        }
+
+        if (sizeof($folders['FIDS']) > 0 && sizeof($folders['TITLES']) > 0) {
+
+            return form_dropdown_array($field_name.$suffix, $folders['FIDS'], $folders['TITLES'], $default_fid, $custom_html, $class);
+        }
+    }
+
+    return false;
+}
+
+function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="", $custom_html = "", $class="bhselect")
+{
+    $db_folder_draw_dropdown = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    if (!$table_data = get_table_prefix()) return "";
+
+    $forum_fid = $table_data['FID'];
+
+    $folders['FIDS'] = array();
+    $folders['TITLES'] = array();
+
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+
+    $result = db_query($sql, $db_folder_draw_dropdown);
+
+    if (db_num_rows($result) > 0) {
+
+        while($row = db_fetch_array($result)) {
+
+            if (!in_array($row['FID'], $folders['FIDS'])) {
+
+                $folders['FIDS'][] = $row['FID'];
+                $folders['TITLES'][] = $row['TITLE'];
             }
         }
 

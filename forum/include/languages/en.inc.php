@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.278 2005-04-20 18:36:41 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.279 2005-04-20 19:03:37 decoyduck Exp $ */
 
 // International English language file
 
@@ -1654,5 +1654,6 @@ $lang['rssfeeds'] = "RSS Feeds";
 $lang['feedlocation'] = "Feed Location";
 $lang['threadprefix'] = "Thread Prefix";
 $lang['updatefrequency'] = "Update Frequency";
+$lang['rssfeedhelp_1'] = "Here you can setup some RSS feeds for automatic propgation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you which to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work."
 
 ?>

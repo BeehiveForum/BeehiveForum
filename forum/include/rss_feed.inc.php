@@ -298,4 +298,16 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
     return db_query($sql, $db_rss_feed_update);
 }
 
+function rss_remove_feed($rssid)
+{
+    $db_rss_remove_feed = db_connect();
+
+    if (!is_numeric($rssid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "DELETE FROM {$table_data['PREFIX']}RSS_FEEDS WHERE RSSID = $rssid";
+    return db_query($sql, $db_rss_remove_feed);
+}
+
 ?>

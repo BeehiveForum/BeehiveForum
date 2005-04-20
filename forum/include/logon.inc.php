@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.25 2005-04-07 19:22:14 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.26 2005-04-20 18:42:35 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -198,7 +198,7 @@ function draw_logon_form($logon_main)
 
     if ($logon_main) {
 
-        echo "  <p>&nbsp;</p>\n";
+        echo "  <br />\n";
         echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
 
     }else {

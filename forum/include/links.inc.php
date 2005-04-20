@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.49 2005-04-19 17:35:46 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.50 2005-04-20 23:27:33 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -78,32 +78,43 @@ function links_folders_get($invisible = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if ($invisible) {
-
-        $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
-        $sql.= "ORDER BY NAME ASC";
-
-    }else {
-
-        $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
-        $sql.= "WHERE VISIBLE = 'Y' ORDER BY NAME ASC";
-    }
-
-    $folders = false;
+    $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
+    $sql.= "WHERE PARENT_FID IS NULL";
 
     $result = db_query($sql, $db_links_folders_get);
 
     if (db_num_rows($result) > 0) {
 
-        $folders = array();
+        $row = db_fetch_array($result);
 
-        while ($row = db_fetch_array($result)) {
+        $top_level = $row['FID'];
+        $folders[$row['FID']] =  $row;
 
-            $folders[$row['FID']] =  $row;
+        if ($invisible) {
+
+            $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
+            $sql.= "WHERE FID NOT IN ($top_level) ORDER BY NAME";
+
+        }else {
+
+            $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM {$table_data['PREFIX']}LINKS_FOLDERS ";
+            $sql.= "WHERE VISIBLE = 'Y' AND FID NOT IN ($top_level) ORDER BY FID";
         }
+
+        $result = db_query($sql, $db_links_folders_get);
+
+        if (db_num_rows($result) > 0) {
+
+            while ($row = db_fetch_array($result)) {
+
+                $folders[$row['FID']] =  $row;
+            }
+        }
+
+        return $folders;
     }
 
-    return $folders;
+    return false;
 }
 
 function links_add($uri, $title, $description, $fid, $uid, $visible = true)

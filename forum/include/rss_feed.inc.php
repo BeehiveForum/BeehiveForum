@@ -213,9 +213,10 @@ function rss_check_feeds()
 
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
-                    $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], "[{$rss_feed['PREFIX']}] {$rss_item->title}");
-
+                    $rss_title   = _htmlentities_decode($rss_item->title);
                     $rss_content = _htmlentities_decode($rss_item->description);
+
+                    $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], "[{$rss_feed['PREFIX']}] {$rss_title}");
 
                     $content = fix_html("<quote source=\"{$rss_feed['NAME']}\" url=\"{$rss_item->link}\">$rss_content</quote>");
 

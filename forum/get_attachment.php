@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.9 2005-04-20 18:36:38 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.10 2005-04-20 19:03:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -176,7 +176,7 @@ if (isset($hash) && is_md5($hash)) {
                 }
 
                 // Last Modified Header for cache control
-                $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT";
+                $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
 
                 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
                     $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);

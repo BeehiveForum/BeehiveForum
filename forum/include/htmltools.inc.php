@@ -69,7 +69,7 @@ function TinyMCE() {
     $str.= "    theme_advanced_buttons2 : \"undo,redo,separator,cleanup,help,code,separator,visualaid,separator,tablecontrols,separator,search,replace,bhspellcheck\",\n";
     $str.= "    theme_advanced_buttons3 : \"removeformat,forecolor,backcolor,separator,sub,sup,separator,bullist,numlist,separator,outdent,indent,separator,link,unlink,separator,image,separator,charmap,hr,separator,bhquote,bhcode,bhspoiler,separator,bhnoemots\",\n";
 
-    $str.= "    extended_valid_elements : \"marquee,span[class|align|title],div[class|align|id]\",\n";
+    $str.= "    extended_valid_elements : \"marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]\",\n";
 
     $str.= "    invalid_elements : \"!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp\"\n";
 

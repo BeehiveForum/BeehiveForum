@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.136 2005-04-19 23:45:23 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.137 2005-04-20 22:23:16 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -780,7 +780,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (RSSID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
             return false;
@@ -792,7 +792,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY RSSID (RSSID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
             return false;

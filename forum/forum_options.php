@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.79 2005-04-15 18:53:56 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.80 2005-04-20 18:36:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -410,9 +410,7 @@ if (isset($_POST['submit'])) {
 
     bh_session_init($uid, false);
 
-    // IIS bug prevents redirect at same time as setting cookies.
-
-    header_redirect_cookie("./forum_options.php?webtag=$webtag&updated=true");
+    header_redirect("./forum_options.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
 }
 
 if (!isset($uid)) $uid = bh_session_get_value('UID');

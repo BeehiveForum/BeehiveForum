@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.150 2005-04-10 14:36:20 decoyduck Exp $ */
+/* $Id: logon.php,v 1.151 2005-04-20 18:36:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,93 +132,30 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
     bh_session_end();
 
-    if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
+    bh_setcookie("bh_logon", "1", time() + YEAR_IN_SECONDS);
 
-        if (isset($final_uri)) {
-            $final_uri = rawurlencode($final_uri);
-            header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri");
-        }else {
-            header_redirect("./index.php?webtag=$webtag");
-        }
+    if (isset($final_uri)) {
+
+        $final_uri = rawurlencode($final_uri);
+        header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri", $lang['cookiessuccessfullydeleted']);
 
     }else {
 
-        html_draw_top();
-
-        // Try a Javascript redirect
-        echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-        echo "<!--\n";
-
-        if (isset($final_uri)) {
-            $final_uri = rawurlencode($final_uri);
-            echo "document.location.href = './index.php?webtag=$webtag&amp;final_uri=$final_uri';\n";
-        }else {
-            echo "document.location.href = './index.php?webtag=$webtag';\n";
-        }
-
-        echo "//-->\n";
-        echo "</script>";
-
-        // If they're still here, Javascript's not working. Give up, give a link.
-        echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-        echo "<p>{$lang['cookiessuccessfullydeleted']}</p>";
-
-        if (isset($final_uri)) {
-            echo form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
-        }else {
-            echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
-        }
-
-        html_draw_bottom();
-        exit;
+        header_redirect("./index.php?webtag=$webtag", $lang['cookiessuccessfullydeleted']);
     }
 
-}elseif (  (isset($_POST['user_logon']) && isset($_POST['user_password']) && (isset($_POST['user_passhash']) || isset($_GET['other']))) || isset($_POST['guest_logon'])) {
+}elseif ((isset($_POST['user_logon']) && isset($_POST['user_password']) && (isset($_POST['user_passhash']) || isset($_GET['other']))) || isset($_POST['guest_logon'])) {
 
     if (perform_logon(true)) {
 
-        // IIS bug prevents redirect at same time as setting cookies.
+        if (isset($final_uri)) {
 
-        if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], "Microsoft-IIS")) {
-
-            if (isset($final_uri)) {
-                $final_uri = rawurlencode($final_uri);
-                header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri");
-            }else {
-                header_redirect("./index.php?webtag=$webtag");
-            }
+            $final_uri = rawurlencode($final_uri);
+            header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri", $lang['loggedinsuccessfully']);
 
         }else {
 
-            html_draw_top();
-
-            // Try a Javascript redirect
-            echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-            echo "<!--\n";
-
-            if (isset($final_uri)) {
-                $final_uri = rawurlencode($final_uri);
-                echo "document.location.href = './index.php?webtag=$webtag&amp;final_uri=$final_uri';\n";
-            }else {
-                echo "document.location.href = './index.php?webtag=$webtag';\n";
-            }
-
-            echo "//-->\n";
-            echo "</script>";
-
-            // If they're still here, Javascript's not working. Give up, give a link.
-            echo "<div align=\"center\">\n";
-            echo "<p>{$lang['loggedinsuccessfully']}</p>\n";
-
-            if (isset($final_uri)) {
-                echo form_quick_button("./index.php", $lang['continue'], "final_uri", rawurlencode($final_uri), "_top");
-            }else {
-               echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
-            }
-
-            echo "</div>\n";
-            html_draw_bottom();
-            exit;
+            header_redirect("./index.php?webtag=$webtag", $lang['loggedinsuccessfully']);
         }
 
     }else {

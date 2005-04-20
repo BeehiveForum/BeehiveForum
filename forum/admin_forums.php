@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.34 2005-03-28 23:45:07 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.35 2005-04-20 18:36:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -231,9 +231,9 @@ if (sizeof($forums_array) > 0) {
         echo "                  <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-1, 0, 1, 2), array($lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), $forum['ACCESS_LEVEL']), "</td>\n";
 
         if (isset($forum['DEFAULT_FORUM']) && $forum['DEFAULT_FORUM'] == 1) {
-            echo "                  <td align=\"left\"><a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\"/></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\"/></td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\" /></td>\n";
         }else {
-            echo "                  <td align=\"left\"><a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\"/></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default={$forum['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\"/></td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default={$forum['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\" /></td>\n";
         }
 
         echo "                </tr>\n";

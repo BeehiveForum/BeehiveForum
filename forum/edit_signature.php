@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.57 2005-04-11 18:32:14 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.58 2005-04-20 18:36:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -153,32 +153,7 @@ if (isset($_POST['submit'])) {
 
         bh_session_init(bh_session_get_value('UID'), false);
 
-        // IIS bug prevents redirect at same time as setting cookies.
-
-        if (isset($_SERVER['SERVER_SOFTWARE']) && !strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS')) {
-
-            header_redirect("./edit_signature.php?webtag=$webtag&updated=true&siguid=$uid");
-
-        }else {
-
-            html_draw_top();
-
-            // Try a Javascript redirect
-            echo "<script language=\"javascript\" type=\"text/javascript\">\n";
-            echo "<!--\n";
-            echo "document.location.href = './edit_signature.php?webtag=$webtag&amp;updated=true&siguid=$uid';\n";
-            echo "//-->\n";
-            echo "</script>";
-
-            // If they're still here, Javascript's not working. Give up, give a link.
-            echo "<div align=\"center\"><p>&nbsp;</p><p>&nbsp;</p>";
-            echo "<p>{$lang['preferencesupdated']}</p>";
-
-            echo form_quick_button("./edit_signature.php&siguid=$uid", $lang['continue'], false, false, "_top");
-
-            html_draw_bottom();
-            exit;
-        }
+        header_redirect("./edit_signature.php?webtag=$webtag&updated=true&siguid=$uid", $lang['signatureupdated']);
     }
 }
 
@@ -243,11 +218,8 @@ echo "<h1>{$lang['editsignature']}</h1>\n";
 if (!empty($error_html)) {
     echo $error_html;
 }else if (isset($_GET['updated'])) {
-    echo "<h2>{$lang['preferencesupdated']}</h2>\n";
+    echo "<h2>{$lang['signatureupdated']}</h2>\n";
 }
-
-
-
 
 if (isset($t_sig_html)) {
     $sig_html = ($t_sig_html == "Y");

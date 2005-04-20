@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.50 2005-04-19 23:45:23 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.51 2005-04-20 18:36:42 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -77,7 +77,7 @@ if (db_num_rows($result) > 0) {
 $remove_tables = array('GROUPS', 'GROUP_PERMS', 'GROUP_USERS',
                        'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
                        'SEARCH_KEYWORDS', 'SEARCH_MATCH', 'SEARCH_POSTS',
-                       'USER_TRACK', 'VISITOR_LOG');
+                       'SESSIONS', 'USER_TRACK', 'VISITOR_LOG');
 
 foreach ($remove_tables as $forum_table) {
 
@@ -237,7 +237,23 @@ $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (VID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = @@db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE SESSIONS (";
+$sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
+$sql.= "  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (HASH),";
+$sql.= "  KEY UID (UID,IPADDRESS,TIME,FID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -780,7 +796,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE USER_PREFS CHANGE POST_PAGE POST_PAGE CHAR(4) DEFAULT '0' NOT NULL";
 
-    if (!$result = @@db_query($sql, $db_install)) {
+    if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;
         return;

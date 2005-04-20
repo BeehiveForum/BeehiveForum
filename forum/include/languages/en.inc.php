@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.277 2005-04-19 23:34:59 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.278 2005-04-20 18:36:41 decoyduck Exp $ */
 
 // International English language file
 
@@ -139,6 +139,7 @@ $lang['yes'] = "Yes";
 $lang['no'] = "No";
 $lang['signature'] = "Signature";
 $lang['signaturepreview'] = "Signature Preview";
+$lang['signatureupdated'] = "Signature Updated";
 $lang['wasnotfound'] = "was not found";
 $lang['back'] = "Back";
 $lang['subject'] = "Subject";
@@ -1590,6 +1591,7 @@ $lang['wehave'] = "We have";
 $lang['registeredmembers'] = "registered members";
 $lang['thenewestmemberis'] = "The newest member is";
 $lang['mostuserseveronlinewas'] = "Most users ever online was";
+$lang['statsdisplayenabled'] = "Stats Display Enabled";
 
 // Thread Options (thread_options.php) ---------------------------------
 

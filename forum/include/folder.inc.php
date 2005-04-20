@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.97 2005-04-20 22:10:21 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.98 2005-04-20 22:41:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -286,7 +286,7 @@ function folder_get_available()
     $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
     $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.FID";
+    $sql.= "ORDER BY FOLDER.POSITION";
 
     $result = db_query($sql, $db_folder_get_available);
 

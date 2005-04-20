@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.80 2005-04-17 17:15:17 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.81 2005-04-20 18:42:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -646,9 +646,7 @@ echo "                <tr>\n";
 echo "                  <td style=\"color: #", contrastFont($elements['body']), "\"><p style=\"color: #", contrastFont($elements['body']), "\" align=\"left\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;General: Welcome&nbsp;<img src=\"", style_image('high_interest.png'), "\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /></p></td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
-echo "            </div>\n";
-echo "            <br />\n";
-echo "            <div align=\"center\">\n";
+echo "              <br />\n";
 echo "              <table width=\"96%\" class=\"box\" style=\"background-color: #{$elements['box']}; color: #", contrastFont($elements['box']), "; border-style: solid; border-width: 1px; border-color: #", contrastFont($elements['box']), "\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "                <tr>\n";
 echo "                  <td>\n";
@@ -702,42 +700,40 @@ echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
+echo "              <br />\n";
+echo "              <table width=\"96%\" class=\"messagefoot\" style=\"background-color: #{$elements['threads']}; color: #", contrastFont($elements['threads']), "\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <p align=\"center\" class=\"smalltext\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['showmessages']}: &nbsp;1 &nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">2</a></p>\n";
+echo "                    <p align=\"center\"></p>\n";
+echo "                    <form name=\"rate_interest\" target=\"_self\" action=\"\" method=\"post\">\n";
+echo "                      {$lang['ratemyinterest']}\n";
+echo "                      <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"-1\" />{$lang['ignore']} </span>\n";
+echo "                      <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"0\" checked=\"checked\" />{$lang['normal']} </span>\n";
+echo "                      <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"1\" />{$lang['interested']} </span>\n";
+echo "                      <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"2\" />{$lang['subscribe']} </span>&nbsp;\n";
+echo "                      <input type=\"submit\" name=\"submit\" value=\"{$lang['apply']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
+echo "                    </form>\n";
+echo "                    <p style=\"color: #", contrastFont($elements['threads']), "\">{$lang['adjtextsize']}: <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['smaller']}</a> 10 <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['larger']}</a></p>\n";
+echo "                    <p align=\"center\"></p>\n";
+echo "                    <div align=\"center\">\n";
+echo "                      <table width=\"96%\" class=\"posthead\" style=\"background-color: #{$elements['threads']}; color: #", contrastFont($elements['threads']), "\">\n";
+echo "                        <tr>\n";
+echo "                          <td width=\"60%\" class=\"smalltext\" align=\"left\">\n";
+echo "                            Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
+echo "                            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
+echo "                            <a href=\"javascript:void(0)\" target=\"_blank\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['docs']}</a> &nbsp;|&nbsp;\n";
+echo "                            <a href=\"javascript:void(0)\" target=\"_blank\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['support']}</a>\n";
+echo "                          </td>\n";
+echo "                          <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date('Y'), " <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">Project BeehiveForum</a></td>\n";
+echo "                        </tr>\n";
+echo "                      </table>\n";
+echo "                    </div>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
 echo "            </div>\n";
-echo "            <p>&nbsp;</p>\n";
-echo "            <div align=\"center\">\n";
-echo "            <table width=\"96%\" class=\"messagefoot\" style=\"background-color: #{$elements['threads']}; color: #", contrastFont($elements['threads']), "\">\n";
-echo "              <tr>\n";
-echo "                <td align=\"center\">\n";
-echo "                  <p align=\"center\" class=\"smalltext\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['showmessages']}: &nbsp;1 &nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">2</a></p>\n";
-echo "                  <p align=\"center\"></p>\n";
-echo "                  <form name=\"rate_interest\" target=\"_self\" action=\"\" method=\"post\">\n";
-echo "                    {$lang['ratemyinterest']}\n";
-echo "                    <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"-1\" />{$lang['ignore']} </span>\n";
-echo "                    <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"0\" checked=\"checked\" />{$lang['normal']} </span>\n";
-echo "                    <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"1\" />{$lang['interested']} </span>\n";
-echo "                    <span class=\"bhinputradio\"><input type=\"radio\" name=\"interest\" value=\"2\" />{$lang['subscribe']} </span>&nbsp;\n";
-echo "                    <input type=\"submit\" name=\"submit\" value=\"{$lang['apply']}\" class=\"button\" style=\"background-color: #{$elements['button']}; color: #", contrastFont($elements['button']), "\" onclick=\"return false\" />\n";
-echo "                  </form>\n";
-echo "                  <p style=\"color: #", contrastFont($elements['threads']), "\">{$lang['adjtextsize']}: <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['smaller']}</a> 10 <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['larger']}</a></p>\n";
-echo "                  <p align=\"center\"></p>\n";
-echo "                  <div align=\"center\">\n";
-echo "                    <table width=\"96%\" class=\"posthead\" style=\"background-color: #{$elements['threads']}; color: #", contrastFont($elements['threads']), "\">\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"60%\" class=\"smalltext\" align=\"left\">\n";
-echo "                          Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
-echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['faq']}</a>&nbsp;|&nbsp;\n";
-echo "                          <a href=\"javascript:void(0)\" target=\"_blank\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['docs']}</a> &nbsp;|&nbsp;\n";
-echo "                          <a href=\"javascript:void(0)\" target=\"_blank\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['support']}</a>\n";
-echo "                        </td>\n";
-echo "                        <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date('Y'), " <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['threads']), "\">Project BeehiveForum</a></td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </div>\n";
-echo "                </td>\n";
-echo "              </tr>\n";
-echo "            </table>\n";
-echo "            </div>\n";
-echo "            <p>&nbsp;</p>\n";
+echo "            <br />\n";
 echo "          </td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
@@ -745,7 +741,6 @@ echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
-echo "<p>&nbsp;</p>\n";
 
 html_draw_bottom();
 

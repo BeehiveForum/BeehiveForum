@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.62 2005-03-28 19:43:31 decoyduck Exp $ */
+/* $Id: email.php,v 1.63 2005-04-20 18:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -148,7 +148,7 @@ if (isset($_POST['submit'])) {
 
         html_draw_top("title={$lang['emailresult']}");
 
-        echo "<p>&nbsp;</p>\n";
+        echo "<br />\n";
         echo "<div align=\"center\">\n";
 
         if (@mail($to_user['EMAIL'], $subject, $message, $header)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.84 2005-04-20 18:36:39 decoyduck Exp $ */
+/* $Id: pm.php,v 1.85 2005-04-20 18:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -182,7 +182,7 @@ if ($folder == PM_FOLDER_INBOX) {
 echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
-echo "<p>&nbsp;</p>\n";
+echo "<br />\n";
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
@@ -194,7 +194,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $pm_elements_array['CONTENT'] = pm_get_content($mid);
 
         pm_display($pm_elements_array);
-        echo "<p>&nbsp;</p>\n";
+        echo "<br />\n";
 
     }else {
 

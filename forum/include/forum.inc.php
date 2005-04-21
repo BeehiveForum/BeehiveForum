@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.139 2005-04-21 18:24:16 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.140 2005-04-21 22:16:55 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -250,79 +250,64 @@ function forum_check_password($forum_data)
     return true;
 }
 
-function forum_get_settings($fid = 0, $current_only = false)
+function forum_get_settings($fid = false, $current_only = false)
 {
-    static $forum_fid = false;
+    $db_forum_get_settings = db_connect();
 
-    static $forum_settings = array();
-    static $default_forum_settings = array();
+    static $forum_settings = false;
 
-    if (!is_bool($current_only)) $current_only = false;
-    if (!is_numeric($forum_fid)) $fid = 0;
+    if (!$table_data = get_table_prefix()) return false;
 
-    if (!$forum_fid || $forum_fid != $fid) {
+    if (is_numeric($fid) || !$forum_settings) {
 
-        $db_forum_get_settings = db_connect();
-
-        if ($current_only === false) {
-
-            $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
-            $result = db_query($sql, $db_forum_get_settings);
-
-            while ($row = db_fetch_array($result)) {
-                $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
-                $forum_fid = $fid;
-            }
+        if (is_numeric($fid)) {
+            $forum_fid = $fid;
+        }else {
+            $forum_fid = $table_data['FID'];
         }
 
-        if ($forum_fid == 0) {
+        $forum_settings = array('fid' => $forum_fid);
 
-            if ($table_data = get_table_prefix()) {
-                $forum_fid = $table_data['FID'];
-            }
-        }
+        $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = $forum_fid";
+        $result = db_query($sql, $db_forum_get_settings);
 
-        if ($forum_fid > 0) {
+        list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
 
-            $forum_settings['fid'] = $forum_fid;
+        $forum_settings['webtag'] = $webtag;
+        $forum_settings['access_level'] = $access_level;
 
-            $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = $forum_fid";
-            $result = db_query($sql, $db_forum_get_settings);
+        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = $forum_fid";
+        $result = db_query($sql, $db_forum_get_settings);
 
-            list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
+        while ($row = db_fetch_array($result)) {
 
-            $forum_settings['webtag'] = $webtag;
-            $forum_settings['access_level'] = $access_level;
-
-            $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = $forum_fid";
-            $result = db_query($sql, $db_forum_get_settings);
-
-            while ($row = db_fetch_array($result)) {
-                $forum_settings[$row['SNAME']] = $row['SVALUE'];
-                $forum_fid = $fid;
-            }
+            $forum_settings[$row['SNAME']] = $row['SVALUE'];
         }
     }
 
-    if (sizeof($default_forum_settings) > 0 || sizeof($forum_settings) > 0) {
-
-        return array_merge($default_forum_settings, $forum_settings);
+    if ($current_only === false) {
+        return array_merge(forum_get_default_settings(), $forum_settings);
     }
 
-    return false;
+    return $forum_settings;
 }
 
 function forum_get_default_settings()
 {
     $db_forum_get_default_settings = db_connect();
 
-    $default_forum_settings = array();
+    static $default_forum_settings = false;
 
-    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
-    $result = db_query($sql, $db_forum_get_default_settings);
+    if (!is_array($default_forum_settings)) {
 
-    while ($row = db_fetch_array($result)) {
-        $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
+        $default_forum_settings = array();
+
+        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = 0";
+        $result = db_query($sql, $db_forum_get_default_settings);
+
+        while ($row = db_fetch_array($result)) {
+            $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
+        }
     }
 
     return $default_forum_settings;

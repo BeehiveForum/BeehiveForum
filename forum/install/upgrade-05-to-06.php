@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.51 2005-04-20 18:36:42 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.52 2005-04-21 18:20:52 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1044,7 +1044,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "CREATE TABLE {$forum_webtag}_RSS_HISTORY (";
     $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  LINK VARCHAR(255) DEFAULT NULL";
+    $sql.= "  LINK VARCHAR(255) DEFAULT NULL,";
     $sql.= "  KEY RSSID (RSSID)";
     $sql.= ") TYPE=MYISAM";
 

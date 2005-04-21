@@ -60,11 +60,15 @@ function rss_read_stream($filename)
     if (!isset($url_array['port'])) $url_array['port'] = 80;
     if (!isset($url_array['query'])) $url_array['query'] = "";
 
+    if (strlen($url_array['query']) > 0) {
+        $url_array['query'] = "?{$url_array['query']}";
+    }
+
     // We can't do much without socket functions
 
     if ($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30)) {
 
-        $http_headers = "GET {$url_array['path']}?{$url_array['query']} HTTP/1.1\r\n";
+        $http_headers = "GET {$url_array['path']}{$url_array['query']} HTTP/1.1\r\n";
         $http_headers.= "Host: {$url_array['host']}\r\n";
         $http_headers.= "Connection: Close\r\n\r\n";
 
@@ -78,8 +82,13 @@ function rss_read_stream($filename)
 
         fclose($fp);
 
-        list(,$rss_data) = explode("<?xml", $http_data);
-        return "<?xml{$rss_data}";
+        if ($http_data_array = preg_split("/\<\?xml/", $http_data)) {
+
+            if (isset($http_data_array[1])) {
+
+                return "<?xml{$http_data_array[1]}";
+            }
+        }
     }
 
     return false;
@@ -214,11 +223,15 @@ function rss_check_feeds()
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
                     $rss_title   = _htmlentities_decode($rss_item->title);
-                    $rss_content = _htmlentities_decode($rss_item->description);
+                    $rss_content = trim(_htmlentities_decode($rss_item->description));
+
+                    if (strlen($rss_content) > 1) {
+                        $content = fix_html("<quote source=\"{$rss_feed['NAME']}\" url=\"{$rss_item->link}\">$rss_content</quote>");
+                    }else {
+                        $content = fix_html("<p>$rss_title</p>\n<p><a href=\"{$rss_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
+                    }
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], "[{$rss_feed['PREFIX']}] {$rss_title}");
-
-                    $content = fix_html("<quote source=\"{$rss_feed['NAME']}\" url=\"{$rss_item->link}\">$rss_content</quote>");
 
                     post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], $rss_feed['UID'], 0, $content);
 
@@ -294,7 +307,8 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}RSS_FEEDS SET NAME = '$name', UID = $uid, ";
-    $sql.= "FID = $fid, URL = '$url', PREFIX = '$prefix' WHERE RSSID = $rssid";
+    $sql.= "FID = $fid, URL = '$url', PREFIX = '$prefix', FREQUENCY = $frequency ";
+    $sql.= "WHERE RSSID = $rssid";
 
     return db_query($sql, $db_rss_feed_update);
 }

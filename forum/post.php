@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.256 2005-04-11 18:32:15 decoyduck Exp $ */
+/* $Id: post.php,v 1.257 2005-04-21 18:20:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -869,8 +869,8 @@ if ($newthread) {
 echo "<h2>".$lang['to'].":</h2>\n";
 
 if (!$newthread) {
-    echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true)."<br />\n";
-    echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false, 'onclick="checkToRadio(0)"')."<br />\n";
+    echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true), "<br />\n";
+    echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false, 'onclick="checkToRadio(0)"'), "<br />\n";
 }
 
 echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false)."<br />\n";

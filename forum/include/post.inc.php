@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.126 2005-04-18 17:31:43 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.127 2005-04-21 18:20:51 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -239,8 +239,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
-    if (!$table_data = get_table_prefix()) return "";
-
+    if (!$table_data = get_table_prefix()) return false;
     if (!is_numeric($default_uid)) $default_uid = 0;
 
     $forum_fid = $table_data['FID'];
@@ -304,7 +303,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     $db_post_draw_to_dropdown = db_connect();
 
     if (!is_numeric($tid)) return false;
-    if (!is_numeric($default_uid)) return false;
+    if (!is_numeric($default_uid)) $default_uid = 0;
 
     if (!$table_data = get_table_prefix()) return "";
 

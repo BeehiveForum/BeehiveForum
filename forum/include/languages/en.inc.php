@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.279 2005-04-20 19:03:37 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.280 2005-04-21 18:20:52 decoyduck Exp $ */
 
 // International English language file
 
@@ -1650,10 +1650,17 @@ $lang['textcaptchanofonts'] = "No fonts available for text captcha. Please uploa
 
 // RSS feeds gubbins
 
+$lang['every30mins'] = "Every 30 mins";
+$lang['onceanhour'] = "Once an hour";
+$lang['every6hours'] = "Every 6 hours";
+$lang['every12hours'] = "Every 12 hours";
+$lang['onceaday'] = "Once a day";
+
 $lang['rssfeeds'] = "RSS Feeds";
 $lang['feedlocation'] = "Feed Location";
 $lang['threadprefix'] = "Thread Prefix";
 $lang['updatefrequency'] = "Update Frequency";
+$lang['rssclicktoreadarticle'] = "Click here to read this article";
 $lang['rssfeedhelp_1'] = "Here you can setup some RSS feeds for automatic propgation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you which to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work."
 
 ?>

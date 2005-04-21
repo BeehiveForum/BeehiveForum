@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.3 2005-04-20 22:10:21 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.4 2005-04-21 18:20:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -325,12 +325,12 @@ if ($rss_feeds = rss_get_feeds()) {
 
         echo "                <tr>\n";
         echo "                  <td valign=\"top\" align=\"left\">", form_input_hidden("t_rssid[{$rss_feed['RSSID']}]", $rss_feed['RSSID']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$rss_feed['RSSID']}]", $rss_feed['NAME'], 25, 255), form_input_hidden("t_old_name[{$rss_feed['RSSID']}]", $rss_feed['NAME']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_user[{$rss_feed['RSSID']}]", $rss_feed['LOGON'], 15, 15), form_input_hidden("t_old_user[{$rss_feed['RSSID']}]", $rss_feed['LOGON']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$rss_feed['RSSID']}]", $rss_feed['NAME'], 20, 255), form_input_hidden("t_old_name[{$rss_feed['RSSID']}]", $rss_feed['NAME']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_user[{$rss_feed['RSSID']}]", $rss_feed['LOGON'], 12, 15), form_input_hidden("t_old_user[{$rss_feed['RSSID']}]", $rss_feed['LOGON']), "</td>\n";
         echo "                  <td valign=\"top\" align=\"left\">", folder_draw_dropdown_all($rss_feed['FID'], "t_fid[{$rss_feed['RSSID']}]", "", "", "post_folder_dropdown"), form_input_hidden("t_old_fid[{$rss_feed['RSSID']}]", $rss_feed['FID']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_url[{$rss_feed['RSSID']}]", $rss_feed['URL'], 50, 255), form_input_hidden("t_old_url[{$rss_feed['RSSID']}]", $rss_feed['URL']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_url[{$rss_feed['RSSID']}]", $rss_feed['URL'], 45, 255), form_input_hidden("t_old_url[{$rss_feed['RSSID']}]", $rss_feed['URL']), "</td>\n";
         echo "                  <td valign=\"top\" align=\"left\">", form_field("t_prefix[{$rss_feed['RSSID']}]", $rss_feed['PREFIX'], 5, 16), form_input_hidden("t_old_prefix[{$rss_feed['RSSID']}]", $rss_feed['PREFIX']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_frequency[{$rss_feed['RSSID']}]", array(5, 10, 15, 30, 60), array(5, 10, 15, 30, 60), $rss_feed['FREQUENCY']), form_input_hidden("t_old_frequency[{$rss_feed['RSSID']}]", $rss_feed['FREQUENCY']), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_frequency[{$rss_feed['RSSID']}]", array(30, 60, 360, 720, 1440), array($lang['every30mins'], $lang['onceanhour'], $lang['every6hours'], $lang['every12hours'], $lang['onceaday']), $rss_feed['FREQUENCY']), form_input_hidden("t_old_frequency[{$rss_feed['RSSID']}]", $rss_feed['FREQUENCY']), "</td>\n";
         echo "                  <td valign=\"top\" align=\"center\">", form_checkbox("t_delete[{$rss_feed['RSSID']}]", "Y", false), "</td>\n";
         echo "                </tr>\n";
     }
@@ -340,12 +340,12 @@ if ($rss_feeds = rss_get_feeds()) {
 
 echo "                <tr>\n";
 echo "                  <td align=\"left\">{$lang['new_caps']}</td>\n";
-echo "                  <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 25, 64), "</td>";
-echo "                  <td align=\"left\">", form_field("t_user_new", bh_session_get_value('LOGON'), 15, 64), "</td>";
+echo "                  <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 20, 64), "</td>";
+echo "                  <td align=\"left\">", form_field("t_user_new", bh_session_get_value('LOGON'), 12, 64), "</td>";
 echo "                  <td align=\"left\">", folder_draw_dropdown_all(0, "t_fid_new", "", "", "post_folder_dropdown"), "</td>\n";
-echo "                  <td align=\"left\">", form_field("t_url_new", "", 50, 255), "</td>";
+echo "                  <td align=\"left\">", form_field("t_url_new", "", 45, 255), "</td>";
 echo "                  <td align=\"left\">", form_field("t_prefix_new", "", 5, 16), "</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("t_frequency_new", array(5, 10, 15, 30, 60), array(5, 10, 15, 30, 60), 30), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("t_frequency_new", array(30, 60, 360, 720, 1440), array($lang['every30mins'], $lang['onceanhour'], $lang['every6hours'], $lang['every12hours'], $lang['onceaday']), 1440), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"4\">&nbsp;</td>\n";

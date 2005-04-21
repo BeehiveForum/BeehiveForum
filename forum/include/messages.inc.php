@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.363 2005-04-20 22:10:22 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.364 2005-04-21 18:20:51 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -892,7 +892,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
             }
 
-            if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED)) && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+            if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                 if ($is_poll && $message['PID'] == 1) {
 

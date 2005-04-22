@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.73 2005-04-20 18:36:35 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.74 2005-04-22 20:17:34 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -118,7 +118,7 @@ $timezones_data = array(-12, -11, -10, -9.5, -9, -8.5, -8, -7, -6, -5, -4, -3.5,
 
 // Get the forum settings just for this forum
 
-$current_forum_settings = forum_get_settings(0, true);
+$current_forum_settings = forum_get_settings(false, true);
 
 if (isset($_POST['changepermissions'])) {
 

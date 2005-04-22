@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.178 2005-04-11 18:11:48 decoyduck Exp $ */
+/* $Id: messages.php,v 1.179 2005-04-22 20:17:34 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -59,6 +59,7 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "poll.inc.php");
+include_once(BH_INCLUDE_PATH. "rss_feed.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");

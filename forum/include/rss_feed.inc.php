@@ -70,6 +70,7 @@ function rss_read_stream($filename)
 
         $http_headers = "GET {$url_array['path']}{$url_array['query']} HTTP/1.1\r\n";
         $http_headers.= "Host: {$url_array['host']}\r\n";
+        $http_headers.= "Accept-Charset: UTF-8\r\n";
         $http_headers.= "Connection: Close\r\n\r\n";
 
         $http_data = "";
@@ -77,7 +78,7 @@ function rss_read_stream($filename)
         fwrite($fp, $http_headers);
 
         while (!feof($fp)) {
-            $http_data.= fgets($fp, 128);
+            $http_data.= fgets($fp, 1024);
         }
 
         fclose($fp);
@@ -98,7 +99,7 @@ function rss_read_database($filename)
 {
    if (!$data = rss_read_stream($filename)) return false;
 
-   $data = preg_replace("/(&[^;]+;)/me", "_html_literal_to_numeric('\\1')", $data);
+   $data = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $data);
 
    $rss_data = array();
 
@@ -222,7 +223,7 @@ function rss_check_feeds()
 
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
-                    $rss_title   = _htmlentities_decode($rss_item->title);
+                    $rss_title   = trim(_htmlentities_decode($rss_item->title));
                     $rss_content = trim(_htmlentities_decode($rss_item->description));
 
                     if (strlen($rss_content) > 1) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.89 2005-04-19 23:34:58 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.90 2005-04-22 20:17:34 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -166,26 +166,28 @@ function _htmlentities($text)
     return htmlentities($text, ENT_QUOTES, 'UTF-8');
 }
 
-// Lazy reversal of _htmlentities
-// (borrowed from: http://uk.php.net/manual/en/function.html-entity-decode.php)
-
-function _htmlentities_decode($text)
+function _htmlentities_decode($text) //, $quote_style = ENT_COMPAT, $charset = null)
 {
     $trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
     $trans_tbl = array_flip($trans_tbl);
+
+    $trans_tbl['&apos;'] = '\'';
 
     $ret = strtr($text, $trans_tbl);
     return preg_replace('/&#(\d+);/me', "chr('\\1')", $ret);
 }
 
-// Translate &nbsp; to &#160; etc.
+// Translate &nbsp; to &#160; etc. Pass the literal without the
+// leading &# and trailing ;, i.e. nbsp, gt, lt.
 
-function _html_literal_to_numeric($literal)
+function xml_literal_to_numeric($literal)
 {
+    if (preg_match("/&#[0-9]+;/", $literal)) return $literal;
+
     $entity  = _htmlentities_decode($literal);
     $numeric = ord($entity);
 
-    return "&#{$numeric};";
+    return "&#$numeric;";
 }
 
 // Checks for Magic Quotes and perform stripslashes if nessecary

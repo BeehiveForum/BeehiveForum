@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.257 2005-04-21 18:20:49 decoyduck Exp $ */
+/* $Id: post.php,v 1.258 2005-04-22 20:41:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -247,15 +247,15 @@ if (isset($_POST['t_post_links'])) {
 
 if (isset($_POST['t_post_interest'])) {
 
-    if ($_POST['t_post_interest'] == "high") {
-        $high_interest = true;
+    if ($_POST['t_post_interest'] == "Y") {
+        $high_interest = "Y";
     }else {
-        $high_interest = false;
+        $high_interest = "N";
     }
 
 }else {
 
-    $high_interest = false;
+    $high_interest = "N";
 }
 
 if (isset($_POST['t_post_html'])) {
@@ -283,7 +283,10 @@ if (isset($_POST['t_post_html'])) {
     $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
     $links_enabled = ($page_prefs & POST_AUTO_LINKS);
     $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
-    $high_interest = bh_session_get_value('MARK_AS_OF_INT');
+
+    if (!$high_interest = bh_session_get_value('MARK_AS_OF_INT')) {
+        $high_interest = "N";
+    }
 }
 
 if (isset($_POST['t_sig_html'])) {
@@ -655,7 +658,7 @@ if ($valid && isset($_POST['submit'])) {
                     $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
                 }
 
-                if ($high_interest) thread_set_high_interest($t_tid, 1, $newthread);
+                if ($high_interest == "Y") thread_set_high_interest($t_tid, 1, $newthread);
 
                 if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
 
@@ -884,7 +887,7 @@ echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
-echo form_checkbox("t_post_interest", "high", $lang['setthreadtohighinterest'], $high_interest)."<br />\n";
+echo form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y")."<br />\n";
 
 if (perm_is_moderator($t_fid)) {
 

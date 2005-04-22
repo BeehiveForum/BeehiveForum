@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.157 2005-04-11 18:32:13 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.158 2005-04-22 20:41:15 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -159,13 +159,13 @@ if (isset($_POST['t_check_spelling'])) {
 }
 
 if (isset($_POST['t_post_interest'])) {
-    if ($_POST['t_post_interest'] == "high") {
-        $high_interest = true;
+    if ($_POST['t_post_interest'] == "Y") {
+        $high_interest = "Y";
     }else {
-        $high_interest = false;
+        $high_interest = "N";
     }
 }else {
-    $high_interest = false;
+    $high_interest = "N";
 }
 
 if (isset($_POST['t_message_html'])) {
@@ -192,7 +192,10 @@ if (isset($_POST['t_message_html'])) {
 
     $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
     $links_enabled = ($page_prefs & POST_AUTO_LINKS);
-    $high_interest = bh_session_get_value('MARK_AS_OF_INT');
+
+    if (!$high_interest = bh_session_get_value('MARK_AS_OF_INT')) {
+        $high_interest = "N";
+    }
 }
 
 if (isset($_POST['t_sig_html'])) {
@@ -567,7 +570,7 @@ if ($valid && isset($_POST['submit'])) {
                 post_create($t_fid, $t_tid, 1, $uid, $uid, 0, $t_message_text);
             }
 
-            if ($high_interest) thread_set_high_interest($t_tid, 1, true);
+            if ($high_interest == "Y") thread_set_high_interest($t_tid, 1, true);
         }
 
         if (isset($t_tid) && $t_tid > 0) {
@@ -999,7 +1002,7 @@ echo "<h2>". $lang['messageoptions'] .":</h2>\n";
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
-echo form_checkbox("t_post_interest", "high", $lang['setthreadtohighinterest'], $high_interest)."<br />\n";
+echo form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y")."[$high_interest]<br />\n";
 
 echo "<br />\n";
 echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']);

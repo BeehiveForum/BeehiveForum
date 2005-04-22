@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.73 2005-04-11 18:32:14 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.74 2005-04-22 20:41:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -114,13 +114,13 @@ if (isset($_POST['cancel'])) {
     header_redirect($uri);
 }
 
-$show_sigs = !(bh_session_get_value('VIEW_SIGS'));
+// Check if the user is viewing signatures.
+
+$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // Get the user's post page preferences.
 
-if (!$page_prefs = bh_session_get_value('POST_PAGE')) {
-    $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT;
-}
+$page_prefs = bh_session_get_post_page_prefs();
 
 // Get the user's UID
 
@@ -177,6 +177,10 @@ if (isset($_POST['t_newthread'])) {
     }
 }
 
+if (!$high_interest = bh_session_get_value('MARK_AS_OF_INT')) {
+    $high_interest = "N";
+}
+
 if (isset($_POST['t_post_html'])) {
 
     $t_post_html = $_POST['t_post_html'];
@@ -184,6 +188,16 @@ if (isset($_POST['t_post_html'])) {
     if ($t_post_html == "enabled_auto") {
         $post_html = 1;
     }else if ($t_post_html == "enabled") {
+        $post_html = 2;
+    }else {
+        $post_html = 0;
+    }
+
+}else {
+
+    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
+        $post_html = 1;
+    }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
         $post_html = 2;
     }else {
         $post_html = 0;
@@ -220,17 +234,6 @@ if (isset($_POST['t_sig_html'])) {
 }
 
 if (!isset($sig_html)) $sig_html = 0;
-
-if (!isset($post_html)) {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = 1;
-    }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = 2;
-    }else {
-        $post_html = 0;
-    }
-}
 
 if (!isset($emots_enabled)) $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
 
@@ -430,7 +433,7 @@ if ($valid && isset($_POST['submit'])) {
                     $new_pid = post_create($t_fid, $t_tid, $t_rpid, $threaddata['BY_UID'], $uid, $_POST['t_to_uid'], $t_content);
                 }
 
-                if (bh_session_get_value('MARK_AS_OF_INT')) thread_set_high_interest($t_tid, 1, $newthread);
+                if ($high_interest == "Y") thread_set_high_interest($t_tid, 1, $newthread);
 
                 email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
                 email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);

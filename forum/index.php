@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.111 2005-04-23 18:00:34 decoyduck Exp $ */
+/* $Id: index.php,v 1.112 2005-04-23 18:06:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -91,7 +91,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     echo "<title>$forum_name</title>\n";
     echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
+    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
     echo "<meta name=\"robots\" content=\"index,follow\" />\n";
     echo "</head>\n";
@@ -190,7 +190,7 @@ if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (us
     echo "<title>$forum_name</title>\n";
     echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
+    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
     echo "<meta name=\"robots\" content=\"index,follow\" />\n";
     echo "</head>\n";

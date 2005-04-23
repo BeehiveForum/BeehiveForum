@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.116 2005-04-11 18:32:15 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.117 2005-04-23 19:54:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -162,8 +162,8 @@ if (isset($t_rmid) && $t_rmid > 0) {
             // Quote the original PM using our psuedo HTML tag
 
             $t_content = "<quote source=\"";
-            $t_content.= format_user_name($pm_data['TLOGON'], $pm_data['TNICK']);
-            $t_content.= "\" url=\"\">";
+            $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+            $t_content.= "\" url=\"pm.php?mid={$pm_data['MID']}\">";
             $t_content.= trim($pm_data['CONTENT']);
             $t_content.= "</quote>\n\n";
 

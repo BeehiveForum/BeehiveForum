@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.281 2005-04-23 18:00:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.282 2005-04-23 19:37:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -459,6 +459,12 @@ $lang['postasignature'] = "Post a signature";
 
 $lang['editforumlinks'] = "Edit Forum Links";
 $lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list displayed in the top-right of the forum frameset. If no links are set, the drop-down list will not be displayed.";
+
+$lang['notoplevellinkidspecified'] = "No top level link ID specified";
+$lang['notoplevellinktitlespecified'] = "No top level link title specified";
+$lang['youmustenteratitleforalllinks'] = "You must enter a title for all links";
+$lang['youmustprovideapositionforalllinks'] = "You must provide a link position for all links";
+$lang['alllinkurismuststartwithaschema'] = "All link URIs must start with a schema (i.e. http://, ftp://, irc://)";
 
 $lang['allowguestaccess'] = "Allow Guest Access";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.10 2005-03-28 23:45:07 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.11 2005-04-23 19:37:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -91,47 +91,116 @@ if (!(perm_has_admin_access())) {
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
-
 }
 
-if (isset($_POST['l_lid'])) {
+if (isset($_POST['submit'])) {
 
-    $first_mark = false;
+    $valid = true;
+    $status_array = array();
 
-    foreach($_POST['l_lid'] as $lid => $value) {
+    if (isset($_POST['l_top_lid']) && is_numeric($_POST['l_top_lid'])) {
+        $l_max_lid = $_POST['l_top_lid'];
+        $l_top_lid = $_POST['l_top_lid'];
+    }else {
+        $status_array[] = "<h2>{$lang['notoplevellinkidspecified']}</h2>\n";
+        $valid = false;
+    }
 
-        if (isset($_POST['l_delete'][$lid])) {
+    if (isset($_POST['l_top_title']) && strlen(trim(_stripslashes($_POST['l_top_title']))) > 0) {
+        $l_top_title = trim(_stripslashes($_POST['l_top_title']));
+    }else {
+        $status_array[] = "<h2>{$lang['notoplevellinktitlespecified']}</h2>\n";
+        $valid = false;
+    }
 
-            forum_links_delete($lid);
+    if ($valid) {
 
-        }else if (!$first_mark) {
+        if ($l_top_lid > 0) {
+            forum_links_update($l_top_lid, 1, $l_top_title, "");
+        }else {
+            forum_links_add(1, $l_top_title, "");
+        }
 
-            $first_mark = true;
+        if (isset($_POST['l_lid']) && is_array($_POST['l_lid'])) {
 
-            if ($lid == 0) {
+            foreach($_POST['l_lid'] as $lid => $value) {
 
-                forum_links_add(1, $_POST['l_title'][$lid], "");
+                $l_max_lid++;
 
-            }else {
+                if (isset($_POST['l_title'][$lid]) && strlen(trim(_stripslashes($_POST['l_title'][$lid]))) > 0) {
+                    $l_title = trim(_stripslashes($_POST['l_title'][$lid]));
+                }else {
+                    $status_array[] = "<h2>{$lang['youmustenteratitleforalllinks']}</h2>\n";
+                    $valid = false;
+                }
 
-                 forum_links_update($lid, 1, $_POST['l_title'][$lid], "");
+                if (isset($_POST['l_pos'][$lid]) && is_numeric($_POST['l_pos'][$lid])) {
+                    $l_pos = $_POST['l_pos'][$lid];
+                }else {
+                    $status_array[] = "<h2>{$lang['youmustprovideapositionforalllinks']}</h2>\n";
+                    $valid = false;
+                }
+
+                if (isset($_POST['l_uri'][$lid]) && strlen(trim(_stripslashes($_POST['l_uri'][$lid]))) > 0) {
+
+                    $l_uri = trim(_stripslashes($_POST['l_uri'][$lid]));
+
+                    if (preg_match("/^[a-z0-9]+:\/\//i", $l_uri) < 1) {
+
+                        $status_array[] = "<h2>{$lang['alllinkurismuststartwithaschema']}</h2>\n";
+                        $valid = false;
+                    }
+
+                }else {
+
+                    $l_uri = "";
+                }
+
+                if ($valid) {
+
+                    forum_links_update($lid, $l_pos, $l_title, $l_uri);
+                }
+            }
+        }
+
+        $l_max_lid++;
+
+        if (isset($_POST['l_title_new']) && strlen(trim(_stripslashes($_POST['l_title_new']))) > 0) {
+            $l_title_new = trim(_stripslashes($_POST['l_title_new']));
+        }else {
+            $valid = false;
+        }
+
+        if (isset($_POST['l_uri_new']) && strlen(trim(_stripslashes($_POST['l_uri_new']))) > 0) {
+
+            $l_uri_new = trim(_stripslashes($_POST['l_uri_new']));
+
+            if (preg_match("/^[a-z0-9]+:\/\//i", $l_uri_new) < 1) {
+
+                $status_array[] = "<h2>{$lang['alllinkurismuststartwithaschema']}</h2>\n";
+                $valid = false;
             }
 
         }else {
 
-            forum_links_update($lid, $_POST['l_pos'][$lid] + 1, $_POST['l_title'][$lid], $_POST['l_uri'][$lid]);
+            $l_uri_new = "";
+        }
+
+        if ($valid) {
+
+            forum_links_add($l_max_lid, $l_title_new, $l_uri_new);
         }
     }
 
-    $uid = bh_session_get_value('UID');
-    admin_add_log_entry(EDIT_FORUM_LINKS);
+}elseif (isset($_POST['l_delete'])) {
+
+    list($lid) = array_keys($_POST['l_delete']);
+    forum_links_delete($lid);
 }
 
 if (isset($_POST['l_title_new']) && $_POST['l_title_new'] != "" && isset($_POST['l_pos_new']) && isset($_POST['l_uri_new'])) {
 
     forum_links_add($_POST['l_pos_new'] + 1, $_POST['l_title_new'], $_POST['l_uri_new']);
-
-    $uid = bh_session_get_value('UID');
     admin_add_log_entry(EDIT_FORUM_LINKS);
 }
 
@@ -140,9 +209,13 @@ html_draw_top();
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['editforumlinks']}</h1>\n";
 echo "<br />\n";
 
-$links = forum_links_get_links();
+if (isset($status_array) && is_array($status_array)) {
 
-if (isset($status_text)) echo $status_text;
+    foreach($status_array as $status_text) {
+
+        echo $status_text;
+    }
+}
 
 echo "<div align=\"center\">\n";
 echo "<form method=\"post\" action=\"admin_forum_links.php\">\n";
@@ -168,39 +241,48 @@ echo "                  <td class=\"subhead\">{$lang['delete']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 
-$lid = isset($links[0]) ? $links[0]['LID'] : 0;
+if ($forum_links_array = forum_links_get_links()) {
 
-echo "                  <td>". form_input_hidden("l_lid[$lid]", $lid) . $lang['top'] ."</td>\n";
-echo "                  <td>". form_field("l_title[$lid]", isset($links[0]) ? $links[0]['TITLE'] : "", 32, 64) ."</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                </tr>\n";
+    $forum_top_link = array_shift($forum_links_array);
 
-for ($i = 1; $i < count($links); $i++) {
+    if (is_array($forum_top_link)) {
 
-        $lid = $links[$i]['LID'];
+        echo "                  <td>", form_input_hidden("l_top_lid", $forum_top_link['LID']), $lang['top'], "</td>\n";
+        echo "                  <td>", form_field("l_top_title", $forum_top_link['TITLE'], 32, 64), "</td>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                  <td>", form_input_hidden("l_top_lid", 0), $lang['top'], "</td>\n";
+        echo "                  <td>", form_field("l_top_title", $lang['forumlinks'], 32, 64), "</td>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
+    }
+
+    foreach($forum_links_array as $key => $forum_link) {
 
         echo "                <tr>\n";
 
-        if (count($links) > 2) {
-
-            echo "                  <td>", form_dropdown_array("l_pos[$lid]", range(1, count($links)-1), range(1, count($links)-1), $i), form_input_hidden("l_lid[$lid]", $lid), "</td>\n";
-
+        if (sizeof($forum_links_array) > 1) {
+            echo "                  <td>", form_dropdown_array("l_pos[{$forum_link['LID']}]", range(1, sizeof($forum_links_array)), range(1, sizeof($forum_links_array)), $key + 1), form_input_hidden("l_lid[{$forum_link['LID']}]", $forum_link['LID']), "</td>\n";
         }else {
-
-            echo "                  <td>1", form_input_hidden("l_pos[$lid]", 1), form_input_hidden("l_lid[$lid]", $lid), "</td>\n";
+            echo "                  <td>1", form_input_hidden("l_pos[{$forum_link['LID']}]", 1), form_input_hidden("l_lid[{$forum_link['LID']}]", $forum_link['LID']), "</td>\n";
         }
 
-        echo "                  <td>". form_field("l_title[$lid]", $links[$i]['TITLE'], 32, 64) ."</td>\n";
-        echo "                  <td>". form_field("l_uri[$lid]", $links[$i]['URI'], 32, 255) ."</td>\n";
-        echo "                  <td>". form_submit("l_delete[$lid]", $lang['delete']) ."</td>\n";
+        echo "                  <td>", form_field("l_title[{$forum_link['LID']}]", $forum_link['TITLE'], 32, 64), "</td>\n";
+        echo "                  <td>", form_field("l_uri[{$forum_link['LID']}]", $forum_link['URI'], 32, 255), "</td>\n";
+        echo "                  <td>", form_submit("l_delete[{$forum_link['LID']}]", $lang['delete']), "</td>\n";
         echo "                </tr>\n";
+    }
 }
 
 echo "                <tr>\n";
-echo "                  <td>". form_input_hidden("l_pos_new", $i).$lang['newcaps'] ."</td>\n";
-echo "                  <td>". form_field("l_title_new", "", 32, 64) ."</td>\n";
-echo "                  <td>". form_field("l_uri_new", "", 32, 255) ."</td>\n";
+echo "                  <td>{$lang['newcaps']}</td>\n";
+echo "                  <td>", form_field("l_title_new", "", 32, 64), "</td>\n";
+echo "                  <td>", form_field("l_uri_new", "", 32, 255), "</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -219,7 +301,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">". form_submit("submit", $lang['submit'])." ".form_reset() ."</td>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_reset(), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

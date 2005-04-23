@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.364 2005-04-21 18:20:51 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.365 2005-04-23 22:08:28 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -755,7 +755,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=$tid', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" height=\"15\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> {$lang['poll']} ";
         }
 
-        echo $message['PID'] . " {$lang['of']} " . $msg_count;
+        echo "{$message['PID']} {$lang['of']} $msg_count";
     }
 
     echo "&nbsp;</span></td>\n";
@@ -1129,7 +1129,7 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 
     unset($navbits);
 
-    echo "<p align=\"center\" class=\"messagefoot\">" . $html . "</p>\n";
+    echo "<p align=\"center\" class=\"messagefoot\">$html</p>\n";
 }
 
 function mess_nav_range($from,$to)

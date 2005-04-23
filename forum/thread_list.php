@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.241 2005-04-19 23:34:58 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.242 2005-04-23 22:08:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,25 +263,20 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         if ($thread = thread_get($tid)) {
 
-            foreach ($thread as $key => $value) {
-                $thread[strtolower($key)] = $value;
-                unset($thread[$key]);
-            }
+            if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if (!isset($thread['relationship'])) $thread['relationship'] = 0;
+            if ($thread['TID'] == $tid) {
 
-            if ($thread['tid'] == $tid) {
-
-                if (in_array($thread['fid'], $folder_order)) {
-                    array_splice($folder_order, array_search($thread['fid'], $folder_order), 1);
+                if (in_array($thread['FID'], $folder_order)) {
+                    array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
                 }
 
-                array_unshift($folder_order, $thread['fid']);
+                array_unshift($folder_order, $thread['FID']);
 
                 if (!is_array($thread_info)) $thread_info = array();
 
                 foreach ($thread_info as $key => $thread_data) {
-                    if ($thread_data['tid'] == $tid) {
+                    if ($thread_data['TID'] == $tid) {
                         unset($thread_info[$key]);
                         break;
                     }
@@ -391,11 +386,11 @@ foreach ($folder_order as $key1 => $folder_number) {
 
             if (is_array($thread_info)) {
 
-                $visible_threads = false;
+                $visible_threads = true;
 
                 foreach ($thread_info as $thread_info_key => $thread_info_array) {
 
-                    if (isset($thread_info[$thread_info_key]['fid']) && $thread_info[$thread_info_key]['fid'] == $folder_number) $visible_threads = true;
+                    if (isset($thread_info[$thread_info_key]['FID']) && $thread_info[$thread_info_key]['FID'] == $folder_number) $visible_threads = true;
                 }
 
                 if ($visible_threads) {
@@ -439,100 +434,100 @@ foreach ($folder_order as $key1 => $folder_number) {
                     foreach($thread_info as $key2 => $thread) {
 
                         if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
-                        if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
+                        if (!in_array($thread['TID'], $visiblethreads)) $visiblethreads[] = $thread['TID'];
 
-                        if ($thread['fid'] == $folder_number) {
+                        if ($thread['FID'] == $folder_number) {
 
                             echo "        <tr>\n";
                             echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\">";
-                            echo "<a href=\"thread_options.php?webtag=$webtag&amp;tid={$thread['tid']}\" target=\"right\">";
+                            echo "<a href=\"thread_options.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"right\">";
 
-                            if ($thread['last_read'] == 0) {
+                            if ($thread['LAST_READ'] == 0) {
 
-                                if ($thread['length'] > 0) {
+                                if ($thread['LENGTH'] > 0) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.1\" target=\"right\">[</a>";
-                                    $number.= "{$thread['length']}&nbsp;{$lang['new']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.{$thread['length']}\" target=\"right\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
+                                    $number.= "{$thread['LENGTH']}&nbsp;{$lang['new']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
 
                                 }else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.1\" target=\"right\">[</a>";
-                                    $number = "1&nbsp;{$lang['new']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.{$thread['length']}\" target=\"right\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
+                                    $number = "1&nbsp;{$lang['new']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
                                 }
 
                                 $latest_post = 1;
 
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-                                    $first_thread = $thread['tid'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    $first_thread = $thread['TID'];
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
 
-                            }elseif ($thread['last_read'] < $thread['length']) {
+                            }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
 
-                                $new_posts = $thread['length'] - $thread['last_read'];
+                                $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
 
-                                $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.1\" target=\"right\">[</a>";
-                                $number.= "{$new_posts}&nbsp;{$lang['new']}&nbsp;{$lang['of']}&nbsp;{$thread['length']}";
-                                $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.{$thread['length']}\" target=\"right\">]</a>";
+                                $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
+                                $number.= "{$new_posts}&nbsp;{$lang['new']}&nbsp;{$lang['of']}&nbsp;{$thread['LENGTH']}";
+                                $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
 
-                                $latest_post = $thread['last_read'] + 1;
+                                $latest_post = $thread['LAST_READ'] + 1;
 
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-                                    $first_thread = $thread['tid'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    $first_thread = $thread['TID'];
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
 
                             }else {
 
-                                if ($thread['length'] > 0) {
+                                if ($thread['LENGTH'] > 0) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.1\" target=\"right\">[</a>";
-                                    $number.= "{$thread['length']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.{$thread['length']}\" target=\"right\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
+                                    $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
 
                                 }else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.1\" target=\"right\">[</a>";
-                                    $number.= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.1\" target=\"right\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
+                                    $number.= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">]</a>";
                                 }
 
                                 $latest_post = 1;
 
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-                                    $first_thread = $thread['tid'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    $first_thread = $thread['TID'];
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['tid']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" height=\"15\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
                             }
 
                             echo "</a>";
 
-                            $thread_time = format_time($thread['modified']);
+                            $thread_time = format_time($thread['MODIFIED']);
 
                             echo "&nbsp;</td>\n";
                             echo "          <td valign=\"top\">";
-                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['tid']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['tid']}');\" title=\"#{$thread['tid']} {$lang['startedby']} ", format_user_name($thread['logon'], $thread['nickname']), "\">", apply_wordfilter($thread['title']), "</a> ";
+                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\" title=\"#{$thread['TID']} {$lang['startedby']} ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", apply_wordfilter($thread['TITLE']), "</a> ";
 
-                            if ($thread['interest'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
-                            if ($thread['interest'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
-                            if ($thread['poll_flag'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";
-                            if ($thread['sticky'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" height=\"15\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
-                            if ($thread['relationship'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
+                            if ($thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
+                            if ($thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" height=\"15\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
+                            if ($thread['POLL_FLAG'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" height=\"15\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";
+                            if ($thread['STICKY'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" height=\"15\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
+                            if ($thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
 
-                            if (thread_has_attachments($thread['tid'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
+                            if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
 
                             echo "<bdo dir=\"{$lang['_textdir']}\"><span class=\"threadxnewofy\">{$number}</span></bdo></td>\n";
                             echo "          <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
@@ -611,7 +606,7 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                     echo "<a href=\"";
                     echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";
-                    echo "&amp;fid=".$folder_number."\" target=\"main\" class=\"folderpostnew\">{$lang['postnew']}</a>";
+                    echo "&amp;fid=$folder_number\" target=\"main\" class=\"folderpostnew\">{$lang['postnew']}</a>";
 
                 }else {
 
@@ -718,7 +713,7 @@ echo "<script language=\"JavaScript\" type=\"text/javascript\">\n";
 echo "<!--\n";
 
 if (isset($first_thread)) {
-    echo "current_thread = ".$first_thread.";\n";
+    echo "current_thread = $first_thread;\n";
 }else {
     echo "current_thread = 0;\n";
 }

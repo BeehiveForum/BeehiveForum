@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.84 2005-04-20 18:36:40 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.85 2005-04-23 22:08:28 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -96,7 +96,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
     echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
     echo "  ", form_input_hidden("webtag", $webtag), "\n";
     echo "  ", light_threads_draw_discussions_dropdown($mode), "\n";
-    echo "  ", light_form_submit("go",$lang['goexcmark']), "\n";
+    echo "  ", light_form_submit("go", $lang['goexcmark']), "\n";
     echo "</form>\n";
 
     // The tricky bit - displaying the right threads for whatever mode is selected
@@ -197,15 +197,15 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                     unset($thread[$key]);
                 }
 
-                if (!isset($thread['relationship'])) $thread['relationship'] = 0;
+                if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-                if ($thread['tid'] == $tid) {
+                if ($thread['TID'] == $tid) {
 
-                    if (in_array($thread['fid'], $folder_order)) {
-                        array_splice($folder_order, array_search($thread['fid'], $folder_order), 1);
+                    if (in_array($thread['FID'], $folder_order)) {
+                        array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
                     }
 
-                    array_unshift($folder_order, $thread['fid']);
+                    array_unshift($folder_order, $thread['FID']);
 
                     if (!is_array($thread_info)) $thread_info = array();
 
@@ -282,7 +282,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
-            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=".$folder_number. "\">". apply_wordfilter($folder_info[$folder_number]['TITLE']) . "</a></h3>";
+            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">". apply_wordfilter($folder_info[$folder_number]['TITLE']) . "</a></h3>";
 
             if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
 
@@ -300,7 +300,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
                     if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
 
-                        if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?webtag=$webtag&amp;fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+                        if ($folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?webtag=$webtag&amp;fid=$folder_number\">{$lang['postnew']}</a></b>";
                     }
 
                     echo "</p>\n";
@@ -312,39 +312,39 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                     foreach($thread_info as $key2 => $thread) {
 
                         if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
-                        if (!in_array($thread['tid'], $visiblethreads)) $visiblethreads[] = $thread['tid'];
+                        if (!in_array($thread['TID'], $visiblethreads)) $visiblethreads[] = $thread['TID'];
 
-                        if ($thread['fid'] == $folder_number) {
+                        if ($thread['FID'] == $folder_number) {
 
                             echo "<li>\n";
 
-                            if ($thread['last_read'] == 0) {
+                            if ($thread['LAST_READ'] == 0) {
 
-                                $number = "[".$thread['length']."&nbsp;new]";
+                                $number = "[{$thread['LENGTH']}&nbsp;new]";
                                 $latest_post = 1;
 
-                            }elseif ($thread['last_read'] < $thread['length']) {
+                            }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
 
-                                $new_posts = $thread['length'] - $thread['last_read'];
-                                $number = "[".$new_posts."&nbsp;new&nbsp;of&nbsp;".$thread['length']."]";
-                                $latest_post = $thread['last_read'] + 1;
+                                $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
+                                $number = "[{$new_posts}&nbsp;new&nbsp;of&nbsp;{$thread['LENGTH']}]";
+                                $latest_post = $thread['LAST_READ'] + 1;
 
                             } else {
 
-                                $number = "[".$thread['length']."]";
+                                $number = "[{$thread['LENGTH']}]";
                                 $latest_post = 1;
 
                             }
 
                             // work out how long ago the thread was posted and format the time to display
-                            $thread_time = format_time($thread['modified']);
+                            $thread_time = format_time($thread['MODIFIED']);
 
-                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=".$thread['tid'].".".$latest_post."\" title=\"#".$thread['tid']. " {$lang['startedby']} ". format_user_name($thread['logon'], $thread['nickname']) . "\">".apply_wordfilter($thread['title'])."</a> ";
-                            if ($thread['interest'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
-                            if ($thread['interest'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
-                            if ($thread['poll_flag'] == 'Y') echo "(P) ";
-                            if ($thread['sticky'] == 'Y') echo "(St) ";
-                            if ($thread['relationship']&USER_FRIEND) echo "(Fr) ";
+                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" title=\"#{$thread['TID']} {$lang['startedby']} ". format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">".apply_wordfilter($thread['TITLE'])."</a> ";
+                            if ($thread['INTEREST'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
+                            if ($thread['INTEREST'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
+                            if ($thread['POLL_FLAG'] == 'Y') echo "(P) ";
+                            if ($thread['STICKY'] == 'Y') echo "(St) ";
+                            if ($thread['RELATIONSHIP']&USER_FRIEND) echo "(Fr) ";
                             echo $number." ";
                             echo $thread_time." ";
                             echo "</li>\n";
@@ -364,7 +364,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
                 }elseif ($folder_info[$folder_number]['INTEREST'] != -1) {
 
-                    echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=".$folder_number."\">";
+                    echo "<p><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">";
 
                     if (isset($folder_msgs[$folder_number])) {
                         echo $folder_msgs[$folder_number];
@@ -373,7 +373,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                     }
 
                     echo " {$lang['threads']}</a>";
-                    if ($folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?webtag=$webtag&amp;fid=".$folder_number."\">{$lang['postnew']}</a></b>";
+                    if ($folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD) echo " - <b><a href=\"lpost.php?webtag=$webtag&amp;fid=$folder_number\">{$lang['postnew']}</a></b>";
                     echo "</p>\n";
                 }
 
@@ -415,7 +415,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
         }
 
         echo light_form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n        ";
-        echo light_form_submit("go",$lang['goexcmark']). "\n";
+        echo light_form_submit("go", $lang['goexcmark']). "\n";
         echo "    </form>\n";
 
     }
@@ -533,9 +533,9 @@ function light_form_dropdown_array($name, $value, $label, $default = "")
     for($i=0;$i<count($value);$i++){
         $sel = ($value[$i] == $default) ? " selected=\"selected\"" : "";
         if($label[$i]){
-            $html.= "<option value=\"".$value[$i]."\"$sel>".$label[$i]."</option>";
+            $html.= "<option value=\"{$value[$i]}\"$sel>{$label[$i]}</option>";
         } else {
-            $html.= "<option$sel>".$value[$i]."</option>";
+            $html.= "<option$sel>{$value[$i]}</option>";
         }
     }
     return $html."</select>";
@@ -587,7 +587,7 @@ function light_poll_confirm_close($tid)
 
     light_poll_display($tid, $preview_message, 0, 0, false);
 
-    echo "<p><form name=\"f_delete\" action=\"" . $_SERVER['PHP_SELF'] . "\" method=\"post\" target=\"_self\">";
+    echo "<p><form name=\"f_delete\" action=\"{$_SERVER['PHP_SELF']}\" method=\"post\" target=\"_self\">";
     echo form_input_hidden('webtag', $webtag), "\n";
     echo form_input_hidden("tid", $tid);
     echo form_input_hidden("confirm_pollclose", "Y");
@@ -636,7 +636,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
     $totalvotes       = 0;
     $poll_group_count = 1;
 
-    $polldata['CONTENT'] = "<form method=\"post\" action=\"". $_SERVER['PHP_SELF']. "\" target=\"_self\">\n";
+    $polldata['CONTENT'] = "<form method=\"post\" action=\"{$_SERVER['PHP_SELF']}\" target=\"_self\">\n";
     $polldata['CONTENT'].= form_input_hidden('webtag', $webtag). "\n";
     $polldata['CONTENT'].= form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "<h2>". thread_get_title($tid). "</h2>\n";
@@ -656,7 +656,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
                 $poll_group_count++;
             }
 
-            $polldata['CONTENT'].= light_form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "&nbsp;". $pollresults['OPTION_NAME'][$i]. "<br />\n";
+            $polldata['CONTENT'].= light_form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "&nbsp;{$pollresults['OPTION_NAME'][$i]}<br />\n";
             $poll_previous_group = $pollresults['GROUP_ID'][$i];
 
           }
@@ -764,11 +764,11 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
         if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
 
-          $polldata['CONTENT'].= "<b>". $totalvotes. " {$lang['peoplevoted']}</b>";
+          $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplevoted']}</b>";
 
         }else {
 
-          $polldata['CONTENT'].= "<b>". $totalvotes. " {$lang['peoplehavevoted']}</b>";
+          $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplehavevoted']}</b>";
 
         }
 
@@ -881,11 +881,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     if((strlen($message['CONTENT']) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text && !$is_poll) {
         $message['CONTENT'] = fix_html(substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226))));
-        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=". $tid. ".". $message['PID']. "\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
+        $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
 
     if($in_list){
-        echo "<a name=\"a". $tid. "_". $message['PID']. "\"></a>";
+        echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
@@ -955,7 +955,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
     echo "</p>\n";
 
-    if (!$in_list && isset($message['PID'])) echo "<p><i>{$lang['message']} ".$message['PID'] . " {$lang['of']} " . $msg_count."</i></p>\n";
+    if (!$in_list && isset($message['PID'])) echo "<p><i>{$lang['message']} {$message['PID']} {$lang['of']} $msg_count</i></p>\n";
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
 
@@ -979,7 +979,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
             }
         }
 
-        echo "<p>". $message['CONTENT']. "</p>\n";
+        echo "<p>{$message['CONTENT']}</p>\n";
 
         if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
@@ -1113,7 +1113,7 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
     unset($navbits);
 
-    echo "<p align=\"center\">" . $html . "</p>\n";
+    echo "<p align=\"center\">$html</p>\n";
 }
 
 function light_html_guest_error ()

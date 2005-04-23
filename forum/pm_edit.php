@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.70 2005-04-08 18:18:54 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.71 2005-04-23 22:08:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -425,7 +425,7 @@ echo "        <tr>\n";
 echo "          <td>&nbsp;</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td><h2>". $lang['messageoptions'] .":</h2>\n";
+echo "          <td><h2>{$lang['messageoptions']}:</h2>\n";
 echo "            ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo "            ".form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo "            ".form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."\n";
@@ -497,7 +497,7 @@ if ($post->isDiff() && $fix_html) {
 
     echo "        <tr>\n";
     echo "          <td>\n";
-    echo "            ".$tools->compare_original("t_content", $post->getOriginalContent());
+    echo "            ", $tools->compare_original("t_content", $post->getOriginalContent()), "\n";
     echo "          </td>\n";
     echo "        </tr>\n";
 }
@@ -513,7 +513,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
 
         $tph_radio = $post->getHTML();
 

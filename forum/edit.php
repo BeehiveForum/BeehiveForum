@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.173 2005-04-15 15:20:03 rendle Exp $ */
+/* $Id: edit.php,v 1.174 2005-04-23 22:08:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -133,10 +133,10 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     echo "<br />\n";
 
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>\n";
     echo "<tr><td>\n";
 
-    echo "<h2>".$lang['nomessagespecifiedforedit']."</h2>\n";
+    echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
     echo "</td></tr>\n";
 
     echo "<tr><td align=\"center\">\n";
@@ -156,10 +156,10 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
     echo "<br />\n";
 
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>\n";
     echo "<tr><td>\n";
 
-    echo "<h2>".$lang['nomessagespecifiedforedit']."</h2>\n";
+    echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
     echo "</td></tr>\n";
 
     echo "<tr><td align=\"center\">\n";
@@ -469,7 +469,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (((forum_get_setting('allow_post_editing', 'N')) 
+    if (((forum_get_setting('allow_post_editing', 'N'))
         || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
         || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
         || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !perm_is_moderator($t_fid)) {
@@ -478,10 +478,10 @@ if (isset($_POST['preview'])) {
         echo "<br />\n";
 
         echo "<table class=\"posthead\" width=\"720\">\n";
-        echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+        echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>\n";
         echo "<tr><td>\n";
 
-        echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
+        echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
         echo "</td></tr>\n";
 
         echo "<tr><td align=\"center\">\n";
@@ -533,10 +533,10 @@ if (isset($_POST['preview'])) {
             echo "<br />\n";
 
             echo "<table class=\"posthead\" width=\"720\">\n";
-            echo "<tr><td class=\"subhead\">".$lang['editmessage']."</td></tr>\n";
+            echo "<tr><td class=\"subhead\">{$lang['editmessage']}</td></tr>\n";
             echo "<tr><td>\n";
 
-            echo "<h2>".$lang['editappliedtomessage']."</h2>\n";
+            echo "<h2>{$lang['editappliedtomessage']}</h2>\n";
             echo "</td></tr>\n";
 
             echo "<tr><td align=\"center\">\n";
@@ -606,7 +606,7 @@ if (isset($_POST['preview'])) {
 
         if ($editmessage['CONTENT'] = message_get_content($tid, $pid)) {
 
-            if (((forum_get_setting('allow_post_editing', 'N')) 
+            if (((forum_get_setting('allow_post_editing', 'N'))
                 || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
                 || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
                 || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !perm_is_moderator($t_fid)) {
@@ -615,10 +615,10 @@ if (isset($_POST['preview'])) {
                 echo "<br />\n";
 
                 echo "<table class=\"posthead\" width=\"720\">\n";
-                echo "<tr><td class=\"subhead\">".$lang['error']."</td></tr>\n";
+                echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>\n";
                 echo "<tr><td>\n";
 
-                echo "<h2>".$lang['nopermissiontoedit']."</h2>\n";
+                echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
                 echo "</td></tr>\n";
 
                 echo "<tr><td align=\"center\">\n";
@@ -773,16 +773,16 @@ echo "<td valign=\"top\" width=\"210\">\n";
 echo "<table class=\"posthead\" width=\"210\">\n";
 echo "<tr><td>\n";
 
-echo "<h2>".$lang['folder'].":</h2>\n";
+echo "<h2>{$lang['folder']}:</h2>\n";
 echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
-echo "<h2>".$lang['threadtitle'].":</h2>\n";
+echo "<h2>{$lang['threadtitle']}:</h2>\n";
 echo apply_wordfilter(_stripslashes($threaddata['TITLE'])), "\n";
 
 echo form_input_hidden("t_msg", $edit_msg);
 echo form_input_hidden("t_to_uid", $to_uid);
 echo form_input_hidden("t_from_uid", $from_uid);
 
-echo "<h2>".$lang['to'].":</h2>\n";
+echo "<h2>{$lang['to']}:</h2>\n";
 
 if ($preview_message['TLOGON'] != "ALL") {
 
@@ -795,7 +795,7 @@ if ($preview_message['TLOGON'] != "ALL") {
     echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
 }
 
-echo "<h2>". $lang['messageoptions'] .":</h2>\n";
+echo "<h2>{$lang['messageoptions']}:</h2>\n";
 
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
@@ -833,7 +833,7 @@ echo "<td valign=\"top\" width=\"500\">\n";
 echo "<table class=\"posthead\" width=\"500\">\n";
 echo "<tr><td>\n";
 
-echo "<h2>". $lang['message'] .":</h2>\n";
+echo "<h2>{$lang['message']}:</h2>\n";
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
@@ -871,7 +871,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
 
         $tph_radio = $post->getHTML();
 

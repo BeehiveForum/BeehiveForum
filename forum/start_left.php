@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.95 2005-04-06 17:35:07 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.96 2005-04-23 22:08:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,11 +110,11 @@ if ($thread_array = threads_get_most_recent()) {
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
 
         if (!isset($thread['LAST_READ'])) {
-            echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['TID']."\" align=\"middle\" alt=\"{$lang['unreadthread']}\" title=\"{$lang['unreadthread']}\" />";
+            echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['unreadthread']}\" title=\"{$lang['unreadthread']}\" />";
         }else if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
-            echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t".$thread['TID']."\" align=\"middle\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" />";
+            echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" />";
         }else if ($thread['LAST_READ'] == $thread['LENGTH']) {
-            echo "<img src=\"".style_image('bullet.png')."\" name=\"t".$thread['TID']."\" align=\"middle\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />";
+            echo "<img src=\"".style_image('bullet.png')."\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />";
         }
 
         echo "&nbsp;</td>\n";

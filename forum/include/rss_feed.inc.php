@@ -123,10 +123,12 @@ function rss_read_database($filename)
 
            for ($i = 0; $i < count($ranges); $i+=2) {
 
-               $offset = $ranges[$i] + 1;
-               $len = $ranges[$i + 1] - $offset;
+               if (isset($ranges[$i]) && isset($ranges[$i + 1])) {
 
-               $rss_data[] = rss_parse_item(array_slice($values, $offset, $len));
+                   $offset = $ranges[$i] + 1;
+                   $len = $ranges[$i + 1] - $offset;
+                   $rss_data[] = rss_parse_item(array_slice($values, $offset, $len));
+               }
            }
 
        }else {

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.258 2005-04-22 20:41:15 decoyduck Exp $ */
+/* $Id: post.php,v 1.259 2005-04-23 22:08:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -609,9 +609,9 @@ if ($valid && isset($_POST['submit'])) {
 
                     echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
                     echo "<table class=\"posthead\" width=\"720\">\n";
-                    echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
+                    echo "<tr><td class=\"subhead\">{$lang['threadclosed']}</td></tr>\n";
                     echo "<tr><td>\n";
-                    echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
+                    echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
                     echo "</td></tr>\n";
 
                     echo "<tr><td align=\"center\">\n";
@@ -733,7 +733,7 @@ if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", 
 
 html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
 
-echo "<h1>".$lang['postmessage']."</h1>\n";
+echo "<h1>{$lang['postmessage']}</h1>\n";
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 
@@ -742,17 +742,17 @@ if (!$newthread) {
     if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
 
         echo "<table class=\"posthead\" width=\"720\">\n";
-        echo "<tr><td class=\"subhead\">".$lang['threadclosed']."</td></tr>\n";
+        echo "<tr><td class=\"subhead\">{$lang['threadclosed']}</td></tr>\n";
         echo "<tr><td>\n";
 
         if (perm_is_moderator($t_fid)) {
 
-            echo "<h2>".$lang['moderatorthreadclosed']."</h2>\n";
+            echo "<h2>{$lang['moderatorthreadclosed']}</h2>\n";
             echo "</td></tr>\n";
 
         }else {
 
-            echo "<h2>".$lang['threadisclosedforposting']."</h2>\n";
+            echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
             echo "</td></tr>\n";
 
             echo "<tr><td align=\"center\">\n";
@@ -859,9 +859,9 @@ if ($newthread) {
 
 }else {
 
-    echo "<h2>".$lang['folder'].":</h2>\n";
+    echo "<h2>{$lang['folder']}:</h2>\n";
     echo $threaddata['FOLDER_TITLE'], "\n";
-    echo "<h2>".$lang['threadtitle'], ":</h2>\n";
+    echo "<h2>{$lang['threadtitle']}:</h2>\n";
     echo apply_wordfilter($threaddata['TITLE']), "\n";
 
     echo form_input_hidden("t_tid", $reply_to_tid);
@@ -869,7 +869,7 @@ if ($newthread) {
     echo "<br /><br />\n";
 }
 
-echo "<h2>".$lang['to'].":</h2>\n";
+echo "<h2>{$lang['to']}:</h2>\n";
 
 if (!$newthread) {
     echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true), "<br />\n";
@@ -882,7 +882,7 @@ echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : (
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
 echo form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(".($newthread ? 1 : 2).")\"", "post_to_others")."<br /><br />\n";
 
-echo "<h2>". $lang['messageoptions'] .":</h2>\n";
+echo "<h2>{$lang['messageoptions']}:</h2>\n";
 
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
@@ -892,7 +892,7 @@ echo form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $hi
 if (perm_is_moderator($t_fid)) {
 
     echo "<br />\n";
-    echo "<h2>".$lang['admin'].":</h2>\n";
+    echo "<h2>{$lang['admin']}:</h2>\n";
     echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
     echo form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br />\n";
     echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
@@ -934,7 +934,7 @@ echo "<tr><td>\n";
 
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
-echo "<h2>". $lang['message'] .":</h2>\n";
+echo "<h2>{$lang['message']}:</h2>\n";
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
@@ -973,7 +973,7 @@ if ($allow_html == true) {
 
     }else {
 
-        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
 
         $tph_radio = $post->getHTML();
 
@@ -1058,8 +1058,11 @@ if (isset($_POST['t_dedupe'])) {
 if (!$newthread && $reply_to_pid > 0) {
 
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">". $lang['inreplyto'] .":</td></tr>\n";
-    echo "<tr><td>\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">{$lang['inreplyto']}:</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td>\n";
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
@@ -1070,7 +1073,9 @@ if (!$newthread && $reply_to_pid > 0) {
         message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
     }
 
-    echo "<br /></td></tr>\n";
+    echo "      <br />\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
     echo "</table>\n";
 }
 

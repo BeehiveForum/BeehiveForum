@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.158 2005-04-22 20:41:15 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.159 2005-04-23 22:08:24 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -978,7 +978,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>". $lang['htmlinmessage'] .":</h2>\n";
+        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
 
         $tph_radio = $post->getHTML();
 
@@ -997,7 +997,7 @@ if ($allow_html == true) {
 
 echo "<br />\n";
 
-echo "<h2>". $lang['messageoptions'] .":</h2>\n";
+echo "<h2>{$lang['messageoptions']}:</h2>\n";
 
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";

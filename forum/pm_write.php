@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.117 2005-04-23 19:54:04 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.118 2005-04-23 20:08:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -161,17 +161,31 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
             // Quote the original PM using our psuedo HTML tag
 
-            $t_content = "<quote source=\"";
-            $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-            $t_content.= "\" url=\"pm.php?mid={$pm_data['MID']}\">";
-            $t_content.= trim($pm_data['CONTENT']);
-            $t_content.= "</quote>\n\n";
+            $page_prefs = bh_session_get_post_page_prefs();
 
-            // Set the HTML mode to 'with automatic line breaks' so
-            // the quote is handled correctly when the user previews
-            // the message.
+            if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
-            $post_html = 1;
+                $t_content = "<div class=\"quotetext\" id=\"quote\">";
+                $t_content.= "<b>quote: </b><a href=\"pm.php?mid={$pm_data['MID']}\">";
+                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                $t_content.= "</a></div><div class=\"quote\">";
+                $t_content.= trim($pm_data['CONTENT']);
+                $t_content.= "</div><p>&nbsp;</p>";
+
+            }else {
+
+                $t_content = "<quote source=\"";
+                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
+                $t_content.= "\" url=\"pm.php?mid={$pm_data['MID']}\">";
+                $t_content.= trim($pm_data['CONTENT']);
+                $t_content.= "</quote>\n\n";
+
+                // Set the HTML mode to 'with automatic line breaks' so
+                // the quote is handled correctly when the user previews
+                // the message.
+
+                $post_html = 1;
+            }
         }
 
     }else {
@@ -686,6 +700,7 @@ $tools = new TextAreaHTML("f_post");
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
 $tool_type = 0;
+
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
     $tool_type = 1;
 } else if ($page_prefs & POST_TINYMCE_DISPLAY) {

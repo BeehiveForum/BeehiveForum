@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.246 2005-04-18 17:31:48 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.247 2005-04-24 22:28:47 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -771,18 +771,21 @@ function user_get_aliases($uid)
 
     $user_ip_address_list = implode("' OR IPADDRESS = '", $user_ip_address_array);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
-    $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
-    $sql.= "GROUP BY USER.UID ORDER BY POST.TID DESC LIMIT 0, 10";
+    if (strlen($user_ip_address_list) > 0) {
 
-    $result = db_query($sql, $db_user_get_aliases);
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM {$table_data['PREFIX']}POST POST ";
+        $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
+        $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
+        $sql.= "GROUP BY USER.UID ORDER BY POST.TID DESC LIMIT 0, 10";
 
-    if (db_num_rows($result) > 0) {
+        $result = db_query($sql, $db_user_get_aliases);
 
-        while($user_get_aliases_row = db_fetch_array($result)) {
+        if (db_num_rows($result) > 0) {
 
-            $user_get_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
+            while($user_get_aliases_row = db_fetch_array($result)) {
+
+                $user_get_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
+            }
         }
     }
 

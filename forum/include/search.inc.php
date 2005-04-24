@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.122 2005-04-24 16:47:28 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.123 2005-04-24 17:14:19 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -567,12 +567,9 @@ function search_index_old_post()
     $sql = "SELECT THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, ";
     $sql.= "POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "ON (THREAD.TID = POST_CONTENT.TID) ";
-    $sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ";
-    $sql.= "ON (SEARCH_POSTS.TID = POST.TID AND SEARCH_POSTS.PID = POST.PID ";
-    $sql.= "AND SEARCH_POSTS.FORUM = $forum_fid) ";
-    $sql.= "WHERE SEARCH_POSTS.TID IS NULL AND SEARCH_POSTS.PID IS NULL ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
+    $sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.TID = POST.TID AND SEARCH_POSTS.PID = POST.PID) ";
+    $sql.= "WHERE SEARCH_POSTS.FORUM = $forum_fid AND SEARCH_POSTS.TID IS NULL AND SEARCH_POSTS.PID IS NULL ";
     $sql.= "LIMIT 0, 1";
 
     $result = db_query($sql, $db_search_index_old_post);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.98 2005-04-20 22:41:57 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.99 2005-04-24 22:24:48 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -245,7 +245,9 @@ function folder_update($fid, $folder_data)
     $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
     $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}')";
 
-    return db_query($sql, $db_folder_update);
+    $result = db_query($sql, $db_folder_update);
+
+    return true;
 }
 
 function folder_move_threads($from, $to)

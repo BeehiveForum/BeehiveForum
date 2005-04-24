@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.282 2005-04-23 19:37:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.283 2005-04-24 22:24:48 decoyduck Exp $ */
 
 // International English language file
 
@@ -389,8 +389,9 @@ $lang['successfullycreatedforum'] = "Successfully created forum";
 $lang['failedtocreateforum_1'] = "Failed to create forum";
 $lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 $lang['nameanddesc'] = "Name and Description";
-$lang['moveposts'] = "Move Posts";
-$lang['movepoststofolder'] = "Move posts to folder";
+$lang['movethreads'] = "Move Threads";
+$lang['threadsmovedsuccessfully'] = "Threads moved successfully";
+$lang['movethreadstofolder'] = "Move threads to folder";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
 $lang['addnewfolder'] = "Add New Folder";
 $lang['mustenterfoldername'] = "You must enter a folder name";
@@ -398,6 +399,7 @@ $lang['nofolderidspecified'] = "No Folder ID specified";
 $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
 $lang['successfullyaddedfolder'] = "Successfully Added Folder";
 $lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
+$lang['folderupdatedsuccessfully'] = "Folder updated successfully";
 $lang['forumisnotrestricted'] = "Forum is not restricted";
 $lang['noforumidspecified'] = "No Forum ID specified";
 $lang['groups'] = "Groups";

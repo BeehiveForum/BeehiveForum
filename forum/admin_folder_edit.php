@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.32 2005-03-28 23:45:07 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.33 2005-04-24 22:24:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -121,7 +121,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
         $folder_data['TITLE'] = trim(_stripslashes($_POST['name']));
     }else {
-        $error_html = "<h2>{$lang['mustenterfoldername']}</h2>\n";
+        $status_html = "<h2>{$lang['mustenterfoldername']}</h2>\n";
         $valid = false;
     }
 
@@ -180,7 +180,10 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        folder_update($fid, $folder_data);
+        if (folder_update($fid, $folder_data)) {
+
+            $status_html = "<h2>{$lang['folderupdatedsuccessfully']}</h2>\n";
+        }
 
         admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data);
 
@@ -189,7 +192,10 @@ if (isset($_POST['submit'])) {
 
             if ($fid != $_POST['move']) {
 
-                folder_move_threads($fid, $_POST['move']);
+                if (folder_move_threads($fid, $_POST['move'])) {
+
+                    $status_html = "<h2>{$lang['threadsmovedsuccessfully']}</h2>\n";
+                }
 
                 $new_folder_title = folder_get_title($_POST['move']);
 
@@ -219,11 +225,10 @@ $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lan
 $allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
 
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['managefolders']} : {$folder_data['TITLE']}</h1>\n";
+echo "<br />\n";
 
-if (isset($error_html) && strlen($error_html) > 0) {
-    echo $error_html;
-}else {
-    echo "<br />\n";
+if (isset($status_html) && strlen($status_html) > 0) {
+    echo $status_html;
 }
 
 echo "<div align=\"center\">\n";
@@ -259,17 +264,17 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if ($folder_dropdown = folder_draw_dropdown($folder_data['FID'], "move", "", FOLDER_ALLOW_ALL_THREAD, "", "post_folder_dropdown")) {
+if ($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], "move", "", "", "post_folder_dropdown")) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['moveposts']}</td>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['movethreads']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"200\" class=\"posthead\">{$lang['movepoststofolder']}:</td>\n";
+    echo "                  <td width=\"200\" class=\"posthead\">{$lang['movethreadstofolder']}:</td>\n";
     echo "                  <td>", $folder_dropdown, "&nbsp;", form_checkbox("move_confirm", "Y", $lang['confirm']), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";

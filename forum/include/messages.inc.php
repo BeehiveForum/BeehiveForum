@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.365 2005-04-23 22:08:28 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.366 2005-04-24 22:24:48 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -71,78 +71,65 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         $messages = array();
 
-        for ($i = 0; $message = db_fetch_array($result); $i++) {
+        while($message = db_fetch_array($result)) {
 
-            $messages[$i]['FID'] = $message['FID'];
-            $messages[$i]['PID'] = $message['PID'];
-            $messages[$i]['REPLY_TO_PID'] = $message['REPLY_TO_PID'];
-            $messages[$i]['FROM_UID'] = $message['FROM_UID'];
-            $messages[$i]['TO_UID'] = $message['TO_UID'];
-            $messages[$i]['CREATED'] = $message['CREATED'];
-            $messages[$i]['VIEWED'] = isset($message['VIEWED']) ? $message['VIEWED'] : 0;
-            $messages[$i]['APPROVED'] = isset($message['APPROVED']) ? $message['APPROVED'] : 0;
-            $messages[$i]['APPROVED_BY'] = isset($message['APPROVED_BY']) ? $message['APPROVED_BY'] : 0;
-            $messages[$i]['APPROVED_LOGON'] = isset($message['APPROVED_LOGON']) ? $message['APPROVED_LOGON'] : 0;
-            $messages[$i]['EDITED'] = isset($message['EDITED']) ? $message['EDITED'] : 0;
-            $messages[$i]['EDIT_LOGON'] = isset($message['EDIT_LOGON']) ? $message['EDIT_LOGON'] : 0;
-            $messages[$i]['IPADDRESS'] = isset($message['IPADDRESS']) ? $message['IPADDRESS'] : "";
-            $messages[$i]['CONTENT'] = "";
-            $messages[$i]['FROM_RELATIONSHIP'] = isset($message['FROM_RELATIONSHIP']) ? $message['FROM_RELATIONSHIP'] : 0;
-            $messages[$i]['TO_RELATIONSHIP'] = isset($message['TO_RELATIONSHIP']) ? $message['TO_RELATIONSHIP'] : 0;
+            $message['CONTENT'] = "";
 
-            if (isset($message['FNICK'])) {
+            if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
 
-                $messages[$i]['FNICK'] = $message['FNICK'];
-                $messages[$i]['FLOGON'] = $message['FLOGON'];
+            if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
+            if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
+            if (!isset($message['APPROVED_LOGON'])) $message['APPROVED_LOGON'] = 0;
 
-            }else {
+            if (!isset($message['EDITED'])) $message['EDITED'] = 0;
+            if (!isset($message['EDIT_LOGON'])) $message['EDIT_LOGON'] = 0;
 
-                $messages[$i]['FNICK'] = "Unknown User";
-                $messages[$i]['FLOGON'] = "Unknown User";
-                $messages[$i]['FROM_UID'] = -1;
-            }
+            if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
 
-            if (isset($message['TNICK'])) {
+            if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
+            if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
 
-                $messages[$i]['TNICK'] = $message['TNICK'];
-                $messages[$i]['TLOGON'] = $message['TLOGON'];
+            if (!isset($message['FNICK'])) $message['FNICK'] = "Unknown User";
+            if (!isset($message['FLOGON'])) $message['FLOGON'] = "Unknown User";
+            if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
 
-            }else {
+            if (!isset($message['TNICK'])) $message['TNICK'] = "ALL";
+            if (!isset($message['TLOGON'])) $message['TLOGON'] = "ALL";
 
-                $messages[$i]['TNICK'] = "ALL";
-                $messages[$i]['TLOGON'] = "ALL";
-            }
+            $messages[] = $message;
         }
+
+        return $messages;
 
     }else {
 
         $messages = db_fetch_array($result);
 
         if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
+
         if (!isset($messages['APPROVED'])) $messages['APPROVED'] = 0;
         if (!isset($messages['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
         if (!isset($messages['APPROVED_LOGON'])) $messages['APPROVED_LOGON'] = 0;
+
         if (!isset($messages['EDITED'])) $messages['EDITED'] = 0;
         if (!isset($messages['EDIT_LOGON'])) $messages['EDIT_LOGON'] = 0;
+
         if (!isset($messages['IPADDRESS'])) $messages['IPADDRESS'] = "";
+
         if (!isset($messages['FROM_RELATIONSHIP'])) $messages['FROM_RELATIONSHIP'] = 0;
         if (!isset($messages['TO_RELATIONSHIP'])) $messages['TO_RELATIONSHIP'] = 0;
 
-        if (!isset($messages['FNICK'])) {
+        if (!isset($message['FNICK'])) $message['FNICK'] = "Unknown User";
+        if (!isset($message['FLOGON'])) $message['FLOGON'] = "Unknown User";
+        if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
 
-            $messages['FNICK'] = "Unknown User";
-            $messages['FLOGON'] = "Unknown User";
-            $mssagess['FROM_UID'] = -1;
-        }
+        if (!isset($message['TNICK'])) $message['TNICK'] = "ALL";
+        if (!isset($message['TLOGON'])) $message['TLOGON'] = "ALL";
 
-        if (!isset($messages['TNICK'])) {
-
-            $messages['TNICK'] = "ALL";
-            $messages['TLOGON'] = "ALL";
-        }
+        return $messages;
     }
 
-    return isset($messages) ? $messages : false;
+    return false;
 }
 
 function message_get_content($tid, $pid)

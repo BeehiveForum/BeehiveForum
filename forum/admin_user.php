@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.149 2005-04-15 21:26:51 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.150 2005-04-24 22:24:47 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -135,9 +135,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }
 
 $user = user_get($uid);
-$user_perms = perm_get_user_permissions($uid);
-
-
+$user_perms = perm_get_forum_user_permissions($uid);
 
 // Draw the form
 echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$user['LOGON']}</h1>\n";
@@ -219,7 +217,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     perm_update_user_permissions($uid, $new_user_perms);
 
-    $user_perms = perm_get_user_permissions($uid);
+    $user_perms = perm_get_forum_user_permissions($uid);
 
     // Global user permissions
 

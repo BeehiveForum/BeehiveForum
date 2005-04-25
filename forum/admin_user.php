@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.150 2005-04-24 22:24:47 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.151 2005-04-25 21:23:16 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -88,13 +88,6 @@ if (!$webtag = get_webtag($webtag_search)) {
 // Load language file
 
 $lang = load_language_file();
-
-// Check that we have access to this forum
-
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri(true));
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
-}
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "./messages.php?webtag=$webtag&msg={$_GET['msg']}";

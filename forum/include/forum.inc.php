@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.141 2005-04-25 19:48:56 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.142 2005-04-25 21:23:22 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -158,16 +158,47 @@ function forum_check_access_level()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(FORUMS.FID) AS FID_COUNT FROM FORUMS FORUMS ";
+    $forum_fid = $table_data['FID'];
+
+    $sql = "SELECT FORUMS.ACCESS_LEVEL FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID) ";
-    $sql.= "WHERE (FORUMS.ACCESS_LEVEL IN (0, 2) ";
-    $sql.= "OR (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1 ";
-    $sql.= "AND USER_FORUM.UID = $uid)) AND FORUMS.FID = '{$table_data['FID']}'";
+    $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1 AND USER_FORUM.UID = $uid) ";
+    $sql.= "OR FORUMS.ACCESS_LEVEL IN (-1, 0, 2) AND FORUMS.FID = $forum_fid";
 
     $result = db_query($sql, $db_forum_check_access_level);
-    list($fid_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return ($fid_count > 0);
+    if (db_num_rows($result) > 0) {
+
+        $forum_data = db_fetch_array($result);
+
+        if (isset($forum_data['ACCESS_LEVEL']) && $forum_data['ACCESS_LEVEL'] < 0) {
+
+            forum_closed_message();
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+function forum_closed_message()
+{
+    $lang = load_language_file();
+
+    html_draw_top();
+
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+    echo "<h1>{$lang['closed']}</h1>\n";
+    echo "<h2>$forum_name {$lang['iscurrentlyclosed']}</h2>\n";
+
+    if (perm_has_admin_access() || perm_has_forumtools_access()) {
+        echo "<p>{$lang['adminforumclosedtip']}</p>\n";
+    }
+
+    html_draw_bottom();
+    exit;
 }
 
 function forum_check_password($forum_data)

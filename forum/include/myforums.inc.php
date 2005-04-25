@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.40 2005-04-21 22:16:55 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.41 2005-04-25 19:48:57 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -51,7 +51,7 @@ function get_forum_list()
 
             $forum_fid = $forum_data['FID'];
 
-            $forum_settings = forum_get_settings($forum_fid);
+            $forum_settings = forum_get_settings_by_fid($forum_fid);
 
             foreach($forum_settings as $key => $value) {
                 if (!isset($forum_data[strtoupper($key)])) {
@@ -116,7 +116,7 @@ function get_my_forums()
 
             $forum_fid = $forum_data['FID'];
 
-            $forum_settings = forum_get_settings($forum_fid);
+            $forum_settings = forum_get_settings_by_fid($forum_fid);
 
             foreach($forum_settings as $key => $value) {
                 if (!isset($forum_data[strtoupper($key)])) {

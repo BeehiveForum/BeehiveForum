@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.140 2005-04-21 22:16:55 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.141 2005-04-25 19:48:56 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -250,7 +250,7 @@ function forum_check_password($forum_data)
     return true;
 }
 
-function forum_get_settings($fid = false, $current_only = false)
+function forum_get_settings()
 {
     $db_forum_get_settings = db_connect();
 
@@ -258,13 +258,9 @@ function forum_get_settings($fid = false, $current_only = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (is_numeric($fid) || !$forum_settings) {
+    $forum_fid = $table_data['FID'];
 
-        if (is_numeric($fid)) {
-            $forum_fid = $fid;
-        }else {
-            $forum_fid = $table_data['FID'];
-        }
+    if (!is_array($forum_settings)) {
 
         $forum_settings = array('fid' => $forum_fid);
 
@@ -285,11 +281,8 @@ function forum_get_settings($fid = false, $current_only = false)
         }
     }
 
-    if ($current_only === false) {
-        return array_merge(forum_get_default_settings(), $forum_settings);
-    }
-
-    return $forum_settings;
+    $default_forum_settings = forum_get_default_settings();
+    return array_merge($default_forum_settings, $forum_settings);
 }
 
 function forum_get_default_settings()
@@ -311,6 +304,34 @@ function forum_get_default_settings()
     }
 
     return $default_forum_settings;
+}
+
+function forum_get_settings_by_fid($fid)
+{
+    $db_forum_get_settings_by_fid = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    $forum_settings_by_fid = array('fid' => $fid);
+
+    $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = $fid";
+    $result = db_query($sql, $db_forum_get_settings_by_fid);
+
+    list($webtag, $access_level) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $forum_settings_by_fid['webtag'] = $webtag;
+    $forum_settings_by_fid['access_level'] = $access_level;
+
+    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = $fid";
+    $result = db_query($sql, $db_forum_get_settings_by_fid);
+
+    while ($row = db_fetch_array($result)) {
+
+        $forum_settings_by_fid[$row['SNAME']] = $row['SVALUE'];
+    }
+
+    $default_forum_settings = forum_get_default_settings();
+    return array_merge($default_forum_settings, $forum_settings_by_fid);
 }
 
 function forum_save_settings($forum_settings_array)

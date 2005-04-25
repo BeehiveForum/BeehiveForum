@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.67 2005-04-22 20:17:34 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.68 2005-04-25 19:48:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -95,7 +95,7 @@ if (isset($_POST['submit'])) {
 
     admin_clear_word_filter();
 
-    $new_forum_settings = forum_get_settings(false, true);
+    $new_forum_settings = forum_get_settings();
 
     if (isset($_POST['match']) && is_array($_POST['match'])) {
 

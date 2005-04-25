@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.113 2005-04-23 22:08:25 decoyduck Exp $ */
+/* $Id: index.php,v 1.114 2005-04-25 19:48:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -57,14 +57,14 @@ $user_sess = bh_session_check(false);
 
 // Does the forum allow auto logon of guests?
 
-$auto_logon = forum_get_setting('auto_logon', 'Y');
+$guest_auto_logon = forum_get_setting('guest_auto_logon', 'Y');
 
 // Top frame and style sheet
 
 $top_html   = html_get_top_page();
 $stylesheet = html_get_style_sheet();
 
-if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (user_guest_enabled() && $auto_logon && !isset($_COOKIE['bh_logon']))) {
+if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (user_guest_enabled() && $guest_auto_logon) && !isset($_COOKIE['bh_logon'])) {
 
     // Load language file
 
@@ -225,7 +225,7 @@ echo "<body>\n";
 
 define('BEEHIVE_LIGHT_INCLUDE', true);
 
-if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (user_guest_enabled() && $auto_logon && !isset($_COOKIE['bh_logon']))) {
+if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (user_guest_enabled() && $guest_auto_logon && !isset($_COOKIE['bh_logon']))) {
 
     light_draw_logon_form();
 

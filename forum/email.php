@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.63 2005-04-20 18:42:26 decoyduck Exp $ */
+/* $Id: email.php,v 1.64 2005-04-25 19:48:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -76,25 +76,27 @@ $lang = load_language_file();
 // Check that we have access to this forum
 
 if (!forum_check_access_level()) {
+
     $request_uri = rawurlencode(get_request_uri(true));
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 if (bh_session_get_value('UID') == 0) {
+
     html_guest_error();
     exit;
 }
 
-if (isset($_POST['cancel'])) {
-    $uri = "./user_profile.php?webtag=$webtag&uid=". $_POST['t_to_uid'];
-    header_redirect($uri);
-}
-
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+
     $to_uid = $_GET['uid'];
-}else if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
-    $to_uid = $_POST['t_to_uid'];
+
+}else if (isset($_POST['to_uid']) && is_numeric($_POST['to_uid'])) {
+
+    $to_uid = $_POST['to_uid'];
+
 }else {
+
     html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<h2>{$lang['nouserspecifiedforemail']}</h2>";
@@ -102,14 +104,20 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     exit;
 }
 
+if (isset($_POST['cancel'])) {
+
+    $uri = "./user_profile.php?webtag=$webtag&uid=$to_uid";
+    header_redirect($uri);
+}
+
+$uid = bh_session_get_value('UID');
+
 $to_user = user_get($to_uid);
-$from_user = user_get(bh_session_get_value('UID'));
+$from_user = user_get($uid);
 
 if (isset($_POST['submit'])) {
 
     $valid = true;
-
-    $message = _stripslashes($_POST['t_message']);
 
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
         $subject = trim(_stripslashes($_POST['t_subject']));
@@ -137,79 +145,121 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        $email_lang = email_get_language($to_user['UID']);
-
-        $message = wordwrap($message . "\n\n{$lang['msgsentfrombeehiveforumby']} ".$from_user['LOGON']);
-
-        $header = "From: \"{$from_user['NICKNAME']}\" <{$from_user['EMAIL']}>\n";
-        $header.= "Reply-To: \"{$from_user['NICKNAME']}\" <{$from_user['EMAIL']}>\n";
-        $header.= "Content-type: text/plain; charset={$email_lang['_charset']}\n";
-        $header.= "X-Mailer: PHP/". phpversion();
-
         html_draw_top("title={$lang['emailresult']}");
 
-        echo "<br />\n";
         echo "<div align=\"center\">\n";
+        echo "<form name=\"f_email\" action=\"user_profile.php\" method=\"get\">\n";
+        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden("uid", $to_uid), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"480\">\n";
+        echo "    <tr>\n";
+        echo "      <td>\n";
+        echo "        <table class=\"box\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"480\">\n";
 
-        if (@mail($to_user['EMAIL'], $subject, $message, $header)) {
-            echo "<p>{$lang['msgsent']}.</p>";
+        if (email_send_message_to_user($to_uid, $uid, $subject, $message)) {
+
+            echo "                <tr>\n";
+            echo "                  <td class=\"subhead\">{$lang['msgsent']}</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>{$lang['msgsentsuccessfully']}</td>\n";
+            echo "                </tr>\n";
+
         }else {
-            echo "<p>{$lang['msgfail']}</p>";
+
+            echo "                <tr>\n";
+            echo "                  <td class=\"subhead\">{$lang['msgfail']}</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>{$lang['mailsystemfailure']}</td>\n";
+            echo "                </tr>\n";
         }
 
-        echo form_quick_button("./user_profile.php", $lang['continue'], "uid", $to_uid);
+        echo "                <tr>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("submit", $lang['continue']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
+        echo "</div>\n";
+
         html_draw_bottom();
         exit;
     }
 }
 
-html_draw_top("{$lang['email']} ".$to_user['LOGON']);
-
-if (isset($error)) echo $error;
+html_draw_top("{$lang['email']} {$to_user['LOGON']}");
 
 if (!isset($subject)) $subject = "";
 if (!isset($message)) $message = "";
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"f_email\" action=\"email.php\" method=\"post\">\n";
-echo "    ", form_input_hidden('webtag', $webtag), "\n";
-echo "    ", form_input_hidden("t_to_uid", $to_uid), "\n";
-echo "    <table width=\"480\" class=\"box\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "      <tr>\n";
-echo "        <td>\n";
-echo "          <table width=\"100%\" class=\"subhead\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "            <tr>\n";
-echo "              <td><h2>&nbsp;{$lang['email']}&nbsp;{$to_user['NICKNAME']}</h2></td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "          <table width=\"100%\" class=\"posthead\" border=\"0\">\n";
-echo "            <tr>\n";
-echo "              <td>\n";
-echo "                <table width=\"100%\">\n";
-echo "                  <tr>\n";
-echo "                    <td class=\"subhead\" width=\"25%\">{$lang['from']}:</td>\n";
-echo "                    <td class=\"posthead\">{$from_user['NICKNAME']} ({$from_user['EMAIL']})</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td class=\"subhead\">{$lang['subject']}:</td>\n";
-echo "                    <td class=\"posthead\">", form_field("t_subject", $subject, 54, 128), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td class=\"subhead\" valign=\"top\">{$lang['message']}:</td>\n";
-echo "                    <td class=\"posthead\">", form_textarea("t_message", $message, 12, 51), "</td>\n";
-echo "                  </tr>\n";
-echo "                  <tr>\n";
-echo "                    <td>&nbsp;</td>\n";
-echo "                    <td class=\"posthead\" align=\"right\">", form_submit("submit", $lang['send']), "&nbsp;", form_submit("cancel", $lang['cancel']), "&nbsp;</td>\n";
-echo "                  </tr>\n";
-echo "                </table>\n";
-echo "              </td>\n";
-echo "            </tr>\n";
-echo "          </table>\n";
-echo "        </td>\n";
-echo "      </tr>\n";
-echo "    </table>\n";
-echo "  </form>\n";
+echo "<form name=\"f_email\" action=\"email.php\" method=\"post\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden("to_uid", $to_uid), "\n";
+
+if (isset($error) && strlen(trim($error)) > 0) {
+
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"480\">\n";
+    echo "    <tr>\n";
+    echo "      <td>$error</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+}
+
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"480\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"480\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['email']}&nbsp;{$to_user['NICKNAME']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td width=\"25%\">{$lang['from']}:</td>\n";
+echo "                  <td>{$from_user['NICKNAME']} ({$from_user['EMAIL']})</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td>{$lang['subject']}:</td>\n";
+echo "                  <td>", form_field("t_subject", $subject, 54, 128), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td valign=\"top\">{$lang['message']}:</td>\n";
+echo "                  <td>", form_textarea("t_message", $message, 12, 51), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['send']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

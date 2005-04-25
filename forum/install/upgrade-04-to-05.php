@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.29 2005-04-07 14:54:01 tribalonline Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.30 2005-04-25 19:48:58 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1006,7 +1006,6 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                                              'allow_polls'            => 'Y',
                                              'show_stats'             => 'Y',
                                              'guest_account_enabled'  => 'Y',
-                                             'auto_logon'             => 'Y',
                                              'allow_search_spidering' => 'Y'),
 
                                 '0' => array('show_pms'                   => 'Y',
@@ -1021,7 +1020,9 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                                              'attachments_enabled'        => 'Y',
                                              'attachments_max_user_space' => '1048576',
                                              'attachments_allow_embed'    => 'N',
-                                             'attachment_use_old_method'  => 'N'));
+                                             'attachment_use_old_method'  => 'N',
+                                             'guest_account_enabled'      => 'Y',
+                                             'guest_auto_logon'           => 'Y'));
 
         foreach ($forum_settings as $forum => $settings_array) {
 

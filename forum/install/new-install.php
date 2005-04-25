@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.61 2005-04-24 22:24:48 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.62 2005-04-25 19:48:58 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -874,7 +874,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $forum_settings = array('1' => array('forum_name'             => 'A Beehive Forum',
-                                     'forum_email'            => 'adminabeehiveforum.net',
+                                     'forum_email'            => 'admin@abeehiveforum.net',
                                      'forum_desc'             => 'A Beehive Forum',
                                      'forum_keywords'         => 'BeehiveForums, Beehive, Forum, Community',
                                      'default_style'          => 'default',
@@ -886,7 +886,6 @@ $forum_settings = array('1' => array('forum_name'             => 'A Beehive Foru
                                      'allow_polls'            => 'Y',
                                      'show_stats'             => 'Y',
                                      'guest_account_enabled'  => 'Y',
-                                     'auto_logon'             => 'Y',
                                      'allow_search_spidering' => 'Y'),
 
                         '0' => array('show_pms'                   => 'Y',
@@ -900,7 +899,9 @@ $forum_settings = array('1' => array('forum_name'             => 'A Beehive Foru
                                      'attachments_enabled'        => 'Y',
                                      'attachments_max_user_space' => '1048576',
                                      'attachments_allow_embed'    => 'N',
-                                     'attachment_use_old_method'  => 'N'));
+                                     'attachment_use_old_method'  => 'N',
+                                     'guest_account_enabled'      => 'Y',
+                                     'guest_auto_logon'           => 'Y'));
 
 foreach ($forum_settings as $forum => $settings_array) {
 

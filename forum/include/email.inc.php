@@ -21,9 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.91 2005-04-08 17:38:40 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.92 2005-04-25 19:48:56 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
@@ -409,6 +410,52 @@ function email_send_user_confirmation($tuid)
         $message.= "{$lang['confirmemail_9']}";
 
         $header = "From: \"$forum_name\" <$forum_email>\n";
+        $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
+        $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+        $header.= "X-Mailer: PHP/". phpversion();
+
+        // SF.net Bug #1040563:
+        // -------------------
+        // RFC2822 compliancy requires that the RCPT TO portion of the
+        // email headers only contain the email address in < >
+        // i.e. <someuser@abeehiveforum.net>
+
+        if (@mail($to_user['EMAIL'], $subject, $message, $header)) return true;
+    }
+
+    return false;
+}
+
+function email_send_message_to_user($tuid, $fuid, $subject, $message)
+{
+    if (!check_mail_variables()) return false;
+
+    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($fuid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_settings = forum_get_settings();
+    $webtag = get_webtag($webtag_search);
+
+    if ($to_user = user_get($tuid)) {
+
+        $from_user = user_get($fuid);
+
+        // Validate the email address before we continue.
+
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
+
+        // get the right language for the email
+        $lang = email_get_language($to_user['UID']);
+
+        $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+        $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
+
+        $sent_from = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
+        $message.= sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from);
+
+        $header = "From: \"{$from_user['NICKNAME']}\" <{$from_user['EMAIL']}>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
         $header.= "X-Mailer: PHP/". phpversion();

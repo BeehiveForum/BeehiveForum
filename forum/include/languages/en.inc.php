@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.283 2005-04-24 22:24:48 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.284 2005-04-25 19:48:57 decoyduck Exp $ */
 
 // International English language file
 
@@ -795,7 +795,9 @@ $lang['changewhenpollcloses'] = "Change when the poll closes?";
 $lang['nochange'] = "No change";
 $lang['emailresult'] = "Email result";
 $lang['msgsent'] = "Message sent";
-$lang['msgfail'] = "Mail system failure. Message not sent.";
+$lang['msgsentsuccessfully'] = "Message sent successfully.";
+$lang['msgfail'] = "Message failed";
+$lang['mailsystemfailure'] = "Mail system failure. Message not sent.";
 $lang['nopermissiontoedit'] = "You are not permitted to edit this message.";
 $lang['pollediterror'] = "You cannot edit polls";
 $lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
@@ -805,7 +807,7 @@ $lang['cannoteditpostsinthisfolder'] = "You cannot edit posts in this folder";
 $lang['nouserspecifiedforemail'] = "No user specified for emailing.";
 $lang['entersubjectformessage'] = "Enter a subject for the message";
 $lang['entercontentformessage'] = "Enter some content for the message";
-$lang['msgsentfrombeehiveforumby'] = "This message was sent from a Beehive Forum by";
+$lang['msgsentfromby'] = "This message was sent from %s by %s";
 $lang['subject'] = "Subject";
 $lang['send'] = "Send";
 

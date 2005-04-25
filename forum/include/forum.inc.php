@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.142 2005-04-25 21:23:22 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.143 2005-04-25 21:34:13 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -160,10 +160,9 @@ function forum_check_access_level()
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT FORUMS.ACCESS_LEVEL FROM FORUMS FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID) ";
-    $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1 AND USER_FORUM.UID = $uid) ";
-    $sql.= "OR FORUMS.ACCESS_LEVEL IN (-1, 0, 2) AND FORUMS.FID = $forum_fid";
+    $sql = "SELECT FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS FORUMS ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = $uid) ";
+    $sql.= "WHERE FORUMS.FID = $forum_fid";
 
     $result = db_query($sql, $db_forum_check_access_level);
 
@@ -171,9 +170,16 @@ function forum_check_access_level()
 
         $forum_data = db_fetch_array($result);
 
-        if (isset($forum_data['ACCESS_LEVEL']) && $forum_data['ACCESS_LEVEL'] < 0) {
+        if (isset($forum_data['ACCESS_LEVEL'])) {
 
-            forum_closed_message();
+            if ($forum_data['ACCESS_LEVEL'] == -1) {
+
+                forum_closed_message();
+
+            }elseif ($forum_data['ACCESS_LEVEL'] == 1 && $forum_data['ALLOWED'] != 1) {
+
+                forum_restricted_message();
+            }
         }
 
         return true;
@@ -192,6 +198,26 @@ function forum_closed_message()
 
     echo "<h1>{$lang['closed']}</h1>\n";
     echo "<h2>$forum_name {$lang['iscurrentlyclosed']}</h2>\n";
+
+    if (perm_has_admin_access() || perm_has_forumtools_access()) {
+        echo "<p>{$lang['adminforumclosedtip']}</p>\n";
+    }
+
+    html_draw_bottom();
+    exit;
+}
+
+function forum_restricted_message()
+{
+    $lang = load_language_file();
+
+    html_draw_top();
+
+    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+    echo "<h1>{$lang['restricted']}</h1>\n";
+    echo "<h2>{$lang['youdonothaveaccessto']} $forum_name.</h2>\n";
+    echo "<h2>{$lang['toapplyforaccessplease']}</h2>\n";
 
     if (perm_has_admin_access() || perm_has_forumtools_access()) {
         echo "<p>{$lang['adminforumclosedtip']}</p>\n";

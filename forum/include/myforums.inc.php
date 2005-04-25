@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.41 2005-04-25 19:48:57 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.42 2005-04-25 21:23:22 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -37,11 +37,9 @@ function get_forum_list()
     $uid = bh_session_get_value('UID');
 
     $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
-    $sql.= "(USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
-    $sql.= "WHERE FORUMS.ACCESS_LEVEL = 0 OR (FORUMS.ACCESS_LEVEL = 1 ";
-    $sql.= "AND USER_FORUM.ALLOWED = 1) ";
-    $sql.= "ORDER BY FORUMS.FID";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID) ";
+    $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1 AND USER_FORUM.UID = $uid) ";
+    $sql.= "OR FORUMS.ACCESS_LEVEL IN (-1, 0, 2) ORDER BY FORUMS.FID";
 
     $result_forums = db_query($sql, $db_get_forum_list);
 
@@ -102,11 +100,9 @@ function get_my_forums()
     $uid = bh_session_get_value('UID');
 
     $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON ";
-    $sql.= "(USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
-    $sql.= "WHERE FORUMS.ACCESS_LEVEL = 0 OR (FORUMS.ACCESS_LEVEL = 1 ";
-    $sql.= "AND USER_FORUM.ALLOWED = 1) ";
-    $sql.= "ORDER BY FORUMS.FID";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID) ";
+    $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 1 AND USER_FORUM.ALLOWED = 1 AND USER_FORUM.UID = $uid) ";
+    $sql.= "OR FORUMS.ACCESS_LEVEL IN (-1, 0, 2) ORDER BY FORUMS.FID";
 
     $result_forums = db_query($sql, $db_get_my_forums);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.75 2005-04-25 19:48:55 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.76 2005-04-25 21:23:13 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -129,8 +129,6 @@ if (isset($_POST['changepermissions'])) {
 }elseif (isset($_POST['submit'])) {
 
     $valid = true;
-
-    $new_forum_settings = forum_get_settings();
 
     if (isset($_POST['forum_name']) && strlen(trim(_stripslashes($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(_stripslashes($_POST['forum_name']));

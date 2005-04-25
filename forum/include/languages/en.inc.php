@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.284 2005-04-25 19:48:57 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.285 2005-04-25 21:23:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -218,6 +218,8 @@ $lang['move'] = "Move";
 $lang['closed'] = "Closed";
 $lang['open'] = "Open";
 $lang['restricted'] = "Restricted";
+$lang['iscurrentlyclosed'] = "is currently closed";
+$lang['adminforumclosedtip'] = "If you want to change some settings on your forum click the Admin link in the nav bar above.";
 $lang['newfolder'] = "New Folder";
 $lang['forumadmin'] = "Forum Admin";
 $lang['adminexp_1'] = "Use the menu on the left to manage things in your forum.";

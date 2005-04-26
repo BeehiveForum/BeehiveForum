@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.287 2005-04-26 18:37:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.288 2005-04-26 22:41:44 decoyduck Exp $ */
 
 // International English language file
 
@@ -1110,8 +1110,8 @@ $lang['mustprovidefolderid'] = "Valid folder ID must be provided";
 $lang['moderatorlist'] = "Moderator list:";
 $lang['modsforfolder'] = "Moderators for folder";
 $lang['nomodsfound'] = "No moderators found";
-$lang['forumlevelmods'] = "Forum level moderators:";
-$lang['folderlevelmods'] = "Folder level moderators:";
+$lang['forumleaders'] = "Forum leaders:";
+$lang['foldermods'] = "Folder moderators:";
 
 // Navigation strip (nav.php) ------------------------------------------
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.163 2005-04-23 18:00:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.164 2005-04-26 18:37:43 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -43,6 +43,60 @@ function html_guest_error ()
      echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
      echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
      html_draw_bottom();
+}
+
+function html_email_confirmation_error()
+{
+    $lang = load_language_file();
+
+    $webtag = get_webtag($webtag_search);
+
+    $uid = bh_session_get_value('UID');
+
+    html_draw_top("robots=noindex,nofollow");
+
+    $user_array = user_get($uid);
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form action=\"confirm_email.php\" method=\"get\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('uid', $user_array['UID']), "\n";
+    echo "  ", form_input_hidden('resend', 'Y'), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"550\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\">{$lang['emailconfirmationrequired']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>{$lang['emailconfirmationrequiredbeforepost']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("resend", $lang['resendconfirmation']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+
+    html_draw_bottom();
 }
 
 function html_poll_edit_error ()

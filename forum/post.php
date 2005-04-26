@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.259 2005-04-23 22:08:26 decoyduck Exp $ */
+/* $Id: post.php,v 1.260 2005-04-26 18:37:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -430,12 +430,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
 
-        html_draw_top();
-
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-
-        html_draw_bottom();
+        html_email_confirmation_error();
         exit;
     }
 
@@ -466,12 +461,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
 
-        html_draw_top();
-
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-
-        html_draw_bottom();
+        html_email_confirmation_error();
         exit;
     }
 
@@ -510,12 +500,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
 
-        html_draw_top();
-
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-
-        html_draw_bottom();
+        html_email_confirmation_error();
         exit;
     }
 

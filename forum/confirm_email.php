@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.2 2005-04-11 18:56:26 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.3 2005-04-26 18:37:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -54,18 +54,43 @@ $webtag = get_webtag($webtag_search);
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "email.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-if (isset($_GET['u']) && is_numeric($_GET['u']) && isset($_GET['h']) && is_md5($_GET['h'])) {
-
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+    $uid = $_GET['uid'];
+}else if (isset($_GET['u']) && is_numeric($_GET['u'])) {
     $uid = $_GET['u'];
-    $key = $_GET['h'];
+}
 
-}else {
+if (isset($_GET['h']) && is_md5($_GET['h'])) {
+    $key = $_GET['h'];
+}
+
+if (isset($_GET['resend']) && isset($uid)) {
+
+    html_draw_top();
+
+    if (email_send_user_confirmation($uid)) {
+
+        echo "<h1>{$lang['emailconfirmation']}</h1>\n";
+        echo "<h2>{$lang['emailconfirmationsent']}</h2>\n";
+
+    }else {
+
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['emailconfirmationfailedtosend']}</h2>\n";
+    }
+
+    html_draw_top();
+    exit;
+}
+
+if (!isset($uid) || !isset($key)) {
 
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";

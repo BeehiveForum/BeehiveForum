@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.74 2005-04-22 20:41:15 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.75 2005-04-26 18:37:42 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -267,6 +267,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+        echo "<h2><a href=\"\">{$lang['resendemailconfirmation']}</a></h2>\n";
 
         html_draw_bottom();
         exit;
@@ -302,6 +303,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+        echo "<h2><a href=\"\">{$lang['resendemailconfirmation']}</a></h2>\n";
 
         html_draw_bottom();
         exit;
@@ -345,6 +347,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+        echo "<h2><a href=\"\">{$lang['resendemailconfirmation']}</a></h2>\n";
 
         html_draw_bottom();
         exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.34 2005-04-25 21:23:12 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.35 2005-04-26 18:37:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -218,12 +218,12 @@ $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lan
 $allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
 
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['managefolders']} : {$folder_data['TITLE']}</h1>\n";
-echo "<br />\n";
 
 if (isset($status_html) && strlen($status_html) > 0) {
     echo $status_html;
 }
 
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form name=\"thread_options\" action=\"admin_folder_edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('fid', $fid), "\n";

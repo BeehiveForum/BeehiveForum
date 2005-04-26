@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.174 2005-04-23 22:08:24 decoyduck Exp $ */
+/* $Id: edit.php,v 1.175 2005-04-26 18:37:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -203,6 +203,7 @@ if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
 
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
+    echo "<h2><a href=\"\">{$lang['resendemailconfirmation']}</a></h2>\n";
 
     html_draw_bottom();
     exit;

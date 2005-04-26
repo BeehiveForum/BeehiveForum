@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.286 2005-04-25 21:34:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.287 2005-04-26 18:37:43 decoyduck Exp $ */
 
 // International English language file
 
@@ -1045,7 +1045,10 @@ $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
 $lang['postfrequencytoogreat_1'] = "You can only post once every";
 $lang['postfrequencytoogreat_2'] = "seconds. Please try again later.";
-$lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post!";
+$lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details";
+$lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Please contact the forum owner to rectify this.";
+$lang['emailconfirmationsent'] = "Confirmation email has been resent.";
+$lang['resendconfirmation'] = "Resend Confirmation";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 

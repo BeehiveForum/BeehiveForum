@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.inc.php,v 1.3 2005-04-09 21:27:15 decoyduck Exp $ */
+/* $Id: mods_list.inc.php,v 1.4 2005-04-26 22:41:44 decoyduck Exp $ */
 
 /**
 * Fucntions related to generating the folder moderators lists
@@ -44,21 +44,33 @@ function mods_list_get_mods($fid)
 
     $forum_fid = $table_data['FID'];
 
-    $mod_status = USER_PERM_FOLDER_MODERATE | USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS;
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID) ";
+    $sql.= "WHERE GROUP_PERMS.FID IN (0, $fid) AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
 
-    $sql = "SELECT GROUP_USERS.UID, USER.LOGON, USER.NICKNAME FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = GROUP_USERS.UID) ";
-    $sql.= "WHERE GROUP_PERMS.FID = $fid AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
-    $sql.= "AND GROUP_PERMS.PERM & $mod_status > 0 ";
-    $sql.= "GROUP BY GROUP_USERS.UID";
+    if ($fid > 0) {
+
+        $user_perm_folder_moderate = USER_PERM_FOLDER_MODERATE;
+        $sql.= "AND (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0 ";
+
+    }else {
+
+        $user_perm_admin_tools = USER_PERM_ADMIN_TOOLS;
+        $user_perm_forum_tools = USER_PERM_FORUM_TOOLS;
+        $user_perm_folder_moderate = USER_PERM_FOLDER_MODERATE;
+
+        $sql.= "AND ((GROUP_PERMS.PERM & $user_perm_admin_tools) > 0 ";
+        $sql.= "OR (GROUP_PERMS.PERM & $user_perm_forum_tools) > 0 ";
+        $sql.= "OR (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0) ";
+    }
 
     $result = db_query($sql, $db_mods_list_get_mods);
 
     if (db_num_rows($result) > 0) {
 
         while ($row = db_fetch_array($result)) {
-            $mod_list_array[] = $row;
+            $mod_list_array[$row['UID']] = $row;
         }
 
         return $mod_list_array;

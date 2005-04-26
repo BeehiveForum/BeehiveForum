@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.53 2005-04-08 18:46:07 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.54 2005-04-26 22:05:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -147,8 +147,6 @@ $messages = messages_get($tid,$pid,$posts_per_page);
 $threaddata = thread_get($tid);
 $foldertitle = folder_get_title($threaddata['FID']);
 
-$show_sigs = false; // explicitly set sigs not to show in light mode
-
 $msg_count = count($messages);
 
 light_messages_top($msg, apply_wordfilter(_stripslashes($threaddata['TITLE'])), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
@@ -182,14 +180,14 @@ if ($msg_count > 0) {
 
           }else {
 
-            light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, true, $show_sigs, false);
+            light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, true, false, false);
             $last_pid = $message['PID'];
 
           }
 
         }else {
 
-          light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, false, $show_sigs, false);
+          light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, false, false, false);
           $last_pid = $message['PID'];
 
         }

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.75 2005-04-26 18:37:42 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.76 2005-04-26 22:05:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,10 +113,6 @@ if (isset($_POST['cancel'])) {
 
     header_redirect($uri);
 }
-
-// Check if the user is viewing signatures.
-
-$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // Get the user's post page preferences.
 
@@ -524,7 +520,7 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
-    light_message_display(0, $preview_message, 0, 0, false, false, false, false, $show_sigs, true);
+    light_message_display(0, $preview_message, 0, 0, false, false, false, false, false, true);
     echo "<br />\n";
 }
 
@@ -622,11 +618,11 @@ if (!$newthread && $reply_to_pid > 0) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-        light_poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, $show_sigs, true);
+        light_poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, false, true);
 
     }else {
 
-        light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
+        light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, false, true);
     }
 }
 

@@ -21,10 +21,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.63 2005-04-06 21:03:31 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.64 2005-04-27 20:20:48 decoyduck Exp $ */
+
+/**
+* admin.inc.php - admin functions
+*
+* Contains admin related functions.
+*/
+
+/**
+*
+*/
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
+
+/**
+* Add log entry
+*
+* Adds an entry to the ADMIN_LOG table.
+*
+* @return bool
+* @param integer $action - Action ID (see constants.inc.php)
+* @param mixed $data - Data to insert into the log. Can be an array or string.
+*/
 
 function admin_add_log_entry($action, $data = 0)
 {
@@ -49,6 +69,15 @@ function admin_add_log_entry($action, $data = 0)
     return true;
 }
 
+/**
+* Clears admin log
+*
+* Clears the forum admin log
+*
+* @return bool
+* @param void
+*/
+
 function admin_clearlog()
 {
     $db_admin_clearlog = db_connect();
@@ -61,6 +90,17 @@ function admin_clearlog()
 
     return true;
 }
+
+/**
+* Fetches admin log entries
+*
+* Fetches the available admin log entries into an array
+*
+* @return array
+* @param integer $offset - Offset of the rows returned by the query
+* @param string $sort_by - Column to sort the results by
+* @param string $sort_dir - Direction to sort the results by
+*/
 
 function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC')
 {
@@ -105,6 +145,15 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
                  'admin_log_array' => $admin_log_array);
 }
 
+/**
+* Fetches admin word filter
+*
+* Fetches the available word filter entries into an array
+*
+* @return bool
+* @param void
+*/
+
 function admin_get_word_filter()
 {
     $db_admin_get_word_filter = db_connect();
@@ -124,6 +173,15 @@ function admin_get_word_filter()
     return $filter_array;
 }
 
+/**
+* Delete an entry in the word filter
+*
+* Fetches the available attachments based on the provided parameters that match $aid
+*
+* @return bool
+* @param integer $id - Filter entry ID
+*/
+
 function admin_delete_word_filter($id)
 {
     if (!is_numeric($id)) return false;
@@ -138,6 +196,15 @@ function admin_delete_word_filter($id)
     $result = db_query($sql, $db_user_delete_word_filter);
 }
 
+/**
+* Clear admin word filter
+*
+* Removes all word filter entries from the admin defined word filter
+*
+* @return bool
+* @param void
+*/
+
 function admin_clear_word_filter()
 {
     $db_admin_clear_word_filter = db_connect();
@@ -147,6 +214,17 @@ function admin_clear_word_filter()
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
     return db_query($sql, $db_admin_clear_word_filter);
 }
+
+/**
+* Add entry to admin word filter
+*
+* Adds an entry to the admin defined word filter
+*
+* @return bool
+* @param string $match - String to match. May be all, word or PCRE
+* @param string $replace - String to replace with. May be all, word or PCRE
+* @param integer $filter_option - Type of filtering to perform (0: all, 1: word, 2: PCRE)
+*/
 
 function admin_add_word_filter($match, $replace, $filter_option)
 {
@@ -165,6 +243,18 @@ function admin_add_word_filter($match, $replace, $filter_option)
 
     $result = db_query($sql, $db_admin_add_word_filter);
 }
+
+/**
+* Search for a user
+*
+* Searches for a user account and returns logon, nickname and last visit timestamp
+*
+* @return array
+* @param string $usersearch - Logon or Nickname to search for
+* @param string $sort_by - Column to sort the results by
+* @param string $sort_dir - Direction to sort results by
+* @param integer $offset - Offset of the rows returned by the query
+*/
 
 function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'DESC', $offset = 0)
 {
@@ -222,6 +312,17 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
                  'user_array' => $user_search_array);
 }
 
+/**
+* Fetch list of users
+*
+* Fetch a list of registered user accounts inc. logons, nicknames and last visit timestamp
+*
+* @return array
+* @param string $sort_by - Column to sort the results by
+* @param string $sort_dir - Direction to sort results by
+* @param integer $offset - Offset of the rows returned by the query
+*/
+
 function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'ASC', $offset = 0)
 {
     $db_user_get_all = db_connect();
@@ -274,6 +375,15 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
                  'user_array' => $user_get_all_array);
 }
 
+/**
+* End user session
+*
+* Ends the session of the specified user
+*
+* @return bool
+* @param integer $uid - UID of the user account to end session for.
+*/
+
 function admin_session_end($uid)
 {
     $db_admin_session_end = db_connect();
@@ -287,6 +397,15 @@ function admin_session_end($uid)
 
     return db_query($sql, $db_admin_session_end);
 }
+
+/**
+* Get user attachments
+*
+* Fetches the attachments for the available user
+*
+* @return mixed
+* @param integer $uid - UID of the user account to fetch attachments for.
+*/
 
 function admin_get_users_attachments($uid)
 {
@@ -323,6 +442,15 @@ function admin_get_users_attachments($uid)
 
     return $userattachments;
 }
+
+/**
+* Fetch list of forums
+*
+* Fetches a list of forums and their settings
+*
+* @return array
+* @param void
+*/
 
 function admin_get_forum_list()
 {
@@ -389,6 +517,15 @@ function admin_get_forum_list()
 
     return $get_forum_list_array;
 }
+
+/**
+* Fetch ban data
+*
+* Fetches available ban data
+*
+* @return array
+* @void
+*/
 
 function admin_get_ban_data()
 {

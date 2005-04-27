@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.143 2005-04-25 21:34:13 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.144 2005-04-27 20:20:48 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -231,9 +231,23 @@ function forum_check_password($forum_data)
 {
     $db_forum_check_password = db_connect();
 
+    // List of pages that are allowed to bypass the forum password.
+    // All admin*.php scripts are checked seperatly.
+
     $page_array = array('forums.php', 'index.php', 'logon.php', 'nav.php', 'register.php');
 
+    // Check if the current page is in the allowed list.
+
+    if (in_array(basename($_SERVER['PHP_SELF']), $page_array)) return;
+    if (preg_match("/^admin.+\.php$/", basename($_SERVER['PHP_SELF']))) return;
+
+    // Only continue if the forum data we've been given indicates that
+    // it is running in password protected mode.
+
     if (isset($forum_data['ACCESS_LEVEL']) && $forum_data['ACCESS_LEVEL'] == 2) {
+
+        // Check to see if the user already has the password cookie set
+        // and verify it against the database.
 
         if (isset($_COOKIE["bh_{$forum_data['WEBTAG']}_password"])) {
 
@@ -247,11 +261,11 @@ function forum_check_password($forum_data)
 
             list($forum_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-            if ($forum_count > 0) return true;
+            if ($forum_count > 0) return;
         }
 
-        if (in_array(basename($_SERVER['PHP_SELF']), $page_array)) return true;
-        if (preg_match("/^admin[a-z_]*\.php$/", basename($_SERVER['PHP_SELF']))) return true;
+        // If we got this far then the password verification failed or
+        // the user hasn't seen the password dialog before.
 
         $lang = load_language_file();
 
@@ -303,8 +317,6 @@ function forum_check_password($forum_data)
         html_draw_bottom();
         exit;
     }
-
-    return true;
 }
 
 function forum_get_settings()

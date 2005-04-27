@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.45 2005-04-20 18:36:38 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.46 2005-04-27 19:47:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -55,6 +55,7 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "light.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
@@ -86,58 +87,23 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $final_uri = "./lthread_list.php?webtag=$webtag&folder={$_GET['folder']}";
 }
 
-if (isset($_POST['submit'])) {
+if ((isset($_POST['user_logon']) && isset($_POST['user_password']) && (isset($_POST['user_passhash']) || isset($_POST['guest_logon'])) {
 
-    if (isset($_POST['logon']) && isset($_POST['password'])) {
+    if (perform_logon(true)) {
 
-        $luid = user_logon(strtoupper($_POST['logon']), $_POST['password']);
-
-        if ($luid > -1) {
-
-            bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
-
-            if ((strtoupper($_POST['logon']) == 'GUEST') && (strtoupper($_POST['password']) == 'GUEST')) {
-
-                bh_session_init(0);
-
-            }else {
-
-                bh_session_init($luid);
-            }
-
-            if (isset($_POST['remember_user']) && $_POST['remember_user'] == 'Y') {
-
-                bh_setcookie("bh_light_remember_username", $_POST['logon'], time() + YEAR_IN_SECONDS);
-                bh_setcookie("bh_light_remember_password", $_POST['password'], time() + YEAR_IN_SECONDS);
-            }
-
-            if (isset($final_uri)) {
-                header_redirect($final_uri, $lang['loggedinsuccessfully']);
-            }else {
-                header_redirect("./lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
-            }
-
-        }else if ($luid == -2) {
-
-            if (!strstr(php_sapi_name(), 'cgi')) {
-                header("HTTP/1.0 500 Internal Server Error");
-            }
-
-            echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
-            exit;
-
+        if (isset($final_uri)) {
+            header_redirect($final_uri, $lang['loggedinsuccessfully']);
         }else {
-
-            light_html_draw_top();
-            echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-            echo form_quick_button("./llogon.php", $lang['back'], false, false, "_top");
-            light_html_draw_bottom();
-            exit;
+            header_redirect("./lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
         }
 
     }else {
 
-        $error_html = "<h2>{$lang['usernameandpasswdrequired']}</h2>";
+        light_html_draw_top();
+        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+        echo form_quick_button("./llogon.php", $lang['back'], false, false, "_top");
+        light_html_draw_bottom();
+        exit;
     }
 }
 

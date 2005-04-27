@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.90 2005-04-22 20:17:34 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.91 2005-04-27 19:47:16 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -188,6 +188,28 @@ function xml_literal_to_numeric($literal)
     $numeric = ord($entity);
 
     return "&#$numeric;";
+}
+
+// Converts MS Word quotes to HTML/XML friendly entities
+
+function ms_word_to_html($string)
+{
+   $char_array = array(128 => '&#8364;', 130 => '&#8218;',
+                       131 => '&#402;',  132 => '&#8222;',
+                       133 => '&#8230;', 134 => '&#8224;',
+                       135 => '&#8225;', 136 => '&#710;',
+                       137 => '&#8240;', 138 => '&#352;',
+                       139 => '&#8249;', 140 => '&#338;',
+                       142 => '&#381;',  145 => '&#8216;',
+                       146 => '&#8217;', 147 => '&#8220;',
+                       148 => '&#8221;', 149 => '&#8226;',
+                       150 => '&#8211;', 151 => '&#8212;',
+                       152 => '&#732;',  153 => '&#8482;',
+                       154 => '&#353;',  155 => '&#8250;',
+                       156 => '&#339;',  158 => '&#382;',
+                       159 => '&#376;');
+
+   return str_replace(array_map('chr', array_keys($chars)), $chars, $string);
 }
 
 // Checks for Magic Quotes and perform stripslashes if nessecary

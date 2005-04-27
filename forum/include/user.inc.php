@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.247 2005-04-24 22:28:47 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.248 2005-04-27 19:47:21 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -173,12 +173,14 @@ function user_update_forums($uid, $forums_array)
     }
 }
 
-function user_logon($logon, $password, $md5hash = false)
+function user_logon($logon, $passhash)
 {
     $db_user_logon = db_connect();
 
-    $logon = addslashes($logon);
-    $md5pass = ($md5hash === true) ? addslashes($password) : md5($password);
+    if (!is_md5($passhash)) return false;
+
+    $logon = addslashes(strtoupper($logon));
+    $passhash = addslashes($passhash);
 
     if ($table_data = get_table_prefix()) {
 
@@ -189,7 +191,7 @@ function user_logon($logon, $password, $md5hash = false)
         $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
         $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
         $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$md5pass' ";
+        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$passhash' ";
         $sql.= "GROUP BY USER.UID";
 
     }else {
@@ -199,7 +201,7 @@ function user_logon($logon, $password, $md5hash = false)
         $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
         $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
         $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0)) ";
-        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$md5pass' ";
+        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$passhash' ";
         $sql.= "GROUP BY USER.UID";
     }
 

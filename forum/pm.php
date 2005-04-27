@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.85 2005-04-20 18:42:26 decoyduck Exp $ */
+/* $Id: pm.php,v 1.86 2005-04-27 19:47:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -59,7 +59,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
     header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
 }
@@ -346,7 +346,7 @@ echo "                  <td class=\"pmbar_text\" nowrap=\"nowrap\">{$lang['yourp
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>";
-echo "            <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(), $start, $pm_messages_array['message_count'], 10), "</td>\n";
+echo "            <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
     echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";

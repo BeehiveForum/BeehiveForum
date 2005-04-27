@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.62 2005-04-25 19:48:58 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.63 2005-04-27 19:47:27 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -51,14 +51,15 @@ if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
-    $forum_tables = array('ADMIN_LOG',     'BANNED',          'FILTER_LIST',
-                          'FOLDER',        'FORUM_LINKS',     'LINKS',
-                          'LINKS_COMMENT', 'LINKS_FOLDERS',   'LINKS_VOTE',
-                          'POLL',          'POLL_VOTES',      'POST',
-                          'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
-                          'STATS',         'THREAD',          'USER_FOLDER',
-                          'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
-                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD');
+    $forum_tables = array('ADMIN_LOG',       'BANNED',        'FILTER_LIST',
+                          'FOLDER',          'FORUM_LINKS',   'LINKS',
+                          'LINKS_COMMENT',   'LINKS_FOLDERS', 'LINKS_VOTE',
+                          'POLL',            'POLL_VOTES',    'POST',
+                          'POST_CONTENT',    'PROFILE_ITEM',  'PROFILE_SECTION',
+                          'RSS_FEEDS',       'RSS_HISTORY',   'STATS',
+                          'THREAD',          'USER_FOLDER',   'USER_PEER',
+                          'USER_POLL_VOTES', 'USER_PREFS',    'USER_PROFILE',
+                          'USER_SIG',        'USER_THREAD');
 
     $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
                            'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',

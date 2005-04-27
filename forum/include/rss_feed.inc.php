@@ -21,10 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-include_once("./include/post.inc.php");
-include_once("./include/fixhtml.inc.php");
-include_once("./include/format.inc.php");
-include_once("./include/db.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "post.inc.php");
 
 class rss_item
 {
@@ -100,6 +101,8 @@ function rss_read_database($filename)
    if (!$data = rss_read_stream($filename)) return false;
 
    $data = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $data);
+
+   $data = ms_word_to_html($data);
 
    $rss_data = array();
 
@@ -217,6 +220,8 @@ function rss_create_history($rss_id, $link)
 
 function rss_check_feeds()
 {
+    $lang = load_language_file();
+
     if ($rss_feed = rss_fetch_feed()) {
 
         if ($rss_data = rss_read_database($rss_feed['URL'])) {

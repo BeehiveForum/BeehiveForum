@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.54 2005-04-26 22:05:16 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.55 2005-04-27 19:47:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -63,7 +63,7 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
     header_redirect("./llogon.php?webtag=$webtag&final_uri=$request_uri");
 }
@@ -71,7 +71,7 @@ if (!$user_sess = bh_session_check()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     header_redirect("./lforums.php?final_uri=$request_uri");
 }
 

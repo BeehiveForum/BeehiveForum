@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.80 2005-04-23 18:06:51 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.81 2005-04-27 19:47:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -55,7 +55,7 @@ include_once(BH_INCLUDE_PATH. "threads.inc.php");
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
     header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
 }
@@ -63,7 +63,7 @@ if (!$user_sess = bh_session_check()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -78,12 +78,11 @@ $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 // Check that we have access to this forum
 
 if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
 $uid = bh_session_get_value('UID');
-$request_uri = get_request_uri();
 
 $dtdpath = html_get_forum_uri();
 

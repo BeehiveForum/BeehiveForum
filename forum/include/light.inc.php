@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.85 2005-04-23 22:08:28 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.86 2005-04-27 19:47:17 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -192,11 +192,6 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
             if ($thread = thread_get($tid)) {
 
-                foreach ($thread as $key => $value) {
-                    $thread[strtolower($key)] = $value;
-                    unset($thread[$key]);
-                }
-
                 if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
                 if ($thread['TID'] == $tid) {
@@ -210,7 +205,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                     if (!is_array($thread_info)) $thread_info = array();
 
                     foreach ($thread_info as $key => $thread_data) {
-                        if ($thread_data['tid'] == $tid) {
+                        if ($thread_data['TID'] == $tid) {
                             unset($thread_info[$key]);
                             break;
                         }
@@ -1122,7 +1117,7 @@ function light_html_guest_error ()
 
      $webtag = get_webtag($webtag_search);
 
-     $final_uri = rawurlencode(get_request_uri(true));
+     $final_uri = rawurlencode(get_request_uri());
 
      light_html_draw_top();
 

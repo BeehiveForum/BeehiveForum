@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.48 2005-04-03 17:38:11 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.49 2005-04-27 19:47:12 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -67,7 +67,7 @@ include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
     header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
 }
@@ -75,7 +75,7 @@ if (!$user_sess = bh_session_check()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -86,7 +86,7 @@ $lang = load_language_file();
 // Check that we have access to this forum
 
 if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 

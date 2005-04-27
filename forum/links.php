@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.74 2005-04-19 17:35:48 decoyduck Exp $ */
+/* $Id: links.php,v 1.75 2005-04-27 19:47:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -57,7 +57,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 // Check we're logged in correctly
 
 if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
     header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
 }
@@ -65,7 +65,7 @@ if (!$user_sess = bh_session_check()) {
 // Check we have a webtag
 
 if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -77,7 +77,7 @@ $lang = load_language_file();
 
 if (!forum_check_access_level()) {
 
-    $request_uri = rawurlencode(get_request_uri(true));
+    $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
@@ -372,7 +372,7 @@ echo "      <td>\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td width=\"25%\"><a href=\"links_add.php?webtag=$webtag&amp;mode=link&amp;fid=$fid\"><b>{$lang['addlinkhere']}</b></a></td>\n";
-echo "            <td width=\"50%\" align=\"center\">", page_links(get_request_uri(), $start, $links['links_count'], 20), "</td>\n";
+echo "            <td width=\"50%\" align=\"center\">", page_links(get_request_uri(false), $start, $links['links_count'], 20), "</td>\n";
 echo "            <td width=\"25%\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";

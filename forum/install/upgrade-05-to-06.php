@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.53 2005-04-24 22:24:49 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.54 2005-04-27 19:47:27 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -76,8 +76,9 @@ if (db_num_rows($result) > 0) {
 
 $remove_tables = array('GROUPS', 'GROUP_PERMS', 'GROUP_USERS',
                        'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
-                       'SEARCH_KEYWORDS', 'SEARCH_MATCH', 'SEARCH_POSTS',
-                       'SESSIONS', 'USER_TRACK', 'VISITOR_LOG');
+                       'RSS_FEEDS', 'RSS_HISTORY', 'SEARCH_KEYWORDS',
+                       'SEARCH_MATCH', 'SEARCH_POSTS', 'SESSIONS',
+                       'USER_TRACK', 'VISITOR_LOG');
 
 foreach ($remove_tables as $forum_table) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.180 2005-04-20 18:36:40 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.181 2005-04-27 19:47:17 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -213,6 +213,12 @@ function bh_session_check($show_session_fail = true)
             }
 
             draw_logon_form(false);
+
+            echo "<pre>\n";
+            print_r($_POST);
+            print_r($_GET);
+            echo "</pre>\n";
+
             html_draw_bottom();
             exit;
         }
@@ -442,29 +448,27 @@ function bh_session_end()
 
 // IIS does not support the REQUEST_URI server var, so we will make one for it
 
-function get_request_uri($rawurlencode = false)
+function get_request_uri($encoded_uri_query = true)
 {
+    if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
+
     $request_uri = "{$_SERVER['PHP_SELF']}?";
 
     foreach ($_GET as $key => $value) {
-        $request_uri.= "{$key}=". rawurlencode($value). "&";
+        if ($encoded_uri_query) {
+            $request_uri.= "{$key}=". rawurlencode($value). "&amp;";
+        }else {
+            $request_uri.= "{$key}=". rawurlencode($value). "&";
+        }
     }
 
-    if (substr($request_uri, -1) == '&') {
-        $request_uri = substr($request_uri, 0, -1);
-    }
+    $request_uri = preg_replace("/&$|&amp;$/", "", $request_uri);
 
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.
     // Any suggestions are welcome on how to handle this better.
 
-    $request_uri = preg_replace("/\/\/+/", "/", $request_uri);
-
-    if ($rawurlencode) {
-        return rawurlencode($request_uri);
-    }else {
-        return $request_uri;
-    }
+    return preg_replace("/\/\/+/", "/", $request_uri);
 }
 
 function bh_session_get_post_page_prefs()

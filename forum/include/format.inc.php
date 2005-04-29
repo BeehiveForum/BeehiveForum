@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.92 2005-04-29 08:38:59 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.93 2005-04-29 22:01:37 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -166,7 +166,7 @@ function _htmlentities($text)
     return htmlentities($text, ENT_QUOTES, 'UTF-8');
 }
 
-function _htmlentities_decode($text) //, $quote_style = ENT_COMPAT, $charset = null)
+function _htmlentities_decode($text)
 {
     $trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
     $trans_tbl = array_flip($trans_tbl);
@@ -174,7 +174,7 @@ function _htmlentities_decode($text) //, $quote_style = ENT_COMPAT, $charset = n
     $trans_tbl['&apos;'] = '\'';
 
     $ret = strtr($text, $trans_tbl);
-    return preg_replace('/&#(\d+);/me', "chr('\\1')", $ret);
+    return preg_replace('/&#(\d+);/me', "chr(\\1)", $ret);
 }
 
 // Translate &nbsp; to &#160; etc. Pass the literal without the
@@ -194,20 +194,19 @@ function xml_literal_to_numeric($literal)
 
 function ms_word_to_html($string)
 {
-   $char_array = array(128 => '&#8364;', 130 => '&#8218;',
-                       131 => '&#402;',  132 => '&#8222;',
-                       133 => '&#8230;', 134 => '&#8224;',
-                       135 => '&#8225;', 136 => '&#710;',
-                       137 => '&#8240;', 138 => '&#352;',
-                       139 => '&#8249;', 140 => '&#338;',
-                       142 => '&#381;',  145 => '&#8216;',
-                       146 => '&#8217;', 147 => '&#8220;',
-                       148 => '&#8221;', 149 => '&#8226;',
-                       150 => '&#8211;', 151 => '&#8212;',
-                       152 => '&#732;',  153 => '&#8482;',
-                       154 => '&#353;',  155 => '&#8250;',
-                       156 => '&#339;',  158 => '&#382;',
-                       159 => '&#376;');
+    $char_array = array(128 => '&euro;',   130 => '&sbquo;',
+                        131 => '&fnof;',   132 => '&bdquo;',
+                        133 => '&hellip;', 134 => '&dagger;',
+                        135 => '&Dagger;', 136 => '&circ;',
+                        137 => '&permil;', 138 => '&Scaron;',
+                        139 => '&lsaquo;', 140 => '&OElig;',
+                        145 => '&lsquo;',  146 => '&rsquo;',
+                        147 => '&ldquo;',  148 => '&rdquo;',
+                        149 => '&bull;',   150 => '&ndash;',
+                        151 => '&mdash;',  152 => '&tilde;',
+                        153 => '&trade;',  154 => '&scaron;',
+                        155 => '&rsaquo;', 156 => '&oelig;',
+                        159 => '&Yuml;');
 
    return str_replace(array_map('chr', array_keys($char_array)), $char_array, $string);
 }

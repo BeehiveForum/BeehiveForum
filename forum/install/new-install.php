@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.64 2005-04-29 08:38:59 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.65 2005-04-29 22:01:38 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -272,7 +272,8 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "CREATE TABLE GROUP_USERS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY (GID, UID)";
+$sql.= "  PRIMARY KEY (GID, UID),";
+$sql.= "  INDEX (UID, GID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -1096,7 +1097,7 @@ $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (VID),";
-$sql.= "  KEY UID (UID),";
+$sql.= "  KEY UID (UID,VID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

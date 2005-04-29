@@ -102,8 +102,6 @@ function rss_read_database($filename)
 
    $data = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $data);
 
-   $data = ms_word_to_html($data);
-
    $rss_data = array();
 
    $parser = xml_parser_create();
@@ -230,8 +228,8 @@ function rss_check_feeds()
 
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
-                    $rss_title   = trim(_htmlentities_decode($rss_item->title));
-                    $rss_content = trim(_htmlentities_decode($rss_item->description));
+                    $rss_title   = ms_word_to_html(trim(_htmlentities_decode($rss_item->title)));
+                    $rss_content = ms_word_to_html(trim(_htmlentities_decode($rss_item->description)));
 
                     if (strlen($rss_content) > 1) {
                         $content = fix_html("<quote source=\"{$rss_feed['NAME']}\" url=\"{$rss_item->link}\">$rss_content</quote>");

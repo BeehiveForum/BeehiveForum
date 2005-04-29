@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.127 2005-04-21 18:20:51 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.128 2005-04-29 08:38:59 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -199,10 +199,11 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     }
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
-    $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
-    $sql.= "WHERE USER.UID <> '$default_uid' ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "WHERE VISITOR_LOG.FORUM = $forum_fid ";
+    $sql.= "AND USER.UID <> $default_uid ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -262,10 +263,11 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     }
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
-    $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
-    $sql.= "WHERE USER.UID <> '$default_uid' ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "WHERE VISITOR_LOG.FORUM = $forum_fid ";
+    $sql.= "AND USER.UID <> $default_uid ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -324,20 +326,20 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
         $html.= "<option value=\"0\">ALL</option>\n";
 
-    } else if ($inc_blank) {
+    }else if ($inc_blank) {
 
         if (isset($default_uid) && $default_uid != 0) {
             $html.= "<option value=\"0\"></option>\n";
-                }else {
+        }else {
             $html.= "<option value=\"0\" selected=\"selected\"></option>\n";
-                }
+        }
     }
 
-    $sql = "SELECT P.FROM_UID AS UID, U.LOGON, U.NICKNAME ";
-    $sql.= "FROM {$table_data['PREFIX']}POST P ";
-    $sql.= "LEFT JOIN USER U ON (P.FROM_UID = U.UID) ";
-    $sql.= "WHERE P.TID = '$tid' ";
-    $sql.= "GROUP BY P.FROM_UID LIMIT 0, 20";
+    $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql.= "WHERE POST.TID = $tid ";
+    $sql.= "GROUP BY POST.FROM_UID LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 

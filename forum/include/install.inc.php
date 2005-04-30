@@ -21,12 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.30 2005-04-07 19:22:14 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.31 2005-04-30 22:17:07 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 
 function dir_exists($dir)
@@ -258,6 +259,40 @@ function install_check_tables($webtag)
     }
 
     return true;
+}
+
+function install_cli_show_help()
+{
+    $beehive_version = BEEHIVE_VERSION;
+
+    echo "BeehiveForum $beehive_version CLI installer\n";
+    echo "Copyright Project BeehiveForum 2002\n";
+    echo "Usage: php-cli new-install.php [OPTIONS]\n";
+    echo "  --help      Display this help and exit\n";
+    echo "  -h          MySQL hostname to connect to\n";
+    echo "  -u          Username to use when connecting to MySQL server\n";
+    echo "  -p          Password to use when connecting to MySQL server\n";
+    echo "  -D          Database to use\n";
+    echo "  -w          Webtag to use for forum\n";
+    echo "  -U          Admin user account to create [Default: ADMIN]\n";
+    echo "  -P          Password to use for Admin account [Default: honey]\n";
+    echo "  -E          Email address to use [Default: admin@abeehiveforum.net]\n";
+}
+
+function install_cli_show_upgrade_help()
+{
+    $beehive_version = BEEHIVE_VERSION;
+
+    echo "BeehiveForum $beehive_version CLI upgrader\n";
+    echo "Copyright Project BeehiveForum 2002\n";
+    echo "Usage: php-cli new-install.php [OPTIONS]\n";
+    echo "  --help      Display this help and exit\n";
+    echo "  -h          MySQL hostname to connect to\n";
+    echo "  -u          Username to use when connecting to MySQL server\n";
+    echo "  -p          Password to use when connecting to MySQL server\n";
+    echo "  -D          Database to use\n\n";
+    echo "During upgrades there is no need to specify a Admin account or\n";
+    echo "forum webtag as the existing forum data will be used instead.\n";
 }
 
 ?>

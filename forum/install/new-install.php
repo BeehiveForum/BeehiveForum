@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.66 2005-04-30 22:17:07 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.67 2005-04-30 22:53:43 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -39,10 +39,8 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
     $admin_password = "honey";
     $admin_email = "admin@abeehiveforum.net";
 
-    $dict_sounds_path = preg_replace('/\\\/', '/', getcwd());
-    $dict_sounds_path.= "/english_sounds.dic";
-
-    $dict_words_path = "./english_words.dic";
+    $dictionary_file = preg_replace('/\\\/', '/', getcwd());
+    $dictionary_file.= "/english.dic";
 
     $beehive_version = BEEHIVE_VERSION;
 
@@ -1227,19 +1225,21 @@ if (!$result = db_query($sql, $db_install)) {
 
 if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
-    $sql = "LOAD DATA INFILE '$dict_sounds_path' INTO TABLE DICTIONARY ";
+    $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
     $sql.= "FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' ";
     $sql.= "(WORD, SOUND)";
 
     if (!$result = db_query($sql, $db_install)) {
 
-        if ($fp = fopen($dict_words_path, 'r')) {
+        if ($fp = fopen($dictionary_file, 'r')) {
 
             while (!feof($fp)) {
 
                 $word = fgets($fp, 100);
 
-                $metaphone = addslashes(metaphone(trim($word)));
+                list($word, $metaphone) = explode("\t", $word);
+
+                $metaphone = addslashes(trim($metaphone));
                 $word = addslashes(trim($word));
 
                 $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";

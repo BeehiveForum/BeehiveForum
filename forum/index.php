@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.114 2005-04-25 19:48:56 decoyduck Exp $ */
+/* $Id: index.php,v 1.115 2005-04-30 11:50:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -55,16 +55,12 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 $user_sess = bh_session_check(false);
 
-// Does the forum allow auto logon of guests?
-
-$guest_auto_logon = forum_get_setting('guest_auto_logon', 'Y');
-
 // Top frame and style sheet
 
 $top_html   = html_get_top_page();
 $stylesheet = html_get_style_sheet();
 
-if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (user_guest_enabled() && $guest_auto_logon) && !isset($_COOKIE['bh_logon'])) {
+if (bh_session_active()) {
 
     // Load language file
 
@@ -225,17 +221,17 @@ echo "<body>\n";
 
 define('BEEHIVE_LIGHT_INCLUDE', true);
 
-if ((isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) || (user_guest_enabled() && $guest_auto_logon && !isset($_COOKIE['bh_logon']))) {
-
-    light_draw_logon_form();
-
-}else {
+if (bh_session_active()) {
 
     if ($webtag = get_webtag($webtag_search)) {
         light_draw_thread_list();
     }else {
         light_draw_my_forums();
     }
+
+}else {
+
+    light_draw_logon_form();
 }
 
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";

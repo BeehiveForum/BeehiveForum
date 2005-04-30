@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.27 2005-04-27 19:47:17 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.28 2005-04-30 11:50:11 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -62,6 +62,7 @@ function perform_logon($logon_main)
 
         if (user_guest_enabled()) {
 
+            bh_setcookie('bh_logon', '', time() - YEAR_IN_SECONDS);
             bh_session_init(0);
             return true;
         }
@@ -89,6 +90,7 @@ function perform_logon($logon_main)
         if (isset($luid) && $luid > -1) {
 
             bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
+            bh_setcookie('bh_logon', '', time() - YEAR_IN_SECONDS);
 
             bh_session_init($luid);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.34 2005-04-27 19:47:05 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.35 2005-05-01 15:23:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -187,7 +187,7 @@ if (isset($_POST['submit'])) {
 
         }else {
 
-            $error_html.= "<h2>{$lang['textcaptchadirsnotwritable']}</h2>\n";
+            $error_html.= "<h2>{$lang['failedtocreatetextcaptchadirectories']}</h2>\n";
             $valid = false;
         }
 
@@ -309,6 +309,11 @@ if (isset($_POST['submit'])) {
                $error_html.= "<h2>{$lang['attachmentdirnotwritable']}</h2>\n";
                $valid = false;
             }
+
+        }else {
+
+           $error_html.= "<h2>{$lang['failedtocreateattachmentdirectory']}</h2>\n";
+           $valid = false;
         }
 
     }elseif (strtoupper($new_forum_settings['attachments_enabled']) == "Y") {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.19 2005-03-25 20:45:43 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.20 2005-05-01 23:55:17 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -47,7 +47,7 @@ class dictionary {
         $this->ignored_words_array = array();
         $this->suggestions_array = array();
 
-        preg_match_all("/([\w']+)|(.)/i", $content, $content_array);
+        preg_match_all("/([\w']+)|(<[^>]+>)|(&[^;]+;)|(.)/i", $content, $content_array);
         $this->content_array = $content_array[0];
 
         $this->ignored_words_array = explode(" ", $ignored_words);
@@ -163,7 +163,21 @@ class dictionary {
 
     function correct_current_word($change_to)
     {
-        $this->content_array[$this->current_word] = $change_to;
+        $current_word = $this->content_array[$this->current_word];
+
+        if (strtoupper($current_word) == $current_word) {
+            return;
+        }
+
+        if (strtolower($current_word) == $current_word) {
+            $this->content_array[$this->current_word] = strtolower($change_to);
+            return;
+        }
+
+        if (ucfirst($current_word) == $current_word) {
+            $this->content_array[$this->current_word] = ucfirst($change_to);
+            return;
+        }
     }
 
     function correct_all_word_matches($change_to)
@@ -173,9 +187,20 @@ class dictionary {
         foreach($this->content_array as $key => $word) {
 
             if (strtolower($word) == strtolower($current_word)) {
-                $this->content_array[$key] = $change_to;
-            }else {
-                $this->content_array[$key] = $word;
+
+                if (strtoupper($word) == $word) {
+                    continue;
+                }
+
+                if (strtolower($word) == $word) {
+                    $this->content_array[$key] = strtolower($change_to);
+                    continue;
+                }
+
+                if (ucfirst($word) == $word) {
+                    $this->content_array[$key] = ucfirst($change_to);
+                    continue;
+                }
             }
         }
     }
@@ -194,7 +219,7 @@ class dictionary {
 
         if (preg_match("/([\w']+)/i", $current_word) > 0) {
 
-            if (preg_match("/([0-9]+)/", $current_word) < 1) {
+            if (preg_match("/([0-9]+)|(<[^>]+>)|(&[^;]+;)/", $current_word) < 1) {
 
                 if (strlen($current_word) > 1 && strtoupper($current_word) != $current_word) return true;
             }

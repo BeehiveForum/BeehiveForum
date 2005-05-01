@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.2 2005-05-01 22:35:30 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.3 2005-05-01 23:55:17 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1607,7 +1607,7 @@ $lang['spellcheck'] = "Vérification d'orthographe";
 $lang['notindictionary'] = "Pas dans le dictionnaire";
 $lang['changeto'] = "Change to";
 $lang['initialisingdotdotdot'] = "Initialisation...";
-$lang['spellcheckcomplete'] = "La vérification de l'orthographe est terminée. Voulez-vous recommencer du début?";
+$lang['spellcheckcomplete'] = "La vérification de l\'orthographe est terminée. Voulez-vous recommencer du début?";
 $lang['spellcheck'] = "Vérification d'orthographe";
 $lang['noformobj'] = "Aucun objet de forme indiqué pour texte de retour";
 $lang['bodytext'] = "Corps de texte";

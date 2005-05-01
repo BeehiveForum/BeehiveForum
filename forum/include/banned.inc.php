@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.4 2005-04-15 18:23:02 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.5 2005-05-01 18:54:43 decoyduck Exp $ */
 
 // banned.inc.php contains functions for checking the ban data
 // against the user credentials.
@@ -29,7 +29,7 @@ USA
 include_once(BH_INCLUDE_PATH. "ip.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function ban_check($user_sess, $show_error = true)
+function ban_check($user_sess)
 {
     $db_ban_check = db_connect();
 
@@ -86,7 +86,7 @@ function ban_check($user_sess, $show_error = true)
     $ban_count = $ip_ban_count + $logon_ban_count;
     $ban_count+= $nickname_ban_count + $email_ban_count;
 
-    if ($ban_count > 0 && $show_error) {
+    if ($ban_count > 0) {
 
         if (!strstr(php_sapi_name(), 'cgi')) {
             header("HTTP/1.0 500 Internal Server Error");

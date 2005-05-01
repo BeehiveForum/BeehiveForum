@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.288 2005-04-26 22:41:44 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.289 2005-05-01 15:23:21 decoyduck Exp $ */
 
 // International English language file
 
@@ -490,6 +490,7 @@ $lang['textcaptchadirerror'] = "Text Captcha has been disabled because the text_
 $lang['textcaptchagderror'] = "Text Captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text captcha support.";
 
 $lang['textcaptchadirsnotwritable'] = "Text captcha directory must be writable by webserver / PHP process!";
+$lang['failedtocreatetextcaptchadirectories'] = "Failed to create text captcha directory!";
 $lang['textcaptchadirblank'] = "Text captcha directory is blank!";
 
 $lang['newuserpreferences'] = "New User Preferences";
@@ -623,6 +624,7 @@ $lang['unknownlanguage'] = "Unknown language";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";
 $lang['attachmentdirnotwritable'] = "Attachment directory must be writable by the webserver / PHP process!";
+$lang['failedtocreateattachmentdirectory'] = "Failed to create required attachment directory!";
 $lang['attachmentdirblank'] = "You must supply a directory to save attachments in";
 $lang['mainsettings'] = "Main Settings";
 $lang['forumname'] = "Forum Name";

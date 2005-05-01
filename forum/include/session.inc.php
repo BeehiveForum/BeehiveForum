@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.183 2005-04-30 11:50:12 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.184 2005-05-01 14:40:28 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -130,7 +130,10 @@ function bh_session_check($show_session_fail = true)
             // If the user isn't currently in the same forum
             // we should make it look like they've visited it.
 
-            bh_update_visitor_log($user_sess['UID']);
+            if ($user_sess['FID'] != $forum_fid) {
+
+                bh_update_visitor_log($user_sess['UID']);
+            }
 
             // Everything checks out OK. If the user's session is older
             // then 5 minutes we should update it.
@@ -385,8 +388,8 @@ function bh_update_visitor_log($uid)
 
     }else {
 
-        $sql = "INSERT INTO VISITOR_LOG ";
-        $sql.= "(FORUM, UID, LAST_LOGON) VALUES ($forum_fid, 0, NOW())";
+        $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
+        $sql.= "VALUES ($forum_fid, 0, NOW())";
 
         $result = db_query($sql, $db_bh_update_visitor_log);
     }

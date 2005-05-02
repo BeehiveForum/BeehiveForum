@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.51 2005-05-01 22:35:30 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.52 2005-05-02 11:37:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -267,7 +267,7 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
-echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td>\n";
 echo "              <table class=\"box\" width=\"100%\">\n";

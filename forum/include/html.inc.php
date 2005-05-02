@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.165 2005-04-27 19:47:16 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.166 2005-05-02 11:37:00 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -505,16 +505,31 @@ function style_image($img)
 
     if ($user_style = bh_session_get_value('STYLE')) {
 
-        if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/images/$img")) {
+        if (@is_dir("styles/$user_style/images") && @file_exists("styles/$user_style/images/$img")) {
             return "styles/$user_style/images/$img";
         }
 
-        if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/images/$img")) {
+        if (@is_dir("forums/$webtag/styles/$user_style/images") && @file_exists("forums/$webtag/styles/$user_style/images/$img")) {
             return "forums/$webtag/styles/$user_style/images/$img";
         }
     }
 
-    return "./images/$img";
+    if ($default_style = forum_get_setting('default_style')) {
+
+        if (@is_dir("styles/$default_style/images") && @file_exists("styles/$default_style/images/$img")) {
+            return "styles/$default_style/images/$img";
+        }
+
+        if (@is_dir("forums/$webtag/styles/$default_style/images") && @file_exists("forums/$webtag/styles/$default_style/images/$img")) {
+            return "forums/$webtag/styles/$default_style/images/$img";
+        }
+
+        if (@is_dir("./forums/$webtag/images") && @file_exists("./forums/$webtag/images/$img")) {
+            return "forums/$webtag/images/$img";
+        }
+    }
+
+    return "images/$img";
 }
 
 function bh_setcookie($name, $value, $expires = 0)

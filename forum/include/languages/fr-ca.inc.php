@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.3 2005-05-01 23:55:17 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.4 2005-05-03 21:39:07 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -139,6 +139,7 @@ $lang['yes'] = "Oui";
 $lang['no'] = "Non";
 $lang['signature'] = "Signature";
 $lang['signaturepreview'] = "Aperçu de Signature";
+$lang['signatureupdated'] = "Signature mise à jour";
 $lang['wasnotfound'] = "n'a pas été retrouvé";
 $lang['back'] = "Retour";
 $lang['subject'] = "Sujet";
@@ -198,6 +199,7 @@ $lang['sortasc'] = "Tri croissant";
 $lang['sortdesc'] = "Tri décroissant";
 $lang['usage'] = "Utilisation";
 $lang['show'] = "Montrer";
+$lang['prefix'] = "Préfixe";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -216,6 +218,10 @@ $lang['move'] = "Déplacer";
 $lang['closed'] = "Fermé";
 $lang['open'] = "Ouvert";
 $lang['restricted'] = "Limité";
+$lang['iscurrentlyclosed'] = "est présentement fermé";
+$lang['youdonothaveaccessto'] = "Vous n'avez pas les droits d'accès à";
+$lang['toapplyforaccessplease'] = "Pour demander accès, veuillez contacter le propriétaire du forum.";
+$lang['adminforumclosedtip'] = "Si vous désirez changer certains réglages sur votre forum, cliquer le lien Admin dans la barre de navigation ci-dessus.";
 $lang['newfolder'] = "Nouveau dossier";
 $lang['forumadmin'] = "Admin du forum";
 $lang['adminexp_1'] = "Utiliser le menu à gauche pour gérer votre forum.";
@@ -239,6 +245,7 @@ $lang['successfullycreated'] = "créé avec succès.";
 $lang['stylesdirnotwritable'] = "Le répertoire de styles n'est pas inscriptible. Veuillez CHMOD le répertoire de styles et relancer.";
 $lang['stylealreadyexists'] = "Un style avec ce nom de fichier existe déjà.";
 $lang['stylenofilename'] = "Vous n'avez pas entrer un nom de fichier pour enregistrer ce style.";
+$lang['stylenodatasubmitted'] = "Impossible de lire les données du style de forum.";
 $lang['stylenotauthorised'] = "Vous n'êtes pas autoriser à créer des styles de forum.";
 $lang['styleexp'] = "Utiliser cette page pour vous aider à créer un style généré aléatoirement pour votre forum.";
 $lang['stylecontrols'] = "Contrôles";
@@ -265,7 +272,10 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Ces options affectent to
 $lang['startpage'] = "Page de démarrage";
 $lang['startpageerror_1'] = "Votre page de démarrage n'a pas pu être entregistrer locallement sur le serveur à cause de déni de permission. Pour modifier votre page de démarrage, SVP cliquer le bouton de téléchargement ci-dessous qui vous invitera à enregister le fichier sur votre disque dur. Vous pourriez par la suite téléverser ce fichier vers le dossier";
 $lang['startpageerror_2'] = "sur votre serveur. SVP noter que certains navigateurs web pourraient changer le nom du fichier sur téléchargement. Lorsque vous téléversez le fichier, SVP vous assurer de le nommer start_main.php sinon les modifications n'apparaîtront pas.";
+$lang['makestyleerror_1'] = "Votre style de forum n'a pas pu être sauvegarder localement sur le serveur parce que la permission a été refusée. Pour sauvegarder votre style de forum, cliquer le bouton de téléchargement ci-dessous ce qui vous invitera à sauvegarder le fichier sur votre lecteur de disque dur. Vous pouvez ensuite téléverser ce fichier à votre serveur dans le dossier";
+$lang['makestyleerror_2'] = "et si nécéssaire, créant la structure de dossier en même temps. SVP noter que certains navigateurs web changeront peut-être le nom du fichier sur téléchargement. Lors du téléversement de ce fichier, SVP vous assurer qu'il est nommé style.css sinon ce style de forum sera inutilisable.";
 $lang['uploadfailed'] = "Votre nouvelle page de démarrage n'a pas pu être téléversée au serveur à cause de déni de permission. SVP vérifier que le serveur web / processus PHP est capable d'écrire au dossier %s sur votre serveur.";
+$lang['makestylefailed'] = "Votre nouveau style de forum n'a pas pu être sauvegarder sur le serveur parce que la permission a été refusée. SVP vérifier que le dossier %s sur votre serveur est inscriptible par le serveur web / processus PHP.";
 $lang['forumstyle'] = "Style du forum";
 $lang['wordfilter'] = "Filtre des mots";
 $lang['forumlinks'] = "Liens de forum";
@@ -383,8 +393,9 @@ $lang['successfullycreatedforum'] = "Création de forum réussie";
 $lang['failedtocreateforum_1'] = "Création de forum non-réussie";
 $lang['failedtocreateforum_2'] = "Veuillez vérifier que la balise d'adresse web et les noms de tableaux ne sont pas déjà en usage.";
 $lang['nameanddesc'] = "Nom et Description";
-$lang['moveposts'] = "Déplacer Messages";
-$lang['movepoststofolder'] = "Déplacer messages vers dossier";
+$lang['movethreads'] = "Déplacer fils de discussion";
+$lang['threadsmovedsuccessfully'] = "Déplacement de fils de discussion réussie";
+$lang['movethreadstofolder'] = "Déplacer fils de discussion au dossier";
 $lang['allowfoldertocontain'] = "Permettre au dossier de contenir";
 $lang['addnewfolder'] = "Ajouter nouveau dossier";
 $lang['mustenterfoldername'] = "Vous devez inscrire un nom de dossier";
@@ -392,6 +403,7 @@ $lang['nofolderidspecified'] = "Aucune identification de dossier définie";
 $lang['invalidfolderid'] = "Identification de dossier invalide. Vérifier qu'un dossier avec cette identification existe!";
 $lang['successfullyaddedfolder'] = "Ajout de dossier réussi";
 $lang['successfullydeletedfolder'] = "Suppression de dossier réussie";
+$lang['folderupdatedsuccessfully'] = "Mise à jour du dossier réussie";
 $lang['forumisnotrestricted'] = "Forum n'est pas limité";
 $lang['noforumidspecified'] = "Aucune identification de forum définie";
 $lang['groups'] = "Groupes";
@@ -413,6 +425,8 @@ $lang['successfullyaddedgroup'] = "Ajout de groupe réussie";
 $lang['successfullydeletedgroup'] = "Suppression de groupe réussie";
 
 $lang['usercanaccessforumtools'] = "L'utilisateur peut accéder aux outils du forum et peut créer, supprimer et modifier les forums";
+$lang['usercanmodallfoldersonallforums'] = "L'utilisateur peut modérer tous les dossiers sur tous les forums";
+$lang['usercanmodlinkssectiononallforums'] = "L'utilisateur peut modérer la section des liens sur tous les forums";
 
 $lang['emailconfirmationrequired'] = "Confirmation par courriel requis";
 $lang['cancelemailconfirmation'] = "Annuler confirmation par courriel et permettre l'utilisateur de poster";
@@ -428,6 +442,7 @@ $lang['usercanmoderatelinkssection'] = "L'utilisateur peut modérer la section d
 
 $lang['userisbanned'] = "L'utilisateur est banni";
 $lang['useriswormed'] = "L'utilisateur est parasité";
+$lang['userispilloried'] = "L'utilisateur est cloué au pilori";
 
 $lang['usercanignoreadmin'] = "L'utilisateur peut ignorer les administrateurs";
 
@@ -450,6 +465,11 @@ $lang['postasignature'] = "Poster une signature";
 
 $lang['editforumlinks'] = "Modifier les Liens de Forum";
 $lang['editforumlinks_exp'] = "Utiliser cette page pour l'ajout de liens à la liste déroulante verticale affichée au dessus-droit du cadre du forum. Si aucun lien est positionné, la liste déroulante verticale ne sera pas afficher.";
+$lang['notoplevellinkidspecified'] = "Aucune identification de lien de niveau supérieur d'indiquée";
+$lang['notoplevellinktitlespecified'] = "Aucun titre le lien de niveau supérieur d'indiqué";
+$lang['youmustenteratitleforalllinks'] = "Vous devez entrer un titre pour tous les liens";
+$lang['youmustprovideapositionforalllinks'] = "Vous devez fournir une position de lien pour tous les liens";
+$lang['alllinkurismuststartwithaschema'] = "Tous URIs de liens doivent commencés avec un schéma (i.e. http://, ftp://, irc://)";
 
 $lang['allowguestaccess'] = "Permettre l'accès aux visiteurs";
 
@@ -469,6 +489,7 @@ $lang['textcaptchadirerror'] = "Le Captcha de texte a été désactivé parce qu
 $lang['textcaptchagderror'] = "Le Captcha de texte a été désactivé parce que le réglage PHP de votre serveur ne fournit pas de support pour la manipulation d'image GD et / ou de support pour les polices TTF. Les deux sont requis pour supporter le captcha de texte.";
 
 $lang['textcaptchadirsnotwritable'] = "Le répertoire de captcha de texte doit être inscriptible par le serveur web / processus PHP!";
+$lang['failedtocreatetextcaptchadirectories'] = "Création du répertoire de captcha de texte échouée!";
 $lang['textcaptchadirblank'] = "Le répertoire de captcha de texte est vierge!";
 
 $lang['newuserpreferences'] = "Préférences du nouveau utilisateur";
@@ -602,6 +623,7 @@ $lang['unknownlanguage'] = "Langage inconnu";
 $lang['mustchoosedefaultlang'] = "Vous devez choisir un langage de défaut pour le forum";
 $lang['activesessiongreaterthansession'] = "La temporisation de session active ne peut pas excéder la temporisation de session";
 $lang['attachmentdirnotwritable'] = "Le répertoire de fichiers joints doit être inscriptible par le serveur web / processus PHP!";
+$lang['failedtocreateattachmentdirectory'] = "Création du répertoire de fichiers joints requis échouée!";
 $lang['attachmentdirblank'] = "Vous devez fournir un répertoire pour l'enregistrement de fichiers joints";
 $lang['mainsettings'] = "Options principales";
 $lang['forumname'] = "Nom du forum";
@@ -632,12 +654,12 @@ $lang['enablewikiintegration'] = "Activer intégration WikiWiki";
 $lang['enablewikiquicklinks'] = "Activer Quick Links WikiWiki";
 $lang['wikiintegrationuri'] = "Adresse WikiWiki";
 $lang['maximumpostlength'] = "Longueure de message maximale";
-$lang['minimumpostfrequency'] = "Fréquence de postage minimale";
+$lang['postfrequency'] = "Fréquence de postage";
 $lang['enablelinkssection'] = "Activer section des Liens";
 $lang['allowcreationofpolls'] = "Permettre création de scrutins";
 $lang['searchoptions'] = "Options de recherche";
 $lang['minsearchwordlength'] = "Longueur minimale de mot recherché";
-$lang['minsearchfrequency'] = "Fréquence minimale de recherche";
+$lang['searchfrequency'] = "Fréquence de recherche";
 $lang['sessions'] = "Sessions";
 $lang['sessioncutoffseconds'] = "Coupure de session (secondes)";
 $lang['activesessioncutoffseconds'] = "Coupure de session active (secondes)";
@@ -778,7 +800,9 @@ $lang['changewhenpollcloses'] = "Changer quand le scrutin termine?";
 $lang['nochange'] = "Aucun changement";
 $lang['emailresult'] = "Envoyer le résultat par courriel";
 $lang['msgsent'] = "Message envoyé";
+$lang['msgsentsuccessfully'] = "Envoi du message réussi.";
 $lang['msgfail'] = "Défaillance du système courrier. Le message n'a pas été envoyé.";
+$lang['mailsystemfailure'] = "Défaillance du système courriel. Le message n'a pas été envoyé.";
 $lang['nopermissiontoedit'] = "Vous n'avez pas la permission de réviser ce message.";
 $lang['pollediterror'] = "Vous ne pouvez pas réviser les scrutins";
 $lang['cannoteditpostsinthisfolder'] = "Vous ne pouvez pas réviser les messages dans ce dossier";
@@ -788,7 +812,7 @@ $lang['cannoteditpostsinthisfolder'] = "Vous ne pouvez pas réviser les messages
 $lang['nouserspecifiedforemail'] = "Aucun utilisateur indiqué pour envoi de courriel.";
 $lang['entersubjectformessage'] = "Indiquer un sujet pour le message";
 $lang['entercontentformessage'] = "Indiquer du contenu pour le message";
-$lang['msgsentfrombeehiveforumby'] = "Ce message vous êtes envoyé d'un forum Beehive par";
+$lang['msgsentfromby'] = "Ce message a été envoyé de %s par %s";
 $lang['subject'] = "Sujet";
 $lang['send'] = "Envoyer";
 
@@ -1023,6 +1047,9 @@ $lang['cannotattachfilesinfolder'] = "Vous ne pouvez pas poster des fichiers joi
 $lang['postfrequencytoogreat_1'] = "Vous pouvez poster seulement une fois tous les";
 $lang['postfrequencytoogreat_2'] = "secondes. SVP ré-essayer plus tard.";
 $lang['emailconfirmationrequiredbeforepost'] = "Confirmation d'adresse courriel requise avant que vous pouvez poster!";
+$lang['emailconfirmationfailedtosend'] = "L'envoi du courriel de confirmation a échoué. SVP contacter le propriétaire du forum pour corriger cette situation.";
+$lang['emailconfirmationsent'] = "Le courriel de confirmation a été renvoyé.";
+$lang['resendconfirmation'] = "Renvoyer confirmation";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 
@@ -1084,8 +1111,8 @@ $lang['mustprovidefolderid'] = "Identification de dossier valide doit être four
 $lang['moderatorlist'] = "Liste de modérateurs:";
 $lang['modsforfolder'] = "Modérateurs de dossier";
 $lang['nomodsfound'] = "Aucun modérateur retrouvé";
-$lang['forumlevelmods'] = "Modérateurs au niveau du forum:";
-$lang['folderlevelmods'] = "Modérateurs au niveau des dossiers:";
+$lang['forumleaders'] = "Leaders du forum:";
+$lang['foldermods'] = "Modérateurs de dossier:";
 
 // Navigation strip (nav.php) ------------------------------------------
 
@@ -1582,6 +1609,7 @@ $lang['wehave'] = "Nous avons";
 $lang['registeredmembers'] = "membres enregistrés";
 $lang['thenewestmemberis'] = "Le plus récent membre est";
 $lang['mostuserseveronlinewas'] = "Le plus grand nombre d'utilisateurs en ligne à la fois était";
+$lang['statsdisplayenabled'] = "Affichage de statistiques activé";
 
 // Thread Options (thread_options.php) ---------------------------------
 
@@ -1637,5 +1665,21 @@ $lang['postapprovalrequired'] = "Approbation de message requise";
 // text_captcha.inc.php ------------------------------------------------
 
 $lang['textcaptchanofonts'] = "Aucune police de disponible pour le captcha de texte. SVP téléverser des polices truetype à votre sous-répertoire de polices sur votre serveur.";
+
+// RSS feeds gubbins
+
+$lang['rssfeed'] = "Alimentation RSS";
+$lang['every30mins'] = "Toutes les 30 minutes";
+$lang['onceanhour'] = "Une fois par heure";
+$lang['every6hours'] = "Toutes les 6 heures";
+$lang['every12hours'] = "Toutes les 12 heures";
+$lang['onceaday'] = "Une fois par jour";
+
+$lang['rssfeeds'] = "Sources de données RSS";
+$lang['feedlocation'] = "Repérage de source de données";
+$lang['threadprefix'] = "Préfixe de fil de discussion";
+$lang['updatefrequency'] = "Fréquence de mise à jour";
+$lang['rssclicktoreadarticle'] = "Cliquer ici pour lire cette article";
+$lang['rssfeedhelp_1'] = "Vous pouvez ici régler des sources de données RSS pour propagation automatique dans votre forum. Les items des sources de données RSS que vous ajoutez seront créés comme fils de discussion auquels vos utilisateurs pourront répondre comme si c'étaient des messages normales. Lorsque vous ajouter une source de données RSS, vous devez indiquer le nom d'utilisateur à utiliser pour commencer les fils de discussion, le dossier dans lequel ils seront créés et le repérage des sources de données. Le repérage des sources de données lui-même doit être accessible via HTTP, sinon les sources de données ne fonctionneront pas.";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.150 2005-04-20 18:42:36 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.151 2005-05-03 21:39:07 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -218,15 +218,20 @@ function poll_get_votes($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT OPTION_ID, OPTION_NAME, GROUP_ID ";
-    $sql.= "FROM {$table_data['PREFIX']}POLL_VOTES WHERE TID = '$tid' ";
+    $sql = "SELECT POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME, ";
+    $sql.= "POLL_VOTES.GROUP_ID, COUNT(USER_POLL_VOTES.ID) AS VOTE_COUNT ";
+    $sql.= "FROM DEFAULT_POLL_VOTES POLL_VOTES LEFT JOIN ";
+    $sql.= "DEFAULT_USER_POLL_VOTES USER_POLL_VOTES ";
+    $sql.= "ON (USER_POLL_VOTES.TID = POLL_VOTES.TID ";
+    $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) ";
+    $sql.= "WHERE POLL_VOTES.TID = $tid GROUP BY POLL_VOTES.OPTION_ID";
 
     $result = db_query($sql, $db_poll_get_votes);
 
-    $option_ids        = array();
-    $option_names    = array();
+    $option_ids    = array();
+    $option_names  = array();
     $option_groups = array();
-    $option_votes    = array();
+    $option_votes  = array();
 
     $pollresults = array();
 
@@ -235,14 +240,7 @@ function poll_get_votes($tid)
         $option_ids[]    = $row['OPTION_ID'];
         $option_names[]  = $row['OPTION_NAME'];
         $option_groups[] = $row['GROUP_ID'];
-
-        $sql = "SELECT COUNT(*) AS VOTES FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-        $sql.= "WHERE OPTION_ID = '{$row['OPTION_ID']}' ";
-        $sql.= "AND TID = '$tid'";
-
-        $result_vote_count = db_query($sql, $db_poll_get_votes);
-        $row_vote_count    = db_fetch_array($result_vote_count);
-        $option_votes[]    = $row_vote_count['VOTES'];
+        $option_votes[]  = $row['VOTE_COUNT'];
     }
 
     $pollresults = array('OPTION_ID'   => $option_ids,
@@ -260,9 +258,8 @@ function poll_get_total_votes($tid)
     if (!is_numeric($tid)) return 0;
     if (!$table_data = get_table_prefix()) return 0;
 
-    //Used to be 'OPTION_ID' not 'DISTINCT UID', but that breaks polls - counts votes*option_groups. What did I break?
     $sql = "SELECT COUNT(DISTINCT UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE TID = '$tid'";
+    $sql.= "WHERE TID = $tid";
 
     $result = db_query($sql, $db_poll_get_total_votes);
     list($vote_count) = db_fetch_array($result, DB_RESULT_NUM);

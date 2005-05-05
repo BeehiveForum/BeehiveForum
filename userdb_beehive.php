@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: userdb_beehive.php,v 1.2 2005-02-20 22:07:33 decoyduck Exp $ */
+/* $Id: userdb_beehive.php,v 1.3 2005-05-05 20:32:04 decoyduck Exp $ */
 
 // Put Ewiki in protected mode and default to view / browse only
 
@@ -37,8 +37,8 @@ include("plugins/auth/auth_perm_ring.php");
 $ewiki_plugins["auth_query"][] = "ewiki_auth_query_beehive";
 $ewiki_plugins["auth_userdb"][] = "ewiki_auth_userdb_beehive";
 
-function ewiki_auth_query_beehive(&$data, $force_query = false) {
-
+function ewiki_auth_query_beehive(&$data, $force_query = false)
+{
     global $ewiki_errmsg, $ewiki_id, $ewiki_action;
 
     $t_success = false;
@@ -100,10 +100,16 @@ function ewiki_auth_query_beehive(&$data, $force_query = false) {
     return $t_success;
 }
 
-function ewiki_auth_userdb_beehive($username, $password) {
-
+function ewiki_auth_userdb_beehive($username, $password)
+{
     include_once("../forum/include/config.inc.php");
     include_once("../forum/include/constants.inc.php");
+
+    // $forum_fid is the FID from the FORUMS table. If you want
+    // to associate the wiki with another forum's user permissions
+    // change the $forum_fid value here.
+
+    $forum_fid = 1;
 
     if (@!$db_ewiki_auth = mysql_connect($db_server, $db_username, $db_password)) return false;
     if (@!mysql_select_db($db_database, $db_ewiki_auth)) return false;
@@ -111,13 +117,12 @@ function ewiki_auth_userdb_beehive($username, $password) {
     $username = addslashes($username);
     $password = md5($password);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM, ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL, ";
+    $sql.= "USER.PASSWD, BIT_OR(GROUP_PERMS.PERM) AS USER_PERM, ";
     $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER USER ";
-    $sql.= "LEFT JOIN DEFAULT_GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN DEFAULT_GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FID = 0) ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+    $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
     $sql.= "WHERE USER.LOGON = '$username' AND USER.PASSWD = '$password' ";
     $sql.= "GROUP BY USER.UID";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.67 2005-04-30 22:53:43 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.68 2005-05-05 20:32:04 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1225,6 +1225,8 @@ if (!$result = db_query($sql, $db_install)) {
 
 if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
+    $word_count = 0;
+
     $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
     $sql.= "FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' ";
     $sql.= "(WORD, SOUND)";
@@ -1249,6 +1251,12 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
                     $valid = false;
                     return;
+                }
+
+                $word_count++;
+
+                if (($word_count % 5) == 0) {
+                    install_flush_buffer();
                 }
             }
 

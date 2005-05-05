@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.31 2005-04-30 22:17:07 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.32 2005-05-05 20:32:04 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
@@ -291,8 +291,26 @@ function install_cli_show_upgrade_help()
     echo "  -u          Username to use when connecting to MySQL server\n";
     echo "  -p          Password to use when connecting to MySQL server\n";
     echo "  -D          Database to use\n\n";
-    echo "During upgrades there is no need to specify a Admin account or\n";
-    echo "forum webtag as the existing forum data will be used instead.\n";
+    echo "  -w          Webtag to use for forum\n";
+    echo "  -U          Admin user account to create [Default: ADMIN]\n";
+    echo "  -P          Password to use for Admin account [Default: honey]\n";
+    echo "  -E          Email address to use [Default: admin@abeehiveforum.net]\n\n";
+    echo "Depending on the version of Beehive you're upgrading to you may not\n";
+    echo "need to specify all of these options. Any that are unneeded by the script\n";
+    echo "you are useing will be ignored.\n";
+}
+
+function install_msie_buffer_fix()
+{
+    if (isset($_SERVER['HTTP_USER_AGENT']) && stristr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+        echo str_repeat("<!--comment-->", 20);
+    }
+}
+
+function install_flush_buffer()
+{
+    echo "<!--comment-->"; flush();
+    if (function_exists('ob_flush')) ob_flush();
 }
 
 ?>

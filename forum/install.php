@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.41 2005-04-30 22:17:07 decoyduck Exp $ */
+/* $Id: install.php,v 1.42 2005-05-05 20:32:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -38,6 +38,8 @@ if (@file_exists("./include/config.inc.php")) {
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+
+install_msie_buffer_fix();
 
 if (isset($_GET['force_install']) && $_GET['force_install'] == 'yes') {
     $force_install = true;

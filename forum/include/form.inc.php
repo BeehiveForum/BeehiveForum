@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.74 2005-04-11 18:32:15 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.75 2005-05-05 18:25:19 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -348,14 +348,8 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
 {
     $lang = load_language_file();
 
-    $birthday_days = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
-                           '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-                           '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
-                           '31');
-
-    $birthday_months = array($lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'],
-                             $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'],
-                             $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
+    $birthday_days = range(1, 31);
+    $birthday_months = $lang['month'];
 
     $birthday_years = range(1900, date('Y', mktime()));
 
@@ -428,12 +422,11 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
 {
     $lang = load_language_file();
 
-    $days = range(1,31);
-    array_unshift($days, " ");
+    $days = range(1, 31);
+    $months = $lang['month_short'];
 
-    $months = array(" ", $lang['jan'], $lang['feb'], $lang['mar'], $lang['apr'],
-                    $lang['may'], $lang['jun'], $lang['jul'], $lang['aug'],
-                    $lang['sep'], $lang['oct'], $lang['nov'], $lang['dec']);
+    array_unshift($days, " ");
+    array_unshift($months, " ");
 
     // the end of 2037 is more or less the maximum time that
     // can be represented as a UNIX timestamp currently
@@ -455,7 +448,7 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
         array_unshift($years_values, " ");
     }
 
-    $output = form_dropdown_array("{$prefix}day", range(0,31), $days, $day);
+    $output = form_dropdown_array("{$prefix}day", range(0, 31), $days, $day);
     $output.= "&nbsp;";
     $output.= form_dropdown_array("{$prefix}month", range(0, 12), $months, $month);
     $output.= "&nbsp;";

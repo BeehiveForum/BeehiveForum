@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.248 2005-04-27 19:47:21 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.249 2005-05-05 18:25:20 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -108,9 +108,9 @@ function user_update_nickname($uid, $nickname)
     return db_query($sql, $db_user_update);
 }
 
-function user_change_pass($uid, $password, $hash)
+function user_change_password($uid, $password, $hash)
 {
-    $db_user_change_pass = db_connect();
+    $db_user_change_password = db_connect();
 
     if (!is_numeric($uid)) return false;
 
@@ -123,14 +123,14 @@ function user_change_pass($uid, $password, $hash)
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid' AND PASSWD = '$hash'";
 
-        return db_query($sql, $db_user_change_pass);
+        return db_query($sql, $db_user_change_password);
 
     }elseif (perm_is_moderator()) {
 
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid'";
 
-        return db_query($sql, $db_user_change_pass);
+        return db_query($sql, $db_user_change_password);
     }
 
     return false;
@@ -698,11 +698,12 @@ function user_get_forthcoming_birthdays()
     }
 }
 
-function user_search($usersearch, $offset = 0)
+function user_search($usersearch, $offset = 0, $exclude_uid = 0)
 {
     $db_user_search = db_connect();
 
     if (!is_numeric($offset)) return false;
+    if (!is_numeric($exclude_uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -713,13 +714,14 @@ function user_search($usersearch, $offset = 0)
 
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql.= "AND USER.UID <> $exclude_uid";
 
     $result = db_query($sql, $db_user_search);
     list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "LIMIT $offset, 20";
+    $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 20";
 
     $result = db_query($sql, $db_user_search);
 

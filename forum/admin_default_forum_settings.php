@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.35 2005-05-01 15:23:21 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.36 2005-05-05 18:25:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -509,7 +509,7 @@ if (isset($default_forum_settings['text_captcha_enabled']) && $default_forum_set
 
                     echo "                            <tr>\n";
                     echo "                              <td width=\"30\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
-                    echo "                              <td>{$lang['textcaptchafonterror_1']} <b>", $text_captcha->get_font_path(), "</b> {$lang['textcaptchafonterror_2']}</td>\n";                    echo "                            </tr>\n";
+                    echo "                              <td>{$lang['textcaptchafonterror_1']} <b>", forum_get_setting('text_captcha_dir', false, 'text_captcha'), "</b> {$lang['textcaptchafonterror_2']}</td>\n";                    echo "                            </tr>\n";
                     break;
 
                 case TEXT_CAPTCHA_DIR_ERROR:

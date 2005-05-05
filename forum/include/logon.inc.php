@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.28 2005-04-30 11:50:11 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.29 2005-05-05 21:40:35 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -211,9 +211,16 @@ function draw_logon_form($logon_main)
 
     }else {
 
+        $request_uri = get_request_uri();
+
         echo "  <h2>Your session has expired. You will need to login again to continue.</h2>\n";
         echo "  <br />\n";
-        echo "  <form name=\"logonform\" action=\"". get_request_uri(). "\" method=\"post\" target=\"_self\" onsubmit=\"return has_clicked;\">\n";
+
+        if (stristr($request_uri, 'logon.php')) {
+            echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+        }else {
+            echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\" onsubmit=\"return has_clicked;\">\n";
+        }
 
         foreach($_POST as $key => $value) {
 

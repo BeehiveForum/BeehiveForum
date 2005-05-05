@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.184 2005-05-01 14:40:28 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.185 2005-05-05 21:40:35 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -199,7 +199,12 @@ function bh_session_check($show_session_fail = true)
 
                     $request_uri = get_request_uri();
 
-                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+                    if (stristr($request_uri, 'logon.php')) {
+                        echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
+                    }else {
+                        echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+                    }
+
                     echo form_input_hidden('webtag', $webtag);
 
                     foreach($_POST as $key => $value) {

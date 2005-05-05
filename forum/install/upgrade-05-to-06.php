@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.57 2005-04-30 22:17:08 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.58 2005-05-05 21:40:36 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -141,7 +141,7 @@ if (db_num_rows($result) > 0) {
     }
 }
 
-$remove_tables = array('GROUPS', 'GROUP_PERMS', 'GROUP_USERS',
+$remove_tables = array('DEDUPE', 'GROUPS', 'GROUP_PERMS', 'GROUP_USERS',
                        'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
                        'RSS_FEEDS', 'RSS_HISTORY', 'SEARCH_KEYWORDS',
                        'SEARCH_MATCH', 'SEARCH_POSTS', 'SESSIONS',
@@ -149,7 +149,7 @@ $remove_tables = array('GROUPS', 'GROUP_PERMS', 'GROUP_USERS',
 
 foreach ($remove_tables as $forum_table) {
 
-    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_{$forum_table}";
+    $sql = "DROP TABLE IF EXISTS {$forum_table}";
 
     if (!$result = db_query($sql, $db_install)) {
 
@@ -343,6 +343,14 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_VISITOR_LOG";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // Admin log has changed to be more simplified
 
     $sql = "DROP TABLE IF EXISTS {$forum_webtag}_ADMIN_LOG";
@@ -369,6 +377,28 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     // Permissions system has changed to be global tables
+
+    // Folder permissions:
+
+    $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+    $sql.= "SELECT 0, $forum_fid, FID, PERM FROM ";
+    $sql.= "{$forum_webtag}_GROUP_PERMS WHERE GID = 0";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "DELETE FROM {$forum_webtag}_GROUP_PERMS WHERE GID = 0";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // User permissions:
 
     $sql = "SELECT * FROM {$forum_webtag}_GROUPS";
 
@@ -423,7 +453,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $up_forum = USER_PERM_FORUM_TOOLS;
     $up_admin = USER_PERM_ADMIN_TOOLS;
 
-    $up_both  = USER_PERM_FORUM_TOOLS | USER_PERM_ADMIN_TOOLS;
+    $up_all = (double) (USER_PERM_FORUM_TOOLS | USER_PERM_ADMIN_TOOLS | USER_PERM_LINKS_MODERATE);
+    $up_all = (double) ($up_all | USER_PERM_FOLDER_MODERATE);
 
     $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.PERM, GROUP_USERS.UID ";
     $sql.= "FROM {$forum_webtag}_GROUP_PERMS GROUP_PERMS ";
@@ -444,7 +475,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
                 $new_group_gid = db_insert_id($db_install);
 
                 $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-                $sql.= "VALUES ($new_group_gid, 0, 0, $up_both)";
+                $sql.= "VALUES ($new_group_gid, 0, 0, $up_all)";
 
                 if (!$result = db_query($sql, $db_install)) {
 

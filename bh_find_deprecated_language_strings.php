@@ -35,41 +35,55 @@ function get_files($path, &$files_array)
 
 set_time_limit(0);
 
-$lang = load_language_file("en.inc.php");
-
 $files_array = array();
 $deprecated_array = array();
+$unused_langs = array();
+
+$lang = load_language_file("en.inc.php");
+
+foreach($lang as $lang_key => $lang_value) {
+    $unused_langs[$lang_key] = $lang_value;
+}
 
 if (get_files("E:/beehiveforum/forum", $files_array)) {
 
     if (get_files("E:/beehiveforum/forum/include", $files_array)) {
 
-        foreach($lang as $lang_key => $lang_value) {
+        echo "Please wait, checking files...\n\n";
 
-            reset($files_array);
+        foreach($files_array as $filename) {
 
-            $lang_used = false;
+            if ($file_contents = file_get_contents($filename)) {
 
-            foreach($files_array as $filename) {
+                echo "CHECKING: $filename\n";
 
-                $file_contents = file_get_contents($filename);
-                if (strstr($file_contents, "\$lang['$lang_key']")) $lang_used = true;
-            }
+                reset($lang);
 
-            if (!$lang_used) {
+                foreach($lang as $lang_key => $lang_value) {
 
-                if (is_array($lang[$lang_key])) {
-
-                    foreach ($lang[$lang_key] as $lang_sub_key => $lang_sub_value) {
-
-                        echo "\$lang['$lang_key']['$lang_sub_key'] = \"$lang_sub_value\";\n";
+                    if (stristr($file_contents, "\$lang['$lang_key']")) {
+                        unset($unused_langs[$lang_key]);
                     }
-
-                }else {
-
-                    echo "\$lang['$lang_key'] = \"$lang_value\";\n";
                 }
+
+            }else {
+
+                echo "FAILED TO LOAD: $filename\n";
             }
+        }
+
+        if (sizeof($unused_langs) > 0) {
+
+            echo "\nUnused language strings:\n\n";
+
+            foreach($unused_langs as $lang_key => $lang_value) {
+
+                echo "\$lang['$lang_key'] = \"$lang_value\";\n";
+            }
+
+        }else {
+
+            echo "\nNo unused language strings detected!\n";
         }
     }
 }

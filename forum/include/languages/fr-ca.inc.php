@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.5 2005-05-05 18:25:20 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.6 2005-05-06 18:20:29 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -993,7 +993,7 @@ $lang['awaitingapprovalbymoderator'] = "en attente d'approbation par un modérat
 $lang['postapprovedsuccessfully'] = "Approbation de message réussie";
 $lang['approvepost'] = "Approuver message pour affichage";
 $lang['approvedcaps'] = "APPROUVÉ";
-
+$lang['makesticky'] = "Rendre collant";
 $lang['linktothread'] = "Lien permanent à ce fil de discussion";
 $lang['linktopost'] = "Hyperlier au message";
 $lang['linktothispost'] = "Hyperlier à ce message";

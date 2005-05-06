@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.50 2005-04-20 23:27:33 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.51 2005-05-06 18:20:28 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -268,14 +268,14 @@ function links_get_single($lid)
     }
 }
 
-function links_get_all($invisible = false, $sort_by = "DATE", $sort_dir = "DESC", $offset = 0)
+function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0)
 {
     $links_array = array();
 
     $sort_array = array('TITLE', 'DESCRIPTION', 'CREATED', 'RATING');
 
     if (!is_numeric($offset)) $offset = 0;
-    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'DESC';
+    if ((trim($sort_dir) != 'DESC') && (trim($sort_dir) != 'ASC')) $sort_dir = 'ASC';
     if (!in_array($sort_by, $sort_array)) $sort_by = 'TITLE';
 
     $db_links_get_in_folder = db_connect();

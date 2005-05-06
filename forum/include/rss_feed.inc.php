@@ -218,6 +218,8 @@ function rss_create_history($rss_id, $link)
 
 function rss_check_feeds()
 {
+    $user_sess = bh_session_check();
+
     $lang = load_language_file();
 
     if ($rss_feed = rss_fetch_feed()) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.290 2005-05-05 18:25:20 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.291 2005-05-06 18:20:28 decoyduck Exp $ */
 
 // International English language file
 
@@ -994,7 +994,7 @@ $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
 $lang['approvepost'] = "Approve post for display";
 $lang['approvedcaps'] = "APPROVED";
-
+$lang['makesticky'] = "Make sticky";
 $lang['linktothread'] = "Permanent link to this thread";
 $lang['linktopost'] = "Link to post";
 $lang['linktothispost'] = "Link to this post";

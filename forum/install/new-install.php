@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.68 2005-05-05 20:32:04 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.69 2005-05-06 20:11:21 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -977,48 +977,83 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$forum_settings = array('1' => array('forum_name'             => 'A Beehive Forum',
-                                     'forum_email'            => 'admin@abeehiveforum.net',
-                                     'forum_desc'             => 'A Beehive Forum',
-                                     'forum_keywords'         => 'BeehiveForums, Beehive, Forum, Community',
-                                     'default_style'          => 'default',
-                                     'default_emoticons'      => 'default',
-                                     'default_language'       => 'en',
-                                     'allow_post_editing'     => 'Y',
-                                     'post_edit_time'         => '0',
-                                     'maximum_post_length'    => '6226',
-                                     'allow_polls'            => 'Y',
-                                     'show_stats'             => 'Y',
-                                     'guest_account_enabled'  => 'Y',
-                                     'allow_search_spidering' => 'Y'),
+$forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wiki/[WikiWord]',
+                        'enable_wiki_quick_links' => 'Y',
+                        'enable_wiki_integration' => 'N',
+                        'minimum_post_frequency'  => '0',
+                        'maximum_post_length'     => '6226',
+                        'post_edit_time'          => '0',
+                        'allow_post_editing'      => 'Y',
+                        'require_post_approval'   => 'N',
+                        'forum_dl_saving'         => 'Y',
+                        'forum_timezone'          => '0',
+                        'default_language'        => 'en',
+                        'default_emoticons'       => 'default',
+                        'default_style'           => 'Default',
+                        'forum_keywords'          => 'A Beehive Forum, BeehiveForum, Project BeehiveForum',
+                        'forum_desc'              => 'A Beehive Forum',
+                        'forum_email'             => 'admin@abeehiveforum.net',
+                        'forum_name'              => 'A Beehive Forum',
+                        'show_links'              => 'Y',
+                        'allow_polls'             => 'Y',
+                        'show_stats'              => 'Y',
+                        'allow_search_spidering'  => 'Y',
+                        'guest_account_enabled'   => 'Y');
 
-                        '0' => array('show_pms'                   => 'Y',
-                                     'pm_max_user_messages'       => '100',
-                                     'pm_auto_prune'              => '-60',
-                                     'pm_allow_attachments'       => 'Y',
-                                     'search_min_word_length'     => '3',
-                                     'session_cutoff'             => '86400',
-                                     'active_sess_cutoff'         => '900',
-                                     'attachment_dir'             => 'attachments',
-                                     'attachments_enabled'        => 'Y',
-                                     'attachments_max_user_space' => '1048576',
-                                     'attachments_allow_embed'    => 'N',
-                                     'attachment_use_old_method'  => 'N',
-                                     'guest_account_enabled'      => 'Y',
-                                     'guest_auto_logon'           => 'Y'));
+foreach ($settings_array as $sname => $svalue) {
 
-foreach ($forum_settings as $forum => $settings_array) {
+    $sname = addslashes($sname);
+    $svalue = addslashes($svalue);
 
-    foreach ($settings_array as $sname => $svalue) {
+    $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+    $sql.= "VALUES (1, '$sname', '$svalue')";
 
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-        $sql.= "VALUES ('$forum', '$sname', '$svalue')";
+    if (!$result = db_query($sql, $db_install)) {
 
-        if (!$result = db_query($sql, $db_install)) {
+        $valid = false;
+        return;
+    }
+}
 
-                    $valid = false;
-            return;
-        }
+$global_settings = array('allow_search_spidering'     => 'Y',
+                         'pm_allow_attachments'       => 'Y',
+                         'pm_auto_prune'              => '-60',
+                         'pm_max_user_messages'       => '100',
+                         'show_pms'                   => 'Y',
+                         'new_user_mark_as_of_int'    => 'Y',
+                         'showpopuponnewpm'           => 'Y',
+                         'new_user_pm_notify_email'   => 'Y',
+                         'new_user_email_notify'      => 'Y',
+                         'text_captcha_key'           => md5(uniqid(rand())),
+                         'text_captcha_dir'           => 'text_captcha',
+                         'text_captcha_enabled'       => 'N',
+                         'require_email_confirmation' => 'N',
+                         'require_unique_email'       => 'N',
+                         'allow_new_registrations'    => 'Y',
+                         'active_sess_cutoff'         => '900',
+                         'session_cutoff'             => '86400',
+                         'search_min_frequency'       => '30',
+                         'search_min_word_length'     => '3',
+                         'guest_account_enabled'      => 'Y',
+                         'guest_auto_logon'           => 'Y',
+                         'attachments_enabled'        => 'N',
+                         'attachment_dir'             => 'attachments',
+                         'attachments_max_user_space' => '1048576',
+                         'attachments_allow_embed'    => 'N',
+                         'attachment_use_old_method'  => 'N');
+
+foreach ($global_settings as $sname => $svalue) {
+
+    $sname = addslashes($sname);
+    $svalue = addslashes($svalue);
+
+    $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+    $sql.= "VALUES (0, '$sname', '$svalue')";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
     }
 }
 

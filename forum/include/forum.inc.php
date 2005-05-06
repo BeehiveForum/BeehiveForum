@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.144 2005-04-27 20:20:48 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.145 2005-05-06 20:11:21 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -1160,17 +1160,47 @@ function forum_create($webtag, $forum_name, $access)
             return false;
         }
 
-        // Store Forum Name
+        // Store Forum settings
 
-        $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) VALUES ('$forum_fid', 'forum_name', '$forum_name')";
+        $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wiki/[WikiWord]',
+                                'enable_wiki_quick_links' => 'Y',
+                                'enable_wiki_integration' => 'N',
+                                'minimum_post_frequency'  => '0',
+                                'maximum_post_length'     => '6226',
+                                'post_edit_time'          => '0',
+                                'allow_post_editing'      => 'Y',
+                                'require_post_approval'   => 'N',
+                                'forum_dl_saving'         => 'Y',
+                                'forum_timezone'          => '0',
+                                'default_language'        => 'en',
+                                'default_emoticons'       => 'default',
+                                'default_style'           => 'Default',
+                                'forum_keywords'          => 'A Beehive Forum, BeehiveForum, Project BeehiveForum',
+                                'forum_desc'              => 'A Beehive Forum',
+                                'forum_email'             => 'admin@abeehiveforum.net',
+                                'forum_name'              => $forum_name,
+                                'show_links'              => 'Y',
+                                'allow_polls'             => 'Y',
+                                'show_stats'              => 'Y',
+                                'allow_search_spidering'  => 'Y',
+                                'guest_account_enabled'   => 'Y');
 
-        if (!$result = @db_query($sql, $db_forum_create)) {
+        foreach ($settings_array as $sname => $svalue) {
 
-            forum_delete($forum_fid);
-            return false;
+            $sname = addslashes($sname);
+            $svalue = addslashes($svalue);
+
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
+
+            if (!$result = @db_query($sql, $db_install)) {
+
+                forum_delete($forum_fid);
+                return false;
+            }
         }
 
-        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$uid', '$forum_fid', 1)";
+        $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$uid', $forum_fid, 1)";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 

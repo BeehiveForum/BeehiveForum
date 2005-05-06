@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.36 2005-05-05 18:25:15 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.37 2005-05-06 19:54:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -391,11 +391,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['minsearchwordlength']}:</td>\n";
-echo "                        <td>", form_input_text("search_min_word_length", (isset($default_forum_settings['search_min_word_length'])) ? $default_forum_settings['search_min_word_length'] : "", 10, 3), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("search_min_word_length", (isset($default_forum_settings['search_min_word_length'])) ? $default_forum_settings['search_min_word_length'] : "3", 10, 3), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['searchfrequency']}:</td>\n";
-echo "                        <td>", form_input_text("search_min_frequency", (isset($default_forum_settings['search_min_frequency'])) ? $default_forum_settings['search_min_frequency'] : "", 10, 3), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("search_min_frequency", (isset($default_forum_settings['search_min_frequency'])) ? $default_forum_settings['search_min_frequency'] : "30", 10, 3), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
@@ -615,19 +615,19 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['enablepersonalmessages']}:</td>\n";
-echo "                        <td>", form_radio("show_pms", "Y", $lang['yes'] , (isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'Y')), "&nbsp;", form_radio("show_pms", "N", $lang['no'] , (isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'N')), "</td>\n";
+echo "                        <td>", form_radio("show_pms", "Y", $lang['yes'] , ((isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'Y')) || !isset($default_forum_settings['show_pms'])), "&nbsp;", form_radio("show_pms", "N", $lang['no'] , (isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"350\">{$lang['autopruneuserspmfoldersevery']} ", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($default_forum_settings['pm_auto_prune']) ? ($default_forum_settings['pm_auto_prune'] > 0 ? $default_forum_settings['pm_auto_prune'] : $default_forum_settings['pm_auto_prune'] * -1) : 4)), " {$lang['days']}:</td>\n";
-echo "                        <td>", form_radio("pm_auto_prune_enabled", "Y", $lang['yes'], (isset($default_forum_settings['pm_auto_prune']) && $default_forum_settings['pm_auto_prune'] > 0)), "&nbsp;", form_radio("pm_auto_prune_enabled", "N", $lang['no'] , (isset($default_forum_settings['pm_auto_prune']) && $default_forum_settings['pm_auto_prune'] < 0)), "</td>\n";
+echo "                        <td>", form_radio("pm_auto_prune_enabled", "Y", $lang['yes'], (isset($default_forum_settings['pm_auto_prune']) && $default_forum_settings['pm_auto_prune'] > 0)), "&nbsp;", form_radio("pm_auto_prune_enabled", "N", $lang['no'] , ((isset($default_forum_settings['pm_auto_prune']) && $default_forum_settings['pm_auto_prune'] < 0)) || !isset($default_forum_settings['pm_auto_prune'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['allowpmstohaveattachments']}:</td>\n";
-echo "                        <td>", form_radio("pm_allow_attachments", "Y", $lang['yes'] , (isset($default_forum_settings['pm_allow_attachments']) && $default_forum_settings['pm_allow_attachments'] == 'Y')), "&nbsp;", form_radio("pm_allow_attachments", "N", $lang['no'] , (isset($default_forum_settings['pm_allow_attachments']) && $default_forum_settings['pm_allow_attachments'] == 'N')), "</td>\n";
+echo "                        <td>", form_radio("pm_allow_attachments", "Y", $lang['yes'] , (isset($default_forum_settings['pm_allow_attachments']) && $default_forum_settings['pm_allow_attachments'] == 'Y')), "&nbsp;", form_radio("pm_allow_attachments", "N", $lang['no'] , ((isset($default_forum_settings['pm_allow_attachments']) && $default_forum_settings['pm_allow_attachments'] == 'N')) || !isset($default_forum_settings['pm_allow_attachments'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['pmusermessages']}:</td>\n";
-echo "                        <td>", form_input_text("pm_max_user_messages", (isset($default_forum_settings['pm_max_user_messages'])) ? $default_forum_settings['pm_max_user_messages'] : "", 10, 32), "&nbsp;</td>\n";
+echo "                        <td>", form_input_text("pm_max_user_messages", (isset($default_forum_settings['pm_max_user_messages'])) ? $default_forum_settings['pm_max_user_messages'] : "100", 10, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"3\">\n";
@@ -745,11 +745,11 @@ echo "                        <td>", form_radio("attachment_use_old_method", "Y"
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['attachmentdir']}:</td>\n";
-echo "                        <td>", form_input_text("attachment_dir", (isset($default_forum_settings['attachment_dir'])) ? $default_forum_settings['attachment_dir'] : "", 35, 255), "</td>\n";
+echo "                        <td>", form_input_text("attachment_dir", (isset($default_forum_settings['attachment_dir'])) ? $default_forum_settings['attachment_dir'] : "attachments", 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['userattachmentspace']}:</td>\n";
-echo "                        <td>", form_input_text("attachments_max_user_space", (isset($default_forum_settings['attachments_max_user_space'])) ? ($default_forum_settings['attachments_max_user_space'] / 1024) / 1024 : "", 10, 32), "&nbsp;(MB)</td>\n";
+echo "                        <td>", form_input_text("attachments_max_user_space", (isset($default_forum_settings['attachments_max_user_space'])) ? ($default_forum_settings['attachments_max_user_space'] / 1024) / 1024 : "1", 10, 32), "&nbsp;(MB)</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

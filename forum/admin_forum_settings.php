@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.77 2005-04-27 19:47:05 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.78 2005-05-06 20:11:20 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -283,12 +283,6 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['guest_account_enabled'] = "Y";
     }else {
         $new_forum_settings['guest_account_enabled'] = "N";
-    }
-
-    if (isset($_POST['guest_auto_logon']) && $_POST['guest_auto_logon'] == "Y") {
-        $new_forum_settings['guest_auto_logon'] = "Y";
-    }else {
-        $new_forum_settings['guest_auto_logon'] = "N";
     }
 
     if ($valid) {

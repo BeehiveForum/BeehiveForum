@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.78 2005-05-06 20:11:20 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.79 2005-05-11 09:22:19 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -118,12 +118,12 @@ $timezones_data = array(-12, -11, -10, -9.5, -9, -8.5, -8, -7, -6, -5, -4, -3.5,
 
 if (isset($_POST['changepermissions'])) {
 
-    header_redirect("admin_forum_access.php?webtag=$webtag&fid={$forum_settings['fid']}");
+    header_redirect("admin_forum_access.php?webtag=$webtag&fid={$forum_settings['fid']}&ret=admin_forum_settings.php%3Fwebtag%3D$webtag");
     exit;
 
 }elseif (isset($_POST['changepassword'])) {
 
-    header_redirect("admin_forum_set_passwd.php?webtag=$webtag&fid={$forum_settings['fid']}");
+    header_redirect("admin_forum_set_passwd.php?webtag=$webtag&fid={$forum_settings['fid']}&ret=admin_forum_settings.php%3Fwebtag%3D$webtag");
     exit;
 
 }elseif (isset($_POST['submit'])) {

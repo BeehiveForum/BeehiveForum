@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.28 2005-04-27 19:47:05 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.29 2005-05-11 09:22:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -74,9 +74,8 @@ $webtag = get_webtag($webtag_search);
 
 $lang = load_language_file();
 
-html_draw_top();
-
 if (!perm_has_admin_access()) {
+    html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -95,6 +94,20 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
     html_draw_bottom();
     exit;
 }
+
+if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+    $ret = trim(_stripslashes($_POST['ret']));
+}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
+    $ret = trim(_stripslashes($_GET['ret']));
+}else {
+    $ret = "admin_forums.php?webtag=$webtag";
+}
+
+if (isset($_POST['back'])) {
+    header_redirect($ret);
+}
+
+html_draw_top();
 
 if ($forum_array = forum_get($fid)) {
 
@@ -161,6 +174,7 @@ if ($forum_array = forum_get($fid)) {
     echo "<form name=\"f_user\" action=\"admin_forum_access.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('fid', $fid), "\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('ret', $ret), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -299,7 +313,7 @@ if ($forum_array = forum_get($fid)) {
     echo "        <td>&nbsp;</td>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_button("back", "Back", "onclick=\"document.location.href='admin_forums.php?webtag=$webtag'\""), "</td>\n";
+    echo "        <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
     echo "      </tr>\n";
     echo "    </td>\n";
     echo "  </table>\n";

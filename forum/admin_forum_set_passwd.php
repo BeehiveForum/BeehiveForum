@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.3 2005-04-27 19:47:05 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.4 2005-05-11 09:22:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -74,14 +74,27 @@ $webtag = get_webtag($webtag_search);
 
 $lang = load_language_file();
 
-html_draw_top();
-
 if (!perm_has_admin_access()) {
+    html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
 }
+
+if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
+    $ret = trim(_stripslashes($_POST['ret']));
+}elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
+    $ret = trim(_stripslashes($_GET['ret']));
+}else {
+    $ret = "admin_forums.php?webtag=$webtag";
+}
+
+if (isset($_POST['back'])) {
+    header_redirect($ret);
+}
+
+html_draw_top();
 
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['changepassword']}</h1>\n";
 
@@ -143,8 +156,10 @@ if (isset($_POST['submit'])) {
 }
 
 echo "<br />\n";
+echo "<div align=\"center\">\n";
 echo "<form name=\"passwd\" action=\"admin_forum_set_passwd.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('ret', $ret), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
@@ -176,10 +191,11 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
+echo "<div>\n";
 
 html_draw_bottom();
 

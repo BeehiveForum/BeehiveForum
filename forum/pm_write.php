@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.120 2005-04-27 19:47:14 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.121 2005-05-13 08:39:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,10 +86,20 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
+// Get the user's UID
+
+$uid = bh_session_get_value('UID');
+
+// Guests can't access PMs
+
+if ($uid == 0) {
     html_guest_error();
     exit;
 }
+
+// Check that PM system is enabled
+
+pm_enabled();
 
 // Get the user's post page preferences.
 
@@ -309,8 +319,6 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                         if (user_allow_pm($to_user['UID']) || perm_is_moderator()) {
 
-                            $uid = bh_session_get_value('UID');
-
                             pm_user_prune_folders();
 
                             if ((pm_get_free_space($uid) < 1) && bh_session_get_value('PM_SAVE_SENT_ITEM') == 'Y') {
@@ -461,14 +469,12 @@ if ($valid && isset($_POST['submit'])) {
 
     if (check_ddkey($_POST['t_dedupe'])) {
 
-        $t_from_uid = bh_session_get_value('UID');
-
         if (isset($to_radio) && $to_radio == 0) {
 
-            if ($new_mid = pm_send_message($t_to_uid, $t_from_uid, $t_subject, $t_content)) {
+            if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content)) {
 
                 if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
-                email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
+                email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
             }else {
 
@@ -480,10 +486,10 @@ if ($valid && isset($_POST['submit'])) {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if ($new_mid = pm_send_message($t_to_uid, $t_from_uid, $t_subject, $t_content)) {
+                if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content)) {
 
                     if (get_num_attachments($aid) > 0) pm_save_attachment_id($new_mid, $_POST['aid']);
-                    email_send_pm_notification($t_to_uid, $new_mid, bh_session_get_value('UID'));
+                    email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
                 }else {
 
@@ -552,7 +558,7 @@ if ($valid && isset($_POST['preview'])) {
         $pm_preview_array['TO_UID'] = $t_new_recipient_array['TO_UID'];
     }
 
-    $preview_fuser = user_get(bh_session_get_value('UID'));
+    $preview_fuser = user_get($uid);
 
     $pm_preview_array['FLOGON'] = $preview_fuser['LOGON'];
     $pm_preview_array['FNICK']  = $preview_fuser['NICKNAME'];

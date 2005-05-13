@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.37 2005-05-06 19:54:38 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.38 2005-05-13 08:39:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -615,7 +615,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['enablepersonalmessages']}:</td>\n";
-echo "                        <td>", form_radio("show_pms", "Y", $lang['yes'] , ((isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'Y')) || !isset($default_forum_settings['show_pms'])), "&nbsp;", form_radio("show_pms", "N", $lang['no'] , (isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'N')), "</td>\n";
+echo "                        <td>", form_radio("show_pms", "Y", $lang['yes'] , ((isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'Y'))), "&nbsp;", form_radio("show_pms", "N", $lang['no'] , (isset($default_forum_settings['show_pms']) && $default_forum_settings['show_pms'] == 'N') || !isset($default_forum_settings['show_pms'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"350\">{$lang['autopruneuserspmfoldersevery']} ", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($default_forum_settings['pm_auto_prune']) ? ($default_forum_settings['pm_auto_prune'] > 0 ? $default_forum_settings['pm_auto_prune'] : $default_forum_settings['pm_auto_prune'] * -1) : 4)), " {$lang['days']}:</td>\n";

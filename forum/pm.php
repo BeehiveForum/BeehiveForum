@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.86 2005-04-27 19:47:13 decoyduck Exp $ */
+/* $Id: pm.php,v 1.87 2005-05-13 08:39:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -70,10 +70,20 @@ $webtag = get_webtag($webtag_search);
 
 $lang = load_language_file();
 
-if (bh_session_get_value('UID') == 0) {
+// Get the user's UID
+
+$uid = bh_session_get_value('UID');
+
+// Guests can't access PMs
+
+if ($uid == 0) {
     html_guest_error();
     exit;
 }
+
+// Check that PM system is enabled
+
+pm_enabled();
 
 // Delete Messages
 

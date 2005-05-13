@@ -21,13 +21,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.121 2005-04-13 11:34:20 tribalonline Exp $ */
+/* $Id: pm.inc.php,v 1.122 2005-05-13 08:39:07 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+function pm_enabled()
+{
+    $lang = load_language_file();
+
+    if (forum_get_setting('show_pms', 'N')) {
+
+        html_draw_top();
+        echo "<h1>{$lang['pmshavebeendisabled']}</h1>\n";
+        html_draw_bottom();
+        exit;
+    }
+}
 
 function pm_markasread($mid)
 {

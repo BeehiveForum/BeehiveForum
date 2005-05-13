@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.6 2005-05-06 18:20:29 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.7 2005-05-13 08:39:02 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1052,6 +1052,7 @@ $lang['yourpmfoldersare_2'] = "pleins";
 $lang['currentmessage'] = "Message actuel";
 $lang['unreadmessage'] = "Message non-lu";
 $lang['readmessage'] = "Lire message";
+$lang['pmshavebeendisabled'] = "Les messages personnels ont été désactivés par le propriétaire du forum.";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

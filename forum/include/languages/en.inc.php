@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.291 2005-05-06 18:20:28 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.292 2005-05-13 08:39:02 decoyduck Exp $ */
 
 // International English language file
 
@@ -1053,6 +1053,7 @@ $lang['yourpmfoldersare_2'] = "full";
 $lang['currentmessage'] = "Current Message";
 $lang['unreadmessage'] = "Unread Message";
 $lang['readmessage'] = "Read Message";
+$lang['pmshavebeendisabled'] = "Personal Messages have been disabled by the forum owner.";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 

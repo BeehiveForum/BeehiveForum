@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.153 2005-05-05 18:25:16 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.154 2005-05-14 12:43:36 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -232,13 +232,13 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_confirm_email;
 
-    if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 1) {
+    if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 2) {
 
          $valid = false;
          echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
     }
 
-    if ($valid && !($new_global_user_perms & USER_PERM_FORUM_TOOLS) && $forum_tools_perm_count < 1) {
+    if ($valid && !($new_global_user_perms & USER_PERM_FORUM_TOOLS) && $forum_tools_perm_count < 2) {
 
         $valid = false;
         echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";

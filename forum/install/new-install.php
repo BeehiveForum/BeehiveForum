@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.69 2005-05-06 20:11:21 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.70 2005-05-14 12:43:37 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -542,8 +542,7 @@ if (!$result = db_query($sql, $db_install)) {
 $sql = "CREATE TABLE PM_CONTENT (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  CONTENT TEXT,";
-$sql.= "  PRIMARY KEY (MID),";
-$sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+$sql.= "  PRIMARY KEY (MID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -662,8 +661,7 @@ $sql = "CREATE TABLE {$forum_webtag}_POST_CONTENT (";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  CONTENT TEXT,";
-$sql.= "  PRIMARY KEY (TID, PID),";
-$sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+$sql.= "  PRIMARY KEY (TID, PID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -824,8 +822,7 @@ $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
 $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (TID),";
 $sql.= "  KEY FID (FID),";
-$sql.= "  KEY BY_UID (BY_UID),";
-$sql.= "  FULLTEXT KEY TITLE (TITLE)";
+$sql.= "  KEY BY_UID (BY_UID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = db_query($sql, $db_install)) {

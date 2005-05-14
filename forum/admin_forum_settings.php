@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.79 2005-05-11 09:22:19 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.80 2005-05-14 12:43:36 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -388,84 +388,89 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['forumaccesssettings']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"220\">{$lang['forumaccessstatus']}:</td>\n";
-echo "                        <td>", form_radio("access_level", 0, $lang['open'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 0 ? true : false)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"220\">&nbsp;</td>\n";
-echo "                        <td>", form_radio("access_level", -1, $lang['closed'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == -1 ? true : false)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"220\">&nbsp;</td>\n";
-echo "                        <td>", form_radio("access_level", 1, $lang['restricted'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 1 ? true : false)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"220\">&nbsp;</td>\n";
-echo "                        <td>", form_radio("access_level", 2, $lang['passwordprotected'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 2 ? true : false)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td>&nbsp;</td>\n";
-echo "                        <td>&nbsp;</td>\n";
-echo "                      </tr>\n";
 
-if ($forum_settings['access_level'] == 1) {
+if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] > -2) {
 
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['forumaccesssettings']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"220\">{$lang['forumaccessstatus']}:</td>\n";
+    echo "                        <td>", form_radio("access_level", 0, $lang['open'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 0 ? true : false)), "</td>\n";
+    echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td width=\"220\">&nbsp;</td>\n";
-    echo "                        <td>", form_submit("changepermissions", $lang['changepermissions']), "</td>\n";
+    echo "                        <td>", form_radio("access_level", -1, $lang['closed'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == -1 ? true : false)), "</td>\n";
     echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td>&nbsp;</td>\n";
-    echo "                        <td>&nbsp;</td>\n";
-    echo "                      </tr>\n";
-
-}elseif ($forum_settings['access_level'] == 2) {
-
     echo "                      <tr>\n";
     echo "                        <td width=\"220\">&nbsp;</td>\n";
-    echo "                        <td>", form_submit("changepassword", $lang['changepassword']), "</td>\n";
+    echo "                        <td>", form_radio("access_level", 1, $lang['restricted'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 1 ? true : false)), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"220\">&nbsp;</td>\n";
+    echo "                        <td>", form_radio("access_level", 2, $lang['passwordprotected'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 2 ? true : false)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>&nbsp;</td>\n";
     echo "                        <td>&nbsp;</td>\n";
     echo "                      </tr>\n";
+
+    if ($forum_settings['access_level'] == 1) {
+
+        echo "                      <tr>\n";
+        echo "                        <td width=\"220\">&nbsp;</td>\n";
+        echo "                        <td>", form_submit("changepermissions", $lang['changepermissions']), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                      </tr>\n";
+
+    }elseif ($forum_settings['access_level'] == 2) {
+
+        echo "                      <tr>\n";
+        echo "                        <td width=\"220\">&nbsp;</td>\n";
+        echo "                        <td>", form_submit("changepassword", $lang['changepassword']), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                      </tr>\n";
+    }
+
+    echo "                      <tr>\n";
+    echo "                        <td colspan=\"2\">\n";
+    echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_33']}</p>\n";
+    echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_34']}</p>\n";
+    echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_35']}</p>\n";
+    echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_36']}</p>\n";
+    echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_37']}</p>\n";
+    echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_38']}</p>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
 }
 
-echo "                      <tr>\n";
-echo "                        <td colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_33']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_34']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_35']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_36']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_37']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_38']}</p>\n";
-echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

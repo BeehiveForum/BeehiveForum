@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.44 2005-04-26 18:37:43 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.45 2005-05-14 12:43:37 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -38,7 +38,8 @@ function get_forum_list()
 
     $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = $uid) ORDER BY FORUMS.FID";
+    $sql.= "AND USER_FORUM.UID = $uid) WHERE FORUMS.ACCESS_LEVEL > -1 ";
+    $sql.= "ORDER BY FORUMS.FID";
 
     $result_forums = db_query($sql, $db_get_forum_list);
 
@@ -100,7 +101,8 @@ function get_my_forums()
 
     $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = $uid) ORDER BY FORUMS.FID";
+    $sql.= "AND USER_FORUM.UID = $uid) WHERE FORUMS.ACCESS_LEVEL > -1 ";
+    $sql.= "ORDER BY FORUMS.FID";
 
     $result_forums = db_query($sql, $db_get_my_forums);
 
@@ -116,6 +118,10 @@ function get_my_forums()
                 if (!isset($forum_data[strtoupper($key)])) {
                     $forum_data[strtoupper($key)] = $value;
                 }
+            }
+
+            if (!isset($forum_data['FORUM_NAME'])) {
+                $forum_data['FORUM_NAME'] = "A Beehive Forum";
             }
 
             if (!isset($forum_data['FORUM_DESC'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.122 2005-05-13 08:39:07 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.123 2005-05-14 12:43:37 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -33,7 +33,7 @@ function pm_enabled()
 {
     $lang = load_language_file();
 
-    if (forum_get_setting('show_pms', 'N')) {
+    if (!forum_get_setting('show_pms', 'Y')) {
 
         html_draw_top();
         echo "<h1>{$lang['pmshavebeendisabled']}</h1>\n";

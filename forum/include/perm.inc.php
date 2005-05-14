@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.77 2005-04-24 22:24:48 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.78 2005-05-14 12:43:37 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -43,7 +43,7 @@ function perm_is_moderator($fid = 0)
 
         $db_perm_is_moderator = db_connect();
 
-        if (!$table_data = get_table_prefix()) return 0;
+        if (!$table_data = get_table_prefix()) return false;
 
         $forum_fid = $table_data['FID'];
 
@@ -77,7 +77,7 @@ function perm_has_admin_access($uid = false)
 
         $db_perm_has_admin_access = db_connect();
 
-        if (!$table_data = get_table_prefix()) return 0;
+        if (!$table_data = get_table_prefix()) return false;
 
         $forum_fid = $table_data['FID'];
 
@@ -109,7 +109,7 @@ function perm_has_forumtools_access($uid = false)
 
         $db_perm_has_forumtools_access = db_connect();
 
-        if (!$table_data = get_table_prefix()) return 0;
+        if (!$table_data = get_table_prefix()) return false;
 
         $forum_fid = $table_data['FID'];
 
@@ -141,7 +141,7 @@ function perm_is_links_moderator($uid = false)
 
         $db_perm_has_forumtools_access = db_connect();
 
-        if (!$table_data = get_table_prefix()) return 0;
+        if (!$table_data = get_table_prefix()) return false;
 
         $forum_fid = $table_data['FID'];
 

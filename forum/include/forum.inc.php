@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.146 2005-05-11 09:22:20 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.147 2005-05-14 12:43:37 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -172,7 +172,11 @@ function forum_check_access_level()
 
         if (isset($forum_data['ACCESS_LEVEL'])) {
 
-            if ($forum_data['ACCESS_LEVEL'] == -1) {
+            if ($forum_data['ACCESS_LEVEL'] == -2) {
+
+                return perm_has_forumtools_access();
+
+            }elseif ($forum_data['ACCESS_LEVEL'] == -1) {
 
                 forum_closed_message();
 
@@ -801,8 +805,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  CONTENT TEXT,";
-        $sql.= "  PRIMARY KEY (TID, PID),";
-        $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
+        $sql.= "  PRIMARY KEY (TID, PID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -907,8 +910,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY (TID),";
         $sql.= "  KEY FID (FID),";
-        $sql.= "  KEY BY_UID (BY_UID),";
-        $sql.= "  FULLTEXT KEY TITLE (TITLE)";
+        $sql.= "  KEY BY_UID (BY_UID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -1283,7 +1285,7 @@ function forum_update_access($fid, $access, $passwd = false)
 
     // Only the queen can change a forums status!!
 
-    if (perm_has_admin_access()) {
+    if (perm_has_admin_access() || perm_has_forumtools_access()) {
 
         $uid = bh_session_get_value('UID');
 

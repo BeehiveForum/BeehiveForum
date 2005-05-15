@@ -44,6 +44,11 @@ class rss_item
 
 function rss_read_stream($filename)
 {
+    // Try and use PHP's own fopen wrapper to save us
+    // having to do our own HTTP connection.
+
+    if ($rss_data = implode('', @file($filename))) return $rss_data;
+
     $url_array = parse_url($filename);
 
     // We only do HTTP
@@ -56,40 +61,43 @@ function rss_read_stream($filename)
     if (isset($url_array['user'])) return false;
     if (isset($url_array['pass'])) return false;
 
-    // If we don't have a port we'll assume port 80
+    // If we don't have a port we'll assume port 80.
 
-    if (!isset($url_array['port'])) $url_array['port'] = 80;
-    if (!isset($url_array['query'])) $url_array['query'] = "";
+    if (!isset($url_array['port']) || empty($url_array['port'])) $url_array['port'] = 80;
 
-    if (strlen($url_array['query']) > 0) {
-        $url_array['query'] = "?{$url_array['query']}";
-    }
+    // No URL query we still need to set the array index.
+    // If we do have a URL query we need to prefix it with a ?
+
+    if (!isset($url_array['query']) || empty($url_array['query'])) $url_array['query'] = "";
+    if (strlen($url_array['query']) > 0) $url_array['query'] = "?{$url_array['query']}";
+
+    // No path, we'll assume we're fetching from the root.
+
+    if (!isset($url_array['path']) || empty($url_array['path'])) $url_array['path'] = "/";
 
     // We can't do much without socket functions
 
     if ($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30)) {
 
-        $http_headers = "GET {$url_array['path']}{$url_array['query']} HTTP/1.1\r\n";
-        $http_headers.= "Host: {$url_array['host']}\r\n";
-        $http_headers.= "Accept-Charset: UTF-8\r\n";
-        $http_headers.= "Connection: Close\r\n\r\n";
+        $header = "GET {$url_array['path']}{$url_array['query']} HTTP/1.0\r\n";
+        $header.= "Host: {$url_array['host']}\r\n";
+        $header.= "Connection: Close\r\n\r\n";
 
-        $http_data = "";
+        $reply_data = "";
 
-        fwrite($fp, $http_headers);
+        fwrite($fp, $header);
 
         while (!feof($fp)) {
-            $http_data.= fgets($fp, 1024);
+            $reply_data.= fgets($fp, 1024);
         }
 
         fclose($fp);
 
-        if ($http_data_array = preg_split("/\<\?xml/", $http_data)) {
+        // Split the header from the data (seperated by \r\n\r\n)
 
-            if (isset($http_data_array[1])) {
+        if ($data_array = preg_split("/\r\n\r\n/", $reply_data, 2)) {
 
-                return "<?xml{$http_data_array[1]}";
-            }
+            if (isset($data_array[1])) return $data_array[1];
         }
     }
 
@@ -98,7 +106,7 @@ function rss_read_stream($filename)
 
 function rss_read_database($filename)
 {
-   if (!$data = rss_read_stream($filename)) return false;
+   if (!$data = rss_read_stream($filename)) die("D'oh!");
 
    $data = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $data);
 
@@ -171,12 +179,12 @@ function rss_fetch_feed()
         $sql = "UPDATE {$table_data['PREFIX']}RSS_FEEDS SET LAST_RUN = NOW() ";
         $sql.= "WHERE RSSID = {$rss_feed['RSSID']} AND LAST_RUN = '{$rss_feed['LAST_RUN']}'";
 
-        $result = db_query($sql, $db_fetch_rss_feed);
+        //$result = db_query($sql, $db_fetch_rss_feed);
 
-        if (db_affected_rows($db_fetch_rss_feed) > 0) {
+        //if (db_affected_rows($db_fetch_rss_feed) > 0) {
 
             return $rss_feed;
-        }
+        //}
     }
 
     return false;

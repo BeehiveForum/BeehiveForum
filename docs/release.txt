@@ -1,5 +1,137 @@
 Beehive Forum Release Notes
 
+What's new in 0.6 ("Cartoon City", released TBC)
+=================
+
+- Notes
+
+        - BeehiveForum 0.6 introduces a new search indexing procedure
+	  which will unfortunately skew the search results of your forum
+	  while it catches up and performs the indexing. If you have a 
+	  lot of posts this will take a long time to complete. To help
+	  reduce the time required in the indexing your old posts, 
+	  included is search_index.php which is suitable for running
+	  from a cron or schedule job. Posts created after upgrading
+	  to 0.6 will be indexed as they are created.
+
+	- New Admin logging options require 0.6 to clear your current
+	  Admin Log before upgrading. This is at the expense of
+	  improved logging. If you want to keep your old logs please
+	  view and save the HTML output or export the ADMIN_LOG table
+	  for each forum.
+
+- Brand new features
+
+        - Installation can now be completed via CLI over telnet / SSH.
+        - RSS Feed propagation allows the replication of an RSS feed
+	  into threads on your forum. Useful for news headlines from
+	  other sites to promote discussion.
+	- Added constant for the include files path so that developers
+	  can reuse the Beehive include files while placing their own
+	  scripts outside of the main forum folder.
+        - Post Approval options allows moderators to optionally approve
+          posts before they are displayed to other users.
+	- Email address confirmation for new user registrations.
+	- Text Captcha options for new user registrations to help
+	  prevent scripts and bots from creating user accounts.
+        - TinyMCE WYSIWYG integration with BeehiveForum's compose pages.
+	- French Canadian (fr-ca) language file. Thanks to Jo from
+	  Canadian Politics Forums (http://www.canadianpolitics.com/)
+	- Forums can be opened, closed, restricted or password protected
+	  without requiring access to the 'Manage Forums' section. A new
+	  option allows a user with access to the 'Manage Forums' section
+	  to disable a forum which will hide it from the My Forums list
+	  as per 0.5's behaviour.
+	- WikiWiki integration allows Beehive to automatically hyperlink
+	  CamalCase words as used by most popular Wiki sites.
+	- Wiki-esq quick links for linking to a specific post using 
+	  msg:1.1 or to user's profile using user:Logon.
+	- Attachments allow for the creation of thumbnails in posts for
+	  supported file types (*.png, *.jpg, *.gif). Requires GD library
+	  to be compiled in with PHP.
+	- New option allows all other users to edit a PILLORIED users
+	  posts without having to be given moderator privileges.
+	- Added user tracking and limitations to restrict how often users
+	  can post and perform searches.
+	- New User Registrations can now be disabled.
+	- Added option to prevent spidering of forums by adding the
+	  appropriate noindex,nofollow meta tags to the HTML generated
+	  by Beehive.
+	- Added options to enable or disable the links and Personal
+	  Messages sections and correctly prevent access to the related
+	  pages.
+	- Added option to specify the forum time zone and day light saving
+	  mode independently of the server clock and user time zone.
+	- Added option to prevent users from ignoring admin.
+	- Default New User registration settings including email notification
+	  PM notification, etc. can be defined in Global Forum Settings.
+	- Added <label for=""> to checkboxes and radio buttons which allow
+	  for clickable text to toggle form elements.
+	- Added post stats page to Admin tools which can be used to find
+	  the Top 20 posters during specified period.
+
+- Enhanced old features
+
+        - Greatly improved Unicode UTF-8 support which should make it
+	  possible to type in different alphabets in the same post.
+        - Improved user permissions handling to more consistent and less
+	  prone to problems. A lot of the niggles you've all encountered
+	  with 0.5's permissions should be fixed in 0.6.
+        - Ban controls now allow banning of IP Addresses, Logons,
+          Nicknames and email addresses by wildcard matching.
+        - Better search indexing added which generates less load on MySQL
+	  server when a user performs a search.
+	- Better Admin log with less possibility for display of Unknown
+	  User, Unknown Thread / Post, etc.
+	- Added ability for Admin to change user's password.
+	- Re-added User Alias list on User page, but removed IP banning
+	  option as this is now handled by the new Ban Controls section.
+	- Dictionary now skips HTML tags and entities and is otherwise
+	  more precise in matching whole words.
+        - Links and Link folders are now sorted alphabetically by default.
+	- Replaced Beautifier with Geshi - Generic Syntax Highlighter.
+	- Improved user permissions allow for separate Links section
+	  and Post moderators as well as better global Admin who
+	  can optionally moderate over all forums.
+	- Improved emoticons support makes it easier to create and 
+	  distribute emoticon packs that are easy to install.
+	- Attachments now always open in a new window / tab.
+	- New improved attachments popup with G-mail-a-like multiple
+	  file uploads.
+	- Light mode now uses the Forum Name in the logon page to indicate
+	  the name of the forum you are visiting.
+	- Images to links option will now convert embedded files including
+	  Shockwave and Flash files.
+	- Added Logon and User UID to top of Edit Preferences page.
+        - Removed all inline CSS and replaced it with class names which
+	  can be more easily modified in your style sheets.
+	- Greatly improved the start page editor and style sheet editor
+	  with more useful error messages and help for write protected
+	  files and folders.
+	- Added Deleted by text and time / date stamp on deleted messages.
+	- Prevented users from blocking moderators and stopping them
+	  from sending them PMs.
+	- Fixed sending an email to a user via their profile always
+	  said "Sent by X from a Beehive Forum"
+	- Better session handling code allows users to logout correctly
+	  and appear logged out on the Recent Users display.
+	- Better detection for when a user's session expires, giving them
+	  more control over logging back in with minimal fuss.
+	- Fixed all user preference updates so they don't affect all
+	  forums. Changing things like post page settings, font size, 
+	  toggling stats display now only affects the forum a user is
+	  currently visiting rather than all of them.
+	- Re-added display of Guests to Recent Visitors list.
+
+- Bug fixes
+
+        - Fixed call to undefined function user_change_pw() fixed. A
+          patch is also available to fix separately this problem in 0.5
+	- Fixed call to undefined function gzcompress() when GZIP
+	  compression was enabled on a PHP installation that was compiled
+	  without ZLIB.
+	- Lots of IIS server fixes.
+
 What's new in 0.5 ("What You Have Is Enough", released 10th December 2004)
 =================
 

@@ -21,9 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.59 2005-05-14 12:43:37 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.60 2005-05-16 17:36:16 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
+
+    if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
+        echo "Error: CLI Upgrade must be run from within install directory.";
+        exit;
+    }
 
     define("BH_INCLUDE_PATH", "../include/");
 

@@ -21,9 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.70 2005-05-14 12:43:37 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.71 2005-05-16 17:36:16 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
+
+    if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
+        echo "Error: CLI Installation must be run from within install directory.";
+        exit;
+    }
 
     define("BH_INCLUDE_PATH", "../include/");
 
@@ -33,14 +38,13 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     $remove_conflicts = true;
 
-    $install_path = "";
-
     $admin_username = "ADMIN";
+    $admin_nickname = "Admin";
     $admin_password = "honey";
     $admin_email = "admin@abeehiveforum.net";
 
-    $dictionary_file = preg_replace('/\\\/', '/', getcwd());
-    $dictionary_file.= "/english.dic";
+    $current_directory = preg_replace('/\\\/', '/', getcwd());
+    $dictionary_file = "$current_directory/english.dic";
 
     $beehive_version = BEEHIVE_VERSION;
 
@@ -67,6 +71,7 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
         }
 
         if (preg_match("/^-U(.+)/", $arg, $admin_username_matches)) {
+            $admin_nickname = $admin_username_matches[1];
             $admin_username = strtoupper($admin_username_matches[1]);
         }
 
@@ -132,10 +137,8 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
         $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
     }
 
-    $dict_sounds_path = dirname($_SERVER['SCRIPT_FILENAME']);
-    $dict_sounds_path.= "/install/english_sounds.dic";
-
-    $dict_words_path = "./install/english_words.dic";
+    $dictionary_file = preg_replace('/\\\/', '/', dirname($_SERVER['SCRIPT_FILENAME']));
+    $dictionary_file.= "/install/english.dic";
 
     include_once(BH_INCLUDE_PATH. "constants.inc.php");
     include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -997,7 +1000,7 @@ $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wi
                         'allow_search_spidering'  => 'Y',
                         'guest_account_enabled'   => 'Y');
 
-foreach ($settings_array as $sname => $svalue) {
+foreach ($forum_settings as $sname => $svalue) {
 
     $sname = addslashes($sname);
     $svalue = addslashes($svalue);
@@ -1160,7 +1163,7 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
-$sql.= "VALUES ('$admin_username', MD5('$admin_password'), '$admin_username', '$admin_email');";
+$sql.= "VALUES ('$admin_username', MD5('$admin_password'), '$admin_nickname', '$admin_email');";
 
 if (!$result = db_query($sql, $db_install)) {
 

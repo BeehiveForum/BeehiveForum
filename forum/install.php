@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.42 2005-05-05 20:32:04 decoyduck Exp $ */
+/* $Id: install.php,v 1.43 2005-05-16 17:36:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,7 +122,8 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
     if (isset($install_method) && ($install_method == 0 || $install_method == 1)) {
 
         if (isset($_POST['admin_username']) && strlen(trim(_stripslashes($_POST['admin_username']))) > 0) {
-            $admin_username = trim(_stripslashes($_POST['admin_username']));
+            $admin_nickname = trim(_stripslashes($_POST['admin_username']));
+            $admin_username = strtoupper(trim(_stripslashes($_POST['admin_username'])));
         }else {
             $error_array[] = "You must supply a username for your administrator account.\n";
             $valid = false;

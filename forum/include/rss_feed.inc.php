@@ -47,7 +47,9 @@ function rss_read_stream($filename)
     // Try and use PHP's own fopen wrapper to save us
     // having to do our own HTTP connection.
 
-    if ($rss_data = implode('', @file($filename))) return $rss_data;
+    if ($rss_data = @file($filename)) {
+        if (is_array($rss_data)) return implode('', $rss_data);
+    }
 
     $url_array = parse_url($filename);
 

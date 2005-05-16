@@ -79,6 +79,9 @@ function rss_read_stream($filename)
 
     if ($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30)) {
 
+        @socket_set_timeout($fp, 2);
+        @socket_set_blocking($fp, false);
+
         $header = "GET {$url_array['path']}{$url_array['query']} HTTP/1.0\r\n";
         $header.= "Host: {$url_array['host']}\r\n";
         $header.= "Connection: Close\r\n\r\n";
@@ -88,7 +91,7 @@ function rss_read_stream($filename)
         fwrite($fp, $header);
 
         while (!feof($fp)) {
-            $reply_data.= fgets($fp, 1024);
+            $reply_data.= fgets($fp, 128);
         }
 
         fclose($fp);
@@ -179,12 +182,12 @@ function rss_fetch_feed()
         $sql = "UPDATE {$table_data['PREFIX']}RSS_FEEDS SET LAST_RUN = NOW() ";
         $sql.= "WHERE RSSID = {$rss_feed['RSSID']} AND LAST_RUN = '{$rss_feed['LAST_RUN']}'";
 
-        //$result = db_query($sql, $db_fetch_rss_feed);
+        $result = db_query($sql, $db_fetch_rss_feed);
 
-        //if (db_affected_rows($db_fetch_rss_feed) > 0) {
+        if (db_affected_rows($db_fetch_rss_feed) > 0) {
 
             return $rss_feed;
-        //}
+        }
     }
 
     return false;
@@ -297,7 +300,7 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
     $url = addslashes($url);
     $prefix = addslashes($prefix);
 
-    $last_run = mktime() - (60 * ($frequency + 1));
+    $last_run = mktime(0, 0, 0, 6, 27, 2002);
 
     if (!$table_data = get_table_prefix()) return false;
 

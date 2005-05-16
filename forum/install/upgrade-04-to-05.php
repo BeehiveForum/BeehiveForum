@@ -21,9 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.33 2005-05-14 12:43:37 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.34 2005-05-16 17:36:16 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
+
+    if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
+        echo "Error: CLI Upgrade must be run from within install directory.";
+        exit;
+    }
 
     define("BH_INCLUDE_PATH", "../include/");
 
@@ -33,7 +38,8 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     $remove_conflicts = true;
 
-    $install_path = "";
+    $current_directory = preg_replace('/\\\/', '/', getcwd());
+    $dictionary_file = "$current_directory/english.dic";
 
     $beehive_version = BEEHIVE_VERSION;
 
@@ -108,6 +114,13 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
     exit;
 
 }else {
+
+    if (!isset($_SERVER['SCRIPT_FILENAME'])) {
+        $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
+    }
+
+    $dictionary_file = preg_replace('/\\\/', '/', dirname($_SERVER['SCRIPT_FILENAME']));
+    $dictionary_file.= "/install/english.dic";
 
     include_once(BH_INCLUDE_PATH. "constants.inc.php");
     include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -1460,22 +1473,21 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
             $word_count = 0;
 
-            $dictionary_path = dirname($_SERVER['SCRIPT_FILENAME']);
-            $dictionary_path.= "/install/english.dic";
-
-            $sql = "LOAD DATA INFILE '$dictionary_path' INTO TABLE DICTIONARY ";
+            $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
             $sql.= "FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' ";
             $sql.= "(WORD, SOUND)";
 
             if (!$result = db_query($sql, $db_install)) {
 
-                if ($fp = fopen('./install/english.dic', 'r')) {
+                if ($fp = fopen($dictionary_file, 'r')) {
 
                     while (!feof($fp)) {
 
                         $word = fgets($fp, 100);
 
-                        $metaphone = addslashes(metaphone(trim($word)));
+                        list($word, $metaphone) = explode("\t", $word);
+
+                        $metaphone = addslashes(trim($metaphone));
                         $word = addslashes(trim($word));
 
                         $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";

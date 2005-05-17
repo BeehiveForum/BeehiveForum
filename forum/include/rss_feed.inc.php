@@ -111,7 +111,7 @@ function rss_read_stream($filename)
 
 function rss_read_database($filename)
 {
-   if (!$data = rss_read_stream($filename)) die("D'oh!");
+   if (!$data = rss_read_stream($filename)) return false;
 
    $data = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $data);
 

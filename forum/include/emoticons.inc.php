@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.46 2005-04-12 21:55:41 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.47 2005-05-19 20:08:30 decoyduck Exp $ */
 
 // Emoticon filter file
 
@@ -49,28 +49,8 @@ class Emoticons
 
             $emoticon = array();
 
-            if ($this->user_emots == 'none') {
-
-                if (@$dir = opendir('emoticons')) {
-
-                    while ((@$file = readdir($dir)) !== false) {
-
-                        if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
-
-                            if (@file_exists("./emoticons/$file/definitions.php")) {
-
-                                unset($emoticon);
-                                include ("./emoticons/$file/definitions.php");
-                            }
-                        }
-                    }
-                }
-
-            }else {
-
-                if (@file_exists("./emoticons/{$this->user_emots}/definitions.php")) {
-                    include ("./emoticons/{$this->user_emots}/definitions.php");
-                }
+            if (@file_exists("./emoticons/{$this->user_emots}/definitions.php")) {
+                include ("./emoticons/{$this->user_emots}/definitions.php");
             }
 
             if (sizeof($emoticon) > 0) {
@@ -134,7 +114,7 @@ class Emoticons
 
     function convert ($content)
     {
-        if ($this->emoticons == false) return $content;
+        if (!is_array($this->emoticons)) return $content;
 
         // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
 
@@ -155,28 +135,39 @@ class Emoticons
         $front = "(?<=\s|^|>)";
         $end = "(?=\s|$|<)";
 
-        foreach ($this->emoticons as $k => $v) {
+        foreach ($this->emoticons as $key => $emoticon) {
 
-            $k2 = _htmlentities($k);
+            $key_encoded = _htmlentities($key);
 
-            if ($k != $k2) {
+            if ($key != $key_encoded) {
 
-                $pattern_array[] = "/$front". preg_quote($k2, "/") ."$end/";
-                $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>$browser_fix";
+                $pattern_string = "$front". preg_quote($key_encoded, "/"). "$end";
+                $replace_string = "<span class=\"e_$emoticon\" title=\"$key_encoded\"><span class=\"e__\">$key_encoded</span>$browser_fix";
+
+                $pattern_array[] = $pattern_string;
+                $replace_array[$replace_string] = $key_encoded;
             }
 
-            $pattern_array[] = "/$front". preg_quote($k, "/") ."$end/";
-            $replace_array[] = "<span class=\"e_$v\" title=\"$k2\"><span class=\"e__\">$k2</span>$browser_fix";
+            $pattern_string = "$front". preg_quote($key, "/"). "$end";
+            $replace_string = "<span class=\"e_$emoticon\" title=\"$key\"><span class=\"e__\">$key</span>$browser_fix";
+
+            $pattern_array[] = $pattern_string;
+            $replace_array[$replace_string] = $key;
         }
 
-        if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
+        $pattern_match = implode("|", $pattern_array);
 
-            $content = $new_content;
-        }
+        if ($content_array = preg_split("/($pattern_match)/", $content, 100, PREG_SPLIT_DELIM_CAPTURE)) {
 
-        if (@$new_content = preg_replace($this->pattern_array, $this->replace_array, $content)) {
+            foreach($content_array as $key => $value) {
 
-            $content = $new_content;
+                if (($replace_string = array_search($value, $replace_array)) !== false) {
+
+                    $content_array[$key] = $replace_string;
+                }
+            }
+
+            $content = implode('', $content_array);
         }
 
         return $content;

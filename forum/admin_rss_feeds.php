@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.6 2005-04-27 19:47:07 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.7 2005-05-19 22:30:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -102,84 +102,78 @@ if (isset($_POST['submit'])) {
                     $t_new_name = trim(_stripslashes($_POST['t_name'][$rssid]));
                 }else {
                     $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed Name</h2>\n";
+                    $error_html = "<h2>{$lang['mustspecifyrssfeedname']}</h2>\n";
                 }
 
                 if (isset($_POST['t_old_name'][$rssid]) && strlen(trim(_stripslashes($_POST['t_old_name'][$rssid]))) > 0) {
                     $t_old_name = trim(_stripslashes($_POST['t_old_name'][$rssid]));
                 }else {
-                    $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed Name2</h2>\n";
+                    $t_old_name = "";
                 }
 
                 if (isset($_POST['t_user'][$rssid]) && strlen(trim(_stripslashes($_POST['t_user'][$rssid]))) > 0) {
                     $t_new_user = trim(_stripslashes($_POST['t_user'][$rssid]));
                 }else {
                     $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed User Account</h2>\n";
+                    $error_html = "<h2>{$lang['mustspecifyrssfeeduseraccount']}</h2>\n";
                 }
 
                 if (isset($_POST['t_old_user'][$rssid]) && strlen(trim(_stripslashes($_POST['t_old_user'][$rssid]))) > 0) {
                     $t_old_user = trim(_stripslashes($_POST['t_old_user'][$rssid]));
                 }else {
-                    $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed User Account2</h2>\n";
+                    $t_old_user = "";
                 }
 
                 if (isset($_POST['t_fid'][$rssid]) && is_numeric($_POST['t_fid'][$rssid])) {
                     $t_new_fid = $_POST['t_fid'][$rssid];
                 }else {
                     $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed Folder</h2>\n";
+                    $error_html = "<h2>{$lang['mustspecifyrssfeedfolder']}</h2>\n";
                 }
 
                 if (isset($_POST['t_old_fid'][$rssid]) && is_numeric($_POST['t_old_fid'][$rssid])) {
                     $t_old_fid = $_POST['t_old_fid'][$rssid];
                 }else {
-                    $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed Folder2</h2>\n";
+                    $t_old_fid = "";
                 }
 
                 if (isset($_POST['t_url'][$rssid]) && strlen(trim(_stripslashes($_POST['t_url'][$rssid]))) > 0) {
                     $t_new_url = $_POST['t_url'][$rssid];
                 }else {
                     $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed URL</h2>\n";
+                    $error_html = "<h2>{$lang['mustspecifyrssfeedurl']}</h2>\n";
                 }
 
                 if (isset($_POST['t_old_url'][$rssid]) && strlen(trim(_stripslashes($_POST['t_old_url'][$rssid]))) > 0) {
                     $t_old_url = $_POST['t_old_url'][$rssid];
                 }else {
-                    $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed URL2</h2>\n";
+                    $t_old_url = "";
                 }
 
                 if (isset($_POST['t_prefix'][$rssid]) && strlen(trim(_stripslashes($_POST['t_prefix'][$rssid]))) > 0) {
                     $t_new_prefix = $_POST['t_prefix'][$rssid];
                 }else {
                     $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed Prefix</h2>\n";
+                    $error_html = "<h2>{$lang['mustspecifyrssfeedprefix']}</h2>\n";
                 }
 
                 if (isset($_POST['t_old_prefix'][$rssid]) && strlen(trim(_stripslashes($_POST['t_old_prefix'][$rssid]))) > 0) {
                     $t_old_prefix = $_POST['t_old_prefix'][$rssid];
                 }else {
-                    $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed Prefix2</h2>\n";
+                    $t_old_prefix = "";
                 }
 
                 if (isset($_POST['t_frequency'][$rssid]) && is_numeric($_POST['t_frequency'][$rssid])) {
                     $t_new_frequency = $_POST['t_frequency'][$rssid];
                 }else {
                     $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed Update Frequency</h2>\n";
+                    $error_html = "<h2>{$lang['mustspecifyrssfeedupdatefrequency']}</h2>\n";
                 }
 
                 if (isset($_POST['t_old_frequency'][$rssid]) && is_numeric($_POST['t_old_frequency'][$rssid])) {
                     $t_old_frequency = $_POST['t_old_frequency'][$rssid];
                 }else {
-                    $valid = false;
-                    $error_html = "<h2>Must specify RSS Feed Update Frequency2</h2>\n";
+                    $t_old_frequency = "";
                 }
 
                 if ($valid && (($t_new_name != $t_old_name) || ($t_new_user != $t_old_user) || ($t_new_fid != $t_old_fid) || ($t_new_url != $t_old_url) || ($t_new_prefix != $t_old_prefix) || ($t_new_frequency != $t_old_frequency))) {
@@ -196,7 +190,7 @@ if (isset($_POST['submit'])) {
                     }else {
 
                         $valid = false;
-                        $error_html = "<h2>Unknown RSS User Account</h2>\n";
+                        $error_html = "<h2>{$lang['unknownrssuseraccount']}</h2>\n";
                     }
                 }
             }
@@ -219,7 +213,7 @@ if (isset($_POST['submit'])) {
         }else {
 
             $valid = false;
-            $error_html = "<h2>Must specify RSS Feed Name</h2>\n";
+            $error_html = "<h2>{$lang['mustspecifyrssfeedname']}</h2>\n";
         }
 
         if ($valid) {
@@ -236,41 +230,60 @@ if (isset($_POST['submit'])) {
                 }else {
 
                     $valid = false;
-                    $error_html = "<h2>Unknown RSS User Account</h2>\n";
+                    $error_html = "<h2>{$lang['unknownrssuseraccount']}</h2>\n";
                 }
 
             }else {
 
                 $valid = false;
-                $error_html = "<h2>Must specify RSS Feed User Account</h2>\n";
+                $error_html = "<h2>{$lang['mustspecifyrssfeeduseraccount']}</h2>\n";
             }
 
             if (isset($_POST['t_fid_new']) && is_numeric($_POST['t_fid_new'])) {
                 $t_fid_new = $_POST['t_fid_new'];
             }else {
                 $valid = false;
-                $error_html = "<h2>Must specify RSS Feed Folder</h2>\n";
+                $error_html = "<h2>{$lang['mustspecifyrssfeedfolder']}</h2>\n";
             }
 
             if (isset($_POST['t_url_new']) && strlen(trim(_stripslashes($_POST['t_url_new']))) > 0) {
+
                 $t_url_new = trim(_stripslashes($_POST['t_url_new']));
+
+                $check_url = parse_url($t_url_new);
+
+                if (!isset($check_url['scheme']) || $check_url['scheme'] != "http") {
+                    $valid = false;
+                    $error_html = "<h2>{$lang['rssfeedsupportshttpurlsonly']}</h2>\n";
+                }
+
+                if (!isset($check_url['host']) || strlen(trim($check_url['host'])) < 1) {
+                    $valid = false;
+                    $error_html = "<h2>{$lang['rssfeedurlformatinvalid']}</h2>\n";
+                }
+
+                if (isset($check_url['user']) || isset($check_url['pass'])) {
+                    $valid = false;
+                    $error_html = "<h2>{$lang['rssfeeduserauthentication']}</h2>\n";
+                }
+
             }else {
                 $valid = false;
-                $error_html = "<h2>Must specify RSS Feed URL</h2>\n";
+                $error_html = "<h2>{$lang['mustspecifyrssfeedurl']}</h2>\n";
             }
 
             if (isset($_POST['t_prefix_new']) && strlen(trim(_stripslashes($_POST['t_prefix_new']))) > 0) {
                 $t_prefix_new = trim(_stripslashes($_POST['t_prefix_new']));
             }else {
                 $valid = false;
-                $error_html = "<h2>Must specify RSS Feed Prefix</h2>\n";
+                $error_html = "<h2>{$lang['mustspecifyrssfeedprefix']}</h2>\n";
             }
 
             if (isset($_POST['t_frequency_new']) && is_numeric($_POST['t_frequency_new'])) {
                 $t_frequency_new = $_POST['t_frequency_new'];
             }else {
                 $valid = false;
-                $error_html = "<h2>Must specify RSS Feed Update Frequency</h2>\n";
+                $error_html = "<h2>{$lang['mustspecifyrssfeedupdatefrequency']}</h2>\n";
             }
 
             if ($valid) {
@@ -278,6 +291,7 @@ if (isset($_POST['submit'])) {
                 if (rss_add_feed($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new)) {
 
                     admin_add_log_entry(ADDED_RSS_FEED, array($t_name_new, $t_url_new));
+                    unset($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new);
                 }
             }
         }
@@ -286,10 +300,11 @@ if (isset($_POST['submit'])) {
 
 html_draw_top();
 
-if (isset($error_html)) echo $error_html;
-
 // Draw the form
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['rssfeeds']}</h1>\n";
+
+if (isset($error_html)) echo $error_html;
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_sections\" action=\"admin_rss_feeds.php\" method=\"post\">\n";
@@ -333,12 +348,12 @@ if ($rss_feeds = rss_get_feeds()) {
 
 echo "                <tr>\n";
 echo "                  <td align=\"left\">{$lang['new_caps']}</td>\n";
-echo "                  <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 20, 64), "</td>";
-echo "                  <td align=\"left\">", form_field("t_user_new", bh_session_get_value('LOGON'), 12, 64), "</td>";
-echo "                  <td align=\"left\">", folder_draw_dropdown_all(0, "t_fid_new", "", "", "post_folder_dropdown"), "</td>\n";
-echo "                  <td align=\"left\">", form_field("t_url_new", "", 45, 255), "</td>";
-echo "                  <td align=\"left\">", form_field("t_prefix_new", "", 5, 16), "</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("t_frequency_new", array(30, 60, 360, 720, 1440), array($lang['every30mins'], $lang['onceanhour'], $lang['every6hours'], $lang['every12hours'], $lang['onceaday']), 1440), "</td>\n";
+echo "                  <td align=\"left\">", form_field("t_name_new", (isset($t_name_new) ? $t_name_new : $lang['newitem']), 20, 64), "</td>";
+echo "                  <td align=\"left\">", form_field("t_user_new", (isset($t_user_new) ? $t_user_new : bh_session_get_value('LOGON')), 12, 64), "</td>";
+echo "                  <td align=\"left\">", folder_draw_dropdown_all((isset($t_fid_new) ? $t_fid_new : 0), "t_fid_new", "", "", "post_folder_dropdown"), "</td>\n";
+echo "                  <td align=\"left\">", form_field("t_url_new", (isset($t_url_new) ? $t_url_new : ""), 45, 255), "</td>";
+echo "                  <td align=\"left\">", form_field("t_prefix_new", (isset($t_prefix_new) ? $t_prefix_new : ""), 5, 16), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("t_frequency_new", array(30, 60, 360, 720, 1440), array($lang['every30mins'], $lang['onceanhour'], $lang['every6hours'], $lang['every12hours'], $lang['onceaday']), (isset($t_frequency_new) ? $t_frequency_new : 1440)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"4\">&nbsp;</td>\n";

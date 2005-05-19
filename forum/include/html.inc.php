@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.166 2005-05-02 11:37:00 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.167 2005-05-19 22:30:30 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -123,30 +123,20 @@ function html_get_top_page()
 
     $forum_settings = forum_get_settings();
 
-    if ($user_style = bh_session_get_value('STYLE')) {
-
-        if (@is_dir("./styles/$user_style") && @file_exists("./styles/$user_style/top.html")) {
-            return "styles/$user_style/top.html";
-        }
-
-        if (@is_dir("./forums/$webtag/styles/$user_style") && @file_exists("./forums/$webtag/styles/$user_style/top.html")) {
-            return "./forums/$webtag/styles/$user_style/top.html";
-        }
+    if (!$user_style = bh_session_get_value('STYLE')) {
+        $user_style = forum_get_setting('default_style');
     }
 
-    if ($default_style = forum_get_setting('default_style')) {
+    if (@is_dir("./styles/$user_style") && @file_exists("./styles/$user_style/top.html")) {
+        return "styles/$user_style/top.html";
+    }
 
-        if (@is_dir("./styles/$default_style") && @file_exists("./styles/$default_style/top.html")) {
-            return "styles/$default_style/top.html";
-        }
+    if (@is_dir("./forums/$webtag/styles/$user_style") && @file_exists("./forums/$webtag/styles/$user_style/top.html")) {
+        return "forums/$webtag/styles/$user_style/top.html";
+    }
 
-        if (@is_dir("./forums/$webtag/styles/$default_style") && @file_exists("./forums/$webtag/styles/$default_style/top.html")) {
-            return "forums/$webtag/styles/$default_style/top.html";
-        }
-
-        if (@is_dir("./forums/$webtag") && @file_exists("./forums/$webtag/top.html")) {
-            return "forums/$webtag/top.html";
-        }
+    if (@is_dir("./forums/$webtag") && @file_exists("./forums/$webtag/top.html")) {
+        return "forums/$webtag/top.html";
     }
 
     return "styles/top.html";
@@ -158,30 +148,20 @@ function html_get_style_sheet()
 
     $forum_settings = forum_get_settings();
 
-    if ($user_style = bh_session_get_value('STYLE')) {
-
-        if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
-            return "styles/$user_style/style.css";
-        }
-
-        if (@is_dir("./forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
-            return "forums/$webtag/styles/$user_style/style.css";
-        }
+    if (!$user_style = bh_session_get_value('STYLE')) {
+        $user_style = forum_get_setting('default_style');
     }
 
-    if ($default_style = forum_get_setting('default_style')) {
+    if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
+        return "styles/$user_style/style.css";
+    }
 
-        if (@is_dir("styles/$default_style") && @file_exists("styles/$default_style/style.css")) {
-            return "styles/$default_style/style.css";
-        }
+    if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
+        return "forums/$webtag/styles/$user_style/style.css";
+    }
 
-        if (@is_dir("forums/$webtag/styles/$default_style") && @file_exists("forums/$webtag/styles/$default_style/style.css")) {
-            return "forums/$webtag/styles/$default_style/style.css";
-        }
-
-        if (@is_dir("./forums/$webtag") && @file_exists("./forums/$webtag/style.css")) {
-            return "forums/$webtag/style.css";
-        }
+    if (@is_dir("./forums/$webtag") && @file_exists("./forums/$webtag/style.css")) {
+        return "forums/$webtag/style.css";
     }
 
     if (@is_dir("./styles") && @file_exists("./styles/style.css")) {
@@ -197,18 +177,12 @@ function html_get_emoticon_style_sheet()
 
     $forum_settings = forum_get_settings();
 
-    if ($user_emots = bh_session_get_value('EMOTICONS')) {
-
-        if (@is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
-            return "emoticons/$user_emots/style.css";
-        }
+    if (!$user_emots = bh_session_get_value('EMOTICONS')) {
+        $user_emots = forum_get_setting('default_emoticons');
     }
 
-    if ($default_emoticons = forum_get_setting('default_emoticons')) {
-
-        if (@is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
-            return "emoticons/$default_emoticons/style.css";
-        }
+    if (@is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
+        return "emoticons/$user_emots/style.css";
     }
 
     return false;
@@ -503,30 +477,20 @@ function style_image($img)
 
     $forum_settings = forum_get_settings();
 
-    if ($user_style = bh_session_get_value('STYLE')) {
-
-        if (@is_dir("styles/$user_style/images") && @file_exists("styles/$user_style/images/$img")) {
-            return "styles/$user_style/images/$img";
-        }
-
-        if (@is_dir("forums/$webtag/styles/$user_style/images") && @file_exists("forums/$webtag/styles/$user_style/images/$img")) {
-            return "forums/$webtag/styles/$user_style/images/$img";
-        }
+    if (!$user_style = bh_session_get_value('STYLE')) {
+        $user_style = forum_get_setting('default_style');
     }
 
-    if ($default_style = forum_get_setting('default_style')) {
+    if (@is_dir("styles/$user_style/images") && @file_exists("styles/$user_style/images/$img")) {
+        return "styles/$user_style/images/$img";
+    }
 
-        if (@is_dir("styles/$default_style/images") && @file_exists("styles/$default_style/images/$img")) {
-            return "styles/$default_style/images/$img";
-        }
+    if (@is_dir("forums/$webtag/styles/$user_style/images") && @file_exists("forums/$webtag/styles/$user_style/images/$img")) {
+        return "forums/$webtag/styles/$user_style/images/$img";
+    }
 
-        if (@is_dir("forums/$webtag/styles/$default_style/images") && @file_exists("forums/$webtag/styles/$default_style/images/$img")) {
-            return "forums/$webtag/styles/$default_style/images/$img";
-        }
-
-        if (@is_dir("./forums/$webtag/images") && @file_exists("./forums/$webtag/images/$img")) {
-            return "forums/$webtag/images/$img";
-        }
+    if (@is_dir("./forums/$webtag/images") && @file_exists("./forums/$webtag/images/$img")) {
+        return "forums/$webtag/images/$img";
     }
 
     return "images/$img";

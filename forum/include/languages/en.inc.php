@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.292 2005-05-13 08:39:02 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.293 2005-05-19 22:30:31 decoyduck Exp $ */
 
 // International English language file
 
@@ -1521,16 +1521,24 @@ $lang['postapprovalrequired'] = "Post approval required";
 // RSS feeds gubbins
 
 $lang['rssfeed'] = "RSS Feed";
-
 $lang['every30mins'] = "Every 30 mins";
 $lang['onceanhour'] = "Once an hour";
 $lang['every6hours'] = "Every 6 hours";
 $lang['every12hours'] = "Every 12 hours";
 $lang['onceaday'] = "Once a day";
-
 $lang['rssfeeds'] = "RSS Feeds";
 $lang['feedlocation'] = "Feed Location";
 $lang['rssclicktoreadarticle'] = "Click here to read this article";
-$lang['rssfeedhelp_1'] = "Here you can setup some RSS feeds for automatic propgation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you which to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work."
+$lang['rssfeedhelp_1'] = "Here you can setup some RSS feeds for automatic propgation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you which to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work.";
+$lang['mustspecifyrssfeedname'] = "Must specify RSS Feed Name";
+$lang['mustspecifyrssfeeduseraccount'] = "Must specify RSS Feed User Account";
+$lang['mustspecifyrssfeedfolder'] = "Must specify RSS Feed Folder";
+$lang['mustspecifyrssfeedurl'] = "Must specify RSS Feed URL";
+$lang['mustspecifyrssfeedprefix'] = "Must specify RSS Feed Prefix";
+$lang['mustspecifyrssfeedupdatefrequency'] = "Must specify RSS Feed Update Frequency";
+$lang['unknownrssuseraccount'] = "Unknown RSS User Account";
+$lang['rssfeedsupportshttpurlsonly'] = "RSS Feed supports HTTP URLs only. Secure feeds (https://) are not supported.";
+$lang['rssfeedurlformatinvalid'] = "RSS Feed URL format is invalid. URL must include scheme (e.g. http://) and a hostname (e.g. www.hostname.com).";
+$lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authentication";
 
 ?>

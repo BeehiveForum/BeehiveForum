@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.29 2005-05-05 21:40:35 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.30 2005-05-20 17:33:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -69,20 +69,20 @@ function perform_logon($logon_main)
 
     }else if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
-        if (preg_match("/^ +$/", _stripslashes($_POST['user_password']))) {
+        $logon = _stripslashes($_POST['user_logon']);
+        $passw = _stripslashes($_POST['user_password']);
+
+        if (preg_match("/^ +$/", $passw)) {
 
             if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
-
-                $logon = _stripslashes($_POST['user_logon']);
-                $passw = _stripslashes($_POST['user_password']);
                 $passh = _stripslashes($_POST['user_passhash']);
+            }else {
+                return false;
             }
 
         }else {
 
-            $logon = _stripslashes($_POST['user_logon']);
-            $passw = str_repeat(chr(32), strlen(_stripslashes($_POST['user_password'])));
-            $passh = md5(_stripslashes($_POST['user_password']));
+            $passh = md5($passw);
         }
 
         $luid = user_logon($logon, $passh);

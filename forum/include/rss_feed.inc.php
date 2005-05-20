@@ -158,7 +158,11 @@ function rss_parse_item($ivalues)
 {
    for ($i = 0; $i < count($ivalues); $i++) {
 
-       $item[$ivalues[$i]["tag"]] = $ivalues[$i]["value"];
+       if (isset($ivalues[$i]["value"])) {
+           $item[$ivalues[$i]["tag"]] = $ivalues[$i]["value"];
+       }else {
+           $item[$ivalues[$i]["tag"]] = "";
+       }
    }
 
    return new rss_item($item);

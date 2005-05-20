@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.86 2005-04-27 19:47:17 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.87 2005-05-20 17:33:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -45,7 +45,7 @@ function light_html_draw_top ($title = false)
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
-    echo "<title>$title {$lang['lightmode']}</title>\n";
+    echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
 
     $stylesheet = html_get_style_sheet();
@@ -69,14 +69,13 @@ function light_draw_logon_form()
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    echo "<h2>$forum_name {$lang['lightmode']}</h2>\n";
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
 
     echo "<p>{$lang['username']}: ";
-    echo light_form_input_text("logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";
+    echo light_form_input_text("user_logon", (isset($_COOKIE['bh_light_remember_username']) ? $_COOKIE['bh_light_remember_username'] : "")). "</p>\n";
 
     echo "<p>{$lang['passwd']}: ";
-    echo light_form_input_password("password", (isset($_COOKIE['bh_light_remember_password']) ? $_COOKIE['bh_light_remember_password'] : "")). "</p>\n";
+    echo light_form_input_password("user_password", (isset($_COOKIE['bh_light_remember_password']) ? $_COOKIE['bh_light_remember_password'] : "")). "</p>\n";
 
     echo "<p>", form_checkbox("remember_user", "Y", $lang['rememberpassword'], (isset($_COOKIE['bh_light_remember_username']) && isset($_COOKIE['bh_light_remember_password']) ? true : false)), "</p>\n";
 

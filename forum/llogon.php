@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.47 2005-05-05 20:32:04 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.48 2005-05-20 17:33:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,7 +87,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $final_uri = "./lthread_list.php?webtag=$webtag&folder={$_GET['folder']}";
 }
 
-if ((isset($_POST['user_logon']) && isset($_POST['user_password']) && (isset($_POST['user_passhash']) || isset($_GET['other']))) || isset($_POST['guest_logon'])) {
+if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
     if (perform_logon(true)) {
 

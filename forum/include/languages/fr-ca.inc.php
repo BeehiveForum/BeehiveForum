@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.7 2005-05-13 08:39:02 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.8 2005-05-20 17:32:52 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1525,10 +1525,19 @@ $lang['onceanhour'] = "Une fois par heure";
 $lang['every6hours'] = "Toutes les 6 heures";
 $lang['every12hours'] = "Toutes les 12 heures";
 $lang['onceaday'] = "Une fois par jour";
-
 $lang['rssfeeds'] = "Sources de données RSS";
 $lang['feedlocation'] = "Repérage de source de données";
 $lang['rssclicktoreadarticle'] = "Cliquer ici pour lire cette article";
 $lang['rssfeedhelp_1'] = "Vous pouvez ici régler des sources de données RSS pour propagation automatique dans votre forum. Les items des sources de données RSS que vous ajoutez seront créés comme fils de discussion auquels vos utilisateurs pourront répondre comme si c'étaient des messages normales. Lorsque vous ajouter une source de données RSS, vous devez indiquer le nom d'utilisateur à utiliser pour commencer les fils de discussion, le dossier dans lequel ils seront créés et le repérage des sources de données. Le repérage des sources de données lui-même doit être accessible via HTTP, sinon les sources de données ne fonctionneront pas.";
+$lang['mustspecifyrssfeedname'] = "Vous devez spécifier le nom de l'alimentation RSS";
+$lang['mustspecifyrssfeeduseraccount'] = "Vous devez spécifier le compte d'utilisateur de l'alimentation RSS";
+$lang['mustspecifyrssfeedfolder'] = "Vous devez spécifier le dossier d'alimentation RSS";
+$lang['mustspecifyrssfeedurl'] = "Vous devez spécifier l'adresse URL de l'alimentation RSS";
+$lang['mustspecifyrssfeedprefix'] = "Vous devez spécifier le préfixe de l'alimentation RSS";
+$lang['mustspecifyrssfeedupdatefrequency'] = "Vous devez spécifier la fréquence de mise à jour de l'alimentation RSS";
+$lang['unknownrssuseraccount'] = "Compte d'utilisateur RSS inconnu";
+$lang['rssfeedsupportshttpurlsonly'] = "L'alimentation RSS supporte uniquement les adresses URL HTTP. Les alimentations protégées (https://) ne sont pas supportées.";
+$lang['rssfeedurlformatinvalid'] = "Le format de l'adresse URL de l'alimentation RSS est invalide. L'adresse URL doit inclure scheme (ex. http://) et une adresse internet (ex. www.adresseinternet.com).";
+$lang['rssfeeduserauthentication'] = "L'alimentation RSS ne supporte pas l'authentication d'utilisateur HTTP";
 
 ?>

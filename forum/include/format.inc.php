@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.95 2005-05-22 08:21:42 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.96 2005-05-22 16:51:37 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -158,58 +158,6 @@ function timestamp_amend_bst($timestamp)
     }
 }
 
-// Used by _htmlentities_decode() to convert &#1242; style HTML
-// entities into utf-8 characters.
-
-function html_numerals_to_utf8($ord)
-{
-    if (preg_match('/^x([0-9a-f]+)$/i', $ord, $match)) {
-        $ord = hexdec($match[1]);
-    }else {
-        $ord = intval($ord);
-    }
-
-    $no_bytes = 0;
-    $byte = array();
-
-    if ($ord < 128) {
-       return chr($ord);
-    }elseif ($ord < 2048) {
-       $no_bytes = 2;
-    }elseif ($ord < 65536) {
-       $no_bytes = 3;
-    }elseif ($ord < 1114112) {
-       $no_bytes = 4;
-    }else {
-       return;
-    }
-
-    switch($no_bytes) {
-        case 2:
-            $prefix = array(31, 192);
-            break;
-        case 3:
-            $prefix = array(15, 224);
-            break;
-        case 4:
-            $prefix = array(7, 240);
-    }
-
-    for ($i = 0; $i < $no_bytes; $i++) {
-       $byte[$no_bytes - $i - 1] = (($ord & (63 * pow(2, 6 * $i))) / pow(2, 6 * $i)) & 63 | 128;
-    }
-
-    $byte[0] = ($byte[0] & $prefix[0]) | $prefix[1];
-
-    $ret = '';
-
-    for ($i = 0; $i < $no_bytes; $i++) {
-       $ret.= chr($byte[$i]);
-    }
-
-    return $ret;
-}
-
 // Lazy htmlentities function which ensures the use of
 // unicode for all character code sets.
 
@@ -229,7 +177,8 @@ function _htmlentities_decode($text)
     $trans_tbl['&apos;'] = '\'';
 
     $ret = strtr($text, $trans_tbl);
-    return preg_replace('/&#([0-9a-fx]+);/me', "html_numerals_to_utf8(\\1)", $ret);
+    $ret = preg_replace('/&#(\d+);/me', "chr(\\1)", $ret);
+    return preg_replace('/&#x([a-f0-9]+);/mei', "chr(0x\\1)", $ret);
 }
 
 // Translate &nbsp; to &#160; etc. Pass the literal without the

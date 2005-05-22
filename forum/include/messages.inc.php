@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.366 2005-04-24 22:24:48 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.367 2005-05-22 16:51:37 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -409,16 +409,26 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
 
             if (!($i % 2)) {
 
-                if ($enable_wiki_words) {
+                $html_parts = preg_split('/([<|>])/', $message_parts[$i], -1, PREG_SPLIT_DELIM_CAPTURE);
 
-                    $message_parts[$i] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $message_parts[$i]);
+                for ($j = 0; $j < sizeof($html_parts); $j++) {
+
+                    if (!($j % 4) && (!isset($html_parts[$j - 2]) || !strstr($html_parts[$j - 2], "href"))) {
+
+                        if ($enable_wiki_words) {
+
+                            $html_parts[$j] = preg_replace("/\b(([A-Z][a-z]+){2,})\b/", "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                        }
+
+                        if ($enable_wiki_links) {
+
+                            $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1, }\.[0-9]{1, }))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2, 15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                        }
+                    }
                 }
 
-                if ($enable_wiki_links) {
-
-                    $message_parts[$i] = preg_replace("/\b(msg:([0-9]{1, }\.[0-9]{1, }))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $message_parts[$i]);
-                    $message_parts[$i] = preg_replace("/\b(user:([a-z0-9_-]{2, 15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $message_parts[$i]);
-                }
+                $message_parts[$i] = implode("", $html_parts);
             }
         }
 

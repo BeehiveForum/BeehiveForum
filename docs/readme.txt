@@ -2,9 +2,10 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.5 / 10th December 2004
+Version 0.6RC1 / 22nd May 2005
 
-A list of changes since previous Beehive versions can be found in release.txt.
+A list of changes since previous BeehiveForum versions can be found
+in release.txt.
 
 0. Contents
 ===========
@@ -20,24 +21,26 @@ A list of changes since previous Beehive versions can be found in release.txt.
     1.2.6    Adminning
     1.2.7    What to do if it doesn't work
     1.2.8    Add your forum to our list
-  1.3    Customising Beehive
-    1.3.1    Stylesheet
+  1.3    Customising your BeehiveForum
+    1.3.1    Style sheet
     1.3.2    Images
     1.3.3    The top frame
     1.3.4    Emoticons
     1.3.5    GeSHi
     1.3.6    TinyMCE
-  1.4    Upgrading 0.4 to 0.5
-    1.4.1    Make a back up of your database
-    1.4.2    Back up your files
-    1.4.3    Upload new forum files
-    1.4.4    Run the upgrade script
-  1.5    Upgrading 0.3 to 0.4.
-    1.5.1    Update the database
-    1.5.2    Update the config file
-  1.6    Upgrading from 0.2 to 0.3
-  1.7    Upgrading from 0.1 / 0.1.1 to 0.2
-  1.8    Upgrading from 0.1 or 0.2 to 0.4
+  1.4    Upgrading from previous versions of BeehiveForum
+    1.4.1    Upgrading 0.4 to 0.x
+      1.4.1.1    Make a back up of your database
+      1.4.1.2    Back up your files
+      1.4.1.3    Upload new forum files
+      1.4.1.4    Run the upgrade script
+    1.4.2    Upgrading 0.5PR1 to 0.5.
+    1.4.3    Upgrading 0.3 to 0.4.
+      1.4.3.1    Update the database
+      1.4.3.2    Update the config file
+    1.4.4   Upgrading from 0.2 to 0.3
+    1.4.5   Upgrading from 0.1 / 0.1.1 to 0.2
+    1.4.6   Upgrading from 0.1 or 0.2 to 0.4
 
 2.    Known Issues
 
@@ -59,11 +62,11 @@ A list of changes since previous Beehive versions can be found in release.txt.
 
 You need web hosting which provides:
 
-  - PHP 4.1.0 or above (tested on 4.1.x, 4.2.x, 4.3.x and 5.0.0) and
+  - PHP 4.1.0 or above (tested on 4.1.x, 4.2.x, 4.3.x and 5.0.3) and
   - MySQL 3.5 or above (must support compound AUTO_INCREMENT).
 
-As a minimum Beehive requires: SELECT, CREATE, CREATE TEMPORARY TABLES,
-GRANT, INSERT, ALTER, UPDATE, INDEX, DELETE and DROP privilleges
+As a minimum BeehiveForum requires: SELECT, CREATE, CREATE TEMPORARY TABLES,
+GRANT, INSERT, ALTER, UPDATE, INDEX, DELETE and DROP privileges
 on the database / tables it creates.
 
 1.2 Instructions
@@ -72,7 +75,7 @@ on the database / tables it creates.
 1.2.1 Archive Extraction
 ========================
 
-How you extract the contents of the Beehiveforum distribution archive is very
+How you extract the contents of the BeehiveForum distribution archive is very
 important. At all times please ensure that you retain the directory structure
 of the archive. If everything has been extracted correctly you should be
 presented with a directory that looks a bit like this:
@@ -102,15 +105,6 @@ presented with a directory that looks a bit like this:
 |  |  |  |- geshi.php
 |  |  | 
 |  |  |  |- emoticons
-|  |  |  |  |- boughton
-|  |  |  |  |  |- images
-|  |  |  |  |  |  |- angry.png
-|  |  |  |  |  |  |- ...
-|  |  |  |  |  |
-|  |  |  |  |  |- definitions.php
-|  |  |  |  |  |- desc.txt
-|  |  |  |  |  |- style.css
-|  |  |  |  |
 |  |  |  |  |- default
 |  |  |  |  |  |- images
 |  |  |  |  |  |  |- alien.png
@@ -130,12 +124,6 @@ presented with a directory that looks a bit like this:
 |  |  |  |  |- README
 |  |  |
 |  |  |- forums
-|  |  |  |- default
-|  |  |  |  |- styles
-|  |  |  |  |  |- put_per_forum_custom_styles_in_here
-|  |  |  |  |
-|  |  |  |  |- start_main.php
-|  |  |  |  |- ...
 |  |  |  
 |  |  |- images
 |  |  |  |- admin_locked.png
@@ -184,10 +172,10 @@ presented with a directory that looks a bit like this:
 
 
 As you can see the main distribution contains a docs and forum folder. The main
-forum folder, which actually contains Beehive, itself contains several more
+forum folder, which actually contains BeehiveForum, itself contains several more
 folders with relevant files in them. If they are not extracted in the right place
 subsequently uploading them to your server in this incorrect order will result in
-Beehive working incorrectly or not at all.
+your BeehiveForum working incorrectly or not at all.
 
 
 1.2.2 Database setup
@@ -198,8 +186,8 @@ https://sourceforge.net/projects/phpmyadmin/), or direct MySQL if you have the
 "skillz", to create a database for your forum to live in. Take note of the
 database name, as you will need it when you run the install script.
 
-(Beehive would prefer its very own database, but if you can't provide that, it
-should work in an existing one.)
+BeehiveForum would prefer its very own database, but if you can't provide that
+it should work in an existing one.
 
 
 1.2.3 Upload
@@ -211,7 +199,7 @@ into another folder of your choosing.
 
 
 1.2.4 Installing the forum
-===========================
+==========================
 
 Once everything's uploaded, you will need to run the forum's install script. This
 is located in the /install subdirectory of your forum. To access it, you will need
@@ -242,9 +230,10 @@ Now you're ready to create some folders, so click the admin link near the top of
 the page, then choose folders from the menu on the left, and set them up.
 
 You may also wish to change the access permissions of your forum. In the admin 
-section, under 'Manage Forums' you can set your forum access to 'Restricted' (so
-that each user account need be given permission) or 'Passworded' (so that each
-user needs to know a password you specify to gain entry).
+section you will find options for restricting access to your BeehiveForum. The
+two main options are restricted, where each user account needs to be given
+permission to access the forum and password protected, where your forum uses
+a common password that can be given to users to allow them access.
 
 The other links on the left let you set up profile sections and items, where
 your members can provide information about themselves if they like, and do stuff
@@ -261,8 +250,8 @@ for help, but remember, we don't get paid for this, so be nice.
 
 It's helpful if you can tell us your setup when you've got a problem, such as
 the type of server (e.g. Linux/Apache, Windows/Apache or Windows/IIS, etc) and
-the version of PHP and MySQL that you're using. If Beehive threw up an error
-message, paste that in as well.
+the version of PHP and MySQL that you're using. If your BeehiveForum threw up
+an error message, paste that in as well.
 
 
 1.2.8 Add your forum to our list (optional)
@@ -276,10 +265,10 @@ It could be a bit of publicity for your site, and it helps us to be able to say
 to.
 
 
-1.3 Customising Beehive
-=======================
+1.3 Customising your BeehiveForum
+=================================
 
-Beehive Forum has user-selectable styles. Basically these are like themes
+BeehiveForum has user-selectable styles. Basically these are like themes
 (or skins for WinAmp users) for your forum. There are several supplied styles,
 and it's easy to create your own.
 
@@ -299,8 +288,8 @@ different multiple colours to use, rather it rather cunningly chooses some for y
 that are mathematically determined to be suitable based on your first choice. Watch
 this space for a fully fledged style editor.
 
-Note: Due to the new multi-forum capabilities of Beehive 0.5+, there are now two 
-locations where stylesheets/images etc. are held. For styles which you wish to be
+Note: Due to the new multi-forum capabilities of BeehiveForum 0.5+, there are now two 
+locations where style sheets/images etc. are held. For styles which you wish to be
 globally available to all forums on your server, add/change the styles in the /styles
 subdirectory. For forum-specific styles, you will need to add/change the styles in
 the /forums/FORUM_WEBTAG/styles directory, where 'FORUM_WEBTAG' is the webtag of your
@@ -315,8 +304,8 @@ Note: start_main.php, style.css and top.html can also be present in the
 styles, and top frames.
 
 
-1.3.1 Stylesheet
-================
+1.3.1 Style sheet
+=================
 
 If you know how to do CSS, you can edit the style.css file in the
 /styles/[stylename] folder to change colours, fonts and things like that.
@@ -343,7 +332,7 @@ Just keep it 60 pixels high or under.
 1.3.4 Emoticons
 ===============
 
-Beehive uses CSS-styled emoticons. This allows the end-user to have great control,
+BeehiveForum uses CSS-styled emoticons. This allows the end-user to have great control,
 being able to choose from options such as completely invisible, text-only, and the
 range of graphic sets which can be installed. 
 
@@ -380,58 +369,75 @@ also have the .e_NAME span { ... } class.
 1.3.5 GeSHi
 ===========
 
-Beehive uses several 'custom' HTML tags, including the <code> tag. This tag now 
+BeehiveForum uses several 'custom' HTML tags, including the <code> tag. This tag now 
 accepts a 'language' attribute (<code language="...">) which will highlight your 
 code, thanks to the open-source software 'GeSHi' (http://qbnz.com/highlighter/). 
-To include GeSHi syntax highlighting with your Beehive install simply download 
+To include GeSHi syntax highlighting with your BeehiveForum install simply download 
 the latest version of GeSHi (tested with v1.0.6) and upload it to a subdirectory 
 'geshi' in your main forum folder (if your forum was at www.site.com/forum/, 
 upload to www.site.com/forum/geshi/).
 
 To change any GeSHi settings edit the file include/geshi.inc.php.
 
-Note: GeSHi is not created by the Beehive developers.
+Note: GeSHi is not created by the BeehiveForum developers.
 
 
 1.3.6 TinyMCE
 =============
 
-Beehive has a simple HTML toolbar built in, but also allows the use of the open-
+BeehiveForum has a simple HTML toolbar built in, but also allows the use of the open-
 source WYSIWYG TinyMCE toolbar (http://tinymce.moxiecode.com/) by Moxiecode Systems. 
-To include TinyMCE in your Beehive install download the latest version (tested with 
+To include TinyMCE in your BeehiveForum install download the latest version (tested with 
 v1.43). Within the compressed source there should be a directory:
   tinymce/jscripts/tiny_mce/
 Simply copy everything from that tiny_mce directory into a subdirectory 'tiny_mce' in
 your main forum folder (if your forum was at www.site.com/forum/, upload it to 
 www.site.com/forum/tiny_mce/). 
 
-There is a Beehive plugin for TinyMCE which should have already been in your forum's 
+There is a BeehiveForum plugin for TinyMCE which should have already been in your forum's 
 tiny_mce directory, under the subdirectory plugins/beehive. If this is not the case 
-copy the directory tiny_mce/plugins/beehive from a fresh download of Beehive to your 
+copy the directory tiny_mce/plugins/beehive from a fresh download of BeehiveForum to your 
 forum.
 
 To change any TinyMCE settings edit the file include/htmltools.inc.php, looking for 
 the function TinyMCE().
 
-Note: TinyMCE is not created by the Beehive developers.
+Note: TinyMCE is not created by the BeehiveForum developers.
+
+1.4 Upgrading from previous versions of BeehiveForum
+====================================================
+
+If you're reading this you're looking for instructions on upgrading your
+BeehiveForum to the latest and greatest available version. Below you will find
+instructions pertaining to each individual release. Please read them fully
+before starting the upgrade process.
+
+As with all software installations or upgrades it is highly recommended that
+you perform a backup of your existing web space and database before upgrading
+your BeehiveForum. Failure to do so could result in lost data. You have been
+warned. Don't make us say we told you if things go wrong and you haven't
+backed up.
 
 
-1.4 Upgrading from 0.4 to 0.5
-=============================
+1.4.1 Upgrading from 0.4 to 0.x
+===============================
 
-0.5's install script will upgrade your 0.4 database, but it is HIGHLY recommended
-that you perform a database and file backup before you attempt this.
+BeehiveForum's install script should be used to perform any upgrade from 0.4
+or higher. There are two ways you can use the upgrade scripts. From a web
+browser or via the command line over telnet / SSH. Using a web browser is the
+preferred method.
 
 
-1.4.1 Make a back up of your database
-======================================
+1.4.1.1 Make a back up of your database
+=======================================
 
 You REALLY SHOULD make a back up of your database before you perform the upgrade. We 
 can't stress how important this is. If you don't perform a backup and something
-goes wrong don't make us say we told you so.
+goes wrong you'll be up creek without a paddle and if things go even more
+wrong you may find that you loose your boat as well.
 
-The easiest way to perform a back up is by telnetting into your server and making
-a physical copy of the mysql/beehiveforum folder. You'll know when you've found
+The easiest way to perform a back up is by using telnet to connect into your server and making
+a physical copy of the MySQL/BeehiveForum folder. You'll know when you've found
 the right one when you come across loads of .MYI and .MYD files with the same
 names as the BeehiveForum tables.
 
@@ -447,8 +453,8 @@ created on your HD so make sure you have adequate disc space in order to do this
 It will also be harder to restore the backup this way.
 
 
-1.4.2 Back up your files
-========================
+1.4.1.2 Back up your files
+==========================
 
 A list of files/directories you will potentially need to backup is as follows:
 
@@ -458,17 +464,17 @@ A list of files/directories you will potentially need to backup is as follows:
 |- top.html
 
 
-1.4.3 Upload new forum files
-============================
+1.4.1.3 Upload new forum files
+==============================
 
 This step is similar to 1.2.3, though you may wish to upload to a temporary
 directory (e.g. if your forum is currently installed in a subdirectory 'forum',
 you may wish to upload the new files to a subdirectory 'forumtemp'. If uploading
-to a seperate directory, remember to also upload the files you backed-up in 1.4.2.
+to a separate directory, remember to also upload the files you backed-up in 1.4.2.
 
 
-1.4.4 Run the upgrade script
-============================
+1.4.1.4 Run the upgrade script
+==============================
 
 Once you've backed up your database/files and uploaded the new files, you will
 need to run the upgrade script, located at install.php in your forum
@@ -479,61 +485,55 @@ http://www.mysite.com/forumtemp/install.php
 Make sure you select 'Upgrade' from the installation method drop-down list, and
 then follow the instructions.
 
-1.5 Upgrading from 0.5PR1 to 0.5
-================================
+1.4.2 Upgrading from 0.5PR1 to 0.5
+==================================
 
-If you are already running 0.5PR1 of Beehive Forum you can upgrade to 0.5 by
-following the instructions outlined in section 1.4.1 to 1.4.3. Once you have
-completed these steps run the upgrade script as instructed in step 1.4.4
-but instead of choosing to upgrade from 0.4 choose to upgrade from 0.5PR1.
-
-That should be all that is needed. If you have any problems with this please
-post on Teh Forum (http://www.tehforum.net/forum/) and we'll try our best to
-help you get sorted.
+0.5PR1 is no longer supported by the development team. If you are still running
+this version of BeehiveForum please upgrade to the 0.5 or a later release.
 
 
-1.5 Upgrading from 0.3 to 0.4
-=============================
+1.4.3 Upgrading from 0.3 to 0.4
+===============================
 
-If you are already using 0.3 of Beehive Forum, you will need to update your
+If you are already using 0.3 of BeehiveForum, you will need to update your
 database. You should first backup by following the steps in 1.4.1.
 
 
-1.5.1 Update the database
-=========================
+1.4.3.1 Update the database
+===========================
 
 Simply run the /docs/update-03-to-04.sql script against the database using phpMyAdmin or
 MySQL directly.
 
 
-1.5.2 Update the config file
-============================
+1.4,3,2 Update the config file
+==============================
 
 Probably the easiest way to do this is to edit the config.inc.php in the 0.4 download
 and set the relevant variables again.
 
 
-1.6 Upgrading from 0.2 to 0.3
-=============================
+1.4.4 Upgrading from 0.2 to 0.3
+===============================
 
 Follow the same procedure as detailed above, but you must run /docs/upgrade-02-to-03.sql
 beforehand.
 
 
-1.7 Upgrading from 0.1 / 0.1.1 to 0.2
-=====================================
+1.4.5 Upgrading from 0.1 / 0.1.1 to 0.2
+=======================================
 
 Follow the same procedure as detailed above, but you must run /docs/upgrade-01-to-02.sql
 beforehand
 
 
-1.8 Upgrading from 0.1 or 0.2 to 0.4
-====================================
+1.4.6 Upgrading from 0.1 or 0.2 to 0.4
+======================================
 
 No direct route exists for 0.1 or 0.2 to be upgraded to 0.4. To upgrade either of these
 versions to 0.4 you will need to run the relevant schema files in order. 
 
-For example if you are using Beehive 0.1 you will need to run:
+For example if you are using BeehiveForum 0.1 you will need to run:
 
 upgrade-01-to-02.sql followed by..
 upgrade-02-to-03.sql followed by..
@@ -545,15 +545,7 @@ This will bring the database up to 0.4, and from there you can use 0.5's upgrade
 2 Known Issues
 ==============
 
-- Folders created under 0.3 or below which contained quotes will now
-  display incorrectly in 0.4. You can fix this by visiting the admin
-  folders option and fixing the folder names. This was due to a bug
-  in previous versions which has now been fixed.
-
-- Content created prior to the installation of 0.5 will be incorrectly
-  escaped (all ' and " characters will appear as \' and \" respectively).
-  This is due to a major bug in versions prior to 0.5 which meant
-  content inserted into the database was double-escaped.
+Please see release.txt for issues pertaining to each individual release.
 
 
 3 Support
@@ -568,7 +560,7 @@ Simply browse to http://sourceforge.net/projects/beehiveforum and submit
 requests or bug reports there.
 
 Alternatively you can visit http://www.tehforum.net/forum/ where you'll
-find most of the developers of Beehive hanging out. Feel free to post
+find most of the developers of BeehiveForum hanging out. Feel free to post
 any questions or queries you have and we'll do our best to answer them.
 
 
@@ -579,22 +571,25 @@ As above, you can try dropping in to http://www.tehforum.net/forum/,
 where you can ask for help or check on the progress of the next version and
 see and test previews of the new features. If you need help don't think twice
 about posting, although please keep Beehive-related enquires to the 'Beehive 
-Development' folder. It should be noted that we prefer using this system
-over the SF bug reporting tool.
+Development' folder.
 
 We've also added a wiki to help us document Beehive. Check it out here:
 
 http://www.beehiveforum.net/wiki/
 
+Want to contribute to the Wiki? To do so you will need to register a user
+account on the test forum. Once you have your account you can login using
+the same logon and password and start contributing.
+
 
 3.3 BeehiveForums in foreign languages
 ======================================
 
-As of 0.4 BeehiveForums supports multiple languages, but because we're all very
-busy doing other things the number of languages that ship with Beehive are few
-and far between, i.e. English, English and nothing but English. There's also an
-incomplete French translation, as well as the 'comedy' English X-Gangsta and
-X-Hacker languages available from CVS should you wish to obtain them.
+Since the release of BeehiveForum 0.4 multiple languages have been supported,
+but because we're all very busy doing other things the number of languages
+that actually ship with BeehiveForum are few and far between. We hope to rectify
+this over time, but in order to do so we require volunteers. If you would
+like to help translate BeehiveForum into your native tongue please see below.
 
 
 3.3.1 Translating BeehiveForums into my native language
@@ -602,26 +597,22 @@ X-Hacker languages available from CVS should you wish to obtain them.
 
 Unfortunately the BeehiveForum coding team consists primarily of born and bred
 English men who have enough trouble speaking our own tongue as it is. Because
-of this, we're on the look out for people to start translating Beehive for us.
-If you feel you have the necessary skills to do this (no babelfish / direct
+of this, we're on the look out for people to start translating BeehiveForum for
+us. If you feel you have the necessary skills to do this (no babelfish / direct
 from dictionary translations please) feel free to drop us a note. With any
 luck your language file may end up being distributed with future versions of
-Beehive Forums and you may even get to see your name in print, or at the very
+BeehiveForums and you may even get to see your name in print, or at the very
 least bundled here amongst the other credits.
 
 
 3.3.2 Current Available Languages
 =================================
 
-Current available languages are as follows:
+Current complete available languages are as follows:
 
 English (UK)
+French Canadian
 X-Hacker
-
-Also avaulable, but incomplete (includes some/many English phrases still):
-
-French
-X-Gangsta
 
 
 4 Credits
@@ -644,27 +635,40 @@ lovely Wiki contributors.
 4.3 Design/CSS
 ==============
 
-Mike Franklin, Simon Roberts, Kevin Yip
+Kevin Yip, Mike Franklin, Simon Roberts, Matt Beale.
 
 
 4.4 Graphics
 ============
 
-Nigel Moore, Kevin Yip, Andrew Holgate, Mike Quigley
+Nigel Moore, Kevin Yip, Andrew Holgate, Mike Quigley, Matt Beale,
+Andy Black.
 
 
 4.5 Translations
 ================
 
 French   - Mark Krywonos
-Gangsta  - Jay Graham.
+Gangsta  - Jay Graham
 X-Hacker - Matt Beale.
+
+
+4.6 Official BeehiveForum Pimp
+==============================
+
+Mike Quigley
+
+
+4.7 Bug finders extraordinaire
+==============================
+
+Ken Kauffman, Speakez.
 
 
 4.6 Other Contributions
 =======================
 
-Mike Quigley, Frnht451, Michael @ Hermitscave, Peter Boughton, Lots of other people
+Frnht451, Michael @ Hermitscave
 
 
 4.7 Project Lead
@@ -681,9 +685,7 @@ Matt Beale
   
 - Michael from Hermitscave for taking the time to find all those nasty exploits.
   
-- Mike Quigley for Teh Backup Forum, Breaking lots of things and pimping Beehive without fail.
-
-- JimL for beating Mike in our being obcessed with Beehive competition.
+- JimL for beating Mike in our being obsessed with BeehiveForum competition.
 
 - SourceForge (http://sourceforge.net) for providing top-notch facilities to us
   (and to thousands of other projects) at absolutely no cost.

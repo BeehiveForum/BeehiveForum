@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.8 2005-05-20 17:32:52 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.9 2005-05-22 08:21:42 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1537,7 +1537,7 @@ $lang['mustspecifyrssfeedprefix'] = "Vous devez spécifier le préfixe de l'alim
 $lang['mustspecifyrssfeedupdatefrequency'] = "Vous devez spécifier la fréquence de mise à jour de l'alimentation RSS";
 $lang['unknownrssuseraccount'] = "Compte d'utilisateur RSS inconnu";
 $lang['rssfeedsupportshttpurlsonly'] = "L'alimentation RSS supporte uniquement les adresses URL HTTP. Les alimentations protégées (https://) ne sont pas supportées.";
-$lang['rssfeedurlformatinvalid'] = "Le format de l'adresse URL de l'alimentation RSS est invalide. L'adresse URL doit inclure scheme (ex. http://) et une adresse internet (ex. www.adresseinternet.com).";
+$lang['rssfeedurlformatinvalid'] = "L'adresse URL doit inclure la spécification du protocole d'application (ex. http://) et une adresse internet (ex. www.adresseinternet.com).";
 $lang['rssfeeduserauthentication'] = "L'alimentation RSS ne supporte pas l'authentication d'utilisateur HTTP";
 
 ?>

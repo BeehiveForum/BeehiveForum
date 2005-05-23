@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.112 2005-04-27 19:47:09 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.113 2005-05-23 22:47:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -281,7 +281,7 @@ echo "                  <td class=\"postbody\" valign=\"top\">", form_submit("up
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"220\">&nbsp;</td>\n";
-echo "                  <td colspan=\"2\" class=\"smalltext\"><img src=\"".style_image('attach.png')."\" width=\"14\" height=\"14\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /><a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">Upload another file</a></td>\n";
+echo "                  <td colspan=\"2\" class=\"smalltext\"><img src=\"", style_image('attach.png'), "\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /><a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">Upload another file</a></td>\n";
 echo "                </tr>\n";
 
 if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {

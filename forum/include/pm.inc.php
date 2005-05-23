@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.123 2005-05-14 12:43:37 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.124 2005-05-23 22:47:06 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -671,7 +671,7 @@ function pm_display($pm_elements_array)
 
         if ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
 
-            echo "            <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
+            echo "            <td align=\"center\"><img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
 
         }else {
 

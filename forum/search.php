@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.115 2005-04-27 19:47:14 decoyduck Exp $ */
+/* $Id: search.php,v 1.116 2005-05-23 22:47:03 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -336,10 +336,10 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     }
 
     echo "<h1>{$lang['searchresults']}</h1>\n";
-    echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['match_count']} {$lang['matches']}<br />\n";
+    echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['match_count']} {$lang['matches']}<br />\n";
 
     if ($sstart >= 20) {
-        echo "<img src=\"".style_image('current_thread.png')."\" height=\"15\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart - 20, $urlquery, "\">{$lang['prevpage']}</a>\n";
+        echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart - 20, $urlquery, "\">{$lang['prevpage']}</a>\n";
     }
 
     echo "<ol start=\"", $sstart + 1, "\">\n";
@@ -411,7 +411,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
     echo "</ol>\n";
 
     if ($search_results_array['match_count'] >  (sizeof($search_results_array['match_array']) + $sstart)) {
-        echo "<img src=\"", style_image('current_thread.png'), "\" height=\"15\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 20, $urlquery, "\">{$lang['findmore']}</a>\n";
+        echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 20, $urlquery, "\">{$lang['findmore']}</a>\n";
     }
 
 }else if ($error) {
@@ -427,7 +427,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
             echo "<p>{$lang['notexttosearchfor']}</p>\n";
             break;
         case SEARCH_NO_MATCHES:
-            echo "<img src=\"", style_image('search.png'), "\" height=\"15\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
+            echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
             break;
         case SEARCH_FREQUENCY_TOO_GREAT:
             echo "<p>{$lang['searchfrequencyerror_1']} ", forum_get_setting('search_min_frequency', false, 30), " {$lang['searchfrequencyerror_2']}</p>\n";

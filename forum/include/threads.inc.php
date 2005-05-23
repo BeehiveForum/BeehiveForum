@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.172 2005-04-23 22:08:29 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.173 2005-05-23 22:47:06 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -1007,22 +1007,22 @@ function thread_list_draw_top($mode)
     echo "</script>\n\n";
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
     echo "  </tr>\n";
 
     if ($pm_new_count = pm_get_unread_count()) {
 
         echo "  <tr>\n";
-        echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
+        echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
         echo "  </tr>\n";
 
     }else {
 
         echo "  <tr>\n";
-        echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmread.png'), "\" height=\"16\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a></td>\n";
+        echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a></td>\n";
         echo "  </tr>\n";
     }
 

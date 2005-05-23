@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.124 2005-05-23 18:17:04 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.125 2005-05-23 21:56:59 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -641,8 +641,8 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
     // Process the list of words.
 
-    $keyword_array = array();
-    $keyword_query = array();
+    $keyword_list_array = array();
+    $sql_values_array = array();
 
     foreach ($content_array as $key => $keyword_add) {
 
@@ -650,7 +650,7 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
         if (strlen($keyword_add) > ($search_min_word_length - 1) && strlen($keyword_add) < 50 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
 
-            if (!_in_array($keyword_add, $keyword_array)) {
+            if (!_in_array($keyword_add, $keyword_list_array)) {
 
                 $keyword_add = addslashes($keyword_add);
 

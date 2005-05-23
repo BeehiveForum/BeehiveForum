@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.115 2005-04-30 11:50:12 decoyduck Exp $ */
+/* $Id: index.php,v 1.116 2005-05-23 21:56:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -224,9 +224,20 @@ define('BEEHIVE_LIGHT_INCLUDE', true);
 if (bh_session_active()) {
 
     if ($webtag = get_webtag($webtag_search)) {
+
         light_draw_thread_list();
+
+        if (bh_session_get_value('UID') == 0) {
+            echo "<h4><a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>\n";
+        }else {
+            echo "<h4><a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+        }
+
     }else {
+
         light_draw_my_forums();
+
+        echo "<h4><a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
     }
 
 }else {

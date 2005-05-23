@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.123 2005-04-24 17:14:19 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.124 2005-05-23 18:17:04 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -568,8 +568,9 @@ function search_index_old_post()
     $sql.= "POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
-    $sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.TID = POST.TID AND SEARCH_POSTS.PID = POST.PID) ";
-    $sql.= "WHERE SEARCH_POSTS.FORUM = $forum_fid AND SEARCH_POSTS.TID IS NULL AND SEARCH_POSTS.PID IS NULL ";
+    $sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.TID = POST.TID AND ";
+    $sql.= "SEARCH_POSTS.PID = POST.PID AND SEARCH_POSTS.FORUM = $forum_fid) ";
+    $sql.= "WHERE SEARCH_POSTS.TID IS NULL AND SEARCH_POSTS.PID IS NULL ";
     $sql.= "LIMIT 0, 1";
 
     $result = db_query($sql, $db_search_index_old_post);
@@ -608,26 +609,37 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
     $forum_fid = $table_data['FID'];
 
+    // Minimum search word length.
+
     $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
 
-    // Tidy the content up (remove URLs, new lines, HTML and invalid chars)
+    // Change HTML entities back into their normal characters
 
-    $drop_char_match = array("/\^/", "/\$/", "/&/", "/\(/", "/\)/", "/\</",
-                             "/\>/", "/`/", "/\"/", "/\|/", "/,/", "/@/",
-                             "/_/", "/\?/", "/%/", "/-/", "/~/", "/\+/",
-                             "/\./", "/\[/", "/\]/", "/\{/", "/\}/",
-                             "/\:/", "/\\\/", "/\//", "/\=/", "/#/",
-                             "/'/", "/;/", "/\!/");
+    $content = _htmlentities_decode($content);
+
+    // Remove new lines
 
     $content = preg_replace("/[\n\r]/is", " ", strip_tags($content));
-    $content = preg_replace("/&[a-z]+;/", " ", $content);
+
+    // Strip URLs
+
     $content = preg_replace("/[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/", " ", $content);
-    $content = preg_replace($drop_char_match, " ", $content);
+
+    // Underlines don't seem to count as a word boundary in PREG, so change them to spaces
+
+    $content = preg_replace("/_+/", " ", $content);
+
+    // Remove duplicate spaces
+
     $content = preg_replace("/ +/", " ", $content);
+
+    // Split the string into an array of words.
 
     preg_match_all("/([\w']+)/i", $content, $content_array);
 
     $content_array = $content_array[0];
+
+    // Process the list of words.
 
     $keyword_array = array();
     $keyword_query = array();
@@ -635,27 +647,29 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
     foreach ($content_array as $key => $keyword_add) {
 
         $keyword_add = trim(strtolower($keyword_add));
-        $keyword_sql = addslashes(trim(strtolower($keyword_add)));
 
         if (strlen($keyword_add) > ($search_min_word_length - 1) && strlen($keyword_add) < 50 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
 
             if (!_in_array($keyword_add, $keyword_array)) {
 
-                $keyword_array[] = $keyword_add;
-                $keyword_query[] = "('$keyword_sql')";
+                $keyword_add = addslashes($keyword_add);
+
+                $keyword_list_array[] = $keyword_add;
+                $sql_values_array[] = "('$keyword_add')";
             }
         }
     }
 
-    if (sizeof($keyword_query) > 0) {
+    if (sizeof($keyword_list_array) > 0) {
 
-        $sql_values = implode(", ", $keyword_query);
-        $keyword_list = implode("', '", $keyword_array);
+        $sql_values = implode(", ", $sql_values_array);
 
         $sql = "INSERT IGNORE INTO SEARCH_KEYWORDS ";
-        $sql.= "(WORD) VALUES $sql_values ";
+        $sql.= "(WORD) VALUES $sql_values";
 
         $result = db_query($sql, $db_search_index_post);
+
+        $keyword_list = implode("', '", $keyword_list_array);
 
         $sql = "INSERT IGNORE INTO SEARCH_MATCH ";
         $sql.= "SELECT WID, $forum_fid, $tid, $pid FROM ";

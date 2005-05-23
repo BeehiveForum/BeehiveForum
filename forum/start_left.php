@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.97 2005-04-27 19:47:15 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.98 2005-05-23 22:47:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,8 +125,8 @@ if ($thread_array = threads_get_most_recent()) {
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
         if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<img src=\"".style_image('poll.png')."\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" align=\"middle\" /> ";
         if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
-        if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" height=\"15\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
-        if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" height=\"15\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
+        if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
+        if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
 
         echo "          </td>\n";
         echo "        </tr>\n";
@@ -167,10 +167,10 @@ echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
@@ -195,7 +195,7 @@ if ($users_array['user_count'] > 0) {
     foreach ($users_array['user_array'] as $recent_user) {
 
         echo "        <tr>\n";
-        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
 
         if ($recent_user['UID'] > 0) {
             echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", apply_wordfilter($recent_user['NICKNAME']), "</a></td>\n";
@@ -221,7 +221,7 @@ echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['showmorevisitors']}\" title=\"{$lang['showmorevisitors']}\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag\" target=\"right\">{$lang['showmorevisitors']}</a>&nbsp;</td>\n";
+echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['showmorevisitors']}\" title=\"{$lang['showmorevisitors']}\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag\" target=\"right\">{$lang['showmorevisitors']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td>&nbsp;</td>\n";
@@ -239,7 +239,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
     foreach ($birthdays as $row) {
 
         echo "        <tr>\n";
-        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" width=\"12\" height=\"16\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
+        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
         echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", apply_wordfilter($row['NICKNAME']), "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "        </tr>\n";

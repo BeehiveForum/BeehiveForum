@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.83 2005-04-27 19:47:06 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.84 2005-05-23 22:47:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -512,9 +512,9 @@ echo "          <td width=\"240\" valign=\"top\" align=\"center\">\n";
 echo "            <table width=\"220\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "              <tr>\n";
 echo "                <td class=\"postbody\" style=\"color: #", contrastFont($elements['body']), "\" colspan=\"2\" align=\"left\">\n";
-echo "                  <img src=\"", style_image('post.png'), "\" height=\"15\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">{$lang['newdiscussion']}</a><br />\n";
-echo "                  <img src=\"", style_image('poll.png'), "\" height=\"15\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">{$lang['createpoll']}</a><br />\n";
-echo "                  <img src=\"", style_image('pmread.png'), "\" height=\"15\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">{$lang['pminbox']}</a><br />\n";
+echo "                  <img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">{$lang['newdiscussion']}</a><br />\n";
+echo "                  <img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">{$lang['createpoll']}</a><br />\n";
+echo "                  <img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">{$lang['pminbox']}</a><br />\n";
 echo "                </td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
@@ -546,8 +546,8 @@ echo "              <tr>\n";
 echo "                <td colspan=\"2\" align=\"left\">\n";
 echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "                    <tr>\n";
-echo "                      <td class=\"foldername\"><img src=\"", style_image('folder.png'), "\" height=\"15\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /><a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">General</a></td>\n";
-echo "                      <td class=\"folderpostnew\" width=\"15\"><a href=\"javascript:void(0)\"><img src=\"images/folder_hide.png\" border=\"0\" height=\"15\" alt=\"{$lang['folderinterest']}\" title=\"{$lang['folderinterest']}\" /></a></td>\n";
+echo "                      <td class=\"foldername\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /><a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['body']), "\">General</a></td>\n";
+echo "                      <td class=\"folderpostnew\" width=\"15\"><a href=\"javascript:void(0)\"><img src=\"images/folder_hide.png\" border=\"0\" alt=\"{$lang['folderinterest']}\" title=\"{$lang['folderinterest']}\" /></a></td>\n";
 echo "                    </tr>\n";
 echo "                  </table>\n";
 echo "                </td>\n";
@@ -571,9 +571,9 @@ echo "                <td class=\"threads\" style=\"background-color: #{$element
 echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "                    <tr>\n";
 echo "                      <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"16\">\n";
-echo "                        <img src=\"", style_image('current_thread.png'), "\" align=\"middle\" height=\"15\" alt=\"{$lang['currentthread']}\" title=\"{$lang['currentthread']}\" />&nbsp;\n";
+echo "                        <img src=\"", style_image('current_thread.png'), "\" align=\"middle\" alt=\"{$lang['currentthread']}\" title=\"{$lang['currentthread']}\" />&nbsp;\n";
 echo "                      </td>\n";
-echo "                      <td valign=\"top\"><a href=\"javascript:void(0)\" class=\"threadname\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['welcome']}</a>&nbsp;<img src=\"", style_image('high_interest.png'), "\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />&nbsp;<span class=\"threadxnewofy\" style=\"color: #", contrastFont($elements['threads']), "\">[2]</span></td>\n";
+echo "                      <td valign=\"top\"><a href=\"javascript:void(0)\" class=\"threadname\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['welcome']}</a>&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />&nbsp;<span class=\"threadxnewofy\" style=\"color: #", contrastFont($elements['threads']), "\">[2]</span></td>\n";
 echo "                      <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\" style=\"color: #", contrastFont($elements['threads']), "\">16 Mar&nbsp;</span></td>\n";
 echo "                    </tr>\n";
 echo "                  </table>\n";
@@ -636,7 +636,7 @@ echo "          <td valign=\"top\">\n";
 echo "            <div align=\"center\">\n";
 echo "              <table width=\"96%\" border=\"0\">\n";
 echo "                <tr>\n";
-echo "                  <td style=\"color: #", contrastFont($elements['body']), "\"><p style=\"color: #", contrastFont($elements['body']), "\" align=\"left\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;General: Welcome&nbsp;<img src=\"", style_image('high_interest.png'), "\" height=\"15\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /></p></td>\n";
+echo "                  <td style=\"color: #", contrastFont($elements['body']), "\"><p style=\"color: #", contrastFont($elements['body']), "\" align=\"left\"><img src=\"", style_image('folder.png'), "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;General: Welcome&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /></p></td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <br />\n";
@@ -677,15 +677,15 @@ echo "                    <table width=\"100%\" class=\"postresponse\" style=\"b
 echo "                      <tr>\n";
 echo "                        <td width=\"25%\">&nbsp;</td>\n";
 echo "                        <td align=\"center\" width=\"50%\">\n";
-echo "                          <img src=\"", style_image('post.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['reply']}</a>&nbsp;&nbsp;\n";
-echo "                          <img src=\"", style_image('delete.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['delete']}</a>&nbsp;&nbsp;\n";
-echo "                          <img src=\"", style_image('edit.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['edit']}</a>&nbsp;&nbsp;\n";
+echo "                          <img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['reply']}</a>&nbsp;&nbsp;\n";
+echo "                          <img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['delete']}</a>&nbsp;&nbsp;\n";
+echo "                          <img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['edit']}\" title=\"{$lang['edit']}\" />&nbsp;<a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">{$lang['edit']}</a>&nbsp;&nbsp;\n";
 echo "                        </td>\n";
 echo "                        <td align=\"right\" width=\"25%\">\n";
-echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('pmunread.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
-echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('print.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
-echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('markasunread.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
-echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('admintool.png'), "\" height=\"15\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
+echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('pmunread.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
+echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('print.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
+echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('markasunread.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
+echo "                          <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\"><img src=\"", style_image('admintool.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" /></a>\n";
 echo "                          <span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"javascript:void(0)\">127.0.0.1</a></span>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";

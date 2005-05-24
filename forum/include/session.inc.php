@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.185 2005-05-05 21:40:35 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.186 2005-05-24 19:59:32 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -267,7 +267,7 @@ function bh_session_check($show_session_fail = true)
         }else {
 
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-            $sql.= "VALUES ('$user_hash', 0, '$forum_fid', '$ipaddress', NOW())";
+            $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', NOW())";
 
             $result = db_query($sql, $db_bh_session_check);
 
@@ -335,12 +335,17 @@ function bh_remove_stale_sessions()
 {
     $db_bh_remove_stale_sessions = db_connect();
 
-    $session_stamp = time() - intval(forum_get_setting('session_cutoff', false, 86400));
+    $session_cutoff = forum_get_setting('session_cutoff', false, 86400);
 
-    $sql = "DELETE FROM SESSIONS WHERE ";
-    $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
+    if (is_numeric($session_cutoff)) {
 
-    $result = db_query($sql, $db_bh_remove_stale_sessions);
+        $session_stamp = time() - $session_cutoff;
+
+        $sql = "DELETE FROM SESSIONS WHERE ";
+        $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
+
+        $result = db_query($sql, $db_bh_remove_stale_sessions);
+    }
 
     return true;
 }

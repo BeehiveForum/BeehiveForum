@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.12 2005-04-27 19:47:06 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.13 2005-05-24 19:59:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -247,8 +247,8 @@ if ($valid) {
 
     if ($to_uid == 0) {
 
-        $preview_message['TLOGON'] = "ALL";
-        $preview_message['TNICK'] = "ALL";
+        $preview_message['TLOGON'] = $lang['allcaps'];
+        $preview_message['TNICK'] = $lang['allcaps'];
 
     }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.293 2005-05-19 22:30:31 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.294 2005-05-24 19:59:32 decoyduck Exp $ */
 
 // International English language file
 
@@ -151,7 +151,6 @@ $lang['nickname'] = "Nickname";
 $lang['emailaddress'] = "Email address";
 $lang['confirm'] = "Confirm";
 $lang['email'] = "Email";
-$lang['new'] = "new";
 $lang['newcaps'] = "NEW";
 $lang['poll'] = "Poll";
 $lang['friend'] = "Friend";
@@ -161,6 +160,7 @@ $lang['guesterror_2'] = "Login now";
 $lang['on'] = "on";
 $lang['unread'] = "unread";
 $lang['all'] = "All";
+$lang['allcaps'] = "ALL";
 $lang['me_caps'] = "ME";
 $lang['by'] = "by";
 $lang['permissions'] = "Permissions";
@@ -1410,6 +1410,10 @@ $lang['ignorethisfolder'] = "Ignore This Folder";
 $lang['stopignoringthisfolder'] = "Stop Ignoring This Folder";
 $lang['stickythreads'] = "Sticky Threads";
 $lang['mostunreadposts'] = "Most unread posts";
+$lang['onenew'] = "%d new";
+$lang['manynew'] = "%d new";
+$lang['onenewoflength'] = "%d new of %d";
+$lang['manynewoflength'] = "%d new of %d";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Bold";

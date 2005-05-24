@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.87 2005-05-20 17:33:09 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.88 2005-05-24 19:59:31 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -562,8 +562,8 @@ function light_poll_confirm_close($tid)
 
     if($preview_message['TO_UID'] == 0) {
 
-        $preview_message['TLOGON'] = "ALL";
-        $preview_message['TNICK'] = "ALL";
+        $preview_message['TLOGON'] = $lang['allcaps'];
+        $preview_message['TNICK'] = $lang['allcaps'];
 
     }else {
 
@@ -922,7 +922,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         }
     }
 
-    if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
+    if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
         echo "<b>{$lang['to']}: " . format_user_name($message['TLOGON'], $message['TNICK'])."</b>";
 

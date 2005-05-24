@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.176 2005-04-27 19:47:10 decoyduck Exp $ */
+/* $Id: edit.php,v 1.177 2005-05-24 19:59:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -424,8 +424,8 @@ if (isset($_POST['preview'])) {
 
         if ($to_uid == 0) {
 
-            $preview_message['TLOGON'] = "ALL";
-            $preview_message['TNICK'] = "ALL";
+            $preview_message['TLOGON'] = $lang['allcaps'];
+            $preview_message['TNICK'] = $lang['allcaps'];
 
         }else{
 
@@ -785,7 +785,7 @@ echo form_input_hidden("t_from_uid", $from_uid);
 
 echo "<h2>{$lang['to']}:</h2>\n";
 
-if ($preview_message['TLOGON'] != "ALL") {
+if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\" target=\"_self\">";
     echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));

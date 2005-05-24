@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.128 2005-04-29 08:38:59 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.129 2005-05-24 19:59:32 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -172,6 +172,8 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
 function post_draw_to_dropdown($default_uid, $show_all = true)
 {
+    $lang = load_language_file();
+
     $html = "<select name=\"t_to_uid\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
@@ -195,7 +197,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     }
 
     if ($show_all) {
-        $html .= "<option value=\"0\">ALL</option>\n";
+        $html .= "<option value=\"0\">{$lang['allcaps']}</option>\n";
     }
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -237,6 +239,8 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
 function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 {
+    $lang = load_language_file();
+
     $html = "<select name=\"t_to_uid_recent\" class=\"recent_user_dropdown\" onclick=\"checkToRadio(". ($default_uid == 0 ? 1 : 0).")\">\n";
     $db_post_draw_to_dropdown = db_connect();
 
@@ -259,7 +263,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
     }
 
     if ($show_all) {
-        $html .= "<option value=\"0\">ALL</option>\n";
+        $html .= "<option value=\"0\">{$lang['allcaps']}</option>\n";
     }
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
@@ -301,6 +305,8 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
 function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $inc_blank = false, $custom_html = "")
 {
+    $lang = load_language_file();
+
     $html = "<select name=\"t_to_uid_in_thread\" class=\"user_in_thread_dropdown\" ".$custom_html.">\n";
     $db_post_draw_to_dropdown = db_connect();
 
@@ -324,7 +330,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
     if ($show_all) {
 
-        $html.= "<option value=\"0\">ALL</option>\n";
+        $html.= "<option value=\"0\">{$lang['allcaps']}</option>\n";
 
     }else if ($inc_blank) {
 

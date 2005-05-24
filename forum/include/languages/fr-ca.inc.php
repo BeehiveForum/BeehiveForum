@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.9 2005-05-22 08:21:42 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.10 2005-05-24 19:59:32 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -59,7 +59,6 @@ $lang['month_short'][10] = "Oct";
 $lang['month_short'][11] = "Nov";
 $lang['month_short'][12] = "Déc";
 
-
 // Common words --------------------------------------------------------
 
 $lang['percent'] = "Pourcentage";
@@ -87,8 +86,8 @@ $lang['of'] = "de";
 $lang['reply'] = "Répondre";
 $lang['replyall'] = "Répondre à tous";
 $lang['pm_reply'] = "Répondre en MP";
-$lang['delete'] = "Supprimer";
-$lang['deleted'] = "Supprimé";
+$lang['delete'] = "supprimer";
+$lang['deleted'] = "supprimé";
 $lang['del'] = "Sup";
 $lang['edit'] = "Modifier";
 $lang['privileges'] = "Privilèges";
@@ -151,7 +150,6 @@ $lang['nickname'] = "Pseudonyme";
 $lang['emailaddress'] = "Adress courriel";
 $lang['confirm'] = "Confirmer";
 $lang['email'] = "Courriel";
-$lang['new'] = "nouveau";
 $lang['newcaps'] = "NOUVEAU";
 $lang['poll'] = "Scrutin";
 $lang['friend'] = "Ami";
@@ -159,8 +157,9 @@ $lang['error'] = "Erreur";
 $lang['guesterror_1'] = "Désolé, vous devez ouvrir une session pour utiliser cette fonction.";
 $lang['guesterror_2'] = "Ouvrir une session maintenant";
 $lang['on'] = "sur";
-$lang['unread'] = "non-lus";
+$lang['unread'] = "non-lu";
 $lang['all'] = "Tous";
+$lang['allcaps'] = "TOUS";
 $lang['me_caps'] = "MOI";
 $lang['by'] = "par";
 $lang['permissions'] = "Droits d'accès";
@@ -953,7 +952,7 @@ $lang['resendconfirmation'] = "Renvoyer confirmation";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 
-$lang['inreplyto'] = "En réponse à";
+$lang['inreplyto'] = "en réponse à";
 $lang['showmessages'] = "Montrer les messages";
 $lang['ratemyinterest'] = "Coter mon intérêt";
 $lang['adjtextsize'] = "Changer la taille des textes";
@@ -1024,7 +1023,7 @@ $lang['logout'] = "Fermer session";
 
 // PM System (pm.php, pm_write.php, pm.inc.php) ------------------------
 $lang['privatemessages'] = "Messages privés";
-$lang['addrecipient'] = "Ajouter destinataire";
+$lang['addrecipient'] = "Ajouter destinataire(s)";
 $lang['recipienttiptext'] = "Séparer les destinataires par un point-virgule ou une virgule";
 $lang['maximumtenrecipientspermessage'] = "Il y a une limite de 10 destinataires par message. SVP modifier votre liste de destinataires.";
 $lang['mustspecifyrecipient'] = "Vous devez spécifier aumoins un destinataire.";
@@ -1409,6 +1408,10 @@ $lang['ignorethisfolder'] = "Ignorer ce dossier";
 $lang['stopignoringthisfolder'] = "Cesser d'ignorer ce dossier";
 $lang['stickythreads'] = "Fils de discussion collants";
 $lang['mostunreadposts'] = "Plus de messages non-lus";
+$lang['onenew'] = "%d nouveau";
+$lang['manynew'] = "%d nouveaux";
+$lang['onenewoflength'] = "%d nouveau de %d";
+$lang['manynewoflength'] = "%d nouveaux de %d";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Caractère gras";
@@ -1453,7 +1456,7 @@ $lang['forumstats'] = "Statistiques du forum";
 $lang['guests'] = "visiteurs";
 $lang['members'] = "membres";
 $lang['anonymousmembers'] = "membres anonymes";
-$lang['viewcompletelist'] = "VOir liste complète";
+$lang['viewcompletelist'] = "Voir liste complète";
 $lang['ourmembershavemadeatotalof'] = "Nos membres ont posté un total de";
 $lang['threadsand'] = "fils de discussion et";
 $lang['postslowercase'] = "messages";
@@ -1462,7 +1465,7 @@ $lang['therehavebeen'] = "Il y a eu";
 $lang['postsmadeinthelastsixtyminutes'] = "messages posté durant les dernières 60 minutes";
 $lang['mostpostsevermadeinasinglesixtyminuteperiodwas'] = "Le plus grand nombre de messages postés dans une seule période de 60 minutes était";
 $lang['wehave'] = "Nous avons";
-$lang['registeredmembers'] = "membres enregistrés";
+$lang['registeredmembers'] = "membres enregistrés.";
 $lang['thenewestmemberis'] = "Le plus récent membre est";
 $lang['mostuserseveronlinewas'] = "Le plus grand nombre d'utilisateurs en ligne à la fois était";
 $lang['statsdisplayenabled'] = "Affichage de statistiques activé";

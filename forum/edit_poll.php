@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.99 2005-04-27 19:47:11 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.100 2005-05-24 19:59:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -310,8 +310,8 @@ if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTI
 
 if ($valid && isset($_POST['preview'])) {
 
-    $polldata['TLOGON'] = "ALL";
-    $polldata['TNICK'] = "ALL";
+    $polldata['TLOGON'] = $lang['allcaps'];
+    $polldata['TNICK'] = $lang['allcaps'];
 
     $preview_tuser = user_get(bh_session_get_value('UID'));
 
@@ -495,8 +495,8 @@ if ($valid && isset($_POST['preview'])) {
 
 }else {
 
-    $polldata['TLOGON'] = "ALL";
-    $polldata['TNICK'] = "ALL";
+    $polldata['TLOGON'] = $lang['allcaps'];
+    $polldata['TNICK'] = $lang['allcaps'];
 
     $preview_tuser = user_get($polldata['FROM_UID']);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.368 2005-05-23 22:47:05 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.369 2005-05-24 19:59:31 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -93,8 +93,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($message['FLOGON'])) $message['FLOGON'] = "Unknown User";
             if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
 
-            if (!isset($message['TNICK'])) $message['TNICK'] = "ALL";
-            if (!isset($message['TLOGON'])) $message['TLOGON'] = "ALL";
+            if (!isset($message['TNICK'])) $message['TNICK'] = $lang['allcaps'];
+            if (!isset($message['TLOGON'])) $message['TLOGON'] = $lang['allcaps'];
 
             $messages[] = $message;
         }
@@ -123,8 +123,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
         if (!isset($message['FLOGON'])) $message['FLOGON'] = "Unknown User";
         if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
 
-        if (!isset($message['TNICK'])) $message['TNICK'] = "ALL";
-        if (!isset($message['TLOGON'])) $message['TLOGON'] = "ALL";
+        if (!isset($message['TNICK'])) $message['TNICK'] = $lang['allcaps'];
+        if (!isset($message['TLOGON'])) $message['TLOGON'] = $lang['allcaps'];
 
         return $messages;
     }
@@ -706,7 +706,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     echo "                <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
     echo "                <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
-    if (($message['TLOGON'] != "ALL") && $message['TO_UID'] != 0) {
+    if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
         echo format_user_name($message['TLOGON'], $message['TNICK']), "</a></span>";

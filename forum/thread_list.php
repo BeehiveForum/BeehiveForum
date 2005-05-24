@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.245 2005-05-23 22:47:04 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.246 2005-05-24 19:59:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -444,15 +444,17 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                             if ($thread['LAST_READ'] == 0) {
 
-                                if ($thread['LENGTH'] > 0) {
+                                if ($thread['LENGTH'] > 1) {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
-                                    $number.= "{$thread['LENGTH']}&nbsp;{$lang['new']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
+                                    $number.= sprintf($lang['manynew'], $thread['LENGTH']);
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
 
                                 }else {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
-                                    $number = "1&nbsp;{$lang['new']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
+                                    $number.= sprintf($lang['onenew'], $thread['LENGTH']);
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
                                 }
 
                                 $latest_post = 1;
@@ -471,9 +473,18 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                                 $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
 
-                                $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
-                                $number.= "{$new_posts}&nbsp;{$lang['new']}&nbsp;{$lang['of']}&nbsp;{$thread['LENGTH']}";
-                                $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
+                                if ($new_posts > 1) {
+
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
+                                    $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
+
+                                }else {
+
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
+                                    $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
+                                }
 
                                 $latest_post = $thread['LAST_READ'] + 1;
 
@@ -489,7 +500,7 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                             }else {
 
-                                if ($thread['LENGTH'] > 0) {
+                                if ($thread['LENGTH'] > 1) {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
                                     $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.161 2005-04-27 19:47:09 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.162 2005-05-24 19:59:29 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -615,8 +615,8 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "<h2>{$lang['preview']}:</h2>";
 
-    $polldata['TLOGON'] = "ALL";
-    $polldata['TNICK'] = "ALL";
+    $polldata['TLOGON'] = $lang['allcaps'];
+    $polldata['TNICK'] = $lang['allcaps'];
 
     $preview_tuser = user_get($uid);
 

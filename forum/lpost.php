@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.77 2005-04-27 19:47:13 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.78 2005-05-24 19:59:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -498,8 +498,8 @@ if ($valid && isset($_POST['preview'])) {
 
     if ($_POST['t_to_uid'] == 0) {
 
-        $preview_message['TLOGON'] = "ALL";
-        $preview_message['TNICK'] = "ALL";
+        $preview_message['TLOGON'] = $lang['allcaps'];
+        $preview_message['TNICK'] = $lang['allcaps'];
 
     }else {
 

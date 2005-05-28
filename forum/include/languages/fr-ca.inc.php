@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.10 2005-05-24 19:59:32 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.11 2005-05-28 13:48:40 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -46,18 +46,30 @@ $lang['month'][10] = "Octobre";
 $lang['month'][11] = "Novembre";
 $lang['month'][12] = "Décembre";
 
-$lang['month_short'][1]  = "Jan";
-$lang['month_short'][2]  = "Fév";
-$lang['month_short'][3]  = "Mars";
-$lang['month_short'][4]  = "Avr";
-$lang['month_short'][5]  = "Mai";
-$lang['month_short'][6]  = "Juin";
-$lang['month_short'][7]  = "Juil";
-$lang['month_short'][8]  = "Août";
-$lang['month_short'][9]  = "Sep";
-$lang['month_short'][10] = "Oct";
-$lang['month_short'][11] = "Nov";
-$lang['month_short'][12] = "Déc";
+$lang['month_short'][1]  = "jan";
+$lang['month_short'][2]  = "fév";
+$lang['month_short'][3]  = "mars";
+$lang['month_short'][4]  = "avr";
+$lang['month_short'][5]  = "mai";
+$lang['month_short'][6]  = "juin";
+$lang['month_short'][7]  = "juil";
+$lang['month_short'][8]  = "août";
+$lang['month_short'][9]  = "sep";
+$lang['month_short'][10] = "oct";
+$lang['month_short'][11] = "nov";
+$lang['month_short'][12] = "déc";
+
+// Dates ---------------------------------------------------------------
+
+// Various date and time formats as used by BeehiveForum. All times are
+// expressed as 24 hour time format.
+
+$lang['daymonthyear'] = "%s %s %s";                 // e.g. 1 Jan 2005
+$lang['monthyear'] = "%s %s";                       // e.g. Jan 2005
+$lang['daymonthyearhourminute'] = "%s %s %s %sh%s"; // e.g. 1 Jan 2005 12:00
+$lang['daymonthhourminute'] = "%s %s %sh%s";        // e.g. 1 Jan 18:30
+$lang['daymonth'] = "%s %s";                        // e.g. 1 Jan
+$lang['hourminute'] = "%sh%s";                      // e.g. 12:00
 
 // Common words --------------------------------------------------------
 
@@ -117,13 +129,13 @@ $lang['viewmessage'] = "voir le message";
 $lang['logon'] = "Ouverture de session";
 $lang['more'] = "Plus";
 $lang['recentvisitors'] = "Dernières visites";
-$lang['username'] = "nom d'Utilisateur";
+$lang['username'] = "nom d'utilisateur";
 $lang['clear'] = "Effacer";
 $lang['action'] = "Action";
 $lang['unknown'] = "Inconnu";
 $lang['none'] = "aucun";
 $lang['preview'] = "Aperçu";
-$lang['post'] = "Message";
+$lang['post'] = "Poster";
 $lang['posts'] = "Messages";
 $lang['change'] = "Changer";
 $lang['yes'] = "Oui";
@@ -152,7 +164,7 @@ $lang['confirm'] = "Confirmer";
 $lang['email'] = "Courriel";
 $lang['newcaps'] = "NOUVEAU";
 $lang['poll'] = "Scrutin";
-$lang['friend'] = "Ami";
+$lang['friend'] = "Ami(e)";
 $lang['error'] = "Erreur";
 $lang['guesterror_1'] = "Désolé, vous devez ouvrir une session pour utiliser cette fonction.";
 $lang['guesterror_2'] = "Ouvrir une session maintenant";
@@ -186,6 +198,7 @@ $lang['sortdesc'] = "Tri décroissant";
 $lang['usage'] = "Utilisation";
 $lang['show'] = "Montrer";
 $lang['prefix'] = "Préfixe";
+$lang['hint'] = "Indice";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -811,6 +824,7 @@ $lang['emailconfirmationfailed'] = "Échec de la confirmation d'adresse de courr
 
 // Links database (links*.php) -----------------------------------------
 
+$lang['toplevel'] = "Niveau supérieur";
 $lang['maynotaccessthissection'] = "Vous ne pouvez pas accéder à cette section.";
 $lang['toplevel'] = "Premier niveau";
 $lang['links'] = "Liens";
@@ -1052,6 +1066,7 @@ $lang['currentmessage'] = "Message actuel";
 $lang['unreadmessage'] = "Message non-lu";
 $lang['readmessage'] = "Lire message";
 $lang['pmshavebeendisabled'] = "Les messages personnels ont été désactivés par le propriétaire du forum.";
+$lang['adduserstofriendslist'] = "Si vous ajoutez des utilisateurs à votre liste d'ami(e)s, ils apparaîtront dans la liste déroulante verticalement de la page Rédiger Message PM.";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -1171,7 +1186,7 @@ $lang['notabletochangevote'] = "Vous ne pourrez pas changer votre vote.";
 $lang['pollvotesrandom'] = "Note: Les votes de scrutin sont générés au hasard pour l'aperçu seulement.";
 $lang['pollquestion'] = "Question de scrutin";
 $lang['possibleanswers'] = "Réponses possibles";
-$lang['enterpollquestionexp'] = "Entrer les réponses pour votre question de scrutin.. Si votre scrutin est une question &quot;oui/non&quot;, vous n'avez qu'à entrer &quot;Oui&quot; pour Réponse 1 et &quot;Non&quot; pour Réponse 2.";
+$lang['enterpollquestionexp'] = "Entrer les réponses pour votre question de scrutin. Si votre scrutin est une question &quot;oui/non&quot;, vous n'avez qu'à entrer &quot;Oui&quot; pour Réponse 1 et &quot;Non&quot; pour Réponse 2.";
 $lang['numberanswers'] = "No. Réponses";
 $lang['answerscontainHTML'] = "Réponses contiennent du HTML (apart de la signature)";
 $lang['optionsdisplay'] = "Type d'affichage des réponses";
@@ -1218,6 +1233,8 @@ $lang['results'] = "Résultats";
 $lang['resultdetails'] = "Détails des résultats";
 $lang['changevote'] = "Changer vote";
 $lang['pollshavebeendisabled'] = "Les scrutins ont été désactivé par le propriétaire du forum.";
+$lang['answertext'] = "Texte de réponse";
+$lang['answergroup'] = "Groupe de réponse";
 
 // Profiles (profile.php) ----------------------------------------------
 
@@ -1308,9 +1325,9 @@ $lang['cannotignoremod'] = "Vous ne pouvez pas ignorer cet utilisateur parce qu'
 
 $lang['searchresults'] = "Résultats de recherche";
 $lang['usernamenotfound'] = "Le nom d'utilisateur spécifié dans le champs à ou dans le champs de n'a pas été retrouvé.";
-$lang['notexttosearchfor'] = "Vous avez entré aucun mot de recherche or les mots que vous avez entré ont été éliminé parce qu'ils étaient trop courts ou qu'ils étaient indexé dans la liste stopwords MySQL.";
+$lang['notexttosearchfor'] = "Vous avez entré aucun mot de recherche or les mots que vous avez entré ont été éliminé parce qu'ils étaient trop courts ou qu'ils étaient indexés dans la liste stopwords MySQL.";
 $lang['searchcriteria_1'] = "<b>Note:</b> Les mots ayant moins de";
-$lang['searchcriteria_2'] = "charactères ou ceux indexé dans la liste FULLTEXT stopword MySQL seront automatiquement éliminés.";
+$lang['searchcriteria_2'] = "charactères ou ceux indexés dans la liste FULLTEXT stopword MySQL seront automatiquement éliminés.";
 $lang['foundzeromatches'] = "Correspondances trouvées: 0";
 $lang['found'] = "Trouvé";
 $lang['matches'] = "correspondances";
@@ -1319,20 +1336,20 @@ $lang['findmore'] = "Trouver d'autres";
 $lang['searchmessages'] = "Chercher les messages";
 $lang['searchdiscussions'] = "Chercher les discussions";
 $lang['containingallwords'] = "Incluant tous les mots";
-$lang['containinganywords'] = "Incluant l'un des mots";
+$lang['containinganywords'] = "Incluant un des mots";
 $lang['find'] = "Trouver";
 $lang['additionalcriteria'] = "Critères supplémentaires";
 $lang['searchbyuser'] = "Chercher par utilisateur (optionnel)";
 $lang['folderbrackets_s'] = "Dossier(s)";
-$lang['postedfrom'] = "Posté de";
-$lang['postedto'] = "Posté à";
+$lang['postedfrom'] = "Posté depuis";
+$lang['postedto'] = "Posté jusqu'à";
 $lang['today'] = "aujourd'hui";
 $lang['yesterday'] = "hier";
 $lang['daybeforeyesterday'] = "avant hier";
-$lang['weekago'] = "semaine passée";
-$lang['weeksago'] = "semaines passées";
-$lang['monthago'] = "mois passé";
-$lang['monthsago'] = "mois passés";
+$lang['weekago'] = "%s semaine passée";
+$lang['weeksago'] = "%s semaines passées";
+$lang['monthago'] = "%s mois passé";
+$lang['monthsago'] = "%s mois passés";
 $lang['yearago'] = "il y a un an";
 $lang['beginningoftime'] = "Du début des temps";
 $lang['now'] = "Maintenant";
@@ -1369,7 +1386,7 @@ $lang['createpoll'] = "Créer Scrutin";
 $lang['search'] = "Chercher";
 $lang['searchagain'] = "Chercher encore";
 $lang['alldiscussions'] = "Toutes les discussions";
-$lang['unreaddiscussions'] = "Discussion non-lues";
+$lang['unreaddiscussions'] = "Discussions non-lues";
 $lang['unreadtome'] = "Non-lues &quot;À: Moi&quot;";
 $lang['todaysdiscussions'] = "Discussions du jour";
 $lang['2daysback'] = "Depuis 2 jours";
@@ -1377,12 +1394,12 @@ $lang['7daysback'] = "Depuis 7 jours";
 $lang['highinterest'] = "D'intérêt élevé";
 $lang['unreadhighinterest'] = "D'intérêt élevé non-lues";
 $lang['iverecentlyseen'] = "que j'ai récemment vues";
-$lang['iveignored'] = "que j'ai ignoré";
+$lang['iveignored'] = "que j'ai ignorées";
 $lang['byignoredusers'] = "Par utilisateurs ignorés";
 $lang['ivesubscribedto'] = "auquelles je m'abonne";
 $lang['startedbyfriend'] = "Commencées par des amis";
 $lang['unreadstartedbyfriend'] = "Non-lues commencées par amis";
-$lang['startedbyme'] = "que j'ai commencé";
+$lang['startedbyme'] = "que j'ai commencées";
 $lang['unreadtoday'] = "Non-lues aujourd'hui";
 $lang['goexcmark'] = "Allez-y!";
 $lang['folderinterest'] = "Niveau d'intérêt du dossier";
@@ -1399,7 +1416,7 @@ $lang['clickhere'] = "cliquer ici";
 $lang['forallthreads'] = "pour tous les fils de discussion";
 $lang['prev50threads'] = "Premiers 50 fil de discussion";
 $lang['next50threads'] = "Prochains 50 fils de discussion";
-$lang['startedby'] = "Commencés par";
+$lang['startedby'] = "Commencée par";
 $lang['unreadthread'] = "Fil de discussion non-lu";
 $lang['readthread'] = "Lire fil de discussion";
 $lang['unreadmessages'] = "Messages non-lus";
@@ -1412,6 +1429,8 @@ $lang['onenew'] = "%d nouveau";
 $lang['manynew'] = "%d nouveaux";
 $lang['onenewoflength'] = "%d nouveau de %d";
 $lang['manynewoflength'] = "%d nouveaux de %d";
+$lang['ignorefolderconfirm'] = "Êtes-vous certain de vouloir ignorer ce dossier?";
+$lang['unignorefolderconfirm'] = "Êtes-vous certain de vouloir cesser d'ignorer ce dossier?";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Caractère gras";
@@ -1474,7 +1493,7 @@ $lang['statsdisplayenabled'] = "Affichage de statistiques activé";
 
 $lang['updatesmade'] = "Mises à jour effectuées";
 $lang['useroptions'] = "Options d'utilisateur";
-$lang['markedasread'] = "Marqué comme lu";
+$lang['markedasread'] = "Marquer comme lu";
 $lang['postsoutof'] = "messages sur";
 $lang['interest'] = "Intérêt";
 $lang['closedforposting'] = "Fermé au postage";

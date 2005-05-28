@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.246 2005-05-24 19:59:31 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.247 2005-05-28 13:48:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -157,6 +157,17 @@ if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
 
 // Output XHTML header
 html_draw_top("modslist.js");
+
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n\n";
+echo "function confirmFolderIgnore() {\n";
+echo "    return window.confirm('{$lang['ignorefolderconfirm']}');\n";
+echo "}\n\n";
+echo "function confirmFolderUnignore() {\n";
+echo "    return window.confirm('{$lang['unignorefolderconfirm']}');\n";
+echo "}\n\n";
+echo "//-->\n";
+echo "</script>\n";
 
 // Draw discussion dropdown
 thread_list_draw_top($mode);

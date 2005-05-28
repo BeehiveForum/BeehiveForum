@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.121 2005-05-13 08:39:02 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.122 2005-05-28 13:48:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -640,10 +640,7 @@ if (!is_array($friends_array)) {
     echo "          <td>&nbsp;</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td><h2>Hint:</h2></td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"smalltext\">Add users to your friends list to have them appear in a drop down on the PM Write Message Page.</td>\n";
+    echo "          <td><h2>{$lang['hint']}:</h2><span class=\"smalltext\">{$lang['adduserstofriendslist']}</span></td>\n";
     echo "        </tr>\n";
 }
 

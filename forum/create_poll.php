@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.162 2005-05-24 19:59:29 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.163 2005-05-28 13:48:39 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -788,8 +788,8 @@ echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>Answer Text</td>\n";
-echo "                  <td align=\"center\">Answer Group</td>\n";
+echo "                  <td>{$lang['answertext']}</td>\n";
+echo "                  <td align=\"center\">{$lang['answergroup']}</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 

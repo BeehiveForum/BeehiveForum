@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.294 2005-05-24 19:59:32 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.295 2005-05-28 13:48:39 decoyduck Exp $ */
 
 // International English language file
 
@@ -59,6 +59,17 @@ $lang['month_short'][10] = "Oct";
 $lang['month_short'][11] = "Nov";
 $lang['month_short'][12] = "Dec";
 
+// Dates ---------------------------------------------------------------
+
+// Various date and time formats as used by BeehiveForum. All times are
+// expressed as 24 hour time format.
+
+$lang['daymonthyear'] = "%s %s %s";                  // 1 Jan 2005
+$lang['monthyear'] = "%s %s";                        // Jan 2005
+$lang['daymonthyearhourminute'] = "%s %s %s %s:%s";  // 1 Jan 2005 12:00
+$lang['daymonthhourminute'] = "%s %s %s:%s";         // 1 Jan 12:00
+$lang['daymonth'] = "%s %s";                         // 1 Jan
+$lang['hourminute'] = "%s:%s";                       // 12:00
 
 // Common words --------------------------------------------------------
 
@@ -187,6 +198,7 @@ $lang['sortdesc'] = "Sort Desc";
 $lang['usage'] = "Usage";
 $lang['show'] = "Show";
 $lang['prefix'] = "Prefix";
+$lang['hint'] = "Hint";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -800,7 +812,7 @@ $lang['passwdresetrequest'] = "Your password reset request";
 $lang['passwdresetemailsent'] = "Password reset e-mail sent";
 $lang['passwdresetexp'] = "You should receive an e-mail containing instructions for resetting your password shortly.";
 $lang['validusernamerequired'] = "A valid username is required";
-$lang['forgotpasswd'] = "Forgot password";
+$lang['forgottenpasswd'] = "Forgot password";
 $lang['forgotpasswdexp'] = "If you have forgotten your password, you can request to have it reset by entering your logon name below. Instructions on how to reset your password will be sent to your registered email address.";
 $lang['couldnotsendpasswordreminder'] = "Could not send password reminder. Please contact the forum owner.";
 $lang['request'] = "Request";
@@ -813,6 +825,7 @@ $lang['emailconfirmationfailed'] = "Email confirmation has failed, please try ag
 
 // Links database (links*.php) -----------------------------------------
 
+$lang['toplevel'] = "Niveau supérieur";
 $lang['maynotaccessthissection'] = "You may not access this section.";
 $lang['toplevel'] = "Top Level";
 $lang['links'] = "Links";
@@ -1054,6 +1067,7 @@ $lang['currentmessage'] = "Current Message";
 $lang['unreadmessage'] = "Unread Message";
 $lang['readmessage'] = "Read Message";
 $lang['pmshavebeendisabled'] = "Personal Messages have been disabled by the forum owner.";
+$lang['adduserstofriendslist'] = "Add users to your friends list to have them appear in a drop down on the PM Write Message Page.";
 
 // Preferences / Profile (user_*.php) ---------------------------------------------
 
@@ -1220,6 +1234,8 @@ $lang['results'] = "Results";
 $lang['resultdetails'] = "Result Details";
 $lang['changevote'] = "Change vote";
 $lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";
+$lang['answertext'] = "Answer Text";
+$lang['answergroup'] = "Answer Group";
 
 // Profiles (profile.php) ----------------------------------------------
 
@@ -1331,11 +1347,11 @@ $lang['postedto'] = "Posted to";
 $lang['today'] = "Today";
 $lang['yesterday'] = "Yesterday";
 $lang['daybeforeyesterday'] = "Day before yesterday";
-$lang['weekago'] = "week ago";
-$lang['weeksago'] = "weeks ago";
-$lang['monthago'] = "month ago";
-$lang['monthsago'] = "months ago";
-$lang['yearago'] = "year ago";
+$lang['weekago'] = "%s week ago";
+$lang['weeksago'] = "%s weeks ago";
+$lang['monthago'] = "%s month ago";
+$lang['monthsago'] = "%s months ago";
+$lang['yearago'] = "%s year ago";
 $lang['beginningoftime'] = "Beginning of time";
 $lang['now'] = "Now";
 $lang['newestfirst'] = "Newest first";
@@ -1414,6 +1430,8 @@ $lang['onenew'] = "%d new";
 $lang['manynew'] = "%d new";
 $lang['onenewoflength'] = "%d new of %d";
 $lang['manynewoflength'] = "%d new of %d";
+$lang['ignorefolderconfirm'] = "Are you sure you want to ignore this folder?";
+$lang['unignorefolderconfirm'] = "Are you sure you want to stop ignoring this folder?";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Bold";

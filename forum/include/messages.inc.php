@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.369 2005-05-24 19:59:31 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.370 2005-05-28 13:48:39 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -35,10 +35,11 @@ include_once(BH_INCLUDE_PATH. "thread.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {
-    $uid = bh_session_get_value('UID');
-    if(!$uid) $uid = 0;
+    $lang = load_language_file();
 
-    $db_message_get = db_connect();
+    if (!$uid = bh_session_get_value('UID')) $uid = 0;
+
+    $db_messages_get = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -63,7 +64,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "ORDER BY POST.PID ";
     $sql .= "LIMIT 0, $limit";
 
-    $result = db_unbuffered_query($sql, $db_message_get);
+    $result = db_unbuffered_query($sql, $db_messages_get);
 
     // Loop through the results and construct an array to return
 
@@ -816,7 +817,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
             echo "              <tr>\n";
-            echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1, "d/m/y H:i"), " {$lang['by']} {$message['EDIT_LOGON']}</p></td>\n";
+            echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$message['EDIT_LOGON']}</p></td>\n";
             echo "              </tr>\n";
         }
 
@@ -825,7 +826,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
                 echo "              <tr>\n";
-                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">{$lang['approvedcaps']}: ", format_time($message['APPROVED'], 1, "d/m/y H:i"), " {$lang['by']} {$message['APPROVED_LOGON']}</p></td>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">{$lang['approvedcaps']}: ", format_time($message['APPROVED'], 1), " {$lang['by']} {$message['APPROVED_LOGON']}</p></td>\n";
                 echo "              </tr>\n";
             }
         }
@@ -1007,7 +1008,7 @@ function message_display_deleted($tid, $pid, $message)
         echo "<br /><div align=\"center\">";
         echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
         echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
-        echo "{$lang['message']} ${tid}.${pid} {$lang['deleted']}: ", format_time($message['EDITED'], 1, "d/m/y H:i"), " {$lang['by']} {$message['EDIT_LOGON']}\n";
+        echo "{$lang['message']} ${tid}.${pid} {$lang['deleted']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$message['EDIT_LOGON']}\n";
         echo "</td></tr></table>\n";
         echo "</td></tr></table></div>\n";
 
@@ -1571,7 +1572,7 @@ function messages_forum_stats($tid, $pid)
                     echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                     echo "          <tr>\n";
                     echo "            <td width=\"35\">&nbsp;</td>\n";
-                    echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodwas']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ","), "</b> {$lang['on']} ", format_time($most_posts['MOST_POSTS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
+                    echo "            <td>{$lang['mostpostsevermadeinasinglesixtyminuteperiodwas']} <b>", number_format($most_posts['MOST_POSTS_COUNT'], 0, ",", ","), "</b> {$lang['on']} ", format_time($most_posts['MOST_POSTS_DATE'], 1), "</td>\n";
                     echo "            <td width=\"35\">&nbsp;</td>\n";
                     echo "          </tr>\n";
                     echo "        </table>\n";
@@ -1606,7 +1607,7 @@ function messages_forum_stats($tid, $pid)
                     echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                     echo "          <tr>\n";
                     echo "            <td width=\"35\">&nbsp;</td>\n";
-                    echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ",", ","), "</b> {$lang['on']} ", format_time($most_users['MOST_USERS_DATE'], 1, "M jS Y, g:i A"), "</td>\n";
+                    echo "            <td>{$lang['mostuserseveronlinewas']} <b>", number_format($most_users['MOST_USERS_COUNT'], 0, ",", ","), "</b> {$lang['on']} ", format_time($most_users['MOST_USERS_DATE'], 1), "</td>\n";
                     echo "            <td width=\"35\">&nbsp;</td>\n";
                     echo "          </tr>\n";
                     echo "        </table>\n";

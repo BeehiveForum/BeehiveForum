@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.97 2005-05-22 22:57:53 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.98 2005-05-28 13:48:39 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -66,6 +66,8 @@ function format_time($time, $verbose = false, $custom_format = false)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 
+    $lang = load_language_file();
+
     if (!$timezone = bh_session_get_value('TIMEZONE')) {
         $timezone = forum_get_setting('forum_timezone', false, 0);
     }
@@ -87,37 +89,41 @@ function format_time($time, $verbose = false, $custom_format = false)
         $local_time_now = timestamp_amend_bst($local_time_now);
     }
 
-    if (gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) {
+    // Get the numerical for the dates to convert
+
+    $date_string = gmdate("s i G j n Y", $local_time);
+    list($sec, $min, $hour, $day, $month, $year) = explode(" ", $date_string);
+
+    // We only ever use the month as a string
+
+    $month_str = $lang['month_short'][$month];
+
+    if ($year != gmdate("Y", $local_time_now)) {
 
         if ($verbose) {
-            $fmt = gmdate("j M Y", $local_time);
-        } else {
-            $fmt = gmdate("M Y", $local_time);
+            $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
+        }else {
+            $fmt = sprintf($lang['monthyear'], $month_str, $year); // M Y
         }
 
-    }elseif ((gmdate("n", $local_time) != gmdate("n", $local_time_now)) || (gmdate("j", $local_time) != gmdate("j", $local_time_now))) {
+    }elseif (($month != gmdate("n", $local_time_now)) || ($day != gmdate("j", $local_time_now))) {
 
         if ($verbose) {
 
-            if (gmdate("Y", $local_time) != gmdate("Y", $local_time_now)) {
-                $fmt = gmdate("j M Y H:i", $local_time);
+            if ($year != gmdate("Y", $local_time_now)) {
+                $fmt = sprintf($lang['daymonthyearhourminute'], $day, $month_str, $year, $hour, $min); // j M Y H:i
             }else {
-                $fmt = gmdate("j M H:i", $local_time);
+                $fmt = sprintf($lang['daymonthhourminute'], $day, $month_str, $hour, $min); // j M H:i
             }
 
         }else {
 
-            $fmt = gmdate("j M", $local_time);
+            $fmt = sprintf($lang['daymonth'], $day, $month_str); // j M
         }
 
     }else {
 
-        $fmt = gmdate("H:i", $local_time);
-    }
-
-    if ($custom_format) {
-
-        $fmt = gmdate($custom_format, $local_time);
+        $fmt = sprintf($lang['hourminute'], $hour, $min); // H:i
     }
 
     return $fmt;

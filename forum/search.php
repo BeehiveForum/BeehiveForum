@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.116 2005-05-23 22:47:03 decoyduck Exp $ */
+/* $Id: search.php,v 1.117 2005-05-28 13:48:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -181,7 +181,7 @@ if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
     echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"left\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden('sstart', '0'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -214,7 +214,7 @@ if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -255,7 +255,7 @@ if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -271,18 +271,18 @@ if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['postedfrom']}:</td>\n";
-    echo "                  <td>", form_dropdown_array("date_from", range(1, 12), array($lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], "1 {$lang['weekago']}", "2 {$lang['weeksago']}", "3 {$lang['weeksago']}", "1 {$lang['monthago']}", "2 {$lang['monthsago']}", "3 {$lang['monthsago']}", "6 {$lang['monthsago']}", "1 {$lang['yearago']}", $lang['beginningoftime']), 7, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                  <td>", form_dropdown_array("date_from", range(1, 12), array($lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1), $lang['beginningoftime']), 7, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['postedto']}:</td>\n";
-    echo "                  <td>", form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], "1 {$lang['weekago']}", "2 {$lang['weeksago']}", "3 {$lang['weeksago']}", "1 {$lang['monthago']}", "2 {$lang['monthsago']}", "3 {$lang['monthsago']}", "6 {$lang['monthsago']}", "1 {$lang['yearago']}"), 2, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                  <td>", form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1)), 2, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;{$lang['orderby']}:</td>\n";
     echo "                  <td>", form_dropdown_array("order_by", range(1, 2), array($lang['newestfirst'], $lang['oldestfirst']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;{$lang['groupbythread']}:</td>\n";
+    echo "                  <td nowrap=\"nowrap\">&nbsp;{$lang['groupbythread']}:</td>\n";
     echo "                  <td>", form_radio("group_by_thread", "Y", $lang['yes'], true), "&nbsp;", form_radio("group_by_thread", "Y", $lang['no'], false), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";

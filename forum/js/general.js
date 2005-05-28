@@ -23,14 +23,6 @@ function openWindow(url, name, width, height) {
 	window.open(url, name, 'width=' + width + ', height=' + height + ', toolbars=no, scrollbars=1');
 }
 
-function confirmFolderIgnore() {
-        return window.confirm('Are you sure you want to ignore this folder?');
-}
-
-function confirmFolderUnignore() {
-        return window.confirm('Are you sure you want to stop ignoring this folder?');
-}
-
 function disable_button(button) {
 
     button.className = 'button_disabled';

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.152 2005-04-25 19:48:56 decoyduck Exp $ */
+/* $Id: logon.php,v 1.153 2005-05-30 14:20:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -196,7 +196,7 @@ draw_logon_form(true);
 if (user_guest_enabled()) {
 
     echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\">\n";
-    echo "    <p class=\"smalltext\">{$lang['enterasa']} ", form_submit('guest_logon', $lang['guest']), "</p>\n";
+    echo "    <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
     echo "  </form>\n";
 }
 
@@ -204,7 +204,7 @@ if (isset($final_uri)) {
 
     $final_uri = rawurlencode($final_uri);
 
-    echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">Register now.</a></p>\n";
+    echo "  <p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
     echo "  <hr width=\"350\" />\n";
     echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
     echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
@@ -212,7 +212,7 @@ if (isset($final_uri)) {
 
 }else {
 
-    echo "  <p class=\"smalltext\">{$lang['donthaveanaccount']} <a href=\"register.php?webtag=$webtag\" target=\"_self\">Register now.</a></p>\n";
+    echo "  <p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
     echo "  <hr width=\"350\" />\n";
     echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
     echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";

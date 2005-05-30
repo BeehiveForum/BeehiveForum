@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.11 2005-05-28 13:48:40 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.12 2005-05-30 14:19:30 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -891,8 +891,9 @@ $lang['lightmode'] = "mode léger";
 $lang['pleasereenterpasswd'] = "SVP ré-introduire votre mot de passe de essayer de nouveau.";
 $lang['rememberpasswds'] = "Se souvenir des mots de passe";
 $lang['rememberpassword'] = "Se souvenir du mot de passe";
-$lang['enterasa'] = "Entrer comme un";
-$lang['donthaveanaccount'] = "Vous n'avez pas de compte?";
+$lang['enterasa'] = "Entrer comme un %s";
+$lang['donthaveanaccount'] = "Vous n'avez pas de compte? %s";
+$lang['registernow'] = "Enregistrez-vous maintenant.";
 $lang['problemsloggingon'] = "Vous avez des problèmes d'ouverture de session?";
 $lang['deletecookies'] = "Supprimer les témoins";
 $lang['cookiessuccessfullydeleted'] = "Suppression des témoins réussie";
@@ -901,6 +902,8 @@ $lang['usingaPDA'] = "Vous utilisez un assistant personnel numérique (PDA)?";
 $lang['lightHTMLversion'] = "Version HTML légèr";
 $lang['youhaveloggedout'] = "Vous avez fermé votre session.";
 $lang['currentlyloggedinas'] = "Vous êtes en session actuelle sous le nom d'utilisateur";
+$lang['logonbutton'] = "Ouvrir session";
+$lang['otherbutton'] = "Autre";
 
 // My Forums (forums.php) ---------------------------------------------------------
 

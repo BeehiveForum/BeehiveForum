@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.295 2005-05-28 13:48:39 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.296 2005-05-30 14:19:29 decoyduck Exp $ */
 
 // International English language file
 
@@ -892,8 +892,9 @@ $lang['lightmode'] = "light mode";
 $lang['pleasereenterpasswd'] = "Please reenter your password and try again.";
 $lang['rememberpasswds'] = "Remember passwords";
 $lang['rememberpassword'] = "Remember password";
-$lang['enterasa'] = "Enter as a";
-$lang['donthaveanaccount'] = "Don't have an account?";
+$lang['enterasa'] = "Enter as a %s";
+$lang['donthaveanaccount'] = "Don't have an account? %s";
+$lang['registernow'] = "Register now.";
 $lang['problemsloggingon'] = "Problems logging on?";
 $lang['deletecookies'] = "Delete Cookies";
 $lang['cookiessuccessfullydeleted'] = "Cookies successfully deleted";
@@ -902,6 +903,8 @@ $lang['usingaPDA'] = "Using a PDA?";
 $lang['lightHTMLversion'] = "Light HTML version";
 $lang['youhaveloggedout'] = "You have logged out.";
 $lang['currentlyloggedinas'] = "You are currently logged in as";
+$lang['logonbutton'] = "Logon";
+$lang['otherbutton'] = "Other";
 
 // My Forums (forums.php) ---------------------------------------------------------
 

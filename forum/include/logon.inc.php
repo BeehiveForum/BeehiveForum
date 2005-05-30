@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.30 2005-05-20 17:33:09 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.31 2005-05-30 14:19:29 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -240,7 +240,7 @@ function draw_logon_form($logon_main)
     echo "              <td class=\"posthead\">\n";
     echo "                <table class=\"posthead\" width=\"100%\">\n";
     echo "                  <tr>\n";
-    echo "                    <td class=\"subhead\" colspan=\"2\">Logon</td>\n";
+    echo "                    <td class=\"subhead\" colspan=\"2\">{$lang['logon']}</td>\n";
     echo "                  </tr>\n";
 
     if ((sizeof($username_array) > 1) && $otherlogon == false) {
@@ -292,7 +292,7 @@ function draw_logon_form($logon_main)
             $request_uri.= "?other=true";
         }
 
-        echo "      &nbsp;", form_button("other", "Other", "onclick=\"self.location.href='$request_uri';\""), "</td>\n";
+        echo "      &nbsp;", form_button("other", $lang['otherbutton'], "onclick=\"self.location.href='$request_uri';\""), "</td>\n";
 
         echo "                </tr>\n";
         echo "                <tr>\n";
@@ -343,11 +343,10 @@ function draw_logon_form($logon_main)
     }
 
     echo "                  <tr>\n";
-    echo "                    <td>&nbsp;</td>\n";
-    echo "                    <td>", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false)), "</td>\n";
+    echo "                    <td align=\"center\" colspan=\"2\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false)), "</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
-    echo "                    <td align=\"center\" colspan=\"2\">", form_submit(uniqid('bh'), $lang['logon'], 'onclick="has_clicked = true"'), "</td>\n";
+    echo "                    <td align=\"center\" colspan=\"2\">", form_submit(uniqid('bh'), $lang['logonbutton'], 'onclick="has_clicked = true"'), "</td>\n";
     echo "                  </tr>\n";
     echo "                </table>\n";
     echo "              </td>\n";

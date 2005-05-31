@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.186 2005-05-24 19:59:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.187 2005-05-31 20:25:27 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -172,7 +172,7 @@ function bh_session_check($show_session_fail = true)
                 header_redirect("./llogon.php?final_uri=". get_request_uri());
             }
 
-            html_draw_top();
+            html_draw_top('logon.js');
 
             if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
 

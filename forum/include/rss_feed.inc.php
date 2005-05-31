@@ -102,7 +102,7 @@ function rss_read_stream($filename)
 
         if ($data_array = preg_split("/\r\n\r\n/", $reply_data, 2)) {
 
-            if (isset($data_array[1])) return $data_array[1];
+            return $data_array[1];
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.68 2005-05-01 14:40:28 decoyduck Exp $ */
+/* $Id: logout.php,v 1.69 2005-05-31 20:25:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -54,7 +54,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Load the user session
 
-$user_sess = bh_session_check();
+$user_sess = bh_session_check(false);
 
 // Fetch the forum webtag
 

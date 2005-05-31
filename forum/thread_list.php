@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.247 2005-05-28 13:48:39 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.248 2005-05-31 20:25:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -465,7 +465,7 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\">[</a>";
                                     $number.= sprintf($lang['onenew'], $thread['LENGTH']);
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
+                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\">]</a>";
                                 }
 
                                 $latest_post = 1;

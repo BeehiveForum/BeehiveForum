@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.23 2005-05-30 14:19:29 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.24 2005-05-31 17:33:29 decoyduck Exp $ */
 
 if (@file_exists("./include/config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
@@ -42,9 +42,6 @@ function load_language_file()
         include_once(BH_INCLUDE_PATH. "languages/en.inc.php");
 
         $default_language = forum_get_setting('default_language', false, 'en');
-
-        include_once ("./include/languages/{$default_language}.inc.php");
-        return $lang;
 
          // if the user has expressed a preference for language,
          // ignore what the browser wants and use that if available

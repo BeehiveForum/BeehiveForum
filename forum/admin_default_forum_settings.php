@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.38 2005-05-13 08:39:02 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.39 2005-06-05 17:15:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -52,6 +52,7 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "styles.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
@@ -159,38 +160,6 @@ if (isset($_POST['submit'])) {
 
         $new_forum_settings['text_captcha_dir'] = trim(_stripslashes($_POST['text_captcha_dir']));
 
-        if (!@is_dir("{$new_forum_settings['text_captcha_dir']}")) {
-
-            @mkdir("{$new_forum_settings['text_captcha_dir']}", 0755);
-            @chmod("{$new_forum_settings['text_captcha_dir']}", 0777);
-        }
-
-        if (!@is_dir("{$new_forum_settings['text_captcha_dir']}/fonts")) {
-
-            @mkdir("{$new_forum_settings['text_captcha_dir']}/fonts", 0755);
-            @chmod("{$new_forum_settings['text_captcha_dir']}/fonts", 0777);
-        }
-
-        if (!@is_dir("{$new_forum_settings['text_captcha_dir']}/images")) {
-
-            @mkdir("{$new_forum_settings['text_captcha_dir']}/images", 0755);
-            @chmod("{$new_forum_settings['text_captcha_dir']}/images", 0777);
-        }
-
-        if (@is_dir("{$new_forum_settings['text_captcha_dir']}/fonts") && @is_dir("{$new_forum_settings['text_captcha_dir']}/images")) {
-
-            if (!@is_writable("{$new_forum_settings['text_captcha_dir']}/fonts") || !@is_writable("{$new_forum_settings['text_captcha_dir']}/images")) {
-
-                $error_html.= "<h2>{$lang['textcaptchadirsnotwritable']}</h2>\n";
-                $valid = false;
-            }
-
-        }else {
-
-            $error_html.= "<h2>{$lang['failedtocreatetextcaptchadirectories']}</h2>\n";
-            $valid = false;
-        }
-
     }else if (strtoupper($new_forum_settings['text_captcha_enabled']) == "Y") {
 
         $error_html = "<h2>{$lang['textcaptchadirblank']}</h2>\n";
@@ -296,26 +265,6 @@ if (isset($_POST['submit'])) {
 
         $new_forum_settings['attachment_dir'] = trim(_stripslashes($_POST['attachment_dir']));
 
-        if (!@is_dir($new_forum_settings['attachment_dir'])) {
-
-            @mkdir($new_forum_settings['attachment_dir'], 0755);
-            @chmod($new_forum_settings['attachment_dir'], 0777);
-        }
-
-        if (@is_dir($new_forum_settings['attachment_dir'])) {
-
-            if (!@is_writable($new_forum_settings['attachment_dir'])) {
-
-               $error_html.= "<h2>{$lang['attachmentdirnotwritable']}</h2>\n";
-               $valid = false;
-            }
-
-        }else {
-
-           $error_html.= "<h2>{$lang['failedtocreateattachmentdirectory']}</h2>\n";
-           $valid = false;
-        }
-
     }elseif (strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
 
         $error_html = "<h2>{$lang['attachmentdirblank']}</h2>\n";
@@ -348,6 +297,8 @@ if (isset($_POST['submit'])) {
 
         header_redirect("./admin_default_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
     }
+
+    $default_forum_settings = array_merge($default_forum_settings, $new_forum_settings);
 }
 
 // Start Output Here
@@ -751,6 +702,27 @@ echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['userattachmentspace']}:</td>\n";
 echo "                        <td>", form_input_text("attachments_max_user_space", (isset($default_forum_settings['attachments_max_user_space'])) ? ($default_forum_settings['attachments_max_user_space'] / 1024) / 1024 : "1", 10, 32), "&nbsp;(MB)</td>\n";
 echo "                      </tr>\n";
+
+if (isset($default_forum_settings['attachments_enabled']) && $default_forum_settings['attachments_enabled'] == "Y") {
+
+    if (!attachments_check_dir()) {
+
+        echo "                      <tr>\n";
+        echo "                        <td colspan=\"2\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td colspan=\"2\" align=\"center\">\n";
+        echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td width=\"30\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+        echo "                              <td>{$lang['attachmentdirnotwritable']}</td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+    }
+}
+
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_23']}</p>\n";

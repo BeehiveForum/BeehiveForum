@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.95 2005-04-04 11:54:36 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.96 2005-06-05 17:15:09 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -39,6 +39,33 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "gd_lib.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
+
+/**
+* Checks attachments directory
+*
+* Checks that the specified attachments directory exists and is writable.
+* Attempts to create the directory if it doesn't exist. Returns string
+* containing attachment path if successful, otherwise false.
+*
+* @return mixed
+* @param void
+*/
+
+function attachments_check_dir()
+{
+    if ($attachment_dir = forum_get_setting('attachment_dir')) {
+
+        if (!@is_dir($attachment_dir)) {
+
+            @mkdir($attachment_dir, 0755);
+            @chmod($attachment_dir, 0777);
+        }
+
+        if (@is_writable($attachment_dir)) return $attachment_dir;
+    }
+
+    return false;
+}
 
 /**
 * Fetches user attachments

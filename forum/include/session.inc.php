@@ -21,7 +21,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.187 2005-05-31 20:25:27 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.188 2005-06-05 17:15:09 decoyduck Exp $ */
+
+/**
+* session.inc.php - session functions
+*
+* Contains session related functions.
+*/
+
+/**
+*
+*/
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -36,6 +46,17 @@ include_once(BH_INCLUDE_PATH. "search.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Checks the session and returns it as an array.
+
+/**
+* Checks the current user's session is valid.
+*
+* Check that the current user's session is valid. If successfully returns the user's session
+* as an array, otherwise a variety of outcomes is possible. If the user's session has expired
+* they are redirected to a page to re-initialise the session.
+*
+* @return mixed - array on success, false on fail
+* @param string $show_session_fail - Disable the default behaviour of showing the session expired page.
+*/
 
 function bh_session_check($show_session_fail = true)
 {
@@ -303,6 +324,15 @@ function bh_session_check($show_session_fail = true)
     return false;
 }
 
+/**
+* Checks if a session is active.
+*
+* Checks the user cookies and session to see if the current user is logged in.
+*
+* @return mixed
+* @param string $session_key - Named key of the session variable to fetch.
+*/
+
 function bh_session_active()
 {
     global $user_sess;
@@ -317,7 +347,16 @@ function bh_session_active()
     return false;
 }
 
-// Fetches a value from the session
+/**
+* Fetch a value from the user session
+*
+* Fetches a named value from the user session for the current user.
+* If value being fetches is 'UID' and the setting is not set for
+* the user 0 is returned, otherwise false.
+*
+* @return mixed
+* @param string $session_key - Named key of the session variable to fetch.
+*/
 
 function bh_session_get_value($session_key)
 {
@@ -329,7 +368,15 @@ function bh_session_get_value($session_key)
     return false;
 }
 
-// Delete expired sessions
+/**
+* Delete expired sessions
+*
+* Automatically remove any sessions which have been idle longer than the time out
+* value specified in the Forum's session_cutoff setting.
+*
+* @return void
+* @param void
+*/
 
 function bh_remove_stale_sessions()
 {
@@ -351,6 +398,15 @@ function bh_remove_stale_sessions()
 }
 
 // Updates the visitor log for the current user
+
+/**
+* Updates the visitor log
+*
+* Updates the visitor log for the specified UID.
+*
+* @return void
+* @param integer $uid - UID of the user account we're updating the visitor log for.
+*/
 
 function bh_update_visitor_log($uid)
 {
@@ -405,7 +461,16 @@ function bh_update_visitor_log($uid)
     }
 }
 
-// Initialises the session
+/**
+* Initialises a user session.
+*
+* Initialises a user session by constructing a unique MD5 hash and assigning
+* the hash to the user's UID and setting a cookie.
+*
+* @return void
+* @param integer $uid - UID of the user account we're initialising a session for.
+* @param bool $update_visitor_log - Optionally update the visitor log if needed.
+*/
 
 function bh_session_init($uid, $update_visitor_log = true)
 {
@@ -439,7 +504,15 @@ function bh_session_init($uid, $update_visitor_log = true)
     bh_setcookie('bh_sess_hash', $user_hash);
 }
 
-// Ends the session by deleting the session data and and the cookie hash.
+/**
+* Ends current user session.
+*
+* Ends session for current logged in user by retrieving their cookie hash
+* and destroying relevant data in the SESSION table.
+*
+* @return void
+* @param void
+*/
 
 function bh_session_end()
 {
@@ -467,7 +540,48 @@ function bh_session_end()
     bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 }
 
-// IIS does not support the REQUEST_URI server var, so we will make one for it
+/**
+* Parse an array into a string
+*
+* Parses an [multi-dimensional] array specified in $array into a string seperated by $sep.
+*
+* @return bool
+* @param array $array - Array to parse
+* @param string $sep - seperator to use to seperate array key and value pairs.
+* @param string $result_var - By reference result variable which contains the returned string.
+*/
+
+function parse_array($array, $sep, &$result_var)
+{
+    if (!is_array($array)) return false;
+
+    if (!is_string($result_var)) $result_var = "";
+    if (!is_string($sep) || strlen($sep) == 0) $sep = "&";
+
+    $preg_sep = preg_quote($sep, "/");
+
+    foreach ($array as $key => $value) {
+
+        if (is_array($value)) {
+            parse_array($value, $sep, $result_var);
+        }else {
+            $result_var.= "$key=$value$sep";
+        }
+    }
+
+    $result_var = preg_replace("/$preg_sep$/", "", $result_var);
+
+    return true;
+}
+
+/**
+* Return request URI
+*
+* IIS doesn't support the REQUEST_URI server var so we use this function to generate our own.
+*
+* @return string
+* @param bool $encoded_uri_query - Specify whether or not we want URL encoded seperator in the URL (& vs. &amp;)
+*/
 
 function get_request_uri($encoded_uri_query = true)
 {
@@ -475,15 +589,11 @@ function get_request_uri($encoded_uri_query = true)
 
     $request_uri = "{$_SERVER['PHP_SELF']}?";
 
-    foreach ($_GET as $key => $value) {
-        if ($encoded_uri_query) {
-            $request_uri.= "{$key}=". rawurlencode($value). "&amp;";
-        }else {
-            $request_uri.= "{$key}=". rawurlencode($value). "&";
-        }
+    if ($encoded_uri_query) {
+        parse_array($_GET, "&amp;", $request_uri);
+    }else {
+        parse_array($_GET, "&", $request_uri);
     }
-
-    $request_uri = preg_replace("/&$|&amp;$/", "", $request_uri);
 
     // Fix the slashes for forum running from sub-domain.
     // Rather dirty hack this, but it's the only idea I've got.
@@ -491,6 +601,17 @@ function get_request_uri($encoded_uri_query = true)
 
     return preg_replace("/\/\/+/", "/", $request_uri);
 }
+
+/**
+* Fetches user's post page preference
+*
+* Fetches the user's post page (POST_PAGE) setting from their user preferences.
+* If no user preference is available it returns a default value or toolbar in
+* plain text mode with emoticons, auto URL linking and signature display enabled.
+*
+* @return integer(32)
+* @param void
+*/
 
 function bh_session_get_post_page_prefs()
 {

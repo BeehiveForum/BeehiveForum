@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.296 2005-05-30 14:19:29 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.297 2005-06-05 17:15:09 decoyduck Exp $ */
 
 // International English language file
 
@@ -265,7 +265,7 @@ $lang['startpage'] = "Start Page";
 $lang['startpageerror_1'] = "Your startpage could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
 $lang['startpageerror_2'] = "folder, if necessary creating the folder structure in the process. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
 $lang['makestyleerror_1'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
-$lang['makestyleerror_2'] = "folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
+$lang['makestyleerror_2'] = "folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
 $lang['uploadfailed'] = "Your new startpage could not be uploaded to the server because permission was denied. Please check that the webserver / PHP process is able to write to the %s folder on your server.";
 $lang['makestylefailed'] = "Your new forum style could not be saved to the server because permission was denied. Please check that the webserver / PHP process is able to write to the %s folder on your server.";
 $lang['forumstyle'] = "Forum Style";

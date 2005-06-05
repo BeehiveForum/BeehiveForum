@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.113 2005-05-23 22:47:03 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.114 2005-06-05 17:15:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -91,7 +91,7 @@ if (forum_get_setting('attachments_enabled', 'N')) {
 
 // If the attachments directory is undefined we can't go any further
 
-if (!$attachment_dir = forum_get_setting('attachment_dir')) {
+if (!$attachment_dir = attachments_check_dir()) {
     html_draw_top();
     echo "<h1>{$lang['attachmentshavebeendisabled']}</h1>\n";
     html_draw_bottom();

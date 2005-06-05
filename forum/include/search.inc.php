@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.126 2005-06-05 17:15:09 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.127 2005-06-05 17:29:59 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -617,13 +617,19 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
     $content = _htmlentities_decode($content);
 
+    // Strip HTML
+
+    $content = strip_tags($content);
+
     // Remove new lines
 
     $content = preg_replace("/[\n\r]/is", " ", strip_tags($content));
 
-    // Strip URLs
+    // Strip URLs and email addresses
 
-    $content = preg_replace("/[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/", " ", $content);
+    $content = preg_replace("/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i", "", $content);
+    $content = preg_replace("/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i", "", $content);
+    $content = preg_replace("/\b(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/i", "", $content);
 
     // Underlines don't seem to count as a word boundary in PREG, so change them to spaces
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.117 2005-05-28 13:48:39 decoyduck Exp $ */
+/* $Id: search.php,v 1.118 2005-06-05 17:15:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -385,7 +385,7 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
             $message['CONTENT'] = substr($message['CONTENT'], 0, 35);
 
-            if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
+            if (($pos = strrpos($message['CONTENT'], ' ')) !== false) {
 
                 $message['CONTENT'] = substr($message['CONTENT'], 0, $pos);
 
@@ -399,12 +399,12 @@ if ($search_results_array = search_execute($search_arguments, $urlquery, $error)
 
             echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
             echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
-            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($search_result['CREATED'], 1). "</span></p></li>\n";
+            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
 
         }else {
 
             echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ". format_user_name($message['FLOGON'], $message['FNICK']). ", ". format_time($search_result['CREATED'], 1). "</span></p></li>\n";
+            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
         }
     }
 

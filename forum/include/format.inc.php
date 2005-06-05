@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.98 2005-05-28 13:48:39 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.99 2005-06-05 17:15:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -207,19 +207,19 @@ function xml_literal_to_numeric($literal)
 
 function ms_word_to_html($string)
 {
-    $char_array = array(128 => '&euro;',   130 => '&sbquo;',
-                        131 => '&fnof;',   132 => '&bdquo;',
-                        133 => '&hellip;', 134 => '&dagger;',
-                        135 => '&Dagger;', 136 => '&circ;',
-                        137 => '&permil;', 138 => '&Scaron;',
-                        139 => '&lsaquo;', 140 => '&OElig;',
-                        145 => '&lsquo;',  146 => '&rsquo;',
-                        147 => '&ldquo;',  148 => '&rdquo;',
-                        149 => '&bull;',   150 => '&ndash;',
-                        151 => '&mdash;',  152 => '&tilde;',
-                        153 => '&trade;',  154 => '&scaron;',
-                        155 => '&rsaquo;', 156 => '&oelig;',
-                        159 => '&Yuml;');
+    $char_array = array(025 => '&apos;',   128 => '&euro;',
+                        130 => '&sbquo;',  131 => '&fnof;',
+                        132 => '&bdquo;',  133 => '&hellip;',
+                        134 => '&dagger;', 135 => '&Dagger;',
+                        136 => '&circ;',   137 => '&permil;',
+                        138 => '&Scaron;', 139 => '&lsaquo;',
+                        140 => '&OElig;',  145 => '&lsquo;',
+                        146 => '&rsquo;',  147 => '&ldquo;',
+                        148 => '&rdquo;',  149 => '&bull;',
+                        150 => '&ndash;',  151 => '&mdash;',
+                        152 => '&tilde;',  153 => '&trade;',
+                        154 => '&scaron;', 155 => '&rsaquo;',
+                        156 => '&oelig;',  159 => '&Yuml;');
 
    return str_replace(array_map('chr', array_keys($char_array)), $char_array, $string);
 }

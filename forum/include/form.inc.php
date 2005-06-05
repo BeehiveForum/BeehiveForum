@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.75 2005-05-05 18:25:19 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.76 2005-06-05 17:15:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -79,6 +79,25 @@ function form_input_password($name, $value = false, $width = false, $maxchars = 
 function form_input_hidden($name, $value = false, $custom_html = false)
 {
     return form_field($name, $value, 0, 0, "hidden", $custom_html);
+}
+
+
+function form_input_hidden_array($array, &$result_var)
+{
+    if (!is_array($array)) return false;
+
+    if (!is_string($result_var)) $result_var = "";
+
+    foreach ($array as $key => $value) {
+
+        if (is_array($value)) {
+            form_input_hidden_array($value, $result_var);
+        }else {
+            $result_var.= form_input_hidden($key, $value);
+        }
+    }
+
+    return true;
 }
 
 // Create a textarea input field
@@ -379,40 +398,6 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
     $output.= form_dropdown_array("dob_year", $birthday_years_values, $birthday_years, $dob_year);
 
     return $output;
-}
-
-// Creates an array of hidden form fields.
-// Is multi-dimensional array safe.
-
-function form_input_hidden_array($name, $value)
-{
-    if (is_array($value)) {
-
-        foreach ($value as $array_key => $array_value) {
-
-            if (isset($return)) {
-
-                $return.= form_input_hidden_array("{$name}[{$array_key}]", $array_value);
-
-            }else {
-
-                $return = form_input_hidden_array("{$name}[{$array_key}]", $array_value);
-            }
-        }
-
-    }else {
-
-        if (isset($return)) {
-
-            $return.= form_input_hidden($name, _stripslashes($value));
-
-        }else {
-
-            $return = form_input_hidden($name, _stripslashes($value));
-        }
-    }
-
-    return $return;
 }
 
 // Creates a dropdown selectors for dates

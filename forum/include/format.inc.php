@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.99 2005-06-05 17:15:09 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.100 2005-06-07 19:24:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -190,15 +190,22 @@ function _htmlentities_decode($text)
     return preg_replace('/&#x([a-f0-9]+);/mei', "chr(0x\\1)", $ret);
 }
 
-// Translate &nbsp; to &#160; etc. Pass the literal without the
-// leading &# and trailing ;, i.e. nbsp, gt, lt.
+// Translate &nbsp; to &#160; etc. If translation of entity fails
+// (i.e. no change is noticed after pass through _htmlentities_decode()
+// function the unaltered entity is returned. This probably isn't
+// valid XML to do this, but there a) doesn't appear to be a
+// comprehensive HTML entities -> UTF-8 -> XML list and b)
+// depending on PHP version things break even more if we do try
+// and convert.
 
 function xml_literal_to_numeric($literal)
 {
     if (preg_match("/&#[0-9]+;/", $literal)) return $literal;
 
-    $entity  = _htmlentities_decode($literal);
-    $numeric = ord($entity);
+    $html_entity  = _htmlentities_decode($literal);
+    if ($literal == $html_entity) return $html_entity;
+
+    $numeric = ord($html_entity);
 
     return "&#$numeric;";
 }

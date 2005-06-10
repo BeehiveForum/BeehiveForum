@@ -49,7 +49,7 @@ function rss_read_stream($filename)
     // having to do our own HTTP connection.
 
     if ($rss_data = @file($filename)) {
-        if (is_array($rss_data)) return implode('', $rss_data);
+        if (is_array($rss_data)) return implode(' ', $rss_data);
     }
 
     $url_array = parse_url($filename);
@@ -162,7 +162,7 @@ function rss_parse_item($ivalues)
        if (isset($ivalues[$i]["value"])) {
            $item[$ivalues[$i]["tag"]] = $ivalues[$i]["value"];
        }else {
-           $item[$ivalues[$i]["tag"]] = "";
+           $item[$ivalues[$i]["tag"]] = " ";
        }
    }
 

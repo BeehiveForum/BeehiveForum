@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.53 2005-04-18 17:31:47 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.54 2005-06-11 14:31:41 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
@@ -76,13 +76,15 @@ function get_num_sessions()
 
     if (!$table_data = get_table_prefix()) return 0;
 
+    $forum_fid = $table_data['FID'];
+
     $sessions_array = array();
 
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $sql = "SELECT COUNT(UID) AS USER_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= FROM_UNIXTIME($session_stamp) ";
-    $sql.= "AND FID = '{$table_data['FID']}'";
+    $sql.= "AND FID = $forum_fid";
 
     $result = db_query($sql, $get_num_sessions);
 
@@ -104,6 +106,8 @@ function get_active_users()
 
     if (!$table_data = get_table_prefix()) return $stats;
 
+    $forum_fid = $table_data['FID'];
+
     $session_stamp = time() - intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $uid = bh_session_get_value('UID');
@@ -117,7 +121,7 @@ function get_active_users()
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = $uid) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
-    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = '{$table_data['FID']}' ";
+    $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = $forum_fid ";
     $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
     $result = db_query($sql, $db_get_active_users);

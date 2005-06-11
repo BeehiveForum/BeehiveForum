@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.124 2005-05-23 22:47:06 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.125 2005-06-11 14:31:41 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -713,21 +713,26 @@ function draw_header_pm()
 
 function pm_save_attachment_id($mid, $aid)
 {
-
-    // ------------------------------------------------------------
-    // Save the attachment ID for the PM
-    // ------------------------------------------------------------
-
     if (!is_numeric($mid)) return false;
     if (!is_md5($aid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
     $db_pm_save_attachment_id = db_connect();
-    $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) values ('$mid', '$aid')";
 
-    $result = db_query($sql, $db_pm_save_attachment_id);
-    return $result;
+    $sql = "SELECT * FROM PM_ATTACHMENT_IDS WHERE MID = $mid";
+    $result = db_query($sql, $db_post_save_attachment_id);
+
+    if (db_num_rows($result) > 0) {
+
+        $sql = "UPDATE PM_ATTACHMENT_IDS SET AID = '$aid' ";
+        $sql.= "WHERE MID = $mid";
+
+    }else {
+
+        $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
+        $sql.= "VALUES ($mid, '$aid')";
+    }
+
+    return db_query($sql, $db_post_save_attachment_id);
 }
 
 function pm_send_message($tuid, $fuid, $subject, $content)

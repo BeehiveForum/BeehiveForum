@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.65 2005-06-07 21:49:16 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.66 2005-06-11 14:31:41 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -393,8 +393,10 @@ function admin_session_end($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $sql = "DELETE FROM SESSIONS WHERE UID = '$uid' ";
-    $sql.= "AND FID = '{$table_data['FID']}'";
+    $sql.= "AND FID = $forum_fid";
 
     return db_query($sql, $db_admin_session_end);
 }

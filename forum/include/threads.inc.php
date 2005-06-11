@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.174 2005-06-05 17:30:02 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.175 2005-06-11 14:31:41 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -1062,14 +1062,13 @@ function thread_has_attachments($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $db_thread_has_attachments = db_connect();
 
-    $sql = "SELECT COUNT(PAF.AID) AS ATTACHMENT_COUNT ";
-    $sql.= "FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ";
-    $sql.= "ON (PAI.AID = PAF.AID) ";
-    $sql.= "WHERE PAI.FID = '{$table_data['FID']}' ";
-    $sql.= "AND PAI.TID = '$tid'";
+    $sql = "SELECT COUNT(PAF.AID) AS ATTACHMENT_COUNT FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "WHERE PAI.FID = $forum_fid AND PAI.TID = $tid";
 
     $result = db_query($sql, $db_thread_has_attachments);
 

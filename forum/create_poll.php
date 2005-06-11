@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.163 2005-05-28 13:48:39 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.164 2005-06-11 13:58:59 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -557,10 +557,7 @@ if ($valid && isset($_POST['submit'])) {
 
             poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_question);
 
-            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
-
-                if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $t_pid, $aid);
-            }
+            post_save_attachment_id($t_tid, $t_pid, $aid);
 
             if (strlen($t_message_text) > 0) {
 

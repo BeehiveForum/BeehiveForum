@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.96 2005-06-05 17:15:09 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.97 2005-06-11 13:58:59 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -424,18 +424,6 @@ function delete_attachment($hash)
             $sql.= "WHERE AID = '{$row['AID']}'";
 
             $result = db_query($sql, $db_delete_attachment);
-
-            // No more attachments connected to the AID, so we can remove it from
-            // the PAI database.
-
-            if (db_num_rows($result) < 1) {
-
-                $sql = "DELETE FROM POST_ATTACHMENT_IDS ";
-                $sql.= "WHERE FID = '{$table_data['FID']}' ";
-                $sql.= "AND AID = '{$row['AID']}'";
-
-                $result = db_query($sql, $db_delete_attachment);
-            }
 
             // Finally delete the file (and it's thumbnail)
 

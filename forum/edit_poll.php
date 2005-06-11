@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.100 2005-05-24 19:59:30 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.101 2005-06-11 13:58:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -486,10 +486,7 @@ if ($valid && isset($_POST['preview'])) {
     poll_edit($tid, $t_threadtitle, $t_question, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $hardedit);
     post_add_edit_text($tid, 1);
 
-    if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
-
-        if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
-    }
+    post_save_attachment_id($tid, $pid, $aid);
 
     header_redirect("./discussion.php?webtag=$webtag&msg=$tid.1");
 

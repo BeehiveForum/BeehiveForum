@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.177 2005-05-24 19:59:29 decoyduck Exp $ */
+/* $Id: edit.php,v 1.178 2005-06-11 13:58:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -513,10 +513,7 @@ if (isset($_POST['preview'])) {
 
             post_add_edit_text($tid, $pid);
 
-            if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
-
-                if (get_num_attachments($aid) > 0) post_save_attachment_id($tid, $pid, $aid);
-            }
+            post_save_attachment_id($tid, $pid, $aid);
 
             if (perm_is_moderator($t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));

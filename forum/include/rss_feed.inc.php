@@ -248,13 +248,20 @@ function rss_check_feeds()
 
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
+                    $rss_title = "[{$rss_feed['PREFIX']}] {$rss_item->title}";
+
+                    if (strlen($rss_title) > 64) {
+                        $rss_title = substr($rss_title, 0, 61);
+                        $rss_title.= "...";
+                    }
+
                     if (strlen($rss_item->description) > 1) {
-                        $content = fix_html("<quote source=\"{$rss_feed['NAME']}\" url=\"{$rss_item->link}\">{$rss_item->description}</quote>");
+                        $content = fix_html("<quote source=\"{$rss_feed['NAME']}: {$rss_item->title}\" url=\"{$rss_item->link}\">{$rss_item->description}</quote>");
                     }else {
                         $content = fix_html("<p>{$rss_item->title}</p>\n<p><a href=\"{$rss_item->link}\" target=\"_blank\">{$lang['rssclicktoreadarticle']}</a></p>");
                     }
 
-                    $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], "[{$rss_feed['PREFIX']}] {$rss_item->title}");
+                    $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);
 
                     post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], $rss_feed['UID'], 0, $content);
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.78 2005-05-24 19:59:30 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.79 2005-06-11 13:58:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -434,8 +434,11 @@ if ($valid && isset($_POST['submit'])) {
 
                 if ($high_interest == "Y") thread_set_high_interest($t_tid, 1, $newthread);
 
-                email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
-                email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+                if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
+
+                    email_sendnotification($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
+                    email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
+                }
             }
 
         }else {

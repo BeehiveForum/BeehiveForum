@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.97 2005-06-11 13:58:59 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.98 2005-06-11 14:31:41 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -492,9 +492,10 @@ function get_attachment_id($tid, $pid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT AID FROM POST_ATTACHMENT_IDS ";
-    $sql.= "WHERE FID = '{$table_data['FID']}' ";
-    $sql.= "AND TID = '$tid' AND PID = '$pid'";
+    $forum_fid = $table_data['FID'];
+
+    $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE ";
+    $sql.= "FID = $forum_fid AND TID = $tid AND PID = $pid";
 
     $result = db_query($sql, $db_get_attachment_id);
 
@@ -526,10 +527,12 @@ function get_folder_fid($aid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $forum_fid = $table_data['FID'];
+
     $sql = "SELECT FOLDER.FID FROM POST_ATTACHMENT_IDS PAI ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE PAI.FID = '{$table_data['FID']}' AND PAI.AID = '$aid'";
+    $sql.= "WHERE PAI.FID = $forum_fid AND PAI.AID = '$aid'";
 
     $result = db_query($sql, $db_get_folder_fid);
 

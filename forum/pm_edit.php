@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.73 2005-05-13 08:39:02 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.74 2005-06-11 14:31:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -126,11 +126,12 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
 
-// was getting a $tid is undefined error so added the isset() - what's $tid?
-}else if (!isset($tid) || !$aid = get_attachment_id($tid, $pid)) {
+}else if (!$aid = get_pm_attachment_id($mid)) {
 
     $aid = md5(uniqid(rand()));
 }
+
+pm_save_attachment_id($mid, $aid);
 
 // User clicked cancel
 
@@ -269,10 +270,7 @@ if ($valid && isset($_POST['preview'])) {
 
         $t_subject = _htmlentities($t_subject);
 
-        if (forum_get_setting('attachments_enabled', 'Y')) {
-
-            if (get_num_attachments($aid) > 0) pm_save_attachment_id($mid, $aid);
-        }
+        pm_save_attachment_id($mid, $aid);
 
         if (pm_edit_message($mid, $t_subject, $t_content)) {
             header_redirect("pm.php?webtag=$webtag&folder=3");

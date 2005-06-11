@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.262 2005-05-24 19:59:30 decoyduck Exp $ */
+/* $Id: post.php,v 1.263 2005-06-11 13:58:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -320,7 +320,6 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 }
 
 if (!isset($sig_html)) $sig_html = 0;
-
 
 if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
@@ -634,7 +633,7 @@ if ($valid && isset($_POST['submit'])) {
             if ($t_tid > 0) {
 
                 if ($allow_sig == true && trim($t_sig) != "") {
-                    $t_content.= "\n<div class=\"sig\">".$t_sig."</div>";
+                    $t_content.= "\n<div class=\"sig\">$t_sig</div>";
                 }
 
                 if ($newthread) {
@@ -647,13 +646,11 @@ if ($valid && isset($_POST['submit'])) {
 
                 if (!(perm_get_user_permissions($uid) & USER_PERM_WORMED)) {
 
-                    email_sendnotification($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
-                    if (!$newthread) email_sendsubscription($_POST['t_to_uid'], "$t_tid.$new_pid", $uid);
+                    email_sendnotification($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
+                    email_sendsubscription($_POST['t_to_uid'], $uid, $t_tid, $new_pid);
                 }
 
-                if (isset($aid) && forum_get_setting('attachments_enabled', 'Y')) {
-                    if (get_num_attachments($aid) > 0) post_save_attachment_id($t_tid, $new_pid, $aid);
-                }
+                post_save_attachment_id($t_tid, $new_pid, $aid);
             }
 
         }else {

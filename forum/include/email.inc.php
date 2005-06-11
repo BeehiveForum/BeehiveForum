@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.92 2005-04-25 19:48:56 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.93 2005-06-11 13:58:59 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -29,13 +29,14 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "server.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 
-function email_sendnotification($tuid, $msg, $fuid)
+function email_sendnotification($tuid, $fuid, $tid, $pid)
 {
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid)) return false;
-    if (!validate_msg($msg)) return false;
     if (!is_numeric($fuid)) return false;
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -55,8 +56,6 @@ function email_sendnotification($tuid, $msg, $fuid)
         if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
 
         if (isset($to_user_prefs['EMAIL_NOTIFY']) && $to_user_prefs['EMAIL_NOTIFY'] == 'Y') {
-
-            list($tid, $pid) = explode('.', $msg);
 
             $thread = thread_get($tid);
 
@@ -78,7 +77,7 @@ function email_sendnotification($tuid, $msg, $fuid)
                 $message.= dirname($_SERVER['PHP_SELF']);
             }
 
-            $message.= "/?webtag=$webtag&msg=$msg\n\n";
+            $message.= "/?webtag=$webtag&msg=$tid.$pid\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['msgnotificationemail_4']}\n";
             $message.= "{$lang['msgnotificationemail_5']} ";
@@ -104,17 +103,16 @@ function email_sendnotification($tuid, $msg, $fuid)
     return false;
 }
 
-function email_sendsubscription($tuid, $msg, $fuid)
+function email_sendsubscription($tuid, $fuid, $tid, $pid)
 {
     if (!check_mail_variables()) return false;
 
     if (!is_numeric($tuid)) return false;
-    if (!validate_msg($msg)) return false;
     if (!is_numeric($fuid)) return false;
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
 
     $db_email_sendsubscription = db_connect();
-
-    list($tid, $pid) = explode('.', $msg);
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -162,11 +160,11 @@ function email_sendsubscription($tuid, $msg, $fuid)
                 $message.= dirname($_SERVER['PHP_SELF']);
             }
 
-            $message.= "/?webtag=$webtag&msg=$msg\n\n";
+            $message.= "/?webtag=$webtag&msg=$tid.$pid\n\n";
             $message.= "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
             $message.= "{$lang['subnotification_4']}\n";
             $message.= "{$lang['subnotification_5']} ";
-            $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/?msg=$msg,\n";
+            $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/?msg=$tid.$pid,\n";
             $message.= "{$lang['subnotification_6']}";
 
             $header = "From: \"$forum_name\" <$forum_email>\n";

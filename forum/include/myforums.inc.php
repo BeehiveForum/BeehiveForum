@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.45 2005-05-14 12:43:37 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.46 2005-06-12 22:54:11 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -163,7 +163,7 @@ function get_my_forums()
             $sql.= "{$forum_data['WEBTAG']}_POST POST ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_PEER USER_PEER ON ";
             $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = POST.FROM_UID) ";
-            $sql.= "WHERE POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
+            $sql.= "WHERE POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
             $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
             $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
             $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.49 2005-04-27 19:47:12 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.50 2005-06-12 22:54:11 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -105,20 +105,22 @@ $uid = bh_session_get_value('UID');
 
 if (isset($_POST['submit'])) {
 
-    for ($i = 0; $i < sizeof($_POST['t_piid']); $i++) {
-        $entry = trim($_POST['t_entry'][$i]);
-        if (isset($_POST['t_entry_private'][$i])) {
-            $privacy = 1;
-        } else {
-            $privacy = 0;
+    if (isset($_POST['t_entry']) && is_array($_POST['t_entry'])) {
+
+        foreach($_POST['t_entry'] as $piid => $profile_entry) {
+
+            $profile_entry = _stripslashes(trim($profile_entry));
+
+            $privacy = isset($_POST['t_entry_private'][$piid]) ? 1 : 0;
+
+            user_profile_update($uid, $piid, $profile_entry, $privacy);
         }
-        user_profile_update($uid, $_POST['t_piid'][$i], $entry, $privacy);
     }
 
     echo "<h2>{$lang['profileupdated']}</h2>";
 }
 
-if ($profile_values = profile_get_user_values($uid)) {
+if ($profile_items_array = profile_get_user_values($uid)) {
 
     // Draw the form
     echo "<br />\n";
@@ -127,80 +129,116 @@ if ($profile_values = profile_get_user_values($uid)) {
     echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
-    echo "        <table class=\"box\">\n";
+    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "            <td>\n";
+    echo "              <table class=\"box\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"posthead\">\n";
+    echo "                    <table class=\"posthead\" width=\"100%\">\n";
 
     $last_psid = false;
 
-    for ($i = 0; $i < sizeof($profile_values); $i++) {
+    foreach($profile_items_array as $profile_item) {
 
-        $new = isset($profile_values[$i]['CHECK_PIID']) ? "N" : "Y";
-        $profile_values[$i]['ENTRY'] = isset($profile_values[$i]['ENTRY']) ? _stripslashes($profile_values[$i]['ENTRY']) : "";
+        $new = isset($profile_value['CHECK_PIID']) ? "N" : "Y";
+        $profile_item['ENTRY'] = isset($profile_item['ENTRY']) ? _stripslashes($profile_item['ENTRY']) : "";
 
-        if ($profile_values[$i]['PSID'] != $last_psid) {
-            echo "                <tr>\n";
-            echo "                  <td class=\"subhead\" colspan=\"3\">", $profile_values[$i]['SECTION_NAME'], "</td>\n";
-            echo "                </tr>\n";
+        if ($profile_item['PSID'] != $last_psid) {
+
+            if ($last_psid !== false) {
+
+                echo "                      <tr>\n";
+                echo "                        <td colspan=\"2\">&nbsp;</td>\n";
+                echo "                      </tr>\n";
+                echo "                    </table>\n";
+                echo "                  </td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+                echo "        <br />\n";
+                echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td>\n";
+                echo "              <table class=\"box\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td class=\"posthead\">\n";
+                echo "                    <table class=\"posthead\" width=\"100%\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                      </tr>\n";
+
+            }else {
+
+                echo "                      <tr>\n";
+                echo "                        <td class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                      </tr>\n";
+            }
         }
 
-        $last_psid = $profile_values[$i]['PSID'];
+        $last_psid = $profile_item['PSID'];
 
-        if (($profile_values[$i]['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_values[$i]['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
+        if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
-            list($field_name, $field_values) = explode(':', $profile_values[$i]['ITEM_NAME']);
-            $field_values = explode(';', $field_values);
+            @list($field_name, $field_values) = explode(':', $profile_item['ITEM_NAME']);
 
-            echo "                <tr>\n";
-            echo "                  <td valign=\"top\">", $field_name, form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":&nbsp;</td>\n";
-            echo "                  <td valign=\"top\">";
+            if (isset($field_name) && isset($field_values)) {
 
-            if ($profile_values[$i]['TYPE'] == PROFILE_ITEM_RADIO) {
-                echo form_radio_array("t_entry[$i]", array_keys($field_values), $field_values, $profile_values[$i]['ENTRY']);
-            }else {
-                echo form_dropdown_array("t_entry[$i]", array_keys($field_values), $field_values, $profile_values[$i]['ENTRY']);
+                $field_values = explode(';', $field_values);
+
+                echo "                            <tr>\n";
+                echo "                              <td valign=\"top\" width=\"50%\" nowrap=\"nowrap\">$field_name:</td>\n";
+
+                if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
+                    echo "                              <td align=\"right\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
+                }else {
+                    echo "                              <td align=\"right\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
+                }
+
+                echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "N", $lang['friendsonly'], $profile_item['PRIVACY']), "&nbsp;</td>\n";
             }
 
-            echo "&nbsp;&nbsp;</td>\n";
-            echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[$i]", "N", $lang['friendsonly'], $profile_values[$i]['PRIVACY']), "&nbsp;</td>\n";
+        }elseif ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
-        }elseif ($profile_values[$i]['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
-
-            echo "                <tr>\n";
-            echo "                  <td valign=\"top\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":&nbsp;</td>\n";
-            echo "                  <td valign=\"top\">", form_textarea("t_entry[$i]", $profile_values[$i]['ENTRY'], 4, 42), "&nbsp;&nbsp;</td>\n";
-            echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[$i]", "N", $lang['friendsonly'], $profile_values[$i]['PRIVACY']), "&nbsp;</td>\n";
-            echo "                </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td valign=\"top\" width=\"50%\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
+            echo "                        <td align=\"right\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], 4, 42), "</td>\n";
+            echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "N", $lang['friendsonly'], $profile_item['PRIVACY']), "&nbsp;</td>\n";
+            echo "                      </tr>\n";
 
         }else {
 
             $text_width = array(45, 30, 10);
 
-            echo "                <tr>\n";
-            echo "                  <td valign=\"top\">", $profile_values[$i]['ITEM_NAME'], form_input_hidden("t_piid[$i]", $profile_values[$i]['PIID']), ":&nbsp;</td>\n";
-            echo "                  <td valign=\"top\">", form_field("t_entry[$i]", $profile_values[$i]['ENTRY'], $text_width[$profile_values[$i]['TYPE']], 255), "&nbsp;&nbsp;</td>\n";
-            echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[$i]", "N", $lang['friendsonly'], $profile_values[$i]['PRIVACY']), "&nbsp;</td>\n";
-            echo "                </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td valign=\"top\" width=\"50%\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
+            echo "                        <td align=\"right\" valign=\"top\">", form_field("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], $text_width[$profile_item['TYPE']], 255), "</td>\n";
+            echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "N", $lang['friendsonly'], $profile_item['PRIVACY']), "&nbsp;</td>\n";
+            echo "                      </tr>\n";
 
         }
     }
 
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                      <tr>\n";
+    echo "                        <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
     echo "          </tr>\n";
+    echo "            <tr>\n";
+    echo "              <td>&nbsp;</td>\n";
+    echo "            </tr>\n";
+    echo "            <tr>\n";
+    echo "              <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+    echo "            </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
-    echo "      <tr>\n";
-    echo "        <td>&nbsp;</td>\n";
-    echo "      </tr>\n";
-    echo "      <tr>\n";
-    echo "        <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
-    echo "      </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
 

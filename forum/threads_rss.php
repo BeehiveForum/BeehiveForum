@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.16 2005-06-14 14:11:48 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.17 2005-06-14 21:44:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -120,7 +120,7 @@ if ($threads_array = threads_get_most_recent(20)) {
         echo "<item>\n";
         echo "<guid isPermaLink=\"true\">http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
         echo "<pubDate>{$modified_date} UT</pubDate>\n";
-        echo "<title>{$thread['TITLE']}</title>\n";
+        echo "<title><![CDATA[{$thread['TITLE']}]]></title>\n";
         echo "<link>http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
         echo "<description><![CDATA[{$t_content}]]></description>\n";
         echo "<comments>http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";

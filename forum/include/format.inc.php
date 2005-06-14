@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.100 2005-06-07 19:24:09 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.101 2005-06-14 21:44:58 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -164,39 +164,49 @@ function timestamp_amend_bst($timestamp)
     }
 }
 
-// Lazy htmlentities function which ensures the use of
-// unicode for all character code sets.
+// Support function for _htmlentities and _htmlentities_decode
+// to escape the items in the $html_entities array contained
+// in html_entities.inc.php.
+
+function bh_preg_quote(&$item, $key)
+{
+    $item = preg_quote($item, "/");
+    $item = "/$item/";
+}
+
+// Replacement for PHP's rather lack-lustre htmlentities.
 
 function _htmlentities($text)
 {
-    return htmlentities($text, ENT_QUOTES, 'UTF-8');
+    include(BH_INCLUDE_PATH. "html_entities.inc.php");
+
+    $entity_names = array_keys($html_entities);
+    $entity_chars = array_values($html_entities);
+
+    array_walk($entity_names, 'bh_preg_quote');
+    array_walk($entity_chars, 'bh_preg_quote');
+
+    return preg_replace($entity_chars, $entity_names, $text);
 }
 
-// Lazy / replacement for htmlentities_decode(). Should be
-// UTF-8 compliant but probably isn't.
+// Replacement for PHP's rather lack-lustre htmlentities_decode
 
 function _htmlentities_decode($text)
 {
-    $trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
-    $trans_tbl = array_flip($trans_tbl);
+    include(BH_INCLUDE_PATH. "html_entities.inc.php");
 
-    $trans_tbl['&apos;'] = '\'';
-    $trans_tbl['&#039;'] = '\'';
+    $entity_names = array_keys($html_entities);
+    $entity_chars = array_values($html_entities);
 
-    unset($trans_tbl['&#39;']);
+    array_walk($entity_names, 'bh_preg_quote');
+    array_walk($entity_chars, 'bh_preg_quote');
 
-    $ret = strtr($text, $trans_tbl);
-    $ret = preg_replace('/&#(\d+);/me', "chr(\\1)", $ret);
-    return preg_replace('/&#x([a-f0-9]+);/mei', "chr(0x\\1)", $ret);
+    return preg_replace($entity_names, $entity_chars, $text);
 }
 
 // Translate &nbsp; to &#160; etc. If translation of entity fails
 // (i.e. no change is noticed after pass through _htmlentities_decode()
-// function the unaltered entity is returned. This probably isn't
-// valid XML to do this, but there a) doesn't appear to be a
-// comprehensive HTML entities -> UTF-8 -> XML list and b)
-// depending on PHP version things break even more if we do try
-// and convert.
+// function the unaltered entity is returned.
 
 function xml_literal_to_numeric($literal)
 {
@@ -208,27 +218,6 @@ function xml_literal_to_numeric($literal)
     $numeric = ord($html_entity);
 
     return "&#$numeric;";
-}
-
-// Converts MS Word quotes to HTML/XML friendly entities
-
-function ms_word_to_html($string)
-{
-    $char_array = array(025 => '&apos;',   128 => '&euro;',
-                        130 => '&sbquo;',  131 => '&fnof;',
-                        132 => '&bdquo;',  133 => '&hellip;',
-                        134 => '&dagger;', 135 => '&Dagger;',
-                        136 => '&circ;',   137 => '&permil;',
-                        138 => '&Scaron;', 139 => '&lsaquo;',
-                        140 => '&OElig;',  145 => '&lsquo;',
-                        146 => '&rsquo;',  147 => '&ldquo;',
-                        148 => '&rdquo;',  149 => '&bull;',
-                        150 => '&ndash;',  151 => '&mdash;',
-                        152 => '&tilde;',  153 => '&trade;',
-                        154 => '&scaron;', 155 => '&rsaquo;',
-                        156 => '&oelig;',  159 => '&Yuml;');
-
-   return str_replace(array_map('chr', array_keys($char_array)), $char_array, $string);
 }
 
 // Checks for Magic Quotes and perform stripslashes if nessecary

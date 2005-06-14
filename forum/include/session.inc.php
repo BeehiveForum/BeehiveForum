@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.188 2005-06-05 17:15:09 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.189 2005-06-14 14:11:32 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -561,6 +561,8 @@ function parse_array($array, $sep, &$result_var)
     $preg_sep = preg_quote($sep, "/");
 
     foreach ($array as $key => $value) {
+
+        $value = rawurlencode($value);
 
         if (is_array($value)) {
             parse_array($value, $sep, $result_var);

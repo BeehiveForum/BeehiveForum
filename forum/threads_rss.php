@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.15 2005-03-26 18:16:45 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.16 2005-06-14 14:11:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -105,7 +105,7 @@ if ($threads_array = threads_get_most_recent(20)) {
         // post in the thread. Can easily change this if it isn't right
         // by making it fetch post 1.
 
-        $thread['TITLE'] = _stripslashes($thread['TITLE']);
+        $thread['TITLE'] = _htmlentities_decode(_stripslashes($thread['TITLE']));
 
         $modified_date   = gmdate("D, d M Y H:i:s", $thread['MODIFIED']);
 

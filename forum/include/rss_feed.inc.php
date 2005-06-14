@@ -43,6 +43,17 @@ class rss_item
     }
 }
 
+function rss_error_handler()
+{
+    $uri = get_request_uri();
+
+    header("Request-URI: $uri");
+    header("Content-Location: $uri");
+    header("Location: $uri");
+
+    exit;
+}
+
 function rss_read_stream($filename)
 {
     // Try and use PHP's own fopen wrapper to save us
@@ -236,6 +247,8 @@ function rss_create_history($rss_id, $link)
 
 function rss_check_feeds()
 {
+    set_error_handler("rss_error_handler");
+
     $user_sess = bh_session_check();
 
     $lang = load_language_file();
@@ -270,6 +283,8 @@ function rss_check_feeds()
             }
         }
     }
+
+    restore_error_handler();
 }
 
 function rss_get_feeds()

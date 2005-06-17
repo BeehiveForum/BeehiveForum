@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html_entities.inc.php,v 1.1 2005-06-14 21:44:58 decoyduck Exp $ */
+/* $Id: html_entities.inc.php,v 1.2 2005-06-17 17:38:43 decoyduck Exp $ */
 
 // ================================================================
 // |                                                              |
@@ -42,7 +42,6 @@ $html_entities['&quot;'] = "\"";
 $html_entities['&amp;'] = "&";
 $html_entities['&lt;'] = "<";
 $html_entities['&gt;'] = ">";
-$html_entities['&nbsp;'] = "]";
 $html_entities['&iexcl;'] = "¡";
 $html_entities['&cent;'] = "¢";
 $html_entities['&pound;'] = "£";

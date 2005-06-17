@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.248 2005-05-31 20:25:29 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.249 2005-06-17 17:38:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -540,8 +540,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                             $thread_time = format_time($thread['MODIFIED']);
 
                             echo "&nbsp;</td>\n";
-                            echo "          <td valign=\"top\">";
-                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\" title=\"#{$thread['TID']} {$lang['startedby']} ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", apply_wordfilter($thread['TITLE']), "</a> ";
+                            echo "          <td valign=\"top\"><a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\" title=\"#{$thread['TID']} {$lang['startedby']} ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", apply_wordfilter($thread['TITLE']), "</a> ";
 
                             if ($thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
                             if ($thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
@@ -551,7 +550,7 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                             if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
 
-                            echo "<bdo dir=\"{$lang['_textdir']}\"><span class=\"threadxnewofy\">{$number}</span></bdo></td>\n";
+                            echo "<span class=\"threadxnewofy\">{$number}</span></bdo></td>\n";
                             echo "          <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
                             echo "        </tr>\n";
 

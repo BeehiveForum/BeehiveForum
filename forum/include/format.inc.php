@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.101 2005-06-14 21:44:58 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.102 2005-06-17 17:38:43 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -183,7 +183,6 @@ function _htmlentities($text)
     $entity_names = array_keys($html_entities);
     $entity_chars = array_values($html_entities);
 
-    array_walk($entity_names, 'bh_preg_quote');
     array_walk($entity_chars, 'bh_preg_quote');
 
     return preg_replace($entity_chars, $entity_names, $text);
@@ -199,7 +198,6 @@ function _htmlentities_decode($text)
     $entity_chars = array_values($html_entities);
 
     array_walk($entity_names, 'bh_preg_quote');
-    array_walk($entity_chars, 'bh_preg_quote');
 
     return preg_replace($entity_names, $entity_chars, $text);
 }

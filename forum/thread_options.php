@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.43 2005-04-27 19:47:15 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.44 2005-06-17 17:38:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -106,8 +106,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $pid = 1;
 }else {
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}</h1>\n";
-    echo"Ararar";
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['invalidop']}</h2>\n";
     html_draw_bottom();
     exit;
 }
@@ -330,7 +330,7 @@ if ($update) {
 }
 
 echo "<div align=\"center\">\n";
-echo "  <form name=\"thread_options\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
+echo "  <form name=\"thread_options\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

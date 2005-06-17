@@ -377,6 +377,7 @@ a {
 .threadxnewofy {
     font-size: 8pt;
     padding-left: 0px;
+    white-space: nowrap;
 }
 
 .foldername {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.102 2005-06-17 17:38:43 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.103 2005-06-17 21:58:14 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -164,42 +164,30 @@ function timestamp_amend_bst($timestamp)
     }
 }
 
-// Support function for _htmlentities and _htmlentities_decode
-// to escape the items in the $html_entities array contained
-// in html_entities.inc.php.
-
-function bh_preg_quote(&$item, $key)
-{
-    $item = preg_quote($item, "/");
-    $item = "/$item/";
-}
-
-// Replacement for PHP's rather lack-lustre htmlentities.
+// Lazy htmlentities function which ensures the use of
+// unicode for all character code sets.
 
 function _htmlentities($text)
 {
-    include(BH_INCLUDE_PATH. "html_entities.inc.php");
-
-    $entity_names = array_keys($html_entities);
-    $entity_chars = array_values($html_entities);
-
-    array_walk($entity_chars, 'bh_preg_quote');
-
-    return preg_replace($entity_chars, $entity_names, $text);
+    return htmlentities($text, ENT_QUOTES, 'UTF-8');
 }
 
-// Replacement for PHP's rather lack-lustre htmlentities_decode
+// Lazy / replacement for htmlentities_decode(). Should be
+// UTF-8 compliant but probably isn't.
 
 function _htmlentities_decode($text)
 {
-    include(BH_INCLUDE_PATH. "html_entities.inc.php");
+    $trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
+    $trans_tbl = array_flip($trans_tbl);
 
-    $entity_names = array_keys($html_entities);
-    $entity_chars = array_values($html_entities);
+    $trans_tbl['&apos;'] = '\'';
+    $trans_tbl['&#039;'] = '\'';
 
-    array_walk($entity_names, 'bh_preg_quote');
+    unset($trans_tbl['&#39;']);
 
-    return preg_replace($entity_names, $entity_chars, $text);
+    $ret = strtr($text, $trans_tbl);
+    $ret = preg_replace('/&#(\d+);/me', "chr(\\1)", $ret);
+    return preg_replace('/&#x([a-f0-9]+);/mei', "chr(0x\\1)", $ret);
 }
 
 // Translate &nbsp; to &#160; etc. If translation of entity fails

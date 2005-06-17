@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.249 2005-06-17 17:38:43 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.250 2005-06-17 17:39:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -550,7 +550,7 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                             if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
 
-                            echo "<span class=\"threadxnewofy\">{$number}</span></bdo></td>\n";
+                            echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
                             echo "          <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
                             echo "        </tr>\n";
 

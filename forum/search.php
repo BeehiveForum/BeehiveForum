@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.118 2005-06-05 17:15:08 decoyduck Exp $ */
+/* $Id: search.php,v 1.119 2005-06-20 22:56:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -103,8 +103,6 @@ if (!$folder_dropdown = folder_search_dropdown()) {
     exit;
 }
 
-html_draw_top("robots=noindex,nofollow");
-
 $search_arguments = array();
 
 if (isset($_POST['search_string'])) {
@@ -174,6 +172,8 @@ if (isset($_POST['sstart']) && is_numeric($_POST['sstart'])) {
 }
 
 if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
+
+    html_draw_top("robots=noindex,nofollow");
 
     echo "<h1>{$lang['searchmessages']}</h1>\n";
     echo "<br />\n";
@@ -305,7 +305,7 @@ if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_button("go", $lang['find'], "onclick=\"disable_button(this); submit_form('search_form')\""), "</td>\n";
+    echo "      <td align=\"center\">", form_button("go_button", $lang['find'], "onclick=\"disable_button(this); submit_form('search_form')\""), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
@@ -317,6 +317,8 @@ if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
 
 $urlquery = "";
 $error = false;
+
+html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
 
 // Draw discussion dropdown
 thread_list_draw_top(0);

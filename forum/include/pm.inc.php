@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.125 2005-06-11 14:31:41 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.126 2005-06-20 22:56:58 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -719,7 +719,7 @@ function pm_save_attachment_id($mid, $aid)
     $db_pm_save_attachment_id = db_connect();
 
     $sql = "SELECT * FROM PM_ATTACHMENT_IDS WHERE MID = $mid";
-    $result = db_query($sql, $db_post_save_attachment_id);
+    $result = db_query($sql, $db_pm_save_attachment_id);
 
     if (db_num_rows($result) > 0) {
 
@@ -732,7 +732,7 @@ function pm_save_attachment_id($mid, $aid)
         $sql.= "VALUES ($mid, '$aid')";
     }
 
-    return db_query($sql, $db_post_save_attachment_id);
+    return db_query($sql, $db_pm_save_attachment_id);
 }
 
 function pm_send_message($tuid, $fuid, $subject, $content)

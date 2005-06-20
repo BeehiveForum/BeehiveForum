@@ -30,7 +30,21 @@ function disable_button(button) {
     if (document.all || document.getElementById) {
         button.disabled = true;
     }else if (button) {
+        button.oldonclick = button.onclick;
         button.onclick = null;
+    }
+
+    return true;
+}
+
+function enable_button(button) {
+
+    button.className = 'button';
+    
+    if (document.all || document.getElementById) {
+        button.disabled = false;
+    }else if (button) {
+        button.onclick = button.oldonclick;
     }
 
     return true;

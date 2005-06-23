@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.76 2005-06-05 17:15:09 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.77 2005-06-23 13:59:31 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -82,17 +82,17 @@ function form_input_hidden($name, $value = false, $custom_html = false)
 }
 
 
-function form_input_hidden_array($array, &$result_var)
+function form_input_hidden_array($array, &$result_var, $ignore_keys = array())
 {
     if (!is_array($array)) return false;
-
+    if (!is_array($ignore_keys)) $ignore_keys = array();
     if (!is_string($result_var)) $result_var = "";
 
     foreach ($array as $key => $value) {
 
         if (is_array($value)) {
             form_input_hidden_array($value, $result_var);
-        }else {
+        }elseif (!in_array($key, $ignore_keys)) {
             $result_var.= form_input_hidden($key, $value);
         }
     }

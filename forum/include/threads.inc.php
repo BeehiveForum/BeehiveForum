@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.175 2005-06-11 14:31:41 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.176 2005-06-23 13:59:33 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -912,8 +912,8 @@ function threads_any_unread()
 
     $sql = "SELECT COUNT(*) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "WHERE THREAD.LENGTH > USER_THREAD.LAST_READ ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "WHERE USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL ";
     $sql.= "LIMIT 0,1";
 
     $result = db_query($sql, $db_threads_any_unread);

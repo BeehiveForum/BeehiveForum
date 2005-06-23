@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.189 2005-06-14 14:11:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.190 2005-06-23 13:59:33 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -228,8 +228,10 @@ function bh_session_check($show_session_fail = true)
 
                     echo form_input_hidden('webtag', $webtag);
 
-                    foreach($_POST as $key => $value) {
-                        echo form_input_hidden($key, _htmlentities(_stripslashes($value)));
+                    $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
+
+                    if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
+                        echo $post_vars;
                     }
 
                     echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";

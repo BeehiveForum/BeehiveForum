@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.103 2005-06-17 21:58:14 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.104 2005-06-23 13:59:31 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -231,6 +231,37 @@ function _array_search($needle, $haystack)
         }
     }
     return false;
+}
+
+// Split an array into a multi-dimensional array.
+// PHP 4 >= 4.2.0, PHP 5 already include this function.
+
+function _array_chunk($input_array, $size, $preserve_keys = false) {
+
+   if (!is_array($input_array)) return false;
+   if (!is_numeric($size)) return false;
+   if (!is_bool($preserve_keys)) $preserve_keys = false;
+
+   reset($input_array);
+
+   $i = 0;
+
+   foreach($input_array as $key => $value) {
+
+       if (sizeof($chunks_array[$i]) >= $size) $i++;
+       if (!isset($chunks_array[$i])) $chunks_array[$i] = array();
+
+       if ($preserve_keys) {
+
+           $chunks_array[$i][$key] = $value;
+
+       }else {
+
+           $chunks_array[$i][] = $value;
+       }
+   }
+
+   return $chunks;
 }
 
 // Case insensitive / multi-dimensional replacement for in_array.

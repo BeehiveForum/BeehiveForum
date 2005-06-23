@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.127 2005-06-05 17:29:59 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.128 2005-06-23 13:59:32 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -609,10 +609,6 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
     $forum_fid = $table_data['FID'];
 
-    // Minimum search word length.
-
-    $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
-
     // Change HTML entities back into their normal characters
 
     $content = _htmlentities_decode($content);
@@ -645,18 +641,21 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
     $content_array = $content_array[0];
 
-    // Process the list of words.
+    // Initialize the arrays to hold the keywords.
 
     $keyword_list_array = array();
     $sql_values_array = array();
+
+    // Process the keywords. Filter out any MySQL stop words, any word that are numbers
+    // and any words longer than 50 characters.
 
     foreach ($content_array as $key => $keyword_add) {
 
         $keyword_add = trim(strtolower($keyword_add));
 
-        if (strlen($keyword_add) > ($search_min_word_length - 1) && strlen($keyword_add) < 50 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
+        if (strlen($keyword_add) < 50 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
 
-            if (!_in_array($keyword_add, $keyword_list_array)) {
+            if (!_in_array($keyword_add, $keyword_list_array) && !is_numeric($keyword_add)) {
 
                 $keyword_add = addslashes($keyword_add);
 
@@ -666,23 +665,38 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
         }
     }
 
+    // If we have some keywords to insert then we should insert them.
+    // We chunk the keyword arrays into bits of 20 so we don't create
+    // queries which are too large for the database to handle.
+
     if (sizeof($keyword_list_array) > 0) {
 
-        $sql_values = implode(", ", $sql_values_array);
+        $sql_chunked_array = _array_chunk($sql_values_array, 20);
+        $keyword_chunked_array = _array_chunk($keyword_list_array, 20);
 
-        $sql = "INSERT IGNORE INTO SEARCH_KEYWORDS ";
-        $sql.= "(WORD) VALUES $sql_values";
+        foreach($sql_chunked_array as $sql_chunked_part) {
 
-        $result = db_query($sql, $db_search_index_post);
+            $sql_values = implode(", ", $sql_chunked_part);
 
-        $keyword_list = implode("', '", $keyword_list_array);
+            $sql = "INSERT IGNORE INTO SEARCH_KEYWORDS ";
+            $sql.= "(WORD) VALUES $sql_values";
 
-        $sql = "INSERT IGNORE INTO SEARCH_MATCH ";
-        $sql.= "SELECT WID, $forum_fid, $tid, $pid FROM ";
-        $sql.= "SEARCH_KEYWORDS WHERE WORD IN ('$keyword_list')";
+            $result = db_query($sql, $db_search_index_post);
+        }
 
-        $result = db_query($sql, $db_search_index_post);
+        foreach ($keyword_chunked_array as $keyword_chunked_part) {
+
+            $keyword_list = implode("', '", $keyword_chunked_part);
+
+            $sql = "INSERT IGNORE INTO SEARCH_MATCH ";
+            $sql.= "SELECT WID, $forum_fid, $tid, $pid FROM ";
+            $sql.= "SEARCH_KEYWORDS WHERE WORD IN ('$keyword_list')";
+
+            $result = db_query($sql, $db_search_index_post);
+        }
     }
+
+    // Mark the post as indexed even if it had no keywords.
 
     $sql = "INSERT IGNORE INTO SEARCH_POSTS (FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED) ";
     $sql.= "VALUES ($forum_fid, $fid, $tid, $pid, $by_uid, $fuid, $tuid, $created)";

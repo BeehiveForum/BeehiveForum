@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.32 2005-06-17 16:20:45 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.33 2005-06-23 13:59:32 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -230,12 +230,10 @@ function draw_logon_form($logon_main)
             echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\" onsubmit=\"return has_clicked;\">\n";
         }
 
-        foreach($_POST as $key => $value) {
+        $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
 
-            if (!in_array($key, array('user_logon', 'user_password', 'user_passhash', 'remember_user'))) {
-
-                echo "    ", form_input_hidden($key, _htmlentities(_stripslashes($value))), "\n";
-            }
+        if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
+            echo $post_vars;
         }
     }
 

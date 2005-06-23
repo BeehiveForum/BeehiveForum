@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.153 2005-06-08 11:43:38 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.154 2005-06-23 12:06:12 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -222,8 +222,8 @@ function poll_get_votes($tid)
 
     $sql = "SELECT POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME, ";
     $sql.= "POLL_VOTES.GROUP_ID, COUNT(USER_POLL_VOTES.ID) AS VOTE_COUNT ";
-    $sql.= "FROM DEFAULT_POLL_VOTES POLL_VOTES LEFT JOIN ";
-    $sql.= "DEFAULT_USER_POLL_VOTES USER_POLL_VOTES ";
+    $sql.= "FROM {$table_data['PREFIX']}POLL_VOTES POLL_VOTES LEFT JOIN ";
+    $sql.= "{$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
     $sql.= "ON (USER_POLL_VOTES.TID = POLL_VOTES.TID ";
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) ";
     $sql.= "WHERE POLL_VOTES.TID = $tid GROUP BY POLL_VOTES.OPTION_ID";

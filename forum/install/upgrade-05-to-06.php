@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.60 2005-05-16 17:36:16 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.61 2005-06-23 12:06:12 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1098,7 +1098,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "INSERT INTO DEFAULT_POLL_NEW SELECT POLL.TID, THREAD.TITLE, ";
+    $sql = "INSERT INTO {$forum_webtag}_POLL_NEW SELECT POLL.TID, THREAD.TITLE, ";
     $sql.= "POLL.CLOSES, POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, ";
     $sql.= "POLL.VOTETYPE, POLL.OPTIONTYPE FROM {$forum_webtag}_POLL POLL ";
     $sql.= "LEFT JOIN {$forum_webtag}_THREAD THREAD ON (THREAD.TID = POLL.TID)";

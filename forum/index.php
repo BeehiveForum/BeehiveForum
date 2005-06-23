@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.116 2005-05-23 21:56:59 decoyduck Exp $ */
+/* $Id: index.php,v 1.117 2005-06-23 10:24:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,12 +98,14 @@ if (bh_session_active()) {
 
     if ($webtag) {
 
-        if (isset($_GET['final_uri'])) {
+        if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
-            if (stristr(rawurldecode($_GET['final_uri']), "?")) {
-                echo "<frame src=\"". rawurldecode($_GET['final_uri']). "&amp;webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+
+            if (stristr($final_uri, "?")) {
+                echo "<frame src=\"", rawurldecode($final_uri), "&amp;webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
             }else {
-                echo "<frame src=\"". rawurldecode($_GET['final_uri']). "?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+                echo "<frame src=\"", rawurldecode($final_uri), "?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
             }
 
         }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -142,9 +144,11 @@ if (bh_session_active()) {
 
     }else {
 
-        if (isset($_GET['final_uri'])) {
+        if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
-            echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode($_GET['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+            $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+
+            echo "<frame src=\"./forums.php?webtag_search=$webtag_search&amp;final_uri=", rawurlencode($final_uri), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
         }else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -194,9 +198,11 @@ if (bh_session_active()) {
     echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"$top_html\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
-    if (isset($_GET['final_uri'])) {
+    if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
-        echo "<frame src=\"./logon.php?webtag=$webtag&amp;final_uri=", rawurlencode($_GET['final_uri']), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
+
+        echo "<frame src=\"./logon.php?webtag=$webtag&amp;final_uri=", rawurlencode($final_uri), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 

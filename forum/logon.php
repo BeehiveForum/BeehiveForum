@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.154 2005-05-31 20:25:28 decoyduck Exp $ */
+/* $Id: logon.php,v 1.155 2005-06-23 10:24:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -58,7 +58,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Retrieve the final_uri request
 
-if (isset($_GET['final_uri'])) {
+if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
     $final_uri = rawurldecode($_GET['final_uri']);
 

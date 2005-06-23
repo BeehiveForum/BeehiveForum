@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.44 2005-04-27 19:47:12 decoyduck Exp $ */
+/* $Id: forums.php,v 1.45 2005-06-23 10:24:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,7 +122,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "                <tr>\n";
                 echo "                  <td width=\"20\" valign=\"top\">", form_checkbox("rem_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
 
-                if (isset($_GET['final_uri'])) {
+                if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
                     echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a></td>\n";
                 }else {
                     echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
@@ -183,7 +183,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "                <tr>\n";
                 echo "                  <td width=\"20\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
 
-                if (isset($_GET['final_uri'])) {
+                if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
                     echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a></td>\n";
                 }else {
                     echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
@@ -244,7 +244,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "                <tr>\n";
                 echo "                  <td width=\"20\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
 
-                if (isset($_GET['final_uri'])) {
+                if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
                     echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a></td>\n";
                 }else {
                     echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";
@@ -320,7 +320,7 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
             echo "                <tr>\n";
             echo "                  <td width=\"25%\" valign=\"top\">\n";
 
-            if (isset($_GET['final_uri'])) {
+            if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
                 echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a>\n";
             }else {
                 echo "                    <a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a>\n";
@@ -378,7 +378,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
             echo "                <tr>\n";
             echo "                  <td width=\"20\" valign=\"top\">", form_checkbox("add_fav[{$forum['FID']}]", "Y", "", false), "</td>\n";
 
-            if (isset($_GET['final_uri'])) {
+            if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
                 echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=", rawurlencode($_GET['final_uri']), "\">{$forum['FORUM_NAME']}</a></td>\n";
             }else {
                 echo "                  <td width=\"25%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></td>\n";

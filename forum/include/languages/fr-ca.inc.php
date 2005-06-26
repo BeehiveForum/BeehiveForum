@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.12 2005-05-30 14:19:30 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.13 2005-06-26 14:28:05 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -679,7 +679,7 @@ $lang['upload'] = "Téléverser";
 $lang['uploadnewattachment'] = "Téléverser nouveau fichier joint";
 $lang['waitdotdot'] = "patienter..";
 $lang['successfullyuploaded'] = "Téléversement réussi";
-$lang['failedtoupload'] = "Téléversement échoué:";
+$lang['failedtoupload'] = "Téléversement échoué";
 $lang['complete'] = "Compléter";
 $lang['uploadattachment'] = "Téléverser un fichier pour joindre au message";
 $lang['enterfilenamestoupload'] = "Entrer nom(s) de fichier(s) à téléverser";
@@ -1056,8 +1056,7 @@ $lang['editpm'] = "Réviser message";
 $lang['cannoteditpm'] = "Impossible de réviser ce MP. Soit qu'il a déjà été lu par le destinataire ou que le message n'existe pas ou qu'il ne vous est pas accessible.";
 $lang['cannotviewpm'] = "Impossible de voir le MP. Le message n'existe pas ou il ne vous est pas accessible";
 $lang['nouserspecified'] = "Aucun utilisateur de spécifié.";
-$lang['pmnotificationpopup_1'] = "Vous avez";
-$lang['pmnotificationpopup_2'] = "un nouveau MP. Désirez-vous ouvrir votre boite de réception maintenant?";
+$lang['pmnotificationpopup'] = "Vous avez %d un nouveau MP. Désirez-vous ouvrir votre boite de réception maintenant?";
 $lang['youdonothaveenoughfreespace'] = "Vous n'avez pas assez d'espace libre pour envoyer ce message.";
 $lang['notenoughfreespace'] = "n'a pas assez d'espace libre pour recevoir ce message";
 $lang['hasoptoutpm'] = "A choisi de ne pas recevoir les messages personnels";

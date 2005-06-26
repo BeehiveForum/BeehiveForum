@@ -261,11 +261,18 @@ function rss_check_feeds()
 
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
-                    $rss_title = "[{$rss_feed['PREFIX']}] {$rss_item->title}";
+                    $rss_title = strip_tags($rss_item->title);
+                    $rss_title = "[{$rss_feed['PREFIX']}] {$rss_title}";
 
                     if (strlen($rss_title) > 64) {
-                        $rss_title = substr($rss_title, 0, 61);
-                        $rss_title.= "...";
+
+                        $rss_title = substr($rss_title, 0, 60);
+
+                        if (($pos = strrpos($rss_title, ' ')) !== false) {
+                            $rss_title = trim(substr($rss_title, 0, $pos));
+                        }
+
+                        $rss_title.= " ...";
                     }
 
                     if (strlen($rss_item->description) > 1) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.34 2005-05-16 17:36:16 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.35 2005-06-26 14:28:16 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -145,7 +145,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE ADMIN_LOG RENAME {$forum_webtag}_ADMIN_LOG";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -153,7 +153,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE BANNED_IP RENAME {$forum_webtag}_BANNED_IP";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -161,7 +161,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE FILTER_LIST RENAME {$forum_webtag}_FILTER_LIST";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -169,7 +169,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE FOLDER RENAME {$forum_webtag}_FOLDER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -177,7 +177,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE LINKS RENAME {$forum_webtag}_LINKS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -185,7 +185,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE LINKS_COMMENT RENAME {$forum_webtag}_LINKS_COMMENT";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -193,7 +193,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE LINKS_FOLDERS RENAME {$forum_webtag}_LINKS_FOLDERS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -201,7 +201,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE LINKS_VOTE RENAME {$forum_webtag}_LINKS_VOTE";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -209,7 +209,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE POLL RENAME {$forum_webtag}_POLL";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -217,7 +217,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE POLL_VOTES RENAME {$forum_webtag}_POLL_VOTES";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -225,7 +225,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE POST RENAME {$forum_webtag}_POST";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -233,7 +233,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE POST_ATTACHMENT_FILES RENAME {$forum_webtag}_POST_ATTACHMENT_FILES";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -241,7 +241,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE POST_ATTACHMENT_IDS RENAME {$forum_webtag}_POST_ATTACHMENT_IDS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -249,7 +249,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE POST_CONTENT RENAME {$forum_webtag}_POST_CONTENT";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -257,7 +257,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE PROFILE_ITEM RENAME {$forum_webtag}_PROFILE_ITEM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -265,7 +265,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE PROFILE_SECTION RENAME {$forum_webtag}_PROFILE_SECTION";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -273,7 +273,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE STATS RENAME {$forum_webtag}_STATS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -281,7 +281,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE THREAD RENAME {$forum_webtag}_THREAD";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -289,7 +289,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER_FOLDER RENAME {$forum_webtag}_USER_FOLDER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -297,7 +297,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER_PEER RENAME {$forum_webtag}_USER_PEER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -305,7 +305,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER_POLL_VOTES RENAME {$forum_webtag}_USER_POLL_VOTES";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -313,7 +313,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER_PROFILE RENAME {$forum_webtag}_USER_PROFILE";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -321,7 +321,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER_SIG RENAME {$forum_webtag}_USER_SIG";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -329,7 +329,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER_THREAD RENAME {$forum_webtag}_USER_THREAD";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -340,7 +340,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (IP)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -349,7 +349,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "INSERT INTO {$forum_webtag}_BANNED_IP_NEW (IP) ";
         $sql.= "SELECT DISTINCT IP FROM {$forum_webtag}_BANNED_IP";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -357,7 +357,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_BANNED_IP";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -365,7 +365,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_BANNED_IP_NEW RENAME {$forum_webtag}_BANNED_IP";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -388,7 +388,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  KEY BY_UID (BY_UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -402,7 +402,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "FROM {$forum_webtag}_THREAD THREAD LEFT JOIN {$forum_webtag}_POST POST ";
         $sql.= "ON (POST.TID = THREAD.TID AND POST.PID = 1)";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -410,7 +410,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_THREAD ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -418,7 +418,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -432,7 +432,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (LID, UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -441,7 +441,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "INSERT INTO {$forum_webtag}_LINKS_VOTE_NEW (LID, UID, RATING, TSTAMP) ";
         $sql.= "SELECT DISTINCT LID, UID, RATING, TSTAMP FROM {$forum_webtag}_LINKS_VOTE GROUP BY LID, UID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -449,7 +449,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_LINKS_VOTE ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -457,7 +457,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_LINKS_VOTE_NEW RENAME {$forum_webtag}_LINKS_VOTE";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -471,7 +471,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  KEY AID (AID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -480,7 +480,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "INSERT INTO {$forum_webtag}_POST_ATTACHMENT_IDS_NEW (TID, PID, AID) ";
         $sql.= "SELECT DISTINCT TID, PID, AID FROM {$forum_webtag}_POST_ATTACHMENT_IDS GROUP BY TID, PID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -488,7 +488,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_POST_ATTACHMENT_IDS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -496,7 +496,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_IDS_NEW RENAME {$forum_webtag}_POST_ATTACHMENT_IDS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -511,7 +511,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -521,7 +521,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SELECT MOST_USERS_DATE, MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT ";
         $sql.= "FROM {$forum_webtag}_STATS ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -529,7 +529,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_STATS ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -537,7 +537,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_STATS_NEW RENAME {$forum_webtag}_STATS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -551,7 +551,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (UID,FID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -561,7 +561,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SELECT DISTINCT UID, FID, INTEREST, ALLOWED FROM {$forum_webtag}_USER_FOLDER ";
         $sql.= "GROUP BY UID, FID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -569,7 +569,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_USER_FOLDER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -577,7 +577,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_USER_FOLDER_NEW RENAME {$forum_webtag}_USER_FOLDER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -590,7 +590,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -600,7 +600,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SELECT DISTINCT UID, PEER_UID, RELATIONSHIP FROM {$forum_webtag}_USER_PEER ";
         $sql.= "GROUP BY UID, PEER_UID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -608,7 +608,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_USER_PEER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -617,7 +617,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_USER_PEER_NEW RENAME {$forum_webtag}_USER_PEER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -659,7 +659,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -673,7 +673,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, PM_NOTIFY_EMAIL, DOB_DISPLAY, ";
         $sql.= "ANON_LOGON, SHOW_STATS FROM USER_PREFS GROUP BY UID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -681,7 +681,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET EMAIL_NOTIFY = 'N' WHERE EMAIL_NOTIFY != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -689,7 +689,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET MARK_AS_OF_INT = 'N' WHERE MARK_AS_OF_INT != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -697,7 +697,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET VIEW_SIGS = 'N' WHERE VIEW_SIGS != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -705,7 +705,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET PM_NOTIFY = 'N' WHERE PM_NOTIFY != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -713,7 +713,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET PM_NOTIFY_EMAIL = 'N' WHERE PM_NOTIFY_EMAIL <> 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -721,7 +721,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET PM_SAVE_SENT_ITEM = 'Y' WHERE 1";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -729,7 +729,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET PM_INCLUDE_REPLY = 'N' WHERE 1";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -737,7 +737,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET PM_AUTO_PRUNE = 'N' WHERE 1";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -745,7 +745,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET PM_AUTO_PRUNE_LENGTH = '60' WHERE 1";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -753,7 +753,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET IMAGES_TO_LINKS = 'N' WHERE IMAGES_TO_LINKS != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -761,7 +761,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET USE_WORD_FILTER = 'N' WHERE USE_WORD_FILTER != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -769,7 +769,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET USE_ADMIN_FILTER = 'N' WHERE USE_ADMIN_FILTER != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -777,7 +777,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET ALLOW_EMAIL = 'N' WHERE ALLOW_EMAIL != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -785,7 +785,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE USER_PREFS_NEW SET ALLOW_PM = 'N' WHERE ALLOW_PM != 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -793,7 +793,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE USER_PREFS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -801,7 +801,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER_PREFS_NEW RENAME USER_PREFS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -831,7 +831,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -844,7 +844,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (UID,PIID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -854,7 +854,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SELECT DISTINCT UID, PIID, ENTRY FROM {$forum_webtag}_USER_PROFILE ";
         $sql.= "GROUP BY UID, PIID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -862,7 +862,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_USER_PROFILE";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -870,7 +870,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_USER_PROFILE_NEW RENAME {$forum_webtag}_USER_PROFILE";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -883,7 +883,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -893,7 +893,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SELECT DISTINCT UID, CONTENT, HTML FROM {$forum_webtag}_USER_SIG ";
         $sql.= "GROUP BY UID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -901,7 +901,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_USER_SIG";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -909,7 +909,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_USER_SIG_NEW RENAME {$forum_webtag}_USER_SIG";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -924,7 +924,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (UID, TID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -934,7 +934,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SELECT DISTINCT UID, TID, LAST_READ, LAST_READ_AT, INTEREST ";
         $sql.= "FROM {$forum_webtag}_USER_THREAD GROUP BY UID, TID ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -942,7 +942,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_USER_THREAD ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -950,7 +950,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD_NEW RENAME {$forum_webtag}_USER_THREAD";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -958,7 +958,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE PM ADD NOTIFIED TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -966,7 +966,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "UPDATE PM SET NOTIFIED = 1 WHERE TYPE > 1";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -974,7 +974,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_POLL_VOTES DROP VOTES";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -989,7 +989,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (ID, UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -998,7 +998,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "INSERT INTO {$forum_webtag}_FILTER_LIST_NEW (ID, UID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
         $sql.= "SELECT DISTINCT ID, 0, FILTER, REPEAT('*', LENGTH(FILTER)), 1 FROM {$forum_webtag}_FILTER_LIST ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1006,7 +1006,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE {$forum_webtag}_FILTER_LIST ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1014,7 +1014,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_FILTER_LIST_NEW RENAME {$forum_webtag}_FILTER_LIST";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1022,7 +1022,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DROP TABLE SESSIONS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1037,7 +1037,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (HASH, UID, IPADDRESS)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1052,7 +1052,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (FID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1060,7 +1060,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM) VALUES('{$forum_webtag}', 1)";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1073,7 +1073,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (FID, SNAME)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1117,7 +1117,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                 $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
                 $sql.= "VALUES ('$forum', '$sname', '$svalue')";
 
-                if (!$result = db_query($sql, $db_install)) {
+                if (!$result = @db_query($sql, $db_install)) {
 
                     $valid = false;
                     return;
@@ -1131,7 +1131,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1140,7 +1140,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "INSERT INTO {$forum_webtag}_VISITOR_LOG (UID, LAST_LOGON) ";
         $sql.= "SELECT UID, LAST_LOGON FROM USER";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1148,7 +1148,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER DROP LAST_LOGON";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1156,7 +1156,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER DROP LOGON_FROM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1164,7 +1164,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_FILES ADD DELETED TINYINT UNSIGNED DEFAULT '0' NOT NULL";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1178,7 +1178,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (LID)";
         $sql.= ") TYPE=MYISAM";
 
-        if(!$result = db_query($sql, $db_install)) {
+        if(!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1187,7 +1187,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (1, 'Forum Links:', NULL)";
 
-        if(!$result = db_query($sql, $db_install)) {
+        if(!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1196,7 +1196,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
 
-        if(!$result = db_query($sql, $db_install)) {
+        if(!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1205,7 +1205,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
 
-        if(!$result = db_query($sql, $db_install)) {
+        if(!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1219,7 +1219,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (UID, FID)";
         $sql.= ") TYPE = MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1227,7 +1227,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "DELETE FROM USER WHERE LOGON = 'GUEST' AND (PASSWD = MD5('GUEST') OR PASSWD = MD5('guest'))";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1241,7 +1241,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (GID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1254,7 +1254,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY (GID,FID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1266,7 +1266,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  PRIMARY KEY  (GID,UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1276,7 +1276,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "SELECT UID, STATUS FROM USER WHERE STATUS IS NOT NULL AND STATUS > 0";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1288,7 +1288,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
             $sql = "INSERT INTO {$forum_webtag}_GROUPS (AUTO_GROUP) VALUES (1)";
 
-            if (!$result_gid = db_query($sql, $db_install)) {
+            if (!$result_gid = @db_query($sql, $db_install)) {
 
                 $valid = false;
                 return;
@@ -1299,7 +1299,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS (GID, UID) ";
             $sql.= "VALUES ('$gid', '{$row['UID']}')";
 
-            if (!$result_uid = db_query($sql, $db_install)) {
+            if (!$result_uid = @db_query($sql, $db_install)) {
 
                 $valid = false;
                 return;
@@ -1313,7 +1313,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
             $sql.= "VALUES ('$gid', '0', '$new_status')";
 
-            if (!$result_perm = db_query($sql, $db_install)) {
+            if (!$result_perm = @db_query($sql, $db_install)) {
 
                 $valid = false;
                 return;
@@ -1325,7 +1325,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                 $sql.= "SELECT $gid, FID, 6652 FROM {$forum_webtag}_FOLDER ";
                 $sql.= "WHERE ACCESS_LEVEL = 0 ";
 
-                if (!$result_fid = db_query($sql, $db_install)) {
+                if (!$result_fid = @db_query($sql, $db_install)) {
 
                     $valid = false;
                     return;
@@ -1339,7 +1339,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SELECT 0, FID, 0 FROM {$forum_webtag}_FOLDER WHERE ";
         $sql.= "ACCESS_LEVEL = -1 OR ACCESS_LEVEL = 1";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1349,7 +1349,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "SELECT 0, FID, 14588 FROM {$forum_webtag}_FOLDER WHERE ";
         $sql.= "ACCESS_LEVEL = 0";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1359,7 +1359,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "SELECT UID, FID FROM {$forum_webtag}_USER_FOLDER WHERE ALLOWED = 1";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1369,7 +1369,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
             $sql = "SELECT GID FROM {$forum_webtag}_GROUP_USERS WHERE UID = '{$row['UID']}'";
 
-            if ($result_gid = db_query($sql, $db_install)) {
+            if ($result_gid = @db_query($sql, $db_install)) {
 
                 if (db_num_rows($result_gid) > 0) {
 
@@ -1378,7 +1378,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                     $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
                     $sql.= "VALUES ('$gid', '{$row['FID']}', '6396')";
 
-                    if (!$result_perm = db_query($sql, $db_install)) {
+                    if (!$result_perm = @db_query($sql, $db_install)) {
 
                         $valid = false;
                         return;
@@ -1388,7 +1388,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
                     $sql = "INSERT INTO {$forum_webtag}_GROUPS (AUTO_GROUP) VALUES (1)";
 
-                    if (!$result_gid = db_query($sql, $db_install)) {
+                    if (!$result_gid = @db_query($sql, $db_install)) {
 
                         $valid = false;
                         return;
@@ -1399,7 +1399,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                     $sql = "INSERT INTO {$forum_webtag}_GROUP_USERS (GID, UID) ";
                     $sql.= "VALUES ('$gid', '{$row['UID']}')";
 
-                    if (!$result_uid = db_query($sql, $db_install)) {
+                    if (!$result_uid = @db_query($sql, $db_install)) {
 
                         $valid = false;
                         return;
@@ -1408,7 +1408,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                     $sql = "INSERT INTO {$forum_webtag}_GROUP_PERMS (GID, FID, PERM) ";
                     $sql.= "VALUES ('$gid', '{$row['FID']}', '6396')";
 
-                    if (!$result_perm = db_query($sql, $db_install)) {
+                    if (!$result_perm = @db_query($sql, $db_install)) {
 
                         $valid = false;
                         return;
@@ -1424,7 +1424,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE USER DROP STATUS";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1432,7 +1432,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_USER_FOLDER DROP ALLOWED";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1440,7 +1440,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_FOLDER DROP ACCESS_LEVEL";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1448,7 +1448,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
         $sql = "ALTER TABLE {$forum_webtag}_POLL ADD OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' AFTER VOTETYPE";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1463,7 +1463,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         $sql.= "  KEY WORD (WORD)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = @db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -1477,7 +1477,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $sql.= "FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' ";
             $sql.= "(WORD, SOUND)";
 
-            if (!$result = db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
                 if ($fp = fopen($dictionary_file, 'r')) {
 
@@ -1493,7 +1493,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
                         $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
                         $sql.= "VALUES ('$word', '$metaphone', 0)";
 
-                        if (!$result = db_query($sql, $db_install)) {
+                        if (!$result = @db_query($sql, $db_install)) {
 
                             $valid = false;
                             return;

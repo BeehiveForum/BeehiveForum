@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.252 2005-06-17 16:20:45 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.253 2005-06-26 14:28:05 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -757,8 +757,9 @@ function user_get_aliases($uid)
 
     // Fetch the last 20 IP addresses from the POST table
 
-    $sql = "SELECT IPADDRESS FROM {$table_data['PREFIX']}POST ";
-    $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 20";
+    $sql = "SELECT DISTINCT IPADDRESS FROM {$table_data['PREFIX']}POST ";
+    $sql.= "WHERE FROM_UID = $uid AND IPADDRESS IS NOT NULL ";
+    $sql.= "ORDER BY TID DESC LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_aliases);
 
@@ -766,22 +767,20 @@ function user_get_aliases($uid)
 
         while($user_get_aliases_row = db_fetch_array($result)) {
 
-            if (!in_array($user_get_aliases_row['IPADDRESS'], $user_ip_address_array) && strlen($user_get_aliases_row['IPADDRESS']) > 0) {
-
-                $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
-            }
+            $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
         }
     }
 
     // Search the POST table for any matches - limit 10 matches
 
-    $user_ip_address_list = implode("' OR IPADDRESS = '", $user_ip_address_array);
+    $user_ip_address_list = implode("' OR POST.IPADDRESS = '", $user_ip_address_array);
 
     if (strlen($user_ip_address_list) > 0) {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM {$table_data['PREFIX']}POST POST ";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, POST.IPADDRESS ";
+        $sql.= "FROM {$table_data['PREFIX']}POST POST ";
         $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
-        $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> '$uid' ";
+        $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') AND POST.FROM_UID <> $uid ";
         $sql.= "GROUP BY USER.UID ORDER BY POST.TID DESC LIMIT 0, 10";
 
         $result = db_query($sql, $db_user_get_aliases);

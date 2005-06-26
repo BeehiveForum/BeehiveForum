@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.297 2005-06-05 17:15:09 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.298 2005-06-26 14:28:05 decoyduck Exp $ */
 
 // International English language file
 
@@ -680,7 +680,7 @@ $lang['upload'] = "Upload";
 $lang['uploadnewattachment'] = "Upload New Attachment";
 $lang['waitdotdot'] = "wait..";
 $lang['successfullyuploaded'] = "Successfully Uploaded";
-$lang['failedtoupload'] = "Failed to upload:";
+$lang['failedtoupload'] = "Failed to upload";
 $lang['complete'] = "Complete";
 $lang['uploadattachment'] = "Upload a file for attachment to the message";
 $lang['enterfilenamestoupload'] = "Enter filename(s) to upload";
@@ -1057,8 +1057,7 @@ $lang['editpm'] = "Edit Message";
 $lang['cannoteditpm'] = "Cannot edit this PM. It has already been viewed by the recipient or the message does not exist or it is inaccessible by you";
 $lang['cannotviewpm'] = "Cannot view PM. Message does not exist or it is inaccessible by you";
 $lang['nouserspecified'] = "No user specified.";
-$lang['pmnotificationpopup_1'] = "You have";
-$lang['pmnotificationpopup_2'] = "a new PM. Would you like to go to your Inbox now?";
+$lang['pmnotificationpopup'] = "You have %d new PM. Would you like to go to your Inbox now?";
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";

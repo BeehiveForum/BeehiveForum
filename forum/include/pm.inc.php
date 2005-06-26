@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.126 2005-06-20 22:56:58 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.127 2005-06-26 14:28:05 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -1021,8 +1021,8 @@ function pm_system_prune_folders()
 // This function is purely just for the display of the
 // warning icon on the PM folders pages. It should not
 // be used for anything else as it is not designed to
-// distinguish between the prune setting being one set
-// by the user or the system.
+// distinguish between the prune setting being set by
+// the user or the system.
 
 function pm_auto_prune_enabled()
 {
@@ -1036,4 +1036,26 @@ function pm_auto_prune_enabled()
 
     return ($pm_prune_length > 0);
 }
+
+function pm_has_attachments($mid)
+{
+    if (!is_numeric($mid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $db_thread_has_attachments = db_connect();
+
+    $sql = "SELECT COUNT(PAF.AID) AS ATTACHMENT_COUNT FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PMI ON (PMI.AID = PAF.AID) ";
+    $sql.= "WHERE PMI.MID = $mid";
+
+    $result = db_query($sql, $db_thread_has_attachments);
+
+    $row = db_fetch_array($result);
+
+    return ($row['ATTACHMENT_COUNT'] > 0);
+}
+
 ?>

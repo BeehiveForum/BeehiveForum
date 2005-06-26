@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.88 2005-05-23 22:47:03 decoyduck Exp $ */
+/* $Id: pm.php,v 1.89 2005-06-26 14:28:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,8 +263,8 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         echo "      <td class=\"postbody\">";
         echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
 
-        if (isset($message['AID'])) {
-            echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" />";
+        if (isset($message['AID']) && pm_has_attachments($message['AID'])) {
+            echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
         }
 
         if (($folder == PM_FOLDER_OUTBOX) && ($message['TYPE'] == PM_UNREAD)) {

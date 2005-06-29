@@ -456,12 +456,10 @@ It will also be harder to restore the backup this way.
 1.4.1.2 Back up your files
 ==========================
 
-A list of files/directories you will potentially need to backup is as follows:
-
-|- /attachments
-|- /styles
-|- start_main.php
-|- top.html
+The easiest way to back up your BeehiveForum files is to take a copy of the forum
+directory and it's contents. Restoring this back up incase of upgrade failure is
+then simply a case of uploading the files again just as you would when performing
+a new install.
 
 
 1.4.1.3 Upload new forum files
@@ -469,8 +467,9 @@ A list of files/directories you will potentially need to backup is as follows:
 
 This step is similar to 1.2.3, though you may wish to upload to a temporary
 directory (e.g. if your forum is currently installed in a subdirectory 'forum',
-you may wish to upload the new files to a subdirectory 'forumtemp'. If uploading
-to a separate directory, remember to also upload the files you backed-up in 1.4.2.
+you may wish to upload the new files to a subdirectory 'forumtemp' so that 
+you can make any neccesary changes before replacing the old files with the
+newer ones.
 
 
 1.4.1.4 Run the upgrade script
@@ -482,8 +481,8 @@ directory:
 
 http://www.mysite.com/forumtemp/install.php
 
-Make sure you select 'Upgrade' from the installation method drop-down list, and
-then follow the instructions.
+Make sure you select the right 'Upgrade' proceedure from the installation
+method drop-down list, and then follow the instructions.
 
 1.4.2 Upgrading from 0.5PR1 to 0.5
 ==================================

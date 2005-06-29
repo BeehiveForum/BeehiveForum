@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.104 2005-06-23 13:59:31 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.105 2005-06-29 19:53:29 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -245,6 +245,8 @@ function _array_chunk($input_array, $size, $preserve_keys = false) {
    reset($input_array);
 
    $i = 0;
+
+   $chunks_array = array();
 
    foreach($input_array as $key => $value) {
 

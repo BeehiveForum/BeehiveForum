@@ -1,5 +1,128 @@
 Beehive Forum Release Notes
 
+What's new in 0.6RC2
+====================
+
+- Changes from 0.6RC1
+
+        - Fixed: error handler falling over itself if the $_POST variables
+                 contains an array. Handled by a function in form.inc.php
+                 that can be used by other scripts if required.
+        - Fixed: error in get_request_uri which trips over $_GET variable
+                 containing an array. Handled by a seperate function to the
+                 one in form.inc.php as this one is required to construct
+                 a URL query from them.
+        - Fixed: post content preview was being chopped incorrectly in
+                 search results
+        - Fixed: search was not working as expected when a user searched
+                 for words by a user and the word wass in the MySQL stop list.
+                 
+        - Fixed: redid all the transparency on all the Default style images
+                 and made sure they were 15x15 pixels.
+        - Fixed: Several changes to make Beehive more friendly to non-english
+                 translations.
+        - Fixed: attachments being deleted prevents moderators from gaining
+                 access to the edit attachments page of a post for another user.
+        - Fixed: Made all edit pages check for and create an AID record in the
+                 relevant ATTACHMENTS table in order to prevent replacing it
+                 and loosing link between posts and attachments.
+        - Fixed: pm_save_attachment_id() causing problems when a PM already
+                 has an attachment ID. It now checks the database first same
+                 as post_save_attachment_id does.
+        - Fixed: all final_uri queries now check to make sure the string
+                 is longer than 0 chars.
+        - Fixed: exploit in final_uri that allowed people to load another
+                 website into the discussion frame of Beehive.
+        - Fixed: grammer error in "You have 1 a new PM" language string.
+        - Fixed: PM's always showing as having attachments. Added a new
+                 function to pm.inc.php called pm_has_attachments() which
+                 will actually check the POST_ATTACHMENT_FILES table for
+                 attachments same as the thread_has_attachments() does.
+        - Fixed: user_get_aliases() no longer include empty IPAddress
+                 matches in the check.
+        - Fixed: moved USER_PREF modifications out of 0.5-to-0.6 upgrader
+                 foreach loop into main part of installer so they are only
+                 performed once.
+        - Fixed: undefined variable $db_post_save_attachment_id on line
+                 722 of pm.inc.php
+        - Fixed: logon drop down not working on expired session page.
+        - Fixed: missing [1 new from thread list.
+        - Fixed: Guest error login link loosing URL query due to it not
+                 being encoded correctly.
+        - Fixed: [x new of y] wrapping incorrectly by adding
+                 white-space: nowrap to CSS
+        - Fixed: "Ararar" error message in thread_options.php
+        - Fixed: missing rawurlencode call in parse_url function which
+                 broke the ?msg thing in email links.
+        - Fixed: emoticon "none" setting not working.
+        - Fixed: session failure page choking on $_POST being a
+                 multi-dimensional array.
+        - Fixed: threads_any_unread() not checking if the user had not
+                 seen the thread before at all.
+        - Fixed: bug with undefined index PATH_INFO in html.inc.php
+        - Fixed: light mode always remembering password even when
+                 tickbox unticked.
+        - Fixed: logging in from light mode and then visiting the full
+                 mode triggers showing the logon dialog even though
+                 you've never visted it before.
+        - Fixed: static webtag in poll.inc.php and upgrade-05-to-06.php
+        - Fixed: undefined variable $lang in poll.inc.php
+        - Fixed: Removed erranous space from end of constants.inc.php
+                 that trips up if the output buffering is disabled.
+        - Fixed: undefined variable $settings_array in forum.inc.php
+        - Fixed: undefined $db_install in forum.inc.php
+        - Fixed: removing a forum didn't remove the RSS_FEEDS and RSS_HISTORY tables for that forum
+        - Fixed: header_redirect problem when msie_buffer_fix() is called producing output before headers
+        - Fixed: undefined variable $chunks_array in format.inc.php
+
+        - Changed: Simplified the calls to the email notification
+                   functions requiring a msg and splitting it into
+                   tid.pid when the function is called by joining
+                   the tid & pid!
+        - Changed: RSS feed now duplicates the headline in the quote
+                   tag so if it gets truncated by Beehive's 64 char
+                   limit on thread titles we still get to see it all.
+        - Changed: All '{$table_data['FID']}' changed to $forum_fid
+                   to make things neater and easier to understand.
+        - Changed: Truncating of RSS thread title now works the same
+                   as the search results.
+        - Changed: Reformatted user_profile.php page so it should
+                   display better.
+        - Changed: Added error checking to installer/upgrade scripts.
+        - Changed: Made the Find button on the Advanced Search form
+                   auto-re-enable when the search results have
+                   successfully loaded.
+        - Changed: logon.php and logout.php to not use the expired
+                   session page. Makes sense, no?
+        - Changed: Removed <bdo> tags from thread_list.php
+        - Changed: Added CDATA tags to the <title> element of the RSS
+                   Feed which should help with FireFox not being able
+                   to use the output.
+        - Changed: Added an exclude_keys array list to 
+                   form_input_hidden_array so you can specify named
+                   keys to skip.
+        - Changed: Added _array_chunk function which mimics 
+                   PHP > 4.2.0's own function.
+        - Changed: search indexing to ignore keywords with numerals
+                   only (like: '000', '999', '911', '666' etc)
+        - Changed: search indexing now chunks the keywords and
+                   performs multiple queries in chunks of 20 keywords
+                   in order to stop MySQL failing when the number of
+                   words to index in one query is greater than the
+                   highest extended query count.
+        - Changed: Removed directory creation functionality from 
+                   admin_default_forum_settings.php and added a 
+                   function that is called by the script and all 
+                   the other attachment scripts to check and create
+                   the directory. The text captcha class already does
+                   this.
+        - Changed: Removed all the width and height attributes from
+                   image tags to stop those images which are larger
+                   or smaller from being resized by the browser.
+        - Changed: Updated readme.txt
+        - Changed: Updated release.txt                 
+                   
+
 What's new in 0.6RC1
 ====================
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.66 2005-06-11 14:31:41 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.67 2005-06-29 19:53:28 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -502,17 +502,21 @@ function admin_get_forum_list()
 
         // Get number of messages on forum
 
-        $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
-        $result_post_count = db_query($sql, $db_get_forum_list);
+        $forum_data['MESSAGES'] = 0;
 
-        if (db_num_rows($result_post_count) > 0) {
+        $sql = "SHOW TABLES LIKE '{$forum_data['WEBTAG']}_POST'";
+        $result = db_query($sql, $db_get_forum_list);
 
-            $row = db_fetch_array($result_post_count);
-            $forum_data['MESSAGES'] = $row['POST_COUNT'];
+        if (db_num_rows($result) > 0) {
 
-        }else {
+            $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+            $result_post_count = db_query($sql, $db_get_forum_list);
 
-            $forum_data['MESSAGES'] = 0;
+            if (db_num_rows($result_post_count) > 0) {
+
+                $row = db_fetch_array($result_post_count);
+                $forum_data['MESSAGES'] = $row['POST_COUNT'];
+            }
         }
 
         $get_forum_list_array[] = $forum_data;

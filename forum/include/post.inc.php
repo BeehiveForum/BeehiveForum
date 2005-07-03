@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.131 2005-06-11 14:31:41 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.132 2005-07-03 17:49:39 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
@@ -29,17 +29,17 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content)
+function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $hide_ipaddress = false)
 {
     $db_post_create = db_connect();
 
-    include("./include/search_stopwords.inc.php");
-
-    $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
-
     $post_content = addslashes($content);
 
-    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+    if ($hide_ipaddress === false) {
+        if (!$ipaddress = get_ip_address()) $ipaddress = "";
+    }else {
+        $ipaddress = "";
+    }
 
     if (!is_numeric($tid)) return -1;
     if (!is_numeric($reply_pid)) return -1;
@@ -48,7 +48,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content)
 
     if (!$table_data = get_table_prefix()) return -1;
 
-    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL) && !perm_is_moderator($fid)) {
+    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fid, $fuid)) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}POST ";
         $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, APPROVED, IPADDRESS) ";

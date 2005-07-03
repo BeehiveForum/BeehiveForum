@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.105 2005-06-29 19:53:29 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.106 2005-07-03 17:49:38 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
@@ -236,10 +236,10 @@ function _array_search($needle, $haystack)
 // Split an array into a multi-dimensional array.
 // PHP 4 >= 4.2.0, PHP 5 already include this function.
 
-function _array_chunk($input_array, $size, $preserve_keys = false) {
+function _array_chunk($input_array, $size = 1, $preserve_keys = false) {
 
    if (!is_array($input_array)) return false;
-   if (!is_numeric($size)) return false;
+   if (!is_numeric($size) || $size < 1) return false;
    if (!is_bool($preserve_keys)) $preserve_keys = false;
 
    reset($input_array);
@@ -250,8 +250,8 @@ function _array_chunk($input_array, $size, $preserve_keys = false) {
 
    foreach($input_array as $key => $value) {
 
-       if (sizeof($chunks_array[$i]) >= $size) $i++;
        if (!isset($chunks_array[$i])) $chunks_array[$i] = array();
+       if (sizeof($chunks_array[$i]) >= $size) $i++;
 
        if ($preserve_keys) {
 
@@ -263,7 +263,7 @@ function _array_chunk($input_array, $size, $preserve_keys = false) {
        }
    }
 
-   return $chunks;
+   return $chunks_array;
 }
 
 // Case insensitive / multi-dimensional replacement for in_array.

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.37 2005-05-14 12:43:36 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.38 2005-07-03 17:49:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -128,6 +128,7 @@ if (isset($_POST['changepermissions'])) {
         }
 
         if ($valid) {
+
             if ($new_fid = forum_create($new_webtag, $new_name, $new_access)) {
                 $message_html = "<h2>{$lang['successfullycreatedforum']} '$new_webtag'</h2>\n";
             }else {

@@ -45,12 +45,7 @@ class rss_item
 
 function rss_error_handler()
 {
-    $uri = get_request_uri();
-
-    header("Request-URI: $uri");
-    header("Content-Location: $uri");
-    header("Location: $uri");
-
+    echo "aww :(";
     exit;
 }
 
@@ -189,7 +184,8 @@ function rss_fetch_feed()
     $sql = "SELECT RSSID, NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN ";
     $sql.= "FROM {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
     $sql.= "WHERE NOW() >= DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL ";
-    $sql.= "RSS_FEEDS.FREQUENCY MINUTE) LIMIT 0, 1";
+    $sql.= "RSS_FEEDS.FREQUENCY MINUTE) AND RSS_FEEDS.FREQUENCY > 0 ";
+    $sql.= "LIMIT 0, 1";
 
     $result = db_query($sql, $db_fetch_rss_feed);
 
@@ -247,11 +243,11 @@ function rss_create_history($rss_id, $link)
 
 function rss_check_feeds()
 {
-    set_error_handler("rss_error_handler");
-
     $user_sess = bh_session_check();
 
     $lang = load_language_file();
+
+    $item_count = 0;
 
     if ($rss_feed = rss_fetch_feed()) {
 
@@ -283,15 +279,16 @@ function rss_check_feeds()
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);
 
-                    post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], $rss_feed['UID'], 0, $content);
+                    post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], $rss_feed['UID'], 0, $content, true);
 
                     rss_create_history($rss_feed['RSSID'], $rss_item->link);
                 }
+
+                $item_count++;
+                if ($item_count == 10) break;
             }
         }
     }
-
-    restore_error_handler();
 }
 
 function rss_get_feeds()

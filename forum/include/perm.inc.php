@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.79 2005-06-07 21:49:16 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.80 2005-07-03 17:49:39 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -36,7 +36,7 @@ if (@file_exists("./include/config.inc.php")) {
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 
-function perm_is_moderator($fid = 0)
+function perm_is_moderator($fid = 0, $uid = false)
 {
     static $user_status = false;
     static $folder_fid = false;
@@ -49,7 +49,7 @@ function perm_is_moderator($fid = 0)
 
         $forum_fid = $table_data['FID'];
 
-        $uid = bh_session_get_value('UID');
+        if ($uid === false) $uid = bh_session_get_value('UID');
 
         $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
         $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
@@ -164,7 +164,7 @@ function perm_is_links_moderator($uid = false)
     return ($user_status & USER_PERM_LINKS_MODERATE) > 0;
 }
 
-function perm_check_folder_permissions($fid, $access_level)
+function perm_check_folder_permissions($fid, $access_level, $uid = false)
 {
     static $user_status = false;
     static $folder_fid = false;
@@ -180,7 +180,7 @@ function perm_check_folder_permissions($fid, $access_level)
 
         $forum_fid = $table_data['FID'];
 
-        $uid = bh_session_get_value('UID');
+        if ($uid === false) $uid = bh_session_get_value('UID');
 
         $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
         $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
@@ -213,7 +213,7 @@ function perm_check_folder_permissions($fid, $access_level)
     return ($user_status & $access_level) == $access_level;
 }
 
-function perm_check_global_permissions($access_level)
+function perm_check_global_permissions($access_level, $uid = false)
 {
     static $user_status = false;
 
@@ -223,7 +223,7 @@ function perm_check_global_permissions($access_level)
 
         if (!is_numeric($access_level)) return false;
 
-        $uid = bh_session_get_value('UID');
+        if ($uid === false) $uid = bh_session_get_value('UID');
 
         $sql = "SELECT GROUP_PERMS.PERM FROM GROUPS ";
         $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";

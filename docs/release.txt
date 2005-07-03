@@ -74,6 +74,7 @@ What's new in 0.6RC2
         - Fixed: removing a forum didn't remove the RSS_FEEDS and RSS_HISTORY tables for that forum
         - Fixed: header_redirect problem when msie_buffer_fix() is called producing output before headers
         - Fixed: undefined variable $chunks_array in format.inc.php
+        - Fixed: undefined variable $chunks in format.inc.php
 
         - Changed: Simplified the calls to the email notification
                    functions requiring a msg and splitting it into
@@ -119,8 +120,13 @@ What's new in 0.6RC2
         - Changed: Removed all the width and height attributes from
                    image tags to stop those images which are larger
                    or smaller from being resized by the browser.
-        - Changed: Updated readme.txt
-        - Changed: Updated release.txt                 
+        - Changed: Added optional UID argument to all the perm_*
+                   functions that require it.
+        - Changed: Added optional argument to disable ip address
+                   logging as used by the RSS feed
+        - Chamged: Added extra index to USER_POLL_VOTES (TID, OPTION_ID)
+                   to improve poll performance
+        - Changed: RSS Feed so it only fetches 10 feed items per update        
                    
 
 What's new in 0.6RC1

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.62 2005-06-26 14:28:16 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.63 2005-07-03 17:49:39 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -848,7 +848,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  PRIMARY KEY (ID)";
+    $sql.= "  PRIMARY KEY  (ID), ";
+    $sql.= "  KEY TID (TID, OPTION_ID)";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {

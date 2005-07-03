@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.123 2005-06-11 14:31:41 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.124 2005-07-03 18:42:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -515,14 +515,6 @@ if ($valid && isset($_POST['submit'])) {
 html_draw_top("onUnload=clearFocus()", "openprofile.js", "post.js", "dictionary.js", "htmltools.js", "basetarget=_blank");
 draw_header_pm();
 
-// PM link from profile
-
-if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
-
-    $to_user = user_get($_GET['uid']);
-    $t_recipient_list = $to_user['LOGON'];
-}
-
 echo "<table border=\"0\" cellpadding=\"20\" cellspacing=\"0\" width=\"100%\">\n";
 echo "  <tr>\n";
 echo "    <td class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['writepm']}</b></td>\n";
@@ -612,6 +604,18 @@ echo "        </tr>\n";
 
 if ($friends_array = pm_user_get_friends()) {
 
+    if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+
+        $to_user = user_get($_GET['uid']);
+
+        if (in_array($to_user['UID'], $friends_array['uid_array'])) {
+            $t_to_uid = $to_user['UID'];
+            $to_radio = 0;
+        }else {
+            $t_recipient_list = $to_user['LOGON'];
+        }
+    }
+
     echo "        <tr>\n";
     echo "          <td>\n";
     echo "            ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
@@ -625,6 +629,12 @@ if ($friends_array = pm_user_get_friends()) {
     echo "        </tr>\n";
 
 }else {
+
+    if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+
+        $to_user = user_get($_GET['uid']);
+        $t_recipient_list = $to_user['LOGON'];
+    }
 
     echo "        <tr>\n";
     echo "          <td>", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_dropdown"), "</td>\n";

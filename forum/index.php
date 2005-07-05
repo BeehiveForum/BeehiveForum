@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.117 2005-06-23 10:24:23 decoyduck Exp $ */
+/* $Id: index.php,v 1.118 2005-07-05 15:08:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -225,7 +225,7 @@ if (bh_session_active()) {
 echo "<noframes>\n";
 echo "<body>\n";
 
-define('BEEHIVE_LIGHT_INCLUDE', true);
+define('BEEHIVE_LIGHT_INCLUDE', 1);
 
 if (bh_session_active()) {
 

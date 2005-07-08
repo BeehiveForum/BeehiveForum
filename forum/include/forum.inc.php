@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.150 2005-07-03 17:49:39 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.151 2005-07-08 10:15:49 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -471,6 +471,44 @@ function forum_get_name($fid)
     }
 
     return "A Beehive Forum";
+}
+
+function forum_get_webtag($fid)
+{
+    $db_forum_get_webtag = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = $fid";
+    $result = db_query($sql, $db_forum_get_webtag);
+
+    if (db_num_rows($result) > 0) {
+
+        list($forum_webtag) = db_fetch_array($result, DB_RESULT_NUM);
+        return $forum_webtag;
+    }
+
+    return false;
+}
+
+function forum_get_table_prefix($fid)
+{
+    $db_forum_get_webtag = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX ";
+    $sql.= "FROM FORUMS WHERE FID = $fid";
+
+    $result = db_query($sql, $db_forum_get_webtag);
+
+    if (db_num_rows($result) > 0) {
+
+        $forum_data = db_fetch_array($result);
+        return $forum_data;
+    }
+
+    return false;
 }
 
 function forum_get_setting($setting_name, $value = false, $default = false)

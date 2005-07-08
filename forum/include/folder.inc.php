@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.99 2005-04-24 22:24:48 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.100 2005-07-08 10:15:49 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -265,14 +265,21 @@ function folder_move_threads($from, $to)
     return $result;
 }
 
-function folder_get_available()
+function folder_get_available($forum_fid = false)
 {
     $db_folder_get_available = db_connect();
 
-    if (!$table_data = get_table_prefix()) return '0';
     if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-    $forum_fid = $table_data['FID'];
+    if (!is_numeric($forum_fid)) {
+
+        if (!$table_data = get_table_prefix()) return '0';
+        $forum_fid = $table_data['FID'];
+
+    }else {
+
+        if (!$table_data = forum_get_table_prefix($forum_fid)) return '0';
+    }
 
     $access_allowed = USER_PERM_POST_READ;
 

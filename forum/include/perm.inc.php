@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.80 2005-07-03 17:49:39 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.81 2005-07-08 10:15:50 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -40,6 +40,9 @@ function perm_is_moderator($fid = 0, $uid = false)
 {
     static $user_status = false;
     static $folder_fid = false;
+
+    if (!is_numeric($fid)) $fid = 0;
+    if (!is_numeric($uid)) $uid = false;
 
     if (!$folder_fid || !$user_status || $folder_fid != $fid) {
 
@@ -73,6 +76,8 @@ function perm_has_admin_access($uid = false)
     static $user_uid = false;
     static $user_status = false;
 
+    if (!is_numeric($uid)) $uid = false;
+
     if ($uid === false) $uid = bh_session_get_value('UID');
 
     if (!$user_uid || !$user_status || $user_uid != $uid) {
@@ -104,6 +109,8 @@ function perm_has_forumtools_access($uid = false)
 {
     static $user_uid = false;
     static $user_status = false;
+
+    if (!is_numeric($uid)) $uid = false;
 
     if ($uid === false) $uid = bh_session_get_value('UID');
 
@@ -137,6 +144,8 @@ function perm_is_links_moderator($uid = false)
     static $user_uid = false;
     static $user_status = false;
 
+    if (!is_numeric($uid)) $uid = false;
+
     if ($uid === false) $uid = bh_session_get_value('UID');
 
     if (!$user_uid || !$user_status || $user_uid != $uid) {
@@ -169,12 +178,13 @@ function perm_check_folder_permissions($fid, $access_level, $uid = false)
     static $user_status = false;
     static $folder_fid = false;
 
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($access_level)) return false;
+    if (!is_numeric($uid)) $uid = false;
+
     if (!$folder_fid || !$user_status || $folder_fid != $fid) {
 
         $db_perm_check_folder_permissions = db_connect();
-
-        if (!is_numeric($fid)) return false;
-        if (!is_numeric($access_level)) return false;
 
         if (!$table_data = get_table_prefix()) return false;
 
@@ -216,6 +226,9 @@ function perm_check_folder_permissions($fid, $access_level, $uid = false)
 function perm_check_global_permissions($access_level, $uid = false)
 {
     static $user_status = false;
+
+    if (!is_numeric($access_level)) return false;
+    if (!is_numeric($uid)) $uid = false;
 
     if (!$user_status) {
 

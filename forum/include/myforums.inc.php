@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.46 2005-06-12 22:54:11 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.47 2005-07-08 10:15:50 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -130,13 +130,13 @@ function get_my_forums()
 
             // Get any unread messages
 
-            $folders = folder_get_available();
+            $folders = folder_get_available($forum_fid);
 
             $user_ignored = USER_IGNORED;
             $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-            $sql = "SELECT SUM(THREAD.LENGTH - USER_THREAD.LAST_READ) AS UNREAD_MESSAGES FROM ";
-            $sql.= "{$forum_data['WEBTAG']}_THREAD THREAD ";
+            $sql = "SELECT SUM(THREAD.LENGTH) - SUM(USER_THREAD.LAST_READ) ";
+            $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ";
             $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ON ";
@@ -149,8 +149,7 @@ function get_my_forums()
             $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
             $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
             $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-            $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-            $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
+            $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1)";
 
             $result_post_count = db_query($sql, $db_get_my_forums);
 

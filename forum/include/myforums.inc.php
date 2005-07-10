@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.47 2005-07-08 10:15:50 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.48 2005-07-10 21:28:34 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -136,7 +136,8 @@ function get_my_forums()
             $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
             $sql = "SELECT SUM(THREAD.LENGTH) - SUM(USER_THREAD.LAST_READ) ";
-            $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
+            $sql.= "AS UNREAD_MESSAGES, SUM(THREAD.LENGTH) AS NUM_MESSAGES ";
+            $sql.= "FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ";
             $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
             $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ON ";
@@ -154,7 +155,12 @@ function get_my_forums()
             $result_post_count = db_query($sql, $db_get_my_forums);
 
             $row = db_fetch_array($result_post_count);
-            $forum_data['UNREAD_MESSAGES'] = is_null($row['UNREAD_MESSAGES']) ? 0 : $row['UNREAD_MESSAGES'];
+
+            if (!isset($row['UNREAD_MESSAGES']) || is_null($row['UNREAD_MESSAGES'])) {
+                $forum_data['UNREAD_MESSAGES'] = $row['NUM_MESSAGES'];
+            }else {
+                $forum_data['UNREAD_MESSAGES'] = $row['UNREAD_MESSAGES'];
+            }
 
             // Get unread to me message count
 

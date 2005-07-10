@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.15 2005-04-27 19:47:06 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.16 2005-07-10 21:28:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -232,6 +232,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form action=\"admin_post_stats.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden("webtag", $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">\n";

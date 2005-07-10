@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.250 2005-06-17 17:39:35 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.251 2005-07-10 21:28:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -90,7 +90,15 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+// Are we viewing a specific folder only?
+
+if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+    $folder = $_GET['folder'];
+    $mode = 0;
+}
+
 // Check that required variables are set
+
 if (bh_session_get_value('UID') == 0) {
 
     $uid = 0; // default to UID 0 if no other UID specified
@@ -122,6 +130,8 @@ if (bh_session_get_value('UID') == 0) {
             threads_mark_all_read();
         }elseif ($_GET['markread'] == 1) {
             threads_mark_50_read();
+        }elseif ($_GET['markread'] == 3 && isset($folder)) {
+            threads_mark_folder_read($folder);
         }
     }
 
@@ -138,11 +148,6 @@ if (bh_session_get_value('UID') == 0) {
             }
         }
     }
-}
-
-if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-    $folder = $_GET['folder'];
-    $mode = 0;
 }
 
 if (bh_session_get_value('UID') != 0) {
@@ -444,8 +449,8 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                     foreach($thread_info as $key2 => $thread) {
 
-                        if (!isset($visiblethreads) || !is_array($visiblethreads)) $visiblethreads = array();
-                        if (!in_array($thread['TID'], $visiblethreads)) $visiblethreads[] = $thread['TID'];
+                        if (!isset($visible_threads_array) || !is_array($visible_threads_array)) $visible_threads_array = array();
+                        if (!in_array($thread['TID'], array_keys($visible_threads_array))) $visible_threads_array[$thread['TID']] = $thread['LENGTH'];
 
                         if ($thread['FID'] == $folder_number) {
 
@@ -681,17 +686,27 @@ if (bh_session_get_value('UID') != 0) {
     echo "        ", form_input_hidden('webtag', $webtag), "\n";
 
     $labels = array($lang['alldiscussions'], $lang['next50discussions']);
+    $selected_option = 0;
 
-    if (isset($visiblethreads) && is_array($visiblethreads)) {
+    if (isset($visible_threads_array) && is_array($visible_threads_array)) {
 
         $labels[] = $lang['visiblediscussions'];
+        $selected_option = 2;
 
-        for ($i = 0; $i < sizeof($visiblethreads); $i++) {
-            echo "        ", form_input_hidden("tid_array[]", $visiblethreads[$i]), "\n";
+        foreach ($visible_threads_array as $tid => $length) {
+            echo "        ", form_input_hidden("tid_array[$tid]", $length), "\n";
         }
     }
 
-    echo "        ", form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n";
+    if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+        echo "        ", form_input_hidden('folder', $folder), "\n";
+
+        $labels[] = $lang['selectedfolder'];
+        $selected_option = 3;
+    }
+
+    echo "        ", form_dropdown_array("markread", range(0, sizeof($labels) - 1), $labels, $selected_option). "\n";
     echo "        ", form_submit("go",$lang['goexcmark']). "\n";
     echo "      </form>\n";
     echo "    </td>\n";
@@ -708,6 +723,11 @@ echo "    <td>&nbsp;</td>\n";
 echo "    <td class=\"smalltext\">\n";
 echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
 echo "        ", form_input_hidden('webtag', $webtag), "\n";
+
+if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+    echo "        ", form_input_hidden('folder', $folder), "\n";
+}
+
 echo "        ", form_input_text('msg', '1.1', 10), "\n";
 echo "        ", form_submit("go",$lang['goexcmark']), "\n";
 echo "      </form>\n";
@@ -723,6 +743,11 @@ echo "    <td>&nbsp;</td>\n";
 echo "    <td class=\"smalltext\">\n";
 echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
 echo "        ", form_input_hidden('webtag', $webtag), "\n";
+
+if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+    echo "        ", form_input_hidden('folder', $folder), "\n";
+}
+
 echo "        ", form_input_text("search_string", "", 20). "\n";
 echo "        ", form_submit("submit", $lang['find']). "\n";
 echo "      </form>\n";

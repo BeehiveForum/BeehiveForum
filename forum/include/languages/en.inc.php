@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.298 2005-06-26 14:28:05 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.299 2005-07-10 21:28:34 decoyduck Exp $ */
 
 // International English language file
 
@@ -121,10 +121,9 @@ $lang['attachments'] = "Attachments";
 $lang['imageattachments'] = "Image Attachments";
 $lang['filename'] = "Filename";
 $lang['dimensions'] = "Dimensions";
-$lang['downloaded'] = "Downloaded";
+$lang['downloadedxtimes'] = "Downloaded: %d times";
+$lang['downloadedonetime'] = "Downloaded: 1 time";
 $lang['size'] = "Size";
-$lang['time'] = "time";
-$lang['times'] = "times";
 $lang['viewmessage'] = "View Message";
 $lang['logon'] = "Logon";
 $lang['more'] = "More";
@@ -451,8 +450,6 @@ $lang['textcaptchafonterror_2'] = "on your server.";
 $lang['textcaptchadirerror'] = "Text Captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the webserver / PHP process.";
 $lang['textcaptchagderror'] = "Text Captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text captcha support.";
 
-$lang['textcaptchadirsnotwritable'] = "Text captcha directory must be writable by webserver / PHP process!";
-$lang['failedtocreatetextcaptchadirectories'] = "Failed to create text captcha directory!";
 $lang['textcaptchadirblank'] = "Text captcha directory is blank!";
 
 $lang['newuserpreferences'] = "New User Preferences";
@@ -580,7 +577,6 @@ $lang['unknownemoticonsname'] = "Unknown emoticons name";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";
 $lang['attachmentdirnotwritable'] = "Attachment directory must be writable by the webserver / PHP process!";
-$lang['failedtocreateattachmentdirectory'] = "Failed to create required attachment directory!";
 $lang['attachmentdirblank'] = "You must supply a directory to save attachments in";
 $lang['mainsettings'] = "Main Settings";
 $lang['forumname'] = "Forum Name";
@@ -888,7 +884,6 @@ $lang['alreadyloggedin'] = "already logged in";
 $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
-$lang['lightmode'] = "light mode";
 $lang['pleasereenterpasswd'] = "Please reenter your password and try again.";
 $lang['rememberpasswds'] = "Remember passwords";
 $lang['rememberpassword'] = "Remember password";
@@ -1412,6 +1407,7 @@ $lang['highinterest'] = "High Interest";
 $lang['markasread'] = "Mark as Read";
 $lang['next50discussions'] = "Next 50 discussions";
 $lang['visiblediscussions'] = "Visible discussions";
+$lang['selectedfolder'] = "Selected folder";
 $lang['navigate'] = "Navigate";
 $lang['couldnotretrievefolderinformation'] = "There are no folders available.";
 $lang['nomessagesinthiscategory'] = "No messages in this category. Please select another, or";

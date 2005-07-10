@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.13 2005-06-26 14:28:05 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.14 2005-07-10 21:28:34 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -121,10 +121,9 @@ $lang['attachments'] = "Fichiers joints";
 $lang['imageattachments'] = "Image jointe";
 $lang['filename'] = "Nom de fichier";
 $lang['dimensions'] = "Dimensions";
-$lang['downloaded'] = "Téléchargé";
+$lang['downloadedxtimes'] = "Téléchargé: %d fois";
+$lang['downloadedonetime'] = "Téléchargé: 1 fois";
 $lang['size'] = "Taille de fichier";
-$lang['time'] = "temps";
-$lang['times'] = "temps";
 $lang['viewmessage'] = "voir le message";
 $lang['logon'] = "Ouverture de session";
 $lang['more'] = "Plus";
@@ -450,8 +449,6 @@ $lang['textcaptchafonterror_2'] = "sur votre serveur.";
 $lang['textcaptchadirerror'] = "Le Captcha de texte a été désactivé parce que le répertoire text_captcha and ses sous-répertoires ne sont pas inscriptibles part le serveur web / processus PHP.";
 $lang['textcaptchagderror'] = "Le Captcha de texte a été désactivé parce que le réglage PHP de votre serveur ne fournit pas de support pour la manipulation d'image GD et / ou de support pour les polices TTF. Les deux sont requis pour supporter le captcha de texte.";
 
-$lang['textcaptchadirsnotwritable'] = "Le répertoire de captcha de texte doit être inscriptible par le serveur web / processus PHP!";
-$lang['failedtocreatetextcaptchadirectories'] = "Création du répertoire de captcha de texte échouée!";
 $lang['textcaptchadirblank'] = "Le répertoire de captcha de texte est vierge!";
 
 $lang['newuserpreferences'] = "Préférences du nouveau utilisateur";
@@ -579,7 +576,6 @@ $lang['unknownemoticonsname'] = "Nom de binettes inconnu";
 $lang['mustchoosedefaultlang'] = "Vous devez choisir un langage de défaut pour le forum";
 $lang['activesessiongreaterthansession'] = "La temporisation de session active ne peut pas excéder la temporisation de session";
 $lang['attachmentdirnotwritable'] = "Le répertoire de fichiers joints doit être inscriptible par le serveur web / processus PHP!";
-$lang['failedtocreateattachmentdirectory'] = "Création du répertoire de fichiers joints requis échouée!";
 $lang['attachmentdirblank'] = "Vous devez fournir un répertoire pour l'enregistrement de fichiers joints";
 $lang['mainsettings'] = "Options principales";
 $lang['forumname'] = "Nom du forum";
@@ -887,7 +883,6 @@ $lang['alreadyloggedin'] = "a déjà ouvert une session";
 $lang['loggedinsuccessfully'] = "Ouverture de session réussie.";
 $lang['presscontinuetoresend'] = "Appuyer Continuer pour renvoyer les données du formulaire ou annuler pour renvoyer la page.";
 $lang['usernameorpasswdnotvalid'] = "Le nom d'utilisateur ou le mot de passe que vous avez entré n'est pas valide.";
-$lang['lightmode'] = "mode léger";
 $lang['pleasereenterpasswd'] = "SVP ré-introduire votre mot de passe de essayer de nouveau.";
 $lang['rememberpasswds'] = "Se souvenir des mots de passe";
 $lang['rememberpassword'] = "Se souvenir du mot de passe";

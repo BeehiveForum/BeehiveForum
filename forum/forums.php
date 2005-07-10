@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.45 2005-06-23 10:24:23 decoyduck Exp $ */
+/* $Id: forums.php,v 1.46 2005-07-10 21:28:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -131,9 +131,9 @@ if ($user_sess && bh_session_get_value('UID') <> 0) {
                 echo "                  <td width=\"30%\" valign=\"top\">{$forum['FORUM_DESC']}</td>\n";
 
                 if ($forum['UNREAD_TO_ME'] > 0) {
-                    echo "                  <td width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']} ({$forum['UNREAD_TO_ME']} {$lang['unreadtome']})</a></td>\n";
+                    echo "                  <td width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ",", ","), " {$lang['unreadmessages']} (", number_format($forum['UNREAD_TO_ME'], 0, ",", ","), " {$lang['unreadtome']})</a></td>\n";
                 }else {
-                    echo "                  <td width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</a></td>\n";
+                    echo "                  <td width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['UNREAD_MESSAGES'], 0, ",", ","), " {$lang['unreadmessages']}</a></td>\n";
                 }
 
                 if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {

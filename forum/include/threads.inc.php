@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.176 2005-06-23 13:59:33 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.177 2005-07-10 21:28:34 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -964,25 +964,43 @@ function threads_mark_50_read()
     }
 }
 
-function threads_mark_read($tidarray)
+function threads_mark_folder_read($fid)
+{
+    $db_threads_mark_50_read = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
+    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
+    $sql.= "AND THREAD.FID = $fid";
+
+    $result = db_query($sql, $db_threads_mark_50_read);
+
+    while ($row = db_fetch_array($result)) {
+        messages_update_read($row['TID'], $row['LENGTH'], $uid);
+    }
+}
+
+function threads_mark_read($tid_array)
 {
     $db_threads_mark_read = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!is_array($tidarray)) return false;
+    if (!is_array($tid_array)) return false;
 
     $uid = bh_session_get_value('UID');
 
-    foreach($tidarray as $ctid) {
+    foreach($tid_array as $tid => $length) {
 
-        if (is_numeric($ctid)) {
-
-            $sql = "SELECT LENGTH FROM {$table_data['PREFIX']}THREAD WHERE TID = $ctid";
-            $result = db_query($sql, $db_threads_mark_read);
-
-            list($ctlength) = db_fetch_array($result);
-            messages_update_read($ctid, $ctlength, $uid);
+        if (is_numeric($tid) && is_numeric($length)) {
+            messages_update_read($tid, $length, $uid);
         }
     }
 }

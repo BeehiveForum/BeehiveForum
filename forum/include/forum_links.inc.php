@@ -21,25 +21,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.12 2005-04-23 19:37:25 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.13 2005-07-14 19:46:20 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "links.inc.php");
 
-function forum_links_get_links()
+function forum_links_get_links($include_top_link)
 {
+    $db_forum_links_get_links = db_connect();
+
+    if (!is_bool($include_top_link)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
-
-    $db_forum_links_get_links = db_connect();
 
     $sql = "SELECT LID, POS, URI, TITLE FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS ASC, LID ASC";
 
     $result = db_query($sql, $db_forum_links_get_links);
 
-    if (db_num_rows($result) > 0) {
+    $num_links = ($include_top_link) ? 0 : 1;
+
+    if (db_num_rows($result) > $num_links) {
+
+        $links = array();
 
         while ($row = db_fetch_array($result)) {
 
@@ -57,7 +63,7 @@ function forum_links_get_links()
 
 function forum_links_draw_dropdown()
 {
-    if ($forum_links_array = forum_links_get_links()) {
+    if ($forum_links_array = forum_links_get_links(false)) {
 
         $html = "<select name=\"forum_links\" onchange=\"openForumLink(this)\" class=\"forumlinks\">\n";
 

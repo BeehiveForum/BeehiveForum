@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.13 2005-04-27 19:47:05 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.14 2005-07-14 19:46:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -234,7 +234,7 @@ echo "                  <td class=\"subhead\">{$lang['delete']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 
-if ($forum_links_array = forum_links_get_links()) {
+if ($forum_links_array = forum_links_get_links(true)) {
 
     $forum_top_link = array_shift($forum_links_array);
 
@@ -270,6 +270,14 @@ if ($forum_links_array = forum_links_get_links()) {
         echo "                  <td>", form_submit("l_delete[{$forum_link['LID']}]", $lang['delete']), "</td>\n";
         echo "                </tr>\n";
     }
+
+}else {
+
+    echo "                  <td>", form_input_hidden("l_top_lid", 0), $lang['top'], "</td>\n";
+    echo "                  <td>", form_field("l_top_title", $lang['forumlinks'], 32, 64), "</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
 }
 
 echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.44 2005-06-29 19:53:29 decoyduck Exp $ */
+/* $Id: install.php,v 1.45 2005-07-14 19:46:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -32,7 +32,7 @@ include_once(BH_INCLUDE_PATH. "install.inc.php");
 // Multiple forum support
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-if (@file_exists("./include/config.inc.php")) {
+if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
@@ -218,7 +218,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
                     if (!defined('BEEHIVE_INSTALL_NOWARN')) {
 
-                        if (@$fp = fopen("./include/config.inc.php", "w")) {
+                        if (@$fp = fopen(BH_INCLUDE_PATH. "config.inc.php", "w")) {
 
                             fwrite($fp, $config_file);
                             fclose($fp);
@@ -365,7 +365,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
         }
     }
 
-}elseif (isset($_POST['download_config']) && (!@file_exists('./include/config.inc.php') || $force_install)) {
+}elseif (isset($_POST['download_config']) && (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install)) {
 
     install_msie_buffer_fix();
 
@@ -528,7 +528,7 @@ echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/instal
 echo "</head>\n";
 echo "<body>\n";
 
-if (!@file_exists('./include/config.inc.php') || $force_install) {
+if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
 
     echo "<form id=\"install_form\" method=\"post\" action=\"install.php\">\n";
     echo "<input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";

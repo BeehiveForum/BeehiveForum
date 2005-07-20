@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.370 2005-05-28 13:48:39 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.371 2005-07-20 20:04:09 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
@@ -423,8 +423,8 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
 
                         if ($enable_wiki_links) {
 
-                            $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1, }\.[0-9]{1, }))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                            $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2, 15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                         }
                     }
                 }

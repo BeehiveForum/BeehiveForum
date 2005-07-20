@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.177 2005-07-10 21:28:34 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.178 2005-07-20 20:04:11 decoyduck Exp $ */
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
@@ -938,9 +938,13 @@ function threads_mark_all_read()
 
     $result_threads = db_query($sql, $db_threads_mark_all_read);
 
+    $threads_array = array();
+
     while($row = db_fetch_array($result_threads)) {
-        messages_update_read($row['TID'], $row['LENGTH'], $uid);
+        $threads_array[$row['TID']] = $row['LENGTH'];
     }
+
+    threads_mark_read($threads_array);
 }
 
 function threads_mark_50_read()
@@ -959,9 +963,13 @@ function threads_mark_50_read()
 
     $result = db_query($sql, $db_threads_mark_50_read);
 
-    while ($row = db_fetch_array($result)) {
-        messages_update_read($row['TID'], $row['LENGTH'], $uid);
+    $threads_array = array();
+
+    while($row = db_fetch_array($result_threads)) {
+        $threads_array[$row['TID']] = $row['LENGTH'];
     }
+
+    threads_mark_read($threads_array);
 }
 
 function threads_mark_folder_read($fid)
@@ -982,9 +990,13 @@ function threads_mark_folder_read($fid)
 
     $result = db_query($sql, $db_threads_mark_50_read);
 
-    while ($row = db_fetch_array($result)) {
-        messages_update_read($row['TID'], $row['LENGTH'], $uid);
+    $threads_array = array();
+
+    while($row = db_fetch_array($result_threads)) {
+        $threads_array[$row['TID']] = $row['LENGTH'];
     }
+
+    threads_mark_read($threads_array);
 }
 
 function threads_mark_read($tid_array)

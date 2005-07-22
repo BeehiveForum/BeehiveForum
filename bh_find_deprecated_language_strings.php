@@ -45,9 +45,9 @@ foreach($lang as $lang_key => $lang_value) {
     $unused_langs[$lang_key] = $lang_value;
 }
 
-if (get_files("E:/beehiveforum/forum", $files_array)) {
+if (get_files("./forum", $files_array)) {
 
-    if (get_files("E:/beehiveforum/forum/include", $files_array)) {
+    if (get_files("./forum/include", $files_array)) {
 
         echo "Please wait, checking files...\n\n";
 

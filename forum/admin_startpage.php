@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.70 2005-04-27 19:47:07 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.71 2005-07-22 11:11:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -85,7 +85,7 @@ if (!(perm_has_admin_access())) {
     exit;
 }
 
-$allowed_file_exts = array('html', 'htm', 'shtml', 'cgi', 'pl', 'php', 'php3', 'phtml', 'txt');
+$allowed_file_exts = array('html', 'htm', 'php', 'txt');
 
 if (isset($_POST['submit'])) {
 
@@ -303,9 +303,9 @@ echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_s
 
 if (isset($status_text)) {
     echo $status_text;
-}else {
-    echo "<br />\n";
 }
+
+echo "<br />\n";
 
 $tools = new TextAreaHTML("startpage");
 

@@ -21,7 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.151 2005-07-08 10:15:49 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.152 2005-07-23 22:53:32 decoyduck Exp $ */
+
+// We shouldn't be accessing this file directly.
+
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+    header("Request-URI: ../index.php");
+    header("Content-Location: ../index.php");
+    header("Location: ../index.php");
+    exit;
+}
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -41,9 +50,9 @@ function get_table_prefix()
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
+        if (isset($_GET['webtag']) && preg_match("/^[A-Z0-9-_]$/", $_GET['webtag']) > 0) {
             $webtag = trim(_stripslashes($_GET['webtag']));
-        }else if (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
+        }else if (isset($_POST['webtag']) && preg_match("/^[A-Z0-9-_]$/", $_POST['webtag']) > 0) {
             $webtag = trim(_stripslashes($_POST['webtag']));
         }else {
             $webtag = false;
@@ -99,9 +108,9 @@ function get_webtag(&$webtag_search)
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
+        if (isset($_GET['webtag']) && preg_match("/^[A-Z0-9-_]+$/", $_GET['webtag']) > 0) {
             $webtag = trim(_stripslashes($_GET['webtag']));
-        }else if (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
+        }else if (isset($_POST['webtag']) && preg_match("/^[A-Z0-9-_]+$/", $_POST['webtag']) > 0) {
             $webtag = trim(_stripslashes($_POST['webtag']));
         }else {
             $webtag = false;

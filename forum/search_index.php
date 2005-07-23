@@ -29,6 +29,9 @@ USA
 // it is run so if you have a lot of posts it could be some time
 // before your entire database is indexed.
 
+// Constant to define where the include files are
+define("BH_INCLUDE_PATH", "./include/");
+
 include_once(BH_INCLUDE_PATH. "search.inc.php");
 
 search_index_old_post();

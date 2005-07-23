@@ -20,11 +20,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.inc.php,v 1.4 2005-04-26 22:41:44 decoyduck Exp $ */
+/* $Id: mods_list.inc.php,v 1.5 2005-07-23 22:53:34 decoyduck Exp $ */
 
 /**
 * Fucntions related to generating the folder moderators lists
 */
+
+// We shouldn't be accessing this file directly.
+
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+    header("Request-URI: ../index.php");
+    header("Content-Location: ../index.php");
+    header("Location: ../index.php");
+    exit;
+}
 
 /**
 * Returns all the mods for a given folder

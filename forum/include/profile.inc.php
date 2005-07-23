@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.36 2005-04-18 17:31:45 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.37 2005-07-23 22:53:34 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -29,6 +29,15 @@ USA
 
 /**
 */
+
+// We shouldn't be accessing this file directly.
+
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+    header("Request-URI: ../index.php");
+    header("Content-Location: ../index.php");
+    header("Location: ../index.php");
+    exit;
+}
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gd_lib.inc.php,v 1.2 2005-04-09 18:44:57 decoyduck Exp $ */
+/* $Id: gd_lib.inc.php,v 1.3 2005-07-23 22:53:32 decoyduck Exp $ */
 
 /**
 * gd_lib.inc.php - GD image library functions
@@ -32,6 +32,15 @@ USA
 /**
 *
 */
+
+// We shouldn't be accessing this file directly.
+
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+    header("Request-URI: ../index.php");
+    header("Content-Location: ../index.php");
+    header("Location: ../index.php");
+    exit;
+}
 
 /**
 * Checks for GD image library support

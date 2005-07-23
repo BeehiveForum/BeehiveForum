@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.263 2005-06-11 13:58:59 decoyduck Exp $ */
+/* $Id: post.php,v 1.264 2005-07-23 22:53:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -117,7 +117,7 @@ if (isset($_POST['cancel'])) {
 
 // for "REPLY ALL" form button on messages.php
 if (isset($_POST['replyto'])) {
-        $_GET['replyto'] = $_POST['replyto'];
+    $_GET['replyto'] = $_POST['replyto'];
 }
 
 // Check if the user is viewing signatures.

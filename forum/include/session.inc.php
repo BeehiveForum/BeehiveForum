@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.190 2005-06-23 13:59:33 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.191 2005-07-23 22:53:35 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -32,6 +32,15 @@ USA
 /**
 *
 */
+
+// We shouldn't be accessing this file directly.
+
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+    header("Request-URI: ../index.php");
+    header("Content-Location: ../index.php");
+    header("Location: ../index.php");
+    exit;
+}
 
 include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
@@ -567,9 +576,22 @@ function parse_array($array, $sep, &$result_var)
         $value = rawurlencode($value);
 
         if (is_array($value)) {
+
             parse_array($value, $sep, $result_var);
+
         }else {
-            $result_var.= "$key=$value$sep";
+
+	    if ($key == 'webtag') {
+
+	        if (preg_match("/^[A-Z0-9-_]+$/", $value) > 0) {
+
+                    $result_var.= "webtag=$value$sep";
+	        }
+
+	    }else {
+
+	        $result_var.= "$key=$value$sep";
+            }
         }
     }
 

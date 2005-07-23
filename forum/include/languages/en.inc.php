@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.301 2005-07-22 11:11:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.302 2005-07-23 22:53:35 decoyduck Exp $ */
 
 // International English language file
 
@@ -225,10 +225,10 @@ $lang['adminexp_3'] = "<b>User Groups</b> allows you to create User Groups to as
 $lang['adminexp_4'] = "<b>Ban Controls</b> allows the banning and un-banning of IP Addresses, Usernames, Email addresses and Nicknames.";
 $lang['adminexp_5'] = "<b>Folders</b> allows the creation, modification and deletion of folders.";
 $lang['adminexp_6'] = "<b>Profiles</b> lets you customise the items that appear in the user profiles.";
-$lang['adminexp_7'] = "<b>Forum Settings</b> allows you to customise your forum\'s name, appearance and many other things.";
-$lang['adminexp_8'] = "<b>Start Page</b> lets you customise your forum\'s start page.";
+$lang['adminexp_7'] = "<b>Forum Settings</b> allows you to customise your forum's name, appearance and many other things.";
+$lang['adminexp_8'] = "<b>Start Page</b> lets you customise your forum's start page.";
 $lang['adminexp_9'] = "<b>Forum style</b> allows you to create styles for your forum members to use.";
-$lang['adminexp_10'] = "<b>Word filter</b> allows you to filter words you don\'t want to be used on your forum.";
+$lang['adminexp_10'] = "<b>Word filter</b> allows you to filter words you don't want to be used on your forum.";
 $lang['adminexp_11'] = "<b>Posting stats</b> generates a report listing the top 10 posters in a defined period.";
 $lang['adminexp_12'] = "<b>Forum links</b> lets you manage the links dropdown in the navigation bar.";
 $lang['adminexp_13'] = "<b>View log</b> lists recent actions by the forum moderators.";
@@ -259,7 +259,7 @@ $lang['profiles'] = "Profiles";
 $lang['manageforums'] = "Manage Forums";
 $lang['forumsettings'] = "Forum Settings";
 $lang['globalforumsettings'] = "Global Forum Settings";
-$lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum\'s settings page that will take precedence over the settings you change here.";
+$lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here.";
 $lang['startpage'] = "Start Page";
 $lang['startpageerror_1'] = "Your start page could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
 $lang['startpageerror_2'] = "folder, if necessary creating the folder structure in the process. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
@@ -294,19 +294,19 @@ $lang['userstatus'] = "User Status";
 $lang['userdetails'] = "User Details";
 $lang['nicknameheader'] = "Nickname:";
 $lang['warning_caps'] = "WARNING";
-$lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user\'s posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
+$lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the selected user's posts? Once the posts are deleted they cannot be retrieved and will be lost forever.";
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
 $lang['folderaccess'] = "Folder Access";
 $lang['possiblealiases'] = "Possible Aliases";
 $lang['usersettingsupdated'] = "User Settings Successfully Updated";
 $lang['nomatches'] = "No matches";
 $lang['deleteposts'] = "Delete Posts";
-$lang['deleteallusersposts'] = "Delete all of this user\'s posts";
+$lang['deleteallusersposts'] = "Delete all of this user's posts";
 $lang['noattachmentsforuser'] = "No attachments for this user";
-$lang['aliasdesc'] = "This is a list of other posters who match this user\'s last 20 known IP addresses.";
+$lang['aliasdesc'] = "This is a list of other posters who match this user's last 20 known IP addresses.";
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
-$lang['manageusersexp_2'] = "To alter a user\'s permissions click their name.";
+$lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
 $lang['lastlogon'] = "Last Logon";
 $lang['nouseraccounts'] = "No user accounts in database.";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
@@ -352,11 +352,11 @@ $lang['wholeword'] = "Whole Word";
 $lang['word_filter_help_1'] = "<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument.";
 $lang['word_filter_help_2'] = "<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument.";
 $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expressions to match text.";
-$lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it\'s entire contents is lost forever and cannot be recovered.";
+$lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it's entire contents is lost forever and cannot be recovered.";
 $lang['deleteforum'] = "Delete Forum";
 $lang['successfullycreatedforum'] = "Successfully created forum";
 $lang['failedtocreateforum_1'] = "Failed to create forum";
-$lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren\'t already in use.";
+$lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 $lang['nameanddesc'] = "Name and Description";
 $lang['movethreads'] = "Move Threads";
 $lang['threadsmovedsuccessfully'] = "Threads moved successfully";
@@ -434,8 +434,8 @@ $lang['textcaptchadir'] = "Text captcha directory";
 $lang['textcaptchakey'] = "Text captcha key";
 $lang['textcaptchafonterror_1'] = "Text Captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to";
 $lang['textcaptchafonterror_2'] = "on your server.";
-$lang['textcaptchadirerror'] = "Text Captcha has been disabled because the text_captcha directory and it\'s sub-directories are not writable by the web server / PHP process.";
-$lang['textcaptchagderror'] = "Text Captcha has been disabled because your server\'s PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text captcha support.";
+$lang['textcaptchadirerror'] = "Text Captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the web server / PHP process.";
+$lang['textcaptchagderror'] = "Text Captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text captcha support.";
 $lang['textcaptchadirblank'] = "Text captcha directory is blank!";
 $lang['newuserpreferences'] = "New User Preferences";
 $lang['sendemailnotificationonreply'] = "Email notification on reply to user";
@@ -459,78 +459,78 @@ $lang['bannedipaddresses'] = "Banned IP Addresses";
 $lang['bannedlogons'] = "Banned Logons";
 $lang['bannednicknames'] = "Banned Nicknames";
 $lang['bannedemailaddresses'] = "Banned Email Addresses";
-$lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. \'192.168.0.%\' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
+$lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
 $lang['ipaddressisalreadybanned'] = "That IP Address is already banned. Check your wildcards to see if they already match it.";
 $lang['logonisalreadybanned'] = "That Logon is already banned. Check your wildcards to see if they already match it.";
 $lang['nicknameisalreadybanned'] = "That Nickname is already banned. Check your wildcards to see if they already match it.";
 $lang['emailisalreadybanned'] = "That Email Address is already banned. Check your wildcards to see if they already match it.";
-$lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it\'s own!";
+$lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
-$lang['changedstatusforuser'] = "Changed user status for \'%s\'";
-$lang['changedpasswordforuser'] = "Changed password for \'%s\'";
-$lang['changedforumaccess'] = "Changed forum access permissions for \'%s\'";
-$lang['deletedallusersposts'] = "Deleted all posts for \'%s\'";
+$lang['changedstatusforuser'] = "Changed user status for '%s'";
+$lang['changedpasswordforuser'] = "Changed password for '%s'";
+$lang['changedforumaccess'] = "Changed forum access permissions for '%s'";
+$lang['deletedallusersposts'] = "Deleted all posts for '%s'";
 
-$lang['createdusergroup'] = "Created User Group \'%s\'";
-$lang['deletedusergroup'] = "Deleted User Group \'%s\'";
-$lang['updatedusergroup'] = "Updated User Group \'%s\'";
-$lang['addedusertogroup'] = "Added user \'%s\' to group \'%s\'";
-$lang['removeduserfromgroup'] = "Remove user \'%s\' from group \'%s\'";
+$lang['createdusergroup'] = "Created User Group '%s'";
+$lang['deletedusergroup'] = "Deleted User Group '%s'";
+$lang['updatedusergroup'] = "Updated User Group '%s'";
+$lang['addedusertogroup'] = "Added user '%s' to group '%s'";
+$lang['removeduserfromgroup'] = "Remove user '%s' from group '%s'";
 
-$lang['addedipaddresstobanlist'] = "Added IP \'%s\' to ban list";
-$lang['removedipaddressfrombanlist'] = "Removed IP \'%s\' from ban list";
+$lang['addedipaddresstobanlist'] = "Added IP '%s' to ban list";
+$lang['removedipaddressfrombanlist'] = "Removed IP '%s' from ban list";
 
-$lang['addedlogontobanlist'] = "Added logon \'%s\' to ban list";
-$lang['removedlogonfrombanlist'] = "Removed logon \'%s\' from ban list";
+$lang['addedlogontobanlist'] = "Added logon '%s' to ban list";
+$lang['removedlogonfrombanlist'] = "Removed logon '%s' from ban list";
 
-$lang['addednicknametobanlist'] = "Added nickname \'%s\' to ban list";
-$lang['removednicknamefrombanlist'] = "Removed nickname \'%s\' from ban list";
+$lang['addednicknametobanlist'] = "Added nickname '%s' to ban list";
+$lang['removednicknamefrombanlist'] = "Removed nickname '%s' from ban list";
 
-$lang['addedemailtobanlist'] = "Added email address \'%s\' to ban list";
-$lang['removedemailfrombanlist'] = "Removed email address \'%s\' from ban list";
+$lang['addedemailtobanlist'] = "Added email address '%s' to ban list";
+$lang['removedemailfrombanlist'] = "Removed email address '%s' from ban list";
 
-$lang['editedfolder'] = "Edited Folder \'%s\'";
-$lang['movedallthreadsfromto'] = "Moved all threads from \'%s\' to \'%s\'";
-$lang['creatednewfolder'] = "Created new folder \'%s\'";
-$lang['deletedfolder'] = "Deleted folder \'%s\'";
+$lang['editedfolder'] = "Edited Folder '%s'";
+$lang['movedallthreadsfromto'] = "Moved all threads from '%s' to '%s'";
+$lang['creatednewfolder'] = "Created new folder '%s'";
+$lang['deletedfolder'] = "Deleted folder '%s'";
 
-$lang['changedprofilesectiontitle'] = "Changed Profile section title from \'%s\' to \'%s\'";
-$lang['addednewprofilesection'] = "Added New Profile section \'%s\'";
-$lang['deletedprofilesection'] = "Deleted Profile Section \'%s\'";
+$lang['changedprofilesectiontitle'] = "Changed Profile section title from '%s' to '%s'";
+$lang['addednewprofilesection'] = "Added New Profile section '%s'";
+$lang['deletedprofilesection'] = "Deleted Profile Section '%s'";
 
-$lang['addednewprofileitem'] = "Added New Profile Item \'%s\' to section \'%s\'";
-$lang['changedprofileitem'] = "Changed Profile Item \'%s\'";
-$lang['deletedprofileitem'] = "Deleted Profile Item \'%s\'";
+$lang['addednewprofileitem'] = "Added New Profile Item '%s' to section '%s'";
+$lang['changedprofileitem'] = "Changed Profile Item '%s'";
+$lang['deletedprofileitem'] = "Deleted Profile Item '%s'";
 
 $lang['editedstartpage'] = "Edited Start Page";
-$lang['savednewstyle'] = "Saved New Style \'%s\'";
+$lang['savednewstyle'] = "Saved New Style '%s'";
 
-$lang['movedthread'] = "Moved Thread \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\' from \'%s\' to \'%s\'";
-$lang['closedthread'] = "Closed Thread \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\'";
-$lang['openedthread'] = "Opened Thread \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\'";
-$lang['renamedthread'] = "Renamed Thread \'%s\' to \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\'";
-$lang['deletedthread'] = "Deleted Thread \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\'";
+$lang['movedthread'] = "Moved Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' from '%s' to '%s'";
+$lang['closedthread'] = "Closed Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['openedthread'] = "Opened Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['renamedthread'] = "Renamed Thread '%s' to '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['deletedthread'] = "Deleted Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
 
-$lang['lockedthreadtitlefolder'] = "Locked thread options on \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\'";
-$lang['unlockedthreadtitlefolder'] = "Unlocked thread options on \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\'";
+$lang['lockedthreadtitlefolder'] = "Locked thread options on '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['unlockedthreadtitlefolder'] = "Unlocked thread options on '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
 
-$lang['deletedpostsfrominthread'] = "Deleted posts from \'%s\' in thread \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\'";
-$lang['deletedattachmentfrompost'] = "Deleted attachment \'%s\' from post \'<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>\'";
+$lang['deletedpostsfrominthread'] = "Deleted posts from '%s' in thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['deletedattachmentfrompost'] = "Deleted attachment '%s' from post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
 
 $lang['editedforumlinks'] = "Edited Forum Links";
 
-$lang['deletedpost'] = "Deleted Post \'<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>\'";
-$lang['editedpost'] = "Edited Post \'<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>\'";
+$lang['deletedpost'] = "Deleted Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['editedpost'] = "Edited Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
 
-$lang['madethreadsticky'] = "Made thread \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\' sticky";
-$lang['madethreadnonsticky'] = "Made thread \'<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>\' non-sticky";
+$lang['madethreadsticky'] = "Made thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' sticky";
+$lang['madethreadnonsticky'] = "Made thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' non-sticky";
 
-$lang['endedsessionforuser'] = "Ended session for user \'%s\'";
+$lang['endedsessionforuser'] = "Ended session for user '%s'";
 
-$lang['approvedpost'] = "Approved post \'<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>\'";
+$lang['approvedpost'] = "Approved post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
 
 $lang['editedwordfilter'] = "Edited Word Filter";
 
@@ -594,7 +594,7 @@ $lang['personalmessages'] = "Personal Messages";
 $lang['enablepersonalmessages'] = "Enable Personal Messages";
 $lang['pmusermessages'] = "PM messages per user";
 $lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachments";
-$lang['autopruneuserspmfoldersevery'] = "Auto prune user\'s PM folders every";
+$lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['autologinguests'] = "Automatically Login Guests";
@@ -611,19 +611,19 @@ $lang['forumsettingsupdated'] = "Forum settings successfully updated";
 
 $lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in hours after posting that a user can edit their post. If set to 0 there is no limit.";
 $lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a separate page.";
-$lang['forum_settings_help_12'] = "If you don\'t want your users to be able to create polls you can disable the above option.";
+$lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
 $lang['forum_settings_help_13'] = "The Links section of Beehive provides a place for your users to maintain a list of sites they frequently visit that other users may find useful. Links can be divided into categories by folder and allow for comments and ratings to be given. In order to moderate the links section a user must be ranted Global Moderator status.";
 $lang['forum_settings_help_14'] = "<b>Min search word length</b> defines the minimum word length that is allowed to be searched for. Words smaller than the value specified will be removed from the query automatically.";
-$lang['forum_settings_help_15'] = "<b>Session cut off</b> is the maximum time before a user\'s session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds).";
-$lang['forum_settings_help_16'] = "<b>Active session cut off</b> is the maximum time before a user\'s session is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
-$lang['forum_settings_help_17'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don\'t want to see it they can hide it from view.";
-$lang['forum_settings_help_18'] = "Personal Messages are invaluable as a way of taking more private matters out of view of the other members. However if you don\'t want your users to be able to send each other personal messages you can disable this option.";
+$lang['forum_settings_help_15'] = "<b>Session cut off</b> is the maximum time before a user's session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds).";
+$lang['forum_settings_help_16'] = "<b>Active session cut off</b> is the maximum time before a user's session is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
+$lang['forum_settings_help_17'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don't want to see it they can hide it from view.";
+$lang['forum_settings_help_18'] = "Personal Messages are invaluable as a way of taking more private matters out of view of the other members. However if you don't want your users to be able to send each other personal messages you can disable this option.";
 $lang['forum_settings_help_19'] = "Personal Messages can also contain attachments which can be useful for exchanging files between users.";
-$lang['forum_settings_help_20'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users\' main attachment allocation and it not in addition to.";
+$lang['forum_settings_help_20'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users' main attachment allocation and it not in addition to.";
 $lang['forum_settings_help_21'] = "The guest account allows visitors to your forum to read posts without having to sign up for an account.";
 $lang['forum_settings_help_22'] = "If you prefer you can also setup your Beehive Forum so that guests are automatically logged in. Once a user registers they will always be shown the login screen as long as their cookies remain intact.";
 $lang['forum_settings_help_23'] = "Beehive allows attachments to be uploaded to messages when posted. If you have limited web space you may which to disable attachments by clearing the box above.";
-$lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive should store it\'s attachments in. This directory must exist on your web space and must be writable by the web server / PHP process otherwise uploads will fail.";
+$lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive should store it's attachments in. This directory must exist on your web space and must be writable by the web server / PHP process otherwise uploads will fail.";
 $lang['forum_settings_help_25'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
 $lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
 $lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
@@ -640,11 +640,11 @@ $lang['forum_settings_help_37'] = "<b>Password Protected</b> allows you to set a
 $lang['forum_settings_help_38'] = "When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
 $lang['forum_settings_help_39'] = "<b>Search Frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";
 $lang['forum_settings_help_40'] = "<b>Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction.";
-$lang['forum_settings_help_41'] = "The above options change the default values for the user registration form. Where applicable other settings will use the forum\'s own default settings.";
+$lang['forum_settings_help_41'] = "The above options change the default values for the user registration form. Where applicable other settings will use the forum's own default settings.";
 $lang['forum_settings_help_42'] = "<b>Prevent use of duplicate email addresses</b> forces Beehive to check the user accounts against the email address the user is registering with and prompts them to use another if it is already in use.";
 $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enabled will send an email to each new user with a link that can be used to confirm their email address. Until they confirm their email address they will not be able to post unless their user permissions are changed manually by an admin.";
 $lang['forum_settings_help_44'] = "<b>Use Text Captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
-$lang['forum_settings_help_45'] = "<b>Text Captcha directory</b> specifies the location that Beehive will store it\'s text captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text captcha you must upload some true type fonts into the fonts sub-directory of your main text captcha directory otherwise Beehive will skip the text captcha during user registration.";
+$lang['forum_settings_help_45'] = "<b>Text Captcha directory</b> specifies the location that Beehive will store it's text captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text captcha you must upload some true type fonts into the fonts sub-directory of your main text captcha directory otherwise Beehive will skip the text captcha during user registration.";
 $lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\" the code.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
@@ -765,7 +765,7 @@ $lang['emailconfirmationrequired'] = "Email confirmation required";
 $lang['confirmemail_1'] = "Hello";
 $lang['confirmemail_2'] = "You recently created a new user account on";
 $lang['confirmemail_3'] = "Before you can start posting we need to confirm your email address.";
-$lang['confirmemail_4'] = "Don\'t worry this is quite easy. All you need to do is click the link";
+$lang['confirmemail_4'] = "Don't worry this is quite easy. All you need to do is click the link";
 $lang['confirmemail_5'] = "below (or copy and paste it into your browser):";
 $lang['confirmemail_6'] = "Once confirmation is complete you may login and start posting immediately.";
 $lang['confirmemail_7'] = "If you did not create a user account on";
@@ -865,7 +865,7 @@ $lang['pleasereenterpasswd'] = "Please re-enter your password and try again.";
 $lang['rememberpasswds'] = "Remember passwords";
 $lang['rememberpassword'] = "Remember password";
 $lang['enterasa'] = "Enter as a %s";
-$lang['donthaveanaccount'] = "Don\'t have an account? %s";
+$lang['donthaveanaccount'] = "Don't have an account? %s";
 $lang['registernow'] = "Register now.";
 $lang['problemsloggingon'] = "Problems logging on?";
 $lang['deletecookies'] = "Delete Cookies";
@@ -924,10 +924,7 @@ $lang['automaticallyparseurls'] = "Automatically parse URLs";
 $lang['automaticallycheckspelling'] = "Automatically check spelling";
 $lang['setthreadtohighinterest'] = "Set thread to high interest";
 $lang['enabledwithautolinebreaks'] = "Enabled with auto-line-breaks";
-$lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.
-
-To view your original code, select the \\\'Submitted code\\\' radio button.
-To view the modified code, select the \\\'Corrected code\\\' radio button.";
+$lang['fixhtmlexplanation'] = "This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\\n\\nTo view your original code, select the \\'Submitted code\\' radio button.\\nTo view the modified code, select the \\'Corrected code\\' radio button.";
 $lang['messageoptions'] = "Message options";
 $lang['notallowedembedattachmentpost'] = "You are not allowed to embed attachments in your posts.";
 $lang['notallowedembedattachmentsignature'] = "You are not allowed to embed attachments in your signature.";
@@ -1037,9 +1034,7 @@ $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to sen
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";
 $lang['pmfolderpruningisenabled'] = "PM Folder pruning is enabled!";
-$lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items
-folders are subject to automatic deletion. Any messages you wish to keep should be moved to
-your \\\'Saved Items\\\' folder so that they are not deleted.";
+$lang['pmpruneexplanation'] = "This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items\\nfolders are subject to automatic deletion. Any messages you wish to keep should be moved to\\nyour \\'Saved Items\\' folder so that they are not deleted.";
 $lang['yourpmfoldersare_1'] = "Your PM folders are";
 $lang['yourpmfoldersare_2'] = "full";
 $lang['currentmessage'] = "Current Message";
@@ -1290,13 +1285,13 @@ $lang['userrelationships'] = "User Relationships";
 $lang['friends'] = "Friends";
 $lang['ignoredcompletely'] = "Ignored Completely";
 $lang['relationship'] = "Relationship";
-$lang['friend_exp'] = "User\'s posts marked with a &quot;Friend&quot; icon.";
-$lang['normal_exp'] = "User\'s posts appear as normal.";
-$lang['ignore_exp'] = "User\'s posts are hidden.";
+$lang['friend_exp'] = "User's posts marked with a &quot;Friend&quot; icon.";
+$lang['normal_exp'] = "User's posts appear as normal.";
+$lang['ignore_exp'] = "User's posts are hidden.";
 $lang['ignore_completely_exp'] = "Threads and posts to or from user will appear deleted.";
 $lang['display'] = "Display";
-$lang['displaysig_exp'] = "User\'s signature is displayed on their posts.";
-$lang['hidesig_exp'] = "User\'s signature is hidden on their posts.";
+$lang['displaysig_exp'] = "User's signature is displayed on their posts.";
+$lang['hidesig_exp'] = "User's signature is hidden on their posts.";
 $lang['globallyignored'] = "Globally ignored";
 $lang['globallyignoredsig_exp'] = "No signatures are displayed.";
 $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator.";
@@ -1368,15 +1363,15 @@ $lang['searchagain'] = "Search Again";
 $lang['alldiscussions'] = "All Discussions";
 $lang['unreaddiscussions'] = "Unread Discussions";
 $lang['unreadtome'] = "Unread &quot;To: Me&quot;";
-$lang['todaysdiscussions'] = "Today\'s Discussions";
+$lang['todaysdiscussions'] = "Today's Discussions";
 $lang['2daysback'] = "2 Days Back";
 $lang['7daysback'] = "7 Days Back";
 $lang['highinterest'] = "High Interest";
 $lang['unreadhighinterest'] = "Unread High Interest";
-$lang['iverecentlyseen'] = "I\'ve recently seen";
-$lang['iveignored'] = "I\'ve ignored";
+$lang['iverecentlyseen'] = "I've recently seen";
+$lang['iveignored'] = "I've ignored";
 $lang['byignoredusers'] = "By ignored users";
-$lang['ivesubscribedto'] = "I\'ve subscribed to";
+$lang['ivesubscribedto'] = "I've subscribed to";
 $lang['startedbyfriend'] = "Started by friend";
 $lang['unreadstartedbyfriend'] = "Unread std by friend";
 $lang['startedbyme'] = "Started by me";

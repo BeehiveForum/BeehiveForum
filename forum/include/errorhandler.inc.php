@@ -21,7 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.73 2005-06-05 17:15:09 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.74 2005-07-23 22:53:31 decoyduck Exp $ */
+
+// We shouldn't be accessing this file directly.
+
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+    header("Request-URI: ../index.php");
+    header("Content-Location: ../index.php");
+    header("Location: ../index.php");
+    exit;
+}
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -179,25 +188,25 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
             case E_USER_ERROR:
 
                 echo "            <p><b>E_USER_ERROR</b> [$errno] $errstr</p>\n";
-                echo "            <p>Fatal error in line $errline of file $errfile</p>\n";
+                echo "            <p>Fatal error in line $errline of file ", basename($errfile), "</p>\n";
                 break;
 
             case E_USER_WARNING:
 
                 echo "            <p><b>E_USER_WARNING</b> [$errno] $errstr</p>\n";
-                echo "            <p>Error in line $errline of file $errfile</p>\n";
+                echo "            <p>Error in line $errline of file ", basename($errfile), "</p>\n";
                 break;
 
             case E_USER_NOTICE:
 
                 echo "            <p><b>E_USER_NOTICE</b> [$errno] $errstr</p>\n";
-                echo "            <p>Warning in line $errline of file $errfile</p>\n";
+                echo "            <p>Warning in line $errline of file ", basename($errfile), "</p>\n";
                 break;
 
             default:
 
                 echo "            <p><b>Unknown error</b> [$errno] $errstr</p>\n";
-                echo "            <p>Unknown error in line $errline of file $errfile</p>\n";
+                echo "            <p>Unknown error in line $errline of file ", basename($errfile), "</p>\n";
                 break;
         }
 

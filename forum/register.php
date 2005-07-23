@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.119 2005-07-20 20:04:12 decoyduck Exp $ */
+/* $Id: register.php,v 1.120 2005-07-23 22:53:13 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -69,7 +69,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 // Where are we going after we've logged on?
 
 if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-    $final_uri = rawurldecode($_GET['final_uri']);
+    $final_uri = basename(trim(_stripslashes(rawurldecode($_GET['final_uri']))));
 }
 
 if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {

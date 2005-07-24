@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.152 2005-07-23 22:53:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.153 2005-07-24 16:11:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -62,6 +62,8 @@ function get_table_prefix()
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
+
+            $webtag = addslashes($webtag);
 
             $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL FROM FORUMS ";
             $sql.= "WHERE WEBTAG = '$webtag'";
@@ -120,6 +122,8 @@ function get_webtag(&$webtag_search)
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
+
+	    $webtag = addslashes($webtag);
 
             $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL FROM FORUMS ";
             $sql.= "WHERE WEBTAG = '$webtag'";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.170 2005-07-23 22:53:32 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.171 2005-07-24 21:36:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -30,6 +30,10 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     header("Content-Location: ../index.php");
     header("Location: ../index.php");
     exit;
+}
+
+if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
+    include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
@@ -320,32 +324,32 @@ function html_draw_top()
 
     foreach($arg_array as $key => $func_args) {
 
-        if (preg_match("/^title=/i", $func_args)) {
+        if (preg_match("/^title=/i", $func_args) > 0) {
             if (!isset($title)) $title = substr($func_args, 6);
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^class=/i", $func_args)) {
+        if (preg_match("/^class=/i", $func_args) > 0) {
             if (!isset($body_class)) $body_class = substr($func_args, 6);
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^basetarget=/i", $func_args)) {
+        if (preg_match("/^basetarget=/i", $func_args) > 0) {
             if (!isset($base_target)) $base_target = substr($func_args, 11);
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^onload=/i", $func_args)) {
+        if (preg_match("/^onload=/i", $func_args) > 0) {
             $onload_array[] = substr($func_args, 7);
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^onunload=/i", $func_args)) {
+        if (preg_match("/^onunload=/i", $func_args) > 0) {
             $onunload_array[] = substr($func_args, 9);
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^refresh=([^:]*):([^$]*)$/i", $func_args, $func_matches)) {
+        if (preg_match("/^refresh=([^:]*):([^$]*)$/i", $func_args, $func_matches) > 0) {
 
             if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
 
@@ -359,7 +363,7 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^robots=/i", $func_args)) {
+        if (preg_match("/^robots=/i", $func_args) > 0) {
             $robots = substr($func_args, 7);
             unset($arg_array[$key]);
         }
@@ -511,7 +515,7 @@ function bh_setcookie($name, $value, $expires = 0)
 
     if (isset($cookie_domain) && strlen(trim($cookie_domain)) > 0 && !defined('BEEHIVEMODE_LIGHT')) {
 
-        $cookie_domain = preg_replace("/^http:\/\//", "", trim($cookie_domain));
+        $cookie_domain = preg_replace("/^[^:\s]+:\/\//", "", trim($cookie_domain));
 
         $cookie_path = preg_replace("/\\\/", "/", $cookie_domain);
         $cookie_path = explode('/', $cookie_domain);

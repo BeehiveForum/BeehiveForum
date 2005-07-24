@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.73 2005-07-03 17:49:39 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.74 2005-07-24 21:36:14 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -50,36 +50,36 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     foreach($_SERVER['argv'] as $arg) {
 
-        if (preg_match("/^-h(.+)/", $arg, $hostname_matches)) {
+        if (preg_match("/^-h(.+)/", $arg, $hostname_matches) > 0) {
             $db_server = $hostname_matches[1];
         }
 
-        if (preg_match("/^-u(.+)/", $arg, $username_matches)) {
+        if (preg_match("/^-u(.+)/", $arg, $username_matches) > 0) {
             $db_username = $username_matches[1];
         }
 
-        if (preg_match("/^-p(.+)/", $arg, $password_matches)) {
+        if (preg_match("/^-p(.+)/", $arg, $password_matches) > 0) {
             $db_password = $password_matches[1];
         }
 
-        if (preg_match("/^-D(.+)/", $arg, $database_matches)) {
+        if (preg_match("/^-D(.+)/", $arg, $database_matches) > 0) {
             $db_database = $database_matches[1];
         }
 
-        if (preg_match("/^-w(.+)/", $arg, $webtag_matches)) {
+        if (preg_match("/^-w(.+)/", $arg, $webtag_matches) > 0) {
             $forum_webtag = $webtag_matches[1];
         }
 
-        if (preg_match("/^-U(.+)/", $arg, $admin_username_matches)) {
+        if (preg_match("/^-U(.+)/", $arg, $admin_username_matches) > 0) {
             $admin_nickname = $admin_username_matches[1];
             $admin_username = strtoupper($admin_username_matches[1]);
         }
 
-        if (preg_match("/^-P(.+)/", $arg, $admin_password_matches)) {
+        if (preg_match("/^-P(.+)/", $arg, $admin_password_matches) > 0) {
             $admin_password = $admin_password_matches[1];
         }
 
-        if (preg_match("/^-E(.+)/", $arg, $admin_email_matches)) {
+        if (preg_match("/^-E(.+)/", $arg, $admin_email_matches) > 0) {
             $admin_email = $admin_email_matches[1];
         }
 

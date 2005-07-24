@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.12 2005-06-05 17:15:08 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.13 2005-07-24 21:36:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -113,13 +113,13 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
     if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) {
 
-        if (preg_match("/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data)) {
+        if (preg_match("/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data) > 0) {
             $hash = $attachment_data[1];
         }
 
     }else {
 
-        if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data)) {
+        if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data) > 0) {
             $hash = $attachment_data[1];
         }
     }

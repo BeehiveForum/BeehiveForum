@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.90 2005-07-23 22:53:32 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.91 2005-07-24 21:36:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -969,7 +969,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
         if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
 
-            if (preg_match("/<div class=\"sig\">/", $message['CONTENT'])) {
+            if (preg_match("/<div class=\"sig\">/", $message['CONTENT']) > 0) {
 
                 $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
 

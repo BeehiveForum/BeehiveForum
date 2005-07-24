@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.133 2005-07-23 22:53:34 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.134 2005-07-24 21:36:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -622,7 +622,7 @@ class MessageTextParse {
 
         $emoticons = $emots_default;
 
-        if (preg_match("/^<noemots>.*<\/noemots>$/s", $message)) {
+        if (preg_match("/^<noemots>.*<\/noemots>$/s", $message) > 0) {
             $emoticons = false;
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.72 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.73 2005-07-24 16:11:42 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -31,15 +31,6 @@ USA
 
 /**
 */
-
-// We shouldn't be accessing this file directly.
-
-if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
 
 // Beehive Version
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.6 2005-04-07 19:22:14 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.7 2005-07-24 21:36:14 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -59,30 +59,35 @@ $show_friendly_errors = true;
 
 $cookie_domain = "";
 
-// Specifies the domain name that the cookies set by Beehive should use.
-// This is useful for situations where there is more than one access
-// point for your forum.
+// Specifies the domain name and path that the cookies set by
+// Beehive should use.
 //
-// For example, both of the following URLs are valid access points for
-// the *same* forum:
+// WARNING: DO NOT CHANGE THIS OPTION IF YOU DO NOT UNDERSTAND WHAT
+//          IT DOES. SETTING THIS OPTION TO AN INVALID OR INCORRECT
+//          VALUE CAN MAKE YOUR FORUM UNUSABLE.	IF YOU ARE IN DOUBT
+//          LEAVE THIS SETTING AS IS.
 //
-// http://forum.mybeehiveforum.net/
+// This option is useful for situations where there is more than one
+// URI for your forum, for example where your forum is accessible
+// from all of the following addresses:
+//
 // http://www.mybeehiveforum.net/forum/
+// http://forum.mybeehiveforum.net/
+// http://mybeehiveforum.net/forum/
 //
-// To prevent users from having to login in twice at each access point,
-// you could set the $cookie_domain value to "mybeehiveforum.net"
-// and the cookies for both the logon page and the main session cookies
-// will work for both URLs.
+// Usually cookies set at one address will be unavailable at the
+// others which forces your users to login multiple times and keep
+// multiple cookies if they visit the different sub-domains.
 //
-// Alternatively to force Beehive's cookies to only be valid at the
-// second domain in the above list you could set the $cookie_domain
-// value as "www.mybeehiveforum.net/forum/" and your users will then
-// be unable to logon from anywhere but that address.
+// To prevent this and force Beehive to use only one set of cookies
+// and have them accessible from all addresses you would set the
+// $cookie_domain value as follows:
 //
-// WARNING: Do not change this if you do not understand what it does.
-//          Setting it to an invalid or incorrect value may make it
-//          impossible for you to use your forum.
+// $cookie_domain = "mybeehiveforum.net/forum/";
 //
+// As you may have noticed the string used is common to all of
+// addresses listed above and so any cookies set at any of the domains
+// will be useable at the others.
 
 // ---------------------------------------------------------------------
 
@@ -97,15 +102,15 @@ $gzip_compress_level  = 1;
 // amounts of bandwidth, but can also increase the CPU load on the
 // server.
 //
-// As of Beehive 0.4 you can change the level of the gzip compression,
-// as long as PHP 4.2.0 is installed. The maximum level of compression
-// available is 9, while the lowest is 1. A higher level will result
-// in increased server load.
+// WARNING: IF YOU ARE USING MOD_GZIP OR ANY OTHER GZIPPING MODULE
+//          TO HANDLE THE COMPRESSION OF FILES ON YOUR WEB SERVER,
+//          DO NOT ENABLE THE BUILT IN GZIP COMPRESSION IN BEEHIVE.
+//          TO DO SO CAN MAKE YOUR FORUM UNUSABLE.
 //
-// WARNING: If you are using mod_gzip or any other gzipping module
-//          to handle the compression of PHP scripts on your web
-//          server, do _NOT_ enable the built in GZIP compression
-//          in Beehive, otherwise your forum may become inaccessible.
+// You can also change the level of the gzip compression as long as PHP
+// 4.2.0 is installed. The maximum level of compression available is 9,
+// while the lowest is 1. A higher level will result in increased server
+// load.
 
 // ---------------------------------------------------------------------
 

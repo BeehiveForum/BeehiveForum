@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.34 2005-07-23 22:53:32 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.35 2005-07-24 21:36:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -71,7 +71,8 @@ function perform_logon($logon_main)
 
         if (user_guest_enabled()) {
 
-            bh_setcookie('bh_logon', '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
             bh_session_init(0);
             return true;
         }
@@ -81,7 +82,7 @@ function perform_logon($logon_main)
         $logon = _stripslashes($_POST['user_logon']);
         $passw = _stripslashes($_POST['user_password']);
 
-        if (preg_match("/^ +$/", $passw)) {
+        if (preg_match("/^ +$/", $passw) > 0) {
 
             if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
                 $passh = _stripslashes($_POST['user_passhash']);
@@ -92,14 +93,15 @@ function perform_logon($logon_main)
         }else {
 
             $passh = md5($passw);
+	    $passw = str_repeat(' ', strlen($passw));
         }
 
         $luid = user_logon($logon, $passh);
 
         if (isset($luid) && $luid > -1) {
 
-            bh_setcookie('bh_thread_mode', '', time() - YEAR_IN_SECONDS);
-            bh_setcookie('bh_logon', '', time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
+            bh_setcookie("bh_logon", "", time() - YEAR_IN_SECONDS);
 
             bh_session_init($luid);
 

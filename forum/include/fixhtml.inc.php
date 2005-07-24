@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.112 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.113 2005-07-24 21:36:11 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -414,7 +414,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                             $ta = array("/".$last_tag2, "");
 
-                            if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws)) {
+                            if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws) > 0) {
 
                                 $html_parts[$i-1] = preg_replace("/( )?\s+$/", "$1", $html_parts[$i-1]);
                                 $ta[1] = $ws[0];
@@ -565,7 +565,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         // wrap white-text
 
-                                        if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws)) {
+                                        if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws) > 0) {
 
                                             $html_parts[$i-1] = preg_replace("/( )?\s+$/", "$1", $html_parts[$i-1]);
                                             $html_parts[$i+1] = $ws[0].$html_parts[$i+1];
@@ -580,7 +580,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                 array_splice($html_parts, $i, 0, array("/".$tag, ""));
 
                                 // wrap white-text
-                                if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws)) {
+                                if (preg_match("/( )?\s+$/", $html_parts[$i-1], $ws) > 0) {
 
                                     $html_parts[$i-1] = preg_replace("/( )?\s+$/", "$1", $html_parts[$i-1]);
                                     $html_parts[$i+1] = $ws[0].$html_parts[$i+1];
@@ -935,7 +935,7 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 
         $matches = array();
 
-        if (preg_match("/^<div class=\"quotetext\" id=\"quote\">.+?(<a href=\"([^\"]*)\">)?([^<>]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is", substr($html_right, $pos), $matches)) {
+        if (preg_match("/^<div class=\"quotetext\" id=\"quote\">.+?(<a href=\"([^\"]*)\">)?([^<>]*)(<\/a>)?<\/div>\s*<div class=\"quote\">.*<\/div>/is", substr($html_right, $pos), $matches) > 0) {
 
             $html_left .= "<quote source=\"".$matches[3]."\" url=\"".$matches[2]."\">";
 
@@ -1093,7 +1093,7 @@ function tidy_tinymce ($html)
 
         $html_left .= substr($html_right, 0, $pos);
 
-        if (preg_match("/^<span class=\"noemots\">.*<\/span>/is", substr($html_right, $pos))) {
+        if (preg_match("/^<span class=\"noemots\">.*<\/span>/is", substr($html_right, $pos)) > 0) {
 
             $html_left .= "<noemots>";
 
@@ -1421,7 +1421,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
 
             for ($j = 0; $j < count($tmp) - 1; $j++) {
 
-                if (preg_match("/<\/p>$/i", $tmp[$j])) {
+                if (preg_match("/<\/p>$/i", $tmp[$j]) > 0) {
 
                     $p_open = false;
 
@@ -1446,7 +1446,7 @@ function add_paragraphs ($html, $base = true, $br_only = true)
                     $tmp[$j+1] = preg_replace("/<br( [^>]*)?>$/i", "", $tmp[$j+1]);
                     $tmp[$j+1] = preg_replace("/<\/p>$/i", "", $tmp[$j+1]);
 
-                    if (preg_match("/^\s*$/", $tmp[$j+1]) && $p_open == true) {
+                    if (preg_match("/^\s*$/", $tmp[$j+1]) > 0 && $p_open == true) {
 
                         $p_open = false;
 

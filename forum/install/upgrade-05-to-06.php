@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.63 2005-07-03 17:49:39 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.64 2005-07-24 21:36:14 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -44,19 +44,19 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     foreach($_SERVER['argv'] as $arg) {
 
-        if (preg_match("/^-h(.+)/", $arg, $hostname_matches)) {
+        if (preg_match("/^-h(.+)/", $arg, $hostname_matches) > 0) {
             $db_server = $hostname_matches[1];
         }
 
-        if (preg_match("/^-u(.+)/", $arg, $username_matches)) {
+        if (preg_match("/^-u(.+)/", $arg, $username_matches) > 0) {
             $db_username = $username_matches[1];
         }
 
-        if (preg_match("/^-p(.+)/", $arg, $password_matches)) {
+        if (preg_match("/^-p(.+)/", $arg, $password_matches) > 0) {
             $db_password = $password_matches[1];
         }
 
-        if (preg_match("/^-D(.+)/", $arg, $database_matches)) {
+        if (preg_match("/^-D(.+)/", $arg, $database_matches) > 0) {
             $db_database = $database_matches[1];
         }
 

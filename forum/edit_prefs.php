@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.47 2005-04-27 19:47:11 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.48 2005-07-26 21:29:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,6 +86,16 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
+// User's UID
+$uid = bh_session_get_value('UID');
+
+// Get User Prefs
+$user_prefs = user_get_prefs($uid);
+
+// Get user information
+$user_info = user_get($uid);
+
+// Clear the error string
 $error_html = "";
 
 if (isset($_POST['submit'])) {
@@ -144,11 +154,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['firstname'])) {
 
-        if (user_check_pref('FIRSTNAME', trim(_stripslashes($_POST['firstname'])))) {
+        $user_prefs['FIRSTNAME'] = trim(_stripslashes($_POST['firstname']));
 
-            $user_prefs['FIRSTNAME'] = trim(_stripslashes($_POST['firstname']));
-
-        }else {
+        if (!user_check_pref('FIRSTNAME', $user_prefs['FIRSTNAME'])) {
 
             $error_html.= "<h2>{$lang['firstname']} {$lang['containsinvalidchars']}</h2>";
             $valid = false;
@@ -157,11 +165,9 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['lastname'])) {
 
-        if (user_check_pref('LASTNAME', trim(_stripslashes($_POST['lastname'])))) {
+        $user_prefs['LASTNAME'] = trim(_stripslashes($_POST['lastname']));
 
-            $user_prefs['LASTNAME'] = trim(_stripslashes($_POST['lastname']));
-
-        }else {
+        if (!user_check_pref('LASTNAME', $user_prefs['LASTNAME'])) {
 
             $error_html.= "<h2>{$lang['lastname']} {$lang['containsinvalidchars']}</h2>";
             $valid = false;
@@ -170,12 +176,10 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['homepage_url'])) {
 
-        if (user_check_pref('HOMEPAGE_URL', trim(_stripslashes($_POST['homepage_url'])))) {
+        $user_prefs['HOMEPAGE_URL'] = trim(_stripslashes($_POST['homepage_url']));
+        $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
 
-            $user_prefs['HOMEPAGE_URL'] = trim(_stripslashes($_POST['homepage_url']));
-            $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
-
-        }else {
+        if (!user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
 
             $error_html.= "<h2>{$lang['homepageURL']} {$lang['containsinvalidchars']}</h2>";
             $valid = false;
@@ -184,12 +188,10 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['pic_url'])) {
 
-        if (user_check_pref('PIC_URL', trim(_stripslashes($_POST['pic_url'])))) {
+        $user_prefs['PIC_URL'] = trim(_stripslashes($_POST['pic_url']));
+        $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;
 
-            $user_prefs['PIC_URL'] = trim(_stripslashes($_POST['pic_url']));
-            $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;
-
-        }else {
+        if (!user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
 
             $error_html.= "<h2>{$lang['pictureURL']} {$lang['containsinvalidchars']}</h2>";
             $valid = false;
@@ -197,10 +199,6 @@ if (isset($_POST['submit'])) {
     }
 
     if ($valid) {
-
-        // User's UID for updating with.
-
-        $uid = bh_session_get_value('UID');
 
         // Update basic settings in USER table
 
@@ -217,14 +215,6 @@ if (isset($_POST['submit'])) {
         header_redirect("./edit_prefs.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
     }
 }
-
-if (!isset($uid)) $uid = bh_session_get_value('UID');
-
-// Get User Prefs
-$user_prefs = user_get_prefs($uid);
-
-// Get user information
-$user_info = user_get($uid);
 
 // Split the DOB into usable variables.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.372 2005-07-23 22:53:32 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.373 2005-07-27 23:18:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -962,7 +962,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
                     if (ip_is_banned($message['IPADDRESS'])) {
 
-                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</span>";
+                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</span>";
 
                     }else {
 

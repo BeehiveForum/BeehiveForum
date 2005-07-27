@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.119 2005-06-20 22:56:58 decoyduck Exp $ */
+/* $Id: search.php,v 1.120 2005-07-27 23:18:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -103,75 +103,249 @@ if (!$folder_dropdown = folder_search_dropdown()) {
     exit;
 }
 
-$search_arguments = array();
+if (isset($_POST) && sizeof($_POST) > 0) {
 
-if (isset($_POST['search_string'])) {
-    $search_arguments['search_string'] = $_POST['search_string'];
-}else if (isset($_GET['search_string'])) {
-    $search_arguments['search_string'] = $_GET['search_string'];
+    $offset = 0;
+
+    $search_arguments = array();
+
+    if (isset($_POST['search_string'])) {
+        $search_arguments['search_string'] = $_POST['search_string'];
+    }
+
+    if (isset($_POST['method']) && is_numeric($_POST['method'])) {
+        $search_arguments['method'] = $_POST['method'];
+    }
+
+    if (isset($_POST['username']) && strlen(trim($_POST['username'])) > 0) {
+        $search_arguments['username'] = $_POST['username'];
+    }
+
+    if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
+        $search_arguments['user_include'] = $_POST['user_include'];
+    }
+
+    if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+        $search_arguments['fid'] = $_POST['fid'];
+    }
+
+    if (isset($_POST['date_from']) && is_numeric($_POST['date_from'])) {
+        $search_arguments['date_from'] = $_POST['date_from'];
+    }
+
+    if (isset($_POST['date_to']) && is_numeric($_POST['date_to'])) {
+        $search_arguments['date_to'] = $_POST['date_to'];
+    }
+
+    if (isset($_POST['order_by']) && is_numeric($_POST['order_by'])) {
+        $search_arguments['order_by'] = $_POST['order_by'];
+    }
+
+    if (isset($_POST['group_by_thread']) && strlen(trim($_POST['group_by_thread'])) > 0) {
+        $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
+    }
+
+    if (!search_execute($search_arguments, $error)) {
+
+        html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
+
+        echo "<h1>{$lang['error']}</h1>\n";
+
+        switch($error) {
+
+            case SEARCH_USER_NOT_FOUND:
+                echo "<p>{$lang['usernamenotfound']}</p>\n";
+                break;
+            case SEARCH_NO_KEYWORDS:
+                echo "<p>{$lang['notexttosearchfor']}</p>\n";
+                break;
+            case SEARCH_FREQUENCY_TOO_GREAT:
+                echo "<p>{$lang['searchfrequencyerror_1']} ", forum_get_setting('search_min_frequency', false, 30), " {$lang['searchfrequencyerror_2']}</p>\n";
+                break;
+        }
+
+        echo "</table>\n";
+        echo "<br />\n";
+        echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td>&nbsp;</td>\n";
+        echo "    <td class=\"smalltext\">\n";
+        echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+        echo "        ", form_input_hidden("webtag", $webtag), "\n";
+        echo "        ", form_input_text('msg', '1.1', 10). "\n";
+        echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+        echo "      </form>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+
+        echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+        echo "  <tr>\n";
+        echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td>&nbsp;</td>\n";
+        echo "    <td class=\"smalltext\">\n";
+        echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
+        echo "        ", form_input_hidden('webtag', $webtag), "\n";
+        echo "        ", form_input_text("search_string", "", 20). "\n";
+        echo "        ", form_submit("submit", $lang['find']). "\n";
+        echo "      </form>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+
+	html_draw_bottom();
+	exit;
+    }
+
+}elseif (isset($_GET['offset']) && is_numeric($_GET['offset'])) {
+
+    $offset = $_GET['offset'];
+
+    if (isset($_GET['search_string'])) {
+        $search_arguments['search_string'] = $_GET['search_string'];
+    }else {
+        $search_arguments['search_string'] = "";
+    }
 }
 
-if (isset($_POST['method']) && is_numeric($_POST['method'])) {
-    $search_arguments['method'] = $_POST['method'];
-}else if (isset($_GET['method']) && is_numeric($_GET['method'])) {
-    $search_arguments['method'] = $_GET['method'];
-}
+if (isset($offset)) {
 
-if (isset($_POST['username']) && strlen(trim($_POST['username'])) > 0) {
-    $search_arguments['username'] = $_POST['username'];
-}else if (isset($_GET['username']) && strlen(trim($_GET['username'])) > 0) {
-    $search_arguments['username'] = $_GET['username'];
-}
+    if ($search_results_array = search_fetch_results($offset)) {
 
-if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
-    $search_arguments['user_include'] = $_POST['user_include'];
-}else if (isset($_GET['user_include']) && is_numeric($_GET['user_include'])) {
-    $search_arguments['user_include'] = $_GET['user_include'];
-}
+        html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
 
-if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-    $search_arguments['fid'] = $_POST['fid'];
-}else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-    $search_arguments['fid'] = $_GET['fid'];
-}
+        thread_list_draw_top(0);
 
-if (isset($_POST['date_from']) && is_numeric($_POST['date_from'])) {
-    $search_arguments['date_from'] = $_POST['date_from'];
-}else if (isset($_GET['date_from']) && is_numeric($_GET['date_from'])) {
-    $search_arguments['date_from'] = $_GET['date_from'];
-}
+	echo "</table>\n";
+        echo "<h1>{$lang['searchresults']}</h1>\n";
+        echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
 
-if (isset($_POST['date_to']) && is_numeric($_POST['date_to'])) {
-    $search_arguments['date_to'] = $_POST['date_to'];
-}else if (isset($_GET['date_to']) && is_numeric($_GET['date_to'])) {
-    $search_arguments['date_to'] = $_GET['date_to'];
-}
+        if ($offset >= 20) {
+            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;search_string={$search_arguments['search_string']}\">{$lang['prevpage']}</a>\n";
+        }
 
-if (isset($_POST['order_by']) && is_numeric($_POST['order_by'])) {
-    $search_arguments['order_by'] = $_POST['order_by'];
-}else if (isset($_GET['order_by']) && is_numeric($_GET['order_by'])) {
-    $search_arguments['order_by'] = $_GET['order_by'];
-}
+        echo "<ol start=\"", $offset + 1, "\">\n";
 
-if (isset($_POST['group_by_thread']) && strlen(trim($_POST['group_by_thread'])) > 0) {
-    $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
-}else if (isset($_GET['group_by_thread']) && strlen(trim($_GET['group_by_thread'])) > 0) {
-    $search_arguments['group_by_thread'] = $_GET['group_by_thread'];
-}
+        foreach ($search_results_array['result_array'] as $search_result) {
 
-if (isset($_POST['sstart']) && is_numeric($_POST['sstart'])) {
-    $search_arguments['sstart'] = $_POST['sstart'];
-}else if (isset($_GET['sstart']) && is_numeric($_GET['sstart'])) {
-    $search_arguments['sstart'] = $_GET['sstart'];
-}
+            $message = messages_get($search_result['TID'], $search_result['PID'], 1);
+            $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
 
-if (isset($_POST['sstart']) && is_numeric($_POST['sstart'])) {
-    $search_arguments['sstart'] = $_POST['sstart'];
-}else if (isset($_GET['sstart']) && is_numeric($_GET['sstart'])) {
-    $search_arguments['sstart'] = $_GET['sstart'];
-}
+            $threaddata = thread_get($search_result['TID']);
 
-if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
+            if (thread_is_poll($search_result['TID'])) {
+
+                $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
+                $message['CONTENT'] = '';
+
+            }else {
+
+                $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
+                $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
+
+            }
+
+            $message['TITLE'] = apply_wordfilter($message['TITLE']);
+
+            // trunicate the search result at the last space in the first 50 chars.
+
+            if (strlen($message['TITLE']) > 20) {
+
+                $message['TITLE'] = substr($message['TITLE'], 0, 20);
+
+                if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
+
+                    $message['TITLE'] = substr($message['TITLE'], 0, $pos);
+
+                }else {
+
+                    $message['TITLE'] = substr($message['TITLE'], 0, 17). "&hellip;";
+                }
+            }
+
+            if (strlen($message['CONTENT']) > 35) {
+
+                $message['CONTENT'] = substr($message['CONTENT'], 0, 35);
+
+                if (($pos = strrpos($message['CONTENT'], ' ')) !== false) {
+
+                    $message['CONTENT'] = substr($message['CONTENT'], 0, $pos);
+
+                }else {
+
+                    $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "&hellip;";
+                }
+            }
+
+            if (strlen($message['CONTENT']) > 0) {
+
+                echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
+                echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
+                echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+
+            }else {
+
+                echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+                echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+            }
+        }
+
+        echo "</ol>\n";
+
+        if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
+            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;search_string={$search_arguments['search_string']}\">{$lang['findmore']}</a>\n";
+        }
+
+    }else {
+
+        html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
+
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
+    }
+
+    echo "</table>\n";
+    echo "<br />\n";
+    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "    <td class=\"smalltext\">\n";
+    echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+    echo "        ", form_input_hidden("webtag", $webtag), "\n";
+    echo "        ", form_input_text('msg', '1.1', 10). "\n";
+    echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+
+    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "    <td class=\"smalltext\">\n";
+    echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
+    echo "        ", form_input_hidden('webtag', $webtag), "\n";
+    echo "        ", form_input_text("search_string", "", 20). "\n";
+    echo "        ", form_submit("submit", $lang['find']). "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+
+    html_draw_bottom();
+
+}else {
 
     html_draw_top("robots=noindex,nofollow");
 
@@ -180,7 +354,6 @@ if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
     echo "<div align=\"center\">\n";
     echo "<form id=\"search_form\" method=\"post\" action=\"search.php\" target=\"left\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('sstart', '0'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
@@ -312,164 +485,6 @@ if (!isset($search_arguments) || sizeof($search_arguments) < 1) {
     echo "</div>\n";
 
     html_draw_bottom();
-    exit;
 }
-
-$urlquery = "";
-$error = false;
-
-html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
-
-// Draw discussion dropdown
-thread_list_draw_top(0);
-
-echo "</table>\n";
-
-if ($search_results_array = search_execute($search_arguments, $urlquery, $error)) {
-
-    if (isset($search_arguments['sstart']) && is_numeric($search_arguments['sstart'])) {
-        $sstart = $search_arguments['sstart'];
-    }else {
-        $sstart = 0;
-    }
-
-    if (!isset($search_arguments['search_string'])) {
-        $search_arguments['search_string'] = "";
-    }
-
-    echo "<h1>{$lang['searchresults']}</h1>\n";
-    echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['match_count']} {$lang['matches']}<br />\n";
-
-    if ($sstart >= 20) {
-        echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart - 20, $urlquery, "\">{$lang['prevpage']}</a>\n";
-    }
-
-    echo "<ol start=\"", $sstart + 1, "\">\n";
-
-    foreach ($search_results_array['match_array'] as $search_result) {
-
-        $message = messages_get($search_result['TID'], $search_result['PID'], 1);
-        $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
-
-        $threaddata = thread_get($search_result['TID']);
-
-        if (thread_is_poll($search_result['TID'])) {
-
-            $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
-            $message['CONTENT'] = '';
-
-        }else {
-
-            $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
-            $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
-
-        }
-
-        $message['TITLE'] = apply_wordfilter($message['TITLE']);
-
-        // trunicate the search result at the last space in the first 50 chars.
-
-        if (strlen($message['TITLE']) > 20) {
-
-            $message['TITLE'] = substr($message['TITLE'], 0, 20);
-
-            if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
-
-                $message['TITLE'] = substr($message['TITLE'], 0, $pos);
-
-            }else {
-
-                $message['TITLE'] = substr($message['TITLE'], 0, 17). "&hellip;";
-            }
-        }
-
-        if (strlen($message['CONTENT']) > 35) {
-
-            $message['CONTENT'] = substr($message['CONTENT'], 0, 35);
-
-            if (($pos = strrpos($message['CONTENT'], ' ')) !== false) {
-
-                $message['CONTENT'] = substr($message['CONTENT'], 0, $pos);
-
-            }else {
-
-                $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "&hellip;";
-            }
-        }
-
-        if (strlen($message['CONTENT']) > 0) {
-
-            echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
-            echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
-            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
-
-        }else {
-
-            echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-            echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
-        }
-    }
-
-    echo "</ol>\n";
-
-    if ($search_results_array['match_count'] >  (sizeof($search_results_array['match_array']) + $sstart)) {
-        echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;sstart=", $sstart + 20, $urlquery, "\">{$lang['findmore']}</a>\n";
-    }
-
-}else if ($error) {
-
-    echo "<h1>{$lang['error']}</h1>\n";
-
-    switch($error) {
-
-        case SEARCH_USER_NOT_FOUND:
-            echo "<p>{$lang['usernamenotfound']}</p>\n";
-            break;
-        case SEARCH_NO_KEYWORDS:
-            echo "<p>{$lang['notexttosearchfor']}</p>\n";
-            break;
-        case SEARCH_NO_MATCHES:
-            echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
-            break;
-        case SEARCH_FREQUENCY_TOO_GREAT:
-            echo "<p>{$lang['searchfrequencyerror_1']} ", forum_get_setting('search_min_frequency', false, 30), " {$lang['searchfrequencyerror_2']}</p>\n";
-            break;
-    }
-}
-
-echo "<br />\n";
-echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
-echo "    <td class=\"smalltext\">\n";
-echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-echo "        ", form_input_hidden("webtag", $webtag), "\n";
-echo "        ", form_input_text('msg', '1.1', 10). "\n";
-echo "        ", form_submit("go",$lang['goexcmark']). "\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-
-echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-echo "  <tr>\n";
-echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
-echo "    <td class=\"smalltext\">\n";
-echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
-echo "        ", form_input_hidden('webtag', $webtag), "\n";
-echo "        ", form_input_text("search_string", "", 20). "\n";
-echo "        ", form_submit("submit", $lang['find']). "\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-
-html_draw_bottom();
 
 ?>

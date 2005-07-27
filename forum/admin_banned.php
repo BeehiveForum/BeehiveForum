@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.15 2005-07-24 21:36:10 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.16 2005-07-27 23:18:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,15 +87,18 @@ html_draw_top();
 $error_html = "";
 $valid = true;
 
-// Add IP address on URI query?
+// Add or remove IP address from ban list on URI query?
+
+$ban_ipaddress = "";
+$unban_ipaddress = "";
 
 if (isset($_GET['ban_ipaddress']) && strlen(trim(_stripslashes($_GET['ban_ipaddress'])))) {
 
     $ban_ipaddress = trim(_stripslashes($_GET['ban_ipaddress']));
 
-}else {
+}elseif (isset($_GET['unban_ipaddress']) && strlen(trim(_stripslashes($_GET['unban_ipaddress'])))) {
 
-    $ban_ipaddress = "";
+    $unban_ipaddress = trim(_stripslashes($_GET['unban_ipaddress']));
 }
 
 // Are we returning somewhere?
@@ -320,7 +323,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\">\n";
 echo "                          <table class=\"posthead\" width=\"95%\">\n";
 echo "                            <tr>\n";
-echo "                              <td colspan=\"2\">", form_dropdown_array('banned_ipaddress[]', $ban_list_array['IPADDRESS'], $ban_list_array['IPADDRESS'], false, "multiple=\"multiple\"", "banned_dropdown"), "</td>\n";
+echo "                              <td colspan=\"2\">", form_dropdown_array('banned_ipaddress[]', $ban_list_array['IPADDRESS'], $ban_list_array['IPADDRESS'], $unban_ipaddress, "multiple=\"multiple\"", "banned_dropdown"), "</td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"right\" width=\"250\">", form_submit('remove_banned_ipaddress', $lang['remove']), "</td>\n";

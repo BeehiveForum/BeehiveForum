@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.130 2005-07-23 22:53:34 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.131 2005-07-27 23:18:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -36,15 +36,9 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function search_execute($argarray, &$urlquery, &$error)
+function search_execute($argarray, &$error)
 {
-    // Check the last time the user performed a search
-
-    if (!check_search_frequency()) {
-
-        $error = SEARCH_FREQUENCY_TOO_GREAT;
-        return false;
-    }
+    $uid = bh_session_get_value('UID');
 
     // MySQL has a list of stop words for fulltext searches.
     // We'll save ourselves some server time by checking
@@ -73,13 +67,19 @@ function search_execute($argarray, &$urlquery, &$error)
 
     $db_search_execute = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    // Each user can only store one search result so we should
+    // clean up their previous search if applicable.
+
+    $sql = "DELETE FROM SEARCH_RESULTS WHERE UID = $uid";
+    $result = db_query($sql, $db_search_execute);
 
     // Base query - the same for all seraches
 
-    $select_sql = "SELECT SEARCH_POSTS.FID, SEARCH_POSTS.TID, SEARCH_POSTS.PID, ";
-    $select_sql.= "SEARCH_POSTS.BY_UID, SEARCH_POSTS.FROM_UID, SEARCH_POSTS.TO_UID, ";
-    $select_sql.= "UNIX_TIMESTAMP(SEARCH_POSTS.CREATED) AS CREATED ";
+    $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FID, TID, PID, ";
+    $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED) SELECT $uid, ";
+    $select_sql.= "SEARCH_POSTS.FID, SEARCH_POSTS.TID, SEARCH_POSTS.PID, ";
+    $select_sql.= "SEARCH_POSTS.BY_UID, SEARCH_POSTS.FROM_UID, ";
+    $select_sql.= "SEARCH_POSTS.TO_UID, SEARCH_POSTS.CREATED ";
 
     // Joins that we need for the search. Only join the keywords table
     // if we're doing a keyword search. Searching by user can be done
@@ -194,6 +194,12 @@ function search_execute($argarray, &$urlquery, &$error)
         }
     }
 
+    if (!check_search_frequency()) {
+
+        $error = SEARCH_FREQUENCY_TOO_GREAT;
+        return false;
+    }
+
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
         $group_sql = "GROUP BY SEARCH_POSTS.TID ";
     }else {
@@ -206,42 +212,50 @@ function search_execute($argarray, &$urlquery, &$error)
         $order_sql = "ORDER BY SEARCH_POSTS.CREATED ";
     }
 
-    $limit_sql = "LIMIT {$argarray['sstart']}, 20";
+    $sql = "$select_sql $from_sql $join_sql $where_sql $group_sql $order_sql";
 
-    // Find out how many matches we have first
+    if ($result = db_query($sql, $db_search_execute)) {
 
-    $sql = preg_replace("/ +/", " ", "$select_sql $from_sql $join_sql $where_sql $group_sql $order_sql");
-    $result = db_query($sql, $db_search_execute);
-
-    $match_count = db_num_rows($result);
-
-    if ($match_count > 0) {
-
-        $sql = preg_replace("/ +/", " ", "$select_sql $from_sql $join_sql $where_sql $group_sql $order_sql $limit_sql");
-        $result = db_query($sql, $db_search_execute);
-
-        $urlquery = "";
-
-        foreach($argarray as $key => $value) {
-            if (!in_array($key, array('webtag', 'sstart'))) {
-                $urlquery.= "&amp;$key=$value";
-            }
-        }
-
-        $match_array = array();
-
-        while ($search_match = db_fetch_array($result)) {
-            $match_array[] = $search_match;
-        }
-
-        return array('match_count' => $match_count,
-                     'match_array' => $match_array);
-
-    }else {
-
-        $error = SEARCH_NO_MATCHES;
-        return false;
+        return true;
     }
+
+    $error = SEARCH_NO_MATCHES;
+    return false;
+}
+
+function search_fetch_results($offset)
+{
+    $db_search_fetch_results = db_connect();
+
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
+    $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
+    $sql.= "WHERE UID = $uid";
+
+    $result = db_query($sql, $db_search_fetch_results);
+
+    $result_count = db_num_rows($result);
+
+    if ($result_count > 0) {
+
+        $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
+        $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
+        $sql.= "WHERE UID = $uid LIMIT $offset, 20";
+
+        $result = db_query($sql, $db_search_fetch_results);
+
+        $search_results_array = array();
+
+        while ($search_result = db_fetch_array($result)) {
+            $search_results_array[] = $search_result;
+        }
+
+        return array('result_count' => $result_count,
+                     'result_array' => $search_results_array);
+    }
+
+    return false;
 }
 
 function search_date_range($from, $to)

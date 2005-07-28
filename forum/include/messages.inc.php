@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.373 2005-07-27 23:18:46 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.374 2005-07-28 22:09:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -933,7 +933,25 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                 echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"", style_image('admintool.png'), "\" border=\"0\" align=\"middle\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a>&nbsp;";
             }
 
-            if ($perm_is_moderator) {
+            if ($perm_has_admin_access) {
+
+                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
+
+                    if (ip_is_banned($message['IPADDRESS'])) {
+
+                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</span>";
+
+                    }else {
+
+                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a>&nbsp;</span>";
+                    }
+
+                }else {
+
+                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
+                }
+
+	    }elseif ($perm_is_moderator) {
 
                 if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
 
@@ -949,24 +967,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     }else {
 
                         echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
-                    }
-
-                }else {
-
-                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
-                }
-
-            }else if ($perm_has_admin_access) {
-
-                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
-
-                    if (ip_is_banned($message['IPADDRESS'])) {
-
-                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</span>";
-
-                    }else {
-
-                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a>&nbsp;</span>";
                     }
 
                 }else {

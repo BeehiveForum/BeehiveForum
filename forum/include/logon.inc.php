@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.36 2005-07-26 21:29:54 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.37 2005-07-29 14:24:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,7 +93,6 @@ function perform_logon($logon_main)
         }else {
 
             $passh = md5($passw);
-	    $passw = str_repeat(' ', strlen($passw));
         }
 
         $luid = user_logon($logon, $passh);
@@ -104,26 +103,6 @@ function perform_logon($logon_main)
             bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
             bh_session_init($luid);
-
-            if (($key = _array_search($logon, $username_array)) !== false) {
-
-                unset($username_array[$key]);
-                unset($password_array[$key]);
-                unset($passhash_array[$key]);
-            }
-
-            array_unshift($username_array, $logon);
-
-            if (isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y')) {
-
-                array_unshift($password_array, $passw);
-                array_unshift($passhash_array, $passh);
-
-            }else {
-
-                array_unshift($password_array, "");
-                array_unshift($passhash_array, "");
-            }
 
             // set / update the username and password cookies
 
@@ -141,6 +120,28 @@ function perform_logon($logon_main)
                 }
 
             }else {
+
+                $passw = str_repeat(' ', strlen($passw));
+
+                if (($key = _array_search($logon, $username_array)) !== false) {
+
+                    unset($username_array[$key]);
+                    unset($password_array[$key]);
+                    unset($passhash_array[$key]);
+                }
+
+                array_unshift($username_array, $logon);
+
+                if (isset($_POST['remember_user']) && ($_POST['remember_user'] == 'Y')) {
+
+                    array_unshift($password_array, $passw);
+                    array_unshift($passhash_array, $passh);
+
+                }else {
+
+                    array_unshift($password_array, "");
+                    array_unshift($passhash_array, "");
+                }
 
                 foreach($username_array as $key => $logon) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.16 2005-07-27 23:18:45 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.17 2005-07-31 17:03:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,8 +107,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "./messages.php?webtag=$webtag&msg={$_GET['msg']}";
 }elseif (isset($_POST['ret'])) {
     $ret = $_POST['ret'];
-}else {
-    $ret = "./admin_banned.php?webtag=$webtag";
 }
 
 // Return to the page we came from.
@@ -299,7 +297,11 @@ if (sizeof($ban_list_array['EMAIL'])     < 1) $ban_list_array['EMAIL']     = arr
 echo "<div align=\"center\">\n";
 echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("ret", $ret), "\n";
+
+if (isset($ret)) {
+    echo "  ", form_input_hidden("ret", $ret), "\n";
+}
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"670\">\n";
 echo "    <tr>\n";
 echo "      <td colspan=\"2\"><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
@@ -522,9 +524,14 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td colspan=\"2\" align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
-echo "    </tr>\n";
+
+if (isset($ret)) {
+
+    echo "    <tr>\n";
+    echo "      <td colspan=\"2\" align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+    echo "    </tr>\n";
+}
+
 echo "  </table>\n";
 echo "</form>\n";
 echo "</div>\n";

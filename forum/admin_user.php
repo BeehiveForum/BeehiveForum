@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.154 2005-05-14 12:43:36 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.155 2005-07-31 17:03:22 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -831,6 +831,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
             echo "                            <tr>\n";
             echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['logon']}</td>\n";
             echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['nickname']}</td>\n";
+	    echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['ip']}</td>\n";
             echo "                            </tr>\n";
 
             foreach ($user_alias_array as $user_alias) {
@@ -838,6 +839,13 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                            <tr>\n";
                 echo "                              <td align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
                 echo "                              <td align=\"left\">&nbsp;{$user_alias['NICKNAME']}</td>\n";
+
+                if (ip_is_banned($user_alias['IPADDRESS'])) {
+                    echo "                              <td align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
+                }else {
+                    echo "                              <td align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>";
+                }
+
                 echo "                            </tr>\n";
             }
 

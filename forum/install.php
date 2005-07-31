@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.46 2005-07-27 23:18:45 decoyduck Exp $ */
+/* $Id: install.php,v 1.47 2005-07-31 17:03:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -176,7 +176,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
     if ($valid) {
 
-        if ($db_install = db_connect()) {
+        if ($db_install = @db_connect()) {
 
             if (($install_method == 5) && (@file_exists('./install/upgrade-06rc-to-06.php'))) {
 

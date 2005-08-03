@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.153 2005-07-24 16:11:42 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.154 2005-08-03 18:01:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,7 +72,6 @@ function get_table_prefix()
 
             if (db_num_rows($result) > 0) {
                 $forum_data = db_fetch_array($result);
-                forum_check_password($forum_data);
                 return $forum_data;
             }
         }
@@ -89,7 +88,6 @@ function get_table_prefix()
 
             if (db_num_rows($result) > 0) {
                 $forum_data = db_fetch_array($result);
-                forum_check_password($forum_data);
                 return $forum_data;
             }
         }
@@ -123,7 +121,7 @@ function get_webtag(&$webtag_search)
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
 
-	    $webtag = addslashes($webtag);
+            $webtag = addslashes($webtag);
 
             $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL FROM FORUMS ";
             $sql.= "WHERE WEBTAG = '$webtag'";
@@ -133,7 +131,6 @@ function get_webtag(&$webtag_search)
             if (db_num_rows($result) > 0) {
 
                 $webtag_data = db_fetch_array($result);
-                forum_check_password($webtag_data);
                 return $webtag_data['WEBTAG'];
             }
         }
@@ -151,7 +148,6 @@ function get_webtag(&$webtag_search)
             if (db_num_rows($result) > 0) {
 
                 $webtag_data = db_fetch_array($result);
-                forum_check_password($webtag_data);
                 return $webtag_data['WEBTAG'];
             }
         }
@@ -196,6 +192,10 @@ function forum_check_access_level()
             }elseif ($forum_data['ACCESS_LEVEL'] == 1 && $forum_data['ALLOWED'] != 1) {
 
                 forum_restricted_message();
+
+            }elseif ($forum_data['ACCESS_LEVEL'] == 2 && !perm_has_forumtools_access()) {
+
+                forum_check_password($forum_fid);
             }
         }
 
@@ -244,41 +244,27 @@ function forum_restricted_message()
     exit;
 }
 
-function forum_check_password($forum_data)
+function forum_check_password($forum_fid)
 {
     $db_forum_check_password = db_connect();
 
-    // List of pages that are allowed to bypass the forum password.
-    // All admin*.php scripts are checked seperatly.
+    $webtag = get_webtag($webtag_search);
 
-    $page_array = array('forums.php', 'index.php', 'logon.php', 'nav.php', 'register.php');
+    if (!is_numeric($forum_fid)) return false;
 
-    // Check if the current page is in the allowed list.
+    $sql = "SELECT FORUM_PASSWD FROM FORUMS WHERE FID = $forum_fid ";
+    $sql.= "AND FORUM_PASSWD IS NOT NULL AND CHAR_LENGTH(FORUM_PASSWD) > 5";
 
-    if (in_array(basename($_SERVER['PHP_SELF']), $page_array)) return;
-    if (preg_match("/^admin.+\.php$/", basename($_SERVER['PHP_SELF']))) return;
+    $result = db_query($sql, $db_forum_check_password);
 
-    // Only continue if the forum data we've been given indicates that
-    // it is running in password protected mode.
+    if (db_num_rows($result) > 0) {
 
-    if (isset($forum_data['ACCESS_LEVEL']) && $forum_data['ACCESS_LEVEL'] == 2) {
+        list($forum_passwd) = db_fetch_array($result, DB_RESULT_NUM);
 
-        // Check to see if the user already has the password cookie set
-        // and verify it against the database.
+        if (isset($_COOKIE["bh_{$webtag}_password"])) {
 
-        if (isset($_COOKIE["bh_{$forum_data['WEBTAG']}_password"])) {
-
-            $passwd = md5($_COOKIE["bh_{$forum_data['WEBTAG']}_password"]);
-
-            $sql = "SELECT COUNT(*) AS FORUM_COUNT FROM FORUMS ";
-            $sql.= "WHERE FID = '{$forum_data['FID']}' AND ";
-            $sql.= "ACCESS_LEVEL = 2 AND FORUM_PASSWD = '$passwd'";
-
-            $result = db_query($sql, $db_forum_check_password);
-
-            list($forum_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-            if ($forum_count > 0) return;
+            $passwd = md5($_COOKIE["bh_{$webtag}_password"]);
+            return ($passwd == $forum_passwd);
         }
 
         // If we got this far then the password verification failed or
@@ -292,7 +278,7 @@ function forum_check_password($forum_data)
         echo "<p>{$lang['passwdprotectedwarning']}</p>\n";
         echo "<div align=\"center\">\n";
         echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
-        echo "  ", form_input_hidden('webtag', $forum_data['WEBTAG']), "\n";
+        echo "  ", form_input_hidden('webtag', $webtag), "\n";
         echo "  ", form_input_hidden('ret', get_request_uri()), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
         echo "    <tr>\n";

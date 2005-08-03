@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.74 2005-07-24 21:36:14 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.75 2005-08-03 09:46:11 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -170,9 +170,9 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
                            'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
                            'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
                            'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SEARCH_KEYWORDS',
-                           'SEARCH_MATCH', 'SEARCH_POSTS',        'SESSIONS',
-                           'USER',         'USER_FORUM',          'USER_PREFS',
-                           'USER_TRACK',   'VISITOR_LOG');
+                           'SEARCH_MATCH', 'SEARCH_POSTS',        'SEARCH_RESULTS',
+                           'SESSIONS',     'USER',                'USER_FORUM',
+                           'USER_PREFS',   'USER_TRACK',          'VISITOR_LOG');
 
     foreach ($forum_tables as $forum_table) {
 
@@ -1132,6 +1132,27 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "CREATE TABLE SEARCH_RESULTS (";
+$sql.= "    UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "    FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "    FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "    PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "    BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "    FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "    TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "    CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+$sql.= "    KEY UID (UID),";
+$sql.= "    KEY FORUM (FORUM),";
+$sql.= "    KEY TID (TID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE SESSIONS (";
 $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1164,7 +1185,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
-$sql.= "VALUES ('$admin_username', MD5('$admin_password'), '$admin_nickname', '$admin_email');";
+$sql.= "VALUES (UPPER('$admin_username'), MD5('$admin_password'), '$admin_username', '$admin_email');";
 
 if (!$result = @db_query($sql, $db_install)) {
 

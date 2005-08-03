@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.78 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.79 2005-08-03 18:25:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -383,28 +383,16 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true)
 
     if ($show_blank) {
 
-        $birthday_days_values = range(0, 31);
         array_unshift($birthday_days, '&nbsp;');
-
-        $birthday_months_values = range(0, 12);
         array_unshift($birthday_months, '&nbsp;');
-
-        $birthday_years_values = $birthday_years;
-        array_unshift($birthday_years_values, 0);
         array_unshift($birthday_years, '&nbsp;');
-
-    }else {
-
-        $birthday_days_values = range(1, 31);
-        $birthday_months_values = range(1, 12);
-        $birthday_years_values = $birthday_years;
     }
 
-    $output = form_dropdown_array("dob_day", $birthday_days_values, $birthday_days, $dob_day);
+    $output = form_dropdown_array("dob_day", array_values($birthday_days), array_values($birthday_days), $dob_day);
     $output.= "&nbsp;";
-    $output.= form_dropdown_array("dob_month", $birthday_months_values, $birthday_months, $dob_month);
+    $output.= form_dropdown_array("dob_month", array_keys($birthday_months), array_values($birthday_months), $dob_month);
     $output.= "&nbsp;";
-    $output.= form_dropdown_array("dob_year", $birthday_years_values, $birthday_years, $dob_year);
+    $output.= form_dropdown_array("dob_year", array_values($birthday_years), array_values($birthday_years), $dob_year);
 
     return $output;
 }

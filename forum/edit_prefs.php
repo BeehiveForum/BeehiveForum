@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.48 2005-07-26 21:29:54 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.49 2005-08-03 18:25:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -97,6 +97,10 @@ $user_info = user_get($uid);
 
 // Clear the error string
 $error_html = "";
+
+// Initialise the global prefs array
+
+$user_prefs_global = array();
 
 if (isset($_POST['submit'])) {
 
@@ -174,7 +178,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if (isset($_POST['homepage_url'])) {
+    if (isset($_POST['homepage_url']) && strlen(trim(_stripslashes($_POST['homepage_url']))) > 0) {
 
         $user_prefs['HOMEPAGE_URL'] = trim(_stripslashes($_POST['homepage_url']));
         $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
@@ -186,7 +190,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if (isset($_POST['pic_url'])) {
+    if (isset($_POST['pic_url']) && strlen(trim(_stripslashes($_POST['pic_url']))) > 0) {
 
         $user_prefs['PIC_URL'] = trim(_stripslashes($_POST['pic_url']));
         $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;

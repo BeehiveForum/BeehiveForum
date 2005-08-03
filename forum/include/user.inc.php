@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.256 2005-07-26 21:29:54 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.257 2005-08-03 09:46:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -874,8 +874,9 @@ function users_get_recent($offset, $limit)
 
         while ($visitor_array = db_fetch_array($result)) {
 
-            if ($visitor_array['UID'] == 0) {
+            if (!isset($visitor_array['UID']) || $visitor_array['UID'] == 0) {
 
+                $visitor_array['UID']      = 0;
                 $visitor_array['LOGON']    = $lang['guest'];
                 $visitor_array['NICKNAME'] = $lang['guest'];
             }

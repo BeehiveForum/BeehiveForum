@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.131 2005-07-27 23:18:48 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.132 2005-08-03 09:46:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -75,10 +75,10 @@ function search_execute($argarray, &$error)
 
     // Base query - the same for all seraches
 
-    $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FID, TID, PID, ";
+    $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
     $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED) SELECT $uid, ";
-    $select_sql.= "SEARCH_POSTS.FID, SEARCH_POSTS.TID, SEARCH_POSTS.PID, ";
-    $select_sql.= "SEARCH_POSTS.BY_UID, SEARCH_POSTS.FROM_UID, ";
+    $select_sql.= "SEARCH_POSTS.FORUM, SEARCH_POSTS.FID, SEARCH_POSTS.TID, ";
+    $select_sql.= "SEARCH_POSTS.PID, SEARCH_POSTS.BY_UID, SEARCH_POSTS.FROM_UID, ";
     $select_sql.= "SEARCH_POSTS.TO_UID, SEARCH_POSTS.CREATED ";
 
     // Joins that we need for the search. Only join the keywords table

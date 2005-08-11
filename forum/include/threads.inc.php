@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.180 2005-07-31 17:03:22 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.181 2005-08-11 15:27:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -949,7 +949,7 @@ function threads_mark_all_read()
 
     $threads_array = array();
 
-    while($row = db_fetch_array($result)) {
+    while($row = db_fetch_array($result_threads)) {
         $threads_array[$row['TID']] = $row['LENGTH'];
     }
 
@@ -970,11 +970,11 @@ function threads_mark_50_read()
     $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50";
 
-    $result = db_query($sql, $db_threads_mark_50_read);
+    $result_threads = db_query($sql, $db_threads_mark_50_read);
 
     $threads_array = array();
 
-    while($row = db_fetch_array($result)) {
+    while($row = db_fetch_array($result_threads)) {
         $threads_array[$row['TID']] = $row['LENGTH'];
     }
 
@@ -997,11 +997,11 @@ function threads_mark_folder_read($fid)
     $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND THREAD.FID = $fid";
 
-    $result = db_query($sql, $db_threads_mark_50_read);
+    $result_threads = db_query($sql, $db_threads_mark_50_read);
 
     $threads_array = array();
 
-    while($row = db_fetch_array($result)) {
+    while($row = db_fetch_array($result_threads)) {
         $threads_array[$row['TID']] = $row['LENGTH'];
     }
 

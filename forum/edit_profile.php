@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.50 2005-06-12 22:54:11 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.51 2005-08-11 15:27:30 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -111,7 +111,11 @@ if (isset($_POST['submit'])) {
 
             $profile_entry = _stripslashes(trim($profile_entry));
 
-            $privacy = isset($_POST['t_entry_private'][$piid]) ? 1 : 0;
+            if (isset($_POST['t_entry_private'][$piid]) && $_POST['t_entry_private'][$piid] == 'Y') {
+                $privacy = 1;
+            }else {
+                $privacy = 0;
+            }
 
             user_profile_update($uid, $piid, $profile_entry, $privacy);
         }
@@ -197,7 +201,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
                     echo "                              <td align=\"right\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
                 }
 
-                echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "N", $lang['friendsonly'], $profile_item['PRIVACY']), "&nbsp;</td>\n";
+                echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
             }
 
         }elseif ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
@@ -205,7 +209,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
             echo "                      <tr>\n";
             echo "                        <td valign=\"top\" width=\"50%\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
             echo "                        <td align=\"right\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], 4, 42), "</td>\n";
-            echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "N", $lang['friendsonly'], $profile_item['PRIVACY']), "&nbsp;</td>\n";
+            echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
             echo "                      </tr>\n";
 
         }else {
@@ -215,7 +219,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
             echo "                      <tr>\n";
             echo "                        <td valign=\"top\" width=\"50%\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
             echo "                        <td align=\"right\" valign=\"top\">", form_field("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], $text_width[$profile_item['TYPE']], 255), "</td>\n";
-            echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "N", $lang['friendsonly'], $profile_item['PRIVACY']), "&nbsp;</td>\n";
+            echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
             echo "                      </tr>\n";
 
         }

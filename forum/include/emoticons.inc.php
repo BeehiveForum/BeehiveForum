@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.49 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.50 2005-08-11 15:27:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -48,7 +48,7 @@ class Emoticons
 
     function Emoticons ()
     {
-        if (!is_array($this->emoticons) || sizeof($this->emoticons) == 0) {
+        if (!isset($this->emoticons) || !is_array($this->emoticons) || sizeof($this->emoticons) == 0) {
 
             if (($user_emots = bh_session_get_value('EMOTICONS')) !== false) {
                 $this->user_emots = $user_emots;
@@ -135,14 +135,9 @@ class Emoticons
         }
     }
 
-    function get_text_array()
-    {
-        return $this->emoticons_text;
-    }
-
     function convert ($content)
     {
-        if (!is_array($this->emoticons)) return $content;
+        if (!isset($this->emoticons) || !is_array($this->emoticons) || sizeof($this->emoticons) == 0) return $content;
 
         // Check for emoticon problems in Safari/Konqueror and Gecko based browsers like FireFox and Mozilla Suite
 

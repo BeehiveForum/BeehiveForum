@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.10 2005-07-23 22:53:35 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.11 2005-08-12 17:49:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -109,9 +109,19 @@ class captcha {
         $this->pub_key_done = true;
     }
 
+    function generate_keys()
+    {
+        if (!$this->generate_public_key() || !$this->generate_private_key()) {
+            $this->error = TEXT_CAPTCHA_KEY_ERROR;
+            return false;
+        }
+
+        return true;
+    }
+
     function verify_keys($private_key_check)
     {
-        if (file_exists($this->get_image_filename())) {
+        if (@file_exists($this->get_image_filename())) {
             @unlink($this->get_image_filename());
         }
 
@@ -121,11 +131,13 @@ class captcha {
 
     function get_image_filename()
     {
-        if (!$this->check_keys()) {
+        if (!$this->check_working_dir()) {
+            $this->error = TEXT_CAPTCHA_DIR_ERROR;
             return false;
         }
 
-        if (!$this->check_working_dir()) {
+        if (!$this->check_keys()) {
+            $this->error = TEXT_CAPTCHA_KEY_ERROR;
             return false;
         }
 
@@ -139,7 +151,11 @@ class captcha {
 
     function get_public_key()
     {
-        $this->check_keys();
+        if (!$this->check_keys()) {
+            $this->error = TEXT_CAPTCHA_KEY_ERROR;
+            return false;
+        }
+
         return $this->public_key;
     }
 
@@ -150,18 +166,18 @@ class captcha {
 
     function make_image()
     {
-        if (!$this->check_keys()) {
-            return false;
-        }
-
-        $this->load_fonts();
-
-        if (sizeof($this->available_fonts) < 1) {
-            $this->error = TEXT_CAPTCHA_NO_FONTS;
-            return false;
-        }
-
         if (!$this->check_working_dir()) {
+            $this->error = TEXT_CAPTCHA_DIR_ERROR;
+            return false;
+        }
+
+        if (!$this->check_keys()) {
+            $this->error = TEXT_CAPTCHA_KEY_ERROR;
+            return false;
+        }
+
+        if (!$this->load_fonts()) {
+            $this->error = TEXT_CAPTCHA_NO_FONTS;
             return false;
         }
 
@@ -238,16 +254,12 @@ class captcha {
                     $text_x += (int)($text_size + ($this->min_char_size / 5));
                 }
 
-                @imagejpeg($image, $this->get_image_filename());
-                return @file_exists($this->get_image_filename());
-
-            }else {
-
-                $this->error = TEXT_CAPTCHA_GD_ERROR;
-                return false;
+                imagejpeg($image, $this->get_image_filename());
+                return file_exists($this->get_image_filename());
             }
         }
 
+        $this->error = TEXT_CAPTCHA_GD_ERROR;
         return false;
     }
 
@@ -285,21 +297,16 @@ class captcha {
             }
         }
 
-        $this->error = TEXT_CAPTCHA_DIR_ERROR;
         return false;
     }
 
     function load_fonts()
     {
-        if (!$this->check_working_dir()) {
-            return false;
-        }
-
         if (!$this->fonts_loaded) {
 
-            if ($dh = opendir("{$this->text_captcha_dir}/fonts")) {
+            if (@$dir = opendir("{$this->text_captcha_dir}/fonts")) {
 
-                while (($file = readdir($dh)) !== false) {
+                while (($file = readdir($dir)) !== false) {
 
                     if ($file != ".." && $file != "." && !is_dir($file) && $this->is_font($file)) {
 
@@ -309,6 +316,8 @@ class captcha {
                 }
             }
         }
+
+        return $this->fonts_loaded;
     }
 
     function is_font($file)
@@ -320,32 +329,25 @@ class captcha {
     {
         $this->public_key = substr(md5(uniqid(rand(), true)), 0, $this->num_chars);
         $this->pub_key_done = true;
+
+        return true;
     }
 
     function generate_private_key()
     {
         if (!$this->pub_key_done) {
-
-            $this->error = TEXT_CAPTCHA_KEY_ERROR;
             return false;
         }
 
         $this->private_key = substr(md5($this->key.$this->public_key), 16 - $this->num_chars / 2, $this->num_chars);
         $this->prv_key_done = true;
-    }
 
-    function generate_keys()
-    {
-        $this->generate_public_key();
-        $this->generate_private_key();
-
-        return ($this->pub_key_done && $this->prv_key_done);
+        return true;
     }
 
     function check_keys()
     {
         if (!$this->pub_key_done || !$this->prv_key_done) {
-            $this->error = TEXT_CAPTCHA_KEY_ERROR;
             return false;
         }
 
@@ -354,7 +356,10 @@ class captcha {
 
     function random_font()
     {
-        $this->load_fonts();
+        if (!$this->load_fonts()) {
+            $this->error = TEXT_CAPTCHA_NO_FONTS;
+            return false;
+        }
 
         srand((float)microtime() * 10000000);
         $this->current_font = $this->available_fonts[array_rand($this->available_fonts)];
@@ -364,7 +369,11 @@ class captcha {
 
     function get_current_font()
     {
-        $this->load_fonts();
+        if (!$this->load_fonts()) {
+            $this->error = TEXT_CAPTCHA_NO_FONTS;
+            return false;
+        }
+
         return "{$this->text_captcha_dir}/fonts/{$this->current_font}";
     }
 

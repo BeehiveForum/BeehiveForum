@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.100 2005-07-23 22:53:13 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.101 2005-08-17 18:35:47 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -872,39 +872,51 @@ function attachment_create_thumb($filepath)
 
         if ($attachment_gd_info = get_gd_info()) {
 
-            if ($attachment_gd_info[$required_read_support[$image_info[2]]] == 1
-                && $attachment_gd_info[$required_write_support[$image_info[2]]] == 1
-                && function_exists($required_read_functions[$image_info[2]])
-                && function_exists($required_write_functions[$image_info[2]])) {
+            // Check 1: Does GD support reading and writing our image type?
 
-                if ($src = $required_read_functions[$image_info[2]]($filepath)) {
+            if (!isset($required_read_support[$image_info[2]])) return false;
+            if (!isset($required_write_support[$image_info[2]])) return false;
 
-                    $target_width  = $image_info[0];
-                    $target_height = $image_info[1];
+            if (!isset($attachment_gd_info[$required_read_support[$image_info[2]]])) return false;
+            if (!isset($attachment_gd_info[$required_write_support[$image_info[2]]])) return false;
 
-                    while ($target_width > 150 || $target_height > 150) {
+            if ($attachment_gd_info[$required_read_support[$image_info[2]]] != 1) return false;
+            if ($attachment_gd_info[$required_write_support[$image_info[2]]] != 1) return false;
 
-                        $target_width--;
-                        $target_height = $target_width * ($image_info[1] / $image_info[0]);
-                    }
+            // Check 2: Even if GD says it supports the image format check the php functions actually exist!
 
-                    if (strcmp($attachment_gd_info['GD Version'], '2.0') > -1) {
+            if (!function_exists($required_read_functions[$image_info[2]])) return false;
+            if (!function_exists($required_write_functions[$image_info[2]])) return false;
 
-                        $dst = imagecreatetruecolor($target_width, $target_height);
+            // Got this far, lets try reading the image.
 
-                        imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
-                                           $target_height, $image_info[0], $image_info[1]);
+            if (@$src = $required_read_functions[$image_info[2]]($filepath)) {
 
-                    }else {
+                $target_width  = $image_info[0];
+                $target_height = $image_info[1];
 
-                        $dst = imagecreate($target_width, $target_height);
+                while ($target_width > 150 || $target_height > 150) {
 
-                        imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
-                                         $target_height, $image_info[0], $image_info[1]);
-                    }
-
-                    return $required_write_functions[$image_info[2]]($dst, "$filepath.thumb");
+                    $target_width--;
+                    $target_height = $target_width * ($image_info[1] / $image_info[0]);
                 }
+
+                if (strcmp($attachment_gd_info['GD Version'], '2.0') > -1) {
+
+                    $dst = imagecreatetruecolor($target_width, $target_height);
+
+                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
+                                       $target_height, $image_info[0], $image_info[1]);
+
+                }else {
+
+                    $dst = imagecreate($target_width, $target_height);
+
+                    imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
+                                     $target_height, $image_info[0], $image_info[1]);
+                }
+
+                return $required_write_functions[$image_info[2]]($dst, "$filepath.thumb");
             }
         }
     }

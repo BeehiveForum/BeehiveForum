@@ -75,7 +75,7 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
         - TinyMCE WYSIWYG integration with BeehiveForum's compose
           pages.
 	- French Canadian (fr-ca) language file. Thanks to Jo from
-	  Canadian Politics Forums (http://www.canadianpolitics.com/)
+	  Canadian Politics Forums (http://www.canadian-politics.com/)
 	- Forums can be opened, closed, restricted or password protected
 	  without requiring access to the 'Manage Forums' section. A new
 	  option allows a user with access to the 'Manage Forums' section

@@ -647,9 +647,8 @@ Andy Black.
 4.5 Translations
 ================
 
-French   - Mark Krywonos
-Gangsta  - Jay Graham
-X-Hacker - Matt Beale.
+French Canadian - Jo
+X-Hacker        - Matt Beale.
 
 
 4.6 Official BeehiveForum Pimp

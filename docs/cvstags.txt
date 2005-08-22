@@ -5,3 +5,6 @@ NB: No tags exist before the release of 0.3 - oops :)
 TAG           DESCRIPTION
 rel0-3        0.3 release
 rel0-4        0.4 release
+rel0-5        0.5 release
+rel0-51       0.5 re-release (oops!)
+rel0-61       0.6.1 release

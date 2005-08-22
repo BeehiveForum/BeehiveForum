@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06RC-to-06.php,v 1.1 2005-07-27 23:18:48 decoyduck Exp $ */
+/* $Id: upgrade-06RC-to-06.php,v 1.2 2005-08-22 15:45:24 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -160,15 +160,15 @@ foreach ($remove_tables as $forum_table) {
 }
 
 $sql = "CREATE TABLE SEARCH_RESULTS (";
-$sql.= "    UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-$sql.= "    KEY UID (UID)";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+$sql.= "  KEY UID (UID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

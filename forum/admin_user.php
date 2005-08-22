@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.155 2005-07-31 17:03:22 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.156 2005-08-22 15:14:31 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -197,55 +197,53 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $new_user_perms = (double) $t_banned | $t_wormed | $t_pilloried | $t_globalmod | $t_linksmod | $t_ignoreadmin;
 
-    if (perm_has_forumtools_access()) {
-
-        $new_user_perms = (double) $new_user_perms | $t_admintools;
-        $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
-
-    }else {
-
-        $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_ADMIN_TOOLS);
-        $new_user_perms = (double) $new_user_perms | ($user_perms & USER_PERM_FORUM_TOOLS);
-    }
-
     perm_update_user_permissions($uid, $new_user_perms);
 
     $user_perms = perm_get_forum_user_permissions($uid);
 
     // Global user permissions
 
-    $new_global_user_perms = (double) 0;
+    if (perm_has_forumtools_access()) {
 
-    $forum_tools_perm_count = perm_get_admin_tools_perm_count();
-    $admin_tools_perm_count = perm_get_forum_tools_perm_count();
+        $new_global_user_perms = (double) 0;
 
-    $t_all_admin_tools = (double) (isset($_POST['t_all_admin_tools'])) ? $_POST['t_all_admin_tools'] : 0;
-    $t_all_forum_tools = (double) (isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;
-    $t_all_folder_mod  = (double) (isset($_POST['t_all_folder_mod']))  ? $_POST['t_all_folder_mod']  : 0;
-    $t_all_links_mod   = (double) (isset($_POST['t_all_links_mod']))   ? $_POST['t_all_links_mod']   : 0;
+        $forum_tools_perm_count = perm_get_admin_tools_perm_count();
+        $admin_tools_perm_count = perm_get_forum_tools_perm_count();
 
-    if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] != 'cancel') {
-        $t_confirm_email = (double) USER_PERM_EMAIL_CONFIRM;
-    }else {
-        $t_confirm_email = (double) 0;
-    }
+        $t_all_admin_tools = (double) (isset($_POST['t_all_admin_tools'])) ? $_POST['t_all_admin_tools'] : 0;
+        $t_all_forum_tools = (double) (isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;
+        $t_all_folder_mod  = (double) (isset($_POST['t_all_folder_mod']))  ? $_POST['t_all_folder_mod']  : 0;
+        $t_all_links_mod   = (double) (isset($_POST['t_all_links_mod']))   ? $_POST['t_all_links_mod']   : 0;
 
-    $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_confirm_email;
+        if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] != 'cancel') {
+            $t_confirm_email = (double) USER_PERM_EMAIL_CONFIRM;
+        }else {
+            $t_confirm_email = (double) 0;
+        }
 
-    if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS) && $admin_tools_perm_count < 2) {
+        $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_confirm_email;
 
-         $valid = false;
-         echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
-    }
+        if (perm_has_forumtools_access($uid) && $forum_tools_perm_count < 2) {
 
-    if ($valid && !($new_global_user_perms & USER_PERM_FORUM_TOOLS) && $forum_tools_perm_count < 2) {
+            if (!($new_global_user_perms & USER_PERM_FORUM_TOOLS)) {
 
-        $valid = false;
-        echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
-    }
+                 $valid = false;
+                 echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
+            }
+        }
 
-    if ($valid) {
-        perm_update_global_perms($uid, $new_global_user_perms);
+        if (perm_has_global_admin_access($uid) && $admin_tools_perm_count < 2) {
+
+            if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS)) {
+
+                $valid = false;
+                echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
+            }
+        }
+
+        if ($valid) {
+            perm_update_global_perms($uid, $new_global_user_perms);
+        }
     }
 
     // Local folder permissions
@@ -831,7 +829,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
             echo "                            <tr>\n";
             echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['logon']}</td>\n";
             echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['nickname']}</td>\n";
-	    echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['ip']}</td>\n";
+            echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['ip']}</td>\n";
             echo "                            </tr>\n";
 
             foreach ($user_alias_array as $user_alias) {

@@ -1,6 +1,30 @@
 Beehive Forum Release Notes
 
-What's new in 0.6
+What's new in 0.6.1 (Released 22nd Aug 2005)
+===================
+
+- Notes
+
+        - BeehiveForum 0.6.1 fixes a few issues highlighted within
+	  the final release of 0.6. There are no functional changes
+	  to the software at this time. For more detailed features
+	  of 0.6.1 please see the 0.6 release notes.
+
+- Changes from 0.6
+
+        - Fixed: Forum level admins were able to remove the global
+                 privilleges of another user without having global 
+                 forum privilleges themselves.
+
+	- Fixed: Upgrading from 0.5 to 0.6 sometimes results in an
+	         error with primary keys on SEARCH_POST table.
+
+        - Fixed: Buffer error occured when using MSIE browser and
+	         being forced to download the config.inc.php when
+		 installing Beehive.
+
+
+What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
 =================
 
 - Notes
@@ -398,8 +422,7 @@ What's new in 0.6
         - Changed: RSS Feed so it only fetches 10 feed items per update
 
 
-What's new in 0.5 ("What You Have Is Enough", released 10th December
-2004)
+What's new in 0.5 ("What You Have Is Enough", released 10th Dec 2004)
 =================
 
 - Notes

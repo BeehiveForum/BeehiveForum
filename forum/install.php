@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.48 2005-08-03 09:46:09 decoyduck Exp $ */
+/* $Id: install.php,v 1.49 2005-08-22 15:14:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -370,8 +370,6 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
 }elseif (isset($_POST['download_config']) && (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install)) {
 
-    install_msie_buffer_fix();
-
     $config_file = "";
 
     if (@$fp = fopen('./install/config.inc.php', 'r')) {
@@ -422,6 +420,8 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
             $config_file = str_replace('{db_database}', "", $config_file);
             $config_file = str_replace('{db_username}', "", $config_file);
             $config_file = str_replace('{db_password}', "", $config_file);
+
+            install_msie_buffer_fix();
 
             echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";

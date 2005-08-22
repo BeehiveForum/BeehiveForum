@@ -647,7 +647,7 @@ Andy Black.
 4.5 Translations
 ================
 
-French Canadian - Jo
+French Canadian - Joanne McNair.
 X-Hacker        - Matt Beale.
 
 

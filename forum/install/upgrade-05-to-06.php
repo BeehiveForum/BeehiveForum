@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.64 2005-07-24 21:36:14 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.65 2005-08-22 15:14:31 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -282,10 +282,10 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SEARCH_POSTS (";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";

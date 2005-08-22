@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.83 2005-07-23 22:53:34 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.84 2005-08-22 15:14:31 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -104,6 +104,36 @@ function perm_has_admin_access($uid = false)
         $sql.= "ORDER BY GROUP_PERMS.GID DESC";
 
         $result = db_query($sql, $db_perm_has_admin_access);
+
+        $row = db_fetch_array($result);
+
+        $user_uid = $uid;
+        $user_status = $row['STATUS'];
+    }
+
+    return ($user_status & USER_PERM_ADMIN_TOOLS) > 0;
+}
+
+function perm_has_global_admin_access($uid = false)
+{
+    static $user_uid = false;
+    static $user_status = false;
+
+    if (!is_numeric($uid)) $uid = false;
+
+    if ($uid === false) $uid = bh_session_get_value('UID');
+
+    if (!$user_uid || !$user_status || $user_uid != $uid) {
+
+        $db_perm_has_global_admin_access = db_connect();
+
+        $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
+        $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+        $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
+        $sql.= "AND GROUP_PERMS.FORUM IN (0) ";
+        $sql.= "ORDER BY GROUP_PERMS.GID DESC";
+
+        $result = db_query($sql, $db_perm_has_global_admin_access);
 
         $row = db_fetch_array($result);
 

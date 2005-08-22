@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.49 2005-07-23 22:53:34 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.50 2005-08-22 16:21:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -165,8 +165,14 @@ function get_my_forums()
 
             $row = db_fetch_array($result_post_count);
 
+            if (!isset($row['NUM_MESSAGES']) || is_null($row['NUM_MESSAGES'])) {
+                $forum_data['NUM_MESSAGES'] = 0;
+            }else {
+                $forum_data['NUM_MESSAGES'] = $row['NUM_MESSAGES'];
+            }
+
             if (!isset($row['UNREAD_MESSAGES']) || is_null($row['UNREAD_MESSAGES'])) {
-                $forum_data['UNREAD_MESSAGES'] = $row['NUM_MESSAGES'];
+                $forum_data['UNREAD_MESSAGES'] = 0;
             }else {
                 $forum_data['UNREAD_MESSAGES'] = $row['UNREAD_MESSAGES'];
             }

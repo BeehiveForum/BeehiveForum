@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.154 2005-08-03 18:01:02 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.155 2005-08-22 16:21:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,15 +50,13 @@ function get_table_prefix()
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag']) && preg_match("/^[A-Z0-9-_]$/", $_GET['webtag']) > 0) {
+        if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_GET['webtag']));
-        }else if (isset($_POST['webtag']) && preg_match("/^[A-Z0-9-_]$/", $_POST['webtag']) > 0) {
+        }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_POST['webtag']));
-        }else {
-            $webtag = false;
         }
 
-        if (!is_bool($webtag)) {
+        if (isset($webtag) && preg_match("/^[A-Z0-9_-]+$/", $webtag) > 0) {
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
@@ -74,9 +72,8 @@ function get_table_prefix()
                 $forum_data = db_fetch_array($result);
                 return $forum_data;
             }
-        }
 
-        if (is_bool($webtag)) {
+        }else {
 
             // Check #2: Try and select a default webtag from
             // the databse
@@ -108,15 +105,13 @@ function get_webtag(&$webtag_search)
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
-        if (isset($_GET['webtag']) && preg_match("/^[A-Z0-9-_]+$/", $_GET['webtag']) > 0) {
+        if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_GET['webtag']));
-        }else if (isset($_POST['webtag']) && preg_match("/^[A-Z0-9-_]+$/", $_POST['webtag']) > 0) {
+        }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_POST['webtag']));
-        }else {
-            $webtag = false;
         }
 
-        if (!is_bool($webtag)) {
+        if (isset($webtag) && preg_match("/^[A-Z0-9_-]+$/", $webtag) > 0) {
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
@@ -133,9 +128,8 @@ function get_webtag(&$webtag_search)
                 $webtag_data = db_fetch_array($result);
                 return $webtag_data['WEBTAG'];
             }
-        }
 
-        if (is_bool($webtag)) {
+        }else {
 
             // Check #2: Try and select a default webtag from
             // the databse

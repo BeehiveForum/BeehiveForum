@@ -23,6 +23,20 @@ What's new in 0.6.1 (Released 22nd Aug 2005)
 	         being forced to download the config.inc.php when
 		 installing Beehive.
 
+        - Fixed: Forum shown was always the default forum even if the
+                 webtag was valid.
+
+        - Fixed: My Forums page would not display the message count on
+	         the forum if the forum had no messages or the user
+		 had not previously visited the forum.
+
+	- Fixed: Missing SEARCH_RESULTS table when performing a new
+	         installation of BeehiveForum 0.6 or upgrading from
+		 a 0.5 installation.
+	
+	- Fixed: Missing FORUM column in SEARCH_RESULTS table when
+	         upgrading from 0.6RC1 / RC2 to 0.6 final.
+
 
 What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
 =================

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.75 2005-08-03 09:46:11 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.76 2005-08-22 16:21:43 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1133,18 +1133,18 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SEARCH_RESULTS (";
-$sql.= "    UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "    CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-$sql.= "    KEY UID (UID),";
-$sql.= "    KEY FORUM (FORUM),";
-$sql.= "    KEY TID (TID)";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+$sql.= "  KEY UID (UID),";
+$sql.= "  KEY FORUM (FORUM),";
+$sql.= "  KEY TID (TID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

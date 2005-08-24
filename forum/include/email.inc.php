@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.94 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.95 2005-08-24 21:09:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -94,7 +94,8 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
             $message.= "{$lang['msgnotificationemail_6']}\n";
             $message.= "{$lang['msgnotificationemail_7']}";
 
-            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header = "Return-path: $forum_email\n";
+            $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
@@ -176,7 +177,8 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
             $message.= "http://{$_SERVER['HTTP_HOST']}". dirname($_SERVER['PHP_SELF']). "/?msg=$tid.$pid,\n";
             $message.= "{$lang['subnotification_6']}";
 
-            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header = "Return-path: $forum_email\n";
+            $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
@@ -249,7 +251,8 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $message.= "{$lang['pmnotification_6']}\n";
             $message.= "{$lang['pmnotification_7']}";
 
-            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header = "Return-path: $forum_email\n";
+            $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
@@ -304,7 +307,8 @@ function email_send_pw_reminder($logon)
 
             $message.= "/change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}";
 
-            $header = "From: \"$forum_name\" <$forum_email>\n";
+            $header = "Return-path: $forum_email\n";
+            $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
             $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
             $header.= "X-Mailer: PHP/". phpversion();
@@ -356,7 +360,8 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
         $message.= "{$lang['pwchangeemail_6']} $forum_name\n";
         $message.= "{$lang['pwchangeemail_7']}";
 
-        $header = "From: \"$forum_name\" <$forum_email>\n";
+        $header = "Return-path: $forum_email\n";
+        $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
         $header.= "X-Mailer: PHP/". phpversion();
@@ -416,7 +421,8 @@ function email_send_user_confirmation($tuid)
         $message.= "{$lang['confirmemail_8']} $forum_email\n";
         $message.= "{$lang['confirmemail_9']}";
 
-        $header = "From: \"$forum_name\" <$forum_email>\n";
+        $header = "Return-path: $forum_email\n";
+        $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
         $header.= "X-Mailer: PHP/". phpversion();
@@ -462,7 +468,8 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
         $sent_from = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
         $message.= sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from);
 
-        $header = "From: \"{$from_user['NICKNAME']}\" <{$from_user['EMAIL']}>\n";
+        $header = "Return-path: $forum_email\n";
+        $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
         $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
         $header.= "X-Mailer: PHP/". phpversion();

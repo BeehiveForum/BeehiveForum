@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.156 2005-08-22 19:16:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.157 2005-08-24 21:09:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,6 +54,8 @@ function get_table_prefix()
             $webtag = trim(_stripslashes($_GET['webtag']));
         }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_POST['webtag']));
+        }elseif (isset($_SERVER['argv'][1]) && strlen(trim(_stripslashes($_SERVER['argv'][1]))) > 0) {
+            $webtag = trim(_stripslashes($_SERVER['argv'][1]));
         }
 
         if (isset($webtag) && preg_match("/^[A-Z0-9_-]+$/", $webtag) > 0) {
@@ -109,6 +111,8 @@ function get_webtag(&$webtag_search)
             $webtag = trim(_stripslashes($_GET['webtag']));
         }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_POST['webtag']));
+        }elseif (isset($_SERVER['argv'][1]) && strlen(trim(_stripslashes($_SERVER['argv'][1]))) > 0) {
+            $webtag = trim(_stripslashes($_SERVER['argv'][1]));
         }
 
         if (isset($webtag) && preg_match("/^[A-Z0-9_-]+$/", $webtag) > 0) {

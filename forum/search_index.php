@@ -34,6 +34,10 @@ define("BH_INCLUDE_PATH", "./include/");
 
 include_once(BH_INCLUDE_PATH. "search.inc.php");
 
-search_index_old_post();
+if (search_index_old_post()) {
+    echo "Successfully indexed a post.\n";
+}else {
+    echo "Could not index a post at this time or there are no posts to index.\n";
+}
 
 ?>

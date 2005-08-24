@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.132 2005-08-03 09:46:08 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.133 2005-08-24 21:09:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -587,10 +587,8 @@ function search_index_old_post()
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, ";
-    $sql.= "POST.TO_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
+    $sql = "SELECT POST.TID, POST.PID, POST.FROM_UID, POST.TO_UID, ";
+    $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.TID = POST.TID AND ";
     $sql.= "SEARCH_POSTS.PID = POST.PID AND SEARCH_POSTS.FORUM = $forum_fid) ";
     $sql.= "WHERE SEARCH_POSTS.TID IS NULL AND SEARCH_POSTS.PID IS NULL ";
@@ -600,11 +598,14 @@ function search_index_old_post()
 
     if (db_num_rows($result) > 0) {
 
-        list($fid, $tid, $pid, $by_uid, $fuid, $tuid, $created) = db_fetch_array($result, DB_RESULT_NUM);
+        list($tid, $pid, $fuid, $tuid, $created) = db_fetch_array($result, DB_RESULT_NUM);
+
+        if (!$fid = thread_get_folder($tid)) $fid = 0;
+        if (!$by_uid = thread_get_by_uid($tid)) $by_uid = 0;
 
         $content = message_get_content($tid, $pid);
 
-        search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $created);
+        return search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $created);
     }
 
     return false;

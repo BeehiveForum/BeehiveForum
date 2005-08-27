@@ -24,10 +24,21 @@ USA
 // Use this script in a CRON job or other schedule to index
 // your forum's posts automatically. How often you want the
 // script to be executed is entirely up to you, but we recommend
-// no more than once every minute. Whatever value you choose
+// no more than once every 5 minutes. Whatever value you choose
 // remember that this script will only index *1* post each time
 // it is run so if you have a lot of posts it could be some time
 // before your entire database is indexed.
+
+// You can optionally add the webtag of the forum you wish to index
+// as a command line argument to the script if you run multiple
+// forums on your BeehiveForum installation. If you don't specify
+// a webtag or you specify an invalid webtag the script will index
+// your default forum only. If you do not have a default forum no
+// posts will be indexed.
+
+// Example command line:
+
+// php /home/account_name/public_html/forum/search_index.php WEBTAG
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");

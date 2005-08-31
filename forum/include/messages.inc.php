@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.374 2005-07-28 22:09:11 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.375 2005-08-31 14:55:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -951,7 +951,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
                     echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
                 }
 
-	    }elseif ($perm_is_moderator) {
+            }elseif ($perm_is_moderator) {
 
                 if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
 
@@ -1472,7 +1472,7 @@ function messages_forum_stats($tid, $pid)
         echo "  <br />\n";
         echo "  <table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "    <tr>\n";
-        echo "      <td class=\"subhead\">&nbsp;{$lang['forumstats']}:</td>\n";
+        echo "      <td class=\"subhead\" align=\"left\">&nbsp;{$lang['forumstats']}:</td>\n";
 
         if ($user_show_stats == "Y" || $uid == 0) {
 
@@ -1484,7 +1484,7 @@ function messages_forum_stats($tid, $pid)
 
             echo "    </tr>\n";
             echo "    <tr>\n";
-            echo "      <td colspan=\"2\">\n";
+            echo "      <td colspan=\"2\" align=\"left\">\n";
 
             if ($user_stats = get_active_users()) {
 

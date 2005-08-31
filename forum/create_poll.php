@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.164 2005-06-11 13:58:59 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.165 2005-08-31 14:55:18 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -229,10 +229,10 @@ if (isset($_POST['t_sig_html'])) {
     $fetched_sig = true;
 }
 
-if (!isset($_POST['aid'])) {
-    $aid = md5(uniqid(rand()));
-}else{
+if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
+}else{
+    $aid = md5(uniqid(rand()));
 }
 
 if (!isset($sig_html)) $sig_html = 0;

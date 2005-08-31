@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.124 2005-07-03 18:42:11 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.125 2005-08-31 14:55:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -457,10 +457,10 @@ if (strlen($t_content) >= 65535) {
 
 // Attachment Unique ID
 
-if (!isset($_POST['aid'])) {
-    $aid = md5(uniqid(rand()));
-}else{
+if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
+}else{
+    $aid = md5(uniqid(rand()));
 }
 
 // Send the PM
@@ -473,7 +473,7 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content)) {
 
-                pm_save_attachment_id($new_mid, $_POST['aid']);
+                pm_save_attachment_id($new_mid, $aid);
                 email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
             }else {
@@ -488,7 +488,7 @@ if ($valid && isset($_POST['submit'])) {
 
                 if ($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content)) {
 
-                    pm_save_attachment_id($new_mid, $_POST['aid']);
+                    pm_save_attachment_id($new_mid, $aid);
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
                 }else {

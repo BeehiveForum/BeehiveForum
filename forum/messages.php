@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.180 2005-04-27 19:47:13 decoyduck Exp $ */
+/* $Id: messages.php,v 1.181 2005-08-31 14:55:18 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -350,7 +350,7 @@ echo "  <tr>\n";
 echo "    <td colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr valign=\"top\">\n";
-echo "    <td width=\"33%\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
+echo "    <td width=\"33%\" align=\"left\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
 
 echo "    <td width=\"33%\" align=\"center\"><p>";
 

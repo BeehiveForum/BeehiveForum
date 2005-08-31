@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.19 2005-08-17 18:35:47 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.20 2005-08-31 14:55:18 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -37,7 +37,8 @@ $master_lang = load_language_file("en.inc.php");
 
 // Slave Language Files.
 
-$slave_langs = array("x-hacker.inc.php" => load_language_file("x-hacker.inc.php"),
+$slave_langs = array("en-us.inc.php"    => load_language_file("en-us.inc.php"),
+                     "x-hacker.inc.php" => load_language_file("x-hacker.inc.php"),
                      "fr-ca.inc.php"    => load_language_file("fr-ca.inc.php"),
                      "es.inc.php"       => load_language_file("es.inc.php"));
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.91 2005-07-24 21:36:13 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.92 2005-08-31 14:55:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -834,6 +834,8 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
       }
 
     }
+
+    $polldata['CONTENT'].= "</form>\n";
 
     // Work out what relationship the user has to the user who posted the poll
     $polldata['FROM_RELATIONSHIP'] = user_rel_get(bh_session_get_value('UID'), $polldata['FROM_UID']);

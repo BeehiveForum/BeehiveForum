@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.182 2005-09-01 13:47:21 rowan_hill Exp $ */
+/* $Id: messages.php,v 1.183 2005-09-01 14:06:38 rowan_hill Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -343,8 +343,6 @@ unset($messages, $message);
 if ($msg_count > 0 && bh_session_get_value('UID') != 0 && !isset($_GET['markasread'])) {
     messages_update_read($tid, $last_pid, bh_session_get_value('UID'));
 }
-
-//print_r($threaddata);
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";

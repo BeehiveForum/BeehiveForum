@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.108 2005-07-24 21:36:11 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.109 2005-09-04 14:47:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -273,24 +273,6 @@ function _array_chunk($input_array, $size = 1, $preserve_keys = false) {
    }
 
    return $chunks_array;
-}
-
-// Case insensitive / multi-dimensional replacement for in_array.
-
-function _in_array($needle, $haystack)
-{
-    if (!is_array($haystack)) return false;
-
-    foreach ($haystack as $key => $value) {
-        if (is_array($value)) {
-            return _in_array($needle, $value);
-        }else {
-            if (strtolower($needle) == strtolower($value)) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 // is_md5 validates an md5 hash to make sure it is correctly

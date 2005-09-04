@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.82 2005-05-01 22:35:30 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.83 2005-09-04 14:47:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -601,12 +601,12 @@ echo "                        <td align=\"right\" >", form_checkbox("font_size_g
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"250\">{$lang['forumstyle']}:</td>\n";
-echo "                        <td>", form_dropdown_array("style", array_keys($available_styles), array_values($available_styles), (isset($user_prefs['STYLE']) && _in_array($user_prefs['STYLE'], array_keys($available_styles))) ? $user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default')), "</td>\n";
+echo "                        <td>", form_dropdown_array("style", array_keys($available_styles), array_values($available_styles), (isset($user_prefs['STYLE']) && in_array($user_prefs['STYLE'], array_keys($available_styles))) ? $user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default')), "</td>\n";
 echo "                        <td align=\"right\" >", form_checkbox("style_global", "Y", $lang['setforallforums'], (isset($user_prefs['STYLE_GLOBAL']) ? $user_prefs['STYLE_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"250\">{$lang['forumemoticons']} [<a href=\"javascript:void(0);\" onclick=\"openEmoticons('', '$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
-echo "                        <td>", form_dropdown_array("emoticons", array_keys($available_emoticons), array_values($available_emoticons), (isset($user_prefs['EMOTICONS']) && _in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default')), "</td>\n";
+echo "                        <td>", form_dropdown_array("emoticons", array_keys($available_emoticons), array_values($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default')), "</td>\n";
 echo "                        <td align=\"right\" >", form_checkbox("emoticons_global", "Y", $lang['setforallforums'], (isset($user_prefs['EMOTICONS_GLOBAL']) ? $user_prefs['EMOTICONS_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

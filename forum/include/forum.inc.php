@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.157 2005-08-24 21:09:23 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.158 2005-09-04 13:13:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -531,9 +531,11 @@ function forum_load_start_page()
 
     if (@file_exists("./forums/$webtag/start_main.php")) {
 
-        if (@$fp = fopen("./forums/$webtag/start_main.php", "r")) {
+        $filesize = filesize("./forums/$webtag/start_main.php");
 
-            $content = fread($fp, filesize("./forums/$webtag/start_main.php"));
+        if ($filesize > 0 && @$fp = fopen("./forums/$webtag/start_main.php", "r")) {
+
+            $content = fread($fp, $filesize);
             fclose($fp);
             return $content;
         }

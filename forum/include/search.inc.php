@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.133 2005-08-24 21:09:23 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.134 2005-09-04 13:13:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -98,6 +98,11 @@ function search_execute($argarray, &$error)
     $where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
+    // Having is needed for AND based searches to find matches with the
+    // number of keywords.
+
+    $having_sql = "";
+
     $folders = folder_get_available();
 
     if (isset($argarray['fid']) && in_array($argarray['fid'], explode(",", $folders))) {
@@ -146,31 +151,35 @@ function search_execute($argarray, &$error)
 
         $keywords_array = explode(' ', trim($argarray['search_string']));
 
-        foreach ($keywords_array as $key => $value) {
+        array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
+        $mysql_fulltext_stopwords = implode('$|^', $mysql_fulltext_stopwords);
 
-            if (strlen($value) < $search_min_word_length || strlen($value) > 64 || _in_array($value, $mysql_fulltext_stopwords)) {
-                unset($keywords_array[$key]);
-            }else {
-                $keywords_array[$key] = strtolower($value);
-            }
-        }
+        $keywords_array = array_unique($keywords_array);
 
-        if (sizeof($keywords_array) > 0) {
+        $keywords_array = preg_grep("/^[\w']{{$search_min_word_length},50}$/", $keywords_array);
+        $keywords_array = preg_grep("/^[\d]+$|^$mysql_fulltext_stopwords$/", $keywords_array, PREG_GREP_INVERT);
 
-            $from_sql = "FROM SEARCH_KEYWORDS SEARCH_KEYWORDS ";
+        $keyword_count = sizeof($keywords_array);
+
+        if ($keyword_count > 0) {
+
+            $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
 
             $join_sql.= "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ";
-            $join_sql.= "ON (SEARCH_MATCH.WID = SEARCH_KEYWORDS.WID) ";
-            $join_sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ";
-            $join_sql.= "ON (SEARCH_POSTS.FORUM = SEARCH_MATCH.FORUM ";
-            $join_sql.= "AND SEARCH_POSTS.TID = SEARCH_MATCH.TID ";
-            $join_sql.= "AND SEARCH_POSTS.PID = SEARCH_MATCH.PID) ";
+            $join_sql.= "ON (SEARCH_MATCH.FORUM = SEARCH_POSTS.FORUM ";
+            $join_sql.= "AND SEARCH_MATCH.TID = SEARCH_POSTS.TID ";
+            $join_sql.= "AND SEARCH_MATCH.PID = SEARCH_POSTS.PID) ";
+
+            $join_sql.= "LEFT JOIN SEARCH_KEYWORDS SEARCH_KEYWORDS ";
+            $join_sql.= "ON (SEARCH_KEYWORDS.WID = SEARCH_MATCH.WID) ";
 
             if ($argarray['method'] == 1) { // AND
 
                 $where_sql.= "AND (SEARCH_KEYWORDS.WORD = '";
-                $where_sql.= implode("' AND SEARCH_KEYWORDS.WORD = '", $keywords_array);
+                $where_sql.= implode("' OR SEARCH_KEYWORDS.WORD = '", $keywords_array);
                 $where_sql.= "') ";
+
+                $having_sql = "HAVING COUNT(SEARCH_KEYWORDS.WORD) >= $keyword_count ";
 
             }elseif ($argarray['method'] == 2) { // OR
 
@@ -203,7 +212,7 @@ function search_execute($argarray, &$error)
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
         $group_sql = "GROUP BY SEARCH_POSTS.TID ";
     }else {
-        $group_sql = "";
+        $group_sql = "GROUP BY SEARCH_POSTS.TID, SEARCH_POSTS.PID";
     }
 
     if ($argarray['order_by'] == 1) {
@@ -212,7 +221,7 @@ function search_execute($argarray, &$error)
         $order_sql = "ORDER BY SEARCH_POSTS.CREATED ";
     }
 
-    $sql = "$select_sql $from_sql $join_sql $where_sql $group_sql $order_sql";
+    $sql = "$select_sql $from_sql $join_sql $where_sql $group_sql $having_sql $order_sql";
 
     if ($result = db_query($sql, $db_search_execute)) {
 
@@ -579,6 +588,16 @@ function check_search_frequency()
     return false;
 }
 
+function search_keywords_callback(&$item, $key)
+{
+    $item = strtolower(trim($item));
+}
+
+function mysql_fulltext_callback(&$item, $key, $delimiter)
+{
+    $item = preg_quote($item, $delimiter);
+}
+
 function search_index_old_post()
 {
     $db_search_index_old_post = db_connect();
@@ -670,23 +689,25 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
     $keyword_list_array = array();
     $sql_values_array = array();
 
-    // Process the keywords. Filter out any MySQL stop words, any word that are numbers
+    // Trim the array entries to remove whitespace and change to lowercase.
+
+    array_walk($content_array, 'search_keywords_callback');
+
+    // Filter out any MySQL stop words, any word that are numbers
     // and any words longer than 50 characters.
+
+    array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
+    $mysql_fulltext_stopwords = implode('$|^', $mysql_fulltext_stopwords);
+
+    $content_array = array_unique($content_array);
+    $content_array = preg_grep("/^[\w']{50,}$|^[\d]+$|^$mysql_fulltext_stopwords$/", $content_array, PREG_GREP_INVERT);
 
     foreach ($content_array as $key => $keyword_add) {
 
-        $keyword_add = trim(strtolower($keyword_add));
+        $keyword_add = addslashes($keyword_add);
 
-        if (strlen($keyword_add) < 50 && !_in_array($keyword_add, $mysql_fulltext_stopwords)) {
-
-            if (!_in_array($keyword_add, $keyword_list_array) && !is_numeric($keyword_add)) {
-
-                $keyword_add = addslashes($keyword_add);
-
-                $keyword_list_array[] = $keyword_add;
-                $sql_values_array[] = "('$keyword_add')";
-            }
-        }
+        $keyword_list_array[] = $keyword_add;
+        $sql_values_array[] = "('$keyword_add')";
     }
 
     // If we have some keywords to insert then we should insert them.

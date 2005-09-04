@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.21 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.22 2005-09-04 14:47:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -239,7 +239,7 @@ class dictionary {
 
     function word_is_ignored()
     {
-        return _in_array($this->get_current_word(), $this->ignored_words_array);
+        return in_array(strtolower($this->get_current_word()), $this->ignored_words_array);
     }
 
     function word_get_metaphone()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.134 2005-09-04 13:13:16 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.135 2005-09-05 17:02:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -81,43 +81,38 @@ function search_execute($argarray, &$error)
     $select_sql.= "SEARCH_POSTS.PID, SEARCH_POSTS.BY_UID, SEARCH_POSTS.FROM_UID, ";
     $select_sql.= "SEARCH_POSTS.TO_UID, SEARCH_POSTS.CREATED ";
 
-    // Joins that we need for the search. Only join the keywords table
-    // if we're doing a keyword search. Searching by user can be done
-    // with just the SEARCH_POSTS table.
+    // Peer portion of the query for removing rows from ignored users - the same for all searches
 
-    $join_sql = "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $join_sql.= "ON (USER_PEER.PEER_UID = SEARCH_POSTS.BY_UID AND USER_PEER.UID = '$uid') ";
+    $peer_join_sql = "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $peer_join_sql.= "ON (USER_PEER.PEER_UID = SEARCH_POSTS.BY_UID AND USER_PEER.UID = $uid) ";
 
-    // Where query base - used for all searches.
-    // Modified depending on the joins by the code
-    // below.
+    $peer_where_sql = "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+    $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $peer_where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+    $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
-    $where_sql = "WHERE SEARCH_POSTS.FORUM = $forum_fid ";
-    $where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
-    $where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
-    $where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-
-    // Having is needed for AND based searches to find matches with the
-    // number of keywords.
+    // Having is needed for AND based searches to find matches with the number of keywords.
 
     $having_sql = "";
 
+    // Get available folders
+
     $folders = folder_get_available();
 
-    if (isset($argarray['fid']) && in_array($argarray['fid'], explode(",", $folders))) {
-        $where_sql.= "AND SEARCH_POSTS.FID = {$argarray['fid']} ";
-    }else{
-        $where_sql.= "AND SEARCH_POSTS.FID IN ($folders) ";
-    }
-
-    $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
+    // Username based search.
 
     if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
 
         if ($user_uid = user_get_uid($argarray['username'])) {
 
+            // Change the main table to be SEARCH_POSTS
+
             $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
+
+            // Where query needs to limit the search results to the current forum
+
+            $where_sql = "WHERE SEARCH_POSTS.FORUM = $forum_fid ";
+            $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
 
             if ($argarray['user_include'] == 1) {
 
@@ -139,6 +134,8 @@ function search_execute($argarray, &$error)
             return false;
         }
     }
+
+    /// Keyword based search.
 
     if (isset($argarray['search_string']) && strlen(trim($argarray['search_string'])) > 0) {
 
@@ -163,15 +160,22 @@ function search_execute($argarray, &$error)
 
         if ($keyword_count > 0) {
 
-            $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
+            // Change the main table to be SEARCH_KEYWORDS
 
-            $join_sql.= "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ";
-            $join_sql.= "ON (SEARCH_MATCH.FORUM = SEARCH_POSTS.FORUM ";
-            $join_sql.= "AND SEARCH_MATCH.TID = SEARCH_POSTS.TID ";
-            $join_sql.= "AND SEARCH_MATCH.PID = SEARCH_POSTS.PID) ";
+            $from_sql = "FROM SEARCH_KEYWORDS SEARCH_KEYWORDS ";
 
-            $join_sql.= "LEFT JOIN SEARCH_KEYWORDS SEARCH_KEYWORDS ";
-            $join_sql.= "ON (SEARCH_KEYWORDS.WID = SEARCH_MATCH.WID) ";
+            // Join the other tables including SEARCH_POSTS so the username portion still works.
+
+            $join_sql = "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ON (SEARCH_MATCH.WID = SEARCH_KEYWORDS.WID) ";
+            $join_sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.FORUM = SEARCH_MATCH.FORUM ";
+            $join_sql.= "AND SEARCH_POSTS.TID = SEARCH_MATCH.TID AND SEARCH_POSTS.PID = SEARCH_MATCH.PID) ";
+
+            // Where query needs to limit the search results to the current forum
+
+            $where_sql = "WHERE SEARCH_MATCH.FORUM = $forum_fid ";
+            $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
+
+            // Include the keyword matching portion of the where clause.
 
             if ($argarray['method'] == 1) { // AND
 
@@ -203,11 +207,25 @@ function search_execute($argarray, &$error)
         }
     }
 
+    // If the user has specified a folder within their viewable scope limit them
+    // to that folder, otherwise limit them to their available folders.
+
+    if (isset($argarray['fid']) && in_array($argarray['fid'], explode(",", $folders))) {
+        $where_sql.= "AND SEARCH_POSTS.FID = {$argarray['fid']} ";
+    }else{
+        $where_sql.= "AND SEARCH_POSTS.FID IN ($folders) ";
+    }
+
+    // If the user has performed a search within the last x minutes bail out
+
     if (!check_search_frequency()) {
 
         $error = SEARCH_FREQUENCY_TOO_GREAT;
         return false;
     }
+
+    // If the user wants results grouped by thread (TID) then do so. We still group
+    // by TID, PID otherwise AND based searches won't work.
 
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
         $group_sql = "GROUP BY SEARCH_POSTS.TID ";
@@ -215,13 +233,18 @@ function search_execute($argarray, &$error)
         $group_sql = "GROUP BY SEARCH_POSTS.TID, SEARCH_POSTS.PID";
     }
 
+    // If the user has specified to sort newest first then do so.
+
     if ($argarray['order_by'] == 1) {
         $order_sql = "ORDER BY SEARCH_POSTS.CREATED DESC ";
     }elseif($argarray['order_by'] == 2) {
         $order_sql = "ORDER BY SEARCH_POSTS.CREATED ";
     }
 
-    $sql = "$select_sql $from_sql $join_sql $where_sql $group_sql $having_sql $order_sql";
+    // Build the final query.
+
+    $sql = "$select_sql $from_sql $join_sql $peer_join_sql $where_sql ";
+    $sql.= "$peer_where_sql $group_sql $having_sql $order_sql";
 
     if ($result = db_query($sql, $db_search_execute)) {
 

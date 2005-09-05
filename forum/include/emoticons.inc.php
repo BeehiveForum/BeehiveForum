@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.51 2005-08-12 17:49:48 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.52 2005-09-05 17:02:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -197,7 +197,7 @@ class Emoticons
     }
 }
 
-function emoticons_get_available()
+function emoticons_get_available($include_text_none = true)
 {
     $sets_normal = array();
     $sets_txtnon = array();
@@ -208,20 +208,23 @@ function emoticons_get_available()
 
             if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
 
-                 if ($file == "none" || $file == "text") {
+                 if (preg_match("/^none$|6text$/i", $file) > 0) {
 
-                     if (@$fp = fopen("./emoticons/$file/desc.txt", "r")) {
+                     if ($include_text_none === true) {
 
-                         @$content = fread($fp, filesize("emoticons/$file/desc.txt"));
-                         $content = split("\n", $content);
+                         if (@$fp = fopen("./emoticons/$file/desc.txt", "r")) {
 
-                         $sets_txtnon[$file] = _htmlentities($content[0]);
+                             @$content = fread($fp, filesize("emoticons/$file/desc.txt"));
+                             $content = split("\n", $content);
 
-                         fclose($fp);
+                             $sets_txtnon[$file] = _htmlentities($content[0]);
 
-                     }else {
+                             fclose($fp);
 
-                         $sets_txtnon[$file] = _htmlentities($file);
+                         }else {
+
+                             $sets_txtnon[$file] = _htmlentities($file);
+                         }
                      }
 
                  }else if (@file_exists("./emoticons/$file/style.css")) {

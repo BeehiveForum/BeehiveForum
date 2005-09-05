@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.39 2005-04-27 19:47:10 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.40 2005-09-05 17:02:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -83,11 +83,11 @@ if (!forum_check_access_level()) {
 $pack = "";
 $mode = "";
 
-if (isset($_GET['pack'])) {
+if (isset($_GET['pack']) && strlen(trim(_stripslashes($_GET['pack']))) > 0) {
     $pack = $_GET['pack'];
 }
 
-if (isset($_GET['mode'])) {
+if (isset($_GET['mode']) && strlen(trim(_stripslashes($_GET['mode']))) > 0) {
     $mode = $_GET['mode'];
 }
 
@@ -113,11 +113,7 @@ echo "              <tr>\n";
 
 $emot_forum = forum_get_setting('default_emoticons', false, 'default');
 
-$emot_sets = emoticons_get_available();
-
-unset($emot_sets['none']);
-unset($emot_sets['text']);
-
+$emot_sets = emoticons_get_available(false);
 $emot_sets_keys = array_keys($emot_sets);
 
 if ($pack != "user" && !in_array($pack, $emot_sets_keys)) {
@@ -144,16 +140,14 @@ if ($pack != "user") {
 }
 
 if ($pack == "user") {
-
-    $pack = bh_session_get_value('EMOTICONS');
-    $pack = $pack ? $pack : $emot_forum;
+    if (!$pack = bh_session_get_value('EMOTICONS')) $pack = $emot_forum;
 }
 
 if (in_array($pack, $emot_sets_keys)) {
     $path = "emoticons/$pack";
 }else if (in_array($emot_forum, $emot_sets_keys)) {
     $path = "emoticons/{$emot_forum}";
-}else {
+}else if (isset($emot_sets_keys[0])) {
     $path = "emoticons/{$emot_sets_keys[0]}";
 }
 
@@ -161,13 +155,16 @@ if (@file_exists("$path/definitions.php")) {
     include ("$path/definitions.php");
 }
 
-krsort($emoticon);
-reset($emoticon);
+if (isset($emoticon) && count($emoticon) > 0) {
 
-$emoticon_text = array();
+    krsort($emoticon);
+    reset($emoticon);
 
-foreach ($emoticon as $k => $v) {
-    $emoticon_text[$v][] = $k;
+    $emoticon_text = array();
+
+    foreach ($emoticon as $k => $v) {
+        $emoticon_text[$v][] = $k;
+    }
 }
 
 echo "                <td>\n";

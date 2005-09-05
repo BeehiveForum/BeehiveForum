@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.101 2005-08-17 18:35:47 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.102 2005-09-05 17:02:49 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -109,7 +109,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
     $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID = '$aid' ";
-    $sql.= "ORDER BY FORUMS.FID DESC";
+    $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
 
     $result = db_query($sql, $db_get_attachments);
 
@@ -254,8 +254,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
     $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-    $sql.= "WHERE PAF.UID = '$uid'";
-    $sql.= "ORDER BY FORUMS.FID DESC";
+    $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
 
     $result = db_query($sql, $db_get_users_attachments);
 
@@ -833,7 +832,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
         $attachment_link.= "alt=\"{$lang['attachment']}\" ";
         $attachment_link.= "title=\"{$lang['attachment']}\" />";
         $attachment_link.= "<a href=\"$href\" title=\"$title\" ";
-        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>";
+        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a><br />\n";
     }
 
     return $attachment_link;

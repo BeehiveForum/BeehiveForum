@@ -21,6 +21,10 @@ function active_text (t, dbl) {
 	}
 	active_field = t;
 
+	if (!active_field.createTextRange && !active_field.setSelectionRange) {
+		return;
+	}
+
 	if (dbl == true) {
 		var s = get_selection();
 		if (s.charAt(s.length-1) == " ") {

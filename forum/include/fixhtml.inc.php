@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.113 2005-07-24 21:36:11 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.114 2005-09-06 17:25:26 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -740,10 +740,14 @@ function clean_attributes ($tag)
 
     $valid["embed"] = array("src", "type", "pluginspage", "pluginurl", "border", "frameborder", "height", "width", "units", "hidden", "hspace", "vspace", "name", "palette", "wmode", "menu", "bgcolor");
 
-    $valid["object"] = array("archive", "classid", "codebase", "codetype", "data", "declare", "height", "width", "name", "standby", "type", "usemap");
-    $valid["param"] = array("name", "id", "value", "valuetype", "type");
+    //$valid["object"] = array("archive", "classid", "codebase", "codetype", "data", "declare", "height", "width", "name", "standby", "type", "usemap");
+    //$valid["param"] = array("name", "id", "value", "valuetype", "type");
 
     $valid["marquee"] = array("direction", "behavior", "loop", "scrollamount", "scrolldelay", "height", "width", "hspace", "vspace");
+
+
+    $urls = array("href", "background", "src", "pluginspage", "pluginurl");
+
 
     $split_tag = preg_split("/\s+/", $tag);
 
@@ -815,9 +819,9 @@ function clean_attributes ($tag)
                     $attrib_value = clean_styles($attrib_value);
                 }
 
-                if ($tag_name == 'img' && $tmp_attrib == "src=") {
+                if (in_array(substr($tmp_attrib,0,-1), $urls)) {
 
-                    $attrib_value = preg_replace("/\s*javascript\s*:/i", "", $attrib_value);
+                    $attrib_value = preg_replace("/javascript:/ix", "", $attrib_value);
                 }
 
                 $tmp_attrib .= "\"".$attrib_value."\"";
@@ -1177,15 +1181,19 @@ function tidy_tinymce_code_callback ($matches)
 * 'Cleans' inline styles
 *
 * Called by clean_attributes function, this function prevents absolute CSS positioning and
-* stops an IE hack that allows Javascripts to be run.
+* prevents some XSS javascript hacks (at the expense of background images through inline CSS).
 *
 * @return string
 * @param string $style The inline CSS style text (e.g. <span style="font:italic"> would need $style="font:italic")
 */
 function clean_styles ($style)
 {
-    $style = preg_replace("/position\s*:\s*absolute\s*;?/i", "", $style);
-    $style = preg_replace("/background\s*:\s*url\s*\(\s*javascript\s*:/i", "background:url(", $style);
+    // no inline comments
+    $style = preg_replace("/\*+\/+|\/+\*+/x", "", $style);
+    // no absolute positioning
+    $style = preg_replace("/position:absolute/ix", "", $style);
+    // no XSS javascript hacks
+    $style = preg_replace("/url\(|expression\(/ix", "", $style);
     return $style;
 }
 

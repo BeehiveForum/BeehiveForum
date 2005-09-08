@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.120 2005-07-27 23:18:45 decoyduck Exp $ */
+/* $Id: search.php,v 1.121 2005-09-08 18:17:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,6 +94,12 @@ if (isset($_COOKIE['bh_thread_mode'])) {
     $mode = 0;
 }
 
+if (isset($_GET['order_by'])) {
+    $order_by = $_GET['order_by'];
+}else {
+    $order_by = 1;
+}
+
 if (!$folder_dropdown = folder_search_dropdown()) {
 
     html_draw_top();
@@ -145,7 +151,7 @@ if (isset($_POST) && sizeof($_POST) > 0) {
         $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
     }
 
-    if (!search_execute($search_arguments, $error)) {
+    if (!$search_success = search_execute($search_arguments, $error)) {
 
         html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
 
@@ -165,45 +171,11 @@ if (isset($_POST) && sizeof($_POST) > 0) {
         }
 
         echo "</table>\n";
-        echo "<br />\n";
-        echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-        echo "  <tr>\n";
-        echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td>&nbsp;</td>\n";
-        echo "    <td class=\"smalltext\">\n";
-        echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-        echo "        ", form_input_hidden("webtag", $webtag), "\n";
-        echo "        ", form_input_text('msg', '1.1', 10). "\n";
-        echo "        ", form_submit("go",$lang['goexcmark']). "\n";
-        echo "      </form>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
-
-        echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-        echo "  <tr>\n";
-        echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td>&nbsp;</td>\n";
-        echo "    <td class=\"smalltext\">\n";
-        echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
-        echo "        ", form_input_hidden('webtag', $webtag), "\n";
-        echo "        ", form_input_text("search_string", "", 20). "\n";
-        echo "        ", form_submit("submit", $lang['find']). "\n";
-        echo "      </form>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
-
-	html_draw_bottom();
-	exit;
     }
 
 }elseif (isset($_GET['offset']) && is_numeric($_GET['offset'])) {
 
+    $search_success = true;
     $offset = $_GET['offset'];
 
     if (isset($_GET['search_string'])) {
@@ -213,20 +185,20 @@ if (isset($_POST) && sizeof($_POST) > 0) {
     }
 }
 
-if (isset($offset)) {
+if (isset($search_success) && $search_success === true && isset($offset)) {
 
-    if ($search_results_array = search_fetch_results($offset)) {
+    if ($search_results_array = search_fetch_results($offset, $order_by)) {
 
         html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
 
         thread_list_draw_top(0);
 
-	echo "</table>\n";
+        echo "</table>\n";
         echo "<h1>{$lang['searchresults']}</h1>\n";
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
 
         if ($offset >= 20) {
-            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;search_string={$search_arguments['search_string']}\">{$lang['prevpage']}</a>\n";
+            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;search_string={$search_arguments['search_string']}&amp;order_by=$order_by\">{$lang['prevpage']}</a>\n";
         }
 
         echo "<ol start=\"", $offset + 1, "\">\n";
@@ -298,7 +270,7 @@ if (isset($offset)) {
         echo "</ol>\n";
 
         if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
-            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;search_string={$search_arguments['search_string']}\">{$lang['findmore']}</a>\n";
+            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;search_string={$search_arguments['search_string']}&amp;order_by=$order_by\">{$lang['findmore']}</a>\n";
         }
 
     }else {
@@ -308,42 +280,6 @@ if (isset($offset)) {
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
     }
-
-    echo "</table>\n";
-    echo "<br />\n";
-    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td>&nbsp;</td>\n";
-    echo "    <td class=\"smalltext\">\n";
-    echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-    echo "        ", form_input_hidden("webtag", $webtag), "\n";
-    echo "        ", form_input_text('msg', '1.1', 10). "\n";
-    echo "        ", form_submit("go",$lang['goexcmark']). "\n";
-    echo "      </form>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-
-    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-    echo "  <tr>\n";
-    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td>&nbsp;</td>\n";
-    echo "    <td class=\"smalltext\">\n";
-    echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
-    echo "        ", form_input_hidden('webtag', $webtag), "\n";
-    echo "        ", form_input_text("search_string", "", 20). "\n";
-    echo "        ", form_submit("submit", $lang['find']). "\n";
-    echo "      </form>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-
-    html_draw_bottom();
 
 }else {
 
@@ -485,6 +421,64 @@ if (isset($offset)) {
     echo "</div>\n";
 
     html_draw_bottom();
+    exit;
 }
+
+echo "<br />\n";
+
+if (isset($search_success) && $search_success === true) {
+
+    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['orderby']}:</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td>&nbsp;</td>\n";
+    echo "    <td class=\"smalltext\">\n";
+    echo "      <form name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
+    echo "        ", form_input_hidden("webtag", $webtag), "\n";
+    echo "        ", form_input_hidden("offset", isset($offset) ? $offset : 0), "\n";
+    echo "        ", form_input_hidden("search_string", $search_arguments['search_string']), "\n";
+    echo "        ", form_dropdown_array("order_by", range(1, 2), array($lang['newestfirst'], $lang['oldestfirst']), $order_by, false), "\n";
+    echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+}
+
+echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "    <td class=\"smalltext\">\n";
+echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+echo "        ", form_input_hidden("webtag", $webtag), "\n";
+echo "        ", form_input_text('msg', '1.1', 10). "\n";
+echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+
+echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+echo "  <tr>\n";
+echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td>&nbsp;</td>\n";
+echo "    <td class=\"smalltext\">\n";
+echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
+echo "        ", form_input_hidden('webtag', $webtag), "\n";
+echo "        ", form_input_text("search_string", "", 20). "\n";
+echo "        ", form_submit("submit", $lang['find']). "\n";
+echo "      </form>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+
+html_draw_bottom();
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.18 2005-07-24 16:11:42 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.19 2005-09-08 18:17:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -110,7 +110,10 @@ if ($threads_array = threads_get_most_recent(20)) {
         $message_content = message_get_content($thread['TID'], $thread['LENGTH']);
         $parsed_message = new MessageTextParse($message_content, false);
 
+        $t_title = _htmlentities_decode($thread['TITLE']);
+
         $t_content = $parsed_message->getMessage();
+        $t_content = _htmlentities_decode($t_content);
         $t_content = strip_tags($t_content);
         $t_content = preg_replace('/[\r|\n|\r\n]/', ' ', $t_content);
         $t_content = trim(preg_replace('/[ ]+/', ' ', $t_content));
@@ -118,7 +121,7 @@ if ($threads_array = threads_get_most_recent(20)) {
         echo "<item>\n";
         echo "<guid isPermaLink=\"true\">http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
         echo "<pubDate>{$modified_date} UT</pubDate>\n";
-        echo "<title><![CDATA[{$thread['TITLE']}]]></title>\n";
+        echo "<title><![CDATA[{$t_title}]]></title>\n";
         echo "<link>http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
         echo "<description><![CDATA[{$t_content}]]></description>\n";
         echo "<comments>http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";

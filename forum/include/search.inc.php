@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.135 2005-09-05 17:02:49 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.136 2005-09-08 18:17:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,6 +108,7 @@ function search_execute($argarray, &$error)
             // Change the main table to be SEARCH_POSTS
 
             $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
+            $join_sql = "";
 
             // Where query needs to limit the search results to the current forum
 
@@ -233,18 +234,10 @@ function search_execute($argarray, &$error)
         $group_sql = "GROUP BY SEARCH_POSTS.TID, SEARCH_POSTS.PID";
     }
 
-    // If the user has specified to sort newest first then do so.
-
-    if ($argarray['order_by'] == 1) {
-        $order_sql = "ORDER BY SEARCH_POSTS.CREATED DESC ";
-    }elseif($argarray['order_by'] == 2) {
-        $order_sql = "ORDER BY SEARCH_POSTS.CREATED ";
-    }
-
     // Build the final query.
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql $where_sql ";
-    $sql.= "$peer_where_sql $group_sql $having_sql $order_sql";
+    $sql.= "$peer_where_sql $group_sql $having_sql";
 
     if ($result = db_query($sql, $db_search_execute)) {
 
@@ -255,25 +248,31 @@ function search_execute($argarray, &$error)
     return false;
 }
 
-function search_fetch_results($offset)
+function search_fetch_results($offset, $order_by)
 {
     $db_search_fetch_results = db_connect();
 
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
-    $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
-    $sql.= "WHERE UID = $uid";
-
+    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = $uid";
     $result = db_query($sql, $db_search_fetch_results);
 
-    $result_count = db_num_rows($result);
+    list($result_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     if ($result_count > 0) {
 
-        $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
-        $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
-        $sql.= "WHERE UID = $uid LIMIT $offset, 20";
+        if ($order_by == 1) {
+
+            $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
+            $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
+            $sql.= "WHERE UID = $uid ORDER BY CREATED ASC LIMIT $offset, 20";
+
+        }else {
+
+            $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
+            $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
+            $sql.= "WHERE UID = $uid ORDER BY CREATED DESC LIMIT $offset, 20";
+        }
 
         $result = db_query($sql, $db_search_fetch_results);
 

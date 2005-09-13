@@ -42,7 +42,7 @@ function initialise_dictionary(obj_id) {
     var contObj = getFormObj('content');
   
     if (window.opener.getFormObj) {
-
+        
         contObj.value = window.opener.readContent(obj_id);
         dictObj.submit();
     }
@@ -73,8 +73,6 @@ function readContent(obj_id) {
 }
 
 function updateContent(obj_id, content) {
-
-    content = unescape(content);
 
     if (self.tinyMCE) {
         return tinyMCE.setContent(content);

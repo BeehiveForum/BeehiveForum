@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.22 2005-09-04 14:47:12 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.23 2005-09-13 14:04:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,9 +56,7 @@ class dictionary {
         $this->ignored_words_array = array();
         $this->suggestions_array = array();
 
-        preg_match_all("/([\w']+)|(<[^>]+>)|(&[^;]+;)|(.)/i", $content, $content_array);
-        $this->content_array = $content_array[0];
-
+        $this->content_array = preg_split("/(\s+)/", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
         $this->ignored_words_array = explode(" ", $ignored_words);
 
         $this->current_word = $current_word;
@@ -226,12 +224,9 @@ class dictionary {
     {
         $current_word = $this->get_current_word();
 
-        if (preg_match("/([\w']+)/i", $current_word) > 0) {
+        if (preg_match("/([0-9]+)|(<[^>]+>)|(&[^;]+;)/", $current_word) < 1) {
 
-            if (preg_match("/([0-9]+)|(<[^>]+>)|(&[^;]+;)/", $current_word) < 1) {
-
-                if (strlen($current_word) > 1 && strtoupper($current_word) != $current_word) return true;
-            }
+            if (strlen($current_word) > 1 && strtoupper($current_word) != $current_word) return true;
         }
 
         return false;
@@ -253,10 +248,9 @@ class dictionary {
 
         if (!isset($this->content_array[$this->current_word])) return false;
 
-        // Fetch the current word and generate it's metaphone value
+        // Fetch the current word
 
         $word = addslashes($this->get_current_word());
-        $metaphone = addslashes($this->word_get_metaphone());
 
         // The offset of the metaphone results
 
@@ -280,34 +274,39 @@ class dictionary {
 
         // Metaphone match (English pronounciation match)
 
-        $sql = "SELECT COUNT(WORD) AS COUNT FROM DICTIONARY WHERE SOUND = '$metaphone' ";
-        $sql.= "AND (UID = 0 OR UID = '$uid')";
+        if ($metaphone = $this->word_get_metaphone()) {
 
-        $result = db_query($sql, $db_dictionary_word_get_suggestions);
-        list($this->word_suggestion_count) = db_fetch_array($result, DB_RESULT_NUM);
+            $metaphone = addslashes($metaphone);
 
-        $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
-        $sql.= "AND (UID = 0 OR UID = '$uid') ";
-        $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
+            $sql = "SELECT COUNT(WORD) AS COUNT FROM DICTIONARY WHERE SOUND = '$metaphone' ";
+            $sql.= "AND (UID = 0 OR UID = '$uid')";
 
-        $result = db_query($sql, $db_dictionary_word_get_suggestions);
+            $result = db_query($sql, $db_dictionary_word_get_suggestions);
+            list($this->word_suggestion_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        if (db_num_rows($result) > 0) {
+            $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
+            $sql.= "AND (UID = 0 OR UID = '$uid') ";
+            $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
 
-            while($row = db_fetch_array($result)) {
+            $result = db_query($sql, $db_dictionary_word_get_suggestions);
 
-                $this->suggestions_array[] = $row['WORD'];
+            if (db_num_rows($result) > 0) {
+
+                while($row = db_fetch_array($result)) {
+
+                    $this->suggestions_array[] = $row['WORD'];
+                }
+
+            }else {
+
+                if ($this->offset_match == 0) return false;
+
+                $this->offset_match = 0;
+                return $this->word_get_suggestions();
             }
 
-        }else {
-
-            if ($this->offset_match == 0) return false;
-
-            $this->offset_match = 0;
-            return $this->word_get_suggestions();
+            if (sizeof($this->suggestions_array) > 0) return $this->suggestions_array;
         }
-
-        if (sizeof($this->suggestions_array) > 0) return $this->suggestions_array;
 
         return false;
     }

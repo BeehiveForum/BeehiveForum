@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.66 2005-08-22 16:21:43 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.67 2005-09-13 14:04:51 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -501,15 +501,17 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // User permissions:
 
-    $sql = "SELECT * FROM {$forum_webtag}_GROUPS";
+    $sql = "SELECT GID, GROUP_NAME, GROUP_DESC, AUTO_GROUP FROM {$forum_webtag}_GROUPS";
 
     if ($result = @db_query($sql, $db_install)) {
 
-        while ($group_data = db_fetch_array($result)) {
+        while (list($gid, $name, $desc, $auto_group) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+            $name = addslashes($name);
+            $desc = addslashes($desc);
 
             $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-            $sql.= "VALUES ('$forum_fid', '{$group_data['GROUP_NAME']}', ";
-            $sql.= "'{$group_data['GROUP_DESC']}', '{$group_data['AUTO_GROUP']}')";
+            $sql.= "VALUES ($forum_fid, '$name', '$desc', $auto_group)";
 
             if ($result_group = @db_query($sql, $db_install)) {
 
@@ -517,7 +519,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
                 $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
                 $sql.= "SELECT $new_group_gid, $forum_fid, FID, PERM FROM ";
-                $sql.= "{$forum_webtag}_GROUP_PERMS WHERE GID = '{$group_data['GID']}'";
+                $sql.= "{$forum_webtag}_GROUP_PERMS WHERE GID = $gid";
 
                 if (!$result = @db_query($sql, $db_install)) {
 
@@ -557,12 +559,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $up_all = (double) (USER_PERM_FORUM_TOOLS | USER_PERM_ADMIN_TOOLS | USER_PERM_LINKS_MODERATE);
     $up_all = (double) ($up_all | USER_PERM_FOLDER_MODERATE);
 
-    $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.PERM, GROUP_USERS.UID ";
-    $sql.= "FROM {$forum_webtag}_GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN {$forum_webtag}_GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE (PERM & $up_forum > 0 OR PERM & $up_admin > 0) ";
-    $sql.= "AND FID = 0";
+    $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.PERM, GROUP_USERS.UID FROM {$forum_webtag}_GROUP_PERMS GROUP_PERMS ";
+    $sql.= "LEFT JOIN {$forum_webtag}_GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+    $sql.= "WHERE ((GROUP_PERMS.PERM & $up_forum > 0) OR (GROUP_PERMS.PERM & $up_admin > 0)) AND FID = 0";
 
     if ($result = @db_query($sql, $db_install)) {
 

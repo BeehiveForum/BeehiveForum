@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.136 2005-09-08 18:17:16 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.137 2005-09-13 14:04:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -91,6 +91,12 @@ function search_execute($argarray, &$error)
     $peer_where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
+
+    // Where query needs to limit the search results to the current forum
+
+    $where_sql = "WHERE SEARCH_MATCH.FORUM = $forum_fid ";
+    $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
+
     // Having is needed for AND based searches to find matches with the number of keywords.
 
     $having_sql = "";
@@ -109,11 +115,6 @@ function search_execute($argarray, &$error)
 
             $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
             $join_sql = "";
-
-            // Where query needs to limit the search results to the current forum
-
-            $where_sql = "WHERE SEARCH_POSTS.FORUM = $forum_fid ";
-            $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
 
             if ($argarray['user_include'] == 1) {
 
@@ -171,11 +172,6 @@ function search_execute($argarray, &$error)
             $join_sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.FORUM = SEARCH_MATCH.FORUM ";
             $join_sql.= "AND SEARCH_POSTS.TID = SEARCH_MATCH.TID AND SEARCH_POSTS.PID = SEARCH_MATCH.PID) ";
 
-            // Where query needs to limit the search results to the current forum
-
-            $where_sql = "WHERE SEARCH_MATCH.FORUM = $forum_fid ";
-            $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
-
             // Include the keyword matching portion of the where clause.
 
             if ($argarray['method'] == 1) { // AND
@@ -217,14 +213,6 @@ function search_execute($argarray, &$error)
         $where_sql.= "AND SEARCH_POSTS.FID IN ($folders) ";
     }
 
-    // If the user has performed a search within the last x minutes bail out
-
-    if (!check_search_frequency()) {
-
-        $error = SEARCH_FREQUENCY_TOO_GREAT;
-        return false;
-    }
-
     // If the user wants results grouped by thread (TID) then do so. We still group
     // by TID, PID otherwise AND based searches won't work.
 
@@ -238,6 +226,16 @@ function search_execute($argarray, &$error)
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql $where_sql ";
     $sql.= "$peer_where_sql $group_sql $having_sql";
+
+    // If the user has performed a search within the last x minutes bail out
+
+    if (!check_search_frequency()) {
+
+        $error = SEARCH_FREQUENCY_TOO_GREAT;
+        return false;
+    }
+
+    // Execute the query
 
     if ($result = db_query($sql, $db_search_execute)) {
 

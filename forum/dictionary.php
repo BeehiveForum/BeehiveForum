@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.22 2005-04-27 19:47:09 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.23 2005-09-13 14:04:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -193,7 +193,7 @@ if (isset($_POST['ok'])) {
 
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  if (window.opener.updateContent) {\n";
-    echo "    window.opener.updateContent('$obj_id', '", rawurlencode($dictionary->get_content()), "');\n";
+    echo "    window.opener.updateContent('$obj_id', '", $dictionary->get_content(), "');\n";
     echo "  }\n";
     echo "  window.close();\n";
     echo "</script>\n";

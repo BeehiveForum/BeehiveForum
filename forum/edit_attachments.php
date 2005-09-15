@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.92 2005-06-11 14:31:41 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.93 2005-09-15 18:50:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -209,15 +209,20 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
-echo "                </tr>\n";
 
 if (is_md5($aid)) {
+
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
+    echo "                </tr>\n";
 
     $attachment_result = get_attachments($uid, $aid, $attachments_array, $image_attachments_array);
 
 }else {
+
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
+    echo "                </tr>\n";
 
     $attachment_result = get_users_attachments($uid, $attachments_array, $image_attachments_array);
 }
@@ -301,7 +306,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if ($uid == bh_session_get_value('UID')) {
+if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -392,7 +397,6 @@ if ($uid == bh_session_get_value('UID')) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

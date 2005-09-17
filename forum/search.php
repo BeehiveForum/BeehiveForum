@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.122 2005-09-17 20:31:06 decoyduck Exp $ */
+/* $Id: search.php,v 1.123 2005-09-17 20:54:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -281,7 +281,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['matches']}\" title=\"{$lang['matches']}\" />&nbsp;{$lang['found']}: 0 {$lang['matches']}<br />\n";
     }
 
-}else {
+}elseif (!isset($search_success)) {
 
     html_draw_top("robots=noindex,nofollow");
 

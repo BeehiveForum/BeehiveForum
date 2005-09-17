@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.139 2005-09-17 20:31:06 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.140 2005-09-17 20:54:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -90,6 +90,12 @@ function search_execute($argarray, &$error)
     $peer_where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
+
+    // Where query needs to limit the search results to the current forum
+
+    $where_sql = "WHERE SEARCH_POSTS.FORUM = $forum_fid ";
+    $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
+
     // Having is needed for AND based searches to find matches with the number of keywords.
 
     $having_sql = "";
@@ -108,11 +114,6 @@ function search_execute($argarray, &$error)
 
             $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
             $join_sql = "";
-
-            // Where query needs to limit the search results to the current forum
-
-            $where_sql = "WHERE SEARCH_POSTS.FORUM = $forum_fid ";
-            $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
 
             if ($argarray['user_include'] == 1) {
 
@@ -163,11 +164,6 @@ function search_execute($argarray, &$error)
             // Change the main table to be SEARCH_KEYWORDS
 
             $from_sql = "FROM SEARCH_KEYWORDS SEARCH_KEYWORDS ";
-
-            // Where query needs to limit the search results to the current forum
-
-            $where_sql = "WHERE SEARCH_MATCH.FORUM = $forum_fid ";
-            $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
 
             // Join the other tables including SEARCH_POSTS so the username portion still works.
 

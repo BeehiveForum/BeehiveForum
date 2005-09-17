@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.121 2005-09-08 18:17:16 decoyduck Exp $ */
+/* $Id: search.php,v 1.122 2005-09-17 20:31:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,7 +94,7 @@ if (isset($_COOKIE['bh_thread_mode'])) {
     $mode = 0;
 }
 
-if (isset($_GET['order_by'])) {
+if (isset($_GET['order_by']) && is_numeric($_GET['order_by'])) {
     $order_by = $_GET['order_by'];
 }else {
     $order_by = 1;
@@ -147,7 +147,7 @@ if (isset($_POST) && sizeof($_POST) > 0) {
         $search_arguments['order_by'] = $_POST['order_by'];
     }
 
-    if (isset($_POST['group_by_thread']) && strlen(trim($_POST['group_by_thread'])) > 0) {
+    if (isset($_POST['group_by_thread']) && is_numeric($_POST['group_by_thread'])) {
         $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
     }
 
@@ -270,7 +270,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
         echo "</ol>\n";
 
         if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
-            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;search_string={$search_arguments['search_string']}&amp;order_by=$order_by\">{$lang['findmore']}</a>\n";
+            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;search_string={$search_arguments['search_string']}&amp;order_by=$order_by\">{$lang['findmore']}</a><br />\n";
         }
 
     }else {
@@ -392,7 +392,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td nowrap=\"nowrap\">&nbsp;{$lang['groupbythread']}:</td>\n";
-    echo "                  <td>", form_radio("group_by_thread", "Y", $lang['yes'], true), "&nbsp;", form_radio("group_by_thread", "Y", $lang['no'], false), "&nbsp;</td>\n";
+    echo "                  <td>", form_radio("group_by_thread", 1, $lang['yes'], false), "&nbsp;", form_radio("group_by_thread", 0, $lang['no'], true), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";

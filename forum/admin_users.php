@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.105 2005-05-23 22:47:02 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.106 2005-09-17 20:31:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -140,16 +140,19 @@ if (isset($_GET['reset'])) {
 // Draw the form
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['manageusers']}</h1>\n";
 
-if (isset($_POST['t_kick'])) {
+if (perm_has_global_admin_access()) {
 
-    list($user_uid) = array_keys($_POST['t_kick']);
+    if (isset($_POST['t_kick'])) {
 
-    if (admin_session_end($user_uid)) {
+        list($user_uid) = array_keys($_POST['t_kick']);
 
-        $user_logon = user_get_logon($user_uid);
+        if (admin_session_end($user_uid)) {
 
-        admin_add_log_entry(END_USER_SESSION, $user_logon);
-        echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">$user_logon</a></b></p>\n";
+            $user_logon = user_get_logon($user_uid);
+
+            admin_add_log_entry(END_USER_SESSION, $user_logon);
+            echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">$user_logon</a></b></p>\n";
+        }
     }
 }
 
@@ -225,7 +228,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         if (user_is_active($user['UID'])) {
 
-            if (perm_has_forumtools_access()) {
+            if (perm_has_global_admin_access()) {
 
                 echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<b>{$lang['yes']}</b></td>\n";
                 echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", form_submit("t_kick[{$user['UID']}]", $lang['kick']), "</td>\n";

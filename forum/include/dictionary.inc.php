@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.23 2005-09-13 14:04:51 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.24 2005-09-17 20:31:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -250,7 +250,7 @@ class dictionary {
 
         // Fetch the current word
 
-        $word = addslashes($this->get_current_word());
+        $word = addslashes(strtolower($this->get_current_word()));
 
         // The offset of the metaphone results
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.138 2005-09-15 18:50:57 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.139 2005-09-17 20:31:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,8 +55,7 @@ function search_execute($argarray, &$error)
     if (!isset($argarray['method']) || !is_numeric($argarray['method'])) $argarray['method'] = 1;
     if (!isset($argarray['date_from']) || !is_numeric($argarray['date_from'])) $argarray['date_from'] = 7;
     if (!isset($argarray['date_to']) || !is_numeric($argarray['date_to'])) $argarray['date_to'] = 2;
-    if (!isset($argarray['order_by']) || !is_numeric($argarray['order_by'])) $argarray['order_by'] = 1;
-    if (!isset($argarray['group_by_thread']) || !is_numeric($argarray['group_by_thread'])) $argarray['group_by_thread'] = "N";
+    if (!isset($argarray['group_by_thread']) || !is_numeric($argarray['group_by_thread'])) $argarray['group_by_thread'] = 0;
     if (!isset($argarray['sstart']) || !is_numeric($argarray['sstart'])) $argarray['sstart'] = 0;
     if (!isset($argarray['fid']) || !is_numeric($argarray['fid'])) $argarray['fid'] = 0;
     if (!isset($argarray['include']) || !is_numeric($argarray['include'])) $argarray['include'] = 2;
@@ -91,12 +90,6 @@ function search_execute($argarray, &$error)
     $peer_where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
-
-    // Where query needs to limit the search results to the current forum
-
-    $where_sql = "WHERE SEARCH_MATCH.FORUM = $forum_fid ";
-    $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
-
     // Having is needed for AND based searches to find matches with the number of keywords.
 
     $having_sql = "";
@@ -115,6 +108,11 @@ function search_execute($argarray, &$error)
 
             $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
             $join_sql = "";
+
+            // Where query needs to limit the search results to the current forum
+
+            $where_sql = "WHERE SEARCH_POSTS.FORUM = $forum_fid ";
+            $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
 
             if ($argarray['user_include'] == 1) {
 
@@ -166,6 +164,11 @@ function search_execute($argarray, &$error)
 
             $from_sql = "FROM SEARCH_KEYWORDS SEARCH_KEYWORDS ";
 
+            // Where query needs to limit the search results to the current forum
+
+            $where_sql = "WHERE SEARCH_MATCH.FORUM = $forum_fid ";
+            $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
+
             // Join the other tables including SEARCH_POSTS so the username portion still works.
 
             $join_sql = "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ON (SEARCH_MATCH.WID = SEARCH_KEYWORDS.WID) ";
@@ -216,10 +219,10 @@ function search_execute($argarray, &$error)
     // If the user wants results grouped by thread (TID) then do so. We still group
     // by TID, PID otherwise AND based searches won't work.
 
-    if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 'Y') {
+    if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 1) {
         $group_sql = "GROUP BY SEARCH_POSTS.TID ";
     }else {
-        $group_sql = "GROUP BY SEARCH_POSTS.TID, SEARCH_POSTS.PID";
+        $group_sql = "GROUP BY SEARCH_POSTS.TID, SEARCH_POSTS.PID ";
     }
 
     // Build the final query.
@@ -263,13 +266,13 @@ function search_fetch_results($offset, $order_by)
 
             $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
             $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
-            $sql.= "WHERE UID = $uid ORDER BY CREATED ASC LIMIT $offset, 20";
+            $sql.= "WHERE UID = $uid ORDER BY CREATED DESC LIMIT $offset, 20";
 
         }else {
 
             $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
             $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
-            $sql.= "WHERE UID = $uid ORDER BY CREATED DESC LIMIT $offset, 20";
+            $sql.= "WHERE UID = $uid ORDER BY CREATED ASC LIMIT $offset, 20";
         }
 
         $result = db_query($sql, $db_search_fetch_results);

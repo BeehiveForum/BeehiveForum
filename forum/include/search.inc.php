@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.140 2005-09-17 20:54:11 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.141 2005-09-18 11:28:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -627,7 +627,7 @@ function search_index_old_post()
 
     $sql = "SELECT POST.TID, POST.PID FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON ( SEARCH_POSTS.TID = POST.TID ";
-    $sql.= "AND SEARCH_POSTS.PID = POST.PID AND SEARCH_POSTS.FORUM = 1) ";
+    $sql.= "AND SEARCH_POSTS.PID = POST.PID AND SEARCH_POSTS.FORUM = $forum_fid) ";
     $sql.= "WHERE SEARCH_POSTS.TID IS NULL AND SEARCH_POSTS.PID IS NULL ";
     $sql.= "LIMIT 0 , 1";
 
@@ -643,9 +643,10 @@ function search_index_old_post()
         if (!$fid = thread_get_folder($tid)) $fid = 0;
         if (!$by_uid = thread_get_by_uid($tid)) $by_uid = 0;
 
-        return search_index_post($fid, $tid, $pid, $by_uid,
-                                 $message['FROM_UID'], $message['TO_UID'],
-                                 $message['CONTENT'], $message['CREATED']);
+        if (search_index_post($fid, $tid, $pid, $by_uid, $message['FROM_UID'], $message['TO_UID'], $message['CONTENT'], $message['CREATED'])) {
+
+            return "$forum_fid.$fid.$tid.$pid";
+        }
     }
 
     return false;

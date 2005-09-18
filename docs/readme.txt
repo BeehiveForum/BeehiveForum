@@ -17,10 +17,12 @@ in release.txt.
     1.2.2    Database setup
     1.2.3    Upload
     1.2.4    Installing the forum
-    1.2.5    First use
-    1.2.6    Adminning
-    1.2.7    What to do if it doesn't work
-    1.2.8    Add your forum to our list
+    1.2.5    Installing from CLI
+    1.2.6    Creating your config.inc.php
+    1.2.7    First use
+    1.2.8    Adminning
+    1.2.9    What to do if it doesn't work
+    1.2.10   Add your forum to our list
   1.3    Customising your BeehiveForum
     1.3.1    Style sheet
     1.3.2    Images
@@ -212,8 +214,112 @@ need your MySQL database's host address, username and password for this stage, a
 well as the name of the database from step 1.2.2.  You should be able to get the 
 information from your hosting provider if you're not running your own server.
 
+1.2.5 Installing from CLI
+=========================
 
-1.2.5 First use
+If PHP CLI mode is available to you, you can also run the BeehiveForum installation
+from a command line over SSH or a telnet connection. If you don't know what SSH or
+telnet is then you'd do best sticking to using the web based installer.
+
+First things first it is important to note that when running the BeehiveForum 
+installer from CLI that no config.inc.php will be created. Rather you must create
+your own and upload it to your server. For instructions on creating a config.inc.php
+please see next section.
+
+The full command needed for running the installation from CLI can vary depending on
+the server configuration and PHP version. In newer versions of PHP the name of the 
+PHP CLI executable has changed to be 'php-cli', but with older versions it is more
+often simply named 'php'. When executing the commands below you should replace the
+php-cli part with the correct name for your PHP CLI executable.
+
+For new installs using the command line installer you should execute the following:
+
+>php-cli new-install.php
+
+When performing an upgrade of your BeehiveForum software you should supplement
+new-install.php with the name of the upgrade script you require. For example if
+you are upgrading from 0.5 to 0.6 you should execute:
+
+>php-cli upgrade-05-to-06.php
+
+You can go ahead and do that right now. Okay, unless you've already read ahead
+you will probably have noticed that not a lot actually happened when you ran either
+of the above commands, but with any luck you should have on your screen the command
+line installer help text which will tell you what went wrong, which should look
+something like this:
+
+    BeehiveForum 0.6.2 CLI installer
+    Copyright Project BeehiveForum 2002 - 2005
+    Usage: php-cli new-install.php [OPTIONS]
+      --help      Display this help and exit
+      -h          MySQL hostname to connect to
+      -u          Username to use when connecting to MySQL server
+      -p          Password to use when connecting to MySQL server
+      -D          Database to use\n
+      -w          Webtag to use for forum
+      -U          Admin user account to create [Default: ADMIN]
+      -P          Password to use for Admin account [Default: honey]
+      -E          Email address to use [Default: admin@abeehiveforum.net]
+    Depending on the version of Beehive you're upgrading to you may not
+    need to specify all of these options. Any that are unneeded by the script
+    you are using will be ignored.
+
+As you can no doubt tell by reading the help text above you need to specify some
+command line options to get the installer or upgrader to work correctly. The most
+important are those which conern the database connection and are required by the
+script before it will actually work. It should be noted that when typing the
+options there should be no white space between the option name and the value you
+give it otherwise problems will occur, for example:
+
+>php new-install.php -hlocalhost -uusername -ppassword -Ddatabase -wDEFAULT
+
+In this example we are running the new-install script and asking it to connect to
+the MySQL server located on localhost using the username 'username' and password 
+'password' and that we wish to use the 'database' database and the webtag for the
+forum we wish to create is called 'DEFAULT'.
+
+The webtag option is only required for new installations. During upgrades you should 
+ommit this option, but it will do no harm if you do not. In addition to the database
+details you can optionally provide user credentials for the admin account. If you
+choose not to provide these credentials then the installer will create a default
+'Admin' account with the password set as honey.
+
+Unless you received any other error messages your installation / upgrade via CLI
+will now be running and once complete you will be back at the shell prompt. Once it
+has completed successfully you should go to the next step.
+
+
+1.2.6 Creating your config.inc.php
+==================================
+
+This step is only required if you chose to run the installer from the command line.
+If you used the web based installation wizard your config.inc.php will have been
+generated for you.
+
+Look in the install folder of the BeehiveForum distribution and open the file 
+called "config.inc.php". This is the template used by the BeehiveForum webbased
+installer when it creates the config.inc.php for you. Unfortunately because the
+command line installer is unable to generate this file for you, you must edit it
+manually before using your BeehiveForum. As with the installer the most important
+settings are those which deal with the connection to your MySQL database which
+appear as follows:
+
+$db_server   = "{db_server}";    // the address of your MySQL server
+$db_username = "{db_username}";  // your MySQL username
+$db_password = "{db_password}";  // your MySQL password
+$db_database = "{db_database}";  // the name of your MySQL database
+
+You will need to change the values in quotes to the correct details for your MySQL
+setup. This will be the same information you used when running the command line
+installer.
+
+Once done you should save and upload the file as /forum/include/config.inc.php.
+
+In addition to the database connection settings you will notice that the
+config.inc.php contains some other settings which you can change. For information
+on these please refer to the config.inc.php template file itself.
+
+1.2.7 First use
 ===============
 
 If all went well, you should now have a working forum! After deleting the /install
@@ -223,7 +329,7 @@ This account gives you access to everything, so you can create folders, set user
 permissions and so forth.
 
 
-1.2.6 Adminning
+1.2.8 Adminning
 ===============
 
 Now you're ready to create some folders, so click the admin link near the top of
@@ -242,7 +348,7 @@ to users, like ban them, gag them or promote them. You can also edit the forum
 all explained in there.
 
 
-1.2.7 What to do if it doesn't work
+1.2.9 What to do if it doesn't work
 ===================================
 
 Don't panic. Pop over to http://www.tehforum.net/forum/ and ask us
@@ -254,7 +360,7 @@ the version of PHP and MySQL that you're using. If your BeehiveForum threw up
 an error message, paste that in as well.
 
 
-1.2.8 Add your forum to our list (optional)
+1.2.10 Add your forum to our list (optional)
 ===========================================
 
 If you like, you can add your shiny new forum to our list of live copies by

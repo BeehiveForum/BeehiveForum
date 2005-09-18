@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.37 2005-08-03 18:01:06 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.38 2005-09-18 19:10:26 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -102,7 +102,10 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
         exit;
     }
 
-    $db_install = db_connect();
+    if (!$db_install = db_connect()) {
+        echo "Database connection to '$db_server' could not be established or permission is denied.\n";
+        exit;
+    }
 
     echo "Upgrading BeehiveForum to $beehive_version. Please wait...\n\n";
 

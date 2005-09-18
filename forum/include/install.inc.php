@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.35 2005-07-29 20:18:53 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.36 2005-09-18 19:10:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -293,7 +293,7 @@ function install_cli_show_upgrade_help()
     $beehive_version = BEEHIVE_VERSION;
 
     echo "BeehiveForum $beehive_version CLI upgrader\n";
-    echo "Copyright Project BeehiveForum 2002\n";
+    echo "Copyright Project BeehiveForum 2002 - ", date("Y", gmmktime()), "\n";
     echo "Usage: php-cli new-install.php [OPTIONS]\n";
     echo "  --help      Display this help and exit\n";
     echo "  -h          MySQL hostname to connect to\n";
@@ -305,23 +305,23 @@ function install_cli_show_upgrade_help()
     echo "  -P          Password to use for Admin account [Default: honey]\n";
     echo "  -E          Email address to use [Default: admin@abeehiveforum.net]\n\n";
     echo "Depending on the version of Beehive you're upgrading to you may not\n";
-    echo "need to specify all of these options. Any that are unneeded by the script\n";
-    echo "you are useing will be ignored.\n";
+    echo "need to specify all of these options. Any options not required by\n";
+    echo "this script will be ignored.\n";
 }
 
 function install_msie_buffer_fix()
 {
     if (isset($_SERVER['HTTP_USER_AGENT']) && stristr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
-        echo str_repeat("<!--comment-->", 20);
+        echo str_repeat("<!-- bh_install_buffer //-->\n", 20);
     }
 }
 
 function install_flush_buffer()
 {
-    echo "<!--comment-->";
+    echo "<!-- bh_install_buffer //-->\n";
 
     if (function_exists('ob_flush')) {
-         if(ob_get_contents()) ob_flush();
+         if (ob_get_contents()) ob_flush();
     }
 
     flush();

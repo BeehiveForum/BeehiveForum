@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.77 2005-09-17 21:24:29 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.78 2005-09-18 19:10:26 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -120,7 +120,10 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
         exit;
     }
 
-    $db_install = db_connect();
+    if (!$db_install = db_connect()) {
+        echo "Database connection to '$db_server' could not be established or permission is denied.\n";
+        exit;
+    }
 
     echo "Installing BeehiveForum $beehive_version. Please wait...\n\n";
 
@@ -1282,11 +1285,11 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
     $word_count = 0;
 
-    $sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
-    $sql.= "FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' ";
-    $sql.= "(WORD, SOUND)";
+    //$sql = "LOAD DATA INFILE '$dictionary_file' INTO TABLE DICTIONARY ";
+    //$sql.= "FIELDS TERMINATED BY '\\t' LINES TERMINATED BY '\\n' ";
+    //$sql.= "(WORD, SOUND)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    //if (!$result = @db_query($sql, $db_install)) {
 
         if ($fp = fopen($dictionary_file, 'r')) {
 
@@ -1299,7 +1302,7 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
                 $metaphone = addslashes(trim($metaphone));
                 $word = addslashes(trim($word));
 
-                $sql = "INSERT IGNORE INTO DICTIONARY (WORD, SOUND, UID) ";
+                $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
                 $sql.= "VALUES ('$word', '$metaphone', 0)";
 
                 if (!$result = @db_query($sql, $db_install)) {
@@ -1310,14 +1313,16 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
 
                 $word_count++;
 
-                if (($word_count % 5) == 0) {
+                if ($word_count == 500) {
+
+                    $word_count = 0;
                     install_flush_buffer();
                 }
             }
 
             fclose($fp);
         }
-    }
+    //}
 }
 
 ?>

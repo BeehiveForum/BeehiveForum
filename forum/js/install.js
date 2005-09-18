@@ -100,8 +100,12 @@ function show_install_help(topic) {
 
     } else if (topic == 3) {
 
-      topic_text = 'These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your BeehiveForum AND other software you may have installed.\n\n';
-      topic_text+= 'USE WITH EXTREME CAUTION!';
+      topic_text = 'USE THESE OPTIONS WITH EXTREME CAUTION!';
+      topic_text+= 'These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your BeehiveForum AND other software you may have installed.\n\n';
+      topic_text+= '\'Automatically remove tables\' permenantly removes tables would have conflicted with those used by BeehiveForum. If other tables exist which conflict with those used by the BeehiveForum software then enabling this option may cause any other scripts or software which rely on them to fail.\n\n';
+      topic_text+= '\Skip dictionary setup\' will force the installation to skip the process which populates the dictionary table. If you have problems with the installation not completeling for example blank pages after clicking submit or PHP error messages try enabling this option.\n\n';
+      topic_text+= 'HINT: Enabling FILE permission on the MySQL database server for the user account used for your BeehiveForum will allow the installer to populate the dictionary much quicker. If you can\'t grant this permission yourself please contact your server administrator to arrange this for you.';
+      
     }
 
     alert(topic_text);

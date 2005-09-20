@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.141 2005-09-18 11:28:29 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.142 2005-09-20 18:30:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -168,8 +168,7 @@ function search_execute($argarray, &$error)
             // Join the other tables including SEARCH_POSTS so the username portion still works.
 
             $join_sql = "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ON (SEARCH_MATCH.WID = SEARCH_KEYWORDS.WID) ";
-            $join_sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.FORUM = SEARCH_MATCH.FORUM ";
-            $join_sql.= "AND SEARCH_POSTS.TID = SEARCH_MATCH.TID AND SEARCH_POSTS.PID = SEARCH_MATCH.PID) ";
+            $join_sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.SID = SEARCH_MATCH.SID) ";
 
             // Include the keyword matching portion of the where clause.
 
@@ -702,9 +701,7 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
     // Split the string into an array of words.
 
-    preg_match_all("/([\w']+)/i", $content, $content_array);
-
-    $content_array = $content_array[0];
+    $content_array = preg_split("/\b|\s/", $content);
 
     // Initialize the arrays to hold the keywords.
 
@@ -715,52 +712,22 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 
     array_walk($content_array, 'search_keywords_callback');
 
-    // Filter out any MySQL stop words, any word that are numbers
-    // and any words longer than 50 characters.
+    // Filter our search keywords so they're less likely to contain odd unmatchable characters.
 
     array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
+
     $mysql_fulltext_stopwords = implode('$|^', $mysql_fulltext_stopwords);
 
     $content_array = array_unique($content_array);
-    $content_array = preg_grep("/^[\w']{50,}$|^[\d]+$|^$mysql_fulltext_stopwords$/", $content_array, PREG_GREP_INVERT);
+
+    $content_array = preg_grep("/^[\w']{50,}$|\d|^['|\"]|['|\"]$/", $content_array, PREG_GREP_INVERT);
+    $content_array = preg_grep("/^$mysql_fulltext_stopwords$/", $content_array, PREG_GREP_INVERT);
+    $content_array = preg_grep("/^[\w']+/", $content_array);
 
     foreach ($content_array as $key => $keyword_add) {
 
         $keyword_add = addslashes($keyword_add);
-
         $keyword_list_array[] = $keyword_add;
-        $sql_values_array[] = "('$keyword_add')";
-    }
-
-    // If we have some keywords to insert then we should insert them.
-    // We chunk the keyword arrays into bits of 20 so we don't create
-    // queries which are too large for the database to handle.
-
-    if (sizeof($keyword_list_array) > 0) {
-
-        $sql_chunked_array = _array_chunk($sql_values_array, 20);
-        $keyword_chunked_array = _array_chunk($keyword_list_array, 20);
-
-        foreach($sql_chunked_array as $sql_chunked_part) {
-
-            $sql_values = implode(", ", $sql_chunked_part);
-
-            $sql = "INSERT IGNORE INTO SEARCH_KEYWORDS ";
-            $sql.= "(WORD) VALUES $sql_values";
-
-            $result = db_query($sql, $db_search_index_post);
-        }
-
-        foreach ($keyword_chunked_array as $keyword_chunked_part) {
-
-            $keyword_list = implode("', '", $keyword_chunked_part);
-
-            $sql = "INSERT IGNORE INTO SEARCH_MATCH ";
-            $sql.= "SELECT WID, $forum_fid, $tid, $pid FROM ";
-            $sql.= "SEARCH_KEYWORDS WHERE WORD IN ('$keyword_list')";
-
-            $result = db_query($sql, $db_search_index_post);
-        }
     }
 
     // Mark the post as indexed even if it had no keywords.
@@ -769,6 +736,34 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
     $sql.= "VALUES ($forum_fid, $fid, $tid, $pid, $by_uid, $fuid, $tuid, $created)";
 
     $result = db_query($sql, $db_search_index_post);
+    $search_index_id = db_insert_id($db_search_index_post);
+
+    // If we have some keywords to insert then we should insert them.
+    // We chunk the keyword arrays into bits of 20 so we don't create
+    // queries which are too large for the database to handle.
+
+    if (sizeof($keyword_list_array) > 0) {
+
+        $keyword_list_chunked_array = _array_chunk($keyword_list_array, 50);
+
+        foreach($keyword_list_chunked_array as $keyword_chunked_part) {
+
+            $keywords_sql = implode("'), ('", $keyword_chunked_part);
+
+            $sql = "INSERT IGNORE INTO SEARCH_KEYWORDS ";
+            $sql.= "(WORD) VALUES ('$keywords_sql')";
+
+            $result = db_query($sql, $db_search_index_post);
+        }
+
+        $keyword_list = implode("', '", $keyword_list_array);
+
+        $sql = "INSERT INTO SEARCH_MATCH (SID, WID) ";
+        $sql.= "SELECT $search_index_id, WID FROM SEARCH_KEYWORDS ";
+        $sql.= "WHERE WORD IN ('$keyword_list')";
+
+        $result = db_query($sql, $db_search_index_post);
+    }
 
     return true;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-06.php,v 1.68 2005-09-18 19:10:26 decoyduck Exp $ */
+/* $Id: upgrade-05-to-06.php,v 1.69 2005-09-20 18:30:45 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -248,7 +248,8 @@ $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (GID)";
+$sql.= "  PRIMARY KEY  (GID),";
+$sql.= "  KEY FORUM (FORUM)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -307,18 +308,17 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SEARCH_RESULTS (";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-$sql.= "  KEY UID (UID),";
-$sql.= "  KEY FORUM (FORUM),";
-$sql.= "  KEY TID (TID)";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
+$sql.= "  PRIMARY KEY (UID, FORUM, TID, PID), ";
+$sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -532,7 +532,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
                 $sql = "INSERT INTO GROUP_USERS (GID, UID) ";
                 $sql.= "SELECT $new_group_gid, UID FROM {$forum_webtag}_GROUP_USERS ";
-                $sql.= "WHERE GID = '{$group_data['GID']}'";
+                $sql.= "WHERE GID = $gid";
 
                 if (!$result = @db_query($sql, $db_install)) {
 
@@ -801,7 +801,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
     $sql.= "  PRIMARY KEY (TID, PID),";
-    $sql.= "  KEY TID (TID),";
     $sql.= "  KEY TO_UID (TO_UID),";
     $sql.= "  KEY FROM_UID (FROM_UID),";
     $sql.= "  KEY IPADDRESS (IPADDRESS),";
@@ -872,7 +871,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
     $sql.= "  PRIMARY KEY  (ID), ";
-    $sql.= "  KEY TID (TID, OPTION_ID)";
+    $sql.= "  KEY TID (TID, OPTION_ID),";
+    $sql.= "  KEY UID (UID)";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.181 2005-08-11 15:27:30 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.182 2005-09-20 18:30:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -919,7 +919,7 @@ function threads_any_unread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(*) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql = "SELECT THREAD.TID FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql.= "WHERE USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL ";
@@ -927,8 +927,7 @@ function threads_any_unread()
 
     $result = db_query($sql, $db_threads_any_unread);
 
-    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
-    return ($thread_count > 0);
+    return (db_num_rows($result) > 0);
 }
 
 function threads_mark_all_read()

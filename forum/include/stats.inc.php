@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.55 2005-07-23 22:53:35 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.56 2005-09-27 17:57:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -121,17 +121,30 @@ function get_active_users()
 
     $uid = bh_session_get_value('UID');
 
-    // Current active users
+    // Current active number of guests
+
+    $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 ";
+    $sql.= "AND SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) ";
+    $sql.= "AND SESSIONS.FID = $forum_fid";
+
+    $result = db_query($sql, $db_get_active_users);
+    list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
+
+    // Curent active users
 
     $sql = "SELECT SESSIONS.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, ";
-    $sql.= "USER_PREFS.ANON_LOGON, USER_PEER.RELATIONSHIP FROM SESSIONS SESSIONS ";
+    $sql.= "USER_PREFS.ANON_LOGON, USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, ";
+    $sql.= "USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP FROM SESSIONS SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER2 ";
+    $sql.= "ON (USER_PEER2.PEER_UID = SESSIONS.UID AND USER_PEER2.UID = $uid) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS ON (USER_PREFS.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "WHERE SESSIONS.TIME >= FROM_UNIXTIME($session_stamp) AND SESSIONS.FID = $forum_fid ";
-    $sql.= "GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
+    $sql.= "AND SESSIONS.UID > 0 GROUP BY SESSIONS.UID ORDER BY USER.NICKNAME";
 
     $result = db_query($sql, $db_get_active_users);
 
@@ -147,27 +160,27 @@ function get_active_users()
             $anon_logon = $row['ANON_LOGON_GLOBAL'];
         }
 
-        if ($row['UID'] == 0) {
+        if (!isset($row['USER_RELATIONSHIP'])) {
+            $row['USER_RELATIONSHIP'] = 0;
+        }
 
-            $stats['GUESTS']++;
+        if (!isset($row['PEER_RELATIONSHIP'])) {
+            $row['PEER_RELATIONSHIP'] = 0;
+        }
 
+        if ($anon_logon > 0) {
+            $stats['AUSERS']++;
         }else {
+            $stats['NUSERS']++;
+        }
 
-            if ($anon_logon > 0) {
+        if ($anon_logon == 0 || $row['UID'] == $uid || (($row['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == 2)) {
 
-                $stats['AUSERS']++;
-
-            }else {
-
-                $stats['NUSERS']++;
-            }
-
-            if ($anon_logon == 0 || $row['UID'] == $uid || (($row['RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == 2)) {
-
-                $stats['USERS'][$row['UID']] = array('UID'      => $row['UID'],
-                                                     'LOGON'    => $row['LOGON'],
-                                                     'NICKNAME' => $row['NICKNAME']);
-            }
+            $stats['USERS'][$row['UID']] = array('UID'          => $row['UID'],
+                                                 'LOGON'        => $row['LOGON'],
+                                                 'NICKNAME'     => $row['NICKNAME'],
+                                                 'RELATIONSHIP' => $row['USER_RELATIONSHIP'],
+                                                 'ANON_LOGON'   => $anon_logon);
         }
     }
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.264 2005-07-23 22:53:12 decoyduck Exp $ */
+/* $Id: post.php,v 1.265 2005-09-27 17:57:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -183,7 +183,7 @@ if (isset($_POST['t_newthread']) && (isset($_POST['submit']) || isset($_POST['pr
         $valid = false;
     }
 
-    if (isset($_POST['t_fid'])) {
+    if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
 
         if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
 
@@ -359,9 +359,17 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
             $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
         }
 
-        if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+        if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
 
-            $t_fid = $_POST['t_fid'];
+            if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+
+                $t_fid = $_POST['t_fid'];
+
+            }else {
+
+                $error_html = "<h2>{$lang['cannotpostthisthreadtypeinfolder']}</h2>";
+                $valid = false;
+            }
         }
     }
 
@@ -377,15 +385,15 @@ if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
     if (isset($_POST['emots_toggle_x'])) {
 
-        $page_prefs ^= POST_EMOTICONS_DISPLAY;
+        $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
 
-    }else {
+    }elseif (isset($_POST['sig_toggle_x'])) {
 
-        $page_prefs ^= POST_SIGNATURE_DISPLAY;
+        $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
     }
 
     $user_prefs['POST_PAGE'] = $page_prefs;
-    $user_prefs_global['POST_PAGE'] = false;
+    $user_prefs_global['POST_PAGE'] = true;
 
     user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
@@ -900,7 +908,7 @@ if ($emot_prev != "") {
 
     }else {
 
-        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
+        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "&nbsp;</td>\n";
     }
 
     echo "  </tr>\n";

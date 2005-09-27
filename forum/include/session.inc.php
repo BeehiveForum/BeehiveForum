@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.194 2005-08-22 19:16:15 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.195 2005-09-27 17:57:23 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -70,7 +70,8 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 function bh_session_check($show_session_fail = true)
 {
     $db_bh_session_check = db_connect();
-    $ipaddress = get_ip_address();
+
+    if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
     $forum_settings = forum_get_settings();
 
@@ -438,38 +439,32 @@ function bh_update_visitor_log($uid)
             $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NULL ";
             $sql.= "WHERE UID = $uid";
 
-            $result = db_query($sql, $db_bh_update_visitor_log);
+            if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
 
         }else {
 
-            $sql = "SELECT LAST_LOGON FROM VISITOR_LOG ";
+            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
             $sql.= "WHERE UID = $uid AND FORUM = $forum_fid";
 
             $result = db_query($sql, $db_bh_update_visitor_log);
 
-            if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-                $sql.= "WHERE UID = $uid AND FORUM = $forum_fid";
-
-                $result = db_query($sql, $db_bh_update_visitor_log);
-
-            }else {
-
-                $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
-                $sql.= "VALUES ($forum_fid, $uid, NOW())";
-
-                $result = db_query($sql, $db_bh_update_visitor_log);
-            }
+            if (db_affected_rows($db_bh_update_visitor_log) > 0) return true;
         }
+
+        $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
+        $sql.= "VALUES ($forum_fid, $uid, NOW())";
+
+        if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
 
     }else {
 
         $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
         $sql.= "VALUES ($forum_fid, 0, NOW())";
 
-        $result = db_query($sql, $db_bh_update_visitor_log);
+        if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
     }
+
+    return false;
 }
 
 /**
@@ -497,18 +492,25 @@ function bh_session_init($uid, $update_visitor_log = true)
         $forum_fid = 0;
     }
 
-    $user_hash = md5($ipaddress);
-
-    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
-    $result = db_query($sql, $db_bh_session_init);
-
-    $user_hash = md5(uniqid(rand()));
-
-    $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
-    $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', ";
-    $sql.= "'$ipaddress', NOW())";
+    $sql = "SELECT HASH FROM SESSIONS WHERE UID = $uid ";
+    $sql.= "AND IPADDRESS = '$ipaddress'";
 
     $result = db_query($sql, $db_bh_session_init);
+
+    if (db_num_rows($result) > 0) {
+
+        list($user_hash) = db_fetch_array($result, DB_RESULT_NUM);
+
+    }else {
+
+        $user_hash = md5(uniqid(rand()));
+
+        $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
+        $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', ";
+        $sql.= "'$ipaddress', NOW())";
+
+        $result = db_query($sql, $db_bh_session_init);
+    }
 
     if ($update_visitor_log) bh_update_visitor_log($uid);
 
@@ -529,18 +531,23 @@ function bh_session_end()
 {
     $db_bh_session_end = db_connect();
 
-    $ipaddress = get_ip_address();
+    $uid = bh_session_get_value('UID');
+
+    if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
     // Session cookie
 
     if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
         $user_hash = $_COOKIE['bh_sess_hash'];
-    }else {
+    }elseif ($uid > 0) {
         $user_hash = md5($ipaddress);
     }
 
-    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
-    $result = db_query($sql, $db_bh_session_end);
+    if (isset($user_hash)) {
+
+        $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
+        $result = db_query($sql, $db_bh_session_end);
+    }
 
     bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
 
@@ -641,6 +648,8 @@ function get_request_uri($encoded_uri_query = true)
 
 function bh_session_get_post_page_prefs()
 {
+    global $user_sess;
+
     if (!$page_prefs = bh_session_get_value('POST_PAGE')) {
         $page_prefs = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY | POST_TEXT_DEFAULT | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
     }

@@ -855,3 +855,10 @@ a {
     border-style: dashed;
 }
 
+.user_stats_curuser {
+    font-weight: bold;
+}
+
+.user_stats_friend {
+    font-style: italic;
+}

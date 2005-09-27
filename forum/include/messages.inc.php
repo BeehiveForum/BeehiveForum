@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.376 2005-09-06 17:25:27 tribalonline Exp $ */
+/* $Id: messages.inc.php,v 1.377 2005-09-27 17:57:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1512,7 +1512,29 @@ function messages_forum_stats($tid, $pid)
                     foreach ($user_stats['USERS'] as $user) {
 
                         $active_user = "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
-                        $active_user.= str_replace(" ", "&nbsp;", format_user_name($user['LOGON'], $user['NICKNAME'])). "</a>";
+
+                        if ($user['UID'] == $uid) {
+
+                            if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > 0) {
+
+                                $active_user.= "<span class=\"user_stats_curuser\" title=\"You (Invisible)\">";
+
+                            }else {
+
+                                $active_user.= "<span class=\"user_stats_curuser\" title=\"You\">";
+                            }
+
+                        }elseif (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {
+
+                            $active_user.= "<span class=\"user_stats_friend\" title=\"Friend\">";
+
+                        }else {
+
+                            $active_user.= "<span class=\"user_stats_normal\">";
+                        }
+
+                        $active_user.= str_replace(" ", "&nbsp;", format_user_name($user['LOGON'], $user['NICKNAME']));
+                        $active_user.= "</span></a>";
 
                         $active_users_array[] = $active_user;
                     }

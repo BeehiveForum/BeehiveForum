@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.195 2005-09-27 17:57:23 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.196 2005-09-28 16:39:56 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -290,11 +290,6 @@ function bh_session_check($show_session_fail = true)
                 $sql.= "WHERE HASH = '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
-
-                // Index an old post that hasn't yet been
-                // indexed (posted prior to 0.6 upgrade)
-
-                search_index_old_post();
             }
 
         }else {

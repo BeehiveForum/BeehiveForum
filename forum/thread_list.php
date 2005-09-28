@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.252 2005-09-01 14:06:38 rowan_hill Exp $ */
+/* $Id: thread_list.php,v 1.253 2005-09-28 16:39:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -402,7 +402,7 @@ foreach ($folder_order as $key1 => $folder_number) {
 
             if (is_array($thread_info)) {
 
-                $visible_threads = true;
+                $visible_threads = false;
 
                 foreach ($thread_info as $thread_info_key => $thread_info_array) {
 
@@ -545,7 +545,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                             $thread_time = format_time($thread['MODIFIED']);
 
                             echo "&nbsp;</td>\n";
-                            echo "          <td valign=\"top\"><a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\" title=\"#{$thread['TID']} {$lang['startedby']} ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", apply_wordfilter($thread['TITLE']), "</a> ";
+                            echo "          <td valign=\"top\"><a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\" title=\"#{$thread['TID']} {$lang['startedby']} ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", wordwrap(apply_wordfilter($thread['TITLE']), 5, "<wbr>", 1), "</a> ";
 
                             if ($thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
                             if ($thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";

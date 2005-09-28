@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06RC-to-06.php,v 1.5 2005-09-20 18:30:45 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-062.php,v 1.1 2005-09-28 16:39:56 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -98,7 +98,7 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     echo "Upgrading BeehiveForum to $beehive_version. Please wait...\n\n";
 
-}elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06RC-to-06.php") {
+}elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-061-to-062.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
@@ -123,7 +123,7 @@ $forum_webtag_array = array();
 
 $sql = "SHOW TABLES LIKE 'FORUMS'";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
     $valid = false;
@@ -134,7 +134,7 @@ if (db_num_rows($result) > 0) {
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS";
 
-    if ($result = @db_query($sql, $db_install)) {
+    if ($result = db_query($sql, $db_install)) {
 
         while ($row = db_fetch_array($result)) {
 
@@ -149,17 +149,113 @@ if (db_num_rows($result) > 0) {
     }
 }
 
-$remove_tables = array('SEARCH_RESULTS');
+$remove_tables = array('SEARCH_POSTS_NEW', 'SEARCH_MATCH_NEW', 'SEARCH_RESULTS');
 
 foreach ($remove_tables as $forum_table) {
 
     $sql = "DROP TABLE IF EXISTS {$forum_table}";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
     }
+}
+
+foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX TID";
+    $result = db_query($sql, $db_install);
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_POLL_VOTES ADD INDEX UID (UID)";
+    $result = db_query($sql, $db_install);
+}
+
+$sql = "CREATE TABLE SEARCH_POSTS_NEW (";
+$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  CREATED DATETIME DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (SID),";
+$sql.= "  KEY TID (TID,PID),";
+$sql.= "  KEY FORUM (FORUM),";
+$sql.= "  KEY BY_UID (BY_UID),";
+$sql.= "  KEY FROM_UID (FROM_UID),";
+$sql.= "  KEY TO_UID (TO_UID),";
+$sql.= "  KEY CREATED (CREATED)";
+$sql.= ") TYPE=MYISAM;";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO SEARCH_POSTS_NEW (FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED) ";
+$sql.= "SELECT FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED FROM SEARCH_POSTS";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE SEARCH_MATCH_NEW (";
+$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  WID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (SID, WID)";
+$sql.= ") TYPE=MYISAM;";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO SEARCH_MATCH_NEW (SID, WID) SELECT SP.SID, SM.WID FROM SEARCH_POSTS_NEW SP ";
+$sql.= "LEFT JOIN SEARCH_MATCH SM ON (SM.FORUM = SP.FORUM AND SM.TID = SP.TID AND SM.PID = SP.PID)";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS SEARCH_POSTS";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS SEARCH_MATCH";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_POSTS_NEW RENAME SEARCH_POSTS";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_MATCH_NEW RENAME SEARCH_MATCH";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
 $sql = "CREATE TABLE SEARCH_RESULTS (";
@@ -176,7 +272,46 @@ $sql.= "  PRIMARY KEY (UID, FORUM, TID, PID), ";
 $sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE DICTIONARY_NEW (";
+$sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '',";
+$sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '',";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (WORD),";
+$sql.= "  KEY SOUND (SOUND)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT IGNORE INTO DICTIONARY_NEW (WORD, SOUND, UID) ";
+$sql.= "SELECT LOWER(WORD), SOUND, UID FROM DICTIONARY";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS DICTIONARY";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE DICTIONARY_NEW RENAME DICTIONARY";
+
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;

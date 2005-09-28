@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.99 2005-09-01 14:21:29 rowan_hill Exp $ */
+/* $Id: start_left.php,v 1.100 2005-09-28 16:39:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,26 +107,23 @@ if ($thread_array = threads_get_most_recent()) {
         }
 
         echo "        <tr>\n";
-        echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
 
         if (!isset($thread['LAST_READ'])) {
-            echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['unreadthread']}\" title=\"{$lang['unreadthread']}\" />";
+            echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['unreadthread']}\" title=\"{$lang['unreadthread']}\" />&nbsp;</td>\n";
         }else if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
-            echo "<img src=\"".style_image('unread_thread.png')."\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" />";
+            echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" />&nbsp;</td>\n";
         }else if ($thread['LAST_READ'] == $thread['LENGTH']) {
-            echo "<img src=\"".style_image('bullet.png')."\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />";
+            echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />&nbsp;</td>\n";
         }
 
-        echo "&nbsp;</td>\n";
-        echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by " . format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">";
-        echo  apply_wordfilter(_stripslashes($thread['TITLE'])), "</a>&nbsp;";
+        echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", wordwrap(apply_wordfilter($thread['TITLE']), 5, "<wbr>", 1), "</a>&nbsp;";
 
-        if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
-        if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
+        if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
+        if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
         if ($thread['POLL_FLAG'] == 'Y') echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> ";
-        if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
-        if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
-        if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
+        if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"", style_image('sticky.png'), "\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
+        if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
+        if (thread_has_attachments($thread['TID'])) echo "<img src=\"", style_image('attach.png'), "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
 
         echo "          </td>\n";
         echo "        </tr>\n";
@@ -266,8 +263,8 @@ echo "        <tr>\n";
 echo "          <td>\n";
 echo "            <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
 echo "              ", form_input_hidden("webtag", $webtag), "\n";
-echo "              ", form_input_text('msg', '1.1', 10). "\n";
-echo "              ", form_submit("go",$lang['goexcmark']). "\n";
+echo "              ", form_input_text('msg', '1.1', 10), "\n";
+echo "              ", form_submit("go",$lang['goexcmark']), "\n";
 echo "            </form>\n";
 echo "          </td>\n";
 echo "        </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.118 2005-07-05 15:08:51 decoyduck Exp $ */
+/* $Id: index.php,v 1.119 2005-09-28 20:08:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -81,7 +81,7 @@ if (bh_session_active()) {
 
     $dtdpath = html_get_forum_uri();
 
-    echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehive-frameset.dtd\">\n";
+    echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehiveforum.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$forum_name</title>\n";
@@ -184,7 +184,7 @@ if (bh_session_active()) {
 
     $webtag = get_webtag($webtag_search);
 
-    echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehive-frameset.dtd\">\n";
+    echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehiveforum.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$forum_name</title>\n";

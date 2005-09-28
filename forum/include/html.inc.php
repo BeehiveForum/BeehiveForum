@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.172 2005-08-31 14:55:18 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.173 2005-09-28 20:08:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -377,8 +377,10 @@ function html_draw_top()
     $forum_description = html_get_forum_description();
     $forum_email = html_get_forum_email();
 
+    $dtdpath = html_get_forum_uri();
+
     echo "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
-    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+    echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehiveforum.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
@@ -737,6 +739,8 @@ function html_get_forum_uri($path_only = false)
             $uri_array['path'] = $path['path'];
             unset($path);
         }
+
+        $uri_array['path'] = dirname($uri_array['path']);
     }
 
     $uri_array['path'] = preg_replace("/\/$/", "", $uri_array['path']);

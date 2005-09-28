@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-062.php,v 1.1 2005-09-28 16:39:56 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-062.php,v 1.2 2005-09-28 20:08:21 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -258,6 +258,14 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "DROP TABLE IF EXISTS SEARCH_RESULTS";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE SEARCH_RESULTS (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -293,7 +301,7 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT IGNORE INTO DICTIONARY_NEW (WORD, SOUND, UID) ";
-$sql.= "SELECT LOWER(WORD), SOUND, UID FROM DICTIONARY";
+$sql.= "SELECT LOWER(TRIM(WORD)), TRIM(SOUND), UID FROM DICTIONARY";
 
 if (!$result = db_query($sql, $db_install)) {
 

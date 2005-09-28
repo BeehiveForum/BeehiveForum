@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.79 2005-09-20 18:30:45 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.80 2005-09-28 16:39:56 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1100,11 +1100,9 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SEARCH_MATCH (";
+$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  WID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PRIMARY KEY  (WID, FORUM, TID, PID)";
+$sql.= "  PRIMARY KEY  (SID, WID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -1114,18 +1112,21 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SEARCH_POSTS (";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-$sql.= "  CREATED DATETIME DEFAULT NULL, ";
-$sql.= "  PRIMARY KEY (FORUM, TID, PID), ";
-$sql.= "  KEY BY_UID (BY_UID), ";
-$sql.= "  KEY FROM_UID (FROM_UID), ";
-$sql.= "  KEY TO_UID (TO_UID), ";
+$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  CREATED DATETIME DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (SID),";
+$sql.= "  KEY TID (TID,PID),";
+$sql.= "  KEY FORUM (FORUM),";
+$sql.= "  KEY BY_UID (BY_UID),";
+$sql.= "  KEY FROM_UID (FROM_UID),";
+$sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 

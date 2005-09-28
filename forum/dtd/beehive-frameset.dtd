@@ -22,11 +22,11 @@ USA
 
 BeehiveForums Extensible HTML version 1.0 Frameset DTD
 
-$Revision: 1.2 $
+$Revision: 1.3 $
 
 -->
 
-<!-- $Id: beehive-frameset.dtd,v 1.2 2005-04-07 19:22:13 decoyduck Exp $ -->
+<!-- $Id: beehive-frameset.dtd,v 1.3 2005-09-28 17:04:44 decoyduck Exp $ -->
 
 <!--================ Character mnemonic entities =========================-->
 
@@ -208,7 +208,7 @@ $Revision: 1.2 $
    "object | applet | img | map | iframe">
 	
 <!ENTITY % special.basic
-	"br | span | bdo">
+	"br | wbr | span | bdo">
 
 <!ENTITY % special
    "%special.basic; | %special.extra;">
@@ -402,8 +402,8 @@ $Revision: 1.2 $
   %coreattrs;
   rows         %MultiLengths; #IMPLIED
   cols         %MultiLengths; #IMPLIED
-  frameborder  (1|0)          1
-  framespacing (1|0)          1
+  frameborder  (1|0)          "1"
+  framespacing (1|0)          "1"
   onload       %Script;       #IMPLIED
   onunload     %Script;       #IMPLIED
   >
@@ -418,8 +418,8 @@ $Revision: 1.2 $
   longdesc     %URI;         #IMPLIED
   name         NMTOKEN       #IMPLIED
   src          %URI;         #IMPLIED
-  frameborder  (1|0)         1
-  framespacing (1|0)         1
+  frameborder  (1|0)         "1"
+  framespacing (1|0)         "1"
   marginwidth  %Pixels;      #IMPLIED
   marginheight %Pixels;      #IMPLIED
   noresize     (noresize)    #IMPLIED
@@ -434,7 +434,7 @@ $Revision: 1.2 $
   longdesc    %URI;          #IMPLIED
   name        NMTOKEN        #IMPLIED
   src         %URI;          #IMPLIED
-  frameborder (1|0)          1
+  frameborder (1|0)          "1"
   marginwidth %Pixels;       #IMPLIED
   marginheight %Pixels;      #IMPLIED
   scrolling   (yes|no|auto)  "auto"
@@ -715,6 +715,8 @@ $Revision: 1.2 $
   %coreattrs;
   clear       (left|all|right|none) "none"
   >
+
+<!ELEMENT wbr EMPTY>   <!-- line break opportunity -->
 
 <!ELEMENT em %Inline;>   <!-- emphasis -->
 <!ATTLIST em %attrs;>

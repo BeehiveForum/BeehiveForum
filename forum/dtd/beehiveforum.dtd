@@ -22,11 +22,11 @@ USA
 
 BeehiveForums Extensible HTML version 1.0 Frameset DTD
 
-$Revision: 1.3 $
+$Revision: 1.1 $
 
 -->
 
-<!-- $Id: beehive-frameset.dtd,v 1.3 2005-09-28 17:04:44 decoyduck Exp $ -->
+<!-- $Id: beehiveforum.dtd,v 1.1 2005-09-28 17:11:05 decoyduck Exp $ -->
 
 <!--================ Character mnemonic entities =========================-->
 
@@ -402,6 +402,7 @@ $Revision: 1.3 $
   %coreattrs;
   rows         %MultiLengths; #IMPLIED
   cols         %MultiLengths; #IMPLIED
+  border       %Pixels;       #IMPLIED
   frameborder  (1|0)          "1"
   framespacing (1|0)          "1"
   onload       %Script;       #IMPLIED
@@ -418,6 +419,7 @@ $Revision: 1.3 $
   longdesc     %URI;         #IMPLIED
   name         NMTOKEN       #IMPLIED
   src          %URI;         #IMPLIED
+  border       %Pixels;       #IMPLIED
   frameborder  (1|0)         "1"
   framespacing (1|0)         "1"
   marginwidth  %Pixels;      #IMPLIED

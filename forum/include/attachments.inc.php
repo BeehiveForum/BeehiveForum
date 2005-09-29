@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.102 2005-09-05 17:02:49 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.103 2005-09-29 22:19:55 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -743,11 +743,14 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    if (!isset($attachment['aid']) || !is_md5($attachment['aid'])) return false;
-    if (!isset($attachment['hash']) || !is_md5($attachment['hash'])) return false;
+    if (!isset($attachment['aid'])) return false;
+    if (!isset($attachment['hash'])) return false;
     if (!isset($attachment['filename'])) return false;
     if (!isset($attachment['filesize'])) return false;
     if (!isset($attachment['downloads'])) return false;
+
+    if (!is_md5($attachment['aid'])) return false;
+    if (!is_md5($attachment['hash'])) return false;
 
     $webtag = get_webtag($webtag_search);
 
@@ -790,20 +793,6 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
         $attachment['filename'].= "&hellip;";
     }
 
-    if (@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}")) {
-
-        $title.= "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}, ";
-
-        $thumbnail_width  = $image_info[0];
-        $thumbnail_height = $image_info[1];
-
-        while ($thumbnail_width > $thumbnail_max_size || $thumbnail_height > $thumbnail_max_size) {
-
-            $thumbnail_width--;
-            $thumbnail_height = $thumbnail_width * ($image_info[1] / $image_info[0]);
-        }
-    }
-
     $title.= "{$lang['size']}: ";
     $title.= format_file_size($attachment['filesize']);
     $title.= ", ";
@@ -819,21 +808,35 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
     if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
 
-        $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
-        $attachment_link.= "target=\"_blank\"><img src=\"$href&amp;thumb=1\"";
-        $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-        $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
+        if (@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}")) {
 
-    }else {
+            $title.= "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}, ";
 
-        $attachment_link = "<img src=\"";
-        $attachment_link.= style_image('attach.png');
-        $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
-        $attachment_link.= "alt=\"{$lang['attachment']}\" ";
-        $attachment_link.= "title=\"{$lang['attachment']}\" />";
-        $attachment_link.= "<a href=\"$href\" title=\"$title\" ";
-        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a><br />\n";
+            $thumbnail_width  = $image_info[0];
+            $thumbnail_height = $image_info[1];
+
+            while ($thumbnail_width > $thumbnail_max_size || $thumbnail_height > $thumbnail_max_size) {
+
+                $thumbnail_width--;
+                $thumbnail_height = $thumbnail_width * ($image_info[1] / $image_info[0]);
+            }
+
+            $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
+            $attachment_link.= "target=\"_blank\"><img src=\"$href&amp;thumb=1\"";
+            $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
+            $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
+
+            return $attachment_link;
+        }
     }
+
+    $attachment_link = "<img src=\"";
+    $attachment_link.= style_image('attach.png');
+    $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\"";
+    $attachment_link.= "alt=\"{$lang['attachment']}\" ";
+    $attachment_link.= "title=\"{$lang['attachment']}\" />";
+    $attachment_link.= "<a href=\"$href\" title=\"$title\" ";
+    $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a><br />\n";
 
     return $attachment_link;
 }

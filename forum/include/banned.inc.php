@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.7 2005-07-23 22:53:13 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.8 2005-09-30 22:02:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,56 +43,41 @@ function ban_check($user_sess)
     $db_ban_check = db_connect();
 
     if (!is_array($user_sess)) return false;
+    if (!isset($user_sess['LOGON'])) return false;
+    if (!isset($user_sess['NICKNAME'])) return false;
+    if (!isset($user_sess['EMAIL'])) return false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $ip_ban_count = 0;
-    $logon_ban_count = 0;
-    $nickname_ban_count = 0;
-    $email_ban_count = 0;
 
     $logon = addslashes($user_sess['LOGON']);
     $nickname = addslashes($user_sess['NICKNAME']);
     $email = addslashes($user_sess['EMAIL']);
 
+    $ban_check_array = array();
+
     if ($ipaddress = get_ip_address()) {
-
-        $sql = "SELECT COUNT(*) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
-        $sql.= "WHERE '$ipaddress' LIKE IPADDRESS ";
-
-        $result = db_query($sql, $db_ban_check);
-        list($ip_ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+        $ban_check_array[] = "'$ipaddress' LIKE IPADDRESS";
     }
 
     if (isset($user_sess['LOGON']) && strlen(trim($user_sess['LOGON'])) > 0) {
-
-        $sql = "SELECT COUNT(*) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
-        $sql.= "WHERE '$logon' LIKE LOGON";
-
-        $result = db_query($sql, $db_ban_check);
-        list($logon_ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+        $ban_check_array[] = "'$logon' LIKE LOGON";
     }
 
     if (isset($user_sess['NICKNAME']) && strlen(trim($user_sess['NICKNAME'])) > 0) {
-
-        $sql = "SELECT COUNT(*) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
-        $sql.= "WHERE '$nickname' LIKE NICKNAME";
-
-        $result = db_query($sql, $db_ban_check);
-        list($nickname_ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+        $ban_check_array[] = "'$nickname' LIKE NICKNAME";
     }
 
     if (isset($user_sess['EMAIL']) && strlen(trim($user_sess['EMAIL'])) > 0) {
-
-        $sql = "SELECT COUNT(*) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
-        $sql.= "WHERE '$email' LIKE EMAIL";
-
-        $result = db_query($sql, $db_ban_check);
-        list($email_ban_count) = db_fetch_array($result, DB_RESULT_NUM);
+        $ban_check_array[] = "'$email' LIKE EMAIL";
     }
 
-    $ban_count = $ip_ban_count + $logon_ban_count;
-    $ban_count+= $nickname_ban_count + $email_ban_count;
+    $ban_check_query = implode(" OR ", $ban_check_array);
+
+    $sql = "SELECT COUNT(ID) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "WHERE $ban_check_query";
+
+    $result = db_query($sql, $db_ban_check);
+    list($ban_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     if ($ban_count > 0) {
 
@@ -102,11 +87,9 @@ function ban_check($user_sess)
 
         echo "<h1>HTTP/1.0 500 Internal Server Error</h1>";
         exit;
-
-    }else {
-
-        return ($ban_count > 0);
     }
+
+    return true;
 }
 
 function ip_is_banned($ipaddress)

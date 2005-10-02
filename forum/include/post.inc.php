@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.134 2005-07-24 21:36:14 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.135 2005-10-02 12:27:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -37,6 +37,7 @@ include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
 
 function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $hide_ipaddress = false)
 {
@@ -87,6 +88,12 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
             $sql.= "WHERE TID = $tid";
 
             $result = db_query($sql, $db_post_create);
+
+            if ($post_count = user_get_post_count($fuid)) {
+
+                $sql = "UPDATE USER_TRACK SET POST_COUNT = POST_COUNT + 1 WHERE UID = $fuid";
+                $result = db_query($sql, $db_post_create);
+            }
 
             search_index_post($fid, $tid, $new_pid, $by_uid, $fuid, $tuid, $post_content);
 

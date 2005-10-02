@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.44 2005-07-23 22:53:35 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.45 2005-10-02 12:27:08 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -176,17 +176,37 @@ function user_get_post_count($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $db_user_get_count = db_connect();
+    $db_user_get_post_count = db_connect();
 
-    $sql = "SELECT COUNT(PID) AS COUNT FROM ";
-    $sql.= "{$table_data['PREFIX']}POST ";
+    $sql = "SELECT POST_COUNT FROM USER_TRACK WHERE UID = $uid";
+    $result = db_query($sql, $db_user_get_post_count);
+
+    if (db_num_rows($result) > 0) {
+
+        $post_count = db_fetch_array($result);
+
+        if (isset($post_count['POST_COUNT']) && !is_null($post_count['POST_COUNT'])) {
+
+            return $post_count['POST_COUNT'];
+        }
+    }
+
+    $sql = "SELECT COUNT(PID) AS COUNT FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE FROM_UID = $uid";
 
-    $result = db_query($sql, $db_user_get_count);
+    $result = db_query($sql, $db_user_get_post_count);
+    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $post_count = db_fetch_array($result);
+    $sql = "UPDATE USER_TRACK SET POST_COUNT = $post_count WHERE UID = $uid";
+    $result = db_query($sql, $db_user_get_post_count);
 
-    return $post_count['COUNT'];
+    if (db_affected_rows($db_user_get_post_count) < 1) {
+
+        $sql = "INSERT INTO USER_TRACK (POST_COUNT) VALUES ($post_count)";
+        $result = db_query($sql, $db_user_get_post_count);
+    }
+
+    return $post_count;
 }
 
 ?>

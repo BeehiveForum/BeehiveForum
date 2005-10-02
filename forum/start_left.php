@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.101 2005-09-28 20:08:21 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.102 2005-10-02 12:27:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -116,7 +116,7 @@ if ($thread_array = threads_get_most_recent()) {
             echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />&nbsp;</td>\n";
         }
 
-        echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", wordwrap(apply_wordfilter($thread['TITLE']), 5, "<wbr />", 1), "</a>&nbsp;";
+        echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", apply_wordfilter($thread['TITLE']), "</a>&nbsp;";
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";

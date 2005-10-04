@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.180 2005-09-27 17:57:23 decoyduck Exp $ */
+/* $Id: edit.php,v 1.181 2005-10-04 11:57:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -669,7 +669,7 @@ if (isset($_POST['preview'])) {
 
            if ($thread_length < 1) {
 
-               if (threads_any_unread() && $msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
+               if ($msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
 
                    echo form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
 
@@ -707,7 +707,7 @@ if (isset($_POST['preview'])) {
 
            if ($thread_length < 1) {
 
-               if (threads_any_unread() && $msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
+               if ($msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
 
                    echo form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.13 2005-05-24 19:59:29 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.14 2005-10-04 11:57:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -213,7 +213,7 @@ if ($valid) {
 
             if ($thread_length < 1) {
 
-                if (threads_any_unread() && $msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
+                if ($msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
 
                     echo form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
 

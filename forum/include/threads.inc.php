@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.183 2005-09-27 17:57:23 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.184 2005-10-04 11:57:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -923,7 +923,7 @@ function threads_any_unread()
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql.= "WHERE USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL ";
-    $sql.= "LIMIT 0,1";
+    $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0,1";
 
     $result = db_query($sql, $db_threads_any_unread);
 

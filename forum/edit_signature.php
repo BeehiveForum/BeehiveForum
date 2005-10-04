@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.60 2005-05-24 19:59:30 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.61 2005-10-04 11:57:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,6 +88,7 @@ if (isset($_GET['siguid'])) {
     if (is_numeric($_GET['siguid'])) {
         $uid = $_GET['siguid'];
     } else {
+        html_draw_top();
         echo "<h1>{$lang['invalidop']}</h1>\n";
         echo "<h2>{$lang['nouserspecified']}</h2>\n";
         html_draw_bottom();
@@ -99,6 +100,7 @@ if (isset($_GET['siguid'])) {
     if (is_numeric($_POST['siguid'])) {
         $uid = $_POST['siguid'];
     } else {
+        html_draw_top();
         echo "<h1>{$lang['invalidop']}</h1>\n";
         echo "<h2>{$lang['nouserspecified']}</h2>\n";
         html_draw_bottom();
@@ -163,7 +165,7 @@ user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML']);
 
 // Start Output Here
 
-html_draw_top("onUnload=clearFocus()", "dictionary.js", "htmltools.js");
+html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "dictionary.js", "htmltools.js");
 
 if (!(perm_has_admin_access()) && ($uid != bh_session_get_value('UID'))) {
 

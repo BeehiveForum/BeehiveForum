@@ -15,14 +15,15 @@ in release.txt.
   1.2    Instructions
     1.2.1    Archive Extraction
     1.2.2    Database setup
-    1.2.3    Upload
-    1.2.4    Installing the forum
-    1.2.5    Installing from CLI
-    1.2.6    Creating your config.inc.php
-    1.2.7    First use
-    1.2.8    Adminning
-    1.2.9    What to do if it doesn't work
-    1.2.10   Add your forum to our list
+    1.2.3    MySQL permissions
+    1.2.4    Upload
+    1.2.5    Installing the forum
+    1.2.6    Installing from CLI
+    1.2.7    Creating your config.inc.php
+    1.2.8    First use
+    1.2.9    Adminning
+    1.2.10    What to do if it doesn't work
+    1.2.11   Add your forum to our list
   1.3    Customising your BeehiveForum
     1.3.1    Style sheet
     1.3.2    Images
@@ -191,8 +192,20 @@ database name, as you will need it when you run the install script.
 BeehiveForum would prefer its very own database, but if you can't provide that
 it should work in an existing one.
 
+1.2.3 MySQL permissions
+=======================
 
-1.2.3 Upload
+As a minimum BeehiveForum requires the following privileges granted on the user
+account it will use for interacting with your database:
+
+SELECT, CREATE, CREATE TEMPORARY TABLES, GRANT, INSERT, ALTER, UPDATE,
+INDEX, DELETE and DROP.
+
+Additionally you can grant the FILE privilege globally for the user account to
+aid in the creation of the dictionary. Without the FILE privilege the installer
+for BeehiveForum will still function but it will take a lot longer to do so.
+
+1.2.4 Upload
 ============
 
 You should now upload the forum onto your web space. We recommend that you simply
@@ -200,7 +213,7 @@ upload the "forum" folder directly, either into the root of your web space or
 into another folder of your choosing.
 
 
-1.2.4 Installing the forum
+1.2.5 Installing the forum
 ==========================
 
 Once everything's uploaded, you will need to run the forum's install script. This
@@ -214,7 +227,7 @@ need your MySQL database's host address, username and password for this stage, a
 well as the name of the database from step 1.2.2.  You should be able to get the 
 information from your hosting provider if you're not running your own server.
 
-1.2.5 Installing from CLI
+1.2.6 Installing from CLI
 =========================
 
 If PHP CLI mode is available to you, you can also run the BeehiveForum installation
@@ -289,7 +302,7 @@ will now be running and once complete you will be back at the shell prompt. Once
 has completed successfully you should go to the next step.
 
 
-1.2.6 Creating your config.inc.php
+1.2.7 Creating your config.inc.php
 ==================================
 
 This step is only required if you chose to run the installer from the command line.
@@ -319,7 +332,7 @@ In addition to the database connection settings you will notice that the
 config.inc.php contains some other settings which you can change. For information
 on these please refer to the config.inc.php template file itself.
 
-1.2.7 First use
+1.2.8 First use
 ===============
 
 If all went well, you should now have a working forum! After deleting the /install
@@ -329,7 +342,7 @@ This account gives you access to everything, so you can create folders, set user
 permissions and so forth.
 
 
-1.2.8 Adminning
+1.2.9 Adminning
 ===============
 
 Now you're ready to create some folders, so click the admin link near the top of
@@ -348,8 +361,8 @@ to users, like ban them, gag them or promote them. You can also edit the forum
 all explained in there.
 
 
-1.2.9 What to do if it doesn't work
-===================================
+1.2.10 What to do if it doesn't work
+====================================
 
 Don't panic. Pop over to http://www.tehforum.net/forum/ and ask us
 for help, but remember, we don't get paid for this, so be nice.
@@ -360,8 +373,8 @@ the version of PHP and MySQL that you're using. If your BeehiveForum threw up
 an error message, paste that in as well.
 
 
-1.2.10 Add your forum to our list (optional)
-===========================================
+1.2.11 Add your forum to our list (optional)
+============================================
 
 If you like, you can add your shiny new forum to our list of live copies by
 going to http://beehiveforum.net/forums.php

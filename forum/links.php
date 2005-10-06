@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.77 2005-05-14 12:43:37 decoyduck Exp $ */
+/* $Id: links.php,v 1.78 2005-10-06 15:47:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,7 +101,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 }else {
 
-    links_add_folder(1, $lang['toplevel'], true);
+    links_create_top_folder($lang['toplevel']);
     header_redirect("./links.php?fid=1");
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db.inc.php,v 1.71 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: db.inc.php,v 1.72 2005-10-06 15:47:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,6 +38,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 if (isset($db_extension)) {
 

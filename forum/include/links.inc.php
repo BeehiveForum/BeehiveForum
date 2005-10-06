@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.52 2005-07-23 22:53:32 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.53 2005-10-06 15:47:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -146,6 +146,21 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 
     return db_query($sql, $db_links_add);
 }
+
+function links_create_top_folder($name)
+{
+    $db_links_add_folder = db_connect();
+
+    $name = addslashes($name);
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "INSERT INTO {$table_data['PREFIX']}LINKS_FOLDERS (FID, PARENT_FID, NAME, VISIBLE) ";
+    $sql.= "VALUES (1, NULL, '$name', 'Y')";
+
+    return db_query($sql, $db_links_add_folder);
+}
+
 
 function links_add_folder($fid, $name, $visible = false)
 {

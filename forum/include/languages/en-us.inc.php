@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.1 2005-08-31 14:55:18 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.2 2005-10-07 23:52:18 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -1498,6 +1498,7 @@ $lang['change'] = "Change";
 $lang['changeall'] = "Change All";
 $lang['add'] = "Add";
 $lang['suggest'] = "Suggest";
+$lang['nosuggestions'] = "(no suggestions)";
 $lang['ok'] = "OK";
 $lang['cancel'] = "Cancel";
 $lang['dictionarynotinstalled'] = "No dictionary has been installed. Please contact the forum owner to remedy this.";

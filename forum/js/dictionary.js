@@ -52,6 +52,8 @@ function changeword(obj) {
 
     var change_to = getFormObj('change_to'); 
     var i = obj.options[obj.selectedIndex].value;
+
+    alert('hello');
     
     // IE doesn't like .value when <object>value</value> is used instead
     // of <object value="value">value</object> so we use innerText

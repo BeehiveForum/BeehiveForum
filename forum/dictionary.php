@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.24 2005-09-27 17:57:23 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.25 2005-10-07 23:05:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -191,9 +191,11 @@ if (isset($_POST['ok'])) {
 
     html_draw_top();
 
+    $content = $dictionary->get_js_safe_content();
+
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  if (window.opener.updateContent) {\n";
-    echo "    window.opener.updateContent('$obj_id', '", rawurlencode($dictionary->get_content()), "');\n";
+    echo "    window.opener.updateContent('$obj_id', '", $dictionary->get_js_safe_content(), "');\n";
     echo "  }\n";
     echo "  window.close();\n";
     echo "</script>\n";
@@ -380,7 +382,16 @@ echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"270\">\n";
-echo "                    ", form_dropdown_array("suggestion", $dictionary->get_suggestions_array(), false, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeword(this)\"", "dictionary_best_selection"), "\n";
+
+if ($suggestions_array = $dictionary->get_suggestions_array()) {
+
+    echo "                    ", form_dropdown_array("suggestion", $suggestions_array, false, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeword(this)\"", "dictionary_best_selection"), "\n";
+
+}else {
+
+    echo "                    ", form_dropdown_array("suggestion", array($lang['nosuggestions']), false, $dictionary->get_best_suggestion(), "size=\"10\"", "dictionary_best_selection"), "\n";
+}
+
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

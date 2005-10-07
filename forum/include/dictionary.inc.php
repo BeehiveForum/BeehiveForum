@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.26 2005-10-07 21:53:49 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.27 2005-10-07 23:05:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -56,7 +56,8 @@ class dictionary {
         $this->ignored_words_array = array();
         $this->suggestions_array = array();
 
-        $this->content_array = preg_split("/(\w+'\w+)|([\s+\.\?,()\-+'\"=;&#0215;\$\/:{}]+)/i", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $this->prepare_content($content);
+
         $this->ignored_words_array = explode(" ", $ignored_words);
 
         $this->current_word = $current_word;
@@ -65,6 +66,16 @@ class dictionary {
         $this->check_complete = false;
         $this->offset_match = $offset_match;
         $this->word_suggestion_count = 0;
+    }
+
+    function prepare_content($content)
+    {
+        $word_match = "(\w+'+\w+)|([\s+\.!\?,\[\]()\-+'\"=;&#0215;\$%\^&\*\/:{}]+)|";
+        $word_match.= "(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
+        $word_match.= "(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
+        $word_match.= "([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})";
+
+        $this->content_array = preg_split("/$word_match/i", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
     }
 
     function is_installed()
@@ -89,6 +100,17 @@ class dictionary {
     function get_content()
     {
         return implode("", $this->content_array);
+    }
+
+    function get_js_safe_content()
+    {
+        $content = $this->get_content();
+
+        $content = str_replace("'", "\'", $content);
+        $content = str_replace("\n", "\\n", $content);
+        $content = str_replace("\r", "\\r", $content);
+
+        return $content;
     }
 
     function get_ignored_words()
@@ -172,19 +194,17 @@ class dictionary {
     {
         $current_word = $this->content_array[$this->current_word];
 
-        if (strtoupper($current_word) == $current_word) {
-            return;
-        }
-
         if (strtolower($current_word) == $current_word) {
+
             $this->content_array[$this->current_word] = strtolower($change_to);
-            return;
+
+        }elseif (ucfirst($current_word) == $current_word) {
+
+            $this->content_array[$this->current_word] = ucfirst($change_to);
         }
 
-        if (ucfirst($current_word) == $current_word) {
-            $this->content_array[$this->current_word] = ucfirst($change_to);
-            return;
-        }
+        $content = $this->get_content();
+        $this->prepare_content($content);
     }
 
     function correct_all_word_matches($change_to)
@@ -194,10 +214,6 @@ class dictionary {
         foreach($this->content_array as $key => $word) {
 
             if (strtolower($word) == strtolower($current_word)) {
-
-                if (strtoupper($word) == $word) {
-                    continue;
-                }
 
                 if (strtolower($word) == $word) {
                     $this->content_array[$key] = strtolower($change_to);
@@ -209,6 +225,9 @@ class dictionary {
                     continue;
                 }
             }
+
+            $content = $this->get_content();
+            $this->prepare_content($content);
         }
     }
 
@@ -284,28 +303,31 @@ class dictionary {
             $result = db_query($sql, $db_dictionary_word_get_suggestions);
             list($this->word_suggestion_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-            $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
-            $sql.= "AND (UID = 0 OR UID = '$uid') ";
-            $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
+            if ($this->word_suggestion_count > 0) {
 
-            $result = db_query($sql, $db_dictionary_word_get_suggestions);
+                $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
+                $sql.= "AND (UID = 0 OR UID = '$uid') ";
+                $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
 
-            if (db_num_rows($result) > 0) {
+                $result = db_query($sql, $db_dictionary_word_get_suggestions);
 
-                while($row = db_fetch_array($result)) {
+                if (db_num_rows($result) > 0) {
 
-                    $this->suggestions_array[] = $row['WORD'];
+                    while($row = db_fetch_array($result)) {
+
+                        $this->suggestions_array[] = $row['WORD'];
+                    }
+
+                }else {
+
+                    if ($this->offset_match == 0) return false;
+
+                    $this->offset_match = 0;
+                    return $this->word_get_suggestions();
                 }
 
-            }else {
-
-                if ($this->offset_match == 0) return false;
-
-                $this->offset_match = 0;
-                return $this->word_get_suggestions();
+                if (sizeof($this->suggestions_array) > 0) return $this->suggestions_array;
             }
-
-            if (sizeof($this->suggestions_array) > 0) return $this->suggestions_array;
         }
 
         return false;
@@ -335,7 +357,7 @@ class dictionary {
 
         }else {
 
-            if (!$this->word_is_valid() || $this->word_is_ignored() || !$this->word_get_suggestions()) {
+            if (!$this->word_is_valid() || $this->word_is_ignored()) {
 
                 $this->find_next_word();
             }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.27 2005-10-07 23:05:11 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.28 2005-10-07 23:52:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -33,6 +33,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
@@ -50,6 +51,7 @@ class dictionary {
 
     var $offset_match;
     var $word_suggestion_count;
+    var $word_suggestion_result;
 
     function dictionary($content, $ignored_words, $current_word, $obj_id, $offset_match) {
 
@@ -65,7 +67,9 @@ class dictionary {
 
         $this->check_complete = false;
         $this->offset_match = $offset_match;
+
         $this->word_suggestion_count = 0;
+        $this->word_suggestion_result = 0;
     }
 
     function prepare_content($content)
@@ -132,6 +136,7 @@ class dictionary {
     function get_suggestions_array()
     {
         if (sizeof($this->suggestions_array) < 1) $this->word_get_suggestions();
+        if ($this->word_suggestion_result == DICTIONARY_NOMATCH) return false;
         return $this->suggestions_array;
     }
 
@@ -265,11 +270,13 @@ class dictionary {
     {
         $db_dictionary_word_get_suggestions = db_connect();
 
-        if (!isset($this->content_array[$this->current_word])) return false;
+        if (!isset($this->content_array[$this->current_word])) return;
 
         // Fetch the current word
 
         $word = addslashes(strtolower($this->get_current_word()));
+
+        if (!$this->word_is_valid($word)) return;
 
         // The offset of the metaphone results
 
@@ -289,7 +296,11 @@ class dictionary {
 
         // If we found an exact match then they spelt it right?
 
-        if (db_num_rows($result) > 0) return false;
+        if (db_num_rows($result) > 0) {
+
+            $this->word_suggestion_result = DICTIONARY_EXACT;
+            return;
+        }
 
         // Metaphone match (English pronounciation match)
 
@@ -320,17 +331,25 @@ class dictionary {
 
                 }else {
 
-                    if ($this->offset_match == 0) return false;
+                    if ($this->offset_match == 0) {
+
+                        $this->word_suggestion_result = DICTIONARY_NOMATCH;
+                        return;
+                    }
 
                     $this->offset_match = 0;
                     return $this->word_get_suggestions();
                 }
 
-                if (sizeof($this->suggestions_array) > 0) return $this->suggestions_array;
+                if (sizeof($this->suggestions_array) > 0) {
+
+                    $this->word_suggestion_result = DICTIONARY_SUGGEST;
+                    return;
+                }
             }
         }
 
-        return false;
+        $this->word_suggestion_result = DICTIONARY_NOMATCH;
     }
 
     function get_best_suggestion()
@@ -356,6 +375,14 @@ class dictionary {
             return;
 
         }else {
+
+            $this->word_get_suggestions();
+
+            if ($this->word_suggestion_result == DICTIONARY_EXACT) {
+
+                $this->find_next_word();
+                return;
+            }
 
             if (!$this->word_is_valid() || $this->word_is_ignored()) {
 

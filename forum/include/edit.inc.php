@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.59 2005-09-20 18:30:45 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.60 2005-10-09 16:30:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,13 +55,19 @@ function post_update($fid, $tid, $pid, $content)
     $sql = "SELECT SID FROM SEARCH_POSTS WHERE TID = $tid AND PID = $pid";
     $result = db_query($sql, $db_post_update);
 
-    list($search_index_id) = db_fetch_array($result, DB_RESULT_NUM);
+    if (db_num_rows($result) > 0) {
 
-    $sql = "DELETE FROM SEARCH_POSTS WHERE SID = $search_index_id";
-    $result = db_query($sql, $db_post_update);
+        $row = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "DELETE FROM SEARCH_MATCH WHERE SID = $search_index_id";
-    $result = db_query($sql, $db_post_update);
+        if (isset($row['SID']) && is_numeric($row['SID'])) {
+
+            $sql = "DELETE FROM SEARCH_POSTS WHERE SID = $search_index_id";
+            $result = db_query($sql, $db_post_update);
+
+            $sql = "DELETE FROM SEARCH_MATCH WHERE SID = $search_index_id";
+            $result = db_query($sql, $db_post_update);
+        }
+    }
 
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL) && !perm_is_moderator($fid)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.101 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.102 2005-10-09 16:30:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -533,11 +533,16 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
     $result = db_query($sql, $db_folder_thread_type_allowed);
 
     if (db_num_rows($result) > 0) {
+
         $row = db_fetch_array($result);
-        return $row['ALLOWED_TYPES'] ? ($row['ALLOWED_TYPES'] & $type) : true;
-    } else {
-        return false;
+
+        if (isset($row['ALLOWED_TYPES']) && is_numeric($row['ALLOWED_TYPES'])) {
+
+            return $row['ALLOWED_TYPES'] ? ($row['ALLOWED_TYPES'] & $type) : true;
+        }
     }
+
+    return false;
 }
 
 // Similar to folder_draw_dropdown() but simply returns

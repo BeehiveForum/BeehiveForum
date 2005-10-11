@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.25 2005-10-07 23:05:11 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.26 2005-10-11 12:42:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -386,6 +386,10 @@ echo "                  <td width=\"270\">\n";
 if ($suggestions_array = $dictionary->get_suggestions_array()) {
 
     echo "                    ", form_dropdown_array("suggestion", $suggestions_array, false, $dictionary->get_best_suggestion(), "size=\"10\" onchange=\"changeword(this)\"", "dictionary_best_selection"), "\n";
+
+}elseif ($dictionary->is_check_complete()) {
+
+    echo "                    ", form_input_text("change_to", $dictionary->get_best_suggestion(), 32, false, "disabled=\"disabled\"", "dictionary_best_selection"), "\n";
 
 }else {
 

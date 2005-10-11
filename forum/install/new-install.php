@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.80 2005-09-28 16:39:56 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.81 2005-10-11 12:46:43 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -242,6 +242,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  DDKEY DATETIME DEFAULT NULL, ";
 $sql.= "  LAST_POST DATETIME DEFAULT NULL, ";
 $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL, ";
+$sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
 

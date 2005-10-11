@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-062.php,v 1.3 2005-10-06 15:47:11 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-062.php,v 1.4 2005-10-11 12:46:43 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -173,6 +173,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_LINKS_FOLDERS CHANGE ";
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
+    $result = @db_query($sql, $db_install);
+
+    $sql = "ALTER TABLE USER_TRACK ADD POST_COUNT MEDIUMINT( 8 ) UNSIGNED";
     $result = @db_query($sql, $db_install);
 }
 

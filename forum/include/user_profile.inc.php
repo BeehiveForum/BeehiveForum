@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.45 2005-10-02 12:27:08 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.46 2005-10-11 12:42:38 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -202,7 +202,7 @@ function user_get_post_count($uid)
 
     if (db_affected_rows($db_user_get_post_count) < 1) {
 
-        $sql = "INSERT INTO USER_TRACK (POST_COUNT) VALUES ($post_count)";
+        $sql = "INSERT INTO USER_TRACK (UID, POST_COUNT) VALUES ($uid, $post_count)";
         $result = db_query($sql, $db_user_get_post_count);
     }
 

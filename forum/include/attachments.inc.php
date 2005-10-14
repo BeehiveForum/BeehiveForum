@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.103 2005-09-29 22:19:55 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.104 2005-10-14 13:30:11 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -850,8 +850,11 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 * @param string $filepath - path to the file attachment on the server
 */
 
-function attachment_create_thumb($filepath)
+function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
 {
+    if (!is_numeric($max_width)) $max_width = 150;
+    if (!is_numeric($max_height)) $max_height = 150;
+
     // We're only going to support GIF, JPEG and PNG
 
     $required_read_functions  = array(1 => 'imagecreatefromgif',
@@ -897,7 +900,7 @@ function attachment_create_thumb($filepath)
                 $target_width  = $image_info[0];
                 $target_height = $image_info[1];
 
-                while ($target_width > 150 || $target_height > 150) {
+                while ($target_width > $max_width || $target_height > $max_height) {
 
                     $target_width--;
                     $target_height = $target_width * ($image_info[1] / $image_info[0]);

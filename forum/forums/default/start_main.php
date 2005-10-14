@@ -21,28 +21,83 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.9 2005-01-26 21:33:17 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.10 2005-10-14 13:30:11 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
 
+// Compress the output
+include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
+
+// Enable the error handler
+include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
+
+// Installation checking functions
+include_once(BH_INCLUDE_PATH. "install.inc.php");
+
+// Check that Beehive is installed correctly
+check_install();
+
+include_once(BH_INCLUDE_PATH. "attachments.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Check we're logged in correctly
+
+if (!$user_sess = bh_session_check()) {
+    $request_uri = rawurlencode(get_request_uri());
+    $webtag = get_webtag($webtag_search);
+    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+}
+
 function formatname($filename)
 {
     if ($pos = strrpos($filename, '.')) {
-        $name = substr($filename, 0, $pos);
-        $name = str_replace('_', ' ', $name);
+        $filename = substr($filename, 0, $pos);
+        $filename = str_replace('_', ' ', $filename);
     }
 
-    return $name;
+    return ucfirst($filename);
 }
 
 // Where are the images stored?
 
-$images_dir = 'images/forumites';
+$images_dir = "forums/$webtag/images/forumites";
 
 // Initialise the array to store the images in
 
 $images_array = array();
+
+// Uploading an image?
+
+if (isset($_POST['upload'])) {
+
+    if (isset($_FILES['userimage']['tmp_name']) && @is_readable($_FILES['userimage']['tmp_name'])) {
+
+        $logon = bh_session_get_value('LOGON');
+
+        $tempfile = $_FILES['userimage']['tmp_name'];
+        $filepath = "$images_dir/$logon";
+
+        if ($image_data = getimagesize($tempfile)) {
+
+            if (@move_uploaded_file($tempfile, $filepath)) {
+
+                if (attachment_create_thumb($filepath, 300, 300)) {
+
+                    unlink($filepath);
+                    rename("$filepath.thumb", $filepath);
+                }
+            }
+        }
+    }
+}
 
 // Get the files here
 
@@ -82,33 +137,31 @@ if (!isset($id) && sizeof($images_array) > 0) {
 
 list($width, $height, $type, $html) = @getimagesize("{$images_dir}/{$images_array[$id]}");
 
-echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">\n";
-echo "<html>\n";
-echo "<head>\n";
-echo "<title>Teh Forum - Forumite Gallery</title>\n";
-echo "<style type=\"text/css\">\n";
-echo "<!--\n\n";
-echo ".bodytext    { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;\n";
-echo "               font-style: normal; line-height: 13px; font-weight: normal; color: #666666;\n";
-echo "               background-color: #EAEFF4 }\n\n";
-echo ".image       { position: absolute; position: absolute; left: 50%; top: 50%; width: {$width}px;\n";
-echo "               height: {$height}px; margin-left: -", round($width / 2), "px; margin-top: -", round($height / 2), "px }\n\n";
-echo ".title       { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 18px;\n";
-echo "               font-style: normal; font-weight: bold; color: #ffffff; background-color: #A6BED7 }\n";
-echo "a            { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;\n";
-echo "               line-height: 13px; font-weight: normal; color: #333399;\n";
-echo "               text-decoration: underline }\n\n";
-echo "//-->\n";
-echo "</style>\n";
-echo "</head>\n\n";
-echo "<body class=\"bodytext\">\n";
+html_draw_top();
 
-if (isset($HTTP_GET_VARS['gallery'])) {
+if (isset($_GET['upload'])) {
 
+    echo "<h1>Upload Image</h1>\n";
+    echo "<br />\n";
+    echo "<form enctype=\"multipart/form-data\" method=\"post\" action=\"start_main.php\">\n";
+    echo "  ", form_field("userimage", "", 40, 0, "file"), "\n";
+    echo "  ", form_submit("upload", $lang['upload']), "\n";
+    echo "  ", form_submit("cancel", $lang['cancel']), "\n";
+    echo "</form>\n";
+
+    echo "<p>Some rules:</p>\n";
+    echo "<ol>\n";
+    echo "  <li>You only get one image, which is stored as your forum logon.</li>\n";
+    echo "  <li>Image will be automatically resized down to a max of 400x400px.</li>\n";
+    echo "</ol>\n";
+
+}elseif (isset($HTTP_GET_VARS['gallery'])) {
+
+    echo "<h1>Convicts Gallery</h1>\n";
     echo "<div align=\"center\">\n";
     echo "<table border=\"0\" cellpadding=\"10\" cellspacing=\"10\" width=\"500\">\n";
 
-    for ($i = 0; $i < sizeof($images_array); $i++) {  // $i+=2
+    for ($i = 0; $i < sizeof($images_array); $i++) {
 
         list($width, $height, $type, $html) = @getimagesize($images_dir.$images_array[$i]);
 
@@ -121,24 +174,23 @@ if (isset($HTTP_GET_VARS['gallery'])) {
     }
 
     echo "</table>\n";
+    echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload an image</a>]</div></p>\n";
+    echo "</div>\n";
+
+}elseif (isset($id) && isset($images_array[$id])) {
+
+    echo "<h1>Some random person</h1>\n";
+    echo "<div class=\"image\">\n";
+    echo "<p><div align=\"center\"><img src=\"{$images_dir}/{$images_array[$id]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$id]), "\" title=\"", formatname($images_array[$id]), "\" /></div></p>\n";
+    echo "<p><div align=\"center\">", formatname($images_array[$id]), "</div></p>\n";
+    echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload an image</a>]</div></p>\n";
     echo "</div>\n";
 
 }else {
 
-    if (isset($id) && isset($images_array[$id])) {
-
-        echo "<div class=\"image\">\n";
-        echo "<p><img src=\"{$images_dir}/{$images_array[$id]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$id]), "\" title=\"", formatname($images_array[$id]), "\" /></p>\n";
-        echo "<p><div align=\"center\">", formatname($images_array[$id]), "</div></p>\n";
-        echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery=true\">Gallery</a>]</div></p>\n";
-        echo "</div>\n";
-
-    }else {
-
-        echo "<p>Upload the images doofus!</p>\n";
-    }
+    echo "<p><div align=\"center\">[<a href=\"?upload\">Upload an image</a>]</div></p>\n";
 }
 
+html_draw_bottom();
+
 ?>
-</body>
-</html>

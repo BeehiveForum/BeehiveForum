@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.60 2005-10-09 16:30:31 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.61 2005-10-14 13:30:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,10 +61,10 @@ function post_update($fid, $tid, $pid, $content)
 
         if (isset($row['SID']) && is_numeric($row['SID'])) {
 
-            $sql = "DELETE FROM SEARCH_POSTS WHERE SID = $search_index_id";
+            $sql = "DELETE FROM SEARCH_POSTS WHERE SID = {$row['SID']}";
             $result = db_query($sql, $db_post_update);
 
-            $sql = "DELETE FROM SEARCH_MATCH WHERE SID = $search_index_id";
+            $sql = "DELETE FROM SEARCH_MATCH WHERE SID = {$row['SID']}";
             $result = db_query($sql, $db_post_update);
         }
     }
@@ -118,13 +118,22 @@ function post_delete($tid, $pid)
 
     $result = db_query($sql, $db_post_delete);
 
-    $sql = "DELETE FROM SEARCH_POSTS WHERE TID = $tid ";
-    $sql.= "AND PID = $pid";
-
+    $sql = "SELECT SID FROM SEARCH_POSTS WHERE TID = $tid AND PID = $pid";
     $result = db_query($sql, $db_post_delete);
 
-    $sql = "DELETE FROM SEARCH_MATCH WHERE TID = $tid ";
-    $sql.= "AND PID = $pid";
+    if (db_num_rows($result) > 0) {
+
+        $row = db_fetch_array($result, DB_RESULT_NUM);
+
+        if (isset($row['SID']) && is_numeric($row['SID'])) {
+
+            $sql = "DELETE FROM SEARCH_POSTS WHERE SID = {$row['SID']}";
+            $result = db_query($sql, $db_post_delete);
+
+            $sql = "DELETE FROM SEARCH_MATCH WHERE SID = {$row['SID']}";
+            $result = db_query($sql, $db_post_delete);
+        }
+    }
 
     $result = db_query($sql, $db_post_delete);
 

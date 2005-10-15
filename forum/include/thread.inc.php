@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.72 2005-07-23 22:53:35 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.73 2005-10-15 15:56:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -396,6 +396,102 @@ function thread_delete($tid)
     $sql.= "SET CONTENT = NULL WHERE TID = '$tid'";
 
     return db_query($sql, $db_thread_delete);
+}
+
+// Fetches replies (and replies of replies, etc) of a post in a thread
+// Returns a by_ref array with results.
+
+function thread_get_structured_replies($tid, $pid, &$pid_array)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!is_array($pid_array)) $pid_array = array();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $db_thread_get_replies = db_connect();
+
+    $sql = "SELECT PID FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE TID = $tid AND REPLY_TO_PID = $pid";
+
+    $result = db_query($sql, $db_thread_get_replies);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($row = db_fetch_array($result)) {
+
+            $pid_array[] = $row['PID'];
+            thread_get_replies($tid, $row['PID'], $pid_array);
+        }
+    }
+}
+
+// Fetches all posts in a reply that have a PID equal to or
+// greater than $pid. Essentially the same as messages_get()
+// except it uses no joins and only retrieves the PID column.
+
+function thread_get_replies($tid, $pid)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $db_thread_get_replies = db_connect();
+
+    $sql = "SELECT PID FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE TID = $tid AND PID >= $pid";
+
+    $result = db_query($sql, $db_thread_get_replies);
+
+    if (db_num_rows($result) > 0) {
+
+        $pid_array = array();
+
+        while ($row = db_fetch_array($result)) {
+
+            $pid_array[] = $row['PID'];
+        }
+
+        return $pid_array;
+    }
+
+    return false;
+}
+
+// Moves posts from one thread to another while maintaining
+// the PID index of the posts, i.e. if it moves posts #1, #4,
+// and #19 the new thread will contain the same PIDs and not
+// #1, #2 and #3.
+
+function thread_move_posts($dest_tid, $source_tid, $pid_array)
+{
+    if (!is_numeric($dest_tid)) return false;
+    if (!is_numeric($source_tid)) return false;
+    if (!is_array($pid_array)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $db_thread_move_posts = db_connect();
+
+    $pid_list = implode(',', $pid_array);
+
+    $sql = "INSERT INTO {$table_data['PREFIX']}POST TID, PID, ";
+    $sql.= "REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, ";
+    $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, ";
+    $sql.= "IPADDRESS  SELECT $dest_tid, REPLY_TO_PID, FROM_UID, ";
+    $sql.= "TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
+    $sql.= "EDITED, EDITED_BY, IPADDRESS FROM DEFAULT_POST ";
+    $sql.= "WHERE TID = $source_tid AND PID IN ($pid_list) ";
+    $sql.= "ORDER BY PID";
+
+    $result = db_query($sql, $db_thread_move_posts);
+
+    $sql = "DELETE FROM DEFAULT_POST WHERE TID = $source_tid ";
+    $sql.= "AND PID IN ($pid_list)";
+
+    $result = db_query($sql, $db_thread_move_posts);
 }
 
 ?>

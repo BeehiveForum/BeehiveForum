@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.142 2005-09-20 18:30:45 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.143 2005-10-16 10:55:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,7 +44,7 @@ function search_execute($argarray, &$error)
     // We'll save ourselves some server time by checking
     // them first.
 
-    include("./include/search_stopwords.inc.php");
+    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -655,7 +655,7 @@ function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $c
 {
     $db_search_index_post = db_connect();
 
-    include("./include/search_stopwords.inc.php");
+    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($tid)) return false;

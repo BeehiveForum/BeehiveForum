@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.28 2005-10-07 23:52:18 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.29 2005-10-16 10:55:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -248,7 +248,12 @@ class dictionary {
     {
         $current_word = $this->get_current_word();
 
-        if (preg_match("/([0-9]+)|(<[^>]+>)|(&[^;]+;)/", $current_word) < 1) {
+        $word_match = "([0-9]+)|(<[^>]+>)|(&[^;]+;)|";
+        $word_match.= "(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
+        $word_match.= "(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
+        $word_match.= "([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})";
+
+        if (preg_match("/$word_match/i", $current_word) < 1) {
 
             if (strlen($current_word) > 1 && strtoupper($current_word) != $current_word) return true;
         }

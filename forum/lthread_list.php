@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.67 2005-04-27 19:47:13 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.68 2005-10-16 10:36:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -131,7 +131,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
 bh_setcookie('bh_thread_mode', $mode);
 
-if (isset($_GET['start_from']) && is_numeric($_GET['start_form'])) {
+if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
     $start_from = $_GET['start_from'];
 }else {
     $start_from = 0;

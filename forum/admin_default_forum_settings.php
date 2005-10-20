@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.40 2005-08-12 17:49:48 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.41 2005-10-20 21:51:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -96,12 +96,6 @@ $text_captcha = new captcha(6, 15, 25, 9, 30);
 if (isset($_POST['submit'])) {
 
     $valid = true;
-
-    if (isset($_POST['search_min_word_length']) && is_numeric($_POST['search_min_word_length'])) {
-        $new_forum_settings['search_min_word_length'] = $_POST['search_min_word_length'];
-    }else {
-        $new_forum_settings['search_min_word_length'] = 3;
-    }
 
     if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {
         $new_forum_settings['search_min_frequency'] = $_POST['search_min_frequency'];
@@ -341,16 +335,11 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td width=\"270\">{$lang['minsearchwordlength']}:</td>\n";
-echo "                        <td>", form_input_text("search_min_word_length", (isset($default_forum_settings['search_min_word_length'])) ? $default_forum_settings['search_min_word_length'] : "3", 10, 3), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['searchfrequency']}:</td>\n";
 echo "                        <td>", form_input_text("search_min_frequency", (isset($default_forum_settings['search_min_frequency'])) ? $default_forum_settings['search_min_frequency'] : "30", 10, 3), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_14']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_39']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";

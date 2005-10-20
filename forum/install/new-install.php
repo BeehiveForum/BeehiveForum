@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.81 2005-10-11 12:46:43 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.82 2005-10-20 21:51:17 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1038,7 +1038,6 @@ $global_settings = array('allow_search_spidering'     => 'Y',
                          'active_sess_cutoff'         => '900',
                          'session_cutoff'             => '86400',
                          'search_min_frequency'       => '30',
-                         'search_min_word_length'     => '3',
                          'guest_account_enabled'      => 'Y',
                          'guest_auto_logon'           => 'Y',
                          'attachments_enabled'        => 'N',

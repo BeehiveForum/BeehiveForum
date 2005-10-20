@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.123 2005-09-17 20:54:11 decoyduck Exp $ */
+/* $Id: search.php,v 1.124 2005-10-20 21:51:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,6 +109,8 @@ if (!$folder_dropdown = folder_search_dropdown()) {
     exit;
 }
 
+search_get_word_lengths($min_length, $max_length);
+
 if (isset($_POST) && sizeof($_POST) > 0) {
 
     $offset = 0;
@@ -166,7 +168,7 @@ if (isset($_POST) && sizeof($_POST) > 0) {
                 echo "<p>{$lang['notexttosearchfor']}</p>\n";
                 break;
             case SEARCH_FREQUENCY_TOO_GREAT:
-                echo "<p>{$lang['searchfrequencyerror_1']} ", forum_get_setting('search_min_frequency', false, 30), " {$lang['searchfrequencyerror_2']}</p>\n";
+                echo "<p>{$lang['searchfrequencyerror_1']} $min_length {$lang['searchfrequencyerror_2']}</p>\n";
                 break;
         }
 
@@ -408,7 +410,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>{$lang['searchcriteria_1']} ", forum_get_setting('search_min_word_length', false, 3), " {$lang['searchcriteria_2']}</td>\n";
+    echo "      <td>{$lang['searchcriteria_1']} $min_length {$lang['searchcriteria_2']}</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";

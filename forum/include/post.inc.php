@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.136 2005-10-16 10:55:15 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.137 2005-10-20 20:49:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -95,8 +95,6 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
                 $sql = "UPDATE USER_TRACK SET POST_COUNT = POST_COUNT + 1 WHERE UID = $fuid";
                 $result = db_query($sql, $db_post_create);
             }
-
-            search_index_post($fid, $tid, $new_pid, $by_uid, $fuid, $tuid, $post_content);
 
         }else {
 

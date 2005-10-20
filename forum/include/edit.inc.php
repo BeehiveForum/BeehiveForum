@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.61 2005-10-14 13:30:11 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.62 2005-10-20 20:49:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -51,23 +51,6 @@ function post_update($fid, $tid, $pid, $content)
     $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
     $result = db_query($sql, $db_post_update);
-
-    $sql = "SELECT SID FROM SEARCH_POSTS WHERE TID = $tid AND PID = $pid";
-    $result = db_query($sql, $db_post_update);
-
-    if (db_num_rows($result) > 0) {
-
-        $row = db_fetch_array($result, DB_RESULT_NUM);
-
-        if (isset($row['SID']) && is_numeric($row['SID'])) {
-
-            $sql = "DELETE FROM SEARCH_POSTS WHERE SID = {$row['SID']}";
-            $result = db_query($sql, $db_post_update);
-
-            $sql = "DELETE FROM SEARCH_MATCH WHERE SID = {$row['SID']}";
-            $result = db_query($sql, $db_post_update);
-        }
-    }
 
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL) && !perm_is_moderator($fid)) {
 
@@ -115,25 +98,6 @@ function post_delete($tid, $pid)
 
     $sql = "DELETE FROM {$table_data['PREFIX']}THREAD ";
     $sql.= "WHERE TID = '$tid' AND LENGTH = 1";
-
-    $result = db_query($sql, $db_post_delete);
-
-    $sql = "SELECT SID FROM SEARCH_POSTS WHERE TID = $tid AND PID = $pid";
-    $result = db_query($sql, $db_post_delete);
-
-    if (db_num_rows($result) > 0) {
-
-        $row = db_fetch_array($result, DB_RESULT_NUM);
-
-        if (isset($row['SID']) && is_numeric($row['SID'])) {
-
-            $sql = "DELETE FROM SEARCH_POSTS WHERE SID = {$row['SID']}";
-            $result = db_query($sql, $db_post_delete);
-
-            $sql = "DELETE FROM SEARCH_MATCH WHERE SID = {$row['SID']}";
-            $result = db_query($sql, $db_post_delete);
-        }
-    }
 
     $result = db_query($sql, $db_post_delete);
 

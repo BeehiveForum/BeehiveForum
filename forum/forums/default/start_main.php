@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.11 2005-10-16 10:55:15 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.12 2005-10-20 20:49:36 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -56,14 +56,16 @@ if (!$user_sess = bh_session_check()) {
     header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
+// Check we have a webtag
+
+if (!$webtag = get_webtag($webtag_search)) {
+    $request_uri = rawurlencode(get_request_uri());
+    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
+}
+
 function formatname($filename)
 {
-    if ($pos = strrpos($filename, '.')) {
-        $filename = substr($filename, 0, $pos);
-        $filename = str_replace('_', ' ', $filename);
-    }
-
-    return ucfirst($filename);
+    return ucfirst(strtolower($filename));
 }
 
 // Where are the images stored?
@@ -137,7 +139,7 @@ if (!isset($id) && sizeof($images_array) > 0) {
 
 list($width, $height, $type, $html) = @getimagesize("{$images_dir}/{$images_array[$id]}");
 
-html_draw_top();
+html_draw_top('openprofile.js');
 
 if (isset($_GET['upload'])) {
 
@@ -159,7 +161,7 @@ if (isset($_GET['upload'])) {
 
     echo "<h1>Convicts Gallery</h1>\n";
     echo "<div align=\"center\">\n";
-    echo "<table border=\"0\" cellpadding=\"10\" cellspacing=\"10\" width=\"500\">\n";
+    echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"10\" width=\"500\">\n";
 
     for ($i = 0; $i < sizeof($images_array); $i++) {
 
@@ -167,8 +169,8 @@ if (isset($_GET['upload'])) {
 
         echo "  <tr>\n";
         echo "    <td align=\"center\">\n";
-        echo "      <p><a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\"><img src=\"{$images_dir}/{$images_array[$i]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$i]), "\" title=\"", formatname($images_array[$i]), "\" /></a></p>\n";
-        echo "      <p class=\"bodytext\">", formatname($images_array[$i]), "</p>\n";
+        echo "      <p><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('{$images_array[$i]}', '$webtag')\"><img src=\"{$images_dir}/{$images_array[$i]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$i]), "\" title=\"", formatname($images_array[$i]), "\" /></a></p>\n";
+        echo "      <p class=\"bodytext\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('{$images_array[$id]}', '$webtag')\">", formatname($images_array[$i]), "</a></p>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
     }
@@ -181,8 +183,8 @@ if (isset($_GET['upload'])) {
 
     echo "<h1>Some random person</h1>\n";
     echo "<div class=\"image\">\n";
-    echo "<p><div align=\"center\"><img src=\"{$images_dir}/{$images_array[$id]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$id]), "\" title=\"", formatname($images_array[$id]), "\" /></div></p>\n";
-    echo "<p><div align=\"center\">", formatname($images_array[$id]), "</div></p>\n";
+    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('{$images_array[$id]}', '$webtag')\"><img src=\"{$images_dir}/{$images_array[$id]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$id]), "\" title=\"", formatname($images_array[$id]), "\" /></a></div></p>\n";
+    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('{$images_array[$id]}', '$webtag')\">", formatname($images_array[$id]), "</a></div></p>\n";
     echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload an image</a>]</div></p>\n";
     echo "</div>\n";
 

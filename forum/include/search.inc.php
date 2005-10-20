@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.143 2005-10-16 10:55:15 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.144 2005-10-20 20:49:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,37 +72,44 @@ function search_execute($argarray, &$error)
     $sql = "DELETE FROM SEARCH_RESULTS WHERE UID = $uid";
     $result = db_query($sql, $db_search_execute);
 
-    // Base query - the same for all seraches
+    // Base query parts - the same for all seraches
 
     $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
     $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED) SELECT $uid, ";
-    $select_sql.= "SEARCH_POSTS.FORUM, SEARCH_POSTS.FID, SEARCH_POSTS.TID, ";
-    $select_sql.= "SEARCH_POSTS.PID, SEARCH_POSTS.BY_UID, SEARCH_POSTS.FROM_UID, ";
-    $select_sql.= "SEARCH_POSTS.TO_UID, SEARCH_POSTS.CREATED ";
+    $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
+    $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED ";
+
+    $from_sql = "FROM {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
+
+    $join_sql = "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
+    $join_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
 
     // Peer portion of the query for removing rows from ignored users - the same for all searches
 
     $peer_join_sql = "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $peer_join_sql.= "ON (USER_PEER.PEER_UID = SEARCH_POSTS.BY_UID AND USER_PEER.UID = $uid) ";
+    $peer_join_sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
 
     $peer_where_sql = "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $peer_where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
-
-    // Where query needs to limit the search results to the current forum
-
-    $where_sql = "WHERE SEARCH_POSTS.FORUM = $forum_fid ";
-    $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
-
-    // Having is needed for AND based searches to find matches with the number of keywords.
-
-    $having_sql = "";
-
     // Get available folders
 
     $folders = folder_get_available();
+
+    // If the user has specified a folder within their viewable scope limit them
+    // to that folder, otherwise limit them to their available folders.
+
+    if (isset($argarray['fid']) && in_array($argarray['fid'], explode(",", $folders))) {
+        $where_sql = "WHERE THREAD.FID = {$argarray['fid']} ";
+    }else{
+        $where_sql = "WHERE THREAD.FID IN ($folders) ";
+    }
+
+    // Where query needs to limit the search results to the user specified date range.
+
+    $where_sql.= search_date_range($argarray['date_from'], $argarray['date_to']);
 
     // Username based search.
 
@@ -110,23 +117,18 @@ function search_execute($argarray, &$error)
 
         if ($user_uid = user_get_uid($argarray['username'])) {
 
-            // Change the main table to be SEARCH_POSTS
-
-            $from_sql = "FROM SEARCH_POSTS SEARCH_POSTS ";
-            $join_sql = "";
-
             if ($argarray['user_include'] == 1) {
 
-                $where_sql.= "AND SEARCH_POSTS.FROM_UID = '{$user_uid['UID']}' ";
+                $where_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}' ";
 
             }elseif ($argarray['user_include'] == 2) {
 
-                $where_sql.= "AND SEARCH_POSTS.TO_UID = '{$user_uid['UID']}' ";
+                $where_sql.= "AND POST.TO_UID = '{$user_uid['UID']}' ";
 
             }else {
 
-                $where_sql.= "AND (SEARCH_POSTS.FROM_UID = '{$user_uid['UID']}' ";
-                $where_sql.= "OR SEARCH_POSTS.TO_UID = '{$user_uid['UID']}') ";
+                $where_sql.= "AND (POST.FROM_UID = '{$user_uid['UID']}' ";
+                $where_sql.= "OR POST.TO_UID = '{$user_uid['UID']}') ";
             }
 
         }else {
@@ -161,30 +163,19 @@ function search_execute($argarray, &$error)
 
         if ($keyword_count > 0) {
 
-            // Change the main table to be SEARCH_KEYWORDS
-
-            $from_sql = "FROM SEARCH_KEYWORDS SEARCH_KEYWORDS ";
-
-            // Join the other tables including SEARCH_POSTS so the username portion still works.
-
-            $join_sql = "LEFT JOIN SEARCH_MATCH SEARCH_MATCH ON (SEARCH_MATCH.WID = SEARCH_KEYWORDS.WID) ";
-            $join_sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON (SEARCH_POSTS.SID = SEARCH_MATCH.SID) ";
-
             // Include the keyword matching portion of the where clause.
 
             if ($argarray['method'] == 1) { // AND
 
-                $where_sql.= "AND (SEARCH_KEYWORDS.WORD = '";
-                $where_sql.= implode("' OR SEARCH_KEYWORDS.WORD = '", $keywords_array);
-                $where_sql.= "') ";
-
-                $having_sql = "HAVING COUNT(SEARCH_KEYWORDS.WORD) >= $keyword_count ";
+                $where_sql.= "AND POST_CONTENT.CONTENT LIKE '%";
+                $where_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                $where_sql.= "%' ";
 
             }elseif ($argarray['method'] == 2) { // OR
 
-                $where_sql.= "AND (SEARCH_KEYWORDS.WORD = '";
-                $where_sql.= implode("' OR SEARCH_KEYWORDS.WORD = '", $keywords_array);
-                $where_sql.= "') ";
+                $where_sql.= "AND (POST_CONTENT.CONTENT LIKE '%";
+                $where_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
+                $where_sql.= "%')) ";
             }
 
         }else {
@@ -202,32 +193,25 @@ function search_execute($argarray, &$error)
         }
     }
 
-    // If the user has specified a folder within their viewable scope limit them
-    // to that folder, otherwise limit them to their available folders.
-
-    if (isset($argarray['fid']) && in_array($argarray['fid'], explode(",", $folders))) {
-        $where_sql.= "AND SEARCH_POSTS.FID = {$argarray['fid']} ";
-    }else{
-        $where_sql.= "AND SEARCH_POSTS.FID IN ($folders) ";
-    }
-
     // If the user wants results grouped by thread (TID) then do so. We still group
     // by TID, PID otherwise AND based searches won't work.
 
     if (isset($argarray['group_by_thread']) && $argarray['group_by_thread'] == 1) {
-        $group_sql = "GROUP BY SEARCH_POSTS.TID ";
+        $group_sql = "GROUP BY THREAD.TID ";
     }else {
-        $group_sql = "GROUP BY SEARCH_POSTS.TID, SEARCH_POSTS.PID ";
+        $group_sql = "";
     }
 
     // Build the final query.
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql $where_sql ";
-    $sql.= "$peer_where_sql $group_sql $having_sql";
+    $sql.= "$peer_where_sql $group_sql";
+
+    echo $sql; exit;
 
     // If the user has performed a search within the last x minutes bail out
 
-    if (!check_search_frequency()) {
+    if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
 
         $error = SEARCH_FREQUENCY_TOO_GREAT;
         return false;
@@ -416,8 +400,8 @@ function search_date_range($from, $to)
 
     }
 
-    if (isset($from_timestamp)) $range = "AND SEARCH_POSTS.CREATED >= FROM_UNIXTIME($from_timestamp) ";
-    if (isset($to_timestamp)) $range.= "AND SEARCH_POSTS.CREATED <= FROM_UNIXTIME($to_timestamp) ";
+    if (isset($from_timestamp)) $range = "AND POST.CREATED >= FROM_UNIXTIME($from_timestamp) ";
+    if (isset($to_timestamp)) $range.= "AND POST.CREATED <= FROM_UNIXTIME($to_timestamp) ";
 
     return $range;
 }
@@ -606,166 +590,9 @@ function check_search_frequency()
     return false;
 }
 
-function search_keywords_callback(&$item, $key)
-{
-    $item = strtolower(trim($item));
-}
-
 function mysql_fulltext_callback(&$item, $key, $delimiter)
 {
     $item = preg_quote($item, $delimiter);
-}
-
-function search_index_old_post()
-{
-    $db_search_index_old_post = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    $sql = "SELECT POST.TID, POST.PID FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "LEFT JOIN SEARCH_POSTS SEARCH_POSTS ON ( SEARCH_POSTS.TID = POST.TID ";
-    $sql.= "AND SEARCH_POSTS.PID = POST.PID AND SEARCH_POSTS.FORUM = $forum_fid) ";
-    $sql.= "WHERE SEARCH_POSTS.TID IS NULL AND SEARCH_POSTS.PID IS NULL ";
-    $sql.= "LIMIT 0 , 1";
-
-    $result = db_query($sql, $db_search_index_old_post);
-
-    if (db_num_rows($result) > 0) {
-
-        list($tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
-
-        $message = messages_get($tid, $pid, 1);
-        $message['CONTENT'] = message_get_content($tid, $pid);
-
-        if (!$fid = thread_get_folder($tid)) $fid = 0;
-        if (!$by_uid = thread_get_by_uid($tid)) $by_uid = 0;
-
-        if (search_index_post($fid, $tid, $pid, $by_uid, $message['FROM_UID'], $message['TO_UID'], $message['CONTENT'], $message['CREATED'])) {
-
-            return "$forum_fid.$fid.$tid.$pid";
-        }
-    }
-
-    return false;
-}
-
-function search_index_post($fid, $tid, $pid, $by_uid, $fuid, $tuid, $content, $created = 0)
-{
-    $db_search_index_post = db_connect();
-
-    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
-
-    if (!is_numeric($fid)) return false;
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($pid)) return false;
-    if (!is_numeric($fuid)) return false;
-    if (!is_numeric($tuid)) return false;
-
-    if (is_numeric($created) && $created > 0) {
-        $created = "FROM_UNIXTIME($created)";
-    }else {
-        $created = "NOW()";
-    }
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    // Change HTML entities back into their normal characters
-
-    $content = _htmlentities_decode($content);
-
-    // Strip HTML
-
-    $content = strip_tags($content);
-
-    // Remove new lines
-
-    $content = preg_replace("/[\n\r]/is", " ", strip_tags($content));
-
-    // Strip URLs and email addresses
-
-    $content = preg_replace("/(\s|\()(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i", "", $content);
-    $content = preg_replace("/(\s|\()(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)/i", "", $content);
-    $content = preg_replace("/\b(mailto:)?([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})/i", "", $content);
-
-    // Underlines don't seem to count as a word boundary in PREG, so change them to spaces
-
-    $content = preg_replace("/_+/", " ", $content);
-
-    // Remove duplicate spaces
-
-    $content = preg_replace("/ +/", " ", $content);
-
-    // Split the string into an array of words.
-
-    $content_array = preg_split("/\b|\s/", $content);
-
-    // Initialize the arrays to hold the keywords.
-
-    $keyword_list_array = array();
-    $sql_values_array = array();
-
-    // Trim the array entries to remove whitespace and change to lowercase.
-
-    array_walk($content_array, 'search_keywords_callback');
-
-    // Filter our search keywords so they're less likely to contain odd unmatchable characters.
-
-    array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
-
-    $mysql_fulltext_stopwords = implode('$|^', $mysql_fulltext_stopwords);
-
-    $content_array = array_unique($content_array);
-
-    $content_array = preg_grep("/^[\w']{50,}$|\d|^['|\"]|['|\"]$/", $content_array, PREG_GREP_INVERT);
-    $content_array = preg_grep("/^$mysql_fulltext_stopwords$/", $content_array, PREG_GREP_INVERT);
-    $content_array = preg_grep("/^[\w']+/", $content_array);
-
-    foreach ($content_array as $key => $keyword_add) {
-
-        $keyword_add = addslashes($keyword_add);
-        $keyword_list_array[] = $keyword_add;
-    }
-
-    // Mark the post as indexed even if it had no keywords.
-
-    $sql = "INSERT IGNORE INTO SEARCH_POSTS (FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED) ";
-    $sql.= "VALUES ($forum_fid, $fid, $tid, $pid, $by_uid, $fuid, $tuid, $created)";
-
-    $result = db_query($sql, $db_search_index_post);
-    $search_index_id = db_insert_id($db_search_index_post);
-
-    // If we have some keywords to insert then we should insert them.
-    // We chunk the keyword arrays into bits of 20 so we don't create
-    // queries which are too large for the database to handle.
-
-    if (sizeof($keyword_list_array) > 0) {
-
-        $keyword_list_chunked_array = _array_chunk($keyword_list_array, 50);
-
-        foreach($keyword_list_chunked_array as $keyword_chunked_part) {
-
-            $keywords_sql = implode("'), ('", $keyword_chunked_part);
-
-            $sql = "INSERT IGNORE INTO SEARCH_KEYWORDS ";
-            $sql.= "(WORD) VALUES ('$keywords_sql')";
-
-            $result = db_query($sql, $db_search_index_post);
-        }
-
-        $keyword_list = implode("', '", $keyword_list_array);
-
-        $sql = "INSERT INTO SEARCH_MATCH (SID, WID) ";
-        $sql.= "SELECT $search_index_id, WID FROM SEARCH_KEYWORDS ";
-        $sql.= "WHERE WORD IN ('$keyword_list')";
-
-        $result = db_query($sql, $db_search_index_post);
-    }
-
-    return true;
 }
 
 ?>

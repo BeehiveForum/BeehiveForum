@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.36 2005-09-18 19:10:25 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.37 2005-10-20 20:49:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -246,8 +246,7 @@ function install_check_tables($webtag)
     $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
                            'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
                            'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
-                           'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SEARCH_KEYWORDS',
-                           'SEARCH_MATCH', 'SEARCH_POSTS',        'SESSIONS',
+                           'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SESSIONS',
                            'USER',         'USER_FORUM',          'USER_PREFS',
                            'USER_TRACK',   'VISITOR_LOG');
 
@@ -293,7 +292,7 @@ function install_cli_show_upgrade_help()
     $beehive_version = BEEHIVE_VERSION;
 
     echo "BeehiveForum $beehive_version CLI upgrader\n";
-    echo "Copyright Project BeehiveForum 2002 - ", date("Y", gmmktime()), "\n";
+    echo "Copyright Project BeehiveForum 2002 - ", date("Y", mktime()), "\n";
     echo "Usage: php-cli new-install.php [OPTIONS]\n";
     echo "  --help      Display this help and exit\n";
     echo "  -h          MySQL hostname to connect to\n";

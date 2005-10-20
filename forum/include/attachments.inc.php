@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.104 2005-10-14 13:30:11 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.105 2005-10-20 20:49:36 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -783,34 +783,32 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
         $href.= "?webtag=$webtag";
     }
 
-    $title = "";
+    $title_array[] = array();
 
     if (strlen($attachment['filename']) > 16 && $limit_filename) {
 
-        $title.= "{$lang['filename']}: {$attachment['filename']}, ";
+        $title_array[] = "{$lang['filename']}: {$attachment['filename']}";
 
         $attachment['filename'] = substr($attachment['filename'], 0, 16);
         $attachment['filename'].= "&hellip;";
     }
 
-    $title.= "{$lang['size']}: ";
-    $title.= format_file_size($attachment['filesize']);
-    $title.= ", ";
+    $title_array[] = "{$lang['size']}: ". format_file_size($attachment['filesize']);
 
     if ($attachment['downloads'] == 1) {
 
-        $title.= $lang['downloadedonetime'];
+        $title_array[] = $lang['downloadedonetime'];
 
     }else {
 
-        $title.= sprintf($lang['downloadedxtimes'], $attachment['downloads']);
+        $title_array[] = sprintf($lang['downloadedxtimes'], $attachment['downloads']);
     }
 
     if (file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
 
         if (@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}")) {
 
-            $title.= "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}, ";
+            $title_array[] = "{$lang['dimensions']}: {$image_info[0]}x{$image_info[1]}";
 
             $thumbnail_width  = $image_info[0];
             $thumbnail_height = $image_info[1];
@@ -821,6 +819,8 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
                 $thumbnail_height = $thumbnail_width * ($image_info[1] / $image_info[0]);
             }
 
+            $title = implode(", ", $title_array);
+
             $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
             $attachment_link.= "target=\"_blank\"><img src=\"$href&amp;thumb=1\"";
             $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
@@ -829,6 +829,8 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
             return $attachment_link;
         }
     }
+
+    $title = implode(", ", $title_array);
 
     $attachment_link = "<img src=\"";
     $attachment_link.= style_image('attach.png');

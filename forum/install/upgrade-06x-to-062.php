@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-062.php,v 1.4 2005-10-11 12:46:43 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-062.php,v 1.5 2005-10-20 20:49:37 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -307,9 +307,9 @@ if (db_num_rows($result) > 0) {
 
     $sql = "CREATE TABLE DICTIONARY_NEW (";
     $sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '',";
-    $sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '',";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "  PRIMARY KEY  (WORD),";
+    $sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '',";
+    $sql.= "  PRIMARY KEY  (WORD, UID),";
     $sql.= "  KEY SOUND (SOUND)";
     $sql.= ") TYPE=MYISAM";
 

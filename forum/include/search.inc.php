@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.145 2005-10-20 21:47:48 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.146 2005-10-20 22:08:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -585,7 +585,11 @@ function check_search_frequency()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $search_stamp = time() - intval(forum_get_setting('search_min_frequency', false, 30));
+    $search_min_frequency = intval(forum_get_setting('search_min_frequency', false, 30));
+
+    if ($search_min_frequency == 0) return true;
+
+    $search_stamp = time() - $search_min_frequency;
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) FROM USER_TRACK WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_search_frequency);

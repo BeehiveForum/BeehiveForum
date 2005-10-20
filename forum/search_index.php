@@ -45,10 +45,6 @@ define("BH_INCLUDE_PATH", "./include/");
 
 include_once(BH_INCLUDE_PATH. "search.inc.php");
 
-if ($indexed_post = search_index_old_post()) {
-    echo "Successfully indexed post: $indexed_post.\n";
-}else {
-    echo "Could not index a post at this time or there are no posts to index.\n";
-}
+echo "Search Indexing is no longer required by BeehiveForum 0.6.2 and higher";
 
 ?>

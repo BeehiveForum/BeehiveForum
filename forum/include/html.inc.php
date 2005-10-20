@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.173 2005-09-28 20:08:21 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.174 2005-10-20 20:49:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -349,6 +349,11 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
+        if (preg_match("/^stylesheet=/i", $func_args) > 0) {
+            $stylesheet_array[] = substr($func_args, 11);
+            unset($arg_array[$key]);
+        }
+
         if (preg_match("/^refresh=([^:]*):([^$]*)$/i", $func_args, $func_matches) > 0) {
 
             if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
@@ -412,6 +417,12 @@ function html_draw_top()
 
     if ($emoticon_style_sheet = html_get_emoticon_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$emoticon_style_sheet\" type=\"text/css\" />\n";
+    }
+
+    if (isset($stylesheet_array) && is_array($stylesheet_array)) {
+        foreach($stylesheet_array as $stylesheet) {
+            echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
+        }
     }
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";

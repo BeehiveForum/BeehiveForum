@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.109 2005-09-04 14:47:12 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.110 2005-10-20 20:49:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -153,18 +153,18 @@ function timestamp_to_date($timestamp)
 
 function timestamp_amend_bst($timestamp)
 {
-    $year = date("Y", gmmktime());
+    $year = date("Y", mktime());
 
-    $ldmarw = date("w", gmmktime(2, 0, 0, 4,  0, $year));
-    $ldoctw = date("w", gmmktime(2, 0, 0, 11, 0, $year));
-    $ldmard = date("d", gmmktime(2, 0, 0, 4,  0, $year));
-    $ldoctd = date("d", gmmktime(2, 0, 0, 11, 0, $year));
+    $ldmarw = date("w", mktime(2, 0, 0, 4,  0, $year));
+    $ldoctw = date("w", mktime(2, 0, 0, 11, 0, $year));
+    $ldmard = date("d", mktime(2, 0, 0, 4,  0, $year));
+    $ldoctd = date("d", mktime(2, 0, 0, 11, 0, $year));
 
     if ($ldmarw > 0) $ldmard = $ldmard - $ldmarw;
     if ($ldoctw > 0) $ldoctd = $ldoctd - $ldoctw;
 
-    $startofbst = gmmktime(2, 0, 0, 3,  $ldmard, $year);
-    $endofbst   = gmmktime(2, 0, 0, 10, $ldoctd, $year);
+    $startofbst = mktime(2, 0, 0, 3,  $ldmard, $year);
+    $endofbst   = mktime(2, 0, 0, 10, $ldoctd, $year);
 
     if (($timestamp > $startofbst) && ($timestamp < $endofbst)) {
         return $timestamp + 3600;  // return adjusted timestamp
@@ -178,7 +178,7 @@ function timestamp_amend_bst($timestamp)
 
 function _htmlentities($text)
 {
-    return htmlentities($text, ENT_QUOTES, 'UTF-8');
+    return htmlentities($text, ENT_COMPAT, 'UTF-8');
 }
 
 // Lazy / replacement for htmlentities_decode(). Should be

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.144 2005-10-20 20:49:36 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.145 2005-10-20 21:47:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,8 +61,6 @@ function search_execute($argarray, &$error)
     if (!isset($argarray['include']) || !is_numeric($argarray['include'])) $argarray['include'] = 2;
     if (!isset($argarray['username']) || strlen(trim($argarray['username'])) < 1) $argarray['username'] = "";
     if (!isset($argarray['user_include']) || !is_numeric($argarray['user_include'])) $argarray['user_include'] = 1;
-
-    $search_min_word_length = intval(forum_get_setting('search_min_word_length', false, 3));
 
     $db_search_execute = db_connect();
 
@@ -156,7 +154,9 @@ function search_execute($argarray, &$error)
 
         $keywords_array = array_unique($keywords_array);
 
-        $keywords_array = preg_grep("/^[\w']{{$search_min_word_length},50}$/", $keywords_array);
+        search_get_word_lengths($min_length, $max_length);
+
+        $keywords_array = preg_grep("/^[\w']{{$min_length},{$max_length}}$/", $keywords_array);
         $keywords_array = preg_grep("/^[\d]+$|^$mysql_fulltext_stopwords$/", $keywords_array, PREG_GREP_INVERT);
 
         $keyword_count = sizeof($keywords_array);
@@ -165,17 +165,19 @@ function search_execute($argarray, &$error)
 
             // Include the keyword matching portion of the where clause.
 
+            $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
+
             if ($argarray['method'] == 1) { // AND
 
-                $where_sql.= "AND POST_CONTENT.CONTENT LIKE '%";
-                $where_sql.= implode("%' AND POST_CONTENT.CONTENT LIKE '%", $keywords_array);
-                $where_sql.= "%' ";
+                $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('+";
+                $where_sql.= implode('+', $keywords_array);
+                $where_sql.= "'$bool_mode) ";
 
             }elseif ($argarray['method'] == 2) { // OR
 
-                $where_sql.= "AND (POST_CONTENT.CONTENT LIKE '%";
-                $where_sql.= implode("%' OR POST_CONTENT.CONTENT LIKE '%", $keywords_array);
-                $where_sql.= "%')) ";
+                $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('";
+                $where_sql.= implode(' ', $keywords_array);
+                $where_sql.= "'$bool_mode) ";
             }
 
         }else {
@@ -207,8 +209,6 @@ function search_execute($argarray, &$error)
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql $where_sql ";
     $sql.= "$peer_where_sql $group_sql";
 
-    echo $sql; exit;
-
     // If the user has performed a search within the last x minutes bail out
 
     if (!check_search_frequency() && !defined('BEEHIVE_INSTALL_NOWARN')) {
@@ -226,6 +226,31 @@ function search_execute($argarray, &$error)
 
     $error = SEARCH_NO_MATCHES;
     return false;
+}
+
+function search_get_word_lengths(&$min_length, &$max_length)
+{
+    $db_search_get_word_lengths = db_connect();
+
+    $sql = "SHOW VARIABLES LIKE 'ft_%'";
+    $result = db_query($sql, $db_search_get_word_lengths);
+
+    $min_length = 4;
+    $max_length = 84;
+
+    while ($row = db_fetch_array($result)) {
+
+        if (isset($row['Variable_name']) && isset($row['Value'])) {
+
+            if ($row['Variable_name'] == 'ft_max_word_len') {
+                $max_length = $row['Value'];
+            }
+
+            if ($row['Variable_name'] == 'ft_min_word_len') {
+                $min_length = $row['Value'];
+            }
+        }
+    }
 }
 
 function search_fetch_results($offset, $order_by)

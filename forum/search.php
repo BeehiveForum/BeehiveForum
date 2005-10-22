@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.124 2005-10-20 21:51:17 decoyduck Exp $ */
+/* $Id: search.php,v 1.125 2005-10-22 12:13:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,6 +86,11 @@ $lang = load_language_file();
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
 }
 
 if (isset($_COOKIE['bh_thread_mode'])) {
@@ -159,6 +164,8 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
         echo "<h1>{$lang['error']}</h1>\n";
 
+        $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+
         switch($error) {
 
             case SEARCH_USER_NOT_FOUND:
@@ -168,7 +175,7 @@ if (isset($_POST) && sizeof($_POST) > 0) {
                 echo "<p>{$lang['notexttosearchfor']}</p>\n";
                 break;
             case SEARCH_FREQUENCY_TOO_GREAT:
-                echo "<p>{$lang['searchfrequencyerror_1']} $min_length {$lang['searchfrequencyerror_2']}</p>\n";
+                echo "<p>{$lang['searchfrequencyerror_1']} $search_frequency {$lang['searchfrequencyerror_2']}</p>\n";
                 break;
         }
 

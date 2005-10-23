@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-062.php,v 1.5 2005-10-20 20:49:37 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-062.php,v 1.6 2005-10-23 10:56:04 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -149,7 +149,7 @@ if (db_num_rows($result) > 0) {
     }
 }
 
-$remove_tables = array('SEARCH_POSTS_NEW', 'SEARCH_MATCH_NEW', 'SEARCH_RESULTS');
+$remove_tables = array('SEARCH_KEYWORDS', 'SEARCH_MATCH', 'SEARCH_POSTS', 'SEARCH_RESULTS');
 
 foreach ($remove_tables as $forum_table) {
 
@@ -175,103 +175,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $result = @db_query($sql, $db_install);
 
-    $sql = "ALTER TABLE USER_TRACK ADD POST_COUNT MEDIUMINT( 8 ) UNSIGNED";
+    $sql = "ALTER TABLE USER_TRACK ADD POST_COUNT MEDIUMINT(8) UNSIGNED";
     $result = @db_query($sql, $db_install);
-}
-
-$sql = "CREATE TABLE SEARCH_POSTS_NEW (";
-$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  CREATED DATETIME DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (SID),";
-$sql.= "  KEY TID (TID,PID),";
-$sql.= "  KEY FORUM (FORUM),";
-$sql.= "  KEY BY_UID (BY_UID),";
-$sql.= "  KEY FROM_UID (FROM_UID),";
-$sql.= "  KEY TO_UID (TO_UID),";
-$sql.= "  KEY CREATED (CREATED)";
-$sql.= ") TYPE=MYISAM;";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO SEARCH_POSTS_NEW (FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED) ";
-$sql.= "SELECT FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED FROM SEARCH_POSTS";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE SEARCH_MATCH_NEW (";
-$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  WID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (SID, WID)";
-$sql.= ") TYPE=MYISAM;";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO SEARCH_MATCH_NEW (SID, WID) SELECT SP.SID, SM.WID FROM SEARCH_POSTS_NEW SP ";
-$sql.= "LEFT JOIN SEARCH_MATCH SM ON (SM.FORUM = SP.FORUM AND SM.TID = SP.TID AND SM.PID = SP.PID)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS SEARCH_POSTS";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS SEARCH_MATCH";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "ALTER TABLE SEARCH_POSTS_NEW RENAME SEARCH_POSTS";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "ALTER TABLE SEARCH_MATCH_NEW RENAME SEARCH_MATCH";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS SEARCH_RESULTS";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
 }
 
 $sql = "CREATE TABLE SEARCH_RESULTS (";

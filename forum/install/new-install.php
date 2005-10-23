@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.82 2005-10-20 21:51:17 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.83 2005-10-23 10:56:04 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -667,7 +667,8 @@ $sql = "CREATE TABLE {$forum_webtag}_POST_CONTENT (";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  CONTENT TEXT, ";
-$sql.= "  PRIMARY KEY (TID, PID)";
+$sql.= "  PRIMARY KEY (TID, PID),";
+$sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

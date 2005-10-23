@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.84 2005-04-27 19:47:08 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.85 2005-10-23 11:58:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -89,9 +89,9 @@ if (isset($_GET['sort_by'])) {
     if ($_GET['sort_by'] == "CREATED") {
         $sort_by = "CREATED";
     } elseif ($_GET['sort_by'] == "UID") {
-        $sort_by = "ADMIN_LOG.UID";
+        $sort_by = "UID";
     } elseif ($_GET['sort_by'] == "ACTION") {
-        $sort_by = "ADMIN_LOG.ACTION";
+        $sort_by = "ACTION";
     } else {
         $sort_by = "CREATED";
     }
@@ -110,9 +110,9 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $start = floor($_GET['page'] - 1) * 20;
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 }else {
-    $start = 0;
+    $page = 1;
 }
 
 // Clear the admin log.
@@ -135,24 +135,39 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 
 if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page\">{$lang['datetime']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+}elseif ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page\">{$lang['datetime']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+}elseif ($sort_dir == 'ASC') {
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['datetime']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }
 
-if ($sort_by == 'ADMIN_LOG.UID' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC\">{$lang['logon']}</a></td>\n";
+if ($sort_by == 'UID' && $sort_dir == 'ASC') {
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;page=$page\">{$lang['logon']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+}elseif ($sort_by == 'UID' && $sort_dir == 'DESC') {
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;page=$page\">{$lang['logon']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+}elseif ($sort_dir == 'ASC') {
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC\">{$lang['logon']}</a></td>\n";
+    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }
 
-if ($sort_by == 'ADMIN_LOG.ACTION' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC\">{$lang['action']}</a></td>\n";
+if ($sort_by == 'ACTION' && $sort_dir == 'ASC') {
+    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;page=$page\">{$lang['action']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+}elseif ($sort_by == 'ACTION' && $sort_dir == 'DESC') {
+    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;page=$page\">{$lang['action']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+}elseif ($sort_dir == 'ASC') {
+    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;page=$page\">{$lang['action']}</a></td>\n";
 }else {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC\">{$lang['action']}</a></td>\n";
+    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;page=$page\">{$lang['action']}</a></td>\n";
 }
 
 echo "                  </tr>\n";
+
+$start = floor($page - 1) * 20;
+if ($start < 0) $start = 0;
 
 $admin_log_array = admin_get_log_entries($start, $sort_by, $sort_dir);
 

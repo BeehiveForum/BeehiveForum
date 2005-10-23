@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.68 2005-07-23 22:53:13 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.69 2005-10-23 11:58:33 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -139,7 +139,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
     $sql.= "ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY, USER.LOGON, USER.NICKNAME ";
     $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+    $sql.= "ORDER BY ADMIN_LOG.$sort_by $sort_dir LIMIT $offset, 20";
 
     if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
 

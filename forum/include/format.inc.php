@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.110 2005-10-20 20:49:36 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.111 2005-10-25 20:13:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -71,7 +71,7 @@ function format_file_size($size)
     return $resized;
 }
 
-function format_time($time, $verbose = false, $custom_format = false)
+function format_time($time, $verbose = false)
 {
     // $time is a UNIX timestamp, which by definition is in GMT/UTC
 

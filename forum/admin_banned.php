@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.17 2005-07-31 17:03:21 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.18 2005-10-25 20:13:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -121,7 +121,7 @@ if (isset($_POST['add_ipaddress'])) {
 
         $add_banned_ipaddress = trim(_stripslashes($_POST['add_banned_ipaddress']));
 
-        if (preg_match("/%+/", $add_banned_ipaddress) > 0) {
+        if (preg_match("/^%+$/", $add_banned_ipaddress) > 0) {
 
             $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
             $valid = false;
@@ -162,7 +162,7 @@ if (isset($_POST['add_logon'])) {
 
         $add_banned_logon = trim(_stripslashes($_POST['add_banned_logon']));
 
-        if (preg_match("/%+/", $add_banned_logon) > 0) {
+        if (preg_match("/^%+$/", $add_banned_logon) > 0) {
 
             $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
             $valid = false;
@@ -203,7 +203,7 @@ if (isset($_POST['add_nickname'])) {
 
         $add_banned_nickname = trim(_stripslashes($_POST['add_banned_nickname']));
 
-        if (preg_match("/%+/", $add_banned_nickname) > 0) {
+        if (preg_match("/^%+$/", $add_banned_nickname) > 0) {
 
             $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
             $valid = false;
@@ -244,7 +244,7 @@ if (isset($_POST['add_email'])) {
 
         $add_banned_email = trim(_stripslashes($_POST['add_banned_email']));
 
-        if (preg_match("/%+/", $add_banned_email)) {
+        if (preg_match("/^%+$/", $add_banned_email)) {
 
             $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
             $valid = false;

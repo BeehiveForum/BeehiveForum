@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.29 2005-10-16 10:55:15 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.30 2005-10-26 17:48:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -74,7 +74,8 @@ class dictionary {
 
     function prepare_content($content)
     {
-        $word_match = "(\w+'+\w+)|([\s+\.!\?,\[\]()\-+'\"=;&#0215;\$%\^&\*\/:{}]+)|";
+        $word_match = "([0-9]+)|(<[^>]+>)|(&[^;]+;)|";
+        $word_match.= "(\w+'+\w+)|([\s+\.!\?,\[\]()\-+'\"=;&#0215;\$%\^&\*\/:{}]+)|";
         $word_match.= "(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
         $word_match.= "(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
         $word_match.= "([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})";

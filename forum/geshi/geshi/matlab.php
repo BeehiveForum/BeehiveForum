@@ -1,29 +1,21 @@
 <?php
 /*************************************************************************************
- * ada.php
- * -------
- * Author: Tux (tux@inmail.cz)
- * Copyright: (c) 2004 Tux (http://tux.a4.cz/), Nigel McNie (http://qbnz.com/highlighter)
+ * matlab.php
+ * -----------
+ * Author: Florian Knorn (floz@gmx.de)
+ * Copyright: (c) 2004 Florian Knorn (http://www.florian-knorn.com)
  * Release Version: 1.0.7.4
- * CVS Revision Version: $Revision: 1.2 $
- * Date Started: 2004/07/29
+ * CVS Revision Version: $Revision: 1.1 $
+ * Date Started: 2005/02/09
  * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
- * Ada language file for GeSHi.
- * Words are from SciTe configuration file
+ * Matlab M-file language file for GeSHi. 
  *
  * CHANGES
  * -------
- * 2004/11/27 (1.0.2)
- *  -  Added support for multiple object splitters
- * 2004/10/27 (1.0.1)
- *   -  Removed apostrophe as string delimiter
- *   -  Added URL support
- * 2004/08/05 (1.0.0)
+ * 2005/05/07 (1.0.0)
  *   -  First Release
  *
- * TODO (updated 2004/11/27)
- * -------------------------
  *
  *************************************************************************************
  *
@@ -46,68 +38,48 @@
  ************************************************************************************/
 
 $language_data = array (
-	'LANG_NAME' => 'Ada',
-	'COMMENT_SINGLE' => array(1 => '--'),
-	'COMMENT_MULTI' => array('/*' => '*/'),
+	'LANG_NAME' => 'M',
+	'COMMENT_SINGLE' => array(1 => '%'),
+	'COMMENT_MULTI' => array(),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
-	'QUOTEMARKS' => array('"'),
-	'ESCAPE_CHAR' => '\\',
+	'QUOTEMARKS' => array("'"),
+	'ESCAPE_CHAR' => '',
 	'KEYWORDS' => array(
 		1 => array(
-			'begin', 'declare', 'do', 'else', 'elsif', 'exception', 'for', 'if',
-			'is', 'loop', 'while', 'then', 'is', 'end', 'select', 'case', 'while',  'until',
-			'goto', 'return'
+			'break', 'case', 'catch', 'continue', 'elseif', 'else', 'end', 'for', 
+			'function', 'global', 'if', 'otherwise', 'persistent', 'return', 
+			'switch', 'try', 'while','...'
 			),
-		2 => array(
-			'abs', 'and', 'mod', 'not', 'or', 'rem', 'xor'
-		  	),
-		3 => array(
-			'abort', 'abstract', 'accept', 'access', 'aliased', 'all', 'array', 'at', 'body',
-			'constant', 'delay', 'delta', 'digits', 'entry', 'exit',
-			'function', 'generic', 'in', 'limited', 'new', 'null', 'of', 'others', 'out', 'package', 'pragma',
-			'private', 'procedure', 'protected', 'raise', 'range', 'record', 'renames', 'requeue', 'reverse',
-			'separate', 'subtype', 'tagged', 'task', 'terminate', 'type', 'use', 'when', 'with'
-			)
 		),
-	'SYMBOLS' => array(
-		'(', ')'
+	'SYMBOLS' => array( 
+		'...' 
 		),
 	'CASE_SENSITIVE' => array(
 		GESHI_COMMENTS => true,
 		1 => false,
 		2 => false,
 		3 => false,
+		4 => false,
 		),
 	'STYLES' => array(
 		'KEYWORDS' => array(
-			1 => 'color: #00007f;',
-			2 => 'color: #0000ff;',
-			3 => 'color: #46aa03; font-weight:bold;',
-			),
-		'BRACKETS' => array(
-			0 => 'color: #66cc66;'
+			1 => 'color: #0000FF;',
 			),
 		'COMMENTS' => array(
-			1 => 'color: #adadad; font-style: italic;',
-			'MULTI' => 'color: #808080; font-style: italic;'
+			1 => 'color: #228B22;',
 			),
 		'ESCAPE_CHAR' => array(
-			0 => 'color: #000099; font-weight: bold;'
 			),
 		'BRACKETS' => array(
-			0 => 'color: #66cc66;'
 			),
 		'STRINGS' => array(
-			0 => 'color: #7f007f;'
+			0 => 'color: #A020F0;'
 			),
 		'NUMBERS' => array(
-			0 => 'color: #ff0000;'
 			),
 		'METHODS' => array(
-			1 => 'color: #202020;'
 			),
 		'SYMBOLS' => array(
-			0 => 'color: #66cc66;'
 			),
 		'REGEXPS' => array(
 			),
@@ -117,11 +89,13 @@ $language_data = array (
 	'URLS' => array(
 		1 => '',
 		2 => '',
-		3 => ''
+		3 => '',
+		4 => ''
 		),
 	'OOLANG' => true,
 	'OBJECT_SPLITTERS' => array(
-		1 => '.'
+		1 => '.',
+		2 => '::'
 		),
 	'REGEXPS' => array(
 		),

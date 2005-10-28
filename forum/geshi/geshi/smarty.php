@@ -4,10 +4,10 @@
  * ----------
  * Author: Alan Juden (alan@judenware.org)
  * Copyright: (c) 2004 Alan Juden, Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.6
- * CVS Revision Version: $Revision: 1.1 $
+ * Release Version: 1.0.7.4
+ * CVS Revision Version: $Revision: 1.2 $
  * Date Started: 2004/07/10
- * Last Modified: $Date: 2005-03-13 23:51:50 $
+ * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * Smarty template language file for GeSHi.
  *
@@ -49,7 +49,7 @@ $language_data = array (
 	'KEYWORDS' => array(
 		1 => array(
 			'$smarty', 'now', 'const', 'capture', 'config', 'section', 'foreach', 'template', 'version', 'ldelim', 'rdelim',
-			'config_load', 'foreach', 'foreachelse', 'include', 'include_php', 'insert', 'if', 'elseif', 'else', 'php',
+			'config_load', 'foreachelse', 'include', 'include_php', 'insert', 'if', 'elseif', 'else', 'php',
 			'sectionelse', 'clear_all_cache', 'clear_cache', 'is_cached', 'from', 'item'
 			),
 		2 => array(

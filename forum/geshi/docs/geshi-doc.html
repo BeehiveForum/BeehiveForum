@@ -143,18 +143,17 @@
 </head>
 <body>
 <h1 id="top">GeSHi Documentation</h1>
-<h5 style="text-align: center;">Version 1.0.6</h5>
-<pre>Author:          Nigel McNie (Oracle)
+<h5 style="text-align: center;">Version 1.0.7.4</h5>
+<pre>Author:          Nigel McNie
 Copyright:       &copy; Nigel McNie, 2004
-Email:           <a href="mailto:oracle.shinoda@gmail.com">oracle.shinoda@gmail.com</a>
-GeSHi Website:   <a href="http://qbnz.com/highlighter">http://qbnz.com/highlighter</a>
-Dev Blog:        <a href="http://qbnz.com/blog">http://qbnz.com/blog</a></pre>
+Email:           <a href="mailto:nigel@geshi.org">nigel@geshi.org</a>
+GeSHi Website:   <a href="http://qbnz.com/highlighter">http://qbnz.com/highlighter</a></pre>
 
 <p>This is the documentation for <acronym>GeSHi</acronym> - Generic Syntax Highlighter.
 The most modern version of this document is available on the web -
 go to <a href="http://qbnz.com/highlighter/documentation.php">http://qbnz.com/highlighter/documentation.php</a> to view it.</p>
 
-<p>Any comments, questions, confusing points? Please <a href="mailto:oracle.shinoda@gmail.com">contact me!</a> I
+<p>Any comments, questions, confusing points? Please <a href="mailto:nigel@geshi.org">contact me!</a> I
 need all the information I can get to make the use of GeSHi and
 everything related to it (including this documentation) a breeze.</p>
 
@@ -289,8 +288,12 @@ as you have a language file for almost any computer language - whether it be a
 scripting language, object orientated, markup or anything in between - GeSHi can
 highlight it! GeSHi is extremely customisable - the same source can be highlighted
 multiple times in multiple ways - the same source even with a different language.
-GeSHi outputs <acronym>XHTML</acronym> strict compliant code, and can make use of <acronym>CSS</acronym> to save on the amount
-of output. And what is the cost for all of this? You need <a href="http://www.php.net/">PHP</a>. That's all!
+GeSHi outputs <acronym>XHTML</acronym> strict compliant code<sup><a href="#xhtml-strict-note">*</a></sup>, and can
+make use of <acronym>CSS</acronym> to save on the amount of output. And what is the cost for all of this? You need
+<a href="http://www.php.net/">PHP</a>. That's all!
+
+<p style="font-size: x-small;"><a name="xhtml-strict-note" id="xhtml-strict-note"></a>Most of the time. Some languages do not output XHTML strict code,
+and using line numbers with the PRE header is not legal either. These problems will be fixed in 1.2.</p>
 
 <h4 id="features">1.1: Features</h4>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#about-geshi">Next</a> | <a href="#introduction">Previous</a></div>
@@ -300,7 +303,7 @@ of output. And what is the cost for all of this? You need <a href="http://www.ph
 <ul>
 	<li><strong>Programmed in PHP:</strong> GeSHi is coded entirely in PHP. Only one extension is used, the <acronym>pcre</acronym> extension,
 	which is typically included with any PHP distribution. This means that where ever you have PHP, you can have GeSHi!</li>
-	<li><strong>Support for many languages:</strong> Release 1.0.4 of GeSHi comes with over <em>30</em> languages, including <acronym>PHP</acronym>,
+	<li><strong>Support for many languages:</strong> Release 1.0.7.1 of GeSHi comes with over <em>40</em> languages, including <acronym>PHP</acronym>,
 	<acronym>HTML</acronym>, <acronym>CSS</acronym>, Java, C, Lisp, <acronym>XML</acronym>, Perl, Python, <acronym>ASM</acronym> and more!</li>
 	<li><strong><acronym>XHTML</acronym> compliant output:</strong> GeSHi produces XHTML compliant output, using stylesheets, so you need not worry about
 	GeSHi ruining your claims to perfection in the standards department ;)</li>
@@ -319,24 +322,30 @@ of output. And what is the cost for all of this? You need <a href="http://www.ph
 <p>GeSHi started as a mod for the <a href="http://www.phpbb.com/"><acronym>phpBB</acronym> forum system</a>, to enable highlighting of more
 languages than the available (which was 0 ;)). However, it quickly spawned into an
 entire project on its own. But now it has been released, work continues on a mod
-for phpBB - and hopefully for many forum systems, blogs and other web-based systems.</p>
+for phpBB<sup><a href="#phpbb-note">*</a></sup> - and hopefully for many forum systems, blogs and other web-based systems.</p>
+
+<p style="font-size: x-small;"><a name="phpbb-note" id="phpbb-note"></a>I am no longer working on this MOD, however if someone else wants to they
+can contact me for more information.</p>
 
 <p>Several systems are using GeSHi now, including:</p>
 
 <ul>
-	<li><a href="http://www.splitbrain.org/docuwiki/">Docuwiki</a> - An advanced wiki engine</li>
+	<li><a href="http://www.splitbrain.org/docuwiki/">Dokuwiki</a> - An advanced wiki engine</li>
 	<li><a href="http://gtk.php.net/">gtk.php.net</a> - Their manual uses GeSHi for syntax highlighting</li>
-	<li><a href="http://www.wordpress.org/">WordPress</a> - A powerful blogging system</li>
+	<li><a href="http://www.wordpress.org/">WordPress</a> - A powerful blogging system<sup><a href="#plugin-only">*</a></sup></li>
 	<li><a href="http://www.php-fusion.co.uk/">PHP-Fusion</a> - A constantly evovling CMS</li>
 	<li><a href="http://cypreess.dione.cc/sqlm">SQL Manager</a> - A Postgres DBAL</li>
 	<li><a href="http://www.mamboserver.com/">Mambo</a> - A popular open source CMS</li>
-	<li><a href="http://www.mediawiki.org/">MediaWiki</a> - A leader in Wikis</li>
-	<li><a href="http://www.tikiwiki.org/">TikiWiki</a> - A megapowerful Wiki/CMS, and one I personally use</li>
+	<li><a href="http://www.mediawiki.org/">MediaWiki</a> - A leader in Wikis<sup><a href="#plugin-only">*</a></sup></li>
+	<li><a href="http://www.tikiwiki.org/">TikiWiki</a> - A megapowerful Wiki/CMS</li>
+    <li><a href="http://www.tikipro.org/">TikiPro</a> - Another powerful Wiki based on Tikiwiki</li>
 	<li><a href="http://robloach.net/projects/phpscripts/rweb/">RWeb</a> - A site-building tool</li>
 </ul>
 
-<p>GeSHi is the work of me, <a href="http://qbnz.com/blog">Nigel McNie</a>. In previous versions I had supressed my real name, but things
-have changed and it doesn't matter any more ;). Others have helped with aspects of GeSHi
+<p style="font-size: x-small;"><a name="plugin-only" id="plugin-only">*</a> Available as plugin only. In addition, some of the other entries mentioned
+here may only have GeSHi available as a plugin.</p>
+
+<p>GeSHi is the work of me, <a href="mailto:nigel@geshi.org">Nigel McNie</a>.  Others have helped with aspects of GeSHi
 also, they're mentioned in the <a href="THANKS">THANKS</a> file.</p>
 
 <h4 id="credits">1.3: Credits</h4>
@@ -360,7 +369,7 @@ congratulations, a bug report or complaint, I don't care! I want to make this so
 the best it can be, and I need your help! You can contact me in the following ways:</p>
 
 <ul>
-	<li><strong>E-mail:</strong>  <a href="mailto:oracle.shinoda@gmail.com">oracle.shinoda@gmail.com</a></li>
+	<li><strong>E-mail:</strong>  <a href="mailto:nigel@geshi.org">nigel@geshi.org</a></li>
 	<li><strong>Forums:</strong>  <a href="http://sourceforge.net/forum?group_id=114997">Sourceforge.net Forums</a> or
 	<a href="http://qbnz.com/highlighter/">GeSHi home forums</a></li>
 </ul>
@@ -392,13 +401,9 @@ version.</p>
 
 <ul>
 	<li><strong><a href="http://www.php.net/">PHP</a></strong>. It's untested with anything other than 4.3.X. I hope to extend this range soon.
-	I see no reason why it won't work with any version of PHP above 4.1.0. <del>I'm also guessing
-	that GeSHi won't work with PHP5, but a new version will be made available soon that
-	runs with PHP5. <strong>Anyone with information about GeSHi on 4.1.X or 5.X.X - <a href="mailto:oracle.shinoda@gmail.com">Contact Me!</a></strong></del>
-	I now have confirmed reports of GeSHi working on PHP5 without problems, though at least one person is still reporting some unexplained
-	problem.</li>
-	<li><strong>Approximately 400 kilobytes of space</strong>. The actual script is small - around 65K - but most
-  	of the size comes from the large number of language files (over 25!). If you're pushed for space, make sure
+	I see no reason why it won't work with any version of PHP above 4.1.0.</li>
+	<li><strong>Approximately 700 kilobytes of space</strong>. The actual script is small - around 85K - but most
+  	of the size comes from the large number of language files (over 50!). If you're pushed for space, make sure
 	you don't upload to your server the <tt>docs/</tt> or <tt>contrib/</tt> directory, and you may want to leave
 	out any language files that don't take your fancy either.</li>
 </ul>
@@ -441,7 +446,7 @@ Winrar or similar for Windows.</p>
 <p>GeSHi is nothing more than a PHP class with related language support files.
 Those of you familiar with PHP can then guess how easy the installation will
 be: simply copy it into your include path somewhere. You can put it wherever
-you like in this include path. I reccommend that you put the language files
+you like in this include path. I recommend that you put the language files
 in a subdirectory of your include path too - perhaps the same subdirectory
 that geshi.php is in. <strong>Remember this path</strong> for later.</p>
 
@@ -457,7 +462,10 @@ http://mysite.com/myfolder/geshi.php</pre>
 <pre>http://mysite.com/myfolder/includes/geshi/[language files]
 http://mysite.com/myfolder/includes/geshi.php</pre>
 
-<p>Just remember the path to the language files for later.</p>
+<div class="caution"><div class="caution-header">Caution:</div><p>When using GeSHi on a live site, the only directory
+required is the <tt>geshi/</tt> subdirectory. Both <tt>contrib/</tt> and <tt>docs/</tt> are worthless, and furthermore,
+as some people discovered, one of the files in contrib had a security hole (fixed as of 1.0.7.3). I suggest you delete
+these directories from any live site they are on.</p></div>
 
 <h4 id="basic-usage">2.3: Basic Usage</h4>
 <div class="nav"><a href="#top">Top</a> | <a href="#contents">Contents</a> | <a href="#advanced-features">Next</a> | <a href="#installation">Previous</a></div>
@@ -484,13 +492,11 @@ for ( $i = 1; $i &lt; $foo; $i++ )<br />
 }'</span>;<br />
 <span style="color: #0000ff;">$language</span> = <span style="color: #ff0000;">'php'</span>;<br />
 
-<span style="color: #0000ff;">$path</span> = <span style="color: #ff0000;">'includes/geshi'</span>;<br />
-<br />
 <span style="color: #808080; font-style: italic;">//</span><br />
 <span style="color: #808080; font-style: italic;">// Create a GeSHi object</span><br />
 <span style="color: #808080; font-style: italic;">//</span><br />
 
-<span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #0000ff;">$language</span>, <span style="color: #0000ff;">$path</span><span style="color: #66cc66;">&#41;</span>;<br />
+<span style="color: #0000ff;">$geshi</span> =&amp; <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #0000ff;">$language</span><span style="color: #66cc66;">&#41;</span>;<br />
 <br />
 <span style="color: #808080; font-style: italic;">//</span><br />
 
@@ -505,11 +511,10 @@ for ( $i = 1; $i &lt; $foo; $i++ )<br />
 
 <p>This line includes the GeSHi class for use</p>
 
-<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #0000ff;">$language</span>, <span style="color: #0000ff;">$path</span><span style="color: #66cc66;">&#41;</span>;</code>
+<code><span style="color: #0000ff;">$geshi</span> = <span style="color: #000000; font-weight: bold;">new</span> GeSHi<span style="color: #66cc66;">&#40;</span><span style="color: #0000ff;">$source</span>, <span style="color: #0000ff;">$language</span><span style="color: #66cc66;">&#41;</span>;</code>
 
 <p>This line creates a new GeSHi object, holding the source and the language
-you want to use for highlighting, and specifying the path to the language
-files.</p>
+you want to use for highlighting.</p>
 
 <code><a href="http://www.php.net/echo"><span style="color: #000066;">echo</span></a> <span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">parse_code</span><span style="color: #66cc66;">&#40;</span><span style="color: #66cc66;">&#41;</span>;</code>
 
@@ -592,17 +597,22 @@ The highlighter demo at the <a href="http://qbnz.com/highlighter/demo.php">GeSHi
 function <tt>geshi_highlight</tt>), partly because of the inconsistent and unexpected ways stuff in <tt>&lt;code&gt;</tt>
 tags is highlighted. Besides, <tt>&lt;code&gt;</tt> is an inline element. But this may become an option in future versions.</p>
 
+<p>As of GeSHi 1.0.7.2 there is a new header type, that specifies that the code should not be wrapped in
+anything at all.</p>
+
 <p>To change/set the header to use, you call the <strong><tt>set_header_type()</tt></strong> method:</p>
 
 <code><span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_DIV<span style="color: #66cc66;">&#41;</span>;<br />
 <span style="color: #808080; font-style: italic;">// or...</span><br />
-<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_PRE<span style="color: #66cc66;">&#41;</span>;</code>
+<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_PRE<span style="color: #66cc66;">&#41;</span>;
+<span style="color: #808080; font-style: italic;">// or...</span><br />
+<span style="color: #0000ff;">$geshi</span>-&gt;<span style="color: #006600;">set_header_type</span><span style="color: #66cc66;">&#40;</span>GESHI_HEADER_NONE<span style="color: #66cc66;">&#41;</span>;</code>
 
-<p>Those are the only two arguments you should pass to set_header_type. Passing anything
+<p>Those are the only three arguments you should pass to set_header_type. Passing anything
 else may cause inconsistencies in what is used as the Code Container (although it
 *should* simply use a <tt>&lt;pre&gt;</tt>). Better not to risk it.</p>
 
-<div class="note"><div class="note-header">Note:</div><p>GESHI_HEADER_DIV and GESHI_HEADER_PRE are <em>constants</em>, so don't put them
+<div class="note"><div class="note-header">Note:</div><p>GESHI_HEADER_DIV, GESHI_HEADER_PRE and GESHI_HEADER_NONE are <em>constants</em>, so don't put them
 in strings!</p></div>
 
 <div class="caution"><div class="caution-header">Caution:</div><p>The default styles for the <tt>&lt;pre&gt;</tt> and <tt>&lt;div&gt;</tt> <em>will
@@ -1739,7 +1749,7 @@ PHP.</p>
 <span style="color: #808080; font-style: italic;">/*************************************************************************************
  * php.php
  * --------
- * Author: Nigel McNie (oracle.shinoda@gmail.com)
+ * Author: Nigel McNie (nigel@geshi.org)
  * Copyright: (c) 2004 Nigel McNie (http://qbnz.com/highlighter/)
  * Release Version: 1.0.2
  * CVS Revision Version: $<!---->Revision$
@@ -2123,9 +2133,9 @@ result.</p>
  * Author: &lt;name&gt; (&lt;e-mail address&gt;)
  * Copyright: (c) 2004 &lt;name&gt; (&lt;website URL&gt;)
  * Release Version: 1.0.0
- * CVS Revision Version: $Revision: 1.1 $
+ * CVS Revision Version: $Revision: 1.2 $
  * Date Started: &lt;date started&gt;
- * Last Modified: $Date: 2005-03-13 23:51:50 $
+ * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * &lt;name-of-language&gt; language file for GeSHi.
  *
@@ -2189,7 +2199,7 @@ else *must* remain the same!</strong></p>
 	it with the date of the GeSHi release that it is first added to.</li>
 </ul>
 
-<p>Everything should remain the same, including <tt>$Revision: 1.1 $</tt> and <tt>$Date: 2005-03-13 23:51:50 $</tt> (I know these may
+<p>Everything should remain the same, including <tt>$Revision: 1.2 $</tt> and <tt>$Date: 2005-10-28 17:37:16 $</tt> (I know these may
 look funny but they have their purpose for those of you who don't know about CVS).</p>
 
 <p><strong>Also:</strong> I'm not sure about the copyright on a new language file. I'm not a lawyer, could
@@ -2639,7 +2649,7 @@ same ^_^ (though I can't say the same for language files!)</p>
 <p>Anyway, enough blather from me. Get GeSHi working for you already! :D</p>
 
 <pre>Nigel McNie
-<a href="mailto:oracle.shinoda@gmail.com">oracle.shinoda@gmail.com</a>
+<a href="mailto:nigel@geshi.org">nigel@geshi.org</a>
 <a href="http://qbnz.com/highlighter">http://qbnz.com/highlighter</a></pre>
 
 </body>

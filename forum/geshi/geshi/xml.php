@@ -4,10 +4,10 @@
  * -------
  * Author: Nigel McNie (oracle.shinoda@gmail.com)
  * Copyright: (c) 2004 Nigel McNie (http://qbnz.com/highlighter/)
- * Release Version: 1.0.6
- * CVS Revision Version: $Revision: 1.1 $
+ * Release Version: 1.0.7.4
+ * CVS Revision Version: $Revision: 1.2 $
  * Date Started: 2004/09/01
- * Last Modified: $Date: 2005-03-13 23:51:50 $
+ * Last Modified: $Date: 2005-10-28 17:37:16 $
  *
  * XML language file for GeSHi. Based on the idea/file by Christian Weiske
  *
@@ -43,7 +43,7 @@
  ************************************************************************************/
 
 $language_data = array (
-	'LANG_NAME' => 'HTML',
+	'LANG_NAME' => 'XML',
 	'COMMENT_SINGLE' => array(),
 	'COMMENT_MULTI' => array('<!--' => '-->'),
 	'CASE_KEYWORDS' => GESHI_CAPS_NO_CHANGE,
@@ -105,7 +105,7 @@ $language_data = array (
 			GESHI_AFTER => '\\4'
 			),
 		1 => array(
-			GESHI_SEARCH => '(&lt;/?[a-z0-9]*(&gt;)?)',
+			GESHI_SEARCH => '(&lt;/?[a-z0-9_]*(&gt;)?)',
 			GESHI_REPLACE => '\\1',
 			GESHI_MODIFIERS => 'i',
 			GESHI_BEFORE => '',

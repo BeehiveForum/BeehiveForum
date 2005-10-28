@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.115 2005-09-06 17:34:50 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.116 2005-10-28 17:31:59 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -75,7 +75,16 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
     $fix_html_quote_text = 'quote:';
     $fix_html_spoiler_text = 'spoiler:';
 
-    global $code_highlighter;
+    $geshi_path = "./geshi/geshi";
+
+    $code_highlighter = new GeSHi("", "", $geshi_path);
+
+    $code_highlighter->set_link_target("_blank");
+    $code_highlighter->set_encoding("UTF-8");
+
+    // reset these to overcome bug(?) in GeSHi when switching languages
+    $code_highlighter->error = false;
+    $code_highlighter->strict_mode = false;
 
     $ret_text = '';
 
@@ -150,10 +159,6 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 
                                         $html_parts[$j] = "/pre";
 
-                                        // reset these to overcome bug(?) in GeSHi when switching languages
-                                        $code_highlighter->error = false;
-                                        $code_highlighter->strict_mode = false;
-
                                         $code_highlighter->set_source($tmpcode);
 
                                         $lang_geshi = $code_highlighter->get_language_name_from_extension(strtolower($lang));
@@ -164,8 +169,12 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
                                             $code_highlighter->set_language(strtolower($lang));
                                         }
 
+                                        set_error_handler("geshi_error_handler");
+
                                         $tmpcode = $code_highlighter->parse_code();
                                         $tmpcode = preg_replace("/<\/?pre( [^>]*)?>/", "", $tmpcode);
+
+                                        restore_error_handler();
 
                                         array_splice($html_parts, $i+1, $j-$i-1, $tmpcode);
 

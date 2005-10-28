@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.146 2005-10-20 22:08:15 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.147 2005-10-28 20:32:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,7 +52,7 @@ function search_execute($argarray, &$error)
 
     // Ensure the bare minimum of variables are set
 
-    if (!isset($argarray['method']) || !is_numeric($argarray['method'])) $argarray['method'] = 1;
+    if (!isset($argarray['method']) || !is_numeric($argarray['method'])) $argarray['method'] = 2;
     if (!isset($argarray['date_from']) || !is_numeric($argarray['date_from'])) $argarray['date_from'] = 7;
     if (!isset($argarray['date_to']) || !is_numeric($argarray['date_to'])) $argarray['date_to'] = 2;
     if (!isset($argarray['group_by_thread']) || !is_numeric($argarray['group_by_thread'])) $argarray['group_by_thread'] = 0;
@@ -73,7 +73,7 @@ function search_execute($argarray, &$error)
     // Base query parts - the same for all seraches
 
     $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-    $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED) SELECT $uid, ";
+    $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE) SELECT $uid, ";
     $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
     $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED ";
 
@@ -91,6 +91,10 @@ function search_execute($argarray, &$error)
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $peer_where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+
+    // The Fulltext search
+
+    $having_sql = "HAVING RELEVANCE > 0.2";
 
     // Get available folders
 
@@ -169,11 +173,19 @@ function search_execute($argarray, &$error)
 
             if ($argarray['method'] == 1) { // AND
 
+                $select_sql.= ", MATCH(POST_CONTENT.CONTENT) AGAINST('+";
+                $select_sql.= implode('+', $keywords_array);
+                $select_sql.= "'$bool_mode) AS RELEVANCE ";
+
                 $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('+";
                 $where_sql.= implode('+', $keywords_array);
                 $where_sql.= "'$bool_mode) ";
 
             }elseif ($argarray['method'] == 2) { // OR
+
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('";
+                $select_sql.= implode(' ', $keywords_array);
+                $select_sql.= "'$bool_mode) AS RELEVANCE ";
 
                 $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('";
                 $where_sql.= implode(' ', $keywords_array);
@@ -206,8 +218,8 @@ function search_execute($argarray, &$error)
 
     // Build the final query.
 
-    $sql = "$select_sql $from_sql $join_sql $peer_join_sql $where_sql ";
-    $sql.= "$peer_where_sql $group_sql";
+    $sql = "$select_sql $from_sql $join_sql $peer_join_sql ";
+    $sql.= "$where_sql $peer_where_sql $group_sql $having_sql";
 
     // If the user has performed a search within the last x minutes bail out
 

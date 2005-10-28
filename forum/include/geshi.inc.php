@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: geshi.inc.php,v 1.7 2005-10-16 10:55:15 decoyduck Exp $ */
+/* $Id: geshi.inc.php,v 1.8 2005-10-28 17:31:59 decoyduck Exp $ */
 
 // GeSHi is a generic syntax highlighter under the General Public License
 // http://qbnz.com/highlighter/
@@ -41,44 +41,35 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 
+function geshi_error_handler () {
+    return;
+}
+
 if (file_exists("./geshi/geshi.php")) {
 
     include_once("./geshi/geshi.php");
 
-    $path = "geshi/geshi";
-
-    $code_highlighter = new GeSHi("", "", $path);
-    $code_highlighter->set_link_target("_blank");
-    $code_highlighter->set_encoding("UTF-8");
-
-    /* To save speed/bandwidth, several highlighting features can be disabled/limited.
-    See: http://qbnz.com/highlighter/geshi-doc.html#disabling-lexics
-
-    $code_highlighter->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
-    $code_highlighter->set_line_style('background: #555555;', true);
-
-    $code_highlighter->set_keyword_group_highlighting($group, $flag);
-    $code_highlighter->set_comments_highlighting($group, $flag);
-    $code_highlighter->set_regexps_highlighting($regexp, $flag);
-
-    $code_highlighter->set_escape_characters_highlighting($flag);
-    $code_highlighter->set_symbols_highlighting($flag);
-    $code_highlighter->set_strings_highlighting($flag);
-    $code_highlighter->set_numbers_highlighting($flag);
-    $code_highlighter->set_methods_highlighting($flag);
-    */
-
 }else {
 
-    class fake_geshi {
+    class GeSHi {
 
-        var $source = '';
+        var $source;
+        var $target;
 
         // these don't get used but need to be set because of a bug in GeSHi
         var $error = false;
         var $strict_mode = false;
 
-        function fake_geshi() {
+        function GeSHi() {
+            $this->source = '';
+            $this->target = '';
+        }
+
+        function set_encoding($encoding) {
+            return;
+        }
+
+        function set_link_target() {
             return;
         }
 
@@ -98,8 +89,6 @@ if (file_exists("./geshi/geshi.php")) {
             return;
         }
     }
-
-    $code_highlighter = new fake_geshi();
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.125 2005-10-22 12:13:59 decoyduck Exp $ */
+/* $Id: search.php,v 1.126 2005-10-28 20:32:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -313,10 +313,15 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                  <td width=\"40%\">&nbsp;{$lang['keywords']}:</td>\n";
     echo "                  <td>", form_input_text("search_string", "", 32), "&nbsp;</td>\n";
     echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td width=\"40%\">&nbsp;</td>\n";
-    echo "                  <td>", form_dropdown_array("method", range(1, 2), array($lang['containingallwords'], $lang['containinganywords']), 1), "&nbsp;</td>\n";
-    echo "                </tr>\n";
+
+    if (db_fetch_mysql_version() > 40010) {
+
+        echo "                <tr>\n";
+        echo "                  <td width=\"40%\">&nbsp;</td>\n";
+        echo "                  <td>", form_dropdown_array("method", range(1, 2), array($lang['containingallwords'], $lang['containinganywords']), 1), "&nbsp;</td>\n";
+        echo "                </tr>\n";
+    }
+
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>&nbsp;</td>\n";

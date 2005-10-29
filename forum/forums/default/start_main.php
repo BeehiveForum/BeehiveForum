@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.12 2005-10-20 20:49:36 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.13 2005-10-29 17:53:43 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -120,24 +120,7 @@ if (@$dir = opendir($images_dir)) {
 
 sort($images_array);
 
-// Check the URL parameters for a specific ID
-
-if (isset($HTTP_GET_VARS['id']) && is_numeric($HTTP_GET_VARS['id'])) {
-    if (isset($images_array[$HTTP_GET_VARS['id']])) {
-        $id = $HTTP_GET_VARS['id'];
-    }
-}
-
-// If we don't have an ID generate a random one
-
-if (!isset($id) && sizeof($images_array) > 0) {
-    srand((double)microtime() * 1000000);
-    $id = rand(0, sizeof($images_array) - 1);
-}
-
-// Get the properties of the random/selected image.
-
-list($width, $height, $type, $html) = @getimagesize("{$images_dir}/{$images_array[$id]}");
+// Draw the HTML header
 
 html_draw_top('openprofile.js');
 
@@ -163,14 +146,12 @@ if (isset($_GET['upload'])) {
     echo "<div align=\"center\">\n";
     echo "<table border=\"0\" cellpadding=\"0\" cellspacing=\"10\" width=\"500\">\n";
 
-    for ($i = 0; $i < sizeof($images_array); $i++) {
-
-        list($width, $height, $type, $html) = @getimagesize($images_dir.$images_array[$i]);
+    foreach($images_array as $key => $image) {
 
         echo "  <tr>\n";
         echo "    <td align=\"center\">\n";
-        echo "      <p><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('{$images_array[$i]}', '$webtag')\"><img src=\"{$images_dir}/{$images_array[$i]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$i]), "\" title=\"", formatname($images_array[$i]), "\" /></a></p>\n";
-        echo "      <p class=\"bodytext\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('{$images_array[$id]}', '$webtag')\">", formatname($images_array[$i]), "</a></p>\n";
+        echo "      <p><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></p>\n";
+        echo "      <p class=\"bodytext\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></p>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
     }
@@ -179,12 +160,14 @@ if (isset($_GET['upload'])) {
     echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload an image</a>]</div></p>\n";
     echo "</div>\n";
 
-}elseif (isset($id) && isset($images_array[$id])) {
+}elseif (is_array($images_array) && sizeof($images_array) > 0) {
+
+    $image = $images_array[array_rand($images_array)];
 
     echo "<h1>Some random person</h1>\n";
     echo "<div class=\"image\">\n";
-    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('{$images_array[$id]}', '$webtag')\"><img src=\"{$images_dir}/{$images_array[$id]}\" {$html} border=\"0\" alt=\"", formatname($images_array[$id]), "\" title=\"", formatname($images_array[$id]), "\" /></a></div></p>\n";
-    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('{$images_array[$id]}', '$webtag')\">", formatname($images_array[$id]), "</a></div></p>\n";
+    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
+    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></div></p>\n";
     echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload an image</a>]</div></p>\n";
     echo "</div>\n";
 

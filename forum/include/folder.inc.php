@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.102 2005-10-09 16:30:31 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.103 2005-10-30 12:39:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -536,10 +536,9 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
 
         $row = db_fetch_array($result);
 
-        if (isset($row['ALLOWED_TYPES']) && is_numeric($row['ALLOWED_TYPES'])) {
+        if (!isset($row['ALLOWED_TYPES']) || is_null($row['ALLOWED_TYPES'])) return true;
 
-            return $row['ALLOWED_TYPES'] ? ($row['ALLOWED_TYPES'] & $type) : true;
-        }
+        return $row['ALLOWED_TYPES'] ? ($row['ALLOWED_TYPES'] & $type) : true;
     }
 
     return false;

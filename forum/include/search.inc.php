@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.147 2005-10-28 20:32:09 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.148 2005-11-01 19:43:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,18 +70,6 @@ function search_execute($argarray, &$error)
     $sql = "DELETE FROM SEARCH_RESULTS WHERE UID = $uid";
     $result = db_query($sql, $db_search_execute);
 
-    // Base query parts - the same for all seraches
-
-    $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-    $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE) SELECT $uid, ";
-    $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
-    $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED ";
-
-    $from_sql = "FROM {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
-
-    $join_sql = "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
-    $join_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
-
     // Peer portion of the query for removing rows from ignored users - the same for all searches
 
     $peer_join_sql = "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
@@ -91,10 +79,6 @@ function search_execute($argarray, &$error)
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $peer_where_sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $peer_where_sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-
-    // The Fulltext search
-
-    $having_sql = "HAVING RELEVANCE > 0.2";
 
     // Get available folders
 
@@ -118,6 +102,25 @@ function search_execute($argarray, &$error)
     if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
 
         if ($user_uid = user_get_uid($argarray['username'])) {
+
+            // Base query slightly different if you're not searching by keywords
+
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED) SELECT $uid, $forum_fid, ";
+            $select_sql.= "THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, ";
+            $select_sql.= "POST.TO_UID, POST.CREATED ";
+
+            // FROM query uses POST table if we're not using keyword searches.
+
+            $from_sql = "FROM {$table_data['PREFIX']}POST POST ";
+
+            // Join to the THREAD table for the TID
+
+            $join_sql = "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
+
+            // Don't need a HAVING clause if we're not using MATCH(..) AGAINST(..)
+
+            $having_sql = "";
 
             if ($argarray['user_include'] == 1) {
 
@@ -167,14 +170,24 @@ function search_execute($argarray, &$error)
 
         if ($keyword_count > 0) {
 
+            $from_sql = "FROM {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
+
+            $join_sql = "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
+            $join_sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
+
+            $having_sql = "HAVING RELEVANCE > 0.2";
+
             // Include the keyword matching portion of the where clause.
 
             $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
 
             if ($argarray['method'] == 1) { // AND
 
-                $select_sql.= ", MATCH(POST_CONTENT.CONTENT) AGAINST('+";
-                $select_sql.= implode('+', $keywords_array);
+                $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE) SELECT $uid, ";
+                $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
+                $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('+". implode('+', $keywords_array);
                 $select_sql.= "'$bool_mode) AS RELEVANCE ";
 
                 $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('+";
@@ -183,8 +196,11 @@ function search_execute($argarray, &$error)
 
             }elseif ($argarray['method'] == 2) { // OR
 
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('";
-                $select_sql.= implode(' ', $keywords_array);
+                $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE) SELECT $uid, ";
+                $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
+                $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST(' ". implode(' ', $keywords_array);
                 $select_sql.= "'$bool_mode) AS RELEVANCE ";
 
                 $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('";
@@ -220,6 +236,8 @@ function search_execute($argarray, &$error)
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql ";
     $sql.= "$where_sql $peer_where_sql $group_sql $having_sql";
+
+    echo $sql;
 
     // If the user has performed a search within the last x minutes bail out
 

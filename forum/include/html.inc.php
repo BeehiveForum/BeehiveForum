@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.174 2005-10-20 20:49:36 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.175 2005-11-02 21:34:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -408,7 +408,10 @@ function html_draw_top()
         echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh_delay}; url=./{$meta_refresh_url}\" />\n";
     }
 
-    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
+    if (basename($_SERVER['PHP_SELF']) == "index.php") {
+        echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
+    }
+
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
 
     if ($stylesheet = html_get_style_sheet()) {

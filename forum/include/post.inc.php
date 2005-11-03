@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.138 2005-10-20 22:08:15 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.139 2005-11-03 09:32:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,6 +46,9 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
     $post_content = addslashes($content);
 
+    // IP Address can be hidden by calling this function with $hide_ipaddress
+    // set to true. Useful for automated functionality like the RSS Feeder.
+
     if ($hide_ipaddress === false) {
         if (!$ipaddress = get_ip_address()) $ipaddress = "";
     }else {
@@ -58,6 +61,13 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
     if (!is_numeric($tuid)) return -1;
 
     if (!$table_data = get_table_prefix()) return -1;
+
+    // Make sure the user's post count is up to date.
+
+    user_get_post_count($fuid);
+
+    // Check that the post needs approval. If the user is a moderator
+    // their posts are self-approved.
 
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fid, $fuid)) {
 
@@ -78,6 +88,9 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
         $new_pid = db_insert_id($db_post_create);
 
+        // Insert the post content. This query can take some time
+        // because of the FULLTEXT indexing used for seatching
+
         $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
@@ -85,16 +98,17 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
         if ($result) {
 
+            // Update the thread length so it matches the number of posts
+
             $sql = "UPDATE {$table_data['PREFIX']}THREAD SET LENGTH = $new_pid, MODIFIED = NOW() ";
             $sql.= "WHERE TID = $tid";
 
             $result = db_query($sql, $db_post_create);
 
-            if ($post_count = user_get_post_count($fuid)) {
+            // Update the user's post count.
 
-                $sql = "UPDATE USER_TRACK SET POST_COUNT = POST_COUNT + 1 WHERE UID = $fuid";
-                $result = db_query($sql, $db_post_create);
-            }
+            $sql = "UPDATE USER_TRACK SET LAST_POST = NOW(), POST_COUNT = POST_COUNT + 1 WHERE UID = $fuid";
+            $result = db_query($sql, $db_post_create);
 
         }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.197 2005-10-20 20:49:36 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.198 2005-11-06 11:45:11 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -425,24 +425,23 @@ function bh_update_visitor_log($uid)
         $user_prefs = user_get_prefs($uid);
 
         if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] > 0) {
+            $last_logon = 'NULL';
+        }else {
+            $last_logon = 'NOW()';
+        }
 
-            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NULL ";
-            $sql.= "WHERE UID = $uid";
+        $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE UID = $uid";
+        $result = db_query($sql, $db_bh_update_visitor_log);
 
-            if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
+        if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = $last_logon WHERE UID = $uid";
 
         }else {
 
-            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-            $sql.= "WHERE UID = $uid AND FORUM = $forum_fid";
-
-            $result = db_query($sql, $db_bh_update_visitor_log);
-
-            if (db_affected_rows($db_bh_update_visitor_log) > 0) return true;
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
+            $sql.= "VALUES ($forum_fid, $uid, $last_logon)";
         }
-
-        $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
-        $sql.= "VALUES ($forum_fid, $uid, NOW())";
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
 

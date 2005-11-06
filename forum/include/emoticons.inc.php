@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.52 2005-09-05 17:02:49 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.53 2005-11-06 11:45:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -76,8 +76,8 @@ class Emoticons
 
             }else {
 
-                if (@file_exists("./emoticons/$user_emots/definitions.php")) {
-                    include ("./emoticons/$user_emots/definitions.php");
+                if (@file_exists("./emoticons/{$this->user_emots}/definitions.php")) {
+                    include ("./emoticons/{$this->user_emots}/definitions.php");
                 }
             }
 

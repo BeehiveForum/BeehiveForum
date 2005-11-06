@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.49 2005-08-03 18:25:49 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.50 2005-11-06 18:09:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -140,7 +140,7 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
+    if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
         $dob['DAY']   = trim(_stripslashes($_POST['dob_day']));
         $dob['MONTH'] = trim(_stripslashes($_POST['dob_month']));

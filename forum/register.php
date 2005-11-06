@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.121 2005-09-04 14:47:12 decoyduck Exp $ */
+/* $Id: register.php,v 1.122 2005-11-06 18:09:48 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -248,7 +248,7 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
+    if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
         $new_user['DOB_DAY']   = trim(_stripslashes($_POST['dob_day']));
         $new_user['DOB_MONTH'] = trim(_stripslashes($_POST['dob_month']));

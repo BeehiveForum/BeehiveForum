@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.127 2005-11-09 20:55:58 decoyduck Exp $ */
+/* $Id: search.php,v 1.128 2005-11-09 21:25:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -186,12 +186,6 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
     $search_success = true;
     $offset = $_GET['offset'];
-
-    if (isset($_GET['search_string'])) {
-        $search_arguments['search_string'] = $_GET['search_string'];
-    }else {
-        $search_arguments['search_string'] = "";
-    }
 }
 
 if (isset($search_success) && $search_success === true && isset($offset)) {
@@ -200,13 +194,14 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
         html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
 
-        thread_list_draw_top(0);
+        thread_list_draw_top(19);
 
+        echo "<br />\n";
         echo "<h1>{$lang['searchresults']}</h1>\n";
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
 
         if ($offset >= 20) {
-            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;search_string={$search_arguments['search_string']}&amp;order_by=$order_by\">{$lang['prevpage']}</a>\n";
+            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;order_by=$order_by\">{$lang['prevpage']}</a>\n";
         }
 
         echo "<ol start=\"", $offset + 1, "\">\n";
@@ -264,13 +259,13 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
             if (strlen($message['CONTENT']) > 0) {
 
-                echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
+                echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
                 echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
                 echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
 
             }else {
 
-                echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_arguments['search_string'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+                echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
                 echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
             }
         }
@@ -278,7 +273,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
         echo "</ol>\n";
 
         if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
-            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;search_string={$search_arguments['search_string']}&amp;order_by=$order_by\">{$lang['findmore']}</a><br />\n";
+            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;order_by=$order_by\">{$lang['findmore']}</a><br />\n";
         }
 
     }else {
@@ -451,7 +446,6 @@ if (isset($search_success) && $search_success === true) {
     echo "      <form name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
     echo "        ", form_input_hidden("webtag", $webtag), "\n";
     echo "        ", form_input_hidden("offset", isset($offset) ? $offset : 0), "\n";
-    echo "        ", form_input_hidden("search_string", $search_arguments['search_string']), "\n";
     echo "        ", form_dropdown_array("order_by", range(1, 2), array($lang['newestfirst'], $lang['oldestfirst']), $order_by, false), "\n";
     echo "        ", form_submit("go",$lang['goexcmark']). "\n";
     echo "      </form>\n";

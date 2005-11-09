@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.186 2005-11-09 20:55:58 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.187 2005-11-09 21:25:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -262,9 +262,9 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql.= "USER_THREAD.LAST_READ,  USER_THREAD.INTEREST, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}POST POST ON (POST.TID = THREAD.TID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
-    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid), ";
-    $sql.= "{$table_data['PREFIX']}POST POST ";
+    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
     $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
@@ -1089,9 +1089,9 @@ function thread_list_draw_top($mode)
         $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
                         $lang['unreadtoday'],$lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
                         $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                        $lang['unreadstartedbyfriend'],$lang['startedbyme'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts']);
+                        $lang['unreadstartedbyfriend'],$lang['startedbyme'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts'],$lang['searchresults']);
 
-        echo form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\"");
+        echo form_dropdown_array("mode", range(0, sizeof($labels)  - 1), $labels, $mode, "onchange=\"submit()\"");
 
     }
 

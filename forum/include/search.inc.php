@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.149 2005-11-02 19:17:11 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.150 2005-11-09 21:25:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -183,29 +183,30 @@ function search_execute($argarray, &$error)
 
             if ($argarray['method'] == 1) { // AND
 
+                $search_string = implode(' ', $keywords_array);
+                $keywords_string = implode('+', $keywords_array);
+
                 $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE) SELECT $uid, ";
+                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE, KEYWORDS) SELECT $uid, ";
                 $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
                 $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('+". implode('+', $keywords_array);
-                $select_sql.= "'$bool_mode) AS RELEVANCE ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('+$keywords_string";
+                $select_sql.= "'$bool_mode) AS RELEVANCE, '$search_string'";
 
-                $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('+";
-                $where_sql.= implode('+', $keywords_array);
-                $where_sql.= "'$bool_mode) ";
+                $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('+$keywords_string'$bool_mode) ";
 
             }elseif ($argarray['method'] == 2) { // OR
 
+                $search_string = implode(' ', $keywords_array);
+
                 $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE) SELECT $uid, ";
+                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE, KEYWORDS) SELECT $uid, ";
                 $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
                 $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST(' ". implode(' ', $keywords_array);
-                $select_sql.= "'$bool_mode) AS RELEVANCE ";
+                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'";
+                $select_sql.= "'$bool_mode) AS RELEVANCE, '$search_string'";
 
-                $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('";
-                $where_sql.= implode(' ', $keywords_array);
-                $where_sql.= "'$bool_mode) ";
+                $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
             }
 
         }else {
@@ -296,13 +297,13 @@ function search_fetch_results($offset, $order_by)
 
         if ($order_by == 1) {
 
-            $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
+            $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, KEYWORDS, ";
             $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
             $sql.= "WHERE UID = $uid ORDER BY CREATED DESC LIMIT $offset, 20";
 
         }else {
 
-            $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, ";
+            $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, KEYWORDS, ";
             $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
             $sql.= "WHERE UID = $uid ORDER BY CREATED ASC LIMIT $offset, 20";
         }

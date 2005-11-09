@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-062.php,v 1.2 2005-10-29 10:47:31 benlumley Exp $ */
+/* $Id: upgrade-05-to-062.php,v 1.3 2005-11-09 21:30:00 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -259,67 +259,19 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE SEARCH_KEYWORDS (";
-$sql.= "  WID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  WORD VARCHAR(50) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY (WORD),";
-$sql.= "  KEY WORD_ID (WID)";
-$sql.= ") TYPE=MYISAM";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE SEARCH_MATCH (";
-$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  WID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PRIMARY KEY  (SID, WID)";
-$sql.= ") TYPE=MYISAM";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE SEARCH_POSTS (";
-$sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql = "CREATE TABLE SEARCH_RESULTS (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  CREATED DATETIME DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (SID),";
-$sql.= "  KEY TID (TID,PID),";
-$sql.= "  KEY FORUM (FORUM),";
-$sql.= "  KEY BY_UID (BY_UID),";
-$sql.= "  KEY FROM_UID (FROM_UID),";
-$sql.= "  KEY TO_UID (TO_UID),";
-$sql.= "  KEY CREATED (CREATED)";
-$sql.= ") TYPE=MYISAM";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE SEARCH_RESULTS (";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
-$sql.= "  PRIMARY KEY (UID, FORUM, TID, PID), ";
+$sql.= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+$sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  KEYWORDS TEXT NOT NULL,";
+$sql.= "  PRIMARY KEY  (UID,FORUM,TID,PID),";
 $sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 

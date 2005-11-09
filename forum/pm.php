@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.89 2005-06-26 14:28:16 decoyduck Exp $ */
+/* $Id: pm.php,v 1.90 2005-11-09 20:55:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -249,12 +249,12 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         }
 
         if ($mid == $message['MID']) {
-            echo "<img src=\"".style_image('current_thread.png')."\" align=\"middle\" title=\"{$lang['currentmessage']}\" alt=\"{$lang['currentmessage']}\" />";
+            echo "<img src=\"".style_image('current_thread.png')."\" title=\"{$lang['currentmessage']}\" alt=\"{$lang['currentmessage']}\" />";
         }else {
             if (($message['TYPE'] == PM_UNREAD)) {
-                echo "<img src=\"".style_image('pmunread.png')."\" align=\"middle\" title=\"{$lang['unreadmessage']}\" alt=\"{$lang['unreadmessage']}\" />";
+                echo "<img src=\"".style_image('pmunread.png')."\" title=\"{$lang['unreadmessage']}\" alt=\"{$lang['unreadmessage']}\" />";
             }else {
-                echo "<img src=\"".style_image('pmread.png')."\" align=\"middle\" title=\"{$lang['readmessage']}\" alt=\"{$lang['readmessage']}\" />";
+                echo "<img src=\"".style_image('pmread.png')."\" title=\"{$lang['readmessage']}\" alt=\"{$lang['readmessage']}\" />";
             }
         }
 
@@ -264,7 +264,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
 
         if (isset($message['AID']) && pm_has_attachments($message['AID'])) {
-            echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" align=\"middle\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
+            echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
         }
 
         if (($folder == PM_FOLDER_OUTBOX) && ($message['TYPE'] == PM_UNREAD)) {

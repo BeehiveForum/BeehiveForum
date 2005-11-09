@@ -546,7 +546,7 @@ A {
       border-left-width: 0px
 }
 
-.bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
+.bhinputtext, .bhtextarea, .bhselect,
 .logon_dropdown, .register_dropdown, .search_dropdown,
 .banned_dropdown, .links_dropdown, .admin_startpage_textarea,
 .dictionary_word_display, .dictionary_best_selection,
@@ -754,10 +754,6 @@ A {
     border: 1px solid #777777;
     padding: 5px;
     margin: 5px;
-}
-
-.install_dropdown{
-    width: 234px;
 }
 
 .logon_dropdown {

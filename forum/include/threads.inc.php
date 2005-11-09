@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.185 2005-10-04 12:07:33 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.186 2005-11-09 20:55:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1051,31 +1051,32 @@ function thread_list_draw_top($mode)
     echo "</script>\n\n";
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+    echo "    <td class=\"postbody\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+    echo "    <td class=\"postbody\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
     echo "  </tr>\n";
 
     if ($pm_new_count = pm_get_unread_count()) {
 
         echo "  <tr>\n";
-        echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmunread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
+        echo "    <td class=\"postbody\"><img src=\"", style_image('pmunread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a> <span class=\"pmnewcount\">[$pm_new_count {$lang['unread']}]</span></td>\n";
         echo "  </tr>\n";
 
     }else {
 
         echo "  <tr>\n";
-        echo "    <td class=\"postbody\" colspan=\"2\"><img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a></td>\n";
+        echo "    <td class=\"postbody\"><img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['pminbox']}\" title=\"{$lang['pminbox']}\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"main\">{$lang['pminbox']}</a></td>\n";
         echo "  </tr>\n";
     }
 
+    echo "</table>\n";
+    echo "<br />\n";
+    echo "<form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
+    echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td colspan=\"2\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td colspan=\"2\">\n";
-    echo "      <form name=\"f_mode\" method=\"get\" action=\"thread_list.php\">\n";
+    echo "    <td class=\"postbody\">";
+
     echo "        ", form_input_hidden("webtag", $webtag), "\n";
 
     if (bh_session_get_value('UID') == 0) {
@@ -1095,9 +1096,10 @@ function thread_list_draw_top($mode)
     }
 
     echo "        ", form_submit("go",$lang['goexcmark']), "\n";
-    echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</form>\n";
 }
 
 function thread_has_attachments($tid)

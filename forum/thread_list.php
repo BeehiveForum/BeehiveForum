@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.255 2005-10-02 12:27:08 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.256 2005-11-09 20:55:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -253,7 +253,6 @@ $folder_info = threads_get_folders();
 
 if (!$folder_info) {
 
-    echo "</table>\n";
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['couldnotretrievefolderinformation']}</h2>\n";
 
@@ -351,13 +350,10 @@ if (bh_session_get_value('UID') > 0) {
 // If no threads are returned, say something to that effect
 
 if (!$thread_info) {
-    echo "  <tr>\n";
-    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['nomessagesinthiscategory']} <a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td>&nbsp;</td>\n";
-    echo "  </tr>\n";
+    echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
 }
+
+echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
 if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prev50threads']}\" title=\"{$lang['prev50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></td></tr><tr><td>&nbsp;</td></tr>\n";
 
@@ -478,11 +474,11 @@ foreach ($folder_order as $key1 => $folder_number) {
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
 
                             }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
@@ -507,11 +503,11 @@ foreach ($folder_order as $key1 => $folder_number) {
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
 
                             }else {
@@ -532,11 +528,11 @@ foreach ($folder_order as $key1 => $folder_number) {
                                 if (!isset($first_thread) && isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('current_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
 
                                 }else {
 
-                                    echo "<img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" align=\"middle\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
+                                    echo "<img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['threadoptions']}\" title=\"{$lang['threadoptions']}\" border=\"0\" />";
                                 }
                             }
 
@@ -547,13 +543,13 @@ foreach ($folder_order as $key1 => $folder_number) {
                             echo "&nbsp;</td>\n";
                             echo "          <td valign=\"top\"><a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\" title=\"#{$thread['TID']} {$lang['startedby']} ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", apply_wordfilter($thread['TITLE']), "</a> ";
 
-                            if ($thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" align=\"middle\" /> ";
-                            if ($thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" align=\"middle\" /> ";
-                            if ($thread['POLL_FLAG'] == 'Y') echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" align=\"middle\" /></a> ";
-                            if ($thread['STICKY'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" align=\"middle\" /> ";
-                            if ($thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" align=\"middle\" /> ";
+                            if ($thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
+                            if ($thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
+                            if ($thread['POLL_FLAG'] == 'Y') echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
+                            if ($thread['STICKY'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
+                            if ($thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
 
-                            if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" align=\"middle\" /> ";
+                            if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
 
                             echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
                             echo "          <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";

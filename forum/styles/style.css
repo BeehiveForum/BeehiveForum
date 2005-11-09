@@ -538,7 +538,7 @@ a {
 .dictionary_change_to, .post_folder_dropdown,
 .thread_title, .post_to_others, .post_content,
 .signature_content, .to_uid_dropdown, .recipient_dropdown,
-.recent_user_dropdown, .user_in_thread_dropdown {
+.recent_user_dropdown, .user_in_thread_dropdown, .install_text {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -739,8 +739,12 @@ a {
     margin: 5px;
 }
 
-.install_dropdown {
-    width: 234px;
+.install_dropdown{
+    width: 250px;
+}
+
+.install_text {
+    width: 247px;
 }
 
 .logon_dropdown {

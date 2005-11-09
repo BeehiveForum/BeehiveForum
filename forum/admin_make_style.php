@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.84 2005-05-23 22:47:01 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.85 2005-11-09 20:55:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -571,7 +571,7 @@ echo "                <td class=\"threads\" style=\"background-color: #{$element
 echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "                    <tr>\n";
 echo "                      <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"16\">\n";
-echo "                        <img src=\"", style_image('current_thread.png'), "\" align=\"middle\" alt=\"{$lang['currentthread']}\" title=\"{$lang['currentthread']}\" />&nbsp;\n";
+echo "                        <img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['currentthread']}\" title=\"{$lang['currentthread']}\" />&nbsp;\n";
 echo "                      </td>\n";
 echo "                      <td valign=\"top\"><a href=\"javascript:void(0)\" class=\"threadname\" style=\"color: #", contrastFont($elements['threads']), "\">{$lang['welcome']}</a>&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />&nbsp;<span class=\"threadxnewofy\" style=\"color: #", contrastFont($elements['threads']), "\">[2]</span></td>\n";
 echo "                      <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\" style=\"color: #", contrastFont($elements['threads']), "\">16 Mar&nbsp;</span></td>\n";

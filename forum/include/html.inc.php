@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.176 2005-11-06 11:45:11 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.177 2005-11-09 20:55:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -143,22 +143,22 @@ function html_get_top_page()
     if ($user_style !== false) {
 
         if (@is_dir("./styles/$user_style") && @file_exists("./styles/$user_style/top.html")) {
-            return "styles/$user_style/top.html";
+            return "./styles/$user_style/top.html";
         }
 
         if (@is_dir("./forums/$webtag/styles/$user_style") && @file_exists("./forums/$webtag/styles/$user_style/top.html")) {
-            return "forums/$webtag/styles/$user_style/top.html";
+            return "./forums/$webtag/styles/$user_style/top.html";
         }
     }
 
     if ($webtag !== false) {
 
         if (@is_dir("./forums/$webtag") && @file_exists("./forums/$webtag/top.html")) {
-            return "forums/$webtag/top.html";
+            return "./forums/$webtag/top.html";
         }
     }
 
-    return "styles/top.html";
+    return "./styles/top.html";
 }
 
 function html_get_style_sheet()
@@ -173,24 +173,24 @@ function html_get_style_sheet()
 
     if ($user_style !== false) {
 
-        if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
-            return "styles/$user_style/style.css";
+        if (@is_dir("./styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
+            return "./styles/$user_style/style.css";
         }
 
-        if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
-            return "forums/$webtag/styles/$user_style/style.css";
+        if (@is_dir("./forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
+            return "./forums/$webtag/styles/$user_style/style.css";
         }
     }
 
     if ($webtag !== false) {
 
         if (@is_dir("./forums/$webtag") && @file_exists("./forums/$webtag/style.css")) {
-            return "forums/$webtag/style.css";
+            return "./forums/$webtag/style.css";
         }
     }
 
     if (@is_dir("./styles") && @file_exists("./styles/style.css")) {
-        return "styles/style.css";
+        return "./styles/style.css";
     }
 
     return false;

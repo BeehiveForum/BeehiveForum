@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.30 2005-10-26 17:48:48 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.31 2005-11-09 00:00:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -217,24 +217,10 @@ class dictionary {
     {
         $current_word = $this->get_current_word();
 
-        foreach($this->content_array as $key => $word) {
+        $content = $this->get_content();
 
-            if (strtolower($word) == strtolower($current_word)) {
-
-                if (strtolower($word) == $word) {
-                    $this->content_array[$key] = strtolower($change_to);
-                    continue;
-                }
-
-                if (ucfirst($word) == $word) {
-                    $this->content_array[$key] = ucfirst($change_to);
-                    continue;
-                }
-            }
-
-            $content = $this->get_content();
-            $this->prepare_content($content);
-        }
+        $content = str_replace($current_word, $change_to, $content);
+        $this->prepare_content($content);
     }
 
     function add_ignored_word($word)

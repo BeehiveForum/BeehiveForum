@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.139 2005-11-03 09:32:14 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.140 2005-11-10 20:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -471,16 +471,16 @@ function check_post_frequency()
 
     if ($minimum_post_frequency == 0) return true;
 
-    $search_stamp = time() - $minimum_post_frequency;
+    $sql = "SELECT UNIX_TIMESTAMP(LAST_POST) + $minimum_post_frequency, ";
+    $sql.= "UNIX_TIMESTAMP(NOW()) FROM USER_TRACK WHERE UID = '$uid'";
 
-    $sql = "SELECT UNIX_TIMESTAMP(LAST_POST) FROM USER_TRACK WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_post_frequency);
 
     if (db_num_rows($result) > 0) {
 
-        list($last_search_check) = db_fetch_array($result);
+        list($last_post_stamp, $current_timestamp) = db_fetch_array($result);
 
-        if (!is_numeric($last_search_check) || $last_search_check < $search_stamp) {
+        if (!is_numeric($last_post_stamp) || ($last_post_stamp + $minimum_post_frequency) < $current_timestamp) {
 
             $sql = "UPDATE USER_TRACK SET LAST_POST = NOW() WHERE UID = '$uid'";
             $result = db_query($sql, $db_check_post_frequency);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.151 2005-11-10 14:31:58 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.152 2005-11-10 20:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -618,16 +618,16 @@ function check_search_frequency()
 
     if ($search_min_frequency == 0) return true;
 
-    $search_stamp = time() - $search_min_frequency;
+    $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $minimum_post_frequency, ";
+    $sql.= "UNIX_TIMESTAMP(NOW()) FROM USER_TRACK WHERE UID = '$uid'";
 
-    $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) FROM USER_TRACK WHERE UID = '$uid'";
     $result = db_query($sql, $db_check_search_frequency);
 
     if (db_num_rows($result) > 0) {
 
-        list($last_search_check) = db_fetch_array($result);
+        list($last_search_stamp, $current_timestamp) = db_fetch_array($result);
 
-        if ($last_search_check < $search_stamp) {
+        if (!is_numeric($last_search_stamp) || $last_search_check < $current_timestamp) {
 
             $sql = "UPDATE USER_TRACK SET LAST_SEARCH = NOW() WHERE UID = '$uid'";
             $result = db_query($sql, $db_check_search_frequency);

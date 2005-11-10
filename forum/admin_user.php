@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.156 2005-08-22 15:14:31 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.157 2005-11-10 14:31:58 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -195,7 +195,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
     $t_linksmod    = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
     $t_ignoreadmin = (double) (isset($_POST['t_ignoreadmin']))? $_POST['t_ignoreadmin']: 0;
 
-    $new_user_perms = (double) $t_banned | $t_wormed | $t_pilloried | $t_globalmod | $t_linksmod | $t_ignoreadmin;
+    $new_user_perms = (double) $t_admintools | $t_banned | $t_wormed | $t_pilloried | $t_globalmod | $t_linksmod | $t_ignoreadmin;
 
     perm_update_user_permissions($uid, $new_user_perms);
 
@@ -228,16 +228,16 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
             if (!($new_global_user_perms & USER_PERM_FORUM_TOOLS)) {
 
                  $valid = false;
-                 echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
+                 echo "<h2>There must be at least 1 user with admin tools and forum tools access on all forums!</h2>\n";
             }
         }
 
-        if (perm_has_global_admin_access($uid) && $admin_tools_perm_count < 2) {
+        if ($valid && perm_has_global_admin_access($uid) && $admin_tools_perm_count < 2) {
 
             if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS)) {
 
                 $valid = false;
-                echo "<h2>There must be at least 1 user with Admin and Forum tools access!</h2>\n";
+                echo "<h2>There must be at least 1 user with admin tools and forum tools access on all forums!</h2>\n";
             }
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.303 2005-10-07 23:05:11 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.304 2005-11-10 14:31:58 decoyduck Exp $ */
 
 // International English language file
 
@@ -1300,7 +1300,8 @@ $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator
 
 $lang['searchresults'] = "Search Results";
 $lang['usernamenotfound'] = "The username you specified in the to or from field was not found.";
-$lang['notexttosearchfor'] = "You did not enter any search words or the words you entered were removed because they were too short or they appeared in the MySQL stop words list.";
+$lang['notexttosearchfor'] = "One or all of your search keywords were invalid. Search keywords must be no shorter than %d characters, no longer than %d characters and must not appear in the %s";
+$lang['mysqlstopwordlist'] = "MySQL stopword list";
 $lang['searchcriteria_1'] = "<b>Note:</b> Words under";
 $lang['searchcriteria_2'] = "characters long or those that appear in the MySQL FULLTEXT stop word list will be automatically removed.";
 $lang['foundzeromatches'] = "Found: 0 matches";

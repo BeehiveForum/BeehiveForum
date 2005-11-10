@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.257 2005-11-09 21:25:38 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.258 2005-11-10 14:31:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -357,6 +357,8 @@ if (bh_session_get_value('UID') > 0) {
 
 if (!$thread_info) {
     echo "<p>{$lang['nomessagesinthiscategory']} <a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">{$lang['clickhere']}</a> {$lang['forallthreads']}.</p>\n";
+}else {
+    echo "<br />\n";
 }
 
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";

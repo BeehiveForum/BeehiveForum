@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.80 2005-10-06 15:47:11 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.81 2005-11-10 14:31:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -337,28 +337,28 @@ function form_button($name, $value, $custom_html, $class="button")
 // containing names and values to be used for hidden form
 // fields. Multi-dimensional arrays will be ignored.
 
-function form_quick_button($href, $label, $var = false, $value = false, $target = "_self")
+function form_quick_button($href, $label, $var_name = false, $value = false, $target = "_self")
 {
     $webtag = get_webtag($webtag_search);
 
     $html = "<form name=\"f_quickbutton\" method=\"get\" action=\"$href\" target=\"$target\">";
     $html.= form_input_hidden("webtag", $webtag);
 
-    if ($var) {
+    if ($var_name !== false) {
 
-        if (is_array($var)) {
+        if (is_array($var_name)) {
 
-            for ($i = 0; $i < count($var); $i++) {
+            foreach($var_name as $key => $name) {
 
-                if (!is_array($var[$i])) {
+                if (is_array($value) && isset($value[$key])) {
 
-                    $html.= form_input_hidden($var[$i], $value[$i]);
+                    $html.= form_input_hidden($var_name[$key], $value[$key]);
                 }
             }
 
         }else {
 
-            $html.= form_input_hidden($var, $value);
+            $html.= form_input_hidden($var_name, $value);
         }
     }
 

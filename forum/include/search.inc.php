@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.150 2005-11-09 21:25:38 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.151 2005-11-10 14:31:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,7 +52,6 @@ function search_execute($argarray, &$error)
 
     // Ensure the bare minimum of variables are set
 
-    if (!isset($argarray['method']) || !is_numeric($argarray['method'])) $argarray['method'] = 2;
     if (!isset($argarray['date_from']) || !is_numeric($argarray['date_from'])) $argarray['date_from'] = 7;
     if (!isset($argarray['date_to']) || !is_numeric($argarray['date_to'])) $argarray['date_to'] = 2;
     if (!isset($argarray['group_by_thread']) || !is_numeric($argarray['group_by_thread'])) $argarray['group_by_thread'] = 0;
@@ -145,30 +144,48 @@ function search_execute($argarray, &$error)
 
     /// Keyword based search.
 
-    if (isset($argarray['search_string']) && strlen(trim($argarray['search_string'])) > 0) {
+    if (isset($argarray['search_string']) && strlen(trim(_stripslashes($argarray['search_string']))) > 0) {
+
+        $search_string = trim(_stripslashes($argarray['search_string']));
 
         // Filter the input so the user can't do anything dangerous with it
 
-        $argarray['search_string'] = str_replace("%", "", $argarray['search_string']);
-        $argarray['search_string'] = _htmlentities($argarray['search_string']);
+        $search_string = str_replace("%", "", $search_string);
 
-        // Remove any keywords which are under the minimum length.
+        // Split the search string into boolean parts and clean out
+        // the empty array values.
 
-        $keywords_array = explode(' ', trim($argarray['search_string']));
+        $keyword_match = "([\+|-]?[\w']+)|([\+|-]?[\"][\w'\s']+[\"])";
+
+        $keywords_array = preg_split("/$keyword_match/", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $keywords_array = preg_grep("/^ {0,}$/", $keywords_array, PREG_GREP_INVERT);
+
+        // Get the min and max word lengths that MySQL supports
+
+        search_get_word_lengths($min_length, $max_length);
+
+        // The number of boolean parts the user is searching for before
+        // we remove the bad ones.
+
+        $unfiltered_keyword_count = sizeof($keywords_array);
+
+        // Prepare the MySQL Full-Text stop word list
 
         array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
         $mysql_fulltext_stopwords = implode('$|^', $mysql_fulltext_stopwords);
 
-        $keywords_array = array_unique($keywords_array);
+        // Filter the boolean parts through the MySQl Full-Text stop word list
+        // and by checking individual words lengths.
 
-        search_get_word_lengths($min_length, $max_length);
+        $keywords_array = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/", $keywords_array);
+        $keywords_array = preg_grep("/^$mysql_fulltext_stopwords$/", $keywords_array, PREG_GREP_INVERT);
 
-        $keywords_array = preg_grep("/^[\w']{{$min_length},{$max_length}}$/", $keywords_array);
-        $keywords_array = preg_grep("/^[\d]+$|^$mysql_fulltext_stopwords$/", $keywords_array, PREG_GREP_INVERT);
+        // The number of boolean parts we're left with. If they're less
+        // than the number the user gave us we error out now.
 
-        $keyword_count = sizeof($keywords_array);
+        $filtered_keyword_count = sizeof($keywords_array);
 
-        if ($keyword_count > 0) {
+        if ($filtered_keyword_count > 0 && $filtered_keyword_count == $unfiltered_keyword_count) {
 
             $from_sql = "FROM {$table_data['PREFIX']}POST_CONTENT POST_CONTENT ";
 
@@ -181,33 +198,16 @@ function search_execute($argarray, &$error)
 
             $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
 
-            if ($argarray['method'] == 1) { // AND
+            $search_string = addslashes(implode(' ', $keywords_array));
 
-                $search_string = implode(' ', $keywords_array);
-                $keywords_string = implode('+', $keywords_array);
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE, KEYWORDS) SELECT $uid, ";
+            $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
+            $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
+            $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string";
+            $select_sql.= "'$bool_mode) AS RELEVANCE, '$search_string'";
 
-                $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE, KEYWORDS) SELECT $uid, ";
-                $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
-                $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('+$keywords_string";
-                $select_sql.= "'$bool_mode) AS RELEVANCE, '$search_string'";
-
-                $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('+$keywords_string'$bool_mode) ";
-
-            }elseif ($argarray['method'] == 2) { // OR
-
-                $search_string = implode(' ', $keywords_array);
-
-                $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-                $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE, KEYWORDS) SELECT $uid, ";
-                $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
-                $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
-                $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'";
-                $select_sql.= "'$bool_mode) AS RELEVANCE, '$search_string'";
-
-                $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
-            }
+            $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
 
         }else {
 

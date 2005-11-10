@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.128 2005-11-09 21:25:38 decoyduck Exp $ */
+/* $Id: search.php,v 1.129 2005-11-10 14:31:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -114,6 +114,47 @@ if (!$folder_dropdown = folder_search_dropdown()) {
     exit;
 }
 
+if (isset($_GET['show_stop_words'])) {
+
+    html_draw_top();
+
+    if (isset($_GET['close'])) {
+
+        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+        echo "  window.close();\n";
+        echo "</script>\n";
+
+        html_draw_bottom();
+        exit;
+    }
+
+    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
+
+    echo "<h1>{$lang['mysqlstopwordlist']}</h1>\n";
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"540\">\n";
+    echo "  <tr>\n";
+
+    for ($i = 0; $i < sizeof($mysql_fulltext_stopwords); $i++) {
+
+        if ($i > 0 && (!($i % 4))) {
+
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+        }
+
+        echo "    <td class=\"postbody\">{$mysql_fulltext_stopwords[$i]}</td>\n";
+    }
+
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<div align=\"center\">\n";
+    echo form_quick_button("./search.php", $lang['close'], array("close", "show_stop_words"), array("close", "yes"), "_self");
+    echo "</div>\n";
+
+    html_draw_bottom();
+    exit;
+}
+
 search_get_word_lengths($min_length, $max_length);
 
 if (isset($_POST) && sizeof($_POST) > 0) {
@@ -164,6 +205,8 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
         echo "<h1>{$lang['error']}</h1>\n";
 
+        search_get_word_lengths($min_length, $max_length);
+
         $search_frequency = forum_get_setting('search_min_frequency', false, 0);
 
         switch($error) {
@@ -172,7 +215,8 @@ if (isset($_POST) && sizeof($_POST) > 0) {
                 echo "<p>{$lang['usernamenotfound']}</p>\n";
                 break;
             case SEARCH_NO_KEYWORDS:
-                echo "<p>{$lang['notexttosearchfor']}</p>\n";
+                $mysql_stop_word_link = "<a href=\"javascript:void(0);\" onclick=\"display_mysql_stopwords('$webtag')\">{$lang['mysqlstopwordlist']}</a>";
+                echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
                 break;
             case SEARCH_FREQUENCY_TOO_GREAT:
                 echo "<p>{$lang['searchfrequencyerror_1']} $search_frequency {$lang['searchfrequencyerror_2']}</p>\n";
@@ -196,7 +240,6 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
         thread_list_draw_top(19);
 
-        echo "<br />\n";
         echo "<h1>{$lang['searchresults']}</h1>\n";
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
 
@@ -307,15 +350,6 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                  <td width=\"40%\">&nbsp;{$lang['keywords']}:</td>\n";
     echo "                  <td>", form_input_text("search_string", "", 32), "&nbsp;</td>\n";
     echo "                </tr>\n";
-
-    if (db_fetch_mysql_version() > 40010) {
-
-        echo "                <tr>\n";
-        echo "                  <td width=\"40%\">&nbsp;</td>\n";
-        echo "                  <td>", form_dropdown_array("method", range(1, 2), array($lang['containingallwords'], $lang['containinganywords']), 1), "&nbsp;</td>\n";
-        echo "                </tr>\n";
-    }
-
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>&nbsp;</td>\n";
@@ -416,7 +450,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>{$lang['searchcriteria_1']} $min_length {$lang['searchcriteria_2']}</td>\n";
+    echo "      <td class=\"postbody\">{$lang['searchcriteria_1']} $min_length {$lang['searchcriteria_2']}</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";

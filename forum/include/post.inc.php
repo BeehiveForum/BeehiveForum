@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.140 2005-11-10 20:04:35 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.141 2005-11-11 08:52:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -480,7 +480,7 @@ function check_post_frequency()
 
         list($last_post_stamp, $current_timestamp) = db_fetch_array($result);
 
-        if (!is_numeric($last_post_stamp) || ($last_post_stamp + $minimum_post_frequency) < $current_timestamp) {
+        if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
             $sql = "UPDATE USER_TRACK SET LAST_POST = NOW() WHERE UID = '$uid'";
             $result = db_query($sql, $db_check_post_frequency);

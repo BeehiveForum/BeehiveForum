@@ -8,6 +8,10 @@ BODY		{
                 font-size: 10pt;
 		}
 
+img             {
+                vertical-align: text-top;
+                }
+
 frameset        {
                 border-style: none;
 		border-width: 0px;

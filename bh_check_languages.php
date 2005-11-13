@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.20 2005-08-31 14:55:18 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.21 2005-11-13 11:43:53 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -39,10 +39,7 @@ $master_lang = load_language_file("en.inc.php");
 
 $slave_langs = array("en-us.inc.php"    => load_language_file("en-us.inc.php"),
                      "x-hacker.inc.php" => load_language_file("x-hacker.inc.php"),
-                     "fr-ca.inc.php"    => load_language_file("fr-ca.inc.php"),
-                     "es.inc.php"       => load_language_file("es.inc.php"));
-
-echo "KEY:\n====\n\n- Unneeded lines which can be removed.\n+ Lines which are missing and need to be added.\n\n\n\n";
+                     "fr-ca.inc.php"    => load_language_file("fr-ca.inc.php"));
 
 foreach ($slave_langs as $lang => $strings) {
 
@@ -55,6 +52,14 @@ foreach ($slave_langs as $lang => $strings) {
 
             echo "+\$lang['$key'] = \"$value\";\n";
             $errors = true;
+
+        }else {
+
+            if ($strings[$key] == $value) {
+
+                echo "*\$lang['$key'] = \"$value\";\n";
+                $errors = true;
+            }
         }
     }
 

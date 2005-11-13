@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.16 2005-07-10 21:28:33 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.17 2005-11-13 11:43:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -180,7 +180,7 @@ if (isset($error_html) && strlen($error_html) > 0) {
 }
 
 echo "  <div align=\"center\">\n";
-echo "  <h2>{$lang['top20postersforperiod']} ", date("d/m/Y", $stats_start), " to ", date("d/m/Y", $stats_end), "</h2>\n";
+echo "  <h2>", sprintf($lang['top20postersforperiod'], date("d/m/Y", $stats_start), date("d/m/Y", $stats_end)), "</h2>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -213,15 +213,15 @@ if (sizeof($user_stats_array['user_stats']) > 0) {
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td colspan=\"4\">{$lang['nodata']}</td>\n";
+    echo "                  <td colspan=\"5\">{$lang['nodata']}</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
-echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                  <td colspan=\"5\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"4\" align=\"center\">{$lang['totalpostsforthisperiod']}: {$user_stats_array['post_count']}</td>\n";
+echo "                  <td colspan=\"5\" align=\"center\">{$lang['totalpostsforthisperiod']}: {$user_stats_array['post_count']}</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

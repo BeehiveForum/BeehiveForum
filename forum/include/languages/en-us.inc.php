@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.3 2005-11-10 14:31:58 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.4 2005-11-13 11:43:53 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -198,6 +198,8 @@ $lang['usage'] = "Usage";
 $lang['show'] = "Show";
 $lang['prefix'] = "Prefix";
 $lang['hint'] = "Hint";
+$lang['new'] = "New";
+$lang['reset'] = "Reset";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -442,7 +444,9 @@ $lang['sendemailnotificationonreply'] = "Email notification on reply to user";
 $lang['sendemailnotificationonpm'] = "Email notification on PM to user";
 $lang['showpopuponnewpm'] = "Show popup when receiving new PM";
 $lang['setautomatichighinterestonpost'] = "Set automatic high interest on post";
-$lang['top20postersforperiod'] = "Top 20 posters for period";
+$lang['top20postersforperiod'] = "Top 20 posters for period %s to %s";
+$lang['datefrom'] = "Date from:";
+$lang['dateto'] = "Date to:";
 $lang['postingstats'] = "Posting Stats";
 $lang['nodata'] = "No data";
 $lang['totalposts'] = "Total posts";

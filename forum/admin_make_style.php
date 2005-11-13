@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.85 2005-11-09 20:55:58 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.86 2005-11-13 11:43:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -409,7 +409,7 @@ if (($boxr < 150 && $boxg < 150 && $boxb < 150) || (($boxr + $boxg + $boxb) / 3)
 
 $r = rand(0, 1000);
 
-echo "                  <td class=\"subhead\" align=\"left\">New</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['new']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
@@ -422,7 +422,7 @@ echo "                <tr>\n";
 echo "                  <td class=\"posthead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">This Colour</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['thiscolour']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td class=\"posthead\" align=\"left\">\n";
@@ -470,7 +470,7 @@ echo "                          <td>", form_input_text("stylename", isset($_POST
 echo "                        </tr>\n";
 echo "                        <tr>\n";
 echo "                          <td class=\"posthead\">{$lang['styledesc']}:</td>\n";
-echo "                          <td>", form_input_text("styledesc", isset($_POST['styledesc']) ? $_POST['styledesc'] : '', 35, 20), "&nbsp;", form_submit('submit', 'Save'), "</td>\n";
+echo "                          <td>", form_input_text("styledesc", isset($_POST['styledesc']) ? $_POST['styledesc'] : '', 35, 20), "&nbsp;", form_submit('submit', $lang['save']), "</td>\n";
 echo "                        </tr>\n";
 echo "                      </table>\n";
 echo "                    </form>\n";

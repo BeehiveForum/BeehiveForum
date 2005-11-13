@@ -9,6 +9,10 @@ body {
     font-family: Verdana, Arial, Helvetica, sans-serif
 }
 
+img {
+    vertical-align: text-top;
+}
+
 frameset {
     border-style: none;
     margin:0;

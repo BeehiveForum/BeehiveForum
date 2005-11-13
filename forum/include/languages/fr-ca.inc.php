@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.17 2005-07-29 14:24:35 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.18 2005-11-13 11:43:53 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -198,6 +198,8 @@ $lang['usage'] = "Utilisation";
 $lang['show'] = "Montrer";
 $lang['prefix'] = "Préfixe";
 $lang['hint'] = "Indice";
+$lang['new'] = "Nouveau";
+$lang['reset'] = "Réinitialiser";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -221,13 +223,13 @@ $lang['newfolder'] = "Nouveau dossier";
 $lang['forumadmin'] = "Admin du forum";
 $lang['adminexp_1'] = "Utiliser le menu à gauche pour gérer votre forum.";
 $lang['adminexp_2'] = "<b>Utilisateurs</b> vous permet de fixer les droits d'accès d'utilisateurs individuels, y inclut la nomination d'éditeurs et le baîllonnement d'individus.";
-$lang['adminexp_3'] = "<b>Groupes d'utilisateurs</b> vous permet de créer des groupes d'utilisateurs pour assigner des droits d'accès à quelques ou plusieurs utilisateurs rapidement and facilement.";
+$lang['adminexp_3'] = "<b>Groupes d'utilisateurs</b> vous permet de créer des groupes d'utilisateurs pour assigner des droits d'accès à quelques ou plusieurs utilisateurs rapidement et facilement.";
 $lang['adminexp_4'] = "<b>Commandes de bannissement</b> permet le bannissement et la levée de bannissement d'adresses IP, noms d'utilisateurs, adresses courriel et pseudonymes.";
 $lang['adminexp_5'] = "<b>Dossiers</b> permet de créer, modifier et de supprimer les dossiers.";
 $lang['adminexp_6'] = "<b>Profiles</b> vous permet de personnaliser les détails qui apparaîssent dans les profiles d'utilisateurs.";
 $lang['adminexp_7'] = "<b>Options du forum</b> vous permet de personnaliser le nom du forum, l'apparence et plusieurs autres choses.";
 $lang['adminexp_8'] = "<b>Page de démarrage</b> permet la personnalisation de la page de démarrage de votre forum.";
-$lang['adminexp_9'] = "<b>Style du Forum</b> vous permet de créer des styles que vos membres pourront utiliser.";
+$lang['adminexp_9'] = "<b>Style du forum</b> vous permet de créer des styles que vos membres pourront utiliser.";
 $lang['adminexp_10'] = "<b>Filtrage de mots</b> vous permet de filtrer les mots dont vous voulez interdire l'usage sur votre forum.";
 $lang['adminexp_11'] = "<b>Statistiques de postage</b> produit un rapport des 10 posteurs les plus prolifiques durant une période de temps définie.";
 $lang['adminexp_12'] = "<b>Liens de Forums</b> permet la gestion de la liste déroulante verticale de liens dans la barre de navigation.";
@@ -246,6 +248,7 @@ $lang['stylecolourexp'] = "Cliquer sur une couleur pour créer un nouveau styles
 $lang['standardstyle'] = "Style Standard";
 $lang['rotelementstyle'] = "Style d'élément inversé";
 $lang['randstyle'] = "Style aléatoire";
+$lang['thiscolour'] = "Cette Couleur";
 $lang['enterhexcolour'] = "ou entrer une couleur hex pour servir de base pour un nouveau stylesheet.";
 $lang['savestyle'] = "Enregistrer ce style";
 $lang['styledesc'] = "Desc. de Style";
@@ -372,7 +375,7 @@ $lang['folderupdatedsuccessfully'] = "Mise à jour du dossier réussie";
 $lang['forumisnotrestricted'] = "Forum n'est pas limité";
 $lang['noforumidspecified'] = "Aucune identification de forum définie";
 $lang['groups'] = "Groupes";
-$lang['addnewgroup'] = "Ajouter un nouveau Groupe";
+$lang['addnewgroup'] = "Ajouter un nouveau groupe";
 $lang['nousergroups'] = "Aucun groupe d'utilisateur établit";
 $lang['suppliedgidisnotausergroup'] = "L'identification de group fournie n'est pas un groupe d'utilisateur";
 $lang['manageusergroups'] = "Organiser les groupes d'utilisateurs";
@@ -437,9 +440,9 @@ $lang['allowguestaccess'] = "Permettre l'accès aux visiteurs";
 $lang['searchenginespidering'] = "Balayage par moteurs de recherche";
 $lang['allowsearchenginespidering'] = "Permettre le balayage par moteurs de recherche";
 
-$lang['newuserregistrations'] = "Enregistrements de nouveau utilisateur";
+$lang['newuserregistrations'] = "Enregistrement de nouveaux utilisateurs";
 $lang['preventduplicateemailaddresses'] = "Empêcher adresses courriel en double";
-$lang['allownewuserregistrations'] = "Permettre l'enregistrement de nouveau utilisateurs";
+$lang['allownewuserregistrations'] = "Permettre l'enregistrement de nouveaux utilisateurs";
 $lang['requireemailconfirmation'] = "Exiger confirmation par courriel";
 $lang['usetextcaptcha'] = "Utiliser Captcha de texte";
 $lang['textcaptchadir'] = "Répertoire de captcha de texte";
@@ -458,7 +461,9 @@ $lang['sendemailnotificationonpm'] = "Avertissement par courriel sur MP à l'uti
 $lang['showpopuponnewpm'] = "Afficher fenêtre contextuelle sur réception de nouveau MP";
 $lang['setautomatichighinterestonpost'] = "Établir intérêt élevé automatique sur postage";
 
-$lang['top20postersforperiod'] = "Les 20 posteurs les plus prolifiques pour la période";
+$lang['top20postersforperiod'] = "Les 20 posteurs les plus prolifiques pour la période %s à %s";
+$lang['datefrom'] = "Dater du:";
+$lang['dateto'] = "Dater au:";
 $lang['postingstats'] = "Statistiques de postage";
 $lang['nodata'] = "Aucune donnée";
 $lang['totalposts'] = "Contributions totales";
@@ -631,7 +636,7 @@ $lang['forumsettingsupdated'] = "mise à jour des options de forum réussie";
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
 $lang['forum_settings_help_10'] = "<b>Délai d'attente pour modification de message</b> indique le temps en heures après avoir poster qu'un utilisateur a pour apporter des modifications à son message. Si établit à 0, il n'y a pas de limite.";
-$lang['forum_settings_help_11'] = "<b>Longueure maximale du message</b> indique le nombre maximale de caractères qui seront affichés dans un message. Si un message dépasse le nombre de caractères définis ici, il sera tronqué et un hyperlien sera ajouté au pied du message pour permettre aux utilisateurs de le lire au complet sur une page à part.";
+$lang['forum_settings_help_11'] = "<b>Longueure maximale du message</b> indique le nombre maximale de caractères qui seront affichés dans un message. Si un message dépasse le nombre de caractères défini ici, il sera tronqué et un hyperlien sera ajouté au pied du message pour permettre aux utilisateurs de le lire au complet sur une page à part.";
 $lang['forum_settings_help_12'] = "Si vous ne voulez pas que vos utilisateurs soient capables de créer des scrutins, vous pouvez désactiver cette option ci-haut.";
 $lang['forum_settings_help_13'] = "La section Liens de Beehive permet à vos utilisateurs de maintenir une liste de sites Web qu'ils visitent régulièrement et que les autres utilisateurs trouveront peut-être utiles. Les hyperliens peuvent être divisés en catégories par dossier et être commenter et coter. Afin de modérer la section liens, un utilisateur doit avoir le statut de modérateur globale.";
 $lang['forum_settings_help_14'] = "<b>Longueur de mot de cherche min</b> défini la longueur minimale d'un mot pour lequel on peut chercher. Les mots plus courts que la valeur spécifiée  seront automatiquement supprimés de la requête.";
@@ -653,7 +658,7 @@ $lang['forum_settings_help_29'] = "<b>Permettre enregistrement de nouveaux compt
 $lang['forum_settings_help_30'] = "<b>Activer intégration WikiWiki</b> fournit un support WikiWord dans les messages sur votre forum. Un mot WikiWord consiste de deux ou plusieurs mots concaténés avec capitales (qu'on appelle aussi CamelCase). Si vous écrivez un mot de cette façon, il sera converti automatiquement en hyperlien pointant à votre Wiki de choix.";
 $lang['forum_settings_help_31'] = "<b>Activer hyperliens rapides WikiWiki</b> active l'usage de liens étendues du style msg:1.1 et User:Logon qui créent des hyperliens au message spécifié / profile d'utilisateur de l'utilisateur spécifié.";
 $lang['forum_settings_help_32'] = "<b>Localisation WikiWiki</b> est utilisée pour spécifier le URI de votre WikiWiki. Lorsque vous entrer le URI, utilisez [WikiWord] pour indiquer où dans le URI le WikiWord devrait apparaître, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> hyperlierait vos WikiWords à <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
-$lang['forum_settings_help_33'] = "<b>Statut d'accès au forum</b> contrôle de quelles façons les utilisateurs peuvent accéder à votre forum.";
+$lang['forum_settings_help_33'] = "<b>Statut d'accès au forum</b> contrôle de quelle façon les utilisateurs peuvent accéder à votre forum.";
 $lang['forum_settings_help_34'] = "<b>Ouvert</b> permettra à tous les utilisateurs et visiteurs d'avoir accès à votre forum sans restrictions.";
 $lang['forum_settings_help_35'] = "<b>Fermé</b> empêche l'accès à tous les utilisateurs, à l'exception des Admins qui pourront toujours accéder au panneau admin.";
 $lang['forum_settings_help_36'] = "<b>Accès limité</b> permet d'établir une liste d'utilisateurs qui ont la permission d'accéder au forum.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.10 2005-07-23 22:53:35 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.11 2005-11-14 21:45:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,12 +46,10 @@ function styles_get_available()
 
                 if (@file_exists("./styles/$file/style.css")) {
 
-                    if (@$fp = fopen("./styles/$file/desc.txt", "r")) {
+                    if (@file_exists("./styles/$file/desc.txt")) {
 
-                        $content = fread($fp, filesize("./styles/$file/desc.txt"));
-                        $content = split("\n", $content);
-                        $styles[$file] = _htmlentities($content[0]);
-                        fclose($fp);
+                        $style_name = implode("", file("./styles/$file/desc.txt"));
+                        $styles[$file] = _htmlentities($style_name);
 
                     }else {
 
@@ -72,12 +70,10 @@ function styles_get_available()
 
                 if (@file_exists("./forums/$webtag/styles/$file/style.css")) {
 
-                    if (@$fp = fopen("./forums/$webtag/styles/$file/desc.txt", "r")) {
+                    if (@file_exists("./forums/$webtag/styles/$file/desc.txt")) {
 
-                        $content = fread($fp, filesize("./forums/$webtag/styles/$file/desc.txt"));
-                        $content = split("\n", $content);
-                        $styles[$file] = _htmlentities($content[0]);
-                        fclose($fp);
+                        $style_name = implode("", file("./forums/$webtag/styles/$file/desc.txt"));
+                        $styles[$file] = _htmlentities($style_name);
 
                     }else {
 

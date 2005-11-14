@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.257 2005-08-03 09:46:08 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.258 2005-11-14 21:45:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -463,70 +463,68 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     $db_user_update_prefs = db_connect();
 
+    $result_global = true;
+    $result_forum  = true;
+
     if (isset($global_prefs)) {
 
         // Is there an entry in USER_PREFS already for this user?
 
         $sql = "SELECT * FROM USER_PREFS WHERE UID = $uid";
-        $result = db_query($sql, $db_user_update_prefs);
+        $result_global = db_query($sql, $db_user_update_prefs);
 
-        if (db_num_rows($result) > 0) {
+        if (db_num_rows($result_global) > 0) {
 
             // previous entry which we will UPDATE
 
-            $values = array();
+            $values_array = array();
 
             foreach($global_prefs as $pref_name => $pref_setting) {
-                 if (user_check_pref($pref_name, $pref_setting)) {
-                     $values[] = "$pref_name = '$pref_setting'";
-                 }
+                 $values_array[] = "$pref_name = '$pref_setting'";
             }
 
-            $sql = "UPDATE USER_PREFS SET ";
-            $sql.= implode(", ", $values);
-            $sql.= " WHERE UID = $uid";
+            if (sizeof($values_array) > 0) {
+
+                $values = implode(", ", $values_array);
+
+                $sql = "UPDATE USER_PREFS SET $values  WHERE UID = $uid";
+                $result_global = db_query($sql, $db_user_update_prefs);
+            }
 
         }else {
 
             // no previous entry, construct an INSERT query
 
-            $sql  = "INSERT INTO USER_PREFS (UID,";
-            $sql .= implode(",",$global_pref_names);
-            $sql .= ") VALUES ('$uid'";
+            $values_array = array();
 
-            foreach ($global_pref_names as $pref_name) {
-
-                if (isset($global_prefs[$pref_name])) {
-
-                     $sql .= ", '{$global_prefs[$pref_name]}'";
-
-                }else {
-
-                     $sql .= ", ''";
-                }
+            foreach($global_prefs as $pref_name => $pref_setting) {
+                 $values_array[$pref_name] = "'$pref_setting'";
             }
 
-            $sql .= ")";
-        }
+            if (sizeof($values_array) > 0) {
 
-        $result_global = db_query($sql, $db_user_update_prefs);
+                $columns = implode(", ", array_keys($values_array));
+                $values = implode(", ", array_values($values_array));
+
+                $sql = "INSERT INTO USER_PREFS (UID, $columns) VALUES ('$uid', $values) ";
+                $result_global = db_query($sql, $db_user_update_prefs);
+            }
+        }
 
         // If a pref is set globally, we need to remove it from all the [webtag]_USER_PREFS tables too.
         // MySQL doesn't mind if a record for this user doesn't exist in a particular table.
 
-        $values = array();
+        $values_array = array();
 
         foreach($global_prefs as $pref_name => $pref_setting) {
-
             if (in_array($pref_name, $forum_pref_names)) {
-
-                $values[] = "$pref_name = ''";
+                $values_array[] = "$pref_name = ''";
             }
         }
 
-        if (count($values) > 0) {
+        if (sizeof($values_array) > 0) {
 
-            $values = implode(",",$values);
+            $values = implode(", ", $values_array);
             $webtags = forum_get_all_webtags();
 
             foreach($webtags as $webtag) {
@@ -535,59 +533,48 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 $result = db_query($sql, $db_user_update_prefs);
             }
         }
-
-    }else {
-
-        $result_global = true;
     }
 
     if (isset($forum_prefs) && $table_data = get_table_prefix()) {
 
         $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
-        $result = db_query($sql, $db_user_update_prefs);
+        $result_forum = db_query($sql, $db_user_update_prefs);
 
-        if (db_num_rows($result) > 0) {
+        if (db_num_rows($result_forum) > 0) {
 
             // previous entry which we will UPDATE
 
-            $values = array();
+            $values_array = array();
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
-
-                $values[] = "$pref_name = '$pref_setting'";
+                $values_array[] = "$pref_name = '$pref_setting'";
             }
 
-            $values = implode(",", $values);
-            $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = $uid";
+            if (sizeof($values_array) > 0) {
+
+                $values = implode(", ", $values_array);
+
+                $sql = "UPDATE {$table_data['PREFIX']}USER_PREFS SET $values WHERE UID = $uid";
+                $result_forum = db_query($sql, $db_user_update_prefs);
+            }
 
         }else {
 
             // no previous entry, construct an INSERT query
 
-            $sql  = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID,";
-            $sql .= implode(",", $forum_pref_names);
-            $sql .= ") VALUES ('$uid'";
-
-            foreach ($forum_pref_names as $pref_name) {
-
-                if (isset($forum_prefs[$pref_name])) {
-
-                    $sql .= ", '{$forum_prefs[$pref_name]}'";
-
-                }else {
-
-                    $sql .= ", ''";
-                }
+            foreach($global_prefs as $pref_name => $pref_setting) {
+                 $values_array[$pref_name] = "'$pref_setting'";
             }
 
-            $sql .= ")";
+            if (sizeof($values_array) > 0) {
+
+                $columns = implode(", ", array_keys($values_array));
+                $values = implode(", ", array_values($values_array));
+
+                $sql = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID, $columns) VALUES ('$uid', $values) ";
+                $result_forum = db_query($sql, $db_user_update_prefs);
+            }
         }
-
-        $result_forum = db_query($sql, $db_user_update_prefs);
-
-    }else {
-
-        $result_forum = true;
     }
 
     return ($result_global && $result_forum);

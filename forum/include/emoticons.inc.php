@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.53 2005-11-06 11:45:11 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.54 2005-11-14 21:45:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -208,18 +208,14 @@ function emoticons_get_available($include_text_none = true)
 
             if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
 
-                 if (preg_match("/^none$|6text$/i", $file) > 0) {
+                 if (preg_match("/^none$|^text$/i", $file) > 0) {
 
                      if ($include_text_none === true) {
 
-                         if (@$fp = fopen("./emoticons/$file/desc.txt", "r")) {
+                         if (@file_exists("./emoticons/$file/desc.txt")) {
 
-                             @$content = fread($fp, filesize("emoticons/$file/desc.txt"));
-                             $content = split("\n", $content);
-
-                             $sets_txtnon[$file] = _htmlentities($content[0]);
-
-                             fclose($fp);
+                             $pack_name = implode("", file("./emoticons/$file/desc.txt"));
+                             $sets_txtnon[$file] = _htmlentities($pack_name);
 
                          }else {
 
@@ -229,14 +225,10 @@ function emoticons_get_available($include_text_none = true)
 
                  }else if (@file_exists("./emoticons/$file/style.css")) {
 
-                     if (@$fp = fopen("./emoticons/$file/desc.txt", "r")) {
+                     if (@file_exists("./emoticons/$file/desc.txt")) {
 
-                         @$content = fread($fp, filesize("emoticons/$file/desc.txt"));
-                         $content = split("\n", $content);
-
-                         $sets_normal[$file] = _htmlentities($content[0]);
-
-                         fclose($fp);
+                         $pack_name = implode("", file("./emoticons/$file/desc.txt"));
+                         $sets_normal[$file] = _htmlentities($pack_name);
 
                      }else {
 
@@ -259,7 +251,7 @@ function emoticons_get_available($include_text_none = true)
 
 function emoticons_set_exists($set)
 {
-    return (@file_exists("./emoticons/$set/style.css") || $set == "text");
+    return (@file_exists("./emoticons/$set/style.css") || $set == "text" || $set == "none");
 }
 
 function emoticons_preview($set, $width=190, $height=100, $num = 35)

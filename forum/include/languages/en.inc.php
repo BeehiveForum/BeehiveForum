@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.306 2005-11-13 11:48:43 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.307 2005-11-14 18:54:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -1307,8 +1307,6 @@ $lang['searchresults'] = "Search Results";
 $lang['usernamenotfound'] = "The username you specified in the to or from field was not found.";
 $lang['notexttosearchfor'] = "One or all of your search keywords were invalid. Search keywords must be no shorter than %d characters, no longer than %d characters and must not appear in the %s";
 $lang['mysqlstopwordlist'] = "MySQL stopword list";
-$lang['searchcriteria_1'] = "<b>Note:</b> Words under";
-$lang['searchcriteria_2'] = "characters long or those that appear in the MySQL FULLTEXT stop word list will be automatically removed.";
 $lang['foundzeromatches'] = "Found: 0 matches";
 $lang['found'] = "Found";
 $lang['matches'] = "matches";
@@ -1533,7 +1531,7 @@ $lang['onceaday'] = "Once a day";
 $lang['rssfeeds'] = "RSS Feeds";
 $lang['feedlocation'] = "Feed Location";
 $lang['rssclicktoreadarticle'] = "Click here to read this article";
-$lang['rssfeedhelp_1'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you which to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work.";
+$lang['rssfeedhelp_1'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you wish to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work.";
 $lang['mustspecifyrssfeedname'] = "Must specify RSS Feed Name";
 $lang['mustspecifyrssfeeduseraccount'] = "Must specify RSS Feed User Account";
 $lang['mustspecifyrssfeedfolder'] = "Must specify RSS Feed Folder";

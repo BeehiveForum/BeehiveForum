@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.49 2005-11-13 11:43:53 decoyduck Exp $ */
+/* $Id: forums.php,v 1.50 2005-11-14 18:54:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -103,10 +103,6 @@ if (isset($_GET['reset'])) {
 if (bh_session_get_value('UID') != 0) {
 
     if ($forums_array = get_my_forums()) {
-
-        echo "<pre>\n";
-        print_r($forums_array);
-        echo "</pre>\n";
 
         echo "<h1>{$lang['myforums']}</h1>\n";
         echo "<br />\n";

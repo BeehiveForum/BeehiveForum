@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.50 2005-08-22 16:21:43 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.51 2005-11-14 18:54:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -75,17 +75,13 @@ function get_forum_list()
             $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
             $result_post_count = db_query($sql, $db_get_forum_list);
 
-            if (db_num_rows($result_post_count) > 0) {
+            $row = db_fetch_array($result_post_count);
 
-                $row = db_fetch_array($result_post_count);
-                $forum_data['MESSAGES'] = $row['POST_COUNT'];
-
-            }else {
-
+            if (!isset($row['POST_COUNT']) || is_null($row['POST_COUNT'])) {
                 $forum_data['MESSAGES'] = 0;
+            }else {
+                $forum_data['MESSAGES'] = $row['POST_COUNT'];
             }
-
-            $result_description = db_query($sql, $db_get_forum_list);
 
             $get_forum_list_array[] = $forum_data;
         }
@@ -192,7 +188,12 @@ function get_my_forums()
             $result_unread_to_me = db_query($sql, $db_get_my_forums);
 
             $row = db_fetch_array($result_unread_to_me);
-            $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
+
+            if (!isset($row['UNREAD_TO_ME']) || is_null($row['UNREAD_TO_ME'])) {
+                $forum_data['UNREAD_TO_ME'] = 0;
+            }else {
+                $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
+            }
 
             // Get Last Visited
 
@@ -202,14 +203,12 @@ function get_my_forums()
 
             $result_last_visit = db_query($sql, $db_get_my_forums);
 
-            if (db_num_rows($result_last_visit) > 0) {
+            $row = db_fetch_array($result_last_visit);
 
-                $row = db_fetch_array($result_last_visit);
-                $forum_data['LAST_LOGON'] = $row['LAST_LOGON'];
-
-            }else{
-
+            if (!isset($row['LAST_LOGON']) || is_null($row['LAST_LOGON'])) {
                 $forum_data['LAST_LOGON'] = 0;
+            }else {
+                $forum_data['LAST_LOGON'] = $row['LAST_LOGON'];
             }
 
             if (isset($forum_data['INTEREST']) && $forum_data['INTEREST'] == 1) {

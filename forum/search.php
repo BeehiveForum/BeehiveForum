@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.130 2005-11-11 21:52:19 benlumley Exp $ */
+/* $Id: search.php,v 1.131 2005-11-14 18:54:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -445,12 +445,6 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\">{$lang['searchcriteria_1']} $min_length {$lang['searchcriteria_2']} <a href=\"javascript:void(0);\" onclick=\"display_mysql_stopwords('$webtag')\">{$lang['viewcompletelist']}</a></td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.18 2005-11-13 11:43:53 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.19 2005-11-14 18:54:26 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1327,9 +1327,8 @@ $lang['cannotignoremod'] = "Vous ne pouvez pas ignorer cet utilisateur parce qu'
 
 $lang['searchresults'] = "Résultats de recherche";
 $lang['usernamenotfound'] = "Le nom d'utilisateur spécifié dans le champs à ou dans le champs de n'a pas été retrouvé.";
-$lang['notexttosearchfor'] = "Vous avez entré aucun mot de recherche or les mots que vous avez entré ont été éliminé parce qu'ils étaient trop courts ou qu'ils étaient indexés dans la liste stopwords MySQL.";
-$lang['searchcriteria_1'] = "<b>Note:</b> Les mots ayant moins de";
-$lang['searchcriteria_2'] = "charactères ou ceux indexés dans la liste FULLTEXT stopword MySQL seront automatiquement éliminés.";
+$lang['notexttosearchfor'] = "Un ou tous vos mots-clés de recherche étaient invalides. Les mots-clés de recherche doivent avoir un minimum de %d caractères et un maximum de %d caractères et ne doivent pas apparaître dans le %s.";
+$lang['mysqlstopwordlist'] = "liste de mots vides MySQL";
 $lang['foundzeromatches'] = "Correspondances trouvées: 0";
 $lang['found'] = "Trouvé";
 $lang['matches'] = "correspondances";
@@ -1513,7 +1512,7 @@ $lang['interestupdated'] = "Mise à jour du statut de l'intérêt du fil de disc
 $lang['dictionary'] = "Dictionnaire";
 $lang['spellcheck'] = "Vérification d'orthographe";
 $lang['notindictionary'] = "Pas dans le dictionnaire";
-$lang['changeto'] = "Change to";
+$lang['changeto'] = "Changer à";
 $lang['initialisingdotdotdot'] = "Initialisation...";
 $lang['spellcheckcomplete'] = "La vérification de l\'orthographe est terminée. Voulez-vous recommencer du début?";
 $lang['spellcheck'] = "Vérification d'orthographe";
@@ -1525,6 +1524,7 @@ $lang['change'] = "Changer";
 $lang['changeall'] = "Changer tout";
 $lang['add'] = "Ajouter";
 $lang['suggest'] = "Suggérer";
+$lang['nosuggestions'] = "(aucune suggestion)";
 $lang['ok'] = "OK";
 $lang['cancel'] = "Annuler";
 $lang['dictionarynotinstalled'] = "Aucun dictionnaire d'installer. Veuillez contacter le propriétaire du forum pour remédier cette situation.";

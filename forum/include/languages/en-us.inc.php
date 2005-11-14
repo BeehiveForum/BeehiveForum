@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.4 2005-11-13 11:43:53 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.5 2005-11-14 18:54:26 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -248,6 +248,7 @@ $lang['stylecolourexp'] = "Click on a color to make a new style sheet based on t
 $lang['standardstyle'] = "Standard Style";
 $lang['rotelementstyle'] = "Rotated Element Style";
 $lang['randstyle'] = "Random Style";
+$lang['thiscolour'] = "This Colour";
 $lang['enterhexcolour'] = "or enter a hex color to base a new style sheet on";
 $lang['savestyle'] = "Save this style";
 $lang['styledesc'] = "Style Descending";
@@ -1305,8 +1306,7 @@ $lang['cannotignoremod'] = "You cannot ignore this user, as they are a moderator
 $lang['searchresults'] = "Search Results";
 $lang['usernamenotfound'] = "The username you specified in the to or from field was not found.";
 $lang['notexttosearchfor'] = "One or all of your search keywords were invalid. Search keywords must be no shorter than %d characters, no longer than %d characters and must not appear in the %s";
-$lang['searchcriteria_1'] = "<b>Note:</b> Words under";
-$lang['searchcriteria_2'] = "characters long or those that appear in the MySQL FULLTEXT stop word list will be automatically removed.";
+$lang['mysqlstopwordlist'] = "MySQL stopword list";
 $lang['foundzeromatches'] = "Found: 0 matches";
 $lang['found'] = "Found";
 $lang['matches'] = "matches";

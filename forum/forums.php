@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.50 2005-11-14 18:54:26 decoyduck Exp $ */
+/* $Id: forums.php,v 1.51 2005-11-15 18:07:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -515,6 +515,7 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
     echo "</div>\n";
 }
 
+echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form action=\"forums.php\" method=\"get\" target=\"_self\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.158 2005-11-20 16:12:04 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.159 2005-11-20 22:09:50 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -161,26 +161,28 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $valid = true;
 
-    // User details
-    if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
+    if (perm_has_forumtools_access()) {
 
-        $user_details['NICKNAME'] = trim(_stripslashes($_POST['t_nickname']));
+        if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
 
-        if (nickname_is_banned($user_details['NICKNAME'])) {
+            $user_details['NICKNAME'] = trim(_stripslashes($_POST['t_nickname']));
 
-            $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+            if (nickname_is_banned($user_details['NICKNAME'])) {
+
+                $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+                $valid = false;
+
+            } else {
+
+                user_update_nickname($uid, $user_details['NICKNAME']);
+
+            }
+
+        }else {
+
+            $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
             $valid = false;
-
-        } else {
-
-            user_update_nickname($uid, $user_details['NICKNAME']);
-
         }
-
-    }else {
-
-        $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
-        $valid = false;
     }
 
     // Local user permissions
@@ -223,7 +225,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
         $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_confirm_email;
 
-        if (perm_has_forumtools_access($uid) && $forum_tools_perm_count < 2) {
+        if (perm_has_forumtools_access($uid) && $forum_tools_perm_count == 1) {
 
             if (!($new_global_user_perms & USER_PERM_FORUM_TOOLS)) {
 
@@ -232,7 +234,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
             }
         }
 
-        if ($valid && perm_has_global_admin_access($uid) && $admin_tools_perm_count < 2) {
+        if ($valid && perm_has_global_admin_access($uid) && $admin_tools_perm_count == 1) {
 
             if (!($new_global_user_perms & USER_PERM_ADMIN_TOOLS)) {
 
@@ -282,37 +284,40 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     // Password reset
 
-    if (isset($_POST['t_reset_password']) && $_POST['t_reset_password'] == 'Y') {
-        $t_reset_password = true;
-    }else {
-        $t_reset_password = false;
-    }
+    if (perm_has_forumtools_access()) {
 
-    if (isset($_POST['t_new_password']) && strlen(trim(_stripslashes($_POST['t_new_password']))) > 0) {
-        $t_new_password = trim(_stripslashes($_POST['t_new_password']));
-    }else {
-        $t_new_password = false;
+        if (isset($_POST['t_reset_password']) && $_POST['t_reset_password'] == 'Y') {
+            $t_reset_password = true;
+        }else {
+            $t_reset_password = false;
+        }
+
+        if (isset($_POST['t_new_password']) && strlen(trim(_stripslashes($_POST['t_new_password']))) > 0) {
+            $t_new_password = trim(_stripslashes($_POST['t_new_password']));
+        }else {
+            $t_new_password = false;
+        }
+
+        if ($t_reset_password === true && strlen($t_new_password) > 0) {
+
+            $fuid = bh_session_get_value('UID');
+
+            user_change_password($uid, $t_new_password, false);
+
+            email_send_new_pw_notification($uid, $fuid, $t_new_password);
+
+            $user_logon = user_get_logon($uid);
+            admin_add_log_entry(CHANGE_USER_PASSWD, $user_logon);
+
+        }else {
+
+            $user_logon = user_get_logon($uid);
+            admin_add_log_entry(CHANGE_USER_STATUS, $user_logon);
+        }
     }
 
     if ($valid) {
         echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
-    }
-
-    if ($t_reset_password === true && strlen($t_new_password) > 0) {
-
-        $fuid = bh_session_get_value('UID');
-
-        user_change_password($uid, $t_new_password, false);
-
-        email_send_new_pw_notification($uid, $fuid, $t_new_password);
-
-        $user_logon = user_get_logon($uid);
-        admin_add_log_entry(CHANGE_USER_PASSWD, $user_logon);
-
-    }else {
-
-        $user_logon = user_get_logon($uid);
-        admin_add_log_entry(CHANGE_USER_STATUS, $user_logon);
     }
 }
 

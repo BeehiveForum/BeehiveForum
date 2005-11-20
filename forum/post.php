@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.265 2005-09-27 17:57:23 decoyduck Exp $ */
+/* $Id: post.php,v 1.266 2005-11-20 16:12:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -571,10 +571,10 @@ if ($valid && isset($_POST['submit'])) {
 
             if ($newthread) {
 
-                if (isset($_POST['t_closed'])) $t_closed = $_POST['t_closed'];
-                if (isset($_POST['old_t_closed'])) $old_t_closed = $_POST['old_t_closed'];
-                if (isset($_POST['t_sticky'])) $t_sticky = $_POST['t_sticky'];
-                if (isset($_POST['old_t_sticky'])) $old_t_sticky = $_POST['old_t_sticky'];
+                $t_closed     = (isset($_POST['t_closed']))     ? $_POST['t_closed']     : false;
+                $old_t_closed = (isset($_POST['old_t_closed'])) ? $_POST['old_t_closed'] : false;
+                $t_sticky     = (isset($_POST['t_sticky']))     ? $_POST['t_sticky']     : false;
+                $old_t_sticky = (isset($_POST['old_t_sticky'])) ? $_POST['old_t_sticky'] : false;
 
                 if (perm_is_moderator($t_fid)) {
 
@@ -619,10 +619,10 @@ if ($valid && isset($_POST['submit'])) {
 
                 if (perm_is_moderator($t_fid)) {
 
-                    if (isset($_POST['t_closed'])) $t_closed = $_POST['t_closed'];
-                    if (isset($_POST['old_t_closed'])) $old_t_closed = $_POST['old_t_closed'];
-                    if (isset($_POST['t_sticky'])) $t_sticky = $_POST['t_sticky'];
-                    if (isset($_POST['old_t_sticky'])) $old_t_sticky = $_POST['old_t_sticky'];
+                    $t_closed     = (isset($_POST['t_closed']))     ? $_POST['t_closed']     : false;
+                    $old_t_closed = (isset($_POST['old_t_closed'])) ? $_POST['old_t_closed'] : false;
+                    $t_sticky     = (isset($_POST['t_sticky']))     ? $_POST['t_sticky']     : false;
+                    $old_t_sticky = (isset($_POST['old_t_sticky'])) ? $_POST['old_t_sticky'] : false;
 
                     if (isset($t_closed) && isset($old_t_closed) && $t_closed != $old_t_closed && $t_closed == "Y") {
                         thread_set_closed($t_tid, true);

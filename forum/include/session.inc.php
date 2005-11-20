@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.199 2005-11-13 11:43:53 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.200 2005-11-20 16:12:05 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -81,7 +81,7 @@ function bh_session_check($show_session_fail = true)
 
     // Session cut off timestamp
 
-    $session_stamp = time() - intval(forum_get_setting('session_cutoff', false, 86400));
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     // Check the current user's session data. This is the main session
     // data that Beehive relies on. If this data does not match what
@@ -167,9 +167,9 @@ function bh_session_check($show_session_fail = true)
             }
 
             // Everything checks out OK. If the user's session is older
-            // then 5 minutes we should update it.
+            // then $active_sess_cutoff we should update it.
 
-            if (($current_time - $user_sess['TIME']) > 300) {
+            if (($current_time - $user_sess['TIME']) > $active_sess_cutoff) {
 
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
                 $sql.= "FID = '$forum_fid', IPADDRESS = '$ipaddress' ";
@@ -184,11 +184,11 @@ function bh_session_check($show_session_fail = true)
                 // Perform system-wide PM Prune
 
                 pm_system_prune_folders();
+
+                // Delete expired sessions
+
+                bh_remove_stale_sessions();
             }
-
-            // Delete expired sessions
-
-            bh_remove_stale_sessions();
 
             return $user_sess;
 
@@ -278,13 +278,15 @@ function bh_session_check($show_session_fail = true)
 
             $user_sess = db_fetch_array($result);
 
-            if (($current_time - $user_sess['TIME']) > 300) {
+            if (($current_time - $user_sess['TIME']) > $active_sess_cutoff) {
 
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
                 $sql.= "FID = '$forum_fid', IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
+
+                bh_remove_stale_sessions();
             }
 
         }else {
@@ -296,8 +298,6 @@ function bh_session_check($show_session_fail = true)
 
             bh_update_visitor_log(0);
         }
-
-        bh_remove_stale_sessions();
 
         return array('UID'              => 0,
                      'LOGON'            => 'GUEST',
@@ -321,7 +321,7 @@ function bh_session_check($show_session_fail = true)
                      'SHOW_THUMBS'      => '2');
     }
 
-    bh_remove_stale_sessions();
+
 
     return false;
 }
@@ -382,18 +382,23 @@ function bh_session_get_value($session_key)
 
 function bh_remove_stale_sessions()
 {
-    $db_bh_remove_stale_sessions = db_connect();
+    $sess_rem_prob = intval(forum_get_setting('sess_rem_prob', false, 1));
 
-    $session_cutoff = forum_get_setting('session_cutoff', false, 86400);
+    if ((time() % (100 / $sess_rem_prob)) == 0) {
 
-    if (is_numeric($session_cutoff)) {
+        $db_bh_remove_stale_sessions = db_connect();
 
-        $session_stamp = time() - $session_cutoff;
+        $session_cutoff = forum_get_setting('session_cutoff', false, 86400);
 
-        $sql = "DELETE FROM SESSIONS WHERE ";
-        $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
+        if (is_numeric($session_cutoff)) {
 
-        $result = db_query($sql, $db_bh_remove_stale_sessions);
+            $session_stamp = time() - $session_cutoff;
+
+            $sql = "DELETE FROM SESSIONS WHERE ";
+            $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
+
+            $result = db_query($sql, $db_bh_remove_stale_sessions);
+        }
     }
 
     return true;

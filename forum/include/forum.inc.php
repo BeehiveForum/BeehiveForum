@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.160 2005-11-15 18:07:12 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.161 2005-11-20 16:12:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -324,14 +324,16 @@ function forum_get_settings()
 {
     $db_forum_get_settings = db_connect();
 
+    static $default_forum_settings = false;
     static $forum_settings = false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
-    if (!is_array($forum_settings)) {
+    if (!is_array($forum_settings) || !is_array($default_forum_settings)) {
 
+        $default_forum_settings = array();
         $forum_settings = array('fid' => $forum_fid);
 
         $sql = "SELECT WEBTAG, ACCESS_LEVEL FROM FORUMS WHERE FID = $forum_fid";
@@ -342,16 +344,19 @@ function forum_get_settings()
         $forum_settings['webtag'] = $webtag;
         $forum_settings['access_level'] = $access_level;
 
-        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = $forum_fid";
+        $sql = "SELECT FID, SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID IN (0, $forum_fid)";
         $result = db_query($sql, $db_forum_get_settings);
 
         while ($row = db_fetch_array($result)) {
 
-            $forum_settings[$row['SNAME']] = $row['SVALUE'];
+            if ($row['FID'] == 0) {
+                $default_forum_settings[$row['SNAME']] = $row['SVALUE'];
+            }else {
+                $forum_settings[$row['SNAME']] = $row['SVALUE'];
+            }
         }
     }
 
-    $default_forum_settings = forum_get_default_settings();
     return array_merge($default_forum_settings, $forum_settings);
 }
 
@@ -576,7 +581,6 @@ function forum_create($webtag, $forum_name, $access)
     // Ensure the variables we've been given are valid
 
     $webtag = preg_replace("/[^A-Z0-9_-]/", "", strtoupper($webtag));
-    $forum_name = addslashes($forum_name);
 
     if (!is_numeric($access)) $access = 0;
 

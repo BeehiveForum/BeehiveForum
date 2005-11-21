@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.19 2005-11-14 18:54:26 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.20 2005-11-21 20:49:24 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -462,8 +462,6 @@ $lang['showpopuponnewpm'] = "Afficher fenêtre contextuelle sur réception de no
 $lang['setautomatichighinterestonpost'] = "Établir intérêt élevé automatique sur postage";
 
 $lang['top20postersforperiod'] = "Les 20 posteurs les plus prolifiques pour la période %s à %s";
-$lang['datefrom'] = "Dater du:";
-$lang['dateto'] = "Dater au:";
 $lang['postingstats'] = "Statistiques de postage";
 $lang['nodata'] = "Aucune donnée";
 $lang['totalposts'] = "Contributions totales";
@@ -492,6 +490,7 @@ $lang['emailisalreadybanned'] = "Cette adresse courriel est déjà bannie. Véri
 $lang['cannotusewildcardonown'] = "Vous ne pouvez pas ajouter % comme concordance de caractère de remplacement seul!";
 
 $lang['requirepostapproval'] = "Exiger approbation du message";
+$lang['adminforumtoolsusercounterror'] = "Il doit y avoir au moins un utilisateur avec accès aux outils admin et aux outils de forum sur tous les forums!";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -607,7 +606,6 @@ $lang['postfrequency'] = "Fréquence de postage";
 $lang['enablelinkssection'] = "Activer section des Liens";
 $lang['allowcreationofpolls'] = "Permettre création de scrutins";
 $lang['searchoptions'] = "Options de recherche";
-$lang['minsearchwordlength'] = "Longueur minimale de mot recherché";
 $lang['searchfrequency'] = "Fréquence de recherche";
 $lang['sessions'] = "Sessions";
 $lang['sessioncutoffseconds'] = "Coupure de session (secondes)";
@@ -639,7 +637,6 @@ $lang['forum_settings_help_10'] = "<b>Délai d'attente pour modification de mess
 $lang['forum_settings_help_11'] = "<b>Longueure maximale du message</b> indique le nombre maximale de caractères qui seront affichés dans un message. Si un message dépasse le nombre de caractères défini ici, il sera tronqué et un hyperlien sera ajouté au pied du message pour permettre aux utilisateurs de le lire au complet sur une page à part.";
 $lang['forum_settings_help_12'] = "Si vous ne voulez pas que vos utilisateurs soient capables de créer des scrutins, vous pouvez désactiver cette option ci-haut.";
 $lang['forum_settings_help_13'] = "La section Liens de Beehive permet à vos utilisateurs de maintenir une liste de sites Web qu'ils visitent régulièrement et que les autres utilisateurs trouveront peut-être utiles. Les hyperliens peuvent être divisés en catégories par dossier et être commenter et coter. Afin de modérer la section liens, un utilisateur doit avoir le statut de modérateur globale.";
-$lang['forum_settings_help_14'] = "<b>Longueur de mot de cherche min</b> défini la longueur minimale d'un mot pour lequel on peut chercher. Les mots plus courts que la valeur spécifiée  seront automatiquement supprimés de la requête.";
 $lang['forum_settings_help_15'] = "<b>Troncage de session</b> indique le temps maximale avant que la session d'un utilisateur est présumée inactive et qu'il a fermé sa session. Par défaut, ceci est 24 heures (86400 secondes).";
 $lang['forum_settings_help_16'] = "<b>Troncage de session active</b> indique le temps maximale avant que la session d'utilisateur est présumée inactive et qu'elle entre dans un état de repos. Dans cet état, la session de l'utilisateur demeure ouverte, mais l'utilisateur n'apparaît plus dans la liste d'utilisateurs actifs dans l'affichage des statistiques du forum. Une fois redevenu actif, l'utilisateur sera ré-ajouté à la liste. Par défaut, cette option est établie à 15 minutes (900 secondes).";
 $lang['forum_settings_help_17'] = "L'activation de cette option permet à Beehive d'inclure l'affichage des statistiques du forum au pied du sous-fenêtre des messages semblable à ceux utilisés par plusieurs logiciels de forum. Une fois activée, l'affichage des statistiques peut être contrôler par chaque utilisateur. S'ils ne veulent pas le voir, ils peuvent le masquer.";
@@ -1336,8 +1333,6 @@ $lang['prevpage'] = "Page précédante";
 $lang['findmore'] = "Trouver d'autres";
 $lang['searchmessages'] = "Chercher les messages";
 $lang['searchdiscussions'] = "Chercher les discussions";
-$lang['containingallwords'] = "Incluant tous les mots";
-$lang['containinganywords'] = "Incluant un des mots";
 $lang['find'] = "Trouver";
 $lang['additionalcriteria'] = "Critères supplémentaires";
 $lang['searchbyuser'] = "Chercher par utilisateur (optionnel)";

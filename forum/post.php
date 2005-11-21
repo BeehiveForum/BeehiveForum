@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.266 2005-11-20 16:12:04 decoyduck Exp $ */
+/* $Id: post.php,v 1.267 2005-11-21 20:49:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -501,7 +501,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !folder_is_valid($t_fid)) {
 
-        $error_html = "<h2>{$lang['invalidfolder']}</h2>\n";
+        $error_html = "<h2>{$lang['invalidfolderid']}</h2>\n";
         $valid = false;
     }
 

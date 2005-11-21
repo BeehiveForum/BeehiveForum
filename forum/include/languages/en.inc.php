@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.307 2005-11-14 18:54:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.308 2005-11-21 20:49:24 decoyduck Exp $ */
 
 // International English language file
 
@@ -258,6 +258,7 @@ $lang['welcome'] = "Welcome";
 $lang['messagepreview'] = "Message Preview";
 $lang['users'] = "Users";
 $lang['usergroups'] = "User Groups";
+$lang['mustentergroupname'] = "You must enter a group name";
 $lang['profiles'] = "Profiles";
 $lang['manageforums'] = "Manage Forums";
 $lang['forumsettings'] = "Forum Settings";
@@ -266,6 +267,7 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect al
 $lang['startpage'] = "Start Page";
 $lang['startpageerror_1'] = "Your start page could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
 $lang['startpageerror_2'] = "folder, if necessary creating the folder structure in the process. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
+$lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your BeehiveForum installation.";
 $lang['makestyleerror_1'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
 $lang['makestyleerror_2'] = "folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
 $lang['uploadfailed'] = "Your new start page could not be uploaded to the server because permission was denied. Please check that the web server / PHP process is able to write to the %s folder on your server.";
@@ -446,8 +448,6 @@ $lang['sendemailnotificationonpm'] = "Email notification on PM to user";
 $lang['showpopuponnewpm'] = "Show popup when receiving new PM";
 $lang['setautomatichighinterestonpost'] = "Set automatic high interest on post";
 $lang['top20postersforperiod'] = "Top 20 posters for period %s to %s";
-$lang['datefrom'] = "Date from:";
-$lang['dateto'] = "Date to:";
 $lang['postingstats'] = "Posting Stats";
 $lang['nodata'] = "No data";
 $lang['totalposts'] = "Total posts";
@@ -471,6 +471,7 @@ $lang['nicknameisalreadybanned'] = "That Nickname is already banned. Check your 
 $lang['emailisalreadybanned'] = "That Email Address is already banned. Check your wildcards to see if they already match it.";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
+$lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -586,7 +587,6 @@ $lang['postfrequency'] = "Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['searchoptions'] = "Search Options";
-$lang['minsearchwordlength'] = "Min search word length";
 $lang['searchfrequency'] = "Search Frequency";
 $lang['sessions'] = "Sessions";
 $lang['sessioncutoffseconds'] = "Session cut off (seconds)";
@@ -618,7 +618,6 @@ $lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in hours
 $lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a separate page.";
 $lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
 $lang['forum_settings_help_13'] = "The Links section of Beehive provides a place for your users to maintain a list of sites they frequently visit that other users may find useful. Links can be divided into categories by folder and allow for comments and ratings to be given. In order to moderate the links section a user must be ranted Global Moderator status.";
-$lang['forum_settings_help_14'] = "<b>Min search word length</b> defines the minimum word length that is allowed to be searched for. Words smaller than the value specified will be removed from the query automatically.";
 $lang['forum_settings_help_15'] = "<b>Session cut off</b> is the maximum time before a user's session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds).";
 $lang['forum_settings_help_16'] = "<b>Active session cut off</b> is the maximum time before a user's session is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds).";
 $lang['forum_settings_help_17'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don't want to see it they can hide it from view.";
@@ -1314,8 +1313,6 @@ $lang['prevpage'] = "Previous page";
 $lang['findmore'] = "Find more";
 $lang['searchmessages'] = "Search Messages";
 $lang['searchdiscussions'] = "Search discussions";
-$lang['containingallwords'] = "Containing all of the words";
-$lang['containinganywords'] = "Containing any of the words";
 $lang['find'] = "Find";
 $lang['additionalcriteria'] = "Additional Criteria";
 $lang['searchbyuser'] = "Search by user (optional)";

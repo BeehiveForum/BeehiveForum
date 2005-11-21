@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.80 2005-08-31 14:55:18 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.81 2005-11-21 20:49:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,7 +263,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-        echo "<h2><a href=\"\">{$lang['resendemailconfirmation']}</a></h2>\n";
+        echo "<h2><a href=\"\">{$lang['resendconfirmation']}</a></h2>\n";
 
         html_draw_bottom();
         exit;
@@ -299,7 +299,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-        echo "<h2><a href=\"\">{$lang['resendemailconfirmation']}</a></h2>\n";
+        echo "<h2><a href=\"\">{$lang['resendconfirmation']}</a></h2>\n";
 
         html_draw_bottom();
         exit;
@@ -333,7 +333,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !folder_is_valid($t_fid)) {
 
-        $error_html = "<h2>{$lang['invalidfolder']}</h2>\n";
+        $error_html = "<h2>{$lang['invalidfolderid']}</h2>\n";
         $valid = false;
     }
 
@@ -343,7 +343,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-        echo "<h2><a href=\"\">{$lang['resendemailconfirmation']}</a></h2>\n";
+        echo "<h2><a href=\"\">{$lang['resendconfirmation']}</a></h2>\n";
 
         html_draw_bottom();
         exit;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.165 2005-08-31 14:55:18 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.166 2005-11-21 20:49:24 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -243,7 +243,7 @@ if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
 
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-    echo "<h2><a href=\"\">{$lang['resendemailconfirmation']}</a></h2>\n";
+    echo "<h2><a href=\"\">{$lang['resendconfirmation']}</a></h2>\n";
 
     html_draw_bottom();
     exit;
@@ -427,7 +427,7 @@ if (isset($_POST['cancel'])) {
     if (isset($t_sig)) {
 
         if (attachment_embed_check($t_sig) && $t_sig_html == "Y") {
-            $error_html = "<h2>{$lang['notallowedembedattachmentpostsignature']}</h2>\n";
+            $error_html = "<h2>{$lang['notallowedembedattachmentsignature']}</h2>\n";
             $valid = false;
         }
     }

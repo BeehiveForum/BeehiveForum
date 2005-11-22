@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.122 2005-11-06 18:09:48 decoyduck Exp $ */
+/* $Id: register.php,v 1.123 2005-11-22 18:57:43 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -72,27 +72,7 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
     $final_uri = basename(trim(_stripslashes(rawurldecode($_GET['final_uri']))));
 }
 
-if ($user_sess = bh_session_check() && bh_session_get_value('UID') != 0) {
-
-    // Load language file
-
-    $lang = load_language_file();
-
-    html_draw_top();
-
-    echo "<div align=\"center\">\n";
-    echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-
-    if (isset($final_uri)) {
-        echo form_quick_button("./index.php", $lang['continue'], "final_uri", $final_uri, "_top");
-    }else {
-        echo form_quick_button("./index.php", $lang['continue'], false, false, "_top");
-    }
-
-    echo "</div>\n";
-    html_draw_bottom();
-    exit;
-}
+$user_sess = bh_session_check();
 
 // Load language file
 

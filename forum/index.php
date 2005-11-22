@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.119 2005-09-28 20:08:21 decoyduck Exp $ */
+/* $Id: index.php,v 1.120 2005-11-22 18:57:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -55,16 +55,16 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 $user_sess = bh_session_check(false);
 
+// Load language file
+
+$lang = load_language_file();
+
 // Top frame and style sheet
 
 $top_html   = html_get_top_page();
 $stylesheet = html_get_style_sheet();
 
 if (bh_session_active()) {
-
-    // Load language file
-
-    $lang = load_language_file();
 
     // Fetch the forum settings
 
@@ -169,10 +169,6 @@ if (bh_session_active()) {
     }
 
 }else {
-
-    // Load language file
-
-    $lang = load_language_file();
 
     // Forum Title
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.161 2005-11-20 16:12:05 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.162 2005-11-25 16:50:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,13 +40,13 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-function get_table_prefix()
+function get_forum_data()
 {
     static $forum_data = false;
 
-    if (!$forum_data) {
+    if (!is_array($forum_data)) {
 
-        $db_get_table_prefix = db_connect();
+        $db_get_forum_data = db_connect();
 
         if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
@@ -65,33 +65,34 @@ function get_table_prefix()
 
             $webtag = addslashes($webtag);
 
-            $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL FROM FORUMS ";
-            $sql.= "WHERE WEBTAG = '$webtag'";
+            $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL ";
+            $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-            $result = db_query($sql, $db_get_table_prefix);
+            $result = db_query($sql, $db_get_forum_data);
 
             if (db_num_rows($result) > 0) {
+
                 $forum_data = db_fetch_array($result);
                 return $forum_data;
             }
+
+            return array('WEBTAG_SEARCH' => $webtag);
 
         }else {
 
             // Check #2: Try and select a default webtag from
             // the databse
 
-            $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL FROM FORUMS ";
-            $sql.= "WHERE DEFAULT_FORUM = 1";
+            $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL ";
+            $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
-            $result = db_query($sql, $db_get_table_prefix);
+            $result = db_query($sql, $db_get_forum_data);
 
             if (db_num_rows($result) > 0) {
+
                 $forum_data = db_fetch_array($result);
-                return $forum_data;
             }
         }
-
-        return false;
     }
 
     return $forum_data;
@@ -99,62 +100,26 @@ function get_table_prefix()
 
 function get_webtag(&$webtag_search)
 {
-    static $webtag_data = false;
+    $forum_data = get_forum_data();
 
-    if (!$webtag_data) {
-
-        $db_get_webtag = db_connect();
-
-        if (!$uid = bh_session_get_value('UID')) $uid = 0;
-
-        if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
-            $webtag = trim(_stripslashes($_GET['webtag']));
-        }elseif (isset($_POST['webtag']) && strlen(trim(_stripslashes($_POST['webtag']))) > 0) {
-            $webtag = trim(_stripslashes($_POST['webtag']));
-        }elseif (isset($_SERVER['argv'][1]) && strlen(trim(_stripslashes($_SERVER['argv'][1]))) > 0) {
-            $webtag = trim(_stripslashes($_SERVER['argv'][1]));
-        }
-
-        if (isset($webtag) && preg_match("/^[A-Z0-9_-]+$/", $webtag) > 0) {
-
-            // Check #1: See if the webtag specified in GET/POST
-            // actually exists.
-
-            $webtag = addslashes($webtag);
-
-            $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL FROM FORUMS ";
-            $sql.= "WHERE WEBTAG = '$webtag'";
-
-            $result = db_query($sql, $db_get_webtag);
-
-            if (db_num_rows($result) > 0) {
-
-                $webtag_data = db_fetch_array($result);
-                return $webtag_data['WEBTAG'];
-            }
-
-        }else {
-
-            // Check #2: Try and select a default webtag from
-            // the databse
-
-            $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL FROM FORUMS ";
-            $sql.= "WHERE DEFAULT_FORUM = 1";
-
-            $result = db_query($sql, $db_get_webtag);
-
-            if (db_num_rows($result) > 0) {
-
-                $webtag_data = db_fetch_array($result);
-                return $webtag_data['WEBTAG'];
-            }
-        }
-
-        $webtag_search = @$webtag;
-        return false;
+    if (is_array($forum_data) && isset($forum_data['WEBTAG'])) {
+        return $forum_data['WEBTAG'];
     }
 
-    return $webtag_data['WEBTAG'];
+    if (is_array($forum_data) && isset($forum_data['WEBTAG_SEARCH'])) {
+        $webtag_search = $forum_data['WEBTAG_SEARCH'];
+    }
+
+    return false;
+}
+
+function get_table_prefix()
+{
+    if ($forum_data = get_forum_data()) {
+        return $forum_data;
+    }
+
+    return false;
 }
 
 function forum_check_access_level()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.162 2005-11-25 16:50:27 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.163 2005-11-25 20:49:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -65,8 +65,10 @@ function get_forum_data()
 
             $webtag = addslashes($webtag);
 
-            $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL ";
-            $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
+            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, CONCAT(FORUMS.WEBTAG, '', '_') AS PREFIX, ";
+            $sql.= "FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS FORUMS ";
+            $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+            $sql.= "AND USER_FORUM.UID = $uid) WHERE WEBTAG = '$webtag'";
 
             $result = db_query($sql, $db_get_forum_data);
 
@@ -83,8 +85,10 @@ function get_forum_data()
             // Check #2: Try and select a default webtag from
             // the databse
 
-            $sql = "SELECT FID, WEBTAG, CONCAT(WEBTAG, '', '_') AS PREFIX, ACCESS_LEVEL ";
-            $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
+            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, CONCAT(FORUMS.WEBTAG, '', '_') AS PREFIX, ";
+            $sql.= "FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS FORUMS ";
+            $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+            $sql.= "AND USER_FORUM.UID = $uid) WHERE DEFAULT_FORUM = 1";
 
             $result = db_query($sql, $db_get_forum_data);
 
@@ -128,19 +132,7 @@ function forum_check_access_level()
 
     $uid = bh_session_get_value('UID');
 
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
-
-    $sql = "SELECT FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = $uid) ";
-    $sql.= "WHERE FORUMS.FID = $forum_fid";
-
-    $result = db_query($sql, $db_forum_check_access_level);
-
-    if (db_num_rows($result) > 0) {
-
-        $forum_data = db_fetch_array($result);
+    if ($forum_data = get_forum_data()) {
 
         if (isset($forum_data['ACCESS_LEVEL'])) {
 

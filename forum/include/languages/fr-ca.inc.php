@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.20 2005-11-21 20:49:24 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.21 2005-11-30 21:59:56 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -258,6 +258,7 @@ $lang['welcome'] = "Bienvenue";
 $lang['messagepreview'] = "Aperçu du message";
 $lang['users'] = "Utilisateurs";
 $lang['usergroups'] = "Groupes d'utilisateurs";
+$lang['mustentergroupname'] = "Vous devez inclure un nom de groupe";
 $lang['profiles'] = "Profiles";
 $lang['manageforums'] = "Organiser les forums";
 $lang['forumsettings'] = "Options de forum";
@@ -266,6 +267,7 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> Ces options affectent to
 $lang['startpage'] = "Page de démarrage";
 $lang['startpageerror_1'] = "Votre page de démarrage n'a pas pu être entregistrer locallement sur le serveur à cause de déni de permission. Pour modifier votre page de démarrage, SVP cliquer le bouton de téléchargement ci-dessous qui vous invitera à enregister le fichier sur votre disque dur. Vous pourriez par la suite téléverser ce fichier vers le dossier";
 $lang['startpageerror_2'] = "sur votre serveur. SVP noter que certains navigateurs web pourraient changer le nom du fichier sur téléchargement. Lorsque vous téléversez le fichier, SVP vous assurer de le nommer start_main.php sinon les modifications n'apparaîtront pas.";
+$lang['failedtoopenmasterstylesheet'] = "Votre style de forum n'a pas pu être enregistré parce que la feuille de style maîtresse n'a pas pu être chargée. Pour enregistrer votre style, la feuille de style maîtresse (make_style.css) doit être située dans le répertoire styles de votre installation Beehive Forum.";
 $lang['makestyleerror_1'] = "Votre style de forum n'a pas pu être sauvegarder localement sur le serveur parce que la permission a été refusée. Pour sauvegarder votre style de forum, cliquer le bouton de téléchargement ci-dessous ce qui vous invitera à sauvegarder le fichier sur votre lecteur de disque dur. Vous pouvez ensuite téléverser ce fichier à votre serveur dans le dossier";
 $lang['makestyleerror_2'] = "et si nécéssaire, créant la structure de dossier en même temps. SVP noter que certains navigateurs web changeront peut-être le nom du fichier sur téléchargement. Lors du téléversement de ce fichier, SVP vous assurer qu'il est nommé style.css sinon ce style de forum sera inutilisable.";
 $lang['uploadfailed'] = "Votre nouvelle page de démarrage n'a pas pu être téléversée au serveur à cause de déni de permission. SVP vérifier que le serveur web / processus PHP est capable d'écrire au dossier %s sur votre serveur.";

@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.6RC1 / 22nd May 2005
+Version 0.6.2 / 30th November 2005
 
 A list of changes since previous BeehiveForum versions can be found
 in release.txt.
@@ -32,7 +32,7 @@ in release.txt.
     1.3.5    GeSHi
     1.3.6    TinyMCE
   1.4    Upgrading from previous versions of BeehiveForum
-    1.4.1    Upgrading 0.4 to 0.x
+    1.4.1    Upgrading your Beehiveforum installation
       1.4.1.1    Make a back up of your database
       1.4.1.2    Back up your files
       1.4.1.3    Upload new forum files
@@ -251,9 +251,9 @@ For new installs using the command line installer you should execute the followi
 
 When performing an upgrade of your BeehiveForum software you should supplement
 new-install.php with the name of the upgrade script you require. For example if
-you are upgrading from 0.5 to 0.6 you should execute:
+you are upgrading from 0.5 to 0.6.2 you should execute:
 
->php-cli upgrade-05-to-06.php
+>php-cli upgrade-05-to-062.php
 
 You can go ahead and do that right now. Okay, unless you've already read ahead
 you will probably have noticed that not a lot actually happened when you ran either
@@ -538,8 +538,8 @@ warned. Don't make us say we told you if things go wrong and you haven't
 backed up.
 
 
-1.4.1 Upgrading from 0.4 to 0.x
-===============================
+1.4.1 Upgrading your Beehiveforum installation
+==============================================
 
 BeehiveForum's install script should be used to perform any upgrade from 0.4
 or higher. There are two ways you can use the upgrade scripts. From a web
@@ -550,14 +550,14 @@ preferred method.
 1.4.1.1 Make a back up of your database
 =======================================
 
-You REALLY SHOULD make a back up of your database before you perform the upgrade. We 
-can't stress how important this is. If you don't perform a backup and something
+You REALLY SHOULD make a back up of your database before you perform the upgrade.
+We can't stress how important this is. If you don't perform a backup and something
 goes wrong you'll be up creek without a paddle and if things go even more
 wrong you may find that you loose your boat as well.
 
-The easiest way to perform a back up is by using telnet to connect into your server and making
-a physical copy of the MySQL/BeehiveForum folder. You'll know when you've found
-the right one when you come across loads of .MYI and .MYD files with the same
+The easiest way to perform a back up is by using telnet to connect into your server
+and making a physical copy of the MySQL/BeehiveForum folder. You'll know when you've
+found the right one when you come across loads of .MYI and .MYD files with the same
 names as the BeehiveForum tables.
 
 If you can do this then great, if not you might want to ask your hosting provider

@@ -1,5 +1,235 @@
 Beehive Forum Release Notes
 
+What's new in 0.6.2 (Released 30th Nov 2005)
+===================
+
+- Notes
+
+        - BeehiveForum 0.6.2 fixes a few issues highlighted within
+	  the release of 0.6 and 0.6.1. For more detailed
+	  features of 0.6.2 please see the 0.6 release notes.
+
+- Changes from 0.6.1
+
+        - Fixed: Query being executed twice in when fetching forum list for 'My Forums' and
+                 potentially undefined variable causing error.
+        - Fixed: Undefined variable $minimum_post_frequency in check_search_frequency()
+        - Fixed: admin_forum_links.php reset button weren't being translated.
+        - Fixed: admin_make_style.php "this colour" and "new" weren't being translated.
+        - Fixed: Undefined index AID in create_poll.php, lpost.php and pm_write.php
+        - Fixed: $page_var not being used correctly in page_links() function
+        - Fixed: page_links() now correctly checks for a URL query before deciding if it
+                 needs to use &amp; or ? to add the $page_var
+        - Fixed: Keep reading button wasn't working correctly in polls due to missing
+                 </form> tag.
+        - Fixed: Page layout issues in Opera. Crazy stinking browser still center aligns
+                 text in a table that has been position within a div??
+        - Fixed: load_language_file not working sometimes because of include_once being used
+                 rather than include
+        - Fixed: UTF-8 encoding in dictionary fixed.
+        - Fixed: Dictionary now skips works that fail the metaphone conversion.
+        - Fixed: Search limiting by username now works again.
+        - Fixed: Regular expression incorrectly matching 9-_ rather than 0-9.
+        - Fixed: URL incorrect for Canadian-Politics.com. Sorry Jo! :)
+        - Fixed: Forum shown was always the default forum even if the webtag was valid.
+        - Fixed: My Forums page was sometimes missing the message count / not showing 0
+                 messages.
+        - Fixed: Missing SEARCH_RESULTS table when performing a new installation of
+                 BeehiveForum 0.6 or upgrading from a 0.5 installation.
+        - Fixed: Missing FORUM column in SEARCH_RESULTS table when upgrading from 0.6RC1 /
+                 RC2 to 0.6 final.
+        - Fixed: Forum level admins were able to remove the global privilleges of another
+                 user without having global forum privilleges themselves.
+        - Fixed: Upgrading from 0.5 to 0.6 sometimes results in an error with primary keys
+                 on SEARCH_POST table.
+        - Fixed: Buffer error occured when using MSIE browser and being forced to download
+                 the config.inc.php when installing Beehive.
+        - Fixed: admin_banned.php wasn't allowing wildcard in ban list entries
+        - Fixed: Removed align="middle" from images on all pages because they look out of
+                 place in the newer Gecko engine builds (FireFox 1.5)
+        - Fixed: Thread list "there are no messages in this mode" text eas stuck to the
+                 bottom of the drop down in newer Gecko engine builds (FireFox 1.5)
+        - Fixed: Missing html_draw_top() calls in edit_signature.php when there is an error
+                 and also changed basetarget to _blank so that when previewing signature any
+                 links open in new window/tab without the HTML needing a target attribute.
+        - Fixed: thread_any_unread not fetching the recent modified unread thread.
+        - Fixed: Missing / undefined language strings in various files.
+        - Fixed: Added tests for perm_forumtools_access() on post data so people can't send
+                 post data to change the user's nickname / password when they don't have
+                 access to it.
+        - Fixed: Double escaped $forum_name when adding a new forum.
+        - Fixed: forum settings array is constructed using only two queries now instead of 2
+                 for current forum and another for global settings.
+        - Fixed: undefined variable $old_t_sticky / $old_t_closed and related variables.
+        - Fixed: Bug in admin_user.php could allow user to loose access to Admin section on
+                 individual forums. Global perms were not affected by this bug.
+        - Fixed: form_quick_button() wasn't looking at the right variable when you send it
+                 an array of var names and values
+        - Fixed: Thread list drop down was sticking to the top most folder.
+        - Fixed: Group by thread wasn't working and order by was back to front.
+        - Fixed: Sorting by columns on admin_viewlog.php wasn't working as expected.
+        - Fixed: Inconsistency in dictionary caused "(no suggestions)" to show when the
+                 dictionary had finished checking all words.
+        - Fixed: Insert error when processing user post count when viewing a new user's (no
+                 posts) profile.
+        - Fixed: Dictionary now works much better. It correctly matches words like couldn't,
+                 wouldn't and words in single quotes, it skips URLs, email address and HTML
+                 and doesn't corrupt unicode characters what so ever. It also correctly
+                 informs the user if there was no match in the dictionary instead of skiping
+                 over the word.
+        - Fixed: Unicode characters were being corrupted by Javascript when sending the text
+                 back after using the dictionary.
+        - Fixed: Emoticons and signature boxes couldn't be reshown once hidden on post, edit
+                 and pm_write pages but reloading them made them show again.
+        - Fixed: Errors in display_emoticons.php when trying to view invalid emoticon sets.
+        - Fixed: edit_attachments.php was showing "Other attachments" in My Controls when it
+                 shouldn't.
+        - Fixed: error in checkdate when not entering birthdate.
+        - Fixed: layout issue in forums.php
+        - Fixed: undefined index NUM_MESSAGES when searching for a forum.
+        - Fixed: Problem when trying to upgrade 0.6RC forum to 0.6 final.
+        - Fixed: Missing _htmlentities and _stripslashes in form_hidden_array()
+        - Fixed: Table structure for LINKS_FOLDER had been mangled and was no longer
+                 allowing NULL on PARENT_FID
+        - Fixed: Debugging code in session.inc.php
+        - Fixed: new-install.php no longer creates the old SEARCH_KEYWORDS, SEARCH_POSTS and
+                 SEARCH_MATCH tables.
+        - Fixed: Array to string conversion in attachments.inc.php
+        - Fixed: Searching for keywords and limiting by user wasn't working as expected.
+        - Fixed: &#037; (single-quote) etc chars not displaying correctly in RSS Feed.
+        - Fixed: Search results not actually sorting by the method picked by the user
+        - Fixed: Missing space in attachment tooltip
+        - Fixed: Search indexing was only ever indexing the first forum created.
+        - Fixed: search_index_old_post() was tripping up over threads which were lost but
+                 still had records in the database.
+        - Fixed: wordwrap plan didn't work because it seems to trim lines it wraps on some
+                 OSes and not others?
+        - Fixed: Default values in beehive-frameset.dtd needed to be in quotes.
+        - Fixed: Some bugs in the example start_main.php
+        - Fixed: Dictionary now correctly skips over web addresses and email addresses.
+        - Fixed: Missing dependencies on post.inc.php and geshi.inc.php fixed.
+        - Fixed: Old style include('./include/file.inc.php') in search.inc.php replaced with
+                 BH_INCLUDE_PATH.
+        - Fixed: Unknown column TID when deleting a message.
+        - Fixed: attachments owned by a moderator / admin were being logged in the admin log
+                 when deleted. Changed so that only attachments not owned by the moderator /
+                 admin are logged when deleted.
+        - Fixed: Bug in attachments when thumbnail could not be read (i.e. corrupted file,
+                 permissions error, locked file, etc).
+        - Fixed: Stream lined the number fo queries that $dictionary->word_get_suggestions()
+                 makes by checking that the word we're checking is well formed first.
+        - Fixed: Dictionary would take forever to find and replace all word matches and time
+                 out.
+        - Fixed: Dictionary now correctly identifies html tags and doesn't check them.
+        - Fixed: Extra single-quote characters in english.dic
+        - Fixed: Dictionary now correctly splits words in single-quotes but doesn't split
+                 words like wouldn't, couldn't aren't, can't, etc.
+        - Fixed: Error when editing a post that has not been indexed yet.
+        - Fixed: Error when folder has no ALLOWED_TYPE set.
+        - Fixed: Upgrading from 0.5 to 0.6 and doing a new install of 0.6 should create 99%
+                 identical tables now.
+        - Fixed: Text emoticons wasn't being listed in emoticon drop down on
+                 forum_options.php or admin_forum_settings.php
+        - Fixed: Your couldn't select "None" as the default emoticon type in
+                 admin_forum_settings.php
+        - Fixed: Some errors with PHP 5.0 with user_update_prefs.
+        - Fixed: top.html and stylesheet not being selected correctly when no default forum
+                 / no webtag
+        - Fixed: bug in emoticons caused them not to work correctly for some users and
+                 guests.
+        - Fixed: duplicate users in visitor log / recent visitors in drop down on post page.
+        - Fixed: Geshi has some bugs which we need to work around. Stole the old trick that
+                 we used to use for Beautifier.
+        - Fixed: Can't post when ALLOWED_TYPES in FOLDER table is null.
+        - Fixed: bh_session_check() was being called twice by the thread list once by itself
+                 and again by the RSS feed checker
+        - Fixed: Added an @ on line 153 of forum.inc.php to suppress warning when no default
+                 forum and no ?webtag in querystring. This might be a dirty way to fix it,
+                 but i can't see why it'd break anything?
+        - Fixed: Uploading a 0 byte startpage causes the admin script to always fail there
+                 after.
+        - Fixed: Searching using AND based search was returning no results!
+        - Fixed: Double frequency time being applied to post restriction.
+        - Fixed: Problem with MySQL server being in different timezone to Apache resulted in
+                 post and search frequency never allowing a user to post/search or
+                 post/search more frequently than they should.
+        - Fixed: POST_COUNT column was being updated twice when a user posted for the very
+                 first time.
+        - Fixed: check_post_frequency() and search_check_frequency() were both breaking if
+                 the server time changed to be behind the user's last post. Both functions
+                 now check to see if the frequency is set to 0 (disabled) before checking.
+        - Fixed: search.inc.php couple of bugs in new frequency test code - line 621
+                 incorrect var name $minimum_post_frequency, assumed it should be
+                 $search_min_frequency, changed. Similarly, line 630, $last_search_check,
+                 assumed it should be $last_search_stamp, changed.
+        - Fixed: Removed debugging code (oops!) and fixed missing semi-colon from query
+                 resulting in error.
+        - Fixed: Relevance wasn't being calculated correctly due to missing IN BOOLEAN MODE
+                 in SELECT.
+        - Fixed: thread list was showing unread threads when there were none because
+                 threads_any_unread() wasn't accounting for ignored completely users.
+        - Fixed: Incorrect arguments foreach on line 565
+        - Fixed: parse error in en.inc.php
+        - Fixed: Search tables inconsistencies across different upgrade paths.
+        - Fixed: Added line to create post_count in user_track table, as in new-install.php.
+
+
+        - Added: Favourites checkbox and button to Guest MyForums with an error about
+                 needing to login.
+        - Added: img { vertical-align: middle } to all CSS files.
+        - Added: English US translation
+        - Added: Script to find lang vars not defined in the default en.inc.php
+        - Added: readme.txt updated with details about MySQL privs
+        - Added: Probability test to see if we should clean the stale user sessions.
+                 Defaults to 10% probability.
+        - Added: Error out when ever the user's search query is affected by the MySQL
+                 full-text stop words
+        - Added: Link to allow the user to view the MySQL stop word list.
+        - Added: User stats differentiates between you (shown in bold), other users and your
+                 friends (shown in italic) and includes tooltips which tell you that you are
+                 Invisible or not.
+        - Added: Missing include to server.inc.php in db.inc.php
+        - Added: Link to stop words list on search form.
+        - Added: "Search Results" selection to thread list drop down.
+        - Added: Relevance to searches. BH doesn't do anything with it, but I might sneak
+                 something in before 0.6.2
+        - Added: Drop down added to search results to allow quick switching of order and
+                 removed it from the actual search query.
+        - Added: english.dic didn't have I'm in it and lots of people had added it on Teh...
+        - Added: Further explanation to search_index.php about being able to use webtag on
+                 the CLI
+        - Added: Return-path header to email functions. Seems to do nothng for tehforum but
+                 it has no negative effect either.
+        - Added: Made Beehive check the arv array for a webtag so you can now call BH's
+                 scripts from the CLI (webtag must be 1st arg!)
+        - Added: Post count caching to USER_TRACK table to reduce the load caused by someone
+                 opening a user profile.
+        - Added: Missing xhtml-lat1.ent, xhtml-special.ent, xhtml-symbol.ent to CVS. Don't
+                 really know if I should be including this or if I can reference them in the
+                 HTML. Anyone know?
+        - Added: You can now make BH dump a query log for each file by creating a PHP
+                 writable directory called db_logs in the forum folder.
+        - Added: The and They to dictionary.
+        - Added: Function to fetch the full text min and max word lengths from the MySQL
+                 server itself.
+        - Added: Functions in preperation from thread splitting functionality for 0.7
+                 release.
+        - Added: POST_COUNT column to installer and upgrade script. CVS should work again
+                 now!
+        - Added: missing semi-colon on end of height attribute in .pmhead class.
+
+
+        - Removed: Text at bottom of search dialog is no longer relevant because BH now errors
+                   out instead.
+        - Removed: Unused argument from format_date() function in format.inc.php
+        - Removed: RSS error handler
+        - Removed: Debugging code from dictionary.
+        - Removed: search_min_word_length setting as BH now uses the MySQL defaults (for MySQL
+                   < 4.0 the values are fixed at 4 and 84)
+        - Removed: Unneeded install_* classes from the provided stylesheets.
+        - Removed: Copy of put_per_forum_custom_styles_in_here
+
+
 What's new in 0.6.1 (Released 22nd Aug 2005)
 ===================
 

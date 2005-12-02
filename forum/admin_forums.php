@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.38 2005-07-03 17:49:38 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.39 2005-12-02 19:48:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -83,14 +83,16 @@ if (!perm_has_forumtools_access()) {
     exit;
 }
 
-if (isset($_POST['changepermissions'])) {
+if (isset($_POST['changepermissions']) && is_array($_POST['changepermissions'])) {
 
-    header_redirect("admin_forum_access.php?webtag=$webtag&fid={$forum_settings['fid']}");
+    list($fid) = array_keys($_POST['changepermissions']);
+    header_redirect("admin_forum_access.php?webtag=$webtag&fid=$fid");
     exit;
 
-}elseif (isset($_POST['changepassword'])) {
+}elseif (isset($_POST['changepassword']) && is_array($_POST['changepassword'])) {
 
-    header_redirect("admin_forum_set_passwd.php?webtag=$webtag&fid={$forum_settings['fid']}");
+    list($fid) = array_keys($_POST['changepassword']);
+    header_redirect("admin_forum_set_passwd.php?webtag=$webtag&fid=$fid");
     exit;
 
 }elseif (isset($_POST['submit'])) {
@@ -239,11 +241,11 @@ if (sizeof($forums_array) > 0) {
 
         if ($forum['ACCESS_LEVEL'] == 1) {
 
-            echo "&nbsp;", form_submit("changepermissions", $lang['changepermissions']);
+            echo "&nbsp;", form_submit("changepermissions[{$forum['FID']}]", $lang['changepermissions']);
 
         }elseif ($forum['ACCESS_LEVEL'] == 2) {
 
-            echo "&nbsp;", form_submit("changepassword", $lang['changepassword']);
+            echo "&nbsp;", form_submit("changepassword[{$forum['FID']}]", $lang['changepassword']);
         }
 
         echo "</td>\n";

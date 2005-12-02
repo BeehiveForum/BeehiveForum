@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.163 2005-11-25 20:49:50 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.164 2005-12-02 19:48:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,11 +44,11 @@ function get_forum_data()
 {
     static $forum_data = false;
 
-    if (!is_array($forum_data)) {
+    if (!$uid = bh_session_get_value('UID')) $uid = 0;
+
+    if (!is_array($forum_data) || !isset($forum_data['UID']) || $forum_data['UID'] != $uid) {
 
         $db_get_forum_data = db_connect();
-
-        if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
         if (isset($_GET['webtag']) && strlen(trim(_stripslashes($_GET['webtag']))) > 0) {
             $webtag = trim(_stripslashes($_GET['webtag']));
@@ -66,7 +66,7 @@ function get_forum_data()
             $webtag = addslashes($webtag);
 
             $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, CONCAT(FORUMS.WEBTAG, '', '_') AS PREFIX, ";
-            $sql.= "FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS FORUMS ";
+            $sql.= "FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, '$uid' AS UID FROM FORUMS FORUMS ";
             $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
             $sql.= "AND USER_FORUM.UID = $uid) WHERE WEBTAG = '$webtag'";
 
@@ -86,7 +86,7 @@ function get_forum_data()
             // the databse
 
             $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, CONCAT(FORUMS.WEBTAG, '', '_') AS PREFIX, ";
-            $sql.= "FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS FORUMS ";
+            $sql.= "FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, '$uid' AS UID FROM FORUMS FORUMS ";
             $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
             $sql.= "AND USER_FORUM.UID = $uid) WHERE DEFAULT_FORUM = 1";
 
@@ -119,7 +119,9 @@ function get_webtag(&$webtag_search)
 
 function get_table_prefix()
 {
-    if ($forum_data = get_forum_data()) {
+    $forum_data = get_forum_data();
+
+    if (is_array($forum_data) && isset($forum_data['WEBTAG'])) {
         return $forum_data;
     }
 

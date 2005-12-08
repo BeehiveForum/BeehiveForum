@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.27 2005-11-22 18:57:42 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.28 2005-12-08 17:24:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,72 +40,82 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 function load_language_file()
 {
-    // start out by including the English language file. This will allow
-    // us to still use Beehive even if our language file isn't up to date
-    // correctly. So long as the en.inc.php is up to date anyway ;)
+    static $lang = false;
 
-    include(BH_INCLUDE_PATH. "languages/en.inc.php");
+    if (!is_array($lang)) {
 
-    $default_language = forum_get_setting('default_language', false, 'en');
+        // start out by including the English language file. This will allow
+        // us to still use Beehive even if our language file isn't up to date
+        // correctly. So long as the en.inc.php is up to date anyway ;)
 
-     // if the user has expressed a preference for language,
-     // ignore what the browser wants and use that if available
+        include(BH_INCLUDE_PATH. "languages/en.inc.php");
 
-    if ($pref_language = bh_session_get_value("LANGUAGE")) {
+        $default_language = forum_get_setting('default_language', false, 'en');
 
-        if (@file_exists("./include/languages/{$pref_language}.inc.php")) {
+         // if the user has expressed a preference for language,
+         // ignore what the browser wants and use that if available
 
-            include(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php");
+        if ($pref_language = bh_session_get_value("LANGUAGE")) {
+
+            if (@file_exists("./include/languages/{$pref_language}.inc.php")) {
+
+                include(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php");
+                return $lang;
+            }
+        }
+
+         // if the browser doesn't send an Accept-Language header, give up.
+
+        if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+
+            include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
             return $lang;
         }
-    }
 
-     // if the browser doesn't send an Accept-Language header, give up.
+        // split the provided Accept-Language string into individual languages
 
-    if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        $langs_array = preg_split("/\s*,\s*/", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+
+         // work out what the q values associated with each language are
+
+        foreach ($langs_array as $key => $value) {
+
+            if (strstr($value, ";q=")) {
+
+                $bits = explode(";q=", $value);
+                $langs_array[$key] = $bits[0];
+                $qvalue[$key] = $bits[1];
+
+            }else {
+
+                $qvalue[$key] = 1;
+            }
+        }
+
+        // sort the array in descending order of q value
+
+        arsort($qvalue);
+
+        // go through the array and use the first language installed that matches
+        // if we've got to the stage where the user will accept any language,
+        // default to what is specified in config.inc.php
+
+        foreach ($qvalue as $key => $value) {
+
+            if ($langs_array[$key] == "*") $langs_array[$key] = $default_language;
+
+            if (@file_exists("./include/languages/{$langs_array[$key]}.inc.php")) {
+
+                include(BH_INCLUDE_PATH. "languages/{$langs_array[$key]}.inc.php");
+                return $lang;
+            }
+        }
+
+        // if we're still here, no languages matched. Use the default specified in config.inc.php
         include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
         return $lang;
     }
 
-    // split the provided Accept-Language string into individual languages
-
-    $langs = preg_split("/\s*,\s*/", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-
-     // work out what the q values associated with each language are
-
-    foreach ($langs as $key => $value) {
-        if (strstr($value, ";q=")) {
-            $bits = explode(";q=", $value);
-            $langs[$key] = $bits[0];
-            $qvalue[$key] = $bits[1];
-        }else {
-            $qvalue[$key] = 1;
-        }
-    }
-
-    // sort the array in descending order of q value
-
-    arsort($qvalue);
-
-    // go through the array and use the first language installed that matches
-    // if we've got to the stage where the user will accept any language,
-    // default to what is specified in config.inc.php
-
-    foreach ($qvalue as $key => $value) {
-
-        if ($langs[$key] == "*") $langs[$key] = $default_language;
-
-        if (@file_exists("./include/languages/{$langs[$key]}.inc.php")) {
-
-            //echo $langs[$key], " = ", $script_filename; exit;
-
-            include(BH_INCLUDE_PATH. "languages/{$langs[$key]}.inc.php");
-            return $lang;
-        }
-    }
-
-    // if we're still here, no languages matched. Use the default specified in config.inc.php
-    include(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
     return $lang;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.14 2005-11-25 16:50:27 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.15 2005-12-08 17:24:56 decoyduck Exp $ */
 
 function db_connect()
 {
@@ -61,11 +61,8 @@ function db_enable_big_selects($connection_id)
 
 function db_query($sql, $connection_id)
 {
-    global $db_query_cache_array;
-
     if ($result = @mysql_query($sql, $connection_id)) {
 
-        $db_query_cache_array[] = $sql;
         return $result;
     }
 
@@ -159,40 +156,34 @@ function db_errno($connection_id)
 
 function db_fetch_mysql_version()
 {
-    static $mysql_version = false;
+    $db_fetch_mysql_version = db_connect();
 
-    if (!$mysql_version) {
+    $sql = "SELECT VERSION() AS version";
+    $result = db_query($sql, $db_fetch_mysql_version);
 
-        $db_fetch_mysql_version = db_connect();
+    if (!$row = db_fetch_array($result)) {
 
-        $sql = "SELECT VERSION() AS version";
+        $sql = "SHOW VARIABLES LIKE 'version'";
         $result = db_query($sql, $db_fetch_mysql_version);
 
-        if (!$row = db_fetch_array($result)) {
-
-            $sql = "SHOW VARIABLES LIKE 'version'";
-            $result = db_query($sql, $db_fetch_mysql_version);
-
-            $row = db_fetch_array($result);
-        }
-
-        $version_array = explode(".", $row['version']);
-
-        if (!isset($version_array) || !isset($version_array[0])) {
-            $version_array[0] = 3;
-        }
-
-        if (!isset($version_array[1])) {
-            $version_array[1] = 21;
-        }
-
-        if (!isset($version_array[2])) {
-            $version_array[2] = 0;
-        }
-
-        $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
+        $row = db_fetch_array($result);
     }
 
+    $version_array = explode(".", $row['version']);
+
+    if (!isset($version_array) || !isset($version_array[0])) {
+        $version_array[0] = 3;
+    }
+
+    if (!isset($version_array[1])) {
+        $version_array[1] = 21;
+    }
+
+    if (!isset($version_array[2])) {
+        $version_array[2] = 0;
+    }
+
+    $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
     return $mysql_version;
 }
 

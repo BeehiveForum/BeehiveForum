@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.39 2005-10-20 21:51:17 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.40 2005-12-13 10:00:52 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -130,7 +130,7 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
     include_once(BH_INCLUDE_PATH. "install.inc.php");
 }
 
-set_time_limit(0);
+@set_time_limit(0);
 
 if (isset($forum_webtag) && strlen(trim($forum_webtag)) > 0) {
 
@@ -1481,7 +1481,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
 
             if (!$result = @db_query($sql, $db_install)) {
 
-                if ($fp = fopen($dictionary_file, 'r')) {
+                if ($fp = @fopen($dictionary_file, 'r')) {
 
                     while (!feof($fp)) {
 

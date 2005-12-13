@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.51 2005-11-14 18:54:26 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.52 2005-12-13 10:00:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -135,7 +135,7 @@ function get_my_forums()
 
             // Get any unread messages
 
-            $folders = folder_get_available($forum_fid);
+            $folders = folder_get_available_by_forum($forum_fid);
 
             $user_ignored = USER_IGNORED;
             $user_ignored_completely = USER_IGNORED_COMPLETELY;

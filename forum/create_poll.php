@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.166 2005-11-21 20:49:24 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.167 2005-12-21 17:32:50 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -41,6 +41,9 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();

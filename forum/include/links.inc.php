@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.inc.php,v 1.53 2005-10-06 15:47:11 decoyduck Exp $ */
+/* $Id: links.inc.php,v 1.54 2005-12-21 17:33:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -131,9 +131,10 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     if (!is_numeric($fid)) return false;
     if (!is_numeric($uid)) return false;
 
-    $uri = addslashes($uri);
-    $title = addslashes($title);
-    $description = addslashes($description);
+    $uri = addslashes(_htmlentities($uri));
+
+    $title = addslashes(_htmlentities($title));
+    $description = addslashes(_htmlentities($description));
 
     $db_links_add = db_connect();
 
@@ -151,7 +152,7 @@ function links_create_top_folder($name)
 {
     $db_links_add_folder = db_connect();
 
-    $name = addslashes($name);
+    $name = addslashes(_htmlentities($name));
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -166,7 +167,7 @@ function links_add_folder($fid, $name, $visible = false)
 {
     if (!is_numeric($fid)) return false;
 
-    $name = addslashes($name);
+    $name = addslashes(_htmlentities($name));
 
     $db_links_add_folder = db_connect();
 
@@ -434,7 +435,7 @@ function links_add_comment($lid, $uid, $comment)
     if (!is_numeric($lid))  return false;
     if (!is_numeric($uid))  return false;
 
-    $comment = addslashes($comment);
+    $comment = addslashes(_htmlentities($comment));
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -525,9 +526,10 @@ function links_update($lid, $fid, $title, $uri, $description)
     if (!is_numeric($lid)) return false;
     if (!is_numeric($fid)) return false;
 
-    $title = addslashes($title);
-    $uri = addslashes($uri);
-    $description = addslashes($description);
+    $uri = addslashes(_htmlentities($uri));
+
+    $title = addslashes(_htmlentities($title));
+    $description = addslashes(_htmlentities($description));
 
     if (!$table_data = get_table_prefix()) return false;
 

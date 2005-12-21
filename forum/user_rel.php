@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.71 2005-04-27 19:47:16 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.72 2005-12-21 17:32:51 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -42,6 +42,9 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();

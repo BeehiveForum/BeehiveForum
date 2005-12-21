@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.92 2005-05-23 22:47:05 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.93 2005-12-21 17:32:51 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -41,6 +41,9 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();

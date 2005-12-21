@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.200 2005-11-20 16:12:05 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.201 2005-12-21 17:33:12 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -364,6 +364,7 @@ function bh_session_get_value($session_key)
 {
     global $user_sess;
 
+    if (!is_array($user_sess)) return false;
     if (isset($user_sess[$session_key])) return $user_sess[$session_key];
     if (strtoupper($session_key) == 'UID') return 0;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.80 2005-05-14 12:43:36 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.81 2005-12-21 17:32:49 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -45,6 +45,9 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();

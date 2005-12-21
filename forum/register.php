@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.123 2005-11-22 18:57:43 decoyduck Exp $ */
+/* $Id: register.php,v 1.124 2005-12-21 17:32:50 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -41,6 +41,9 @@ include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
 
 // Installation checking functions
 include_once(BH_INCLUDE_PATH. "install.inc.php");
+
+// Server checking functions
+include_once(BH_INCLUDE_PATH. "server.inc.php");
 
 // Check that Beehive is installed correctly
 check_install();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.259 2005-11-29 21:57:31 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.260 2005-12-28 14:58:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -561,6 +561,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         }else {
 
             // no previous entry, construct an INSERT query
+
+            $values_array = array();
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
                  $values_array[$pref_name] = "'$pref_setting'";

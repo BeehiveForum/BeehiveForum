@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.379 2005-11-09 20:55:58 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.380 2005-12-29 21:18:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1573,7 +1573,7 @@ function messages_forum_stats($tid, $pid)
                 echo "        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "          <tr>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
-                echo "            <td>{$lang['longestthreadis']} '<a href=\"?msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ",", ","), "</b> {$lang['postslowercase']}.</td>\n";
+                echo "            <td>{$lang['longestthreadis']} '<a href=\"./index.php?webtag=$webtag&amp;msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ",", ","), "</b> {$lang['postslowercase']}.</td>\n";
                 echo "            <td width=\"35\">&nbsp;</td>\n";
                 echo "          </tr>\n";
                 echo "        </table>\n";

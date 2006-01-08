@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.php,v 1.45 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: user.php,v 1.46 2006-01-08 21:40:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,27 +86,13 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-$stylesheet = html_get_style_sheet();
+html_draw_top('body_tag=false');
 
-// Forum Name
-
-$forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-
-$dtdpath = html_get_forum_uri();
-
-echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehiveforum.dtd\">\n";
-echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
-echo "<head>\n";
-echo "<title>$forum_name</title>\n";
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
-echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
-echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
-echo "</head>\n";
 echo "<frameset cols=\"180,*\" border=\"1\">\n";
-echo "<frame src=\"./user_menu.php?webtag=$webtag\" name=\"left\" border=\"1\" />\n";
-echo "<frame src=\"./user_main.php?webtag=$webtag\" name=\"right\" border=\"1\" />\n";
+echo "<frame src=\"./user_menu.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+echo "<frame src=\"./user_main.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 echo "</frameset>\n";
-echo "</html>\n";
+
+html_draw_bottom(false);
 
 ?>

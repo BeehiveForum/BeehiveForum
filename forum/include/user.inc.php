@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.260 2005-12-28 14:58:16 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.261 2006-01-08 21:40:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -403,10 +403,10 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     that when true set the appropriate preference globally and when false only set it for the current forum.
     The default behaviour is to set a preference globally if it is not specified otherwise.
 
-    e.g.    $prefs_array                  $prefs_global_setting_array      Result
-            'STYLE' => 'default'          'STYLE' => true                  Sets STYLE to 'default' globally
-            'VIEW_SIGS' => 'N'            'VIEW_SIGS' => false             Sets VIEW_SIGS to 'N' for current forum only
-            'FONT_SIZE' => 11             'FONT_SIZE' not set              Sets FONT_SIZE to 11 globally
+    e.g.  $prefs_array           $prefs_global_setting_array    Result
+          'STYLE' => 'default'   'STYLE' => true                Sets STYLE to 'default' globally
+          'VIEW_SIGS' => 'N'     'VIEW_SIGS' => false           Sets VIEW_SIGS to 'N' for current forum only
+          'FONT_SIZE' => 11      'FONT_SIZE' not set            Sets FONT_SIZE to 11 globally
 
     FIRSTNAME, LASTNAME, DOB, TIMEZONE, DL_SAVING and POST_PAGE can only be set globally - there's no sense
     in changing them on a per-forum basis.
@@ -449,14 +449,23 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                 // preference is to be set globally.
                 // check this pref name is allowed to be set globally
 
-                if (in_array($pref_name, $global_pref_names)) $global_prefs[$pref_name] = $pref_setting;
+
+                if (in_array($pref_name, $global_pref_names)) {
+
+                    if (!isset($global_prefs) || !is_array($global_prefs)) $global_prefs = array();
+                    $global_prefs[$pref_name] = $pref_setting;
+                }
 
             }else {
 
                 // preference is to be set for current forum only
                 // check this pref name is allowed to be set on a per-forum basis
 
-                if (in_array($pref_name, $forum_pref_names)) $forum_prefs[$pref_name] = $pref_setting;
+                if (in_array($pref_name, $forum_pref_names)) {
+
+                    if (!isset($forum_prefs) || !is_array($forum_prefs)) $forum_prefs = array();
+                    $forum_prefs[$pref_name] = $pref_setting;
+                }
             }
         }
     }
@@ -466,16 +475,21 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     $result_global = true;
     $result_forum  = true;
 
-    if (isset($global_prefs)) {
+    if (isset($global_prefs) && is_array($global_prefs)) {
 
         // Is there an entry in USER_PREFS already for this user?
 
-        $sql = "SELECT * FROM USER_PREFS WHERE UID = $uid";
+        $sql = "SELECT COUNT(*) FROM USER_PREFS WHERE UID = $uid";
         $result_global = db_query($sql, $db_user_update_prefs);
 
-        if (db_num_rows($result_global) > 0) {
+        list($user_pref_count) = db_fetch_array($result_global, DB_RESULT_NUM);
+
+        if ($user_pref_count > 0) {
 
             // previous entry which we will UPDATE
+
+            $values  = array();
+            $columns = array();
 
             $values_array = array();
 
@@ -495,6 +509,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             // no previous entry, construct an INSERT query
 
+            $values  = array();
+            $columns = array();
+
             $values_array = array();
 
             foreach($global_prefs as $pref_name => $pref_setting) {
@@ -504,7 +521,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             if (sizeof($values_array) > 0) {
 
                 $columns = implode(", ", array_keys($values_array));
-                $values = implode(", ", array_values($values_array));
+                $values  = implode(", ", array_values($values_array));
 
                 $sql = "INSERT INTO USER_PREFS (UID, $columns) VALUES ('$uid', $values) ";
                 $result_global = db_query($sql, $db_user_update_prefs);
@@ -513,6 +530,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
         // If a pref is set globally, we need to remove it from all the [webtag]_USER_PREFS tables too.
         // MySQL doesn't mind if a record for this user doesn't exist in a particular table.
+
+        $values  = array();
+        $columns = array();
 
         $values_array = array();
 
@@ -524,7 +544,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
         if (sizeof($values_array) > 0) {
 
-            $values = implode(", ", $values_array);
+            $values  = implode(", ", $values_array);
             $webtags = forum_get_all_webtags();
 
             foreach($webtags as $webtag) {
@@ -535,7 +555,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         }
     }
 
-    if (isset($forum_prefs) && $table_data = get_table_prefix()) {
+    if (isset($forum_prefs) && is_array($forum_prefs) && $table_data = get_table_prefix()) {
 
         $sql = "SELECT * FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
         $result_forum = db_query($sql, $db_user_update_prefs);
@@ -543,6 +563,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         if (db_num_rows($result_forum) > 0) {
 
             // previous entry which we will UPDATE
+
+            $values  = array();
+            $columns = array();
 
             $values_array = array();
 
@@ -562,6 +585,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             // no previous entry, construct an INSERT query
 
+            $values  = array();
+            $columns = array();
+
             $values_array = array();
 
             foreach($forum_prefs as $pref_name => $pref_setting) {
@@ -571,7 +597,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
             if (sizeof($values_array) > 0) {
 
                 $columns = implode(", ", array_keys($values_array));
-                $values = implode(", ", array_values($values_array));
+                $values  = implode(", ", array_values($values_array));
 
                 $sql = "INSERT INTO {$table_data['PREFIX']}USER_PREFS (UID, $columns) VALUES ('$uid', $values) ";
                 $result_forum = db_query($sql, $db_user_update_prefs);

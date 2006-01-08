@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.178 2005-11-25 16:50:27 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.179 2006-01-08 21:40:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -332,10 +332,13 @@ function html_draw_top()
     $arg_array = func_get_args();
     $meta_refresh_delay = false;
     $meta_refresh_url = false;
+
     $robots = "noindex,follow";
 
     $forum_settings = forum_get_settings();
     $webtag = get_webtag($webtag_search);
+
+    $include_body_tag = true;
 
     foreach($arg_array as $key => $func_args) {
 
@@ -385,6 +388,11 @@ function html_draw_top()
 
         if (preg_match("/^robots=/i", $func_args) > 0) {
             $robots = substr($func_args, 7);
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match("/^body_tag=/i", $func_args) > 0) {
+            $include_body_tag = substr($func_args, 9);
             unset($arg_array[$key]);
         }
     }
@@ -506,10 +514,17 @@ function html_draw_top()
     $onunload = trim(implode(";", $onunload_array));
 
     echo "</head>\n\n";
-    echo "<body", ($body_class) ? " class=\"$body_class\"" : "", (strlen($onload) > 0) ? " onload=\"$onload\"" : "", (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "", ">\n";
+
+    if ($include_body_tag === true) {
+
+        echo "<body", ($body_class) ? " class=\"$body_class\"" : "";
+        echo (strlen($onload) > 0) ? " onload=\"$onload\"" : "";
+        echo (strlen($onunload) > 0) ? " onunload=\"$onunload\"" : "";
+        echo ">\n";
+    }
 }
 
-function html_draw_bottom ()
+function html_draw_bottom($include_body_tag = true)
 {
     global $db_query_cache_array;
 
@@ -520,7 +535,10 @@ function html_draw_bottom ()
         fclose($fp);
     }
 
-    echo "</body>\n";
+    if ($include_body_tag === true) {
+        echo "</body>\n";
+    }
+
     echo "</html>\n";
 }
 
@@ -777,10 +795,10 @@ function html_get_forum_uri($path_only = false)
             $uri_array['path'] = $path['path'];
             unset($path);
         }
-
-        $uri_array['path'] = dirname($uri_array['path']);
     }
 
+    $uri_array['path'] = dirname($uri_array['path']);
+    $uri_array['path'] = preg_replace("/\\\/", "/", $uri_array['path']);
     $uri_array['path'] = preg_replace("/\/$/", "", $uri_array['path']);
 
     $server_uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.121 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: index.php,v 1.122 2006-01-08 21:40:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -62,10 +62,9 @@ $user_sess = bh_session_check(false);
 
 $lang = load_language_file();
 
-// Top frame and style sheet
+// Top frame filename
 
-$top_html   = html_get_top_page();
-$stylesheet = html_get_style_sheet();
+$top_html = html_get_top_page();
 
 if (bh_session_active()) {
 
@@ -73,27 +72,12 @@ if (bh_session_active()) {
 
     $webtag = get_webtag($webtag_search);
 
-    // Forum Name
-
-    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-
     // Calculate how tall the nav frameset should be based on the user's fontsize.
 
     $navsize = bh_session_get_value('FONT_SIZE');
     $navsize = max(($navsize ? $navsize * 2 : 22), 22);
 
-    $dtdpath = html_get_forum_uri();
-
-    echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehiveforum.dtd\">\n";
-    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
-    echo "<head>\n";
-    echo "<title>$forum_name</title>\n";
-    echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
-    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
-    echo "<meta name=\"robots\" content=\"index,follow\" />\n";
-    echo "</head>\n";
+    html_draw_top('body_tag=false', 'robots=index,follow');
 
     echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"$top_html\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
@@ -173,26 +157,11 @@ if (bh_session_active()) {
 
 }else {
 
-    // Forum Title
-
-    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
-
-    $dtdpath = html_get_forum_uri();
-
     // Fetch the forum settings
 
     $webtag = get_webtag($webtag_search);
 
-    echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehiveforum.dtd\">\n";
-    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
-    echo "<head>\n";
-    echo "<title>$forum_name</title>\n";
-    echo "<link rel=\"stylesheet\" href=\"{$stylesheet}\" type=\"text/css\" />\n";
-    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-    echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$forum_name} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
-    echo "<meta name=\"robots\" content=\"index,follow\" />\n";
-    echo "</head>\n";
+    html_draw_top('body_tag=false', 'robots=index,follow');
 
     echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"$top_html\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
@@ -254,6 +223,7 @@ echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target
 echo "</body>\n";
 echo "</noframes>\n";
 echo "</frameset>\n";
-echo "</html>\n";
+
+html_draw_bottom(false);
 
 ?>

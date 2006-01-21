@@ -21,13 +21,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-062.php,v 1.9 2005-12-13 10:00:52 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-062.php,v 1.10 2006-01-21 23:40:39 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
-    if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
-        echo "Error: CLI Upgrade must be run from within install directory.";
-        exit;
+    if (strstr(php_sapi_name(), 'cgi')) {
+
+        $install_cgi_mode  = true;
+        $install_cgi_valid = false;
+
+        $current_directory = basename(getcwd());
+
+    }else {
+
+        $install_cgi_mode  = false;
+        $install_cgi_valid = false;
+
+        $current_directory = preg_replace('/\\\/', '/', getcwd());
+
+        if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
+            echo "Error: CLI Upgrade must be run from within install directory.\n";
+            exit;
+        }
     }
 
     define("BH_INCLUDE_PATH", "../include/");
@@ -37,8 +52,6 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
     include_once(BH_INCLUDE_PATH. "install.inc.php");
 
     $remove_conflicts = true;
-
-    $install_path = "";
 
     $beehive_version = BEEHIVE_VERSION;
 
@@ -60,11 +73,21 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
             $db_database = $database_matches[1];
         }
 
+        if (preg_match("/^-Cq/", $arg) > 0) {
+            $install_cgi_valid = true;
+        }
+
         if (preg_match("/^--help/", $arg) > 0) {
 
             install_cli_show_upgrade_help();
             exit;
         }
+    }
+
+    if ($install_cgi_mode === true && $install_cgi_valid === false) {
+        echo "When using PHP CGI binary you must specify -Cq option.\n\n";
+        install_cli_show_help();
+        exit;
     }
 
     if (!isset($db_server)) {

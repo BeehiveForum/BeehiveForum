@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.13 2005-10-29 17:53:43 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.14 2006-01-21 23:40:35 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -45,6 +45,7 @@ include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
@@ -63,6 +64,13 @@ if (!$webtag = get_webtag($webtag_search)) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
 }
 
+// User's UID and LOGON for use later in the script.
+
+$uid = bh_session_get_value('UID');
+$logon = bh_session_get_value('LOGON');
+
+// Function to format the display of people's names.
+
 function formatname($filename)
 {
     return ucfirst(strtolower($filename));
@@ -78,11 +86,9 @@ $images_array = array();
 
 // Uploading an image?
 
-if (isset($_POST['upload'])) {
+if (isset($_POST['upload']) && $uid > 0) {
 
     if (isset($_FILES['userimage']['tmp_name']) && @is_readable($_FILES['userimage']['tmp_name'])) {
-
-        $logon = bh_session_get_value('LOGON');
 
         $tempfile = $_FILES['userimage']['tmp_name'];
         $filepath = "$images_dir/$logon";
@@ -95,9 +101,26 @@ if (isset($_POST['upload'])) {
 
                     unlink($filepath);
                     rename("$filepath.thumb", $filepath);
+
+                    html_draw_top();
+
+                    echo "<h1>Uploaded Image</h1>\n";
+                    echo "<div class=\"image\">\n";
+                    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\"><img src=\"$images_dir/$logon\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
+                    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\">", formatname($logon), "</a></div></p>\n";
+                    echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload different image</a>]</div></p>\n";
+                    echo "</div>\n";
+
+                    html_draw_bottom();
+                    exit;
                 }
             }
         }
+
+        html_draw_top();
+        echo "<h1>Error</h1>\n";
+        echo "<p>Something went wrong. You'll be needing to try again.</p>";
+        html_draw_bottom();
     }
 }
 
@@ -124,7 +147,41 @@ sort($images_array);
 
 html_draw_top('openprofile.js');
 
-if (isset($_GET['upload'])) {
+// Delete a selected image
+
+if (isset($_GET['delete'])) {
+
+    $image = basename($_GET['delete']);
+
+    if (perm_has_admin_access() || strtolower($image) == strtolower($logon)) {
+
+        echo "<h1>Delete Image</h1>\n";
+        echo "<div class=\"image\">\n";
+        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
+        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></div></p>\n";
+        echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?confirm_delete=$image\">Delete</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Cancel</a>]</div></p>\n";
+        echo "</div>\n";
+
+        html_draw_bottom();
+        exit;
+    }
+
+}elseif (isset($_GET['confirm_delete'])) {
+
+    $image = basename($_GET['confirm_delete']);
+
+    if (perm_has_admin_access() || strtolower($image) == strtolower($logon)) {
+
+        if (@file_exists("forums/$webtag/images/forumites/$image")) {
+
+            unlink("forums/$webtag/images/forumites/$image");
+        }
+    }
+}
+
+// Upload / Show Gallery / Random image
+
+if (isset($_GET['upload']) && $uid > 0) {
 
     echo "<h1>Upload Image</h1>\n";
     echo "<br />\n";
@@ -137,7 +194,7 @@ if (isset($_GET['upload'])) {
     echo "<p>Some rules:</p>\n";
     echo "<ol>\n";
     echo "  <li>You only get one image, which is stored as your forum logon.</li>\n";
-    echo "  <li>Image will be automatically resized down to a max of 400x400px.</li>\n";
+    echo "  <li>Image will be automatically resized down to a max of 300x300px.</li>\n";
     echo "</ol>\n";
 
 }elseif (isset($HTTP_GET_VARS['gallery'])) {
@@ -152,12 +209,19 @@ if (isset($_GET['upload'])) {
         echo "    <td align=\"center\">\n";
         echo "      <p><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></p>\n";
         echo "      <p class=\"bodytext\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></p>\n";
+
+        if (perm_has_admin_access() || strtolower($image) == strtolower($logon)) {
+            echo "      <p class=\"bodytext\"><a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?delete=$image\">[Delete]</a></p>\n";
+        }
+
         echo "    </td>\n";
         echo "  </tr>\n";
     }
 
     echo "</table>\n";
-    echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload an image</a>]</div></p>\n";
+    echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a>";
+    echo $uid > 0 ? "| <a href=\"?upload\">Upload an image</a>" : "";
+    echo "]</div></p>\n";
     echo "</div>\n";
 
 }elseif (is_array($images_array) && sizeof($images_array) > 0) {
@@ -168,13 +232,20 @@ if (isset($_GET['upload'])) {
     echo "<div class=\"image\">\n";
     echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
     echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></div></p>\n";
-    echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload an image</a>]</div></p>\n";
+    echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a>";
+    echo $uid > 0 ? "| <a href=\"?upload\">Upload an image</a>" : "";
+    echo "]</div></p>\n";
     echo "</div>\n";
 
 }else {
 
     echo "<h1>Convicts Gallery</h1>\n";
-    echo "<p><div align=\"center\">[<a href=\"?upload\">Upload an image</a>]</div></p>\n";
+
+    if ($uid > 0) {
+        echo "<p><div align=\"center\">[<a href=\"?upload\">Upload an image</a>]</div></p>\n";
+    }else {
+        echo "<p><div align=\"center\">Gallery is empty</div></p>\n";
+    }
 }
 
 html_draw_bottom();

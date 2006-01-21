@@ -21,13 +21,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.40 2005-12-13 10:00:52 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.41 2006-01-21 23:40:37 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
-    if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
-        echo "Error: CLI Upgrade must be run from within install directory.";
-        exit;
+    if (strstr(php_sapi_name(), 'cgi')) {
+
+        $install_cgi_mode  = true;
+        $install_cgi_valid = false;
+
+        $current_directory = basename(getcwd());
+
+    }else {
+
+        $install_cgi_mode  = false;
+        $install_cgi_valid = false;
+
+        $current_directory = preg_replace('/\\\/', '/', getcwd());
+
+        if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
+            echo "Error: CLI Upgrade must be run from within install directory.\n";
+            exit;
+        }
     }
 
     define("BH_INCLUDE_PATH", "../include/");
@@ -38,7 +53,6 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
     $remove_conflicts = true;
 
-    $current_directory = preg_replace('/\\\/', '/', getcwd());
     $dictionary_file = "$current_directory/english.dic";
 
     $beehive_version = BEEHIVE_VERSION;
@@ -65,11 +79,21 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
             $forum_webtag = $webtag_matches[1];
         }
 
+        if (preg_match("/^-Cq/", $arg) > 0) {
+            $install_cgi_valid = true;
+        }
+
         if (preg_match("/^--help/", $arg) > 0) {
 
             install_cli_show_upgrade_help();
             exit;
         }
+    }
+
+    if ($install_cgi_mode === true && $install_cgi_valid === false) {
+        echo "When using PHP CGI binary you must specify -Cq option.\n\n";
+        install_cli_show_help();
+        exit;
     }
 
     if (!isset($db_server)) {
@@ -1479,7 +1503,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $sql.= "FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' ";
             $sql.= "(WORD, SOUND)";
 
-            if (!$result = @db_query($sql, $db_install)) {
+            if ($install_cgi_mode || !$result = @db_query($sql, $db_install)) {
 
                 if ($fp = @fopen($dictionary_file, 'r')) {
 

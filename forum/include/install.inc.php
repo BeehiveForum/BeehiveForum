@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.37 2005-10-20 20:49:36 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.38 2006-01-21 23:40:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -275,7 +275,7 @@ function install_cli_show_help()
 
     echo "BeehiveForum $beehive_version CLI installer\n";
     echo "Copyright Project BeehiveForum 2002\n";
-    echo "Usage: php-cli new-install.php [OPTIONS]\n";
+    echo "Usage: php [-Cq] new-install.php [OPTIONS]\n";
     echo "  --help      Display this help and exit\n";
     echo "  -h          MySQL hostname to connect to\n";
     echo "  -u          Username to use when connecting to MySQL server\n";
@@ -285,6 +285,7 @@ function install_cli_show_help()
     echo "  -U          Admin user account to create [Default: ADMIN]\n";
     echo "  -P          Password to use for Admin account [Default: honey]\n";
     echo "  -E          Email address to use [Default: admin@abeehiveforum.net]\n";
+    echo "  -Cq         Required when using PHP CGI binary to install.\n";
 }
 
 function install_cli_show_upgrade_help()
@@ -293,7 +294,7 @@ function install_cli_show_upgrade_help()
 
     echo "BeehiveForum $beehive_version CLI upgrader\n";
     echo "Copyright Project BeehiveForum 2002 - ", date("Y", mktime()), "\n";
-    echo "Usage: php-cli new-install.php [OPTIONS]\n";
+    echo "Usage: php [-Cq] new-install.php [OPTIONS]\n";
     echo "  --help      Display this help and exit\n";
     echo "  -h          MySQL hostname to connect to\n";
     echo "  -u          Username to use when connecting to MySQL server\n";
@@ -302,7 +303,8 @@ function install_cli_show_upgrade_help()
     echo "  -w          Webtag to use for forum\n";
     echo "  -U          Admin user account to create [Default: ADMIN]\n";
     echo "  -P          Password to use for Admin account [Default: honey]\n";
-    echo "  -E          Email address to use [Default: admin@abeehiveforum.net]\n\n";
+    echo "  -E          Email address to use [Default: admin@abeehiveforum.net]\n";
+    echo "  -Cq         Required when using PHP CGI binary to install.\n\n";
     echo "Depending on the version of Beehive you're upgrading to you may not\n";
     echo "need to specify all of these options. Any options not required by\n";
     echo "this script will be ignored.\n";

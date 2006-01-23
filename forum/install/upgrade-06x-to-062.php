@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-062.php,v 1.10 2006-01-21 23:40:39 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-062.php,v 1.11 2006-01-23 01:01:55 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -129,6 +129,12 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
     exit;
 
 }else {
+
+    if (strstr(php_sapi_name(), 'cgi')) {
+        $install_cgi_mode = true;
+    }else {
+        $install_cgi_mode = false;
+    }
 
     include_once(BH_INCLUDE_PATH. "constants.inc.php");
     include_once(BH_INCLUDE_PATH. "db.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.41 2006-01-21 23:40:37 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.42 2006-01-23 01:01:53 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -141,6 +141,12 @@ if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
     exit;
 
 }else {
+
+    if (strstr(php_sapi_name(), 'cgi')) {
+        $install_cgi_mode = true;
+    }else {
+        $install_cgi_mode = false;
+    }
 
     if (!isset($_SERVER['SCRIPT_FILENAME'])) {
         $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];

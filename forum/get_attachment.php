@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.14 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.15 2006-01-23 01:00:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -130,17 +130,19 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
 if (isset($hash) && is_md5($hash)) {
 
-    // Increment the 'Downloaded x times tooltip text'
-    attachment_inc_dload_count($hash);
-
     if ($attachment_details = get_attachment_by_hash($hash)) {
 
-        // If we're requesting the thumbnail then we need
-        // to apprent .thumb to the filepath
+        // If we're requesting the thumbnail then we need to append
+        //.thumb to the filepath. If we're getting the full image we
+        // increase the view count by one.
 
         if (isset($_GET['thumb']) && $_GET['thumb'] == 1) {
+
             $filepath = "{$attachment_dir}/{$attachment_details['HASH']}.thumb";
+
         }else {
+
+            attachment_inc_dload_count($hash);
             $filepath = "{$attachment_dir}/{$attachment_details['HASH']}";
         }
 

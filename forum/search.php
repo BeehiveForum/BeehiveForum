@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.132 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: search.php,v 1.133 2006-01-28 11:58:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -218,9 +218,28 @@ if (isset($_POST) && sizeof($_POST) > 0) {
                 echo "<p>{$lang['usernamenotfound']}</p>\n";
                 break;
             case SEARCH_NO_KEYWORDS:
+
                 $mysql_stop_word_link = "<a href=\"javascript:void(0);\" onclick=\"display_mysql_stopwords('$webtag')\">{$lang['mysqlstopwordlist']}</a>";
+
                 echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
+
+                if (isset($search_arguments['search_string']) && strlen(trim(_stripslashes($search_arguments['search_string']))) > 0) {
+
+                    $search_string = trim(_stripslashes($search_arguments['search_string']));
+                    $keywords_error_array = search_strip_keywords($search_string, true);
+
+                    echo "<h2>Keywords containing errors:</h2>\n";
+                    echo "<ul>\n";
+
+                    foreach($keywords_error_array['keywords'] as $keyword_error) {
+                        echo "  <li>$keyword_error</li>\n";
+                    }
+
+                    echo "</ul>\n";
+                }
+
                 break;
+
             case SEARCH_FREQUENCY_TOO_GREAT:
                 echo "<p>{$lang['searchfrequencyerror_1']} $search_frequency {$lang['searchfrequencyerror_2']}</p>\n";
                 break;

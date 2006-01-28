@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.153 2005-11-11 00:28:25 benlumley Exp $ */
+/* $Id: search.inc.php,v 1.154 2006-01-28 11:58:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -39,12 +39,6 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 function search_execute($argarray, &$error)
 {
     $uid = bh_session_get_value('UID');
-
-    // MySQL has a list of stop words for fulltext searches.
-    // We'll save ourselves some server time by checking
-    // them first.
-
-    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -148,42 +142,10 @@ function search_execute($argarray, &$error)
 
         $search_string = trim(_stripslashes($argarray['search_string']));
 
-        // Filter the input so the user can't do anything dangerous with it
+        $search_keywords_array = search_strip_keywords($search_string);
 
-        $search_string = str_replace("%", "", $search_string);
-
-        // Split the search string into boolean parts and clean out
-        // the empty array values.
-
-        $keyword_match = "([\+|-]?[\w']+)|([\+|-]?[\"][\w'\s']+[\"])";
-
-        $keywords_array = preg_split("/$keyword_match/", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $keywords_array = preg_grep("/^ {0,}$/", $keywords_array, PREG_GREP_INVERT);
-
-        // Get the min and max word lengths that MySQL supports
-
-        search_get_word_lengths($min_length, $max_length);
-
-        // The number of boolean parts the user is searching for before
-        // we remove the bad ones.
-
-        $unfiltered_keyword_count = sizeof($keywords_array);
-
-        // Prepare the MySQL Full-Text stop word list
-
-        array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
-        $mysql_fulltext_stopwords = implode('$|^', $mysql_fulltext_stopwords);
-
-        // Filter the boolean parts through the MySQl Full-Text stop word list
-        // and by checking individual words lengths.
-
-        $keywords_array = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/", $keywords_array);
-        $keywords_array = preg_grep("/^$mysql_fulltext_stopwords$/", $keywords_array, PREG_GREP_INVERT);
-
-        // The number of boolean parts we're left with. If they're less
-        // than the number the user gave us we error out now.
-
-        $filtered_keyword_count = sizeof($keywords_array);
+        $filtered_keyword_count   = $search_keywords_array['filtered_word_count'];
+        $unfiltered_keyword_count = $search_keywords_array['unfiltered_word_count'];
 
         if ($filtered_keyword_count > 0 && $filtered_keyword_count == $unfiltered_keyword_count) {
 
@@ -198,7 +160,7 @@ function search_execute($argarray, &$error)
 
             $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
 
-            $search_string = addslashes(implode(' ', $keywords_array));
+            $search_string = addslashes(implode(' ', $search_keywords_array['keywords']));
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE, KEYWORDS) SELECT $uid, ";
@@ -255,6 +217,73 @@ function search_execute($argarray, &$error)
 
     $error = SEARCH_NO_MATCHES;
     return false;
+}
+
+function search_strip_keywords($search_string, $strip_valid = false)
+{
+
+    // MySQL has a list of stop words for fulltext searches.
+    // We'll save ourselves some server time by checking
+    // them first.
+
+    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
+
+    // Filter the input so the user can't do anything dangerous with it
+
+    $search_string = str_replace("%", "", $search_string);
+
+    // Split the search string into boolean parts and clean out
+    // the empty array values.
+
+    $keyword_match = "([\+|-]?[\w']+)|([\+|-]?[\"][\w'\s']+[\"])";
+
+    $keywords_array = preg_split("/$keyword_match/", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $keywords_array = preg_grep("/^ {0,}$/", $keywords_array, PREG_GREP_INVERT);
+
+    // Get the min and max word lengths that MySQL supports
+
+    search_get_word_lengths($min_length, $max_length);
+
+    // The number of boolean parts the user is searching for before
+    // we remove the bad ones.
+
+    $keywords_array = array_values($keywords_array);
+    $unfiltered_keyword_count = sizeof($keywords_array);
+
+    // Prepare the MySQL Full-Text stop word list
+
+    array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
+    $mysql_fulltext_stopwords = implode('$|^', $mysql_fulltext_stopwords);
+
+    // Filter the boolean parts through the MySQl Full-Text stop word list
+    // and by checking individual words lengths.
+
+    if ($strip_valid === true) {
+
+        $keywords_array_length = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/", $keywords_array, PREG_GREP_INVERT);
+        $keywords_array_swords = preg_grep("/^$mysql_fulltext_stopwords$/", $keywords_array);
+
+        $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
+
+    }else {
+
+        $keywords_array = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/", $keywords_array);
+        $keywords_array = preg_grep("/^$mysql_fulltext_stopwords$/", $keywords_array, PREG_GREP_INVERT);
+    }
+
+    // Remove any duplicate words, reindex the array and finally
+    // count the number of boolean parts we're left with.
+    // If they're less than the number the user gave us we have
+    // an error somewhere.
+
+    $keywords_array = array_unique($keywords_array);
+    $keywords_array = array_values($keywords_array);
+
+    $filtered_keyword_count = sizeof($keywords_array);
+
+    return array('keywords' => $keywords_array,
+                 'unfiltered_word_count' => $unfiltered_keyword_count,
+                 'filtered_word_count'   => $filtered_keyword_count);
 }
 
 function search_get_word_lengths(&$min_length, &$max_length)

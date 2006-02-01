@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.116 2005-10-28 17:31:59 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.117 2006-02-01 19:03:22 tribalonline Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1200,7 +1200,7 @@ function clean_styles ($style)
     // no inline comments
     $style = preg_replace("/\*+\/+|\/+\*+/x", "", $style);
     // no absolute positioning
-    $style = preg_replace("/position:absolute/ix", "", $style);
+    $style = preg_replace("/position/i", "", $style);
     // no XSS javascript hacks
     $style = preg_replace("/url\(|expression\(/ix", "", $style);
     return $style;

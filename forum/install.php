@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.53 2006-02-09 23:39:24 decoyduck Exp $ */
+/* $Id: install.php,v 1.54 2006-02-09 23:43:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -249,7 +249,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
                     if ($config_saved) {
 
-                        echo "<form method=\"post\" action=\"./install.php\">\n";
+                        echo "<form method=\"post\" action=\"../index.php\">\n";
                         echo "  <input type=\"hidden\" name=\"force_install\" value=\"", ($force_install) ? "yes" : "no", "\" />\n";
                         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
                         echo "    <tr>\n";
@@ -508,15 +508,6 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
         $error_array[] = "Could not complete installation. Error was: failed to read config.inc.php\n";
         $valid = false;
     }
-
-}elseif (isset($_POST['finish_install'])) {
-
-    if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
-
-        install_remove_files();
-    }
-
-    header_redirect('index.php');
 }
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";

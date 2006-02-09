@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.38 2006-01-21 23:40:35 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.39 2006-02-09 23:43:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -51,6 +51,12 @@ function dir_exists($dir)
 
 function check_install()
 {
+    if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
+
+        install_remove_files();
+	header_redirect('index.php');
+    }
+
     if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
 
         if ((@dir_exists('install') || @file_exists('install.php')) && !defined("BEEHIVE_INSTALL_NOWARN")) {

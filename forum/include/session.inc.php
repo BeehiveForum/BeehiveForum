@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.201 2005-12-21 17:33:12 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.202 2006-02-09 23:39:25 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -588,7 +588,7 @@ function parse_array($array, $sep, &$result_var)
 
             if ($key == 'webtag') {
 
-                if (preg_match("/^[A-Z0-9_-]+$/", $value) > 0) {
+                if (preg_match("/^[A-Z0-9_]+$/", $value) > 0) {
 
                     $result_var.= "webtag=$value$sep";
                 }

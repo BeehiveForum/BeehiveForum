@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.40 2005-12-21 17:32:49 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.41 2006-02-09 23:39:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -115,7 +115,7 @@ if (isset($_POST['changepermissions']) && is_array($_POST['changepermissions']))
 
         $new_webtag = strtoupper(trim(_stripslashes($_POST['t_webtag_new'])));
 
-        if (!preg_match("/^[A-Z0-9_-]+$/", $new_webtag)) {
+        if (!preg_match("/^[A-Z0-9_]+$/", $new_webtag)) {
             $message_html.= "<h2>{$lang['webtaginvalidchars']}</h2>\n";
             $valid = false;
         }

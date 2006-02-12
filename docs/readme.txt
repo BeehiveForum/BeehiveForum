@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.6.2 / 30th November 2005
+Version 0.6.3 / TBA
 
 A list of changes since previous BeehiveForum versions can be found
 in release.txt.

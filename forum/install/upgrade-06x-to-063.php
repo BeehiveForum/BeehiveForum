@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-062.php,v 1.11 2006-01-23 01:01:55 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-063.php,v 1.1 2006-02-12 16:33:00 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 

@@ -1,5 +1,178 @@
 Beehive Forum Release Notes
 
+What's new in 0.6.3 (Release TBA)
+===================
+
+- Notes
+
+        - BeehiveForum 0.6.3 fixed a few issues highlighted within
+	  the release of 0.6.2. For more detailed
+	  features of 0.6.2 please see the 0.6 release notes.
+
+- Changes from 0.6.2
+
+        - Fixed: html_draw_top() and html_draw_bottom() are now used for the
+                 frames pages (admin.php, discussion.php, index.php, start.php and
+                 user.php) so we correctly add the forum description and RSS feed
+                 links rather than the generic Beehive ones.
+        - Fixed: Second attempt at fixing the error when updating your user
+                 prefs. Not even sure that the first patch didn't fix it to be
+                 honest.
+        - Fixed: Added some code to disable register_globals to prevent an
+                 exploit involving passing values in the URL
+        - Fixed: Links pages weren't filtering the input correctly and were
+                 allowing HTML to be posted.
+        - Fixed: potential exploit made available though page url var in
+                 admin.php
+        - Fixed: Prevented the use of a hyphen in the forum webtag because it
+                 breaks things.
+        - Fixed: Not being able to access restricted forum when access is
+                 applied correctly to user account.
+        - Fixed: Clicking Change password / permissions button took you to the
+                 permissions page for the wrong forum.
+        - Fixed: Removed align="middle" from images on all pages because they
+                 look out of place in the newer Gecko engine builds (FireFox 1.5)
+        - Fixed: Thread list "there are no messages in this mode" text eas
+                 stuck to the bottom of the drop down in newer Gecko engine builds
+                 (FireFox 1.5)
+        - Fixed: Missing html_draw_top() calls in edit_signature.php when
+                 there is an error and also changed basetarget to _blank so that when
+                 previewing signature any links open in new window/tab without the
+                 HTML needing a target attribute.
+        - Fixed: Added tests for perm_forumtools_access() on post data so
+                 people can't send post data to change the user's nickname / password
+                 when they don't have access to it.
+        - Fixed: forum settings array is constructed using only two queries
+                 now instead of 2 for current forum and another for global settings.
+        - Fixed: Bug in admin_user.php could allow user to loose access to
+                 Admin section on individual forums. Global perms were not affected
+                 by this bug.
+        - Fixed: form_quick_button() wasn't looking at the right variable when
+                 you send it an array of var names and values
+        - Fixed: Inconsistency in dictionary caused "(no suggestions)" to show
+                 when the dictionary had finished checking all words.
+        - Fixed: Insert error when processing user post count when viewing a
+                 new user's (no posts) profile.
+        - Fixed: Dictionary now works much better. It correctly matches words
+                 like couldn't, wouldn't and words in single quotes, it skips URLs,
+                 email address and HTML and doesn't corrupt unicode characters what
+                 so ever. It also correctly informs the user if there was no match in
+                 the dictionary instead of skiping over the word.
+        - Fixed: Unicode characters were being corrupted by Javascript when
+                 sending the text back after using the dictionary.
+        - Fixed: Emoticons and signature boxes couldn't be reshown once hidden
+                 on post, edit and pm_write pages but reloading them made them show
+                 again.
+        - Fixed: edit_attachments.php was showing "Other attachments" in My
+                 Controls when it shouldn't.
+        - Fixed: Removed debug code from forums.php
+        - Fixed: Query being executed twice in when fetching forum list for
+                 'My Forums' and potentially undefined variable causing error.
+        - Fixed: user_stats.php no longer fetches the user prefs because it is
+                 told what to do by messages.php
+        - Fixed: Undefined variable $install_cgi_mode when using the web
+                 interface to install.
+        - Fixed: Attachment view count was incremented each time a thumbnail
+                 of an image was seen.
+        - Fixed: load_language_file not working sometimes because of
+                 include_once being used rather than include
+        - Fixed: 404 page not found error when you click Continue upon
+                 finishing the install because you've just deleted install.php.
+        - Fixed: Table structure for LINKS_FOLDER had been mangled and was no
+                 longer allowing NULL on PARENT_FID
+        - Fixed: new-install.php no longer creates the old SEARCH_KEYWORDS,
+                 SEARCH_POSTS and SEARCH_MATCH tables.
+        - Fixed: wordwrap plan didn't work because it seems to trim lines it
+                 wraps on some OSes and not others?
+        - Added: html_draw_top() now accepts a body_tag argument which stops
+                 the function from drawing the body tag, as used in the frames pages.
+        - Added: Favourites checkbox and button to Guest MyForums with an
+                 error about needing to login.
+        - Added: Probability test to see if we should clean the stale user
+                 sessions. Defaults to 10% probability.
+        - Added: Error out when ever the user's search query is affected by
+                 the MySQL full-text stop words
+        - Added: User stats differentiates between you (shown in bold), other
+                 users and your friends (shown in italic) and includes tooltips which
+                 tell you that you are Invisible or not.
+        - Added: By request search now tells you which words were invalid in
+                 your search query.
+        - Added: Relevance to searches. BH doesn't do anything with it, but I
+                 might sneak something in before 0.6.2
+        - Added: Drop down added to search results to allow quick switching of
+                 order and removed it from the actual search query.
+        - Added: Post count caching to USER_TRACK table to reduce the load
+                 caused by someone opening a user profile.
+        - Changed: user_font.php no longer loads the user's prefs as that
+                   part is handled by messages.php.
+        - Changed: Made 06x upgrade script drop the SEARCH_RESULTS table
+                   before attempting to create it.
+        - Changed: Slight change to word wrapping in thread list and start
+                   page.
+        - Changed: All pages now use our DTD. Can't get the W3 validator to
+                   see it though, but FireFox reports it is in Standards Compliance
+                   mode. Hmm.
+        - Changed: bh_check_languages.php can now help to find strings which
+                   haven't been translated.
+        - Changed: Removed call to threads_any_unread() in discussion.php,
+                   admin_post_approve.php, delete.php and edit.php
+        - Changed: Only users who are perm_forumtools_access() can change
+                   another user's nickname and password.
+        - Changed: bh_session_remove_stale() is now only called when the
+                   user's session is about to expire.
+        - Changed: Removed and / or based drop down from search and allow
+                   users to compose their own boolean searches.
+        - Changed: Kick button is now available to global admins rather than
+                   just forum tools users
+        - Changed: Dictionary is now case insensitive and with new primary
+                   key much quicker.
+        - Changed: Removed count() query from thread_has_attachments and
+                   simply made it fetch the AID of the attachment
+        - Changed: Removed count() query from thread_any_unread and made it
+                   fetch the TID.PID of the thread instead.
+        - Changed: Encoding on some files changed to UTF-8 PC line endings
+        - Changed: emoticon_get_sets() to have an optional function argument
+                   that hides the none and text emoticons
+        - Changed: Attachments now sort alphabetically. Previously updating
+                   the attachment to say how many times it has viewed bumped it to
+                   the top of the list causing confusion when people pointed towards
+                   "attachment #1" rather than naming them by filename.
+        - Changed: More tweaks to search which makes things a heck of a lot
+                   quicker!
+        - Changed: Finding an old post to index is more friendly to the
+                   server hopefully.
+        - Changed: Removed use of function _in_array() as defined in
+                   format.inc.php because it takes too long to process anything.
+        - Changed: Updated language files.
+        - Changed: Guests no longer help to index posts to help reduce load
+                   on server.
+        - Changed: thread_list.php and start_left.php now wordwrap thread
+                   titles so they don't cause a horizontal scrollbar in the frame.
+        - Changed: upgrade-06RC-to-06.php replaced with a generic script
+                   which will upgrade all 0.6 releases thus far to 0.6.2.
+        - Changed: upgrade-05-to-06.php replaced with upgrade-05-to-062.php.
+        - Changed: start_form != start_from.
+        - Changed: robots.txt. 1st stage of Google Friendly Beehive.
+        - Changed: Search now checks to see if it is running MySQL 4 and if
+                   so allows a choice between AND and OR based searches
+        - Changed: Guests can no longer perform searches
+        - Changed: Different way to check for results from user search which
+                   should be less server intensive.
+        - Changed: Few more changes to the start_main.php example script.
+        - Changed: Removed gmmktime() and changed back to mktime() so we use
+                   the server timezone.
+        - Changed: Removed all the search indexing code because it was a bad
+                   experiment that didn't work out. Going to concentrate of
+                   optimising BH to use MySQL FULLTEXT searches instead.
+        - Changed: _htmlentities now leaves single-quotes alone so they
+                   won't get mangled in the database.
+        - Changed: search_index.php now says which post it has just indexed.
+        - Removed: search_min_word_length setting as BH now uses the MySQL
+                   defaults (for MySQL < 4.0 the values are fixed at 4 and 84)
+        - Removed: Text at bottom of search dialog is no longer relevant
+                   because BH now errors out instead.
+
+
 What's new in 0.6.2 (Released 30th Nov 2005)
 ===================
 

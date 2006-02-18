@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.20 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.21 2006-02-18 18:49:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -80,9 +80,24 @@ if (isset($_COOKIE['bh_remember_username'][0]) && isset($_COOKIE['bh_remember_pa
 
     if (isset($uid) && $uid > -1) {
 
-        bh_session_init($uid);
-        $user_sess = bh_session_check();
+        $user_hash = bh_session_init($uid, false, true);
+        $user_sess = bh_session_check(false, $user_hash);
     }
+}
+
+// Check to see if the user wants a custom number of threads.
+// Maximum to display is 20. Minimum is 1.
+
+if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
+    
+    $limit = $_GET['limit'];
+
+    if ($limit > 20) $limit = 20;
+    if ($limit < 1)  $limit = 1;
+
+}else {
+
+    $limit = 20;
 }
 
 // echo out the rss feed
@@ -100,7 +115,7 @@ echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
 
-if ($threads_array = threads_get_most_recent(20)) {
+if ($threads_array = threads_get_most_recent($limit)) {
 
     foreach ($threads_array as $thread) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.54 2005-11-14 21:45:46 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.55 2006-02-18 18:49:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -145,7 +145,7 @@ class Emoticons
 
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
 
-            if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari")) {
+            if (stristr($_SERVER['HTTP_USER_AGENT'], "konqueror") || stristr($_SERVER['HTTP_USER_AGENT'], "safari") || stristr($_SERVER['HTTP_USER_AGENT'], "MSIE 7")) {
 
                 $browser_fix = "&nbsp;</span>";
 

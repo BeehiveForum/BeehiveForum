@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.133 2006-01-28 11:58:40 decoyduck Exp $ */
+/* $Id: search.php,v 1.134 2006-02-18 18:49:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -136,6 +136,8 @@ if (isset($_GET['show_stop_words'])) {
     echo "<h1>{$lang['mysqlstopwordlist']}</h1>\n";
     echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"540\">\n";
     echo "  <tr>\n";
+
+    $mysql_fulltext_stopwords = array_values($mysql_fulltext_stopwords);
 
     for ($i = 0; $i < sizeof($mysql_fulltext_stopwords); $i++) {
 

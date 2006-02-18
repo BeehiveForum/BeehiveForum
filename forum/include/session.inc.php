@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.202 2006-02-09 23:39:25 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.203 2006-02-18 18:49:23 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -65,9 +65,10 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 *
 * @return mixed - array on success, false on fail
 * @param string $show_session_fail - Disable the default behaviour of showing the session expired page.
+* @param string $use_sess_hash     - Specify MD5 hash to use for session rather than user's cookie.
 */
 
-function bh_session_check($show_session_fail = true)
+function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 {
     $db_bh_session_check = db_connect();
 
@@ -83,14 +84,23 @@ function bh_session_check($show_session_fail = true)
 
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
+    // Check to see if we've been given a MD5 hash to use instead of the cookie.
+
+    if (!is_bool($use_sess_hash) && is_md5($use_sess_hash)) {
+
+        $user_hash = $use_sess_hash;
+    
+    }elseif (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
+
+        $user_hash = $_COOKIE['bh_sess_hash'];
+    }
+
     // Check the current user's session data. This is the main session
     // data that Beehive relies on. If this data does not match what
     // we have stored in the database then the user gets logged out
     // automatically.
 
-    if (isset($_COOKIE['bh_sess_hash']) && is_md5($_COOKIE['bh_sess_hash'])) {
-
-        $user_hash = $_COOKIE['bh_sess_hash'];
+    if (isset($user_hash) && is_md5($user_hash)) {
 
         if ($table_data = get_table_prefix()) {
 
@@ -474,9 +484,10 @@ function bh_update_visitor_log($uid)
 * @return void
 * @param integer $uid - UID of the user account we're initialising a session for.
 * @param bool $update_visitor_log - Optionally update the visitor log if needed.
+* @param bool $skip_cookie - Optionally skips setting of cookie if needed.
 */
 
-function bh_session_init($uid, $update_visitor_log = true)
+function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 {
     $db_bh_session_init = db_connect();
 
@@ -510,9 +521,10 @@ function bh_session_init($uid, $update_visitor_log = true)
         $result = db_query($sql, $db_bh_session_init);
     }
 
-    if ($update_visitor_log) bh_update_visitor_log($uid);
+    if ($update_visitor_log === true) bh_update_visitor_log($uid);
+    if ($skip_cookie === false) bh_setcookie('bh_sess_hash', $user_hash);
 
-    bh_setcookie('bh_sess_hash', $user_hash);
+    return $user_hash;
 }
 
 /**

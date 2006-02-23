@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.261 2006-01-08 21:40:34 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.262 2006-02-23 16:44:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -783,15 +783,18 @@ function user_get_aliases($uid)
 
     $sql = "SELECT DISTINCT IPADDRESS FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE FROM_UID = $uid AND IPADDRESS IS NOT NULL ";
-    $sql.= "ORDER BY TID DESC LIMIT 0, 20";
+    $sql.= "AND LENGTH(IPADDRESS) > 0 ORDER BY TID DESC LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_aliases);
 
     if (db_num_rows($result) > 0) {
 
-        while($user_get_aliases_row = db_fetch_array($result)) {
+        while ($user_get_aliases_row = db_fetch_array($result)) {
 
-            $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
+            if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
+            
+                $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
+            }
         }
     }
 

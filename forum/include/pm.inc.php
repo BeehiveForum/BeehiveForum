@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.128 2005-07-23 22:53:34 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.129 2006-02-23 16:44:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -632,7 +632,7 @@ function pm_display($pm_elements_array)
 
         $aid = $pm_elements_array['AID'];
 
-        if (get_attachments($pm_elements_array['FROM_UID'], $aid, $attachments_array['attachments'], $attachments_array['image_attachments'])) {
+        if (get_attachments($pm_elements_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
             // Draw the attachment header at the bottom of the post
 
@@ -642,29 +642,28 @@ function pm_display($pm_elements_array)
             echo "          <tr>\n";
             echo "            <td class=\"postbody\" align=\"left\">\n";
 
-            if (isset($attachments_array['attachments']) && is_array($attachments_array['attachments']) && sizeof($attachments_array['attachments']) > 0) {
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
-                echo "              <p><b>{$lang['attachments']}:</b><br />\n";
+                echo "                  <p><b>{$lang['attachments']}:</b><br />\n";
 
-                foreach($attachments_array['attachments'] as $attachment) {
+                foreach($attachments_array as $attachment) {
 
-                    echo attachment_make_link($attachment), "<br />\n";
+                    echo "                  ", attachment_make_link($attachment), "\n";
                 }
 
-                echo "              </p>\n";
+                echo "                  </p>\n";
             }
 
-            if (isset($attachments_array['image_attachments']) && is_array($attachments_array['image_attachments']) && sizeof($attachments_array['image_attachments']) > 0) {
+            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
 
-                echo "              <p><b>{$lang['imageattachments']}:</b><br />\n";
+                echo "                  <p><b>{$lang['imageattachments']}:</b><br />\n";
 
-                foreach($attachments_array['image_attachments'] as $key => $attachment) {
+                foreach($image_attachments_array as $key => $attachment) {
 
-                    echo attachment_make_link($attachment), "&nbsp;\n";
-                    if ($key > 0 && !($key % 4)) echo "<br />\n";
+                    echo "                  ", attachment_make_link($attachment), "\n";
                 }
 
-                echo "              </p>\n";
+                echo "                  </p>\n";
             }
 
             echo "            </td>\n";

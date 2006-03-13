@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.107 2005-10-23 11:45:33 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.108 2006-03-13 21:51:21 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -775,6 +775,7 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
     if (forum_get_setting('attachment_use_old_method', 'Y')) {
 
         $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
+        $href.= "&amp;filename={$attachment['filename']}";
 
     }else {
 

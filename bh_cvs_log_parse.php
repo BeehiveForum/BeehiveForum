@@ -21,30 +21,41 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.2 2006-03-13 21:51:19 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.3 2006-03-14 22:02:55 decoyduck Exp $ */
 
-// To use this you need to perform a dump of the CVS log and output
-// a correctly formatted change log for use on SF or within the
-// release.txt file.
-//
-// For this to work you need to have correctly set up SSH and CVS and
-// have created a ssh key otherwise you will be prompted for your
-// password for every call to CVS LOG, in excess of 20 times which
-// won't be fun at all.
-//
-// And no this won't work with TortoiseCVS and Pageant.
+/**
+* bh_cvs_log_parse.php
+*
+* Automated collection and processing of CVS LOG entries into a human
+* readable changelog.txt. 
+*
+* For this to work you need to have correctly set up SSH and CVS and
+* have created a ssh key otherwise you will be prompted for your
+* password for every call to CVS LOG, in excess of 20 times which
+* won't be fun at all.
+*
+* And no this won't work with TortoiseCVS and Pageant.
+*/
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "./forum/include/");
+/**
+*
+*/
 
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
+/**
+* Get CVS Log
+*
+* Fetches the CVS Log data. The main workhorse of this script.
+*
+* @return mixed - False on failure, CVS LOG as string on success.
+* @param string $dir - Directory path to run the CVS LOG command in.
+* @param mixed $date - Date to limit the CVS LOG command by.
+*/
 
 function get_cvs_log_data($dir, $date)
 {
     $cwd = getcwd();
 
-    if (dir_exists($dir)) {
+    if (is_dir($dir)) {
        
         chdir($dir);
         
@@ -65,6 +76,19 @@ function get_cvs_log_data($dir, $date)
     chdir($cwd);
     return false;
 }
+
+/**
+* Get Directory listing that we want CVS log data from.
+*
+* Fetches a list of directories that we want to fetch CVS LOG data
+* from. Recurses through the child directories ignoring CVS folders.
+* Is influenced by the array $exclude_dirs which contains an array
+* of paths to ignore.
+*
+* @return void
+* @param string $path - Directory to start in.
+* @param array $date - By Reference array which the paths are returned in.
+*/
 
 function get_cvs_dirs($path, &$cvs_dir_array)
 {

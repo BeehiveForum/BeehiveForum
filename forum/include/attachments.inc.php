@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.108 2006-03-13 21:51:21 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.109 2006-03-15 18:13:06 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -845,6 +845,36 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 }
 
 /**
+* Set thumb transparency
+*
+* Assigns alpha transparency to an image to correctly create thumbnails from 
+* pngs with alpha transparency.
+*
+* @return GD image resource
+* @param GD image resource $im - GD image source from GD image create function.
+*/
+
+function attachment_thumb_transparency($im)
+{
+    imageantialias($im, true);
+    imagealphablending($im, false);
+    imagesavealpha($im, true);
+
+    $im_width  = imagesx($im);
+    $im_height = imagesy($im);
+
+    $transparent = imagecolorallocatealpha($im, 255, 255, 255, 0);
+
+    for ($x = 0; $x < $im_width; $x++) {
+        for($y = 0;$y < $im_height; $y++) {
+            imagesetpixel($im, $x, $y, $transparent);
+        }
+    }
+
+    return $im;
+}
+
+/**
 * Create a thumbnail
 *
 * Creates a thumbnail for the attachment if it is of a supported image type
@@ -912,6 +942,7 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
                 if (strcmp($attachment_gd_info['GD Version'], '2.0') > -1) {
 
                     $dst = imagecreatetruecolor($target_width, $target_height);
+                    $dst = attachment_thumb_transparency($dst);
 
                     imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
                                        $target_height, $image_info[0], $image_info[1]);
@@ -919,6 +950,7 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
                 }else {
 
                     $dst = imagecreate($target_width, $target_height);
+                    $dst = attachment_thumb_transparency($dst);
 
                     imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
                                      $target_height, $image_info[0], $image_info[1]);

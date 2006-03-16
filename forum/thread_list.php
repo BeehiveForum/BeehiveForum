@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.260 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.261 2006-03-16 19:34:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -409,12 +409,7 @@ foreach ($folder_order as $key1 => $folder_number) {
 
             if (is_array($thread_info)) {
 
-                $visible_threads = false;
-
-                foreach ($thread_info as $thread_info_key => $thread_info_array) {
-
-                    if (isset($thread_info[$thread_info_key]['FID']) && $thread_info[$thread_info_key]['FID'] == $folder_number) $visible_threads = true;
-                }
+                $visible_threads = in_array($folder_number, $folder_order);
 
                 if ($visible_threads) {
 
@@ -560,7 +555,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                             if ($thread['STICKY'] == 'Y') echo "<img src=\"".style_image('sticky.png')."\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
                             if ($thread['RELATIONSHIP'] & USER_FRIEND) echo "<img src=\"" . style_image('friend.png') . "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
 
-                            if (thread_has_attachments($thread['TID'])) echo "<img src=\"" . style_image('attach.png') . "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
+                            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"" . style_image('attach.png') . "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
 
                             echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
                             echo "          <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";

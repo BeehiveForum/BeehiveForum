@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.187 2005-11-09 21:25:38 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.188 2006-03-16 19:34:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -814,17 +814,19 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
 
 function threads_process_list($result, $allow_ignored_completely = false)
 {
-    $max = db_num_rows($result);
-
     // Default to returning no threads.
 
-    $lst = 0;
+    $threads_array = 0;
     $folder = 0;
     $folder_order = 0;
 
     // Check that the set of threads returned is not empty
 
-    if ($max) {
+    if (db_num_rows($result) > 0) {
+
+        // Record the TIDs as we go for later attachment checking.
+        
+        $tid_array = array();
 
         // If the user has clicked on a folder header, we want
         // that folder to be first in the list
@@ -836,9 +838,7 @@ function threads_process_list($result, $allow_ignored_completely = false)
 
         // Loop through the results and construct an array to return
 
-        for ($i = 0; $i < $max; $i++) {
-
-            $thread = db_fetch_array($result);
+        while ($thread = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
@@ -846,52 +846,36 @@ function threads_process_list($result, $allow_ignored_completely = false)
             // make it the next folder in the order to be displayed
 
             if (!is_array($folder_order)) {
-
                 $folder_order = array($thread['FID']);
-
             }else {
-
                 if (!in_array($thread['FID'], $folder_order)) {
-
                     $folder_order[] = $thread['FID'];
                 }
             }
 
-            if (!is_array($lst)) $lst = array();
+            if (!is_array($threads_array)) $threads_array = array();
 
-            $lst[$i]['TID'] = $thread['TID'];
-            $lst[$i]['FID'] = $thread['FID'];
-            $lst[$i]['TITLE'] = $thread['TITLE'];
-            $lst[$i]['LENGTH'] = $thread['LENGTH'];
-            $lst[$i]['POLL_FLAG'] = $thread['POLL_FLAG'];
+            // LAST_READ, INTEREST, RELATIONSHIP and STICKY keys may be null.
+            // If they are we need to set them otherwise PHP will complain
+            // that the keys don't exist.
 
-            // Special case - last_read may be NULL, in which case
-            // PHP will complain that the array index doesn't exist
-            // if we don't do this
+            if (!isset($thread['LAST_READ'])) $thread['LAST_READ'] = 0;
+            if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
+            if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
+            if (!isset($thread['STICKY'])) $thread['STICKY'] = 0;
 
-            if (isset($thread['LAST_READ'])) {
-
-                $lst[$i]['LAST_READ'] = $thread['LAST_READ'];
-
-            }else {
-
-                $lst[$i]['LAST_READ'] = 0;
-            }
-
-            $lst[$i]['INTEREST'] = isset($thread['INTEREST']) ? $thread['INTEREST'] : 0;
-            $lst[$i]['MODIFIED'] = $thread['MODIFIED'];
-            $lst[$i]['LOGON'] = $thread['LOGON'];
-            $lst[$i]['NICKNAME'] = $thread['NICKNAME'];
-            $lst[$i]['RELATIONSHIP'] = isset($thread['RELATIONSHIP']) ? $thread['RELATIONSHIP'] : 0;
-            $lst[$i]['STICKY'] = isset($thread['STICKY']) ? $thread['STICKY'] : 0;
+            $threads_array[$thread['TID']] = $thread;
+            $tid_array[] = $thread['TID'];
         }
+
+        threads_have_attachments($threads_array, $tid_array);
     }
 
-    // $lst is the array with thread information,
+    // $threads_array is the array with thread information,
     // $folder_order is a list of FIDs in the order
     // in which the folders should be displayed
 
-    return array($lst, $folder_order);
+    return array($threads_array, $folder_order);
 }
 
 function threads_get_folder_msgs()
@@ -1100,6 +1084,30 @@ function thread_list_draw_top($mode)
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</form>\n";
+}
+
+function threads_have_attachments(&$threads_array, $tid_array)
+{
+    if (!is_array($tid_array)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $tid_list = implode(",", preg_grep("/^[0-9]+$/", $tid_array));
+
+    $db_thread_has_attachments = db_connect();
+
+    $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "WHERE PAI.FID = $forum_fid AND PAI.TID IN ($tid_list) ";
+
+    $result = db_query($sql, $db_thread_has_attachments);
+
+    while ($row = db_fetch_array($result)) {
+
+        $threads_array[$row['TID']]['AID'] = $row['AID'];
+    }
 }
 
 function thread_has_attachments($tid)

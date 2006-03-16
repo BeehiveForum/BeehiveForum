@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.45 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.46 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -193,7 +193,7 @@ if (isset($_POST['interest']) && is_numeric($_POST['interest']) && $_POST['inter
 
 // Admin Options
 
-if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)))) {
+if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)))) {
 
     if (isset($_POST['rename'])&& strlen(trim(_stripslashes($_POST['rename']))) > 0) {
 
@@ -205,7 +205,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
             post_add_edit_text($tid, 1);
 
-            if (perm_is_moderator($fid)) {
+            if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
                 admin_add_log_entry(RENAME_THREAD, array($tid, $threaddata['TITLE'], $t_rename));
             }
@@ -221,7 +221,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
         if (folder_is_valid($t_move) && $t_move != $threaddata['FID']) {
 
-            if (perm_check_folder_permissions($t_move, USER_PERM_THREAD_CREATE)) {
+            if (bh_session_check_perm(USER_PERM_THREAD_CREATE, $t_move)) {
 
                 thread_change_folder($tid, $t_move);
 
@@ -230,7 +230,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
 
                 post_add_edit_text($tid, 1);
 
-                if (perm_is_moderator($fid)) {
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
                     admin_add_log_entry(MOVED_THREAD, array($tid, $threaddata['TITLE'], $old_folder_title, $new_folder_title));
                 }
@@ -242,7 +242,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
     }
 }
 
-if (perm_is_moderator($fid)) {
+if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
     if (isset($_POST['closed'])) {
 
@@ -373,7 +373,7 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
-if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)))) {
+if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddata['ADMIN_LOCK'] == 0) && ((forum_get_setting('allow_post_editing', 'Y')) && intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $threaddata['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)))) {
 
     echo "        <br />\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -408,7 +408,7 @@ if (perm_is_moderator($fid) || ((($threaddata['FROM_UID'] == $uid) && $threaddat
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (perm_is_moderator($fid)) {
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
         echo "        <br />\n";
         echo "        <table class=\"box\" width=\"100%\">\n";

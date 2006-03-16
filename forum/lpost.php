@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.82 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.83 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -260,7 +260,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_draw_top();
 
@@ -272,7 +272,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
+    if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
@@ -296,7 +296,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_draw_top();
 
@@ -308,7 +308,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
+    if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
@@ -340,7 +340,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_draw_top();
 
@@ -352,7 +352,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE | USER_PERM_POST_READ)) {
+    if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
@@ -365,11 +365,11 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 $allow_html = true;
 $allow_sig = true;
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
 
@@ -394,7 +394,7 @@ if (!$newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
+    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
         $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         $valid = false;

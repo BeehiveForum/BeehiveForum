@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.183 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: edit.php,v 1.184 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -200,7 +200,7 @@ if (isset($_POST['cancel'])) {
     header_redirect($uri);
 }
 
-if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_draw_top();
 
@@ -212,7 +212,7 @@ if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
     exit;
 }
 
-if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_READ)) {
+if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top();
 
@@ -331,11 +331,11 @@ $sig = new MessageText($sig_html, "", true, false);
 $allow_html = true;
 $allow_sig = true;
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
 
@@ -413,7 +413,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
     }
@@ -470,7 +470,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
     }
@@ -478,7 +478,7 @@ if (isset($_POST['preview'])) {
     if (((forum_get_setting('allow_post_editing', 'N'))
         || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
         || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
-        || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !perm_is_moderator($t_fid)) {
+        || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
         echo "<br />\n";
@@ -520,7 +520,7 @@ if (isset($_POST['preview'])) {
 
             post_save_attachment_id($tid, $pid, $aid);
 
-            if (perm_is_moderator($t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+            if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
@@ -613,7 +613,7 @@ if (isset($_POST['preview'])) {
             if (((forum_get_setting('allow_post_editing', 'N'))
                 || ((bh_session_get_value('UID') != $editmessage['FROM_UID']) && !(perm_get_user_permissions($editmessage['FROM_UID']) & USER_PERM_PILLORIED))
                 || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
-                || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !perm_is_moderator($t_fid)) {
+                || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * HOUR_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
                 echo "<br />\n";
@@ -903,7 +903,7 @@ echo form_submit('submit',$lang['apply'], "tabindex=\"2\" onclick=\"return autoC
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
-if (forum_get_setting('attachments_enabled', 'Y') && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('$from_uid', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);

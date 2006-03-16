@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.127 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.128 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -320,7 +320,7 @@ if (isset($_POST['submit']) || isset($_POST['preview'])) {
 
                     if ($to_radio == 1) {
 
-                        if (user_allow_pm($to_user['UID']) || perm_is_moderator()) {
+                        if (user_allow_pm($to_user['UID']) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
                             pm_user_prune_folders();
 

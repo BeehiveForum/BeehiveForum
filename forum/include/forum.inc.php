@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.168 2006-02-09 23:39:25 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.169 2006-03-16 16:29:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -140,7 +140,7 @@ function forum_check_access_level()
 
             if ($forum_data['ACCESS_LEVEL'] == -2) {
 
-                return perm_has_forumtools_access();
+                return bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0);
 
             }elseif ($forum_data['ACCESS_LEVEL'] == -1) {
 
@@ -150,7 +150,7 @@ function forum_check_access_level()
 
                 forum_restricted_message();
 
-            }elseif ($forum_data['ACCESS_LEVEL'] == 2 && !perm_has_forumtools_access()) {
+            }elseif ($forum_data['ACCESS_LEVEL'] == 2 && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
                 forum_check_password($forum_data['FID']);
             }
@@ -173,7 +173,7 @@ function forum_closed_message()
     echo "<h1>{$lang['closed']}</h1>\n";
     echo "<h2>$forum_name {$lang['iscurrentlyclosed']}</h2>\n";
 
-    if (perm_has_admin_access() || perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
         echo "<p>{$lang['adminforumclosedtip']}</p>\n";
     }
 
@@ -193,7 +193,7 @@ function forum_restricted_message()
     echo "<h2>{$lang['youdonothaveaccessto']} $forum_name.</h2>\n";
     echo "<h2>{$lang['toapplyforaccessplease']}</h2>\n";
 
-    if (perm_has_admin_access() || perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
         echo "<p>{$lang['adminforumclosedtip']}</p>\n";
     }
 
@@ -549,7 +549,7 @@ function forum_create($webtag, $forum_name, $access)
 
     // Only the queen can create forums!!
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $uid = bh_session_get_value('UID');
 
@@ -1225,7 +1225,7 @@ function forum_create($webtag, $forum_name, $access)
 
 function forum_delete($fid)
 {
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $db_forum_delete = db_connect();
 
@@ -1260,7 +1260,7 @@ function forum_delete_tables($webtag)
 {
     // Only the queen can delete forums!!
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $db_forum_delete_tables = db_connect();
 
@@ -1292,7 +1292,7 @@ function forum_update_access($fid, $access, $passwd = false)
 
     // Only the queen can change a forums status!!
 
-    if (perm_has_admin_access() || perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $uid = bh_session_get_value('UID');
 
@@ -1352,7 +1352,7 @@ function forum_get($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $db_forum_get = db_connect();
 
@@ -1382,7 +1382,7 @@ function forum_get_permissions($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $db_forum_get_permissions = db_connect();
 
@@ -1411,7 +1411,7 @@ function forum_update_default($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $db_forum_get_permissions = db_connect();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.161 2005-12-21 17:32:49 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.162 2006-03-16 16:29:22 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -112,7 +112,7 @@ if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
 
 html_draw_top('admin.js');
 
-if (!(perm_has_admin_access())) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -164,7 +164,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $valid = true;
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
 
@@ -208,7 +208,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     // Global user permissions
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $new_global_user_perms = (double) 0;
 
@@ -287,7 +287,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     // Password reset
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         if (isset($_POST['t_reset_password']) && $_POST['t_reset_password'] == 'Y') {
             $t_reset_password = true;
@@ -410,7 +410,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
 }else {
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
@@ -462,7 +462,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
 
-    if (perm_has_admin_access()) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         echo "                      <tr>\n";
         echo "                        <td>", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintools'], $user_perms & USER_PERM_ADMIN_TOOLS), "</td>\n";
@@ -502,7 +502,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $global_user_perm = perm_get_global_user_permissions($uid);
 
@@ -924,7 +924,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";

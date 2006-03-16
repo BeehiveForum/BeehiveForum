@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.259 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.260 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -635,7 +635,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                 echo "&nbsp;{$lang['threads']}</a></td>\n";
                 echo "    <td class=\"threads_top_right_bottom\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
 
-                if (perm_check_folder_permissions($folder_number, USER_PERM_THREAD_CREATE)) {
+                if (bh_session_check_perm(USER_PERM_THREAD_CREATE, $folder_number)) {
 
                     echo "<a href=\"";
                     echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "./post.php?webtag=$webtag" : "./create_poll.php?webtag=$webtag";

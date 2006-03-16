@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.94 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.95 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -152,7 +152,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 // or that it is an admin if we're viewing another user's
 // attachments.
 
-if (($uid != bh_session_get_value('UID')) && !(perm_is_moderator($t_fid))) {
+if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";

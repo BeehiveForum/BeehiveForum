@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.97 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: delete.php,v 1.98 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -142,7 +142,7 @@ if (isset($_POST['cancel'])) {
     header_redirect($uri);
 }
 
-if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_draw_top();
 
@@ -154,7 +154,7 @@ if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
     exit;
 }
 
-if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_READ)) {
+if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top();
 
@@ -180,7 +180,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
             exit;
         }
 
-        if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED) && !perm_is_moderator($t_fid)) {
+        if ((bh_session_get_value('UID') != $preview_message['FROM_UID'] || bh_session_check_perm(USER_PERM_PILLORIED, 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             html_draw_top();
             edit_refuse($tid, $pid);
@@ -206,7 +206,7 @@ if ($valid) {
 
         if (post_delete($tid, $pid)) {
 
-            if (perm_is_moderator($t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
+            if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
 
                 admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
             }

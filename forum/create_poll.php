@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.167 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.168 2006-03-16 16:29:22 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -240,7 +240,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 if (!isset($sig_html)) $sig_html = 0;
 
-if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_draw_top();
 
@@ -290,13 +290,13 @@ if (isset($_POST['cancel'])) {
             $valid = false;
         }
 
-        if (!perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE | USER_PERM_POST_READ)) {
+        if (!bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
             $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>\n";
             $valid = false;
         }
 
-        if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+        if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
             $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
             $valid = false;
@@ -477,11 +477,11 @@ if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
 $allow_html = true;
 $allow_sig = true;
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
 

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.268 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: post.php,v 1.269 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -438,13 +438,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
+    if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
@@ -469,13 +469,13 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_CREATE | USER_PERM_POST_READ)) {
+    if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
@@ -484,7 +484,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
@@ -508,19 +508,19 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+    if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
         html_email_confirmation_error();
         exit;
     }
 
-    if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_THREAD_CREATE | USER_PERM_POST_READ)) {
+    if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         $error_html = "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
         $valid = false;
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
@@ -530,11 +530,11 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 $allow_html = true;
 $allow_sig = true;
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_SIGNATURE)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
 
@@ -559,7 +559,7 @@ if (!$newthread) {
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
     $threaddata = thread_get($reply_to_tid);
 
-    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
+    if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 
         $error_html = "<h2>{$lang['messagehasbeendeleted']}</h2>\n";
         $valid = false;
@@ -579,7 +579,7 @@ if ($valid && isset($_POST['submit'])) {
                 $t_sticky     = (isset($_POST['t_sticky']))     ? $_POST['t_sticky']     : false;
                 $old_t_sticky = (isset($_POST['old_t_sticky'])) ? $_POST['old_t_sticky'] : false;
 
-                if (perm_is_moderator($t_fid)) {
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                     $t_closed = isset($t_closed) && $t_closed == "Y" ? true : false;
                     $t_sticky = isset($t_sticky) && $t_sticky == "Y" ? "Y" : "N";
@@ -598,7 +598,7 @@ if ($valid && isset($_POST['submit'])) {
                 $t_tid = $_POST['t_tid'];
                 $t_rpid = $_POST['t_rpid'];
 
-                if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!perm_is_moderator($t_fid))) {
+                if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 && (!bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
 
                     html_draw_top();
 
@@ -620,7 +620,7 @@ if ($valid && isset($_POST['submit'])) {
                     exit;
                 }
 
-                if (perm_is_moderator($t_fid)) {
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                     $t_closed     = (isset($_POST['t_closed']))     ? $_POST['t_closed']     : false;
                     $old_t_closed = (isset($_POST['old_t_closed'])) ? $_POST['old_t_closed'] : false;
@@ -738,7 +738,7 @@ if (!$newthread) {
         echo "<tr><td class=\"subhead\">{$lang['threadclosed']}</td></tr>\n";
         echo "<tr><td>\n";
 
-        if (perm_is_moderator($t_fid)) {
+        if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             echo "<h2>{$lang['moderatorthreadclosed']}</h2>\n";
             echo "</td></tr>\n";
@@ -882,7 +882,7 @@ echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspell
 echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
 echo form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y")."<br />\n";
 
-if (perm_is_moderator($t_fid)) {
+if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     echo "<br />\n";
     echo "<h2>{$lang['admin']}:</h2>\n";
@@ -995,7 +995,7 @@ echo form_submit("submit", $lang['post'], "tabindex=\"2\" onclick=\"return autoC
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 
-if (forum_get_setting('attachments_enabled', 'Y') && (perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ) || $newthread)) {
+if (forum_get_setting('attachments_enabled', 'Y') && (bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $newthread)) {
 
     echo "&nbsp;".form_button("attachments", $lang['attachments'], "tabindex=\"5\" onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);

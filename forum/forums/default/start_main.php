@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.14 2006-01-21 23:40:35 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.15 2006-03-16 16:29:23 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -153,7 +153,7 @@ if (isset($_GET['delete'])) {
 
     $image = basename($_GET['delete']);
 
-    if (perm_has_admin_access() || strtolower($image) == strtolower($logon)) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
 
         echo "<h1>Delete Image</h1>\n";
         echo "<div class=\"image\">\n";
@@ -170,7 +170,7 @@ if (isset($_GET['delete'])) {
 
     $image = basename($_GET['confirm_delete']);
 
-    if (perm_has_admin_access() || strtolower($image) == strtolower($logon)) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
 
         if (@file_exists("forums/$webtag/images/forumites/$image")) {
 
@@ -210,7 +210,7 @@ if (isset($_GET['upload']) && $uid > 0) {
         echo "      <p><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></p>\n";
         echo "      <p class=\"bodytext\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></p>\n";
 
-        if (perm_has_admin_access() || strtolower($image) == strtolower($logon)) {
+        if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
             echo "      <p class=\"bodytext\"><a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?delete=$image\">[Delete]</a></p>\n";
         }
 

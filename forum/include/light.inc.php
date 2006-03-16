@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.93 2006-03-13 21:51:21 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.94 2006-03-16 16:29:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -562,7 +562,7 @@ function light_poll_confirm_close($tid)
         return;
     }
 
-    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator($t_fid)) {
+    if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
         edit_refuse($tid, 1);
         return;
     }
@@ -856,7 +856,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     }
 
     if (bh_session_get_value('UID') != $message['FROM_UID']) {
-      if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED) && !perm_is_moderator($message['FID'])) {
+      if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $message['FID'])) {
         light_message_display_deleted($tid, $message['PID']);
         return;
       }
@@ -1037,7 +1037,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
         if ($in_list && $limit_text != false) {
 
-            if (!$closed && perm_check_folder_permissions($message['FID'], USER_PERM_POST_CREATE)) {
+            if (!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $message['FID'])) {
 
                 echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
             }

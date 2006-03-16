@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.109 2006-03-15 18:13:06 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.110 2006-03-16 16:29:23 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -404,7 +404,7 @@ function delete_attachment($hash)
 
         $row = db_fetch_array($result);
 
-        if (($row['UID'] == $uid) || perm_is_moderator($row['FID'])) {
+        if (($row['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $row['FID'])) {
 
             // Mark the related post as edited
 
@@ -412,7 +412,7 @@ function delete_attachment($hash)
 
                 post_add_edit_text($row['TID'], $row['PID']);
 
-                if (perm_is_moderator($row['FID']) && ($row['UID'] != $uid)) {
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $row['FID']) && ($row['UID'] != $uid)) {
 
                     $log_data = array($row['TID'], $row['PID'], $row['FILENAME']);
                     admin_add_log_entry(DELETE_ATTACHMENT, $log_data);

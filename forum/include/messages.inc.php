@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.381 2006-02-23 16:43:59 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.382 2006-03-16 16:29:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -500,8 +500,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         }
     }
 
-    $perm_is_moderator = perm_is_moderator($message['FID']);
-    $perm_has_admin_access = perm_has_admin_access();
+    $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $message['FID']);
+    $perm_has_admin_access = bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0);
 
     $webtag = get_webtag($webtag_search);
 
@@ -888,18 +888,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "                <td width=\"25%\">&nbsp;</td>\n";
             echo "                <td width=\"50%\" nowrap=\"nowrap\">";
 
-            if ((!$closed && perm_check_folder_permissions($message['FID'], USER_PERM_POST_CREATE)) || $perm_is_moderator) {
+            if ((!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $message['FID'])) || $perm_is_moderator) {
 
                 echo "<img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
                 echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\">{$lang['reply']}</a>";
             }
 
-            if (($uid == $message['FROM_UID'] && perm_check_folder_permissions($message['FID'], USER_PERM_POST_DELETE) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
+            if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $message['FID']) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
                 echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />";
                 echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
             }
 
-            if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && perm_check_folder_permissions($message['FID'], USER_PERM_POST_EDIT) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+            if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $message['FID']) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                 if ($is_poll && $message['PID'] == 1) {
 

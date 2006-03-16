@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.262 2006-02-23 16:44:03 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.263 2006-03-16 16:29:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -134,7 +134,7 @@ function user_change_password($uid, $password, $hash)
 
         return db_query($sql, $db_user_change_password);
 
-    }elseif (perm_is_moderator()) {
+    }elseif (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
         $sql = "UPDATE USER SET PASSWD = '$password' ";
         $sql.= "WHERE UID = '$uid'";

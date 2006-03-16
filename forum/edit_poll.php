@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.104 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.105 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -155,7 +155,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 post_save_attachment_id($tid, $pid, $aid);
 
-if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
+if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_draw_top();
 
@@ -167,7 +167,7 @@ if (perm_check_global_permissions(USER_PERM_EMAIL_CONFIRM)) {
     exit;
 }
 
-if (!perm_check_folder_permissions($t_fid, USER_PERM_POST_EDIT | USER_PERM_POST_READ)) {
+if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top();
 
@@ -276,7 +276,7 @@ if (isset($_POST['preview']) || isset($_POST['submit'])) {
         $t_post_html = 'N';
     }
 
-    if (get_num_attachments($aid) > 0 && !perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+    if (get_num_attachments($aid) > 0 && !bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
         $error_html = "<h2>{$lang['cannotattachfilesinfolder']}</h2>";
         $valid = false;
     }
@@ -309,7 +309,7 @@ html_draw_top("basetarget=_blank", "openprofile.js", "post.js");
 
 $allow_html = true;
 
-if (isset($t_fid) && !perm_check_folder_permissions($t_fid, USER_PERM_HTML_POSTING)) {
+if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
@@ -570,7 +570,7 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "</div>\n";
     $polldata['CONTENT'].= "<br />\n";
 
-    if (bh_session_get_value('UID') != $polldata['FROM_UID'] && !perm_is_moderator($t_fid)) {
+    if (bh_session_get_value('UID') != $polldata['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         edit_refuse($tid, $pid);
         exit;
@@ -879,7 +879,7 @@ echo "  </table>\n";
 
 echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
 
-if (forum_get_setting('attachments_enabled', 'Y') && perm_check_folder_permissions($t_fid, USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ)) {
+if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
     echo "&nbsp;", form_button("attachments", $lang['attachments'], "onclick=\"launchAttachEditWin('{$polldata['FROM_UID']}', '$aid', '$webtag');\"");
     echo form_input_hidden('aid', $aid);

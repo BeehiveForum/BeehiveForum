@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.62 2005-10-20 20:49:36 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.63 2006-03-16 16:29:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -52,7 +52,7 @@ function post_update($fid, $tid, $pid, $content)
 
     $result = db_query($sql, $db_post_update);
 
-    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL) && !perm_is_moderator($fid)) {
+    if (bh_session_check_perm(USER_PERM_POST_APPROVAL, $fid) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
         $sql = "UPDATE {$table_data['PREFIX']}POST SET APPROVED = 0, APPROVED_BY = 0 ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";

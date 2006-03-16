@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.203 2006-02-18 18:49:23 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.204 2006-03-16 16:29:23 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -149,6 +149,10 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             // Add preference settings
 
             $user_sess = array_merge($user_sess, user_get_prefs($user_sess['UID']));
+
+            // Add user perms
+
+            $user_sess['PERMS'] = bh_session_get_perm_array($user_sess['UID']);
 
             // We need to check here to see if the user is
             // banned from this forum as the login check
@@ -566,6 +570,99 @@ function bh_session_end()
     bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
 
     bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+}
+
+/**
+* Returns user perm array from database
+*
+* Processes GROUP_PERM and GROUP_USERS tables to fetch the user's perm array
+* and return it as an indexed array in the format:
+*
+* $perm_array['FORUM_FID']['FOLDER_FID'] = PERM_VALUE;
+*
+* @return mixed
+* @param integer $uid - User UID.
+*/
+
+function bh_session_get_perm_array($uid)
+{
+    if (!is_numeric($uid)) return false;
+
+    $user_perm_array = array();
+
+    $db_bh_session_get_perm_array = db_connect();
+
+    $sql = "SELECT GP.GID, GP.FORUM, GP.FID, BIT_OR(GP.PERM) AS PERM ";
+    $sql.= "FROM GROUP_PERMS GP LEFT JOIN GROUP_USERS GU ON (GU.GID = GP.GID) ";
+    $sql.= "WHERE GU.UID = '$uid' GROUP BY GP.FORUM, GP.FID";
+
+    $result = db_query($sql, $db_bh_session_get_perm_array);
+
+    while ($row = db_fetch_array($result)) {
+
+        $user_perm_array[$row['FORUM']][$uid][$row['FID']] = $row['PERM'];
+    }
+
+    $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM ";
+    $sql.= "FROM GROUP_PERMS WHERE GID = 0 ";
+    $sql.= "GROUP BY FORUM, FID";
+
+    $result = db_query($sql, $db_bh_session_get_perm_array);
+
+    while ($row = db_fetch_array($result)) {
+
+        $user_perm_array[$row['FORUM']][0][$row['FID']] = $row['PERM'];
+    }
+
+    return sizeof($user_perm_array) > 0 ? $user_perm_array : false;
+}
+
+/**
+* Checks user perm array in current user session
+*
+* Checks the user session perms against the provided perm value.
+* See constants.inc.php for perm values to use.
+*
+* @return bool
+* @param integer $perm - Perm value to check
+* @param integer $folder_fid - FID of the folder to check.
+* @param integer $forum_fid - Optional forum fid otherwise uses current forum FID.
+*/
+
+function bh_session_check_perm($perm, $folder_fid, $forum_fid = false)
+{
+    global $user_sess;
+
+    if (!is_array($user_sess)) return false;
+    if (!is_numeric($folder_fid)) return false;
+
+    if (!is_numeric($forum_fid)) {
+
+        if (!$table_data = get_table_prefix()) return false;
+        $forum_fid = $table_data['FID'];
+    }
+
+    $uid = bh_session_get_value('UID');
+
+    if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
+        if (($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm) > 0) {
+            return true;
+        }
+    }
+
+    if (isset($user_sess['PERMS'][$forum_fid][0][$folder_fid])) {
+        if (($user_sess['PERMS'][$forum_fid][0][$folder_fid] & $perm) > 0) {
+            return true;
+        }
+    }
+
+    if (isset($user_sess['PERMS'][0][$uid][$folder_fid])) {
+        if (($user_sess['PERMS'][0][$uid][$folder_fid] & $perm) > 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**

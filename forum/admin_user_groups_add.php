@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.25 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.26 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -91,7 +91,7 @@ if (isset($_POST['cancel'])) {
 
 html_draw_top();
 
-if (!(perm_has_admin_access())) {
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -128,7 +128,7 @@ if (isset($_POST['submit'])) {
 
     $new_group_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
 
-    if (perm_has_forumtools_access()) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
         $new_group_perms = (double)$new_group_perms | $t_admintools;
     }
@@ -212,7 +212,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"90%\">\n";
 
-if (perm_has_forumtools_access()) {
+if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
     echo "                      <tr>\n";
     echo "                        <td>", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['groupcanaccessadmintools'], false), "</td>\n";

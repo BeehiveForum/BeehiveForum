@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.18 2005-12-21 17:32:49 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.19 2006-03-16 16:29:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -79,7 +79,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
-if (!perm_has_admin_access()) {
+if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     html_draw_top();
     echo "<h2>{$lang['accessdenied']}</h2>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";

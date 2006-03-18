@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.188 2006-03-16 19:34:31 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.189 2006-03-18 01:08:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -745,24 +745,21 @@ function threads_get_most_recent($limit = 10)
     if (db_num_rows($result) > 0) {
 
         $threads_get_array = array();
+        $tid_array = array();
 
         while ($thread = db_fetch_array($result)) {
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if (!($thread['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
-
-                if (!($thread['RELATIONSHIP'] & USER_IGNORED) || $thread['LENGTH'] > 1) {
-                    $threads_get_array[] = $thread;
-                }
-            }
+            $threads_get_array[$thread['TID']] = $thread;
+            $tid_array[] = $thread['TID'];
         }
 
+        threads_have_attachments($threads_get_array, $tid_array);
         return $threads_get_array;
-
-    }else {
-        return false;
     }
+        
+    return false;
 }
 
 function threads_get_unread_by_days($uid, $days = 0) // get unread messages for $uid

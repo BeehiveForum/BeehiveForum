@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.156 2006-03-16 16:29:23 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.157 2006-03-18 00:15:59 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -750,7 +750,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">";
 
-                if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($polldata['FID'])) {
+                if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $polldata['FID'])) {
 
                     if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
@@ -762,7 +762,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                     }
                 }
 
-                if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($polldata['FID'])) {
+                if (bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $polldata['FID'])) {
 
                     $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
 
@@ -1697,7 +1697,7 @@ function poll_confirm_close($tid)
 
     $preview_message = messages_get($tid, 1, 1);
 
-    if (bh_session_get_value('UID') != $preview_message['FROM_UID'] && !perm_is_moderator($preview_message['FID'])) {
+    if (bh_session_get_value('UID') != $preview_message['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $preview_message['FID'])) {
 
         edit_refuse($tid, 1);
         return;
@@ -1751,7 +1751,7 @@ function poll_close($tid)
 
         $polldata = db_fetch_array($result);
 
-        if (bh_session_get_value('UID') == $polldata['FROM_UID'] || perm_is_moderator($t_fid)) {
+        if (bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             $timestamp = mktime();
 

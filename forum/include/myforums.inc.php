@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.52 2005-12-13 10:00:52 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.53 2006-03-18 00:33:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -113,7 +113,7 @@ function get_my_forums()
 
     if (db_num_rows($result_forums) > 0) {
 
-        while ($forum_data = db_fetch_array($result_forums)) {
+        while ($forum_data = db_fetch_array($result_forums, DB_RESULT_ASSOC)) {
 
             $forum_fid = $forum_data['FID'];
 
@@ -194,6 +194,14 @@ function get_my_forums()
             }else {
                 $forum_data['UNREAD_TO_ME'] = $row['UNREAD_TO_ME'];
             }
+
+            // Sometimes the USER_THREAD table might have a higher count that the thread
+            // length due to table corruption. I've only seen this on the SF provided
+            // webspace but none the less we do this check here anyway.
+
+            if ($forum_data['NUM_MESSAGES'] < 0) $forum_data['NUM_MESSAGES'] = 0;
+            if ($forum_data['UNREAD_MESSAGES'] < 0) $forum_data['UNREAD_MESSAGES'] = 0;
+            if ($forum_data['UNREAD_TO_ME'] < 0) $forum_data['UNREAD_TO_ME'] = 0;
 
             // Get Last Visited
 

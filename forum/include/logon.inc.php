@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.38 2006-02-23 16:43:58 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.39 2006-03-18 18:20:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -82,13 +82,17 @@ function perform_logon($logon_main)
         $logon = _stripslashes($_POST['user_logon']);
         $passw = _stripslashes($_POST['user_password']);
 
-        if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
-                
-            $passh = _stripslashes($_POST['user_passhash']);
-        
-        }else {
+        if (strlen(trim($passw)) > 0) {
 
             $passh = md5($passw);
+
+        }else {
+            
+            if (isset($_POST['user_passhash']) && is_md5(_stripslashes($_POST['user_passhash']))) {
+                $passh = _stripslashes($_POST['user_passhash']);
+            }else {
+                return false;
+            }
         }
 
         $luid = user_logon($logon, $passh);

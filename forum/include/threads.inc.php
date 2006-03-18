@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.189 2006-03-18 01:08:59 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.190 2006-03-18 18:20:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -925,21 +925,17 @@ function threads_mark_all_read()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
-    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
-    $sql.= "ORDER BY THREAD.MODIFIED";
+    $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+    $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
+    $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
+    $sql.= "({$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID ";
+    $sql.= "AND {$table_data['PREFIX']}USER_THREAD.UID = $uid) ";
+    $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
     $result_threads = db_query($sql, $db_threads_mark_all_read);
 
-    $threads_array = array();
-
-    while($row = db_fetch_array($result_threads)) {
-        $threads_array[$row['TID']] = $row['LENGTH'];
-    }
-
-    threads_mark_read($threads_array);
+    return $result_threads;
 }
 
 function threads_mark_50_read()
@@ -950,26 +946,24 @@ function threads_mark_50_read()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
-    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
-    $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50";
+    $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+    $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
+    $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
+    $sql.= "({$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID ";
+    $sql.= "AND {$table_data['PREFIX']}USER_THREAD.UID = $uid) LIMIT 0, 50";
+    $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
+
+    echo $sql; exit;
 
     $result_threads = db_query($sql, $db_threads_mark_50_read);
 
-    $threads_array = array();
-
-    while($row = db_fetch_array($result_threads)) {
-        $threads_array[$row['TID']] = $row['LENGTH'];
-    }
-
-    threads_mark_read($threads_array);
+    return $result_threads;
 }
 
 function threads_mark_folder_read($fid)
 {
-    $db_threads_mark_50_read = db_connect();
+    $db_threads_mark_folder_read = db_connect();
 
     if (!is_numeric($fid)) return false;
 
@@ -977,21 +971,18 @@ function threads_mark_folder_read($fid)
 
     $uid = bh_session_get_value('UID');
 
-    $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
-    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
-    $sql.= "AND THREAD.FID = $fid";
+    $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+    $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
+    $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
+    $sql.= "({$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID ";
+    $sql.= "AND {$table_data['PREFIX']}USER_THREAD.UID = $uid) ";
+    $sql.= "WHERE {$table_data['PREFIX']}THREAD.FID = '$fid'";
+    $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    $result_threads = db_query($sql, $db_threads_mark_50_read);
+    $result_threads = db_query($sql, $db_threads_mark_folder_read);
 
-    $threads_array = array();
-
-    while($row = db_fetch_array($result_threads)) {
-        $threads_array[$row['TID']] = $row['LENGTH'];
-    }
-
-    threads_mark_read($threads_array);
+    return $result_threads;
 }
 
 function threads_mark_read($tid_array)
@@ -1004,12 +995,20 @@ function threads_mark_read($tid_array)
 
     $uid = bh_session_get_value('UID');
 
-    foreach($tid_array as $tid => $length) {
+    $tid_list = implode(",", array_unique($tid_array));
 
-        if (is_numeric($tid) && is_numeric($length)) {
-            messages_update_read($tid, $length, $uid);
-        }
-    }
+    $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+    $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
+    $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
+    $sql.= "({$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID ";
+    $sql.= "AND {$table_data['PREFIX']}USER_THREAD.UID = $uid) ";
+    $sql.= "WHERE {$table_data['PREFIX']}THREAD.TID IN ($tid_list) ";
+    $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
+
+    $result_threads = db_query($sql, $db_threads_mark_read);
+
+    return $result_threads;
 }
 
 function thread_list_draw_top($mode)

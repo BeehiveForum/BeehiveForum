@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.154 2006-01-28 11:58:39 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.155 2006-03-19 23:50:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -542,42 +542,21 @@ function folder_search_dropdown()
 
     $access_allowed = USER_PERM_POST_READ;
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.FID";
+    $sql = "SELECT FID, TITLE FROM {$table_data['PREFIX']}FOLDER ";
+    $sql.= "ORDER BY FID ";
 
     $result = db_query($sql, $db_folder_search_dropdown);
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result)) {
+        while($folder_data = db_fetch_array($result)) {
 
-            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
+            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
 
-                if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
+                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
-
-                }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
-
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
-
-                }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
-
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
+                    $folders['FIDS'][]   = $folder_data['FID'];
+                    $folders['TITLES'][] = $folder_data['TITLE'];
                 }
             }
         }
@@ -590,8 +569,6 @@ function folder_search_dropdown()
             return form_dropdown_array("fid", $folders['FIDS'], $folders['TITLES'], 0, false, "search_dropdown");
         }
     }
-
-    return false;
 }
 
 function search_draw_user_dropdown($name)

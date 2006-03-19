@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.190 2006-03-18 18:20:44 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.191 2006-03-19 23:50:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,20 +50,10 @@ function threads_get_folders()
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, USER_FOLDER.INTEREST, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, USER_FOLDER.INTEREST ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = $uid) ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "GROUP BY FOLDER.FID ";
     $sql.= "ORDER BY FOLDER.FID, USER_FOLDER.INTEREST DESC";
 
     $result = db_query($sql, $db_threads_get_folders);
@@ -72,42 +62,22 @@ function threads_get_folders()
 
         $folder_info = array();
 
-        while($row = db_fetch_array($result)) {
+        while ($folder_data = db_fetch_array($result)) {
 
-            if ($row['USER_PERM_COUNT'] > 0) {
+            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
 
-                $status = $row['USER_STATUS'];
+                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
-            }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+                    $folder_data['STATUS'] = bh_session_get_perm($folder_data['FID']);
 
-                $status = $row['FOLDER_PERMS'];
+                    if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
+                    if (!isset($folder_data['INTEREST'])) $folder_data['INTEREST'] = 0;
 
-            }else {
+                    if (!isset($folder_data['ALLOWED_TYPES']) || is_null($folder_data['ALLOWED_TYPES'])) {
+                        $folder_data['ALLOWED_TYPES'] = FOLDER_ALLOW_ALL_THREAD;
+                    }                   
 
-                $status = (double)USER_PERM_POST_READ | USER_PERM_POST_CREATE;
-                $status = (double)$status | USER_PERM_THREAD_CREATE | USER_PERM_POST_EDIT;
-                $status = (double)$status | USER_PERM_POST_DELETE | USER_PERM_POST_ATTACHMENTS;
-            }
-
-            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
-
-                if (($status & $access_allowed) > 0) {
-
-                    if (isset($row['INTEREST'])) {
-
-                        $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
-                                                          'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
-                                                          'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
-                                                          'INTEREST'      => $row['INTEREST'],
-                                                          'STATUS'        => $status);
-                    }else {
-
-                        $folder_info[$row['FID']] = array('TITLE'         => $row['TITLE'],
-                                                          'DESCRIPTION'   => (isset($row['DESCRIPTION'])) ? $row['DESCRIPTION'] : "",
-                                                          'ALLOWED_TYPES' => (isset($row['ALLOWED_TYPES']) && !is_null($row['ALLOWED_TYPES'])) ? $row['ALLOWED_TYPES'] : FOLDER_ALLOW_ALL_THREAD,
-                                                          'INTEREST'      => 0,
-                                                          'STATUS'        => $status);
-                    }
+                    $folder_info[$folder_data['FID']] = $folder_data;
                 }
             }
         }

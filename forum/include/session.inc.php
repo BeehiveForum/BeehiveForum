@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.204 2006-03-16 16:29:23 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.205 2006-03-19 23:50:48 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -599,7 +599,6 @@ function bh_session_get_perm_array($uid)
     $result = db_query($sql, $db_bh_session_get_perm_array);
 
     while ($row = db_fetch_array($result)) {
-
         $user_perm_array[$row['FORUM']][$uid][$row['FID']] = $row['PERM'];
     }
 
@@ -636,7 +635,7 @@ function bh_session_check_perm($perm, $folder_fid, $forum_fid = false)
     if (!is_array($user_sess)) return false;
     if (!is_numeric($folder_fid)) return false;
 
-    if (!is_numeric($forum_fid)) {
+    if ($forum_fid === false) {
 
         if (!$table_data = get_table_prefix()) return false;
         $forum_fid = $table_data['FID'];
@@ -645,21 +644,55 @@ function bh_session_check_perm($perm, $folder_fid, $forum_fid = false)
     $uid = bh_session_get_value('UID');
 
     if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
-        if (($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm) > 0) {
-            return true;
-        }
+        return ($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm);
     }
 
     if (isset($user_sess['PERMS'][$forum_fid][0][$folder_fid])) {
-        if (($user_sess['PERMS'][$forum_fid][0][$folder_fid] & $perm) > 0) {
-            return true;
-        }
+        return ($user_sess['PERMS'][$forum_fid][0][$folder_fid] & $perm);
     }
 
     if (isset($user_sess['PERMS'][0][$uid][$folder_fid])) {
-        if (($user_sess['PERMS'][0][$uid][$folder_fid] & $perm) > 0) {
-            return true;
-        }
+        return ($user_sess['PERMS'][0][$uid][$folder_fid] & $perm);
+    }
+
+    return false;
+}
+
+/**
+* Get the user session current perm value.
+*
+* Gets the current perm value for the selected forum and folder.
+*
+* @return integer
+* @param integer $folder_fid - FID of the folder to check.
+* @param integer $forum_fid - Optional forum fid otherwise uses current forum FID.
+*/
+
+function bh_session_get_perm($folder_fid, $forum_fid = false)
+{
+    global $user_sess;
+
+    if (!is_array($user_sess)) return false;
+    if (!is_numeric($folder_fid)) return false;
+
+    if ($forum_fid === false) {
+
+        if (!$table_data = get_table_prefix()) return false;
+        $forum_fid = $table_data['FID'];
+    }
+
+    $uid = bh_session_get_value('UID');
+
+    if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
+        return $user_sess['PERMS'][$forum_fid][$uid][$folder_fid];
+    }
+
+    if (isset($user_sess['PERMS'][$forum_fid][0][$folder_fid])) {
+        return $user_sess['PERMS'][$forum_fid][0][$folder_fid];
+    }
+
+    if (isset($user_sess['PERMS'][0][$uid][$folder_fid])) {
+        return $user_sess['PERMS'][0][$uid][$folder_fid];
     }
 
     return false;

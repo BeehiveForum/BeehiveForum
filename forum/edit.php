@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.184 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: edit.php,v 1.185 2006-03-19 18:38:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -226,6 +226,8 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 // Check if the user is viewing signatures.
 $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
+// User UID
+$uid = bh_session_get_value('UID');
 
 // Get the user's post page preferences.
 $page_prefs = bh_session_get_post_page_prefs();
@@ -557,20 +559,6 @@ if (isset($_POST['preview'])) {
     }
 
 }else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
-
-    if (isset($_POST['t_content'])) {
-
-        $t_content = _htmlentities(trim(_stripslashes($_POST['t_content'])));
-        $post->setContent($t_content);
-        $t_content = $post->getContent();
-    }
-
-    if (isset($_POST['t_sig'])) {
-
-        $t_sig = _htmlentities(trim(_stripslashes($_POST['t_sig'])));
-        $sig->setContent($t_sig);
-        $t_sig = $sig->getContent();
-    }
 
     $preview_message = messages_get($tid, $pid, 1);
 

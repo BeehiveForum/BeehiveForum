@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.94 2006-03-16 16:29:23 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.95 2006-03-19 23:50:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1146,11 +1146,9 @@ function light_html_guest_error ()
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
-    $db_light_folder_draw_dropdown = db_connect();
+    $db_folder_draw_dropdown = db_connect();
 
     $uid = bh_session_get_value('UID');
-
-    if (!is_numeric($default_fid));
 
     if (!$table_data = get_table_prefix()) return "";
 
@@ -1162,43 +1160,24 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     $allowed_types = FOLDER_ALLOW_NORMAL_THREAD;
     $access_allowed = USER_PERM_THREAD_CREATE;
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID AND GROUP_PERMS.GID = GROUP_USERS.GID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ";
-    $sql.= "ON (FOLDER_PERMS.FID = FOLDER.FID AND FOLDER_PERMS.GID = 0) ";
-    $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
-    $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.FID";
+    $sql.= "WHERE FOLDER.ALLOWED_TYPES & $allowed_types > 0 ";
+    $sql.= "OR FOLDER.ALLOWED_TYPES IS NULL ";
+    $sql.= "ORDER BY FOLDER.FID ";
 
-    $result = db_query($sql, $db_light_folder_draw_dropdown);
+    $result = db_query($sql, $db_folder_draw_dropdown);
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result)) {
+        while($folder_data = db_fetch_array($result)) {
 
-            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
+            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
 
-                if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
+                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
-
-                }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
-
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
-
-                }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
-
-                    $folders['FIDS'][] = $row['FID'];
-                    $folders['TITLES'][] = $row['TITLE'];
+                    $folders['FIDS'][]   = $folder_data['FID'];
+                    $folders['TITLES'][] = $folder_data['TITLE'];
                 }
             }
         }

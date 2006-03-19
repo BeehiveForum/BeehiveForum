@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.104 2005-12-13 10:00:52 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.105 2006-03-19 23:50:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,46 +53,24 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     $access_allowed = USER_PERM_THREAD_CREATE;
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
     $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL) ";
-    $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.FID";
+    $sql.= "WHERE FOLDER.ALLOWED_TYPES & $allowed_types > 0 ";
+    $sql.= "OR FOLDER.ALLOWED_TYPES IS NULL ";
+    $sql.= "ORDER BY FOLDER.FID ";
 
     $result = db_query($sql, $db_folder_draw_dropdown);
 
     if (db_num_rows($result) > 0) {
 
-        while($row = db_fetch_array($result)) {
+        while($folder_data = db_fetch_array($result)) {
 
-            if (!in_array($row['FID'], $folders['FIDS'])) {
+            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
 
-                if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
+                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
-                    if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
-
-                        $folders['FIDS'][] = $row['FID'];
-                        $folders['TITLES'][] = $row['TITLE'];
-
-                    }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
-
-                        $folders['FIDS'][] = $row['FID'];
-                        $folders['TITLES'][] = $row['TITLE'];
-
-                    }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
-
-                        $folders['FIDS'][] = $row['FID'];
-                        $folders['TITLES'][] = $row['TITLE'];
-                    }
+                    $folders['FIDS'][]   = $folder_data['FID'];
+                    $folders['TITLES'][] = $folder_data['TITLE'];
                 }
             }
         }
@@ -274,7 +252,7 @@ function folder_move_threads($from, $to)
     return $result;
 }
 
-function folder_get_available($sort_by_interest = false)
+function folder_get_available()
 {
     $db_folder_get_available = db_connect();
 
@@ -285,41 +263,20 @@ function folder_get_available($sort_by_interest = false)
 
     $access_allowed = USER_PERM_POST_READ;
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.POSITION";
-
+    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ORDER BY FID ";
     $result = db_query($sql, $db_folder_get_available);
 
     if (db_num_rows($result) > 0) {
 
         $folder_list = array();
 
-        while ($row = db_fetch_array($result)) {
+        while($folder_data = db_fetch_array($result)) {
 
-            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
+            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
 
-                if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
+                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
-                    $folder_list[] = $row['FID'];
-
-                }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
-
-                    $folder_list[] = $row['FID'];
-
-                }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
-
-                    $folder_list[] = $row['FID'];
+                    $folder_list[] = $folder_data['FID'];
                 }
             }
         }
@@ -341,39 +298,18 @@ function folder_get_available_by_forum($forum_fid)
 
     $access_allowed = USER_PERM_POST_READ;
 
-    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.POSITION";
-
-    $result = db_query($sql, $db_folder_get_available_by_forum);
+    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ORDER BY FID ";
+    $result = db_query($sql, $db_folder_draw_dropdown);
 
     if (db_num_rows($result) > 0) {
 
         $folder_list = array();
 
-        while ($row = db_fetch_array($result)) {
+        while($folder_data = db_fetch_array($result)) {
 
-            if (($row['FOLDER_PERMS'] & USER_PERM_GUEST_ACCESS) > 0 || !user_is_guest()) {
+            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'], $forum_fid) || !user_is_guest()) {
 
-                if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
-
-                    $folder_list[] = $row['FID'];
-
-                }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
-
-                    $folder_list[] = $row['FID'];
-
-                }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
+                if (bh_session_check_perm($access_allowed, $folder_data['FID'], $forum_fid)) {
 
                     $folder_list[] = $row['FID'];
                 }
@@ -393,8 +329,6 @@ function folder_get_all()
     if (!$table_data = get_table_prefix()) return array();
 
     $forum_fid = $table_data['FID'];
-
-    if (!$uid = bh_session_get_value('UID')) $uid = 0;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
     $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, ";
@@ -491,52 +425,10 @@ function folder_is_valid($fid)
 
 function folder_is_accessible($fid)
 {
-    $db_folder_is_available = db_connect();
-
     if (!is_numeric($fid)) return false;
-    if (!$uid = bh_session_get_value('UID')) $uid = 0;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
 
     $access_allowed = USER_PERM_POST_READ;
-
-    $sql = "SELECT FOLDER.FID, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "WHERE FOLDER.FID = '$fid' ";
-    $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.FID";
-
-    $result = db_query($sql, $db_folder_is_available);
-
-    if (db_num_rows($result) > 0) {
-
-        $row = db_fetch_array($result);
-
-        if ($row['USER_PERM_COUNT'] > 0 && ($row['USER_STATUS'] & $access_allowed) > 0) {
-
-            return true;
-
-        }elseif ($row['FOLDER_PERM_COUNT'] > 0 && ($row['FOLDER_PERMS'] & $access_allowed) > 0) {
-
-            return true;
-
-        }elseif ($row['FOLDER_PERM_COUNT'] == 0 && $row['USER_PERM_COUNT'] == 0) {
-
-            return true;
-        }
-    }
-
-    return false;
+    return bh_session_check_perm($access_allowed, $fid);
 }
 
 function user_set_folder_interest($fid, $interest)

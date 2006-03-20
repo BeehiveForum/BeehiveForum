@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.155 2006-03-19 23:50:48 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.156 2006-03-20 18:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,7 +38,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function search_execute($argarray, &$error)
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -315,7 +315,7 @@ function search_fetch_results($offset, $order_by)
 {
     $db_search_fetch_results = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = $uid";
     $result = db_query($sql, $db_search_fetch_results);
@@ -495,7 +495,7 @@ function forum_search_dropdown()
 
     $db_forum_search_dropdown = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -531,7 +531,7 @@ function folder_search_dropdown()
 
     $db_folder_search_dropdown = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -577,7 +577,7 @@ function search_draw_user_dropdown($name)
 
     $db_search_draw_user_dropdown = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return "";
 
@@ -616,7 +616,7 @@ function check_search_frequency()
 {
     $db_check_search_frequency = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

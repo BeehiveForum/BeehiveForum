@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.206 2006-03-20 17:43:06 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.207 2006-03-20 18:26:07 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -95,6 +95,12 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
         $user_hash = $_COOKIE['bh_sess_hash'];
     }
 
+    // Get the forum data
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
     // Check the current user's session data. This is the main session
     // data that Beehive relies on. If this data does not match what
     // we have stored in the database then the user gets logged out
@@ -102,44 +108,24 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
     if (isset($user_hash) && is_md5($user_hash)) {
 
-        if ($table_data = get_table_prefix()) {
-
-            $forum_fid = $table_data['FID'];
-
-            $sql = "SELECT USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, ";
-            $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
-            $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-            $sql.= "SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
-            $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-            $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = SESSIONS.UID) ";
-            $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-            $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-            $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
-            $sql.= "GROUP BY USER.UID";
-
-        }else {
-
-            $forum_fid = 0;
-
-            $sql = "SELECT USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, ";
-            $sql.= "BIT_OR(GROUP_PERMS.PERM) AS STATUS, ";
-            $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-            $sql.= "SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-            $sql.= "SESSIONS.FID FROM SESSIONS SESSIONS ";
-            $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-            $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = SESSIONS.UID) ";
-            $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-            $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0)) ";
-            $sql.= "WHERE SESSIONS.HASH = '$user_hash' ";
-            $sql.= "GROUP BY USER.UID";
-        }
+        $sql = "SELECT SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+        $sql.= "USER.LOGON, USER.NICKNAME, USER.EMAIL, USER.PASSWD, SESSIONS.FID ";
+        $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER ON (USER.UID = SESSIONS.UID) ";
+        $sql.= "WHERE SESSIONS.HASH = '$user_hash'";
 
         $result = db_query($sql, $db_bh_session_check);
 
         if (db_num_rows($result) > 0) {
 
-            $user_sess = db_fetch_array($result);
+            // Fetch the session data from the database
+            
+            $user_sess = db_fetch_array($result, DB_RESULT_ASSOC);
+
+            // If the session belongs to a guest pass control to bh_guest_session_init();
+
+            if ($user_sess['UID'] == 0) {
+                return bh_guest_session_init($user_hash);
+            }
 
             // check to see if the user's credentials match the
             // ban data set up on this forum.
@@ -159,17 +145,14 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             // may have failed because they weren't logging
             // in to a specific forum.
 
-            if (isset($user_sess['USER_PERM_COUNT']) && $user_sess['USER_PERM_COUNT'] > 0) {
-
-                if (isset($user_sess['STATUS']) && $user_sess['STATUS'] & USER_PERM_BANNED) {
-
-                    if (!strstr(php_sapi_name(), 'cgi')) {
-                        header("HTTP/1.0 500 Internal Server Error");
-                    }
-
-                    echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
-                    exit;
+            if (bh_session_check_perm(USER_PERM_BANNED, 0)) {
+            
+                if (!strstr(php_sapi_name(), 'cgi')) {
+                    header("HTTP/1.0 500 Internal Server Error");
                 }
+
+                echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
+                exit;
             }
 
             // If the user isn't currently in the same forum
@@ -208,66 +191,104 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
         }elseif ($show_session_fail) {
 
-            if (defined("BEEHIVEMODE_LIGHT")) {
-                header_redirect("./llogon.php?final_uri=". get_request_uri());
-            }
-
-            html_draw_top('logon.js');
-
-            if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
-
-                if (perform_logon(false)) {
-
-                    $lang = load_language_file();
-                    $webtag = get_webtag($webtag_search);
-
-                    echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
-
-                    $top_html = html_get_top_page();
-
-                    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                    echo "<!--\n\n";
-                    echo "if (top.document.body.rows) {\n\n";
-                    echo "    top.frames['ftop'].location.replace('$top_html');\n";
-                    echo "    top.frames['fnav'].location.reload();\n";
-                    echo "}\n\n";
-                    echo "-->\n";
-                    echo "</script>";
-
-                    echo "<div align=\"center\">\n";
-                    echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
-
-                    $request_uri = get_request_uri();
-
-                    if (stristr($request_uri, 'logon.php')) {
-                        echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
-                    }else {
-                        echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
-                    }
-
-                    echo form_input_hidden('webtag', $webtag);
-
-                    $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
-
-                    if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
-                        echo $post_vars;
-                    }
-
-                    echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
-                    echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
-                    echo "</form>\n";
-
-                    html_draw_bottom();
-                    exit;
-                }
-            }
-
-            draw_logon_form(false);
-            html_draw_bottom();
-            exit;
+            bh_session_expired();
         }
     }
 
+    return bh_guest_session_init();
+}
+
+function bh_session_expired()
+{
+    if ($show_session_fail) {
+    
+        if (defined("BEEHIVEMODE_LIGHT")) {
+            header_redirect("./llogon.php?final_uri=". get_request_uri());
+        }
+
+        html_draw_top('logon.js');
+
+        if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
+
+            if (perform_logon(false)) {
+
+                $lang = load_language_file();
+                $webtag = get_webtag($webtag_search);
+
+                echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
+
+                $top_html = html_get_top_page();
+
+                echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                echo "<!--\n\n";
+                echo "if (top.document.body.rows) {\n\n";
+                echo "    top.frames['ftop'].location.replace('$top_html');\n";
+                echo "    top.frames['fnav'].location.reload();\n";
+                echo "}\n\n";
+                echo "-->\n";
+                echo "</script>";
+
+                echo "<div align=\"center\">\n";
+                echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+
+                $request_uri = get_request_uri();
+
+                if (stristr($request_uri, 'logon.php')) {
+                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
+                }else {
+                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+                }
+
+                echo form_input_hidden('webtag', $webtag);
+
+                $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
+
+                if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
+                    echo $post_vars;
+                }
+
+                echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
+                echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
+                echo "</form>\n";
+
+                html_draw_bottom();
+                exit;
+            }
+        }
+
+        draw_logon_form(false);
+        html_draw_bottom();
+        exit;
+    }
+}
+
+function bh_guest_session_init($use_sess_hash = false)
+{
+    $db_bh_guest_session_init = db_connect();
+
+    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+
+    $forum_settings = forum_get_settings();
+
+    // Current server time.
+
+    $current_time = time();
+
+    // Session cut off timestamp
+
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+
+    // Check to see if we've been given a MD5 hash to use instead of the cookie.
+
+    if (!is_bool($use_sess_hash) && is_md5($use_sess_hash)) {
+
+        $user_hash = $use_sess_hash;
+    
+    }else {
+
+        $user_hash = md5($ipaddress);
+    }
+    
     if (user_guest_enabled() && !user_cookies_set()) {
 
         // Guest user sessions are handled a bit differently.
@@ -283,10 +304,8 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             $forum_fid = 0;
         }
 
-        $user_hash = md5($ipaddress);
-
         $sql = "SELECT * FROM SESSIONS WHERE HASH = '$user_hash' ";
-        $result = db_query($sql, $db_bh_session_check);
+        $result = db_query($sql, $db_bh_guest_session_init);
 
         if (db_num_rows($result) > 0) {
 
@@ -298,7 +317,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
                 $sql.= "FID = '$forum_fid', IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
 
-                $result = db_query($sql, $db_bh_session_check);
+                $result = db_query($sql, $db_bh_guest_session_init);
 
                 bh_remove_stale_sessions();
             }
@@ -308,7 +327,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME) ";
             $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', NOW())";
 
-            $result = db_query($sql, $db_bh_session_check);
+            $result = db_query($sql, $db_bh_guest_session_init);
 
             bh_update_visitor_log(0);
         }
@@ -527,7 +546,7 @@ function bh_session_end()
 {
     $db_bh_session_end = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
@@ -623,7 +642,7 @@ function bh_session_check_perm($perm, $folder_fid, $forum_fid = false)
         $forum_fid = $table_data['FID'];
     }
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
         return ($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm);
@@ -663,7 +682,7 @@ function bh_session_get_perm($folder_fid, $forum_fid = false)
         $forum_fid = $table_data['FID'];
     }
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
         return $user_sess['PERMS'][$forum_fid][$uid][$folder_fid];

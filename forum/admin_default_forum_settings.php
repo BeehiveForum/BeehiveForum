@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.43 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.44 2006-03-20 18:26:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -289,9 +289,6 @@ if (isset($_POST['submit'])) {
     if ($valid) {
 
         forum_save_default_settings($new_forum_settings);
-
-        $uid = bh_session_get_value('UID');
-
         header_redirect("./admin_default_forum_settings.php?webtag=$webtag&updated=true", $lang['forumsettingsupdated']);
     }
 

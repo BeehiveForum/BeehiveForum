@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.157 2006-03-18 00:15:59 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.158 2006-03-20 18:26:07 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -160,7 +160,7 @@ function poll_get($tid)
 {
     $lang = load_language_file();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -314,7 +314,7 @@ function poll_get_user_vote($tid)
 
     $db_poll_get_user_vote = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -351,7 +351,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     $webtag = get_webtag($webtag_search);
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $polldata     = poll_get($tid);
     $pollresults  = poll_get_votes($tid);
@@ -1785,7 +1785,7 @@ function poll_is_closed($tid)
 
 function poll_vote($tid, $vote_array)
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_array($vote_array)) return false;
@@ -1825,7 +1825,7 @@ function poll_delete_vote($tid)
 
     if (!is_numeric($tid)) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

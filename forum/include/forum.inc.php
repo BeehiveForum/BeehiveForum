@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.169 2006-03-16 16:29:23 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.170 2006-03-20 18:26:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -131,8 +131,8 @@ function get_table_prefix()
 function forum_check_access_level()
 {
     $db_forum_check_access_level = db_connect();
-
-    $uid = bh_session_get_value('UID');
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if ($forum_data = get_forum_data()) {
 
@@ -551,7 +551,7 @@ function forum_create($webtag, $forum_name, $access)
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
-        $uid = bh_session_get_value('UID');
+        if (($uid = bh_session_get_value('UID')) === false) return false;
 
         $db_forum_create = db_connect();
 
@@ -1294,7 +1294,7 @@ function forum_update_access($fid, $access, $passwd = false)
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
-        $uid = bh_session_get_value('UID');
+        if (($uid = bh_session_get_value('UID')) === false) return false;
 
         $db_forum_update_access = db_connect();
 
@@ -1452,7 +1452,7 @@ function forum_search($search_string)
 {
     $fid_array = array();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $lang = load_language_file();
 

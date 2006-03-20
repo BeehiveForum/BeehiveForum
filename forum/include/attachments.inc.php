@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.110 2006-03-16 16:29:23 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.111 2006-03-20 18:26:06 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -346,7 +346,7 @@ function delete_attachment_by_aid($aid)
 
     $db_delete_attachment_by_aid = db_connect();
 
-    if (!$uid = bh_session_get_value('UID')) return false;
+    if (($uid = bh_session_get_value('UID')) === false) return false;
     if(!$table_data = get_table_prefix()) return false;
 
     $forum_settings = forum_get_settings();
@@ -382,7 +382,7 @@ function delete_attachment($hash)
 
     $db_delete_attachment = db_connect();
 
-    if (!$uid = bh_session_get_value('UID')) return false;
+    if (($uid = bh_session_get_value('UID')) === false) return false;
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_settings = forum_get_settings();

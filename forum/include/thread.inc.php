@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.73 2005-10-15 15:56:56 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.74 2006-03-20 18:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -61,7 +61,7 @@ function thread_get($tid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -175,7 +175,8 @@ function thread_get_length($tid)
 
 function thread_get_interest($tid)
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
     $db_thread_get_interest = db_connect();
 
     if (!$table_data = get_table_prefix()) return 0;
@@ -200,7 +201,7 @@ function thread_get_interest($tid)
 
 function thread_set_interest($tid, $interest, $new = false)
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($interest)) return false;
@@ -227,7 +228,7 @@ function thread_set_interest($tid, $interest, $new = false)
 
 function thread_set_high_interest($tid, $interest, $new = false)
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($interest)) return false;

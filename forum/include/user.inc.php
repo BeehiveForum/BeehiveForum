@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.263 2006-03-16 16:29:23 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.264 2006-03-20 18:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1102,7 +1102,7 @@ function user_get_word_filter()
 
     if (!$table_data = get_table_prefix()) return array();
 
-    $uid = bh_session_get_value('UID');
+    if (!$uid = bh_session_get_value('UID')) return array();
 
     if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y') {
 
@@ -1132,7 +1132,7 @@ function user_clear_word_filter()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
     return db_query($sql, $db_user_clear_word_filter);
@@ -1149,7 +1149,7 @@ function user_add_word_filter($match, $replace, $filter_option)
     $match = addslashes($match);
     $replace = addslashes($replace);
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (UID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
     $sql.= "VALUES ('$uid', '$match', '$replace', '$filter_option')";
@@ -1165,7 +1165,7 @@ function user_delete_word_filter($id)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE ID = '$id' AND UID = '$uid'";

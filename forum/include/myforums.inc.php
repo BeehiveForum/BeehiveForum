@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.53 2006-03-18 00:33:31 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.54 2006-03-20 18:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,7 +43,7 @@ function get_forum_list()
     $db_get_forum_list = db_connect();
     $get_forum_list_array = array();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
@@ -102,7 +102,7 @@ function get_my_forums()
                                  'RECENT_FORUMS' => array(),
                                  'OTHER_FORUMS'  => array());
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
@@ -243,7 +243,7 @@ function user_set_forum_interest($fid, $interest)
 {
     $db_user_set_forum_interest = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($interest)) return false;

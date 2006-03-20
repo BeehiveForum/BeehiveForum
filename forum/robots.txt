@@ -74,7 +74,6 @@ Disallow: /forum/forum_options.php
 Disallow: /forum/forum_password.php
 Disallow: /forum/get_attachment.php
 Disallow: /forum/install.php
-Disallow: /forum/lforums.php
 Disallow: /forum/links.php
 Disallow: /forum/links_add.php
 Disallow: /forum/links_detail.php

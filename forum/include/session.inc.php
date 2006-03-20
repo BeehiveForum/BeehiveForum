@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.205 2006-03-19 23:50:48 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.206 2006-03-20 17:43:06 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -313,29 +313,11 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             bh_update_visitor_log(0);
         }
 
-        return array('UID'              => 0,
-                     'LOGON'            => 'GUEST',
-                     'PASSWD'           => md5('GUEST'),
-                     'STATUS'           => 0,
-                     'POSTS_PER_PAGE'   => 20,
-                     'TIMEZONE'         => 0,
-                     'DL_SAVING'        => 0,
-                     'MARK_AS_OF_INT'   => 0,
-                     'FONT_SIZE'        => 10,
-                     'STYLE'            => forum_get_setting('default_style', false, 'default'),
-                     'VIEW_SIGS'        => 'Y',
-                     'START_PAGE'       => 0,
-                     'LANGUAGE'         => forum_get_setting('default_language', false, 'default'),
-                     'PM_NOTIFY'        => 'N',
-                     'SHOW_STATS'       => 'Y',
-                     'IMAGES_TO_LINKS'  => 'N',
-                     'USE_WORD_FILTER'  => 'Y',
-                     'USE_ADMIN_FILTER' => 'Y',
-                     'POST_PAGE'        => 0,
-                     'SHOW_THUMBS'      => '2');
+        return array('UID'    => 0,
+                     'LOGON'  => 'GUEST',
+                     'PASSWD' => '33e9232989576b5cfaa06654217d7a1a',
+                     'PERMS'  => bh_session_get_perm_array($user_sess['UID']));
     }
-
-
 
     return false;
 }

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.18 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.19 2006-03-20 17:43:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -60,11 +60,13 @@ include_once(BH_INCLUDE_PATH. "myforums.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Load the user session. We don't need to check if
-// the user should be logged in as we want all visitors
-// to be able to see this page.
+// Check we're logged in correctly
 
-$user_sess = bh_session_check();
+if (!$user_sess = bh_session_check()) {
+    $request_uri = rawurlencode(get_request_uri());
+    $webtag = get_webtag($webtag_search);
+    header_redirect("./llogon.php?webtag=$webtag&final_uri=$request_uri");
+}
 
 // Make sure we have a webtag
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.31 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.32 2006-03-20 20:45:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -92,6 +92,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 }else if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
     $fid = $_POST['fid'];
 }else {
+    html_draw_top();
     echo "<h1>{$lang['invalidop']}</h1>\n";
     echo "<h2>{$lang['noforumidspecified']}</h2>\n";
     html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.141 2005-11-11 08:52:30 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.142 2006-03-20 18:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -432,7 +432,7 @@ function check_ddkey($ddkey)
 {
     $db_check_ddkey = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -463,7 +463,7 @@ function check_post_frequency()
 {
     $db_check_post_frequency = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

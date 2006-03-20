@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.31 2005-11-09 00:00:53 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.32 2006-03-20 18:26:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -175,7 +175,7 @@ class dictionary {
         $metaphone = addslashes(metaphone(trim($word)));
         $word = addslashes(trim($word));
 
-        $uid = bh_session_get_value('UID');
+        if (($uid = bh_session_get_value('UID')) === false) return false;
 
         // Check to see if the word does actually exist
 
@@ -276,7 +276,7 @@ class dictionary {
 
         // The current user's UID
 
-        $uid = bh_session_get_value('UID');
+        if (($uid = bh_session_get_value('UID')) === false) return false;
 
         // Exact match
 

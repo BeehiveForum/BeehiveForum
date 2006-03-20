@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.69 2005-10-23 11:58:33 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.70 2006-03-20 18:26:06 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -59,7 +59,8 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 function admin_add_log_entry($action, $data = 0)
 {
     $db_admin_add_log_entry = db_connect();
-    $uid = bh_session_get_value('UID');
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($action)) return false;
 
@@ -244,7 +245,8 @@ function admin_add_word_filter($match, $replace, $filter_option)
     if (!is_numeric($filter_option)) $filter_option = 0;
 
     $db_admin_add_word_filter = db_connect();
-    $uid = bh_session_get_value('UID');
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

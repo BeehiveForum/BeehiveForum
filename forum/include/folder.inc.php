@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.105 2006-03-19 23:50:48 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.106 2006-03-20 18:26:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,7 +40,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 {
     $db_folder_draw_dropdown = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return "";
 
@@ -88,7 +88,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 {
     $db_folder_draw_dropdown = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return "";
 
@@ -299,7 +299,7 @@ function folder_get_available_by_forum($forum_fid)
     $access_allowed = USER_PERM_POST_READ;
 
     $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ORDER BY FID ";
-    $result = db_query($sql, $db_folder_draw_dropdown);
+    $result = db_query($sql, $db_folder_get_available_by_forum);
 
     if (db_num_rows($result) > 0) {
 
@@ -311,7 +311,7 @@ function folder_get_available_by_forum($forum_fid)
 
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'], $forum_fid)) {
 
-                    $folder_list[] = $row['FID'];
+                    $folder_list[] = $folder_data['FID'];
                 }
             }
         }
@@ -433,7 +433,7 @@ function folder_is_accessible($fid)
 
 function user_set_folder_interest($fid, $interest)
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $db_user_set_folder_interest = db_connect();
 
@@ -493,7 +493,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 {
     $db_folder_get_by_type_allowed = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($allowed_types)) $allowed_types = FOLDER_ALLOW_ALL_THREAD;
 

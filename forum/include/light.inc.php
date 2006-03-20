@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.95 2006-03-19 23:50:48 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.96 2006-03-20 18:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -99,7 +99,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
     $lang = load_language_file();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     echo "<form name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
     echo "  ", form_input_hidden("webtag", $webtag), "\n";
@@ -428,7 +428,7 @@ function light_draw_my_forums()
 {
     $lang = load_language_file();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if ($uid <> 0) {
 
@@ -630,7 +630,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
 
     $lang = load_language_file();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $polldata     = poll_get($tid);
     $pollresults  = poll_get_votes($tid);
@@ -1148,7 +1148,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 {
     $db_folder_draw_dropdown = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return "";
 

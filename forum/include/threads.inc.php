@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.191 2006-03-19 23:50:48 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.192 2006-03-20 18:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -39,7 +39,7 @@ include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function threads_get_folders()
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $db_threads_get_folders = db_connect();
 
@@ -683,7 +683,7 @@ function threads_get_most_recent($limit = 10)
 
     $folders = folder_get_available();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
@@ -866,7 +866,7 @@ function threads_any_unread()
 {
     $db_threads_any_unread = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -889,7 +889,7 @@ function threads_any_unread()
 
 function threads_mark_all_read()
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $db_threads_mark_all_read = db_connect();
 
@@ -910,7 +910,7 @@ function threads_mark_all_read()
 
 function threads_mark_50_read()
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $db_threads_mark_50_read = db_connect();
 
@@ -939,7 +939,7 @@ function threads_mark_folder_read($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
     $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
@@ -963,7 +963,7 @@ function threads_mark_read($tid_array)
 
     if (!is_array($tid_array)) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $tid_list = implode(",", array_unique($tid_array));
 

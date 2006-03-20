@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.129 2006-02-23 16:44:02 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.130 2006-03-20 18:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,7 +54,8 @@ function pm_enabled()
 function pm_markasread($mid)
 {
     $db_pm_markasread = db_connect();
-    $uid = bh_session_get_value('UID');
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -96,7 +97,8 @@ function pm_error_refuse()
 function pm_add_sentitem($mid)
 {
     $db_pm_add_sentitem = db_connect();
-    $uid = bh_session_get_value('UID');
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -160,7 +162,7 @@ function pm_get_inbox($offset)
 
     $db_pm_get_inbox = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_inbox_array = array();
 
@@ -209,7 +211,7 @@ function pm_get_outbox($offset)
 
     $db_pm_get_outbox = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_outbox_array = array();
 
@@ -258,7 +260,7 @@ function pm_get_sent($offset)
 
     $db_pm_get_outbox = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_outbox_array = array();
 
@@ -307,7 +309,7 @@ function pm_get_saveditems($offset)
 
     $db_pm_get_saveditems = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_saveditems_array = array();
 
@@ -356,7 +358,9 @@ function pm_get_free_space($uid = false)
 {
     $db_pm_get_free_space = db_connect();
 
-    if (!$uid) $uid = bh_session_get_value('UID');
+    if ($uid === false) {
+        if (($uid = bh_session_get_value('UID')) === false) return false;
+    }
 
     $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 
@@ -413,7 +417,7 @@ function pm_user_get_friends()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $user_rel = USER_FRIEND;
 
@@ -472,7 +476,7 @@ function pm_single_get($mid, $folder)
 {
     $db_pm_list_get = db_connect();
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($mid)) return false;
     if (!is_numeric($folder)) return false;
@@ -561,7 +565,7 @@ function pm_display($pm_elements_array)
 
     $webtag = get_webtag($webtag_search);
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     echo "<div align=\"center\">\n";
     echo "  <table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -818,7 +822,7 @@ function pm_delete_message($mid)
 
     if (!is_numeric($mid)) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -874,7 +878,7 @@ function pm_archive_message($mid)
 
     if (!is_numeric($mid)) return false;
 
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -922,7 +926,8 @@ function pm_archive_message($mid)
 function pm_new_check()
 {
     $db_pm_new_check = db_connect();
-    $uid = bh_session_get_value('UID');
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -953,7 +958,8 @@ function pm_new_check()
 function pm_get_unread_count()
 {
     $db_pm_get_unread_count = db_connect();
-    $uid = bh_session_get_value('UID');
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -984,7 +990,9 @@ function pm_user_prune_folders($uid = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!$uid) $uid = bh_session_get_value('UID');
+    if ($uid === false) {
+        if (($uid = bh_session_get_value('UID')) === false) return false;
+    }
 
     $user_prefs = user_get_prefs($uid);
 
@@ -1034,7 +1042,7 @@ function pm_system_prune_folders()
 
 function pm_auto_prune_enabled()
 {
-    $uid = bh_session_get_value('UID');
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $user_prefs = user_get_prefs($uid);
 

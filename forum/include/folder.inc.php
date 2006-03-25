@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.107 2006-03-25 10:36:26 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.108 2006-03-25 18:12:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -284,7 +284,7 @@ function folder_get_available()
         if (sizeof($folder_list) > 0) return implode(',', $folder_list);
     }*/
 
-    $access_allowed = USER_PERM_POST_READ;
+    $access_allowed = USER_PERM_POST_READ | USER_PERM_GUEST_ACCESS;
 
     if ($folder_list = bh_session_get_folders_by_perm($access_allowed)) {
         return implode(',', $folder_list);
@@ -325,7 +325,7 @@ function folder_get_available_by_forum($forum_fid)
         if (sizeof($folder_list) > 0) return implode(',', $folder_list);
     }*/
 
-    $access_allowed = USER_PERM_POST_READ;
+    $access_allowed = USER_PERM_POST_READ | USER_PERM_GUEST_ACCESS;
 
     if ($folder_list = bh_session_get_folders_by_perm($access_allowed, $forum_fid)) {
         return implode(',', $folder_list);

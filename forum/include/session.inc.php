@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.210 2006-03-25 17:47:02 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.211 2006-03-25 18:12:44 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -723,18 +723,20 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (isset($user_sess['PERMS'][$forum_fid][$uid]) && is_array($user_sess['PERMS'][$forum_fid][$uid])) {
-        foreach($user_sess['PERMS'][$forum_fid][$uid] as $folder_fid => $folder_perm) {
-            if (($folder_perm & USER_PERM_GUEST_ACCESS) || !user_is_guest()) {
-                if ($folder_perm & $perm) $folder_fid_array[] = $folder_fid;
-            }
-        }
-    }
+    // Iterate through the folders and test against the folder's own perm
 
     if (isset($user_sess['PERMS'][$forum_fid][0]) && is_array($user_sess['PERMS'][$forum_fid][0])) {
         foreach($user_sess['PERMS'][$forum_fid][0] as $folder_fid => $folder_perm) {
-            if (($folder_perm & USER_PERM_GUEST_ACCESS) || !user_is_guest()) {
-                if ($folder_perm & $perm) $folder_fid_array[] = $folder_fid;
+            if ($folder_perm & $perm) $folder_fid_array[$folder_fid] = $folder_fid;
+        }
+    }
+
+    // Remove the folders that the user doesn't have access to.
+
+    if (isset($user_sess['PERMS'][$forum_fid][$uid]) && is_array($user_sess['PERMS'][$forum_fid][$uid])) {
+        foreach($user_sess['PERMS'][$forum_fid][$uid] as $folder_fid => $folder_perm) {
+            if ((!$folder_perm & $perm) && isset($folder_fid_array[$folder_fid])) {
+                unset($folder_fid_array[$folder_fid]);
             }
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.209 2006-03-25 10:36:26 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.210 2006-03-25 17:47:02 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -200,66 +200,63 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
 function bh_session_expired()
 {
-    if ($show_session_fail) {
-    
-        if (defined("BEEHIVEMODE_LIGHT")) {
-            header_redirect("./llogon.php?final_uri=". get_request_uri());
-        }
-
-        html_draw_top('logon.js');
-
-        if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
-
-            if (perform_logon(false)) {
-
-                $lang = load_language_file();
-                $webtag = get_webtag($webtag_search);
-
-                echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
-
-                $top_html = html_get_top_page();
-
-                echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-                echo "<!--\n\n";
-                echo "if (top.document.body.rows) {\n\n";
-                echo "    top.frames['ftop'].location.replace('$top_html');\n";
-                echo "    top.frames['fnav'].location.reload();\n";
-                echo "}\n\n";
-                echo "-->\n";
-                echo "</script>";
-
-                echo "<div align=\"center\">\n";
-                echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
-
-                $request_uri = get_request_uri();
-
-                if (stristr($request_uri, 'logon.php')) {
-                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
-                }else {
-                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
-                }
-
-                echo form_input_hidden('webtag', $webtag);
-
-                $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
-
-                if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
-                    echo $post_vars;
-                }
-
-                echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
-                echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
-                echo "</form>\n";
-
-                html_draw_bottom();
-                exit;
-            }
-        }
-
-        draw_logon_form(false);
-        html_draw_bottom();
-        exit;
+    if (defined("BEEHIVEMODE_LIGHT")) {
+        header_redirect("./llogon.php?final_uri=". get_request_uri());
     }
+
+    html_draw_top('logon.js');
+
+    if (isset($_POST['user_logon']) && isset($_POST['user_password']) && isset($_POST['user_passhash'])) {
+
+        if (perform_logon(false)) {
+
+            $lang = load_language_file();
+            $webtag = get_webtag($webtag_search);
+
+            echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
+
+            $top_html = html_get_top_page();
+
+            echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+            echo "<!--\n\n";
+            echo "if (top.document.body.rows) {\n\n";
+            echo "    top.frames['ftop'].location.replace('$top_html');\n";
+            echo "    top.frames['fnav'].location.reload();\n";
+            echo "}\n\n";
+            echo "-->\n";
+            echo "</script>";
+
+            echo "<div align=\"center\">\n";
+            echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+
+            $request_uri = get_request_uri();
+
+            if (stristr($request_uri, 'logon.php')) {
+                echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
+            }else {
+                echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+            }
+
+            echo form_input_hidden('webtag', $webtag);
+
+            $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
+
+            if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
+                echo $post_vars;
+            }
+
+            echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
+            echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
+            echo "</form>\n";
+
+            html_draw_bottom();
+            exit;
+        }
+    }
+
+    draw_logon_form(false);
+    html_draw_bottom();
+    exit;
 }
 
 function bh_guest_session_init($use_sess_hash = false)
@@ -728,6 +725,14 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
 
     if (isset($user_sess['PERMS'][$forum_fid][$uid]) && is_array($user_sess['PERMS'][$forum_fid][$uid])) {
         foreach($user_sess['PERMS'][$forum_fid][$uid] as $folder_fid => $folder_perm) {
+            if (($folder_perm & USER_PERM_GUEST_ACCESS) || !user_is_guest()) {
+                if ($folder_perm & $perm) $folder_fid_array[] = $folder_fid;
+            }
+        }
+    }
+
+    if (isset($user_sess['PERMS'][$forum_fid][0]) && is_array($user_sess['PERMS'][$forum_fid][0])) {
+        foreach($user_sess['PERMS'][$forum_fid][0] as $folder_fid => $folder_perm) {
             if (($folder_perm & USER_PERM_GUEST_ACCESS) || !user_is_guest()) {
                 if ($folder_perm & $perm) $folder_fid_array[] = $folder_fid;
             }

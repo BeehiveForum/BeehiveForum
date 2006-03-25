@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.56 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.57 2006-03-25 17:47:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,6 +107,7 @@ if (!is_numeric($pid)) $pid = 1;
 if (!is_numeric($tid)) $tid = 1;
 
 if (!thread_can_view($tid, bh_session_get_value('UID'))) {
+
     light_html_draw_top();
     echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
     light_html_draw_bottom();

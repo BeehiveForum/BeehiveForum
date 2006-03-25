@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.130 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.131 2006-03-25 10:36:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -640,9 +640,6 @@ function pm_display($pm_elements_array)
 
             // Draw the attachment header at the bottom of the post
 
-            echo "          <tr>\n";
-            echo "            <td>&nbsp;</td>\n";
-            echo "          </tr>\n";
             echo "          <tr>\n";
             echo "            <td class=\"postbody\" align=\"left\">\n";
 

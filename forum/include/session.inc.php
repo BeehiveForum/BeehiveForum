@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.208 2006-03-20 21:12:37 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.209 2006-03-25 10:36:26 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -697,6 +697,44 @@ function bh_session_get_perm($folder_fid, $forum_fid = false)
     }
 
     return false;
+}
+
+/**
+* Return an array of folder fids in the user session that match the provided permission.
+*
+* Iterates through the USER_PERMS array and finds folders that match the user permission
+* provided in $perm or false if no results.
+*
+* @return mixed - array on success, false on no results.
+* @param integer $perm - Perm value to test (see constants.inc.php)
+* @param integer $forum_fid = Optional forum fid otherwise  uses current forum FID.
+*/
+
+function bh_session_get_folders_by_perm($perm, $forum_fid = false)
+{
+    global $user_sess;
+
+    if (!is_numeric($perm)) return false;
+
+    if ($forum_fid === false) {
+
+        if (!$table_data = get_table_prefix()) return false;
+        $forum_fid = $table_data['FID'];
+    }
+
+    $folder_fid_array = array();
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (isset($user_sess['PERMS'][$forum_fid][$uid]) && is_array($user_sess['PERMS'][$forum_fid][$uid])) {
+        foreach($user_sess['PERMS'][$forum_fid][$uid] as $folder_fid => $folder_perm) {
+            if (($folder_perm & USER_PERM_GUEST_ACCESS) || !user_is_guest()) {
+                if ($folder_perm & $perm) $folder_fid_array[] = $folder_fid;
+            }
+        }
+    }
+
+    return sizeof($folder_fid_array) > 0 ? $folder_fid_array : false;
 }
 
 /**

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.211 2006-03-25 18:12:44 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.212 2006-03-28 08:44:06 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -723,20 +723,22 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    // Iterate through the folders and test against the folder's own perm
+    // Test each folder against the rpovided perm at both the folder
+    // and user levels.
 
     if (isset($user_sess['PERMS'][$forum_fid][0]) && is_array($user_sess['PERMS'][$forum_fid][0])) {
+
         foreach($user_sess['PERMS'][$forum_fid][0] as $folder_fid => $folder_perm) {
-            if ($folder_perm & $perm) $folder_fid_array[$folder_fid] = $folder_fid;
-        }
-    }
 
-    // Remove the folders that the user doesn't have access to.
+            if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
 
-    if (isset($user_sess['PERMS'][$forum_fid][$uid]) && is_array($user_sess['PERMS'][$forum_fid][$uid])) {
-        foreach($user_sess['PERMS'][$forum_fid][$uid] as $folder_fid => $folder_perm) {
-            if ((!$folder_perm & $perm) && isset($folder_fid_array[$folder_fid])) {
-                unset($folder_fid_array[$folder_fid]);
+                if ($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm) {
+                    $folder_fid_array[$folder_fid] = $folder_fid;
+                }
+
+            }else {
+
+                if ($folder_perm & $perm) $folder_fid_array[$folder_fid] = $folder_fid;
             }
         }
     }
@@ -766,13 +768,13 @@ function parse_array($array, $sep, &$result_var)
 
     foreach ($array as $key => $value) {
 
-        $value = rawurlencode($value);
-
         if (is_array($value)) {
 
             parse_array($value, $sep, $result_var);
 
         }else {
+
+            $value = rawurlencode($value);
 
             if ($key == 'webtag') {
 

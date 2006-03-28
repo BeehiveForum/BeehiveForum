@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.96 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.97 2006-03-28 21:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -410,14 +410,27 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
         echo "      ", form_input_hidden("webtag", $webtag), "\n";
 
         $labels = array($lang['alldiscussions'], $lang['next50discussions']);
+        $selected_option = 0;
 
-        if (isset($visiblethreads) && is_array($visiblethreads)) {
+        if (isset($visible_threads_array) && is_array($visible_threads_array)) {
 
             $labels[] = $lang['visiblediscussions'];
-            echo form_input_hidden("tids", implode(',', $visiblethreads));
+            $selected_option = 2;
+
+            foreach ($visible_threads_array as $tid => $length) {
+                echo form_input_hidden("tid_array[$tid]", $length), "\n";
+            }
         }
 
-        echo light_form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, 0). "\n        ";
+        if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+            echo "        ", form_input_hidden('folder', $folder), "\n";
+
+            $labels[] = $lang['selectedfolder'];
+            $selected_option = 3;
+        }
+
+        echo light_form_dropdown_array("markread", range(0, sizeof($labels) -1), $labels, $selected_option). "\n";
         echo light_form_submit("go", $lang['goexcmark']). "\n";
         echo "    </form>\n";
 

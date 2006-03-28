@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.383 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.384 2006-03-28 21:19:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1210,43 +1210,33 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     if ($uid == 0) return false;
 
-    $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD ";
+    // mysql_affected_rows() doesn't appear to be reliable and
+    // can sometimes return 0 (possible bug in some MySQL versions??)
+    // so we're a bit dirty here and simply do a INSERT IGNORE
+    // followed by an UPDATE.
+
+    // Try inserting new rows first with an IGNORE.
+    $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+    $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+
+    if (!$result = db_query($sql, $db_message_update_read)) return false;
+
+    // Try an update also just incase a row already exists.
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
     $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-    $result = db_query($sql, $db_message_update_read);
-
-    if (db_num_rows($result) > 0) {
-
-        $fa = db_fetch_array($result);
-
-        if (!isset($fa['LAST_READ'])) {
-            $fa['LAST_READ'] = 0;
-        }
-
-        if ($pid > $fa['LAST_READ']) {
-
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-            $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
-
-            $result = db_query($sql, $db_message_update_read);
-        }
-
-    }else {
-
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-        $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
-
-        $result = db_query($sql, $db_message_update_read);
-    }
+    if (!$result = db_query($sql, $db_message_update_read)) return false;
 
     // Mark posts as Viewed...
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() ";
     $sql.= "WHERE TID = '$tid' AND PID BETWEEN '$spid' AND '$pid' ";
     $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
 
-    $result = db_query($sql, $db_message_update_read);
+    if (!$result = db_query($sql, $db_message_update_read)) return false;
+
+    return true;
 }
 
 function messages_set_read($tid, $pid, $uid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.69 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.70 2006-03-28 21:19:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -91,8 +91,8 @@ $uid = bh_session_get_value('UID');
 
 if (isset($_GET['markread'])) {
 
-    if ($_GET['markread'] == 2 && isset($_GET['tids']) && is_array($_GET['tids'])) {
-        threads_mark_read(explode(',', $_GET['tids']));
+    if ($_GET['markread'] == 2 && isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
+        threads_mark_read($_GET['tid_array']);
     }elseif ($_GET['markread'] == 0) {
         threads_mark_all_read();
     }elseif ($_GET['markread'] == 1) {

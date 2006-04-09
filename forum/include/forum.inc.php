@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.170 2006-03-20 18:26:06 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.171 2006-04-09 21:03:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -144,15 +144,15 @@ function forum_check_access_level()
 
             }elseif ($forum_data['ACCESS_LEVEL'] == -1) {
 
-                forum_closed_message();
+                return forum_closed_message();
 
             }elseif ($forum_data['ACCESS_LEVEL'] == 1 && $forum_data['ALLOWED'] != 1) {
 
-                forum_restricted_message();
+                return forum_restricted_message();
 
             }elseif ($forum_data['ACCESS_LEVEL'] == 2 && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
 
-                forum_check_password($forum_data['FID']);
+                return forum_check_password($forum_data['FID']);
             }
         }
 
@@ -209,74 +209,88 @@ function forum_check_password($forum_fid)
 
     if (!is_numeric($forum_fid)) return false;
 
-    $sql = "SELECT FORUM_PASSWD FROM FORUMS WHERE FID = $forum_fid ";
-    $sql.= "AND FORUM_PASSWD IS NOT NULL AND CHAR_LENGTH(FORUM_PASSWD) > 5";
-
+    $sql = "SELECT FORUM_PASSWD FROM FORUMS WHERE FID = '$forum_fid'";
     $result = db_query($sql, $db_forum_check_password);
 
     if (db_num_rows($result) > 0) {
 
         list($forum_passwd) = db_fetch_array($result, DB_RESULT_NUM);
 
-        if (isset($_COOKIE["bh_{$webtag}_password"])) {
+        if (isset($forum_passwd) && is_md5($forum_passwd)) {
 
-            $passwd = md5($_COOKIE["bh_{$webtag}_password"]);
-            return ($passwd == $forum_passwd);
+            if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
+                $passwd = md5($_COOKIE["bh_{$webtag}_password"]);
+            }else {
+                $passwd = "";
+            }
+
+            if ($passwd == $forum_passwd) return true;
+
+            // If we got this far then the password verification failed or
+            // the user hasn't seen the password dialog before.
+
+            $lang = load_language_file();
+
+            html_draw_top();
+
+            echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
+            echo "<p>{$lang['passwdprotectedwarning']}</p>\n";
+
+            if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
+                bh_setcookie("bh_{$webtag}_password", "", time() - YEAR_IN_SECONDS);
+                echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+                echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
+            }
+
+            echo "<div align=\"center\">\n";
+            echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
+            echo "  ", form_input_hidden('webtag', $webtag), "\n";
+            echo "  ", form_input_hidden('ret', get_request_uri()), "\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">\n";
+            echo "        <table class=\"box\" width=\"90%\">\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"posthead\" align=\"center\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "              <table class=\"posthead\" width=\"90%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td>{$lang['passwd']}:</td>\n";
+            echo "                  <td>", form_input_password('forum_password', '', 32), "</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td>", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], false), "</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td>&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+            echo "</form>\n";
+            echo "</div>\n";
+
+            html_draw_bottom();
+            exit;
         }
-
-        // If we got this far then the password verification failed or
-        // the user hasn't seen the password dialog before.
-
-        $lang = load_language_file();
-
-        html_draw_top();
-
-        echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
-        echo "<p>{$lang['passwdprotectedwarning']}</p>\n";
-        echo "<div align=\"center\">\n";
-        echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
-        echo "  ", form_input_hidden('webtag', $webtag), "\n";
-        echo "  ", form_input_hidden('ret', get_request_uri()), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
-        echo "    <tr>\n";
-        echo "      <td>\n";
-        echo "        <table class=\"box\">\n";
-        echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td>{$lang['passwd']}</td>\n";
-        echo "                  <td>", form_input_password('forum_password', '', 32), "</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
-        echo "                  <td>", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], false), "</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td colspan=\"2\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-        echo "</div>\n";
-
-        html_draw_bottom();
-        exit;
     }
+
+    return true;
 }
 
 function forum_get_settings()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.32 2006-03-20 20:45:32 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.33 2006-04-09 21:03:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,10 +111,9 @@ if (isset($_POST['back'])) {
     header_redirect($ret);
 }
 
-html_draw_top();
-
 if ($forum_array = forum_get($fid)) {
 
+    html_draw_top();
     echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['manageforumpermissions']}</h1>\n";
 
     if ($forum_array['ACCESS_LEVEL'] != 1) {
@@ -323,8 +322,11 @@ if ($forum_array = forum_get($fid)) {
     echo "  </table>\n";
     echo "</form>\n";
     echo "</div>\n";
+
+    html_draw_bottom();
+    exit;
 }
 
-html_draw_bottom();
+header_redirect("./admin_forums.php?webtag=$webtag");
 
 ?>

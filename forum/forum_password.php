@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.5 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.6 2006-04-09 21:03:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -59,6 +59,13 @@ if (isset($_GET['webtag'])) {
     $webtag = trim(_stripslashes($_POST['webtag']));
 }else {
     $webtag = false;
+}
+
+// User clicked Cancel so we send them to the My Forums page.
+
+if (isset($_POST['cancel'])) {
+    $ret = "./index.php?final_uri=forums.php";
+    header_redirect($ret);
 }
 
 // Check we have the password in the POST data

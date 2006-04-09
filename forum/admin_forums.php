@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.42 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.43 2006-04-09 21:03:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -211,114 +211,120 @@ if (isset($message_html) && strlen($message_html) > 0) {
     echo "<br />\n";
 }
 
-echo "<div align=\"center\">\n";
-
 $forums_array = admin_get_forum_list();
+
+echo "<div align=\"center\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
 
 if (sizeof($forums_array) > 0) {
 
-    echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "        <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+    echo "        ", form_input_hidden('webtag', $webtag), "\n";
+    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "            <td>\n";
+    echo "              <table class=\"box\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" width=\"150\">&nbsp;{$lang['webtag']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['name']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['messages']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['access']}</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;</td>\n";
-    echo "                </tr>\n";
+    echo "                  <td class=\"posthead\">\n";
+    echo "                    <table class=\"posthead\" width=\"100%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" width=\"150\">&nbsp;{$lang['webtag']}</td>\n";
+    echo "                        <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['name']}</td>\n";
+    echo "                        <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['messages']}</td>\n";
+    echo "                        <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['access']}</td>\n";
+    echo "                        <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
 
     foreach ($forums_array as $forum) {
 
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;<a href=\"index.php?webtag={$forum['WEBTAG']}\" target=\"_blank\">{$forum['WEBTAG']}</a></td>\n";
-        echo "                  <td align=\"left\">&nbsp;{$forum['FORUM_NAME']}</td>\n";
-        echo "                  <td align=\"left\">&nbsp;{$forum['MESSAGES']} Messages</td>\n";
-        echo "                  <td align=\"left\">&nbsp;", form_dropdown_array("t_access[{$forum['FID']}]", array(-2, -1, 0, 1, 2), array($lang['disabled'], $lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), $forum['ACCESS_LEVEL']);
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;<a href=\"index.php?webtag={$forum['WEBTAG']}\" target=\"_blank\">{$forum['WEBTAG']}</a></td>\n";
+        echo "                        <td align=\"left\">&nbsp;{$forum['FORUM_NAME']}</td>\n";
+        echo "                        <td align=\"left\">&nbsp;{$forum['MESSAGES']} Messages</td>\n";
+        echo "                        <td align=\"left\">&nbsp;", form_dropdown_array("t_access[{$forum['FID']}]", array(-2, -1, 0, 1, 2), array($lang['disabled'], $lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), $forum['ACCESS_LEVEL']);
 
         if ($forum['ACCESS_LEVEL'] == 1) {
 
-            echo "&nbsp;", form_submit("changepermissions[{$forum['FID']}]", $lang['changepermissions']);
+            echo "      &nbsp;", form_submit("changepermissions[{$forum['FID']}]", $lang['changepermissions']);
 
         }elseif ($forum['ACCESS_LEVEL'] == 2) {
 
-            echo "&nbsp;", form_submit("changepassword[{$forum['FID']}]", $lang['changepassword']);
+            echo "      &nbsp;", form_submit("changepassword[{$forum['FID']}]", $lang['changepassword']);
         }
 
-        echo "</td>\n";
+        echo "      </td>\n";
 
         if (isset($forum['DEFAULT_FORUM']) && $forum['DEFAULT_FORUM'] == 1) {
-            echo "                  <td align=\"left\">&nbsp;<a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\" /></td>\n";
+            echo "                        <td align=\"left\">&nbsp;<a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default=0\"><img src=\"", style_image('default_forum.png'), "\" border=\"0\" alt=\"{$lang['unsetdefault']}\" title=\"{$lang['unsetdefault']}\" /></td>\n";
         }else {
-            echo "                  <td align=\"left\">&nbsp;<a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default={$forum['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\" /></td>\n";
+            echo "                        <td align=\"left\">&nbsp;<a href=\"admin_forum_settings.php?webtag={$forum['WEBTAG']}\" target=\"_self\"><img src=\"", style_image('edit.png'), "\" border=\"0\" alt=\"{$lang['forumsettings']}\" title=\"{$lang['forumsettings']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&delete={$forum['FID']}\"><img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['deleteforum']}\" title=\"{$lang['deleteforum']}\" /></a>&nbsp;<a href=\"admin_forums.php?webtag=$webtag&amp;default={$forum['FID']}\"><img src=\"", style_image('set_default_forum.png'), "\" border=\"0\" alt=\"{$lang['makedefault']}\" title=\"{$lang['makedefault']}\" /></td>\n";
         }
 
-        echo "                </tr>\n";
+        echo "                      </tr>\n";
     }
 
-    echo "                <tr>\n";
-    echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+    echo "                      <tr>\n";
+    echo "                        <td colspan=\"5\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
     echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td>&nbsp;</td>\n";
+    echo "          </tr>\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"center\">", form_submit("submit", $lang['savechanges']), "</td>\n";
+    echo "          </tr>\n";
     echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['savechanges']), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  </form>\n";
-    echo "  <br />\n";
+    echo "        </form>\n";
+    echo "        <br />\n";
 }
 
-echo "  <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
+echo "        <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
+echo "        ", form_input_hidden('webtag', $webtag), "\n";
+echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "            <td>\n";
+echo "              <table class=\"box\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['webtag']}</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['name']}</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['allow']}</td>\n";
-echo "                  <td class=\"subhead\" width=\"50%\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>{$lang['newcaps']}</td>\n";
-echo "                  <td>", form_input_text("t_webtag_new", "", 20, 32), "</td>\n";
-echo "                  <td>", form_input_text("t_name_new", "", 45, 255), "</td>\n";
-echo "                  <td>", form_dropdown_array("t_access_new", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), 0), "</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+echo "                  <td class=\"posthead\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
+echo "                      <tr>\n";
+echo "                        <td class=\"subhead\">&nbsp;</td>\n";
+echo "                        <td class=\"subhead\">&nbsp;{$lang['webtag']}</td>\n";
+echo "                        <td class=\"subhead\">&nbsp;{$lang['name']}</td>\n";
+echo "                        <td class=\"subhead\">&nbsp;{$lang['allow']}</td>\n";
+echo "                        <td class=\"subhead\" width=\"50%\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['newcaps']}</td>\n";
+echo "                        <td>", form_input_text("t_webtag_new", "", 20, 32), "</td>\n";
+echo "                        <td>", form_input_text("t_name_new", "", 45, 255), "</td>\n";
+echo "                        <td>", form_dropdown_array("t_access_new", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), 0), "</td>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"5\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td align=\"center\">", form_submit("submit", $lang['add']), "</td>\n";
+echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['add']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";;

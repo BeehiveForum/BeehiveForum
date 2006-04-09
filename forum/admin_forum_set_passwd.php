@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.6 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.7 2006-04-09 21:03:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -85,6 +85,20 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     exit;
 }
 
+// Update stuff here
+
+if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+    $fid = $_GET['fid'];
+}else if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+    $fid = $_POST['fid'];
+}else {
+    html_draw_top();
+    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h2>{$lang['noforumidspecified']}</h2>\n";
+    html_draw_bottom();
+    exit;
+}
+
 if (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
     $ret = trim(_stripslashes($_POST['ret']));
 }elseif (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
@@ -97,109 +111,115 @@ if (isset($_POST['back'])) {
     header_redirect($ret);
 }
 
-html_draw_top();
+if ($forum_array = forum_get($fid)) {
 
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['changepassword']}</h1>\n";
+    html_draw_top();
+    echo "<h1>{$lang['admin']} : ", (isset($forum_array['forum_name']) ? $forum_array['forum_name'] : 'A Beehive Forum'), " : {$lang['changepassword']}</h1>\n";
 
-if (isset($_POST['submit'])) {
+    if (isset($_POST['submit'])) {
 
-    $valid = true;
+        $valid = true;
 
-    // Required fields
+        // Required fields
 
-    if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw']))) > 0) {
+        if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw']))) > 0) {
 
-        if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
+            if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
 
-            if (trim(_stripslashes($_POST['pw'])) == trim(_stripslashes($_POST['cpw']))) {
+                if (trim(_stripslashes($_POST['pw'])) == trim(_stripslashes($_POST['cpw']))) {
 
-                if (_htmlentities(trim(_stripslashes($_POST['pw']))) != trim(trim(_stripslashes($_POST['pw'])))) {
+                    if (_htmlentities(trim(_stripslashes($_POST['pw']))) != trim(trim(_stripslashes($_POST['pw'])))) {
 
-                    echo "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+                        echo "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+                        $valid = false;
+                    }
+
+                    if (!preg_match("/^[a-z0-9_-]+$/i", trim(_stripslashes($_POST['pw'])))) {
+
+                        echo "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+                        $valid = false;
+                    }
+
+                    if (strlen(trim(_stripslashes($_POST['pw']))) < 6) {
+
+                        echo "<h2>{$lang['passwdtooshort']}</h2>\n";
+                        $valid = false;
+                    }
+
+                    if ($valid) {
+
+                        $t_password = trim(_stripslashes($_POST['pw']));
+                    }
+
+                }else {
+
+                    echo "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
                     $valid = false;
-                }
-
-                if (!preg_match("/^[a-z0-9_-]+$/i", trim(_stripslashes($_POST['pw'])))) {
-
-                    echo "<h2>{$lang['passwordinvalidchars']}</h2>\n";
-                    $valid = false;
-                }
-
-                if (strlen(trim(_stripslashes($_POST['pw']))) < 6) {
-
-                    echo "<h2>{$lang['passwdtooshort']}</h2>\n";
-                    $valid = false;
-                }
-
-                if ($valid) {
-
-                    $t_password = trim(_stripslashes($_POST['pw']));
                 }
 
             }else {
 
-                echo "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+                echo "<h2>{$lang['passwdrequired']}</h2>\n";
                 $valid = false;
             }
+        }
 
-        }else {
+        if ($valid) {
 
-            echo "<h2>{$lang['passwdrequired']}</h2>\n";
-            $valid = false;
+            if (forum_update_access($forum_array['FID'], $forum_array['ACCESS_LEVEL'], $t_password)) {
+
+                echo "<h2>{$lang['passwdchanged']}</h2>\n";
+            }
         }
     }
 
-    if ($valid) {
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"passwd\" action=\"admin_forum_set_passwd.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('ret', $ret), "\n";
+    echo "  ", form_input_hidden('fid', $fid), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['changepassword']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>{$lang['newpasswd']}:</td>\n";
+    echo "                  <td>", form_field("pw", "", 37, 0, "password"), "&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>{$lang['confirmpasswd']}:</td>\n";
+    echo "                  <td>", form_field("cpw", "", 37, 0, "password"), "&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "<div>\n";
 
-        if (forum_update_access($forum_settings['fid'], $forum_settings['access_level'], $t_password)) {
-
-            echo "<h2>{$lang['passwdchanged']}</h2>\n";
-        }
-    }
+    html_draw_bottom();
+    exit;
 }
 
-echo "<br />\n";
-echo "<div align=\"center\">\n";
-echo "<form name=\"passwd\" action=\"admin_forum_set_passwd.php\" method=\"post\" target=\"_self\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('ret', $ret), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['changepassword']}</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>{$lang['newpasswd']}:</td>\n";
-echo "                  <td>", form_field("pw", "", 37, 0, "password"), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>{$lang['confirmpasswd']}:</td>\n";
-echo "                  <td>", form_field("cpw", "", 37, 0, "password"), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</form>\n";
-echo "<div>\n";
-
-html_draw_bottom();
+header_redirect("./admin_forums.php?webtag=$webtag");
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.91 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: pm.php,v 1.92 2006-04-11 20:58:10 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -58,6 +58,7 @@ include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "zip_lib.inc.php");
 
 // Check we're logged in correctly
 
@@ -88,32 +89,7 @@ if ($uid == 0) {
 
 pm_enabled();
 
-// Delete Messages
-
-if (isset($_POST['deletemessages'])) {
-    if (isset($_POST['process']) && is_array($_POST['process'])) {
-        for ($i = 0; $i < sizeof($_POST['process']); $i++) {
-            pm_delete_message($_POST['process'][$i]);
-        }
-    }
-}
-
-// Archive Messages
-
-if (isset($_POST['savemessages'])) {
-    if (isset($_POST['process']) && is_array($_POST['process'])) {
-        for ($i = 0; $i < sizeof($_POST['process']); $i++) {
-            pm_archive_message($_POST['process'][$i]);
-        }
-    }
-}
-
-// Prune old messages for the current user
-
-pm_user_prune_folders();
-
-
-// Check to see which page we should be one
+// Check to see which page we should be on
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
@@ -145,6 +121,108 @@ if (isset($_GET['folder'])) {
         $folder = PM_FOLDER_SAVED;
     }
 }
+
+// Delete Messages
+
+if (isset($_POST['deletemessages'])) {
+    if (isset($_POST['process']) && is_array($_POST['process']) && sizeof($_POST['process']) > 0) {
+        foreach($_POST['process'] as $mid) {
+            pm_delete_message($mid);
+        }
+    }
+}
+
+// Archive Messages
+
+if (isset($_POST['savemessages'])) {
+    if (isset($_POST['process']) && is_array($_POST['process']) && sizeof($_POST['process']) > 0) {
+        foreach($_POST['process'] as $mid) {
+            pm_archive_message($mid);
+        }
+    }
+}
+
+// Export Messages
+
+if (isset($_POST['exportmessages'])) {
+
+    if (isset($_POST['process']) && is_array($_POST['process']) && sizeof($_POST['process']) > 0) {
+        
+        $logon = bh_session_get_value('LOGON');
+        
+        $archive_name = "pm_backup_$logon.zip";
+
+        $zipfile = new zipfile();
+
+        if ($attach_img = style_image('attach.png', true)) {
+            $attach_img_contents = implode("", file($attach_img));
+            $zipfile->addFile($attach_img_contents, $attach_img);
+        }
+
+        if (@file_exists("./styles/style.css")) {
+            $stylesheet_content = implode("", file("./styles/style.css"));
+            $zipfile->addFile($stylesheet_content, "styles/style.css");
+        }
+
+        foreach($_POST['process'] as $mid) {
+            
+            if ($pm_elements_array = pm_single_get($mid, $folder)) {
+            
+                $filename = "message_$mid.htm";
+                
+                $pm_elements_array['FOLDER'] = $folder;
+                $pm_elements_array['CONTENT'] = pm_get_content($mid);
+
+                $pm_display = pm_backup_top($mid);
+                $pm_display.= pm_backup_display($pm_elements_array);
+                $pm_display.= pm_backup_bottom();
+            
+                $zipfile->addFile($pm_display, $filename);
+
+                if (isset($pm_elements_array['AID']) && $attachment_dir = attachments_check_dir()) {
+
+                    $aid = $pm_elements_array['AID'];
+
+                    if (get_attachments($pm_elements_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+
+                        if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+
+                            foreach($attachments_array as $attachment) {
+                                
+                                if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
+                                    $attachment_content = implode("", file("./styles/style.css"));
+                                    $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}");
+                                }
+                            }
+                        }
+
+                        if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                            foreach($image_attachments_array as $key => $attachment) {
+
+                                if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
+                                    $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
+                                    $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        header("Content-Type: application/zip");
+        header("Expires: ". gmdate('D, d M Y H:i:s'). " GMT");
+        header("Content-Disposition: attachment; filename=\"$archive_name\"");
+        header("Pragma: no-cache");
+        echo $zipfile->file();
+        exit;
+    }
+}
+
+// Prune old messages for the current user
+
+pm_user_prune_folders();
 
 html_draw_top("basetarget=_blank", "openprofile.js");
 
@@ -362,7 +440,7 @@ echo "            </td>";
 echo "            <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", form_submit("exportmessages", "Export"), "&nbsp;", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
 }else {
     echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">&nbsp;</td>\n";
 }

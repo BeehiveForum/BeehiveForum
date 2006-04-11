@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.131 2006-03-25 10:36:26 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.132 2006-04-11 20:58:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1069,6 +1069,157 @@ function pm_has_attachments($mid)
     $row = db_fetch_array($result);
 
     return ($row['ATTACHMENT_COUNT'] > 0);
+}
+
+function pm_backup_top($mid)
+{
+    $lang = load_language_file();
+    
+    $html = "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
+    $html.= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+    $html.= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
+    $html.= "<head>\n";
+    $html.= "<title>PM $mid</title>\n";
+
+    if (@file_exists("./styles/style.css")) {
+        $html.= "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+    }
+
+    $html.= "</head>\n";
+    $html.= "<body>\n";
+
+    return $html;
+}
+
+function pm_backup_display($pm_elements_array)
+{
+    $lang = load_language_file();
+
+    $webtag = get_webtag($webtag_search);
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $html = "<div align=\"center\">\n";
+    $html.= "  <table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    $html.= "    <tr>\n";
+    $html.= "      <td>\n";
+    $html.= "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
+    $html.= "          <tr>\n";
+
+    if (isset($pm_elements_array['FOLDER']) && $pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
+
+        $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+        $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+        $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
+        $html.= format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']). "</a>";
+        $html.= "</span></td>\n";
+
+    }else {
+
+        $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+        $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+
+        if (is_array($pm_elements_array['TO_UID'])) {
+
+            for ($i = 0; $i < sizeof($pm_elements_array['TO_UID']); $i++) {
+                $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
+                $html.= format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]). "</a>&nbsp;";
+            }
+
+        }else {
+
+            $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
+            $html.= format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']). "</a>";
+        }
+
+        $html.= "</span></td>\n";
+    }
+
+    // Add emoticons/wikilinks -------------------------------------------------
+
+    $pm_elements_array['CONTENT'] = message_split_fiddle($pm_elements_array['CONTENT']);
+
+    $html.= "          </tr>\n";
+    $html.= "          <tr>\n";
+    $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
+    $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">{$pm_elements_array['SUBJECT']}</span></td>\n";
+    $html.= "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED']). "&nbsp;</span></td>\n";
+    $html.= "          </tr>\n";
+    $html.= "        </table>\n";
+    $html.= "      </td>\n";
+    $html.= "    </tr>\n";
+    $html.= "    <tr>\n";
+    $html.= "      <td>\n";
+    $html.= "        <table width=\"100%\">\n";
+    $html.= "          <tr align=\"right\">\n";
+    $html.= "            <td colspan=\"3\">&nbsp;</td>\n";
+    $html.= "          </tr>\n";
+    $html.= "          <tr>\n";
+    $html.= "            <td class=\"postbody\" align=\"left\">{$pm_elements_array['CONTENT']}</td>\n";
+    $html.= "          </tr>\n";
+
+    if (isset($pm_elements_array['AID'])) {
+
+        $aid = $pm_elements_array['AID'];
+
+        if (get_attachments($pm_elements_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+
+            // Draw the attachment header at the bottom of the post
+
+            $html.= "          <tr>\n";
+            $html.= "            <td class=\"postbody\" align=\"left\">\n";
+
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+
+                $html.= "                  <p><b>{$lang['attachments']}:</b><br />\n";
+
+                foreach($attachments_array as $attachment) {
+
+                    $html.= "                  ". attachment_make_link($attachment, false, false, true). "\n";
+                }
+
+                $html.= "                  </p>\n";
+            }
+
+            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                $html.= "                  <p><b>{$lang['imageattachments']}:</b><br />\n";
+
+                foreach($image_attachments_array as $key => $attachment) {
+
+                    $html.= "                  ". attachment_make_link($attachment, false, false, true). "\n";
+                }
+
+                $html.= "                  </p>\n";
+            }
+
+            $html.= "            </td>\n";
+            $html.= "          </tr>\n";
+        }
+    }
+
+    $html.= "        </table>\n";
+    $html.= "        <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
+    $html.= "          <tr>\n";
+    $html.= "            <td>&nbsp;</td>\n";
+    $html.= "          </tr>\n";
+    $html.= "        </table>\n";
+    $html.= "      </td>\n";
+    $html.= "    </tr>\n";
+    $html.= "  </table>\n";
+    $html.= "</div>\n";
+
+    return $html;
+}
+
+function pm_backup_bottom()
+{
+    $lang = load_language_file();
+    
+    $html = "</body>\n";
+    $html.= "</html>\n";
+
+    return $html;
 }
 
 ?>

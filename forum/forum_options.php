@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.84 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.85 2006-04-12 16:12:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -707,6 +707,44 @@ echo "                        <td>", form_checkbox("pm_include_reply", "Y", $lan
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td>", form_checkbox("pm_auto_prune_enabled", "Y", $lang['autoprunemypmfoldersevery'], (isset($user_prefs['PM_AUTO_PRUNE']) && $user_prefs['PM_AUTO_PRUNE'] > 0) ? true : false), "&nbsp;", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($user_prefs['PM_AUTO_PRUNE']) ? ($user_prefs['PM_AUTO_PRUNE'] > 0 ? $user_prefs['PM_AUTO_PRUNE'] : $user_prefs['PM_AUTO_PRUNE'] * -1) : 60)), " {$lang['days']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "        <br />\n";
+echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td>\n";
+echo "              <table class=\"box\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"posthead\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\" class=\"subhead\">{$lang['privatemessageexportoptions']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"250\">{$lang['pmexportastype']}:</td>\n";
+echo "                        <td>", form_dropdown_array("pm_export_type", range(0, 2), array($lang['pmexporthtml'], $lang['pmexportxml'], $lang['pmexportplaintext']), (isset($user_prefs['PM_EXPORT_TYPE']) && is_numeric($user_prefs['PM_EXPORT_TYPE'])) ? $user_prefs['PM_EXPORT_TYPE'] : 0), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"250\">{$lang['pmexportmessagesas']}:</td>\n";
+echo "                        <td>", form_dropdown_array("pm_export_files", range(0, 1), array($lang['pmexportonefileforallmessages'], $lang['pmexportonefilepermessage']), (isset($user_prefs['PM_EXPORT_FILE']) && is_numeric($user_prefs['PM_EXPORT_FILE'])) ? $user_prefs['PM_EXPORT_FILE'] : 0), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\">", form_checkbox("pm_export_attachments", "Y", $lang['pmexportattachments'], (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\">", form_checkbox("pm_include_style", "Y", $lang['pmexportincludestyle'], (isset($user_prefs['PM_INCLUDE_STYLE']) && $user_prefs['PM_INCLUDE_STYLE'] == "Y") ? true : false), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\">", form_checkbox("pm_export_wordfilter", "Y", $lang['pmexportwordfilter'], (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">&nbsp;</td>\n";

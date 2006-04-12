@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.132 2006-04-11 20:58:10 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.133 2006-04-12 20:31:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1071,7 +1071,7 @@ function pm_has_attachments($mid)
     return ($row['ATTACHMENT_COUNT'] > 0);
 }
 
-function pm_backup_top($mid)
+function pm_export_html_top($mid)
 {
     $lang = load_language_file();
     
@@ -1079,7 +1079,12 @@ function pm_backup_top($mid)
     $html.= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     $html.= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     $html.= "<head>\n";
-    $html.= "<title>PM $mid</title>\n";
+
+    if (is_bool($mid)) {    
+        $html.= "<title>{$lang['messages']}</title>\n";
+    }else {
+        $html.= "<title>{$lang['message']} $mid</title>\n";
+    }
 
     if (@file_exists("./styles/style.css")) {
         $html.= "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
@@ -1091,128 +1096,7 @@ function pm_backup_top($mid)
     return $html;
 }
 
-function pm_backup_display($pm_elements_array)
-{
-    $lang = load_language_file();
-
-    $webtag = get_webtag($webtag_search);
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
-    $html = "<div align=\"center\">\n";
-    $html.= "  <table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
-    $html.= "    <tr>\n";
-    $html.= "      <td>\n";
-    $html.= "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
-    $html.= "          <tr>\n";
-
-    if (isset($pm_elements_array['FOLDER']) && $pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
-
-        $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-        $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
-        $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
-        $html.= format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']). "</a>";
-        $html.= "</span></td>\n";
-
-    }else {
-
-        $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-        $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
-
-        if (is_array($pm_elements_array['TO_UID'])) {
-
-            for ($i = 0; $i < sizeof($pm_elements_array['TO_UID']); $i++) {
-                $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
-                $html.= format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]). "</a>&nbsp;";
-            }
-
-        }else {
-
-            $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
-            $html.= format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']). "</a>";
-        }
-
-        $html.= "</span></td>\n";
-    }
-
-    // Add emoticons/wikilinks -------------------------------------------------
-
-    $pm_elements_array['CONTENT'] = message_split_fiddle($pm_elements_array['CONTENT']);
-
-    $html.= "          </tr>\n";
-    $html.= "          <tr>\n";
-    $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
-    $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">{$pm_elements_array['SUBJECT']}</span></td>\n";
-    $html.= "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED']). "&nbsp;</span></td>\n";
-    $html.= "          </tr>\n";
-    $html.= "        </table>\n";
-    $html.= "      </td>\n";
-    $html.= "    </tr>\n";
-    $html.= "    <tr>\n";
-    $html.= "      <td>\n";
-    $html.= "        <table width=\"100%\">\n";
-    $html.= "          <tr align=\"right\">\n";
-    $html.= "            <td colspan=\"3\">&nbsp;</td>\n";
-    $html.= "          </tr>\n";
-    $html.= "          <tr>\n";
-    $html.= "            <td class=\"postbody\" align=\"left\">{$pm_elements_array['CONTENT']}</td>\n";
-    $html.= "          </tr>\n";
-
-    if (isset($pm_elements_array['AID'])) {
-
-        $aid = $pm_elements_array['AID'];
-
-        if (get_attachments($pm_elements_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
-
-            // Draw the attachment header at the bottom of the post
-
-            $html.= "          <tr>\n";
-            $html.= "            <td class=\"postbody\" align=\"left\">\n";
-
-            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-
-                $html.= "                  <p><b>{$lang['attachments']}:</b><br />\n";
-
-                foreach($attachments_array as $attachment) {
-
-                    $html.= "                  ". attachment_make_link($attachment, false, false, true). "\n";
-                }
-
-                $html.= "                  </p>\n";
-            }
-
-            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
-
-                $html.= "                  <p><b>{$lang['imageattachments']}:</b><br />\n";
-
-                foreach($image_attachments_array as $key => $attachment) {
-
-                    $html.= "                  ". attachment_make_link($attachment, false, false, true). "\n";
-                }
-
-                $html.= "                  </p>\n";
-            }
-
-            $html.= "            </td>\n";
-            $html.= "          </tr>\n";
-        }
-    }
-
-    $html.= "        </table>\n";
-    $html.= "        <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
-    $html.= "          <tr>\n";
-    $html.= "            <td>&nbsp;</td>\n";
-    $html.= "          </tr>\n";
-    $html.= "        </table>\n";
-    $html.= "      </td>\n";
-    $html.= "    </tr>\n";
-    $html.= "  </table>\n";
-    $html.= "</div>\n";
-
-    return $html;
-}
-
-function pm_backup_bottom()
+function pm_export_html_bottom()
 {
     $lang = load_language_file();
     
@@ -1220,6 +1104,212 @@ function pm_backup_bottom()
     $html.= "</html>\n";
 
     return $html;
+}
+
+function pm_export_html($mid_array, $folder, &$zipfile)
+{
+    if (!is_array($mid_array)) return false;
+    if (!is_numeric($folder)) return false;
+    if (!is_object($zipfile)) return false;
+
+    $mid_array = preg_grep("/^[0-9]+$/", $mid_array);
+
+    $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
+    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
+
+    $pm_display = "";
+
+    if ($pm_export_file == PM_EXPORT_SINGLE) {
+        $pm_display.= pm_export_html_top(false);
+    }
+
+    foreach($mid_array as $mid) {
+        
+        if ($pm_elements_array = pm_single_get($mid, $folder)) {
+
+            $pm_elements_array['FOLDER'] = $folder;
+            $pm_elements_array['CONTENT'] = pm_get_content($mid);
+
+            if ($pm_export_file == PM_EXPORT_MANY) {
+                $pm_display.= pm_export_html_top($mid);
+            }
+
+            ob_start();
+            pm_display($pm_elements_array);
+            $pm_display.= ob_get_contents();
+            ob_end_clean();
+
+            if ($pm_export_file == PM_EXPORT_SINGLE) {
+                $pm_display.= "<br />\n";                
+            }
+
+            if ($pm_export_file == PM_EXPORT_MANY) {
+
+                $pm_display.= pm_export_html_bottom();
+                $filename = "message_$mid.html";
+                $zipfile->addFile($pm_display, $filename);
+            }
+
+            if (isset($pm_elements_array['AID'])) {
+                pm_export_attachments($pm_elements_array['AID'], $pm_elements_array['FROM_UID'], $zipfile);
+            }
+        }
+    }
+
+    if ($pm_export_file == PM_EXPORT_SINGLE) {
+
+        $pm_display.= pm_export_html_bottom();
+        $filename = "messages.html";
+        $zipfile->addFile($pm_display, $filename);
+    }
+
+    return true;
+}
+
+function pm_export_xml($mid_array, $folder, &$zipfile)
+{
+    if (!is_array($mid_array)) return false;
+    if (!is_numeric($folder)) return false;
+    if (!is_object($zipfile)) return false;
+
+    $mid_array = preg_grep("/^[0-9]+$/", $mid_array);
+
+    $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
+    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
+
+    $pm_display = "<xml>\n";
+    $pm_display.= "  <pmbackup>\n";
+
+    foreach($mid_array as $mid) {
+        
+        if ($pm_elements_array = pm_single_get($mid, $folder)) {
+
+            $pm_display.= "    <message>\n";
+
+            foreach($pm_elements_array as $key => $value) {
+
+                $pm_display.= "      <$key>$value</$key>\n";
+            }
+
+            $pm_content = pm_get_content($mid);
+            $pm_display.= "      <content>$pm_content</content>\n";
+
+            if ($pm_export_file == PM_EXPORT_MANY) {
+
+                $pm_display.= "    </message>\n";
+                $pm_display.= "  </pmbackup>\n";
+                $pm_display.= "</xml>\n";
+                
+                $filename = "message_$mid.xml";
+                $zipfile->addFile($pm_display, $filename);
+
+                $pm_display = "<xml>\n";
+                $pm_display.= "  <pmbackup>\n";
+            }
+
+            if (isset($pm_elements_array['AID'])) {
+                pm_export_attachments($pm_elements_array['AID'], $pm_elements_array['FROM_UID'], $zipfile);
+            }
+        }
+    }
+
+    if ($pm_export_file == PM_EXPORT_SINGLE) {
+
+        $pm_display.= "    </message>\n";
+        $pm_display.= "  </pmbackup>\n";
+        $pm_display.= "</xml>\n";
+
+        $filename = "messages.xml";
+        $zipfile->addFile($pm_display, $filename);
+    }
+
+    return true;
+}
+
+function pm_export_plaintext($mid_array, $folder, &$zipfile)
+{
+    if (!is_array($mid_array)) return false;
+    if (!is_numeric($folder)) return false;
+    if (!is_object($zipfile)) return false;
+
+    $mid_array = preg_grep("/^[0-9]+$/", $mid_array);
+
+    $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
+    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
+
+    $pm_display = "";
+
+    foreach ($mid_array as $mid) {
+
+        if ($pm_elements_array = pm_single_get($mid, $folder)) {
+
+            foreach($pm_elements_array as $key => $value) {
+
+                $pm_display.= "$key: $value\n";
+            }
+
+            $pm_content = pm_get_content($mid);
+            $pm_display.= "content:\n\n$pm_content\n\n";
+
+            if ($pm_export_file == PM_EXPORT_MANY) {
+                
+                $filename = "message_$mid.txt";
+                $zipfile->addFile($pm_display, $filename);
+                $pm_display = "";
+            }
+
+            if (isset($pm_elements_array['AID'])) {
+                pm_export_attachments($pm_elements_array['AID'], $pm_elements_array['FROM_UID'], $zipfile);
+            }
+        }
+    }
+
+    if ($pm_export_file == PM_EXPORT_SINGLE) {
+
+        $filename = "messages.txt";
+        $zipfile->addFile($pm_display, $filename);
+    }
+
+    return true;
+}
+
+function pm_export_attachments($aid, $from_uid, &$zipfile)
+{
+    if (!is_numeric($aid)) return false;
+    if (!is_numeric($from_uid)) return false;
+    if (!is_object($zipfile)) return false;
+
+    if ($attachment_dir = attachments_check_dir()) {
+
+        if (get_attachments($from_uid, $aid, $attachments_array, $image_attachments_array)) {
+
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+
+                foreach($attachments_array as $attachment) {
+
+                    if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
+
+                        $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
+                        $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}");
+                    }
+                }
+            }
+
+            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                foreach($image_attachments_array as $key => $attachment) {
+
+                    if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
+
+                        $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
+                        $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}");
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.92 2006-04-11 20:58:10 decoyduck Exp $ */
+/* $Id: pm.php,v 1.93 2006-04-12 20:31:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -152,63 +152,44 @@ if (isset($_POST['exportmessages'])) {
         
         $archive_name = "pm_backup_$logon.zip";
 
+        $pm_export_type = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
+        $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
+        $pm_export_style = bh_session_get_value('PM_EXPORT_STYLE');
+
         $zipfile = new zipfile();
 
-        if ($attach_img = style_image('attach.png', true)) {
-            $attach_img_contents = implode("", file($attach_img));
-            $zipfile->addFile($attach_img_contents, $attach_img);
-        }
+        if ($pm_export_attachments == "Y") {
 
-        if (@file_exists("./styles/style.css")) {
-            $stylesheet_content = implode("", file("./styles/style.css"));
-            $zipfile->addFile($stylesheet_content, "styles/style.css");
-        }
-
-        foreach($_POST['process'] as $mid) {
-            
-            if ($pm_elements_array = pm_single_get($mid, $folder)) {
-            
-                $filename = "message_$mid.htm";
-                
-                $pm_elements_array['FOLDER'] = $folder;
-                $pm_elements_array['CONTENT'] = pm_get_content($mid);
-
-                $pm_display = pm_backup_top($mid);
-                $pm_display.= pm_backup_display($pm_elements_array);
-                $pm_display.= pm_backup_bottom();
-            
-                $zipfile->addFile($pm_display, $filename);
-
-                if (isset($pm_elements_array['AID']) && $attachment_dir = attachments_check_dir()) {
-
-                    $aid = $pm_elements_array['AID'];
-
-                    if (get_attachments($pm_elements_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
-
-                        if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-
-                            foreach($attachments_array as $attachment) {
-                                
-                                if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
-                                    $attachment_content = implode("", file("./styles/style.css"));
-                                    $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}");
-                                }
-                            }
-                        }
-
-                        if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
-
-                            foreach($image_attachments_array as $key => $attachment) {
-
-                                if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
-                                    $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
-                                    $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}");
-                                }
-                            }
-                        }
-                    }
-                }
+            if ($attach_img = style_image('attach.png', true)) {
+                $attach_img_contents = implode("", file($attach_img));
+                $zipfile->addFile($attach_img_contents, $attach_img);
             }
+        }
+
+        if ($pm_export_style == "Y") {
+
+            if (@file_exists("./styles/style.css")) {
+                $stylesheet_content = implode("", file("./styles/style.css"));
+                $zipfile->addFile($stylesheet_content, "styles/style.css");
+            }
+        }
+
+        switch ($pm_export_type) {
+
+            case PM_EXPORT_HTML:
+
+                pm_export_html($_POST['process'], $folder, $zipfile);
+                break;
+
+            case PM_EXPORT_XML:
+
+                pm_export_xml($_POST['process'], $folder, $zipfile);
+                break;
+
+            case PM_EXPORT_PLAINTEXT:
+
+                pm_export_plaintext($_POST['process'], $folder, $zipfile);
+                break;
         }
 
         header("Content-Type: application/zip");

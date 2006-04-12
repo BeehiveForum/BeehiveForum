@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.74 2005-10-07 23:52:18 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.75 2006-04-12 20:31:36 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -231,5 +231,13 @@ define("TEXT_CAPTCHA_GD_ERROR", 4);
 define('DICTIONARY_EXACT', 1);
 define('DICTIONARY_NOMATCH', 2);
 define('DICTIONARY_SUGGEST', 3);
+
+// PM Export constants
+
+define('PM_EXPORT_HTML', 0);
+define('PM_EXPORT_XML', 1);
+define('PM_EXPORT_PLAINTEXT', 2);
+define('PM_EXPORT_SINGLE', 0);
+define('PM_EXPORT_MANY', 1);
 
 ?>

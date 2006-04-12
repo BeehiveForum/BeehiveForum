@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.85 2006-04-12 16:12:41 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.86 2006-04-12 20:31:36 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -189,6 +189,36 @@ if (isset($_POST['submit'])) {
 
             $user_prefs['PM_AUTO_PRUNE'] = "-60";
         }
+    }
+
+    if (isset($_POST['pm_export_file']) && is_numeric($_POST['pm_export_file'])) {
+        $user_prefs['PM_EXPORT_FILE'] = $_POST['pm_export_file'];
+    }else {
+        $user_prefs['PM_EXPORT_FILE'] = 0;
+    }
+
+    if (isset($_POST['pm_export_type']) && is_numeric($_POST['pm_export_type'])) {
+        $user_prefs['PM_EXPORT_TYPE'] = $_POST['pm_export_type'];
+    }else {
+        $user_prefs['PM_EXPORT_TYPE'] = 0;
+    }
+
+    if (isset($_POST['pm_export_attachments']) && $_POST['pm_export_attachments'] == "Y") {
+        $user_prefs['PM_EXPORT_ATTACHMENTS'] = "Y";
+    }else {
+        $user_prefs['PM_EXPORT_ATTACHMENTS'] = "N";
+    }
+
+    if (isset($_POST['pm_export_style']) && $_POST['pm_export_style'] == "Y") {
+        $user_prefs['PM_EXPORT_STYLE'] = "Y";
+    }else {
+        $user_prefs['PM_EXPORT_STYLE'] = "N";
+    }
+
+    if (isset($_POST['pm_export_wordfilter']) && $_POST['pm_export_wordfilter'] == "Y") {
+        $user_prefs['PM_EXPORT_WORDFILTER'] = "Y";
+    }else {
+        $user_prefs['PM_EXPORT_WORDFILTER'] = "N";
     }
 
     if (isset($_POST['mark_as_of_int']) && $_POST['mark_as_of_int'] == "Y") {
@@ -735,13 +765,13 @@ echo "                        <td>", form_dropdown_array("pm_export_type", range
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"250\">{$lang['pmexportmessagesas']}:</td>\n";
-echo "                        <td>", form_dropdown_array("pm_export_files", range(0, 1), array($lang['pmexportonefileforallmessages'], $lang['pmexportonefilepermessage']), (isset($user_prefs['PM_EXPORT_FILE']) && is_numeric($user_prefs['PM_EXPORT_FILE'])) ? $user_prefs['PM_EXPORT_FILE'] : 0), "</td>\n";
+echo "                        <td>", form_dropdown_array("pm_export_file", range(0, 1), array($lang['pmexportonefileforallmessages'], $lang['pmexportonefilepermessage']), (isset($user_prefs['PM_EXPORT_FILE']) && is_numeric($user_prefs['PM_EXPORT_FILE'])) ? $user_prefs['PM_EXPORT_FILE'] : 0), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">", form_checkbox("pm_export_attachments", "Y", $lang['pmexportattachments'], (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td colspan=\"2\">", form_checkbox("pm_include_style", "Y", $lang['pmexportincludestyle'], (isset($user_prefs['PM_INCLUDE_STYLE']) && $user_prefs['PM_INCLUDE_STYLE'] == "Y") ? true : false), "</td>\n";
+echo "                        <td colspan=\"2\">", form_checkbox("pm_export_style", "Y", $lang['pmexportincludestyle'], (isset($user_prefs['PM_EXPORT_STYLE']) && $user_prefs['PM_EXPORT_STYLE'] == "Y") ? true : false), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">", form_checkbox("pm_export_wordfilter", "Y", $lang['pmexportwordfilter'], (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";

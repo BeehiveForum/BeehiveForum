@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.265 2006-03-25 18:12:44 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.266 2006-04-12 20:31:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -348,9 +348,11 @@ function user_get_prefs($uid)
 
     $sql = "SELECT FIRSTNAME, LASTNAME, DOB, HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, TIMEZONE, DL_SAVING, ";
     $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, PM_NOTIFY, ";
-    $sql.= "PM_NOTIFY_EMAIL, PM_SAVE_SENT_ITEM, PM_INCLUDE_REPLY, PM_AUTO_PRUNE, DOB_DISPLAY, ANON_LOGON, ";
-    $sql.= "SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ALLOW_EMAIL, ";
-    $sql.= "ALLOW_PM, POST_PAGE, SHOW_THUMBS, ENABLE_WIKI_WORDS FROM USER_PREFS WHERE UID = $uid";
+    $sql.= "PM_NOTIFY_EMAIL, PM_SAVE_SENT_ITEM, PM_INCLUDE_REPLY, PM_AUTO_PRUNE, PM_EXPORT_TYPE, ";
+    $sql.= "PM_EXPORT_FILE, PM_EXPORT_ATTACHMENTS, PM_EXPORT_STYLE, PM_EXPORT_WORDFILTER, DOB_DISPLAY, ";
+    $sql.= "ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ";
+    $sql.= "ALLOW_EMAIL, ALLOW_PM, POST_PAGE, SHOW_THUMBS, ENABLE_WIKI_WORDS FROM USER_PREFS ";
+    $sql.= "WHERE UID = $uid";
 
     $result = db_query($sql, $db_user_get_prefs);
 
@@ -424,7 +426,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE',
                                'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
                                'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
-                               'PM_INCLUDE_REPLY', 'PM_AUTO_PRUNE', 'DOB_DISPLAY',
+                               'PM_INCLUDE_REPLY', 'PM_AUTO_PRUNE', 'PM_EXPORT_FILE',
+                               'PM_EXPORT_TYPE', 'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE',
+                               'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY',
                                'ANON_LOGON', 'SHOW_STATS', 'IMAGES_TO_LINKS',
                                'USE_WORD_FILTER', 'USE_ADMIN_FILTER', 'EMOTICONS',
                                'ALLOW_EMAIL', 'ALLOW_PM', 'POST_PAGE', 'SHOW_THUMBS',
@@ -620,9 +624,9 @@ function user_check_pref($name, $value)
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
         } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL") {
             return preg_match("/^http:\/\/[_\.0-9a-z\-~]*/i", $value);
-        } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS") {
+        } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS") {
             return ($value == "Y" || $value == "N") ? true : false;
-        } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE") {
+        } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE" || $name == "PM_EXPORT_FILE" || $name == "PM_EXPORT_TYPE") {
             return is_numeric($value);
         } else {
             return false;

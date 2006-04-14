@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-063.php,v 1.2 2006-04-12 20:31:36 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.1 2006-04-14 16:38:51 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -193,6 +193,39 @@ foreach ($remove_tables as $forum_table) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
+    if (isset($remove_conflicts) && $remove_conflicts === true) {
+
+        $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_TRACK";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+    
+    $sql = "CREATE TABLE {$forum_webtag}_USER_TRACK (";
+    $sql.= "UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "DDKEY DATETIME DEFAULT NULL,";
+    $sql.= "LAST_POST DATETIME DEFAULT NULL,";
+    $sql.= "LAST_SEARCH DATETIME DEFAULT NULL,";
+    $sql.= "POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "USER_TIME MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "PRIMARY KEY (UID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "INSERT INTO {$forum_webtag}_USER_TRACK SELECT * FROM USER_TRACK";
+    $result = @db_query($sql, $db_install);
+
+    $sql = "DROP TABLE IF EXISTS USER_TRACK";
+    $result = @db_query($sql, $db_install);
+
     $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX TID";
     $result = @db_query($sql, $db_install);
 
@@ -204,7 +237,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $result = @db_query($sql, $db_install);
 
-    $sql = "ALTER TABLE USER_TRACK ADD POST_COUNT MEDIUMINT(8) UNSIGNED";
+    $sql = "ALTER TABLE {$forum_webtag}_USER_TRACK ADD POST_COUNT MEDIUMINT(8) UNSIGNED";
     $result = @db_query($sql, $db_install);
 }
 

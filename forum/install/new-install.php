@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.88 2006-01-23 01:00:14 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.89 2006-04-14 16:38:51 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -197,14 +197,14 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
                           'RSS_FEEDS',       'RSS_HISTORY',   'STATS',
                           'THREAD',          'USER_FOLDER',   'USER_PEER',
                           'USER_POLL_VOTES', 'USER_PREFS',    'USER_PROFILE',
-                          'USER_SIG',        'USER_THREAD');
+                          'USER_SIG',        'USER_THREAD',   'USER_TRACK');
 
     $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
                            'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
                            'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
                            'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SEARCH_RESULTS',
                            'SESSIONS',     'USER',                'USER_FORUM',
-                           'USER_PREFS',   'USER_TRACK',          'VISITOR_LOG');
+                           'USER_PREFS',   'VISITOR_LOG');
 
     foreach ($forum_tables as $forum_table) {
 
@@ -266,12 +266,13 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE USER_TRACK (";
+$sql = "CREATE TABLE {$forum_webtag}_USER_TRACK (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  DDKEY DATETIME DEFAULT NULL, ";
 $sql.= "  LAST_POST DATETIME DEFAULT NULL, ";
 $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL, ";
 $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+$sql.= "  USER_TIME MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
 
@@ -1210,11 +1211,16 @@ $sql.= "  EMOTICONS VARCHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  VIEW_SIGS CHAR(1) NOT NULL DEFAULT 'Y', ";
 $sql.= "  START_PAGE CHAR(1) NOT NULL DEFAULT '0', ";
 $sql.= "  LANGUAGE VARCHAR(32) NOT NULL DEFAULT '', ";
-$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y', ";
-$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y', ";
-$sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y', ";
-$sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N', ";
-$sql.= "  PM_AUTO_PRUNE CHAR(3) NOT NULL DEFAULT '-60', ";
+$sql.= "  PM_NOTIFY CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  PM_NOTIFY_EMAIL CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  PM_SAVE_SENT_ITEM CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  PM_INCLUDE_REPLY CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  PM_AUTO_PRUNE CHAR(3) NOT NULL DEFAULT '-60',";
+$sql.= "  PM_EXPORT_TYPE CHAR(1) NOT NULL DEFAULT '0',";
+$sql.= "  PM_EXPORT_FILE CHAR(1) NOT NULL DEFAULT '0',";
+$sql.= "  PM_EXPORT_ATTACHMENTS CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  PM_EXPORT_STYLE CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  PM_EXPORT_WORDFILTER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  DOB_DISPLAY CHAR(1) NOT NULL DEFAULT '2', ";
 $sql.= "  ANON_LOGON CHAR(1) NOT NULL DEFAULT '0', ";
 $sql.= "  SHOW_STATS CHAR(1) NOT NULL DEFAULT 'Y', ";

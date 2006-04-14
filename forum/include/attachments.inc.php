@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.112 2006-04-11 20:58:10 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.113 2006-04-14 16:38:51 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -837,10 +837,20 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
             $title = implode(", ", $title_array);
 
-            $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
-            $attachment_link.= "target=\"_blank\"><img src=\"$href&amp;thumb=1\"";
-            $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-            $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
+            if ($local_path) {
+
+                $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
+                $attachment_link.= "target=\"_blank\"><img src=\"$href.thumb\"";
+                $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
+                $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
+
+            }else {
+
+                $attachment_link = "<div class=\"attachment_thumb\"><a href=\"$href\" title=\"$title\" ";
+                $attachment_link.= "target=\"_blank\"><img src=\"$href&amp;thumb=1\"";
+                $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
+                $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></div>";
+            }
 
             return $attachment_link;
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.142 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.143 2006-04-14 16:38:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -107,7 +107,9 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
 
             // Update the user's post count.
 
-            $sql = "UPDATE USER_TRACK SET LAST_POST = NOW(), POST_COUNT = POST_COUNT + 1 WHERE UID = $fuid";
+            $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET LAST_POST = NOW(), ";
+            $sql.= "POST_COUNT = POST_COUNT + 1 WHERE UID = $fuid";
+
             $result = db_query($sql, $db_post_create);
 
         }else {
@@ -436,21 +438,25 @@ function check_ddkey($ddkey)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UNIX_TIMESTAMP(DDKEY) FROM USER_TRACK WHERE UID = '$uid'";
+    $sql = "SELECT UNIX_TIMESTAMP(DDKEY) FROM ";
+    $sql.= "{$table_data['PREFIX']}USER_TRACK WHERE UID = '$uid'";
+
     $result = db_query($sql, $db_check_ddkey);
 
     if (db_num_rows($result)) {
 
         list($ddkey_check) = db_fetch_array($result);
 
-        $sql = "UPDATE USER_TRACK SET DDKEY = FROM_UNIXTIME($ddkey) WHERE UID = '$uid'";
+        $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+        $sql.= "SET DDKEY = FROM_UNIXTIME($ddkey) WHERE UID = '$uid'";
+
         $result = db_query($sql, $db_check_ddkey);
 
     }else{
 
         $ddkey_check = "";
 
-        $sql = "INSERT INTO USER_TRACK (UID, DDKEY) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', FROM_UNIXTIME($ddkey))";
 
         $result = db_query($sql, $db_check_ddkey);
@@ -472,7 +478,8 @@ function check_post_frequency()
     if ($minimum_post_frequency == 0) return true;
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_POST) + $minimum_post_frequency, ";
-    $sql.= "UNIX_TIMESTAMP(NOW()) FROM USER_TRACK WHERE UID = '$uid'";
+    $sql.= "UNIX_TIMESTAMP(NOW()) FROM {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_check_post_frequency);
 
@@ -482,7 +489,9 @@ function check_post_frequency()
 
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
-            $sql = "UPDATE USER_TRACK SET LAST_POST = NOW() WHERE UID = '$uid'";
+            $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+            $sql.= "SET LAST_POST = NOW() WHERE UID = '$uid'";
+
             $result = db_query($sql, $db_check_post_frequency);
 
             return true;
@@ -490,8 +499,8 @@ function check_post_frequency()
 
     }else{
 
-        $sql = "INSERT INTO USER_TRACK (UID, LAST_POST) ";
-        $sql.= "VALUES ('$uid', NOW())";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
+        $sql.= "(UID, LAST_POST) VALUES ('$uid', NOW())";
 
         $result = db_query($sql, $db_check_post_frequency);
 

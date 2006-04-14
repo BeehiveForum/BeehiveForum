@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.212 2006-03-28 08:44:06 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.213 2006-04-14 16:38:51 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -395,6 +395,10 @@ function bh_session_get_value($session_key)
 
 function bh_remove_stale_sessions()
 {
+    if (!$table_data = get_table_prefix()) return false;   
+
+    $forum_fid = $table_data['FID'];
+    
     $sess_rem_prob = intval(forum_get_setting('sess_rem_prob', false, 1));
 
     if ((time() % (100 / $sess_rem_prob)) == 0) {
@@ -407,6 +411,25 @@ function bh_remove_stale_sessions()
 
             $session_stamp = time() - $session_cutoff;
 
+            $sql = "SELECT SESSIONS.UID, SESSIONS.TIME, VISITOR_LOG.LAST_LOGON ";
+            $sql.= "FROM SESSIONS LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = SESSIONS.UID ";
+            $sql.= "AND VISITOR_LOG.FORUM = SESSIONS.FID) ";
+            $sql.= "WHERE SESSIONS.TIME < FROM_UNIXTIME($session_stamp) ";
+            $sql.= "AND SESSIONS.FID = '$forum_fid'";
+
+            $result_fetch = db_query($sql, $db_bh_remove_stale_sessions);
+
+            while ($row = db_fetch_array($result_fetch)) {
+
+                $session_length = $row['LAST_LOGON'] - $row['TIME'];
+                
+                $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+                $sql.= "SET USER_TIME = USER_TIME + $session_length ";
+                $sql.= "WHERE UID = '{$row['UID']}'";
+
+                $result_update = db_query($sql, $db_bh_remove_stale_sessions);
+            }            
+            
             $sql = "DELETE FROM SESSIONS WHERE ";
             $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
@@ -543,6 +566,8 @@ function bh_session_end()
 {
     $db_bh_session_end = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;   
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
@@ -556,6 +581,23 @@ function bh_session_end()
     }
 
     if (isset($user_hash)) {
+
+        $sql = "SELECT SESSIONS.TIME, VISITOR_LOG.LAST_LOGON FROM SESSIONS ";
+        $sql.= "LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = SESSIONS.UID ";
+        $sql.= "AND VISITOR_LOG.FORUM = SESSIONS.FID) ";
+        $sql.= "WHERE HASH = '$user_hash'";
+
+        $result = db_query($sql, $db_bh_session_end);
+
+        $row = db_fetch_array($result);
+
+        $session_length = $row['LAST_LOGON'] - $row['TIME'];
+
+        $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+        $sql.= "SET USER_TIME = USER_TIME + $session_length ";
+        $sql.= "WHERE UID = '$uid'";
+
+        $result = db_query($sql, $db_bh_session_end);
 
         $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
         $result = db_query($sql, $db_bh_session_end);

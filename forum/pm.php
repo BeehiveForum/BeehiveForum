@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.93 2006-04-12 20:31:36 decoyduck Exp $ */
+/* $Id: pm.php,v 1.94 2006-04-14 16:38:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -144,61 +144,79 @@ if (isset($_POST['savemessages'])) {
 
 // Export Messages
 
-if (isset($_POST['exportmessages'])) {
+if (isset($_POST['exportfolder'])) {
 
-    if (isset($_POST['process']) && is_array($_POST['process']) && sizeof($_POST['process']) > 0) {
-        
-        $logon = bh_session_get_value('LOGON');
-        
-        $archive_name = "pm_backup_$logon.zip";
+    $logon = strtolower(bh_session_get_value('LOGON'));
 
-        $pm_export_type = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
-        $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
-        $pm_export_style = bh_session_get_value('PM_EXPORT_STYLE');
+    switch ($folder) {
 
-        $zipfile = new zipfile();
+        case PM_FOLDER_INBOX:
 
-        if ($pm_export_attachments == "Y") {
+            $archive_name = "pm_backup_{$logon}_inbox.zip";
+            break;
 
-            if ($attach_img = style_image('attach.png', true)) {
-                $attach_img_contents = implode("", file($attach_img));
-                $zipfile->addFile($attach_img_contents, $attach_img);
-            }
-        }
+        case PM_FOLDER_SENT:
 
-        if ($pm_export_style == "Y") {
+            $archive_name = "pm_backup_{$logon}_sent_items.zip";
+            break;
 
-            if (@file_exists("./styles/style.css")) {
-                $stylesheet_content = implode("", file("./styles/style.css"));
-                $zipfile->addFile($stylesheet_content, "styles/style.css");
-            }
-        }
+        case PM_FOLDER_OUTBOX:
 
-        switch ($pm_export_type) {
+            $archive_name = "pm_backup_{$logon}_outbox.zip";
+            break;
 
-            case PM_EXPORT_HTML:
+        case PM_FOLDER_SAVED:
 
-                pm_export_html($_POST['process'], $folder, $zipfile);
-                break;
-
-            case PM_EXPORT_XML:
-
-                pm_export_xml($_POST['process'], $folder, $zipfile);
-                break;
-
-            case PM_EXPORT_PLAINTEXT:
-
-                pm_export_plaintext($_POST['process'], $folder, $zipfile);
-                break;
-        }
-
-        header("Content-Type: application/zip");
-        header("Expires: ". gmdate('D, d M Y H:i:s'). " GMT");
-        header("Content-Disposition: attachment; filename=\"$archive_name\"");
-        header("Pragma: no-cache");
-        echo $zipfile->file();
-        exit;
+            $archive_name = "pm_backup_{$logon}_saved_items.zip";
+            break;
     }
+
+    $pm_export_type = bh_session_get_value('PM_EXPORT_TYPE');
+    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
+    $pm_export_style = bh_session_get_value('PM_EXPORT_STYLE');
+
+    $zipfile = new zipfile();
+
+    if ($pm_export_attachments == "Y") {
+
+        if ($attach_img = style_image('attach.png', true)) {
+            $attach_img_contents = implode("", file($attach_img));
+            $zipfile->addFile($attach_img_contents, $attach_img);
+        }
+    }
+
+    if ($pm_export_style == "Y") {
+
+        if (@file_exists("./styles/style.css")) {
+            $stylesheet_content = implode("", file("./styles/style.css"));
+            $zipfile->addFile($stylesheet_content, "styles/style.css");
+        }
+    }
+
+    switch ($pm_export_type) {
+
+        case PM_EXPORT_HTML:
+
+            pm_export_html($folder, $zipfile);
+            break;
+
+        case PM_EXPORT_XML:
+
+            pm_export_xml($folder, $zipfile);
+            break;
+
+        case PM_EXPORT_PLAINTEXT:
+
+            pm_export_plaintext($folder, $zipfile);
+            break;
+    }
+
+    header("Content-Type: application/zip");
+    header("Expires: ". gmdate('D, d M Y H:i:s'). " GMT");
+    header("Content-Disposition: attachment; filename=\"$archive_name\"");
+    header("Pragma: no-cache");
+    echo $zipfile->file();
+    exit;
 }
 
 // Prune old messages for the current user
@@ -324,8 +342,8 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
         echo "      <td class=\"postbody\">";
         echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
-
-        if (isset($message['AID']) && pm_has_attachments($message['AID'])) {
+        
+        if (pm_has_attachments($message['MID'])) {
             echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
         }
 
@@ -421,7 +439,7 @@ echo "            </td>";
 echo "            <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $pm_messages_array['message_count'], 10), "</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", form_submit("exportmessages", "Export"), "&nbsp;", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
+    echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">", form_submit("exportfolder", "Export Folder"), "&nbsp;", (($folder <> PM_FOLDER_SAVED) && ($folder <> PM_FOLDER_OUTBOX)) ? form_submit("savemessages", $lang['savemessage']) : "", "&nbsp;", form_submit("deletemessages", $lang['delete']), "</td>\n";
 }else {
     echo "            <td colspan=\"2\" align=\"right\" width=\"25%\" nowrap=\"nowrap\">&nbsp;</td>\n";
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-063.php,v 1.1 2006-02-12 16:33:00 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.1 2006-04-14 16:38:51 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -193,21 +193,6 @@ foreach ($remove_tables as $forum_table) {
         $valid = false;
         return;
     }
-}
-
-$sql = "CREATE TABLE USER_TRACK (";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  DDKEY DATETIME DEFAULT NULL,";
-$sql.= "  LAST_POST DATETIME DEFAULT NULL,";
-$sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
-$sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-$sql.= "  PRIMARY KEY  (UID)";
-$sql.= ") TYPE=MYISAM";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
 }
 
 $sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
@@ -1157,6 +1142,22 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  LINK VARCHAR(255) DEFAULT NULL,";
     $sql.= "  KEY RSSID (RSSID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "CREATE TABLE {$forum_webtag}_USER_TRACK (";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  DDKEY DATETIME DEFAULT NULL,";
+    $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
+    $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
+    $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+    $sql.= "  USER_TIME MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+    $sql.= "  PRIMARY KEY  (UID)";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {

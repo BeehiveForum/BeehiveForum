@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.213 2006-04-14 16:38:51 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.214 2006-04-14 16:48:39 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -411,7 +411,8 @@ function bh_remove_stale_sessions()
 
             $session_stamp = time() - $session_cutoff;
 
-            $sql = "SELECT SESSIONS.UID, SESSIONS.TIME, VISITOR_LOG.LAST_LOGON ";
+            $sql = "SELECT SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+            $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
             $sql.= "FROM SESSIONS LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = SESSIONS.UID ";
             $sql.= "AND VISITOR_LOG.FORUM = SESSIONS.FID) ";
             $sql.= "WHERE SESSIONS.TIME < FROM_UNIXTIME($session_stamp) ";
@@ -421,10 +422,14 @@ function bh_remove_stale_sessions()
 
             while ($row = db_fetch_array($result_fetch)) {
 
-                $session_length = $row['LAST_LOGON'] - $row['TIME'];
+                $session_length = 0;
+                
+                if ($row['TIME'] > $row['LAST_LOGON']) {
+                    $session_length = $row['TIME'] - $row['LAST_LOGON'];
+                }
                 
                 $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
-                $sql.= "SET USER_TIME = USER_TIME + $session_length ";
+                $sql.= "SET USER_TIME = IFNULL(USER_TIME, 0) + $session_length ";
                 $sql.= "WHERE UID = '{$row['UID']}'";
 
                 $result_update = db_query($sql, $db_bh_remove_stale_sessions);
@@ -582,7 +587,8 @@ function bh_session_end()
 
     if (isset($user_hash)) {
 
-        $sql = "SELECT SESSIONS.TIME, VISITOR_LOG.LAST_LOGON FROM SESSIONS ";
+        $sql = "SELECT UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM SESSIONS ";
         $sql.= "LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = SESSIONS.UID ";
         $sql.= "AND VISITOR_LOG.FORUM = SESSIONS.FID) ";
         $sql.= "WHERE HASH = '$user_hash'";
@@ -591,10 +597,14 @@ function bh_session_end()
 
         $row = db_fetch_array($result);
 
-        $session_length = $row['LAST_LOGON'] - $row['TIME'];
+        $session_length = 0;
+
+        if ($row['TIME'] > $row['LAST_LOGON']) {
+            $session_length = $row['TIME'] - $row['LAST_LOGON'];
+        }
 
         $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
-        $sql.= "SET USER_TIME = USER_TIME + $session_length ";
+        $sql.= "SET USER_TIME = IFNULL(USER_TIME,0) + $session_length ";
         $sql.= "WHERE UID = '$uid'";
 
         $result = db_query($sql, $db_bh_session_end);

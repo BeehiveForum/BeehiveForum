@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.156 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.157 2006-04-14 16:38:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -625,7 +625,8 @@ function check_search_frequency()
     if ($search_min_frequency == 0) return true;
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $search_min_frequency, ";
-    $sql.= "UNIX_TIMESTAMP(NOW()) FROM USER_TRACK WHERE UID = '$uid'";
+    $sql.= "UNIX_TIMESTAMP(NOW()) FROM {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "WHERE UID = '$uid'";
 
     $result = db_query($sql, $db_check_search_frequency);
 
@@ -635,7 +636,9 @@ function check_search_frequency()
 
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 
-            $sql = "UPDATE USER_TRACK SET LAST_SEARCH = NOW() WHERE UID = '$uid'";
+            $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+            $sql.= "SET LAST_SEARCH = NOW() WHERE UID = '$uid'";
+
             $result = db_query($sql, $db_check_search_frequency);
 
             return true;
@@ -643,8 +646,8 @@ function check_search_frequency()
 
     }else{
 
-        $sql = "INSERT INTO USER_TRACK (UID, LAST_SEARCH) ";
-        $sql.= "VALUES ('$uid', NOW())";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
+        $sql.= "(UID, LAST_SEARCH) VALUES ('$uid', NOW())";
 
         $result = db_query($sql, $db_check_search_frequency);
 

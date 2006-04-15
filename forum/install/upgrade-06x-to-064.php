@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.1 2006-04-14 16:38:51 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.2 2006-04-15 16:07:43 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -221,10 +221,36 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "INSERT INTO {$forum_webtag}_USER_TRACK SELECT * FROM USER_TRACK";
-    $result = @db_query($sql, $db_install);
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     $sql = "DROP TABLE IF EXISTS USER_TRACK";
-    $result = @db_query($sql, $db_install);
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD VIEWCOUNT MEDIUMINT UNSIGNED NOT NULL AFTER STATUS";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_TRACK ADD POST_COUNT MEDIUMINT(8) UNSIGNED";
+    
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX TID";
     $result = @db_query($sql, $db_install);
@@ -235,9 +261,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_LINKS_FOLDERS CHANGE ";
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
-    $result = @db_query($sql, $db_install);
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_TRACK ADD POST_COUNT MEDIUMINT(8) UNSIGNED";
     $result = @db_query($sql, $db_install);
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.2 2006-04-15 16:07:43 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.3 2006-04-15 16:23:31 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -220,14 +220,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "INSERT INTO {$forum_webtag}_USER_TRACK SELECT * FROM USER_TRACK";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
     $sql = "DROP TABLE IF EXISTS USER_TRACK";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -236,7 +228,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD VIEWCOUNT MEDIUMINT UNSIGNED NOT NULL AFTER STATUS";
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD VIEWCOUNT MEDIUMINT UNSIGNED DEFAULT '0' NOT NULL";
 
     if (!$result = @db_query($sql, $db_install)) {
 

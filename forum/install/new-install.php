@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.90 2006-04-15 16:07:43 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.91 2006-04-15 16:23:31 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -629,7 +629,6 @@ $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
 $sql.= "  VIEWED DATETIME DEFAULT NULL, ";
 $sql.= "  CREATED DATETIME DEFAULT NULL, ";
 $sql.= "  STATUS TINYINT(4) DEFAULT '0', ";
-$sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  APPROVED DATETIME DEFAULT NULL, ";
 $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  EDITED DATETIME DEFAULT NULL, ";
@@ -858,6 +857,7 @@ $sql.= "  CLOSED DATETIME DEFAULT NULL, ";
 $sql.= "  STICKY CHAR(1) DEFAULT NULL, ";
 $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
 $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
+$sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (TID), ";
 $sql.= "  KEY FID (FID), ";
 $sql.= "  KEY BY_UID (BY_UID)";

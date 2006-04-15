@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.74 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.75 2006-04-15 16:58:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -66,7 +66,7 @@ function thread_get($tid)
     if (!is_numeric($tid)) return false;
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, ";
-    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD.VIEWCOUNT, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";

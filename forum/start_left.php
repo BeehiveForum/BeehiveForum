@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.105 2006-03-18 01:08:59 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.106 2006-04-15 16:58:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -119,7 +119,10 @@ if ($thread_array = threads_get_most_recent()) {
             echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />&nbsp;</td>\n";
         }
 
-        echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" title=\"#$tid Started by ", format_user_name($thread['LOGON'], $thread['NICKNAME']), "\">", apply_wordfilter($thread['TITLE']), "</a>&nbsp;";
+        echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
+        echo "title=\"#$tid Started by ", format_user_name($thread['LOGON'], $thread['NICKNAME']), ". ";
+        echo ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT']), "\">";
+        echo apply_wordfilter($thread['TITLE']), "</a>&nbsp;";
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";

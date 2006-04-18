@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.181 2006-04-11 20:58:10 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.182 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -45,6 +45,8 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function html_guest_error ()
 {
+     global $frame_top_target;
+     
      $lang = load_language_file();
 
      html_draw_top("robots=noindex,nofollow");
@@ -53,8 +55,14 @@ function html_guest_error ()
 
      $final_uri = rawurlencode(get_request_uri());
 
-     echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
-     echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
+     if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+         echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
+         echo "&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['guesterror_2']}</a></h1>";
+     }else {
+         echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
+         echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
+     }
+
      html_draw_bottom();
 }
 

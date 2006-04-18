@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.133 2005-07-24 21:36:10 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.134 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -66,7 +66,7 @@ $cookie_domain = "";
 //
 // WARNING: DO NOT CHANGE THIS OPTION IF YOU DO NOT UNDERSTAND WHAT
 //          IT DOES. SETTING THIS OPTION TO AN INVALID OR INCORRECT
-//          VALUE CAN MAKE YOUR FORUM UNUSABLE.	IF YOU ARE IN DOUBT
+//          VALUE CAN MAKE YOUR FORUM UNUSABLE. IF YOU ARE IN DOUBT
 //          LEAVE THIS SETTING AS IS.
 //
 // This option is useful for situations where there is more than one
@@ -113,6 +113,24 @@ $gzip_compress_level  = 1;
 // 4.2.0 is installed. The maximum level of compression available is 9,
 // while the lowest is 1. A higher level will result in increased server
 // load.
+
+// ---------------------------------------------------------------------
+
+// Frame top target ----------------------------------------------------
+
+$frame_top_target = "_top";
+
+// This option allows you to specify the "top" frame for Beehive to use
+// when navigating between frames. If you intend to use your Beehive
+// Forum embedded into another site (for example within an iframe)
+// then you could change the value of this variable to match the name
+// attribute of your iframe and prevent Beehive from breaking out of
+// the frameset.
+//
+// Note: That when using Beehive within a iframe you should ensure that
+//       it is running from the same domain as it's parent page
+//       otherwise browsers may refuse the session cookies required
+//       by Beehive and your users will not be able to login.
 
 // ---------------------------------------------------------------------
 

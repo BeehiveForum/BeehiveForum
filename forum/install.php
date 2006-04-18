@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.56 2006-04-12 20:31:36 decoyduck Exp $ */
+/* $Id: install.php,v 1.57 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -177,13 +177,13 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
         if ($db_install = @db_connect()) {
 
-            if (($install_method == 5) && (@file_exists('./install/upgrade-06x-to-063.php'))) {
+            if (($install_method == 5) && (@file_exists('./install/upgrade-06x-to-064.php'))) {
 
-                include_once("./install/upgrade-06x-to-063.php");
+                include_once("./install/upgrade-06x-to-064.php");
 
-            }elseif (($install_method == 4) && (@file_exists('./install/upgrade-05-to-063.php'))) {
+            }elseif (($install_method == 4) && (@file_exists('./install/upgrade-05-to-064.php'))) {
 
-                include_once("./install/upgrade-05-to-063.php");
+                include_once("./install/upgrade-05-to-064.php");
 
             }elseif (($install_method == 3) && (@file_exists('./install/upgrade-04-to-05.php'))) {
 
@@ -583,8 +583,8 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
     echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
     echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.4 to 0.5</option>\n";
-    echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.5 to 0.6.3</option>\n";
-    echo "                            <option value=\"5\" ", (isset($install_method) && $install_method == 5) ? "selected=\"selected\"" : "", ">Upgrade 0.6RCx or 0.6.x to 0.6.3</option>\n";
+    echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.5 to 0.6.4</option>\n";
+    echo "                            <option value=\"5\" ", (isset($install_method) && $install_method == 5) ? "selected=\"selected\"" : "", ">Upgrade 0.6RCx or 0.6.x to 0.6.4</option>\n";
     echo "                          </select>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";

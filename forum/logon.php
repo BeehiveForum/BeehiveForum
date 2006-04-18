@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.156 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: logon.php,v 1.157 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -179,11 +179,25 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         echo "<h2>{$lang['problemsloggingon']}</h2>\n";
 
         if (isset($final_uri)) {
+
             $final_uri = rawurlencode($final_uri);
-            echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+
+            if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+                echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
+            }else {
+                echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+            }
+
             echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+
         }else {
-            echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+
+            if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+                echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
+            }else {
+                echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+            }
+
             echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
         }
 
@@ -198,9 +212,18 @@ draw_logon_form(true);
 
 if (user_guest_enabled()) {
 
-    echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\">\n";
-    echo "    <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
-    echo "  </form>\n";
+    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+    
+        echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"$frame_top_target\">\n";
+        echo "    <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
+        echo "  </form>\n";
+
+    }else {
+
+        echo "  <form name=\"guest\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\">\n";
+        echo "    <p class=\"smalltext\">", sprintf($lang['enterasa'], form_submit('guest_logon', $lang['guest'])), "</p>\n";
+        echo "  </form>\n";
+    }
 }
 
 if (isset($final_uri)) {
@@ -210,21 +233,45 @@ if (isset($final_uri)) {
     echo "  <p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
     echo "  <hr width=\"350\" />\n";
     echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
-    echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+
+    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+
+        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
+        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+
+    }else {
+
+        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+    }
 
 }else {
 
     echo "  <p class=\"smalltext\">", sprintf($lang['donthaveanaccount'], "<a href=\"register.php?webtag=$webtag\" target=\"_self\">{$lang['registernow']}</a>"), "</p>\n";
     echo "  <hr width=\"350\" />\n";
     echo "  <h2>{$lang['problemsloggingon']}</h2>\n";
-    echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-    echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+
+    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+
+        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
+        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+
+    }else {
+
+        echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
+        echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+    }
 }
 
 echo "  <hr width=\"350\" />\n";
 echo "  <h2>{$lang['usingaPDA']}</h2>\n";
-echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag=$webtag\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
+
+if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+    echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['lightHTMLversion']}</a></p>\n";
+}else {
+    echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag=$webtag\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
+}
+
 echo "</div>\n";
 
 html_draw_bottom();

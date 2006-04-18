@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.3 2006-04-15 16:23:31 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.4 2006-04-18 17:28:21 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -203,7 +203,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             return;
         }
     }
-    
+  
     $sql = "CREATE TABLE {$forum_webtag}_USER_TRACK (";
     $sql.= "UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "DDKEY DATETIME DEFAULT NULL,";
@@ -228,7 +228,24 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD VIEWCOUNT MEDIUMINT UNSIGNED DEFAULT '0' NOT NULL";
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_NEW (";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+    $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+    $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+    $sql.= "  TITLE VARCHAR(64) DEFAULT NULL, ";
+    $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+    $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL, ";
+    $sql.= "  CREATED DATETIME DEFAULT NULL, ";
+    $sql.= "  MODIFIED DATETIME DEFAULT NULL, ";
+    $sql.= "  CLOSED DATETIME DEFAULT NULL, ";
+    $sql.= "  STICKY CHAR(1) DEFAULT NULL, ";
+    $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
+    $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
+    $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
+    $sql.= "  PRIMARY KEY (TID), ";
+    $sql.= "  KEY FID (FID), ";
+    $sql.= "  KEY BY_UID (BY_UID)";
+    $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -236,8 +253,35 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE {$forum_webtag}_USER_TRACK ADD POST_COUNT MEDIUMINT(8) UNSIGNED";
-    
+    $sql = "INSERT INTO {$forum_webtag}_THREAD_NEW ";
+    $sql.= "(TID, FID, BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, ";
+    $sql.= "MODIFIED, CLOSED, STICKY, STICKY_UNTIL,ADMIN_LOCK, VIEWCOUNT) ";
+    $sql.= "SELECT USER_THREAD.TID, THREAD.FID, THREAD.BY_UID, ";
+    $sql.= "THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, ";
+    $sql.= "THREAD.CREATED, THREAD.MODIFIED, THREAD.CLOSED, ";
+    $sql.= "THREAD.STICKY, THREAD.STICKY_UNTIL, THREAD.ADMIN_LOCK, ";
+    $sql.= "COUNT(USER_THREAD.LAST_READ) AS VIEWCOUNT ";
+    $sql.= "FROM {$forum_webtag}_USER_THREAD USER_THREAD, ";
+    $sql.= "{$forum_webtag}_THREAD THREAD ";
+    $sql.= "WHERE THREAD.TID = USER_THREAD.TID ";
+    $sql.= "GROUP BY USER_THREAD.TID";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "DROP TABLE {$forum_webtag}_THREAD";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
+
     if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;

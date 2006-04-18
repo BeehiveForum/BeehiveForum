@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.215 2006-04-15 16:07:43 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.216 2006-04-18 17:28:21 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -200,6 +200,8 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
 function bh_session_expired()
 {
+    global $frame_top_target;
+    
     if (defined("BEEHIVEMODE_LIGHT")) {
         header_redirect("./llogon.php?final_uri=". get_request_uri());
     }
@@ -232,8 +234,18 @@ function bh_session_expired()
             $request_uri = get_request_uri();
 
             if (stristr($request_uri, 'logon.php')) {
-                echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
+
+                if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+
+                    echo "<form method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
+
+                }else {
+
+                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
+                }
+
             }else {
+
                 echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
             }
 

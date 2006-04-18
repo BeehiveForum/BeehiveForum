@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.97 2006-03-28 21:19:35 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.98 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1143,6 +1143,8 @@ function light_messages_nav_strip($tid,$pid,$length,$ppp)
 
 function light_html_guest_error ()
 {
+     global $frame_top_target;
+     
      $lang = load_language_file();
 
      $webtag = get_webtag($webtag_search);
@@ -1151,8 +1153,13 @@ function light_html_guest_error ()
 
      light_html_draw_top();
 
-     echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag";
-     echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
+     if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+         echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag";
+         echo "&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['guesterror_2']}</a></h1>";
+     }else {
+         echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag";
+         echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
+     }
 
      light_html_draw_bottom();
 }

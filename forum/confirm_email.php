@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.4 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.5 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -111,7 +111,13 @@ if ($user = user_get_password($uid, $key)) {
         echo "<h1>{$lang['emailconfirmation']}</h1>";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
-        echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"_top\">\n";
+
+        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+            echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"$frame_top_target\">\n";
+        }else {
+            echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"_top\">\n";
+        }
+
         echo "  ", form_input_hidden('webtag', $webtag), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";
@@ -150,7 +156,13 @@ if ($user = user_get_password($uid, $key)) {
         echo "<h1>{$lang['emailconfirmation']}</h1>";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
-        echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"_top\">\n";
+
+        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+            echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"$frame_top_target\">\n";
+        }else {
+            echo "  <form name=\"confirm_email\" action=\"index.php\" method=\"post\" target=\"_top\">\n";
+        }
+
         echo "  ", form_input_hidden('webtag', $webtag), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.171 2006-04-09 21:03:18 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.172 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -203,6 +203,8 @@ function forum_restricted_message()
 
 function forum_check_password($forum_fid)
 {
+    global $frame_top_target;
+    
     $db_forum_check_password = db_connect();
 
     $webtag = get_webtag($webtag_search);
@@ -243,7 +245,13 @@ function forum_check_password($forum_fid)
             }
 
             echo "<div align=\"center\">\n";
-            echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
+            
+            if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+                echo "<form method=\"post\" action=\"./forum_password.php\" target=\"$frame_top_target\">\n";
+            }else {
+                echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
+            }
+
             echo "  ", form_input_hidden('webtag', $webtag), "\n";
             echo "  ", form_input_hidden('ret', get_request_uri()), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.39 2006-03-18 18:20:43 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.40 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -184,6 +184,8 @@ function perform_logon($logon_main)
 
 function draw_logon_form($logon_main)
 {
+    global $frame_top_target;
+   
     $lang = load_language_file();
 
     $webtag = get_webtag($webtag_search);
@@ -227,7 +229,12 @@ function draw_logon_form($logon_main)
     if ($logon_main) {
 
         echo "  <br />\n";
-        echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+
+        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+            echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"$frame_top_target\" onsubmit=\"return has_clicked;\">\n";
+        }else {
+            echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+        }
 
     }else {
 
@@ -237,7 +244,11 @@ function draw_logon_form($logon_main)
         echo "  <br />\n";
 
         if (stristr($request_uri, 'logon.php')) {
-            echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+            if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+                echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\" onsubmit=\"return has_clicked;\">\n";
+            }else {
+                echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+            }
         }else {
             echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\" onsubmit=\"return has_clicked;\">\n";
         }

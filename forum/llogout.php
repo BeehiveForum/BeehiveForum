@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.34 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.35 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -92,7 +92,12 @@ if (isset($_POST['submit'])) {
 
 light_html_draw_top();
 
-echo "<form name=\"logon\" action=\"llogout.php\" method=\"post\" target=\"_top\">\n";
+if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+    echo "<form name=\"logon\" action=\"llogout.php\" method=\"post\" target=\"$frame_top_target\">\n";
+}else {
+    echo "<form name=\"logon\" action=\"llogout.php\" method=\"post\" target=\"_top\">\n";
+}
+
 echo form_input_hidden('webtag', $webtag), "\n";
 echo "<p>{$lang['currentlyloggedinas']} ", user_get_logon(bh_session_get_value('UID')), "</p>\n";
 echo "<p>", light_form_submit("submit", $lang['logout']), "</p>\n";

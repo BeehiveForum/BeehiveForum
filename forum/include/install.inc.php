@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.39 2006-02-09 23:43:26 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.40 2006-04-18 17:28:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,7 +54,7 @@ function check_install()
     if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
 
         install_remove_files();
-	header_redirect('index.php');
+    header_redirect('index.php');
     }
 
     if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
@@ -151,6 +151,8 @@ function rmdir_recursive($path)
 
 function install_incomplete()
 {
+    global $frame_top_target;
+    
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
@@ -186,7 +188,13 @@ function install_incomplete()
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "  <form method=\"get\" action=\"./install.php\" target=\"_top\">\n";
+
+    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+        echo "  <form method=\"get\" action=\"./install.php\" target=\"$frame_top_target\">\n";
+    }else {
+        echo "  <form method=\"get\" action=\"./install.php\" target=\"_top\">\n";
+    }
+
     echo "    <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "      <tr>\n";

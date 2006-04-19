@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.387 2006-04-18 17:28:21 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.388 2006-04-19 20:28:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1202,7 +1202,21 @@ function message_get_user($tid, $pid)
     return $uid;
 }
 
-function messages_update_read($tid, $pid, $uid, $spid = 1)
+/**
+* Update last read post in a thread and increments thread view count
+*
+* Updates LAST_READ column in USER_THREAD to last displayed post.
+* Increments VIEWCOUNT column in THREAD.
+*
+* @return bool
+* @param integer $tid  - Thread ID
+* @param integer $pid  - Post ID
+* @param integer $uid  - User UID
+* @param integer $spid - Starting PID for marking threads to user as read.
+* @param bool    $chk_lr - Check current LAST_READ and only update if PID is newer
+*/
+
+function messages_update_read($tid, $pid, $uid, $spid = 1, $chk_lr = true)
 {
     $db_message_update_read = db_connect();
 
@@ -1210,6 +1224,8 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     if (!is_numeric($pid)) return false;
     if (!is_numeric($uid)) return false;
     if (!is_numeric($spid)) return false;
+
+    if (!is_bool($chk_lr)) $chk_lr = true;
 
     // Check for existing entry in USER_THREAD
 
@@ -1219,26 +1235,56 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     if ($uid > 0) {
 
-        // mysql_affected_rows() doesn't appear to be reliable and
-        // can sometimes return 0 (possible bug in some MySQL versions??)
-        // so we're a bit dirty here and simply do a INSERT IGNORE
-        // followed by an UPDATE.
+        if ($chk_lr === true) {
 
-        // Try inserting new rows first with an IGNORE.
-        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-        $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+            $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-        if (!$result = db_query($sql, $db_message_update_read)) return false;
+            if (!$result = db_query($sql, $db_message_update_read)) return false;
 
-        // Try an update also just incase a row already exists.
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-        $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+            if (db_num_rows($result) > 0) {
 
-        if (!$result = db_query($sql, $db_message_update_read)) return false;
+                $fa = db_fetch_array($result);
+
+                if (!isset($fa['LAST_READ'])) $fa['LAST_READ'] = 0;
+
+                if ($pid > $fa['LAST_READ']) {
+
+                    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+                    $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
+                    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+
+                    if (!$result = db_query($sql, $db_message_update_read)) return false;
+                }
+
+            }else {
+
+                $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD ";
+                $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+                $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+
+                if (!$result = db_query($sql, $db_message_update_read)) return false;
+            }
+
+        }else {
+
+            // Try inserting new rows first with an IGNORE.
+            $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+            $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+
+            if (!$result = db_query($sql, $db_message_update_read)) return false;
+
+            // Try an update also just incase a row already exists.
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
+            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+
+            if (!$result = db_query($sql, $db_message_update_read)) return false;
+        }
 
         // Mark posts as Viewed...
+
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() ";
         $sql.= "WHERE TID = '$tid' AND PID BETWEEN '$spid' AND '$pid' ";
         $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
@@ -1247,6 +1293,7 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     }
 
     // Update thread viewed counter
+
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}THREAD SET VIEWCOUNT = VIEWCOUNT + 1 ";
     $sql.= "WHERE TID = '$tid'";
 

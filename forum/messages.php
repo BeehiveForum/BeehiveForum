@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.186 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: messages.php,v 1.187 2006-04-22 12:57:02 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -111,7 +111,7 @@ if (!isset($tid) || !is_numeric($tid)) $tid = 1;
 if (!isset($pid) || !is_numeric($pid)) $pid = 1;
 
 if (!thread_can_view($tid, bh_session_get_value('UID'))) {
-
+    
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
@@ -180,7 +180,14 @@ if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
 
 if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+
+        header_redirect("./thread_options.php?webtag=$webtag&msg=$tid.$pid");
+        exit;
+    }
+
     html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
     html_draw_bottom();
     exit;
@@ -188,8 +195,15 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
 if (!$threaddata = thread_get($tid)) {
 
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+
+        header_redirect("./thread_options.php?webtag=$webtag&msg=$tid.$pid");
+        exit;
+    }
+
     html_draw_top();
-    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}2222</h2>\n";
     html_draw_bottom();
     exit;
 }

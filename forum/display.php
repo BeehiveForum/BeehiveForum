@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.63 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: display.php,v 1.64 2006-04-22 12:57:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -91,35 +91,54 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = "1.1";
 }
 
-list($tid, $pid) = explode('.', $msg);
+@list($tid, $pid) = explode('.', $msg);
 
-if (!is_numeric($pid)) $pid = 1;
-if (!is_numeric($tid)) $tid = 1;
+if (!isset($tid) || !is_numeric($tid)) $tid = 1;
+if (!isset($pid) || !is_numeric($pid)) $pid = 1;
 
 if (!thread_can_view($tid, bh_session_get_value('UID'))) {
+
     html_draw_top();
-    echo "<h2>You are not authorised to view this thread!</h2>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
     html_draw_bottom();
     exit;
 }
 
-// Check if the user is viewing signatures.
-$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
-
-// Output XHTML header
-html_draw_top("basetarget=_blank", "openprofile.js");
-
 if (!$message = messages_get($tid, $pid, 1)) {
 
-   html_draw_top();
-   echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
-   html_draw_bottom();
-   exit;
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+    html_draw_bottom();
+    exit;
 }
 
-$threaddata = thread_get($tid);
+if (!$threaddata = thread_get($tid)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    html_draw_bottom();
+    exit;
+}
+
+$forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+html_draw_top("title=$forum_name > {$threaddata['TITLE']}", "openprofile.js", "basetarget=_blank", "robots=index,follow");
+
+if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
+
+    if ($threaddata['STICKY'] == "Y" && $threaddata['STICKY_UNTIL'] != 0 && time() > $threaddata['STICKY_UNTIL']) {
+
+        thread_set_sticky($tid, false);
+        $threaddata['STICKY'] == "N";
+    }
+}
 
 $foldertitle = folder_get_title($threaddata['FID']);
+
+$show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";

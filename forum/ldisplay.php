@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.7 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.8 2006-04-22 12:57:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,21 +101,32 @@ if (!is_numeric($pid)) $pid = 1;
 if (!is_numeric($tid)) $tid = 1;
 
 if (!thread_can_view($tid, bh_session_get_value('UID'))) {
-    html_draw_top();
-    echo "<h2>You are not authorised to view this thread!</h2>\n";
-    html_draw_bottom();
+
+    light_html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
+    light_html_draw_bottom();
     exit;
 }
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
    light_html_draw_top();
+   echo "<h1>{$lang['error']}</h1>\n";
    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
    light_html_draw_bottom();
    exit;
 }
 
-$threaddata = thread_get($tid);
+if (!$threaddata = thread_get($tid)) {
+
+    light_html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    light_html_draw_bottom();
+    exit;
+}
+
 $foldertitle = folder_get_title($threaddata['FID']);
 
 light_html_draw_top();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.75 2006-04-15 16:58:38 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.76 2006-04-22 12:57:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,7 +55,7 @@ function thread_get_title($tid)
     return "The Unknown Thread";
 }
 
-function thread_get($tid)
+function thread_get($tid, $inc_deleted = false)
 {
     $db_thread_get = db_connect();
 
@@ -77,7 +77,9 @@ function thread_get($tid)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.TID = $tid";
+    $sql.= "WHERE THREAD.TID = '$tid' ";
+    
+    if ($inc_deleted === false) $sql.= "AND THREAD.LENGTH > 0 ";
 
     $result = db_query($sql, $db_thread_get);
 
@@ -385,18 +387,57 @@ function thread_delete_by_user($tid, $uid)
     return $result;
 }
 
-function thread_delete($tid)
+function thread_delete($tid, $delete_type)
 {
     $db_thread_delete = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($tid)) return false;
+    if (!is_numeric($delete_type)) return false;
 
-    $sql = "UPDATE {$table_data['PREFIX']}POST_CONTENT ";
-    $sql.= "SET CONTENT = NULL WHERE TID = '$tid'";
+    if ($delete_type == 0) {
 
-    return db_query($sql, $db_thread_delete);
+        $sql = "DELETE FROM {$table_data['PREFIX']}POST_CONTENT WHERE TID = '$tid'";
+        $result = db_query($sql, $db_thread_delete);
+
+        $sql = "DELETE FROM {$table_data['PREFIX']}POST WHERE TID = '$tid'";
+        $result = db_query($sql, $db_thread_delete);
+
+        $sql = "DELETE FROM {$table_data['PREFIX']}THREAD WHERE TID = '$tid'";
+        $result = db_query($sql, $db_thread_delete);
+
+        $sql = "DELETE FROM {$table_data['PREFIX']}USER_THREAD WHERE TID = '$tid'";
+        $result = db_query($sql, $db_thread_delete);
+
+        $sql = "DELETE FROM {$table_data['PREFIX']}USER_THREAD WHERE TID = '$tid'";
+        $result = db_query($sql, $db_thread_delete);
+
+    }else {
+
+        $sql = "UPDATE {$table_data['PREFIX']}THREAD ";
+        $sql.= "SET LENGTH = 0 WHERE TID = '$tid'";
+
+        $result = db_query($sql, $db_thread_delete);
+    }
+
+    return true;
+}
+
+function thread_undelete($tid)
+{
+    $db_thread_undelete = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($tid)) return false;
+
+    if (!$thread_length = thread_can_be_undeleted($tid)) return false;
+
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD ";
+    $sql.= "SET LENGTH = '$thread_length' WHERE TID = '$tid'";
+
+    return db_query($sql, $db_thread_undelete);
 }
 
 // Fetches replies (and replies of replies, etc) of a post in a thread
@@ -493,6 +534,24 @@ function thread_move_posts($dest_tid, $source_tid, $pid_array)
     $sql.= "AND PID IN ($pid_list)";
 
     $result = db_query($sql, $db_thread_move_posts);
+}
+
+function thread_can_be_undeleted($tid)
+{
+    if (!is_numeric($tid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+    
+    $db_thread_can_be_undeleted = db_connect();
+
+    $sql = "SELECT MAX(PID) AS LENGTH FROM ";
+    $sql.= "{$table_data['PREFIX']}POST WHERE TID = '$tid'";
+
+    $result = db_query($sql, $db_thread_can_be_undeleted);
+
+    list($length) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $length;
 }
 
 ?>

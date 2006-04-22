@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.195 2006-04-19 20:28:47 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.196 2006-04-22 12:57:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -123,6 +123,7 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
@@ -160,6 +161,7 @@ function threads_get_started_by_me($uid, $start = 0) // get threads started by u
     $sql.= "WHERE THREAD.BY_UID = $uid AND THREAD.FID IN ($folders) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
@@ -204,6 +206,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -247,6 +250,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND POST.TID = THREAD.TID AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "GROUP BY THREAD.TID ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -292,6 +296,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
     $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -336,6 +341,7 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
     $sql.= "AND USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid ";
     $sql.= "AND USER_THREAD.INTEREST = $interest ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -380,6 +386,7 @@ function threads_get_unread_by_interest($uid, $interest = 1) // get unread messa
     $sql.= "AND USER_THREAD.LAST_READ < THREAD.LENGTH ";
     $sql.= "AND USER_THREAD.INTEREST = $interest ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -423,6 +430,7 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
     $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(USER_THREAD.LAST_READ_AT) <= 1 ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -461,6 +469,7 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start =
     $sql.= "AND (USER_PEER.RELATIONSHIP & $relationship = $relationship)";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
@@ -500,6 +509,7 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -545,6 +555,7 @@ function threads_get_polls($uid, $start = 0)
     $sql.= "AND THREAD.POLL_FLAG = 'Y' ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
@@ -590,6 +601,7 @@ function threads_get_sticky($uid, $start = 0)
     $sql.= "AND THREAD.STICKY = 'Y' ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
@@ -635,6 +647,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY T_LENGTH DESC, THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -676,12 +689,58 @@ function threads_get_folder($uid, $fid, $start = 0)
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
     $result = db_query($sql, $db_threads_get_folder);
     list($threads, $folder_order) = threads_process_list($result);
     return array($threads, $folder_order);
+}
+
+function threads_get_deleted($uid, $start = 0)
+{
+    $db_threads_get_all = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $folders = folder_get_available();
+
+    $user_ignored = USER_IGNORED;
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
+    // for threads with unread messages, so the UID needs to be passed to the function
+
+    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+    $sql.= "THREAD.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
+    $sql.= "USER_FOLDER.INTEREST AS FOLDER_INTEREST, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
+    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
+    $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
+    $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+    $sql.= "WHERE THREAD.FID IN ($folders) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH = 0 ";
+    $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+    $sql.= "LIMIT $start, 50";
+
+    $result = db_query($sql, $db_threads_get_all);
+    list($threads, $folder_order) = threads_process_list($result);
+    return array($threads, $folder_order);
+
 }
 
 function threads_get_most_recent($limit = 10)
@@ -718,6 +777,7 @@ function threads_get_most_recent($limit = 10)
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, $limit";
 
@@ -781,6 +841,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
+    $sql.= "AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -1061,7 +1122,7 @@ function threads_mark_read($tid_array)
         foreach($tid_array as $tid => $length) {
 
             if (is_numeric($tid) && is_numeric($length)) {
-                if (!$result = messages_update_read($tid, $length, $uid, 1, false)) return false;
+                if (!$result = messages_update_read($tid, $length, $uid)) return false;
             }
         }
 
@@ -1124,13 +1185,28 @@ function thread_list_draw_top($mode)
 
     }else {
 
-        $labels = array($lang['alldiscussions'],$lang['unreaddiscussions'],$lang['unreadtome'],$lang['todaysdiscussions'],
-                        $lang['unreadtoday'],$lang['2daysback'],$lang['7daysback'],$lang['highinterest'],$lang['unreadhighinterest'],
-                        $lang['iverecentlyseen'],$lang['iveignored'],$lang['byignoredusers'],$lang['ivesubscribedto'],$lang['startedbyfriend'],
-                        $lang['unreadstartedbyfriend'],$lang['startedbyme'],$lang['polls'],$lang['stickythreads'],$lang['mostunreadposts'],$lang['searchresults']);
+        if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+
+            $labels = array($lang['alldiscussions'], $lang['unreaddiscussions'], $lang['unreadtome'],
+                            $lang['todaysdiscussions'], $lang['unreadtoday'], $lang['2daysback'],
+                            $lang['7daysback'], $lang['highinterest'], $lang['unreadhighinterest'],
+                            $lang['iverecentlyseen'], $lang['iveignored'], $lang['byignoredusers'],
+                            $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['unreadstartedbyfriend'],
+                            $lang['startedbyme'], $lang['polls'], $lang['stickythreads'],
+                            $lang['mostunreadposts'], $lang['searchresults'], $lang['deletedthreads']);
+
+        }else {
+        
+            $labels = array($lang['alldiscussions'], $lang['unreaddiscussions'], $lang['unreadtome'],
+                            $lang['todaysdiscussions'], $lang['unreadtoday'], $lang['2daysback'],
+                            $lang['7daysback'], $lang['highinterest'], $lang['unreadhighinterest'],
+                            $lang['iverecentlyseen'], $lang['iveignored'], $lang['byignoredusers'],
+                            $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['unreadstartedbyfriend'],
+                            $lang['startedbyme'], $lang['polls'], $lang['stickythreads'],
+                            $lang['mostunreadposts'], $lang['searchresults']);
+        }
 
         echo form_dropdown_array("mode", range(0, sizeof($labels)  - 1), $labels, $mode, "onchange=\"submit()\"");
-
     }
 
     echo "        ", form_submit("go",$lang['goexcmark']), "\n";

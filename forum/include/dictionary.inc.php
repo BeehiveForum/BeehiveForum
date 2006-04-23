@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.33 2006-04-23 10:25:03 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.34 2006-04-23 10:27:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -74,8 +74,8 @@ class dictionary {
 
     function prepare_content($content)
     {
-        $word_match = "([0-9\w'-]+)|([0-9\w']+)|([0-9\w'-]+)|([0-9]+)|(<[^>]+>)|(&[^;]+;)|";
-        $word_match.= "(\w+'+\w+)|([\s+\.!\?,\[\]()\-+'\"=;&#0215;\$%\^&\*\/:{}]+)|";
+        $word_match = "([0-9\w'-]+)|([0-9]+)|(<[^>]+>)|(&[^;]+;)|(\w+'+\w+)|";
+        $word_match.= "([\s+\.!\?,\[\]()\-+'\"=;&#0215;\$%\^&\*\/:{}]+)|";
         $word_match.= "(\w+:\/\/([^:\s]+:?[^@\s]+@)?[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
         $word_match.= "(www\.[_\.0-9a-z-]*(:\d+)?([\/?#]\S*[^),\.\s])?)|";
         $word_match.= "([0-9a-z][_\.0-9a-z-]*@[0-9a-z][_\.0-9a-z-]*\.[a-z]{2,})";

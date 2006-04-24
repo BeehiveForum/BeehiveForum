@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.216 2006-04-18 17:28:21 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.217 2006-04-24 21:53:25 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -436,10 +436,15 @@ function bh_remove_stale_sessions()
 
                 $session_length = 0;
                 
-                if ($row['TIME'] > $row['LAST_LOGON']) {
+                if (($row['TIME'] > $row['LAST_LOGON']) && !is_null($row['LAST_LOGON'])) {
                     $session_length = $row['TIME'] - $row['LAST_LOGON'];
                 }
-                
+
+                $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
+                $sql.= "(UID, USER_TIME) VALUES ('{$row['UID']}', '$session_length')";
+
+                $result_update = db_query($sql, $db_bh_remove_stale_sessions);
+
                 $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
                 $sql.= "SET USER_TIME = IFNULL(USER_TIME, 0) + $session_length ";
                 $sql.= "WHERE UID = '{$row['UID']}'";
@@ -610,9 +615,14 @@ function bh_session_end()
 
         $session_length = 0;
                 
-        if ($row['TIME'] > $row['LAST_LOGON']) {
+        if (($row['TIME'] > $row['LAST_LOGON']) && !is_null($row['LAST_LOGON'])) {
             $session_length = $row['TIME'] - $row['LAST_LOGON'];
         }
+
+        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
+        $sql.= "(UID, USER_TIME) VALUES ('$uid', '$session_length')";
+
+        $result_update = db_query($sql, $db_bh_session_end);
 
         $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
         $sql.= "SET USER_TIME = IFNULL(USER_TIME, 0) + $session_length ";

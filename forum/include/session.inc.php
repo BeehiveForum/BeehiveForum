@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.217 2006-04-24 21:53:25 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.218 2006-04-25 11:27:10 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -177,6 +177,8 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
                 if (forum_get_setting('show_stats', 'Y')) {
                     update_stats();
                 }
+
+                bh_update_user_time($user_sess['UID']);
 
                 // Perform system-wide PM Prune
 
@@ -417,39 +419,15 @@ function bh_remove_stale_sessions()
 
         $db_bh_remove_stale_sessions = db_connect();
 
-        $session_cutoff = forum_get_setting('session_cutoff', false, 86400);
-
-        if (is_numeric($session_cutoff)) {
+        if ($session_cutoff = forum_get_setting('session_cutoff', false, 86400)) {
 
             $session_stamp = time() - $session_cutoff;
 
-            $sql = "SELECT SESSIONS.UID, UNIX_TIMESTAMP(SESSIONS.TIME) AS TIME, ";
-            $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-            $sql.= "FROM SESSIONS LEFT JOIN VISITOR_LOG ON (VISITOR_LOG.UID = SESSIONS.UID ";
-            $sql.= "AND VISITOR_LOG.FORUM = SESSIONS.FID) ";
-            $sql.= "WHERE SESSIONS.TIME < FROM_UNIXTIME($session_stamp) ";
-            $sql.= "AND SESSIONS.FID = '$forum_fid'";
+            $sql = "SELECT UID FROM SESSIONS WHERE TIME < FROM_UNIXTIME($session_stamp)";
+            $result = db_query($sql, $db_bh_remove_stale_sessions);
 
-            $result_fetch = db_query($sql, $db_bh_remove_stale_sessions);
-
-            while ($row = db_fetch_array($result_fetch)) {
-
-                $session_length = 0;
-                
-                if (($row['TIME'] > $row['LAST_LOGON']) && !is_null($row['LAST_LOGON'])) {
-                    $session_length = $row['TIME'] - $row['LAST_LOGON'];
-                }
-
-                $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
-                $sql.= "(UID, USER_TIME) VALUES ('{$row['UID']}', '$session_length')";
-
-                $result_update = db_query($sql, $db_bh_remove_stale_sessions);
-
-                $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
-                $sql.= "SET USER_TIME = IFNULL(USER_TIME, 0) + $session_length ";
-                $sql.= "WHERE UID = '{$row['UID']}'";
-
-                $result_update = db_query($sql, $db_bh_remove_stale_sessions);
+            while ($session_data = db_fetch_array($result_fetch)) {
+                bh_update_user_time($session_data['UID']);
             }            
             
             $sql = "DELETE FROM SESSIONS WHERE ";
@@ -520,6 +498,46 @@ function bh_update_visitor_log($uid)
     }
 
     return false;
+}
+
+function bh_update_user_time($uid)
+{
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $db_bh_update_user_time = db_connect();
+        
+    $sql = "SELECT UNIX_TIMESTAMP(NOW()) AS TIME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
+    $sql.= "FROM VISITOR_LOG WHERE UID = '$uid' AND FORUM = '$forum_fid'";
+
+    $result = db_query($sql, $db_bh_update_user_time);
+
+    if ($user_track = db_fetch_array($result)) {
+
+        if (isset($user_track['LAST_LOGON']) || !is_null($user_track['LAST_LOGON'])) {
+        
+            $session_length = 0;
+
+            if ($user_track['TIME'] > $user_track['LAST_LOGON']) {
+                $session_length = $user_track['TIME'] - $user_track['LAST_LOGON'];
+            }
+
+            $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
+            $sql.= "(UID, USER_TIME) VALUES ('$uid', '$session_length')";
+
+            if (!$result = @db_query($sql, $db_bh_update_user_time)) {
+
+                $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+                $sql.= "SET USER_TIME = IFNULL(USER_TIME, 0) + $session_length ";
+                $sql.= "WHERE UID = '$uid'";
+
+                $result = db_query($sql, $db_bh_update_user_time);
+            }
+        }
+    }
 }
 
 /**
@@ -604,42 +622,21 @@ function bh_session_end()
 
     if (isset($user_hash)) {
 
-        $forum_fid = $table_data['FID'];
+        // If the user isn't a guest we should update how long
+        // they have been actively logged in.
         
-        $sql = "SELECT UNIX_TIMESTAMP(NOW()) AS TIME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
-        $sql.= "FROM VISITOR_LOG WHERE UID = '$uid' AND FORUM = '$forum_fid'";
+        if ($uid > 0) bh_update_user_time($uid);
 
-        $result = db_query($sql, $db_bh_session_end);
-
-        $row = db_fetch_array($result);
-
-        $session_length = 0;
-                
-        if (($row['TIME'] > $row['LAST_LOGON']) && !is_null($row['LAST_LOGON'])) {
-            $session_length = $row['TIME'] - $row['LAST_LOGON'];
-        }
-
-        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
-        $sql.= "(UID, USER_TIME) VALUES ('$uid', '$session_length')";
-
-        $result_update = db_query($sql, $db_bh_session_end);
-
-        $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
-        $sql.= "SET USER_TIME = IFNULL(USER_TIME, 0) + $session_length ";
-        $sql.= "WHERE UID = '$uid'";
-
-        $result = db_query($sql, $db_bh_session_end);
+        // Remove the user session.
 
         $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
         $result = db_query($sql, $db_bh_session_end);
     }
 
+    // Unset the cookies used by Beehive.
+
     bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
-
-    // Other cookies set by Beehive
-
     bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
-
     bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 }
 

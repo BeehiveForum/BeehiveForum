@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.134 2006-04-14 16:38:51 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.135 2006-04-25 17:00:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1180,7 +1180,7 @@ function pm_export_html($folder, &$zipfile)
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
 
             if ($pm_export_file == PM_EXPORT_MANY) {
-                $pm_display.= pm_export_html_top($mid);
+                $pm_display.= pm_export_html_top($pm_message['MID']);
             }
 
             $pm_display.= pm_display($pm_message, true);
@@ -1192,7 +1192,7 @@ function pm_export_html($folder, &$zipfile)
             if ($pm_export_file == PM_EXPORT_MANY) {
 
                 $pm_display.= pm_export_html_bottom();
-                $filename = "message_$mid.html";
+                $filename = "message_{$pm_message['MID']}.html";
                 $zipfile->addFile($pm_display, $filename);
             }
 
@@ -1246,7 +1246,7 @@ function pm_export_xml($folder, &$zipfile)
                 $pm_display.= "    </messages>\n";
                 $pm_display.= "  </beehiveforum>\n";
 
-                $filename = "message_$mid.xml";
+                $filename = "message_{$pm_message['MID']}.xml";
                 $zipfile->addFile($pm_display, $filename);
 
                 $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
@@ -1293,12 +1293,12 @@ function pm_export_plaintext($folder, &$zipfile)
                 $pm_display.= "$key: $value\r\n";
             }
 
-            $pm_content = pm_get_content($mid);
+            $pm_content = pm_get_content($pm_message['MID']);
             $pm_display.= "content:\r\n\r\n$pm_content\r\n\r\n\r\n\r\n";
 
             if ($pm_export_file == PM_EXPORT_MANY) {
 
-                $filename = "message_$mid.txt";
+                $filename = "message_{$pm_message['MID']}.txt";
                 $zipfile->addFile($pm_display, $filename);
                 $pm_display = "";
             }

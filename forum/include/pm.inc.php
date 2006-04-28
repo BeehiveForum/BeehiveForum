@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.135 2006-04-25 17:00:38 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.136 2006-04-28 15:10:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -191,7 +191,7 @@ function pm_get_inbox($offset = false)
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result)) {
+        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
             $pm_get_inbox_array[] = $result_array;
         }
 
@@ -239,7 +239,7 @@ function pm_get_outbox($offset = false)
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result)) {
+        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
             $pm_get_outbox_array[] = $result_array;
         }
 
@@ -287,7 +287,7 @@ function pm_get_sent($offset = false)
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result)) {
+        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
             $pm_get_outbox_array[] = $result_array;
         }
 
@@ -339,7 +339,7 @@ function pm_get_saveditems($offset = false)
 
     if (db_num_rows($result) > 0) {
 
-        while ($result_array = db_fetch_array($result)) {
+        while ($result_array = db_fetch_array($result, DB_RESULT_ASSOC)) {
             $pm_get_saveditems_array[] = $result_array;
         }
 
@@ -643,7 +643,13 @@ function pm_display($pm_elements_array, $pm_export_html = false)
     $html.= "          <tr>\n";
     $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
     $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">{$pm_elements_array['SUBJECT']}</span></td>\n";
-    $html.= "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED']). "&nbsp;</span></td>\n";
+
+    if ($pm_export_html === true) {
+        $html.= "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED'], true). "&nbsp;</span></td>\n";
+    }else {
+        $html.= "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED']). "&nbsp;</span></td>\n";
+    }
+
     $html.= "          </tr>\n";
     $html.= "        </table>\n";
     $html.= "      </td>\n";
@@ -1168,20 +1174,12 @@ function pm_export_html($folder, &$zipfile)
 
     if ($pm_messages_array = pm_export_get_messages($folder)) {
 
-        $pm_display = "";
-
-        if ($pm_export_file == PM_EXPORT_SINGLE) {
-            $pm_display.= pm_export_html_top(false);
-        }
+        $pm_display = pm_export_html_top(false);
 
         foreach($pm_messages_array['message_array'] as $pm_message) {
 
             $pm_message['FOLDER'] = $folder;
             $pm_message['CONTENT'] = pm_get_content($pm_message['MID']);
-
-            if ($pm_export_file == PM_EXPORT_MANY) {
-                $pm_display.= pm_export_html_top($pm_message['MID']);
-            }
 
             $pm_display.= pm_display($pm_message, true);
 
@@ -1194,6 +1192,7 @@ function pm_export_html($folder, &$zipfile)
                 $pm_display.= pm_export_html_bottom();
                 $filename = "message_{$pm_message['MID']}.html";
                 $zipfile->addFile($pm_display, $filename);
+		$pm_display = pm_export_html_top(false);
             }
 
             if (isset($pm_message['AID'])) {
@@ -1222,7 +1221,7 @@ function pm_export_xml($folder, &$zipfile)
     $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
     $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
 
-    if ($mid_array = pm_export_get_messages($folder)) {
+    if ($pm_messages_array = pm_export_get_messages($folder)) {
 
         $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
         $pm_display.= "  <beehiveforum>\n";
@@ -1230,16 +1229,17 @@ function pm_export_xml($folder, &$zipfile)
 
         foreach($pm_messages_array['message_array'] as $pm_message) {
 
-            $pm_display.= "    <message>\n";
+            $pm_display.= "      <message>\n";
 
             foreach($pm_message as $key => $value) {
 
-                $pm_display.= "      <$key>$value</$key>\n";
+                $key = strtolower($key);                
+                $pm_display.= "        <$key>$value</$key>\n";
             }
 
             $pm_content = pm_get_content($pm_message['MID']);
-            $pm_display.= "      <content>$pm_content</content>\n";
-            $pm_display.= "    </message>\n";
+            $pm_display.= "        <content><![CDATA[{$pm_content}]]></content>\n";
+            $pm_display.= "      </message>\n";
 
             if ($pm_export_file == PM_EXPORT_MANY) {
 

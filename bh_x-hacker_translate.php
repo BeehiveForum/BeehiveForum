@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_x-hacker_translate.php,v 1.11 2005-03-20 22:09:27 decoyduck Exp $ */
+/* $Id: bh_x-hacker_translate.php,v 1.12 2006-04-29 16:10:45 decoyduck Exp $ */
 
 // Creates an X-Hacker (L33t SpEak) language file from the en.inc.php
 // Derived from the L33t-5p34K G3n3r@t0r v3r510N 0.6 found at :
@@ -43,11 +43,13 @@ function rn($r)
     return rand(1, $r);
 }
 
-function translate($string)
+function translate($matches)
 {
+    $string_translate = $matches[1];
+
     $sprintf_chars = array('b', 'c', 'd', 'e', 'u', 'f', 'F', 'o', 's', 'x', 'X');
 
-    $string_parts = preg_split('/([<|>])/', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $string_parts = preg_split('/([<|>])/', $string_translate, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     // Initialize the variables we need.
 
@@ -174,7 +176,8 @@ function translate($string)
         }
     }
 
-    return trim(str_replace(' <', '<', $str_out));
+    $string_result = trim(str_replace(' <', '<', $str_out));
+    return "\"$string_result\";";
 }
 
 // Start here
@@ -185,14 +188,10 @@ if ($langfile = file('./forum/include/languages/en.inc.php')) {
 
         foreach($langfile as $line) {
 
-            if (preg_match('/\$lang\[\'([^\']+)\'\]([^"]+)"([^"]+)";/', $line, $value)) {
-
-                if (substr($value[1], 0, 1) != "_") {
-
-                    $value[3] = translate($value[3]);
-                }
-
-                fwrite($fp, "\$lang['{$value[1]}']{$value[2]}\"{$value[3]}\";\n");
+            if (!preg_match('/^\$lang\[\'_/', $line)) {
+            
+                $translated_line = preg_replace_callback('/"([^"]+)";/', 'translate', $line);
+                fwrite($fp, $translated_line);
 
             }else {
 

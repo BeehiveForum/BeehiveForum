@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.22 2005-11-14 18:54:26 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.23 2006-04-29 16:10:45 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -48,7 +48,7 @@ foreach ($slave_langs as $lang => $strings) {
 
     foreach ($master_lang as $key => $value) {
 
-        if (!isset($strings[$key])) {
+        if (!isset($strings[$key]) || $strings[$key] == $value) {
 
             echo "+\$lang['$key'] = \"$value\";\n";
             $errors = true;

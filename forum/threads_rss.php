@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.21 2006-02-18 18:49:23 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.22 2006-04-30 23:59:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -83,6 +83,11 @@ if (isset($_COOKIE['bh_remember_username'][0]) && isset($_COOKIE['bh_remember_pa
         $user_hash = bh_session_init($uid, false, true);
         $user_sess = bh_session_check(false, $user_hash);
     }
+
+}else {
+
+    $user_hash = bh_session_init(0, false, true);
+    $user_sess = bh_session_check(false, $user_hash);
 }
 
 // Check to see if the user wants a custom number of threads.

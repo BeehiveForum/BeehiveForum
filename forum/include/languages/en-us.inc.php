@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.7 2006-05-01 12:31:46 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.8 2006-05-01 18:30:10 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -1091,6 +1091,7 @@ $lang['dateofbirth'] = "Date of Birth";
 $lang['homepageURL'] = "Homepage URL";
 $lang['pictureURL'] = "Picture URL";
 $lang['forumoptions'] = "Forum Options";
+$lang['pmoptions'] = "PM Options";
 $lang['notifybyemail'] = "Notify by email of posts to me";
 $lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";
 $lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
@@ -1141,6 +1142,7 @@ $lang['postinplaintextbydefault'] = "Post in plain text by default";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Post in HTML with auto-line-breaks by default";
 $lang['postinhtmlbydefault'] = "Post in HTML by default";
 $lang['privatemessageoptions'] = "Private Message Options";
+$lang['privatemessageexportoptions'] = "Private Message Export Options";
 $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items folder";
 $lang['includepminreply'] = "Include message body when replying to PM";
 $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
@@ -1378,6 +1380,7 @@ $lang['startedbyfriend'] = "Started by friend";
 $lang['unreadstartedbyfriend'] = "Unread std by friend";
 $lang['startedbyme'] = "Started by me";
 $lang['unreadtoday'] = "Unread today";
+$lang['deletedthreads'] = "Deleted Threads";
 $lang['goexcmark'] = "Go!";
 $lang['folderinterest'] = "Folder Interest";
 $lang['postnew'] = "Post New";
@@ -1409,6 +1412,8 @@ $lang['onenewoflength'] = "%d new of %d";
 $lang['manynewoflength'] = "%d new of %d";
 $lang['ignorefolderconfirm'] = "Are you sure you want to ignore this folder?";
 $lang['unignorefolderconfirm'] = "Are you sure you want to stop ignoring this folder?";
+$lang['threadviewedonetime'] = "Viewed: 1 time";
+$lang['threadviewedtimes'] = "Viewed: %d times";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Bold";
@@ -1478,6 +1483,8 @@ $lang['closedforposting'] = "Closed for posting";
 $lang['locktitleandfolder'] = "Lock title and folder";
 $lang['deletepostsinthreadbyuser'] = "Delete posts in thread by user";
 $lang['deletethread'] = "Delete Thread";
+$lang['undeletethread'] = "Undelete Thread";
+$lang['threaddeletedpermenantly'] = "Thread deleted permenantly. Cannot undelete.";
 $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
@@ -1540,5 +1547,18 @@ $lang['unknownrssuseraccount'] = "Unknown RSS User Account";
 $lang['rssfeedsupportshttpurlsonly'] = "RSS Feed supports HTTP URLs only. Secure feeds (https://) are not supported.";
 $lang['rssfeedurlformatinvalid'] = "RSS Feed URL format is invalid. URL must include scheme (e.g. http://) and a hostname (e.g. www.hostname.com).";
 $lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authentication";
+
+// PM Export Options
+
+$lang['pmexportastype'] = "Export as type";
+$lang['pmexporthtml'] = "HTML";
+$lang['pmexportxml'] = "XML";
+$lang['pmexportplaintext'] = "Plain Text";
+$lang['pmexportmessagesas'] = "Export messages as";
+$lang['pmexportonefileforallmessages'] = "One file for all messages";
+$lang['pmexportonefilepermessage'] = "One file per message";
+$lang['pmexportattachments'] = "Export attachments";
+$lang['pmexportincludestyle'] = "Include forum stylesheet";
+$lang['pmexportwordfilter'] = "Apply word filter to messages";
 
 ?>

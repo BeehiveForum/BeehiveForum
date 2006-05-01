@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.22 2006-05-01 12:31:46 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.23 2006-05-01 18:30:10 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1113,6 +1113,7 @@ $lang['dateofbirth'] = "Date de naissance";
 $lang['homepageURL'] = "Adresse URL de votre page d'accueil";
 $lang['pictureURL'] = "Adresse URL de l'image";
 $lang['forumoptions'] = "Options de forum";
+$lang['pmoptions'] = "Options MP";
 $lang['notifybyemail'] = "M'aviser par courriel de messages à moi";
 $lang['notifyofnewpm'] = "M'aviser par fenêtre contextuelle de nouveaux messages MP";
 $lang['notifyofnewpmemail'] = "M'aviser par courriel de nouveaux messages MP";
@@ -1163,6 +1164,7 @@ $lang['postinplaintextbydefault'] = "Poster en texte en clair par défaut";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Poster en HTML avec coupures de lignes automatiques par défaut";
 $lang['postinhtmlbydefault'] = "Poster en HTML par défaut";
 $lang['privatemessageoptions'] = "Options de message privé";
+$lang['privatemessageexportoptions'] = "Options d'exportation de message privé";
 $lang['savepminsentitems'] = "Enregistrer une copie de chaque MP que j'envois dans mon dossier d'Items envoyés";
 $lang['includepminreply'] = "Inclure le corps du message en répondant au MP";
 $lang['autoprunemypmfoldersevery'] = "Élaguer automatiquement mes dossiers de MP tous les:";
@@ -1400,6 +1402,7 @@ $lang['startedbyfriend'] = "Commencées par des amis";
 $lang['unreadstartedbyfriend'] = "Non-lues commencées par amis";
 $lang['startedbyme'] = "que j'ai commencées";
 $lang['unreadtoday'] = "Non-lues aujourd'hui";
+$lang['deletedthreads'] = "Fils de discussions supprimés";
 $lang['goexcmark'] = "Allez-y!";
 $lang['folderinterest'] = "Niveau d'intérêt du dossier";
 $lang['postnew'] = "Poster nouveau";
@@ -1431,6 +1434,8 @@ $lang['onenewoflength'] = "%d nouveau de %d";
 $lang['manynewoflength'] = "%d nouveaux de %d";
 $lang['ignorefolderconfirm'] = "Êtes-vous certain de vouloir ignorer ce dossier?";
 $lang['unignorefolderconfirm'] = "Êtes-vous certain de vouloir cesser d'ignorer ce dossier?";
+$lang['threadviewedonetime'] = "Vu: 1 fois";
+$lang['threadviewedtimes'] = "Vu: %d fois";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Caractère gras";
@@ -1500,6 +1505,8 @@ $lang['closedforposting'] = "Fermé au postage";
 $lang['locktitleandfolder'] = "Verrouiller le titre et le dossier";
 $lang['deletepostsinthreadbyuser'] = "Supprimer les messages dans le fil de discussion par l'utilisateur";
 $lang['deletethread'] = "Supprimer le fil de discussion";
+$lang['undeletethread'] = "Annuler suppression du fils de discussion";
+$lang['threaddeletedpermenantly'] = "Fils de discussion supprimer en permanence. Impossible d'annuler la suppression.";
 $lang['markasunread'] = "Marquer comme non-lu";
 $lang['makethreadsticky'] = "Rendre le fil de discussion collant";
 $lang['threareadstatusupdated'] = "Mise à jour du statut de lecture du fil de discussion réussie";
@@ -1562,5 +1569,18 @@ $lang['unknownrssuseraccount'] = "Compte d'utilisateur RSS inconnu";
 $lang['rssfeedsupportshttpurlsonly'] = "L'alimentation RSS supporte uniquement les adresses URL HTTP. Les alimentations protégées (https://) ne sont pas supportées.";
 $lang['rssfeedurlformatinvalid'] = "L'adresse URL doit inclure la spécification du protocole d'application (ex. http://) et une adresse internet (ex. www.adresseinternet.com).";
 $lang['rssfeeduserauthentication'] = "L'alimentation RSS ne supporte pas l'authentication d'utilisateur HTTP";
+
+// PM Export Options
+
+$lang['pmexportastype'] = "Exporter comme type";
+$lang['pmexporthtml'] = "HTML";
+$lang['pmexportxml'] = "XML";
+$lang['pmexportplaintext'] = "Texte en clair";
+$lang['pmexportmessagesas'] = "Exporter messages comme";
+$lang['pmexportonefileforallmessages'] = "Un fichier pour tous les messages";
+$lang['pmexportonefilepermessage'] = "Un fichier pour chaque message";
+$lang['pmexportattachments'] = "Exporter les fichiers joints";
+$lang['pmexportincludestyle'] = "Inclure feuille de style du forum";
+$lang['pmexportwordfilter'] = "Appliquer le filtre des mots aux messages";
 
 ?>

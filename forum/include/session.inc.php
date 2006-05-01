@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.218 2006-04-25 11:27:10 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.219 2006-05-01 12:31:46 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -426,7 +426,7 @@ function bh_remove_stale_sessions()
             $sql = "SELECT UID FROM SESSIONS WHERE TIME < FROM_UNIXTIME($session_stamp)";
             $result = db_query($sql, $db_bh_remove_stale_sessions);
 
-            while ($session_data = db_fetch_array($result_fetch)) {
+            while ($session_data = db_fetch_array($result)) {
                 bh_update_user_time($session_data['UID']);
             }            
             

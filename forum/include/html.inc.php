@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.182 2006-04-18 17:28:21 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.183 2006-05-01 12:31:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -478,21 +478,30 @@ function html_draw_top()
         echo "</script>\n";
     }
 
-    if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php')) {
+    if ($include_body_tag === true) {
+    
+        if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php')) {
 
-        if ((bh_session_get_value('PM_NOTIFY') == 'Y') && ($pm_new_count = pm_new_check())) {
-
-            echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-            echo "<!--\n\n";
-            echo "function pm_notification() {\n";
-            echo "    if (window.confirm('", sprintf($lang['pmnotificationpopup'], $pm_new_count), "')) {\n";
-            echo "        top.frames['main'].location.replace('pm.php?webtag=$webtag');\n";
-            echo "    }\n";
-            echo "    return true;\n";
-            echo "}\n\n";
-            echo "//-->\n";
-            echo "</script>\n";
-            if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
+            if ((bh_session_get_value('PM_NOTIFY') == 'Y') && ($pm_new_count = pm_new_check())) {
+            
+                if ($pm_new_count > 1) {
+                    $pm_notification = sprintf($lang['youhavexnewpm'], $pm_new_count);
+                }else {
+                    $pm_notification = $lang['youhave1newpm'];
+                }
+                
+                echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                echo "<!--\n\n";
+                echo "function pm_notification() {\n";
+                echo "    if (window.confirm('$pm_notification')) {\n";
+                echo "        top.frames['main'].location.replace('pm.php?webtag=$webtag');\n";
+                echo "    }\n";
+                echo "    return true;\n";
+                echo "}\n\n";
+                echo "//-->\n";
+                echo "</script>\n";
+                if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
+            }
         }
     }
 

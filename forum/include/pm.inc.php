@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.136 2006-04-28 15:10:32 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.137 2006-05-01 12:31:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1192,7 +1192,7 @@ function pm_export_html($folder, &$zipfile)
                 $pm_display.= pm_export_html_bottom();
                 $filename = "message_{$pm_message['MID']}.html";
                 $zipfile->addFile($pm_display, $filename);
-		$pm_display = pm_export_html_top(false);
+        $pm_display = pm_export_html_top(false);
             }
 
             if (isset($pm_message['AID'])) {

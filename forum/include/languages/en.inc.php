@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.311 2006-04-22 12:57:02 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.312 2006-05-01 12:31:46 decoyduck Exp $ */
 
 // International English language file
 
@@ -1033,7 +1033,8 @@ $lang['editpm'] = "Edit Message";
 $lang['cannoteditpm'] = "Cannot edit this PM. It has already been viewed by the recipient or the message does not exist or it is inaccessible by you";
 $lang['cannotviewpm'] = "Cannot view PM. Message does not exist or it is inaccessible by you";
 $lang['nouserspecified'] = "No user specified.";
-$lang['pmnotificationpopup'] = "You have %d new PM. Would you like to go to your Inbox now?";
+$lang['youhavexnewpm'] = "You have %d new PMs. Would you like to go to your Inbox now?";
+$lang['youhave1newpm'] = "You have 1 new PM. Would you like to go to your Inbox now?";
 $lang['youdonothaveenoughfreespace'] = "You do not have enough free space to send this message.";
 $lang['notenoughfreespace'] = "does not have enough free space to receive this message";
 $lang['hasoptoutpm'] = "Has opted out of receiving personal messages";

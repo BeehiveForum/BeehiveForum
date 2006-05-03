@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.187 2006-04-22 12:57:02 decoyduck Exp $ */
+/* $Id: messages.php,v 1.188 2006-05-03 16:49:47 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -180,12 +180,6 @@ if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
 
 if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
-
-        header_redirect("./thread_options.php?webtag=$webtag&msg=$tid.$pid");
-        exit;
-    }
-
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
@@ -193,17 +187,11 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     exit;
 }
 
-if (!$threaddata = thread_get($tid)) {
-
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
-
-        header_redirect("./thread_options.php?webtag=$webtag&msg=$tid.$pid");
-        exit;
-    }
+if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}2222</h2>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
     html_draw_bottom();
     exit;
 }
@@ -264,7 +252,7 @@ if (sizeof($highlight_array) > 0) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
+echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK'], ($threaddata['LENGTH'] < 1)), "</td>\n";
 
 if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
@@ -377,7 +365,11 @@ if (($threaddata['CLOSED'] == 0) || bh_session_check_perm(USER_PERM_FOLDER_MODER
 echo "    <td width=\"33%\" align=\"center\"><p>";
 
 if (bh_session_get_value('UID') != 0) {
-    echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
+    if ($threaddata['LENGTH'] > 0) {
+        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
+    }else {
+        echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a>";
+    }
 }else {
     echo "&nbsp;";
 }

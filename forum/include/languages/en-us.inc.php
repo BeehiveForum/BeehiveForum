@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.8 2006-05-01 18:30:10 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.9 2006-05-14 22:14:29 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -1560,5 +1560,25 @@ $lang['pmexportonefilepermessage'] = "One file per message";
 $lang['pmexportattachments'] = "Export attachments";
 $lang['pmexportincludestyle'] = "Include forum stylesheet";
 $lang['pmexportwordfilter'] = "Apply word filter to messages";
+
+// Thread merge / split options
+
+$lang['mergesplitthread'] = "Merge / Split Thread";
+$lang['mergewiththreadid'] = "Merge with thread ID:";
+$lang['postsinthisthreadatstart'] = "Posts in this thread at start";
+$lang['postsinthisthreadatend'] = "Posts in this thread at end";
+$lang['reorderpostsintodateorder'] = "Re-order posts into date order";
+$lang['splitthreadatpost'] = "Split thread at post:";
+$lang['selectedpostsandrepliesonly'] = "Selected post and replies only";
+$lang['selectedandallfollowingposts'] = "Selected and all following posts";
+
+$lang['threadhere'] = "here";
+$lang['thisthreadhasmoved'] = "<b>Threads Merged:</b> This thread has moved <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['thisthreadwasmergedfrom'] = "<b>Threads Merged:</b> This thread was merged from <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Thread Split:</b> Some posts in this thread have been moved <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['somepostsinthisthreadweremovedfrom'] = "<b>Thread Split:</b> Some posts in this thread were moved from <a href=\"%s\" target=\"_self\">%s</a>";
+
+$lang['threadmergefailed'] = "Thread merge failed";
+$lang['threadsplitfailed'] = "Thread split failed";
 
 ?>

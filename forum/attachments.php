@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.115 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.116 2006-05-14 12:12:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,29 +127,33 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-html_draw_top();
+html_draw_top('onload=add_upload_field_link()');
 
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "var upload_field_array = new Array();\n\n";
-echo "var upload_field_html = '<input type=\"file\" name=\"userfile[]\" id=\"userfile[]\" class=\"bhinputtext\" value=\"\" size=\"40\" />';\n\n";
+echo "var upload_field_html = '<input type=\"file\" name=\"userfile[]\" id=\"userfile[]\" class=\"bhinputtext\" value=\"\" size=\"40\" />';\n";
+echo "var upload_field_link_html = '<img src=\"", style_image('attach.png'), "\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /><a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">Upload another file</a>';\n\n";
+echo "function add_upload_field_link()\n";
+echo "{\n";
+echo "    var upload_field_link_obj;\n\n";
+echo "    if (document.getElementById) {\n\n";
+echo "        upload_field_link_obj = eval(\"document.getElementById('upload_fields_link')\");\n";
+echo "        upload_field_link_obj.innerHTML = upload_field_link_html;\n";
+echo "    }\n";
+echo "}\n\n";
 echo "function add_upload_field()\n";
 echo "{\n";
 echo "    var upload_fields_obj;\n\n";
-echo "    if (document.getElementById) {\n";
-echo "        upload_fields_obj = eval(\"document.getElementById('upload_fields')\");\n";
-echo "    }else if (document.all) {\n";
-echo "        upload_fields_obj = eval(\"document.all.upload_fields\");\n";
-echo "    }else if (document.layer) {\n";
-echo "        upload_fields_obj = eval(\"document.upload_fields\");\n";
-echo "    }else {\n";
-echo "        return false;\n";
-echo "    }\n\n";
-echo "    if (upload_field_array.length < 9) {\n\n";
-echo "        upload_field_array.push(upload_field_html);\n";
-echo "        upload_fields_obj.innerHTML = upload_field_array.join(\"<br />\");\n\n";
-echo "    }else {\n\n";
-echo "        alert('{$lang['canonlyuploadmaximum']}');\n";
+echo "    if (document.getElementById) {\n\n";
+echo "        upload_field_obj = eval(\"document.getElementById('upload_fields')\");\n\n";
+echo "        if (upload_field_array.length < 9) {\n\n";
+echo "            new_upload_div = document.createElement('div');\n";
+echo "            upload_field_obj.appendChild(new_upload_div);\n";
+echo "            new_upload_div.innerHTML =  upload_field_html;\n\n";
+echo "        }else {\n\n";
+echo "            alert('{$lang['canonlyuploadmaximum']}');\n";
+echo "        }\n";
 echo "    }\n";
 echo "}\n\n";
 echo "//-->\n";
@@ -284,7 +288,7 @@ echo "                  <td class=\"postbody\" valign=\"top\">", form_submit("up
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td width=\"220\">&nbsp;</td>\n";
-echo "                  <td colspan=\"2\" class=\"smalltext\"><img src=\"", style_image('attach.png'), "\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /><a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">Upload another file</a></td>\n";
+echo "                  <td colspan=\"2\" class=\"smalltext\"><div id=\"upload_fields_link\"></div></td>\n";
 echo "                </tr>\n";
 
 if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {

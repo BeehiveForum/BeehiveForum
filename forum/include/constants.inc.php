@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.76 2006-04-22 12:57:02 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.77 2006-05-14 12:12:12 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -240,5 +240,14 @@ define('PM_EXPORT_XML', 1);
 define('PM_EXPORT_PLAINTEXT', 2);
 define('PM_EXPORT_SINGLE', 0);
 define('PM_EXPORT_MANY', 1);
+
+// Thread Merge and Split constants
+
+define('THREAD_MERGE_START', 0);
+define('THREAD_MERGE_END', 1);
+define('THREAD_MERGE_BY_CREATED', 2);
+
+define('THREAD_SPLIT_REPLIES', 0);
+define('THREAD_SPLIT_FOLLOWING', 1);
 
 ?>

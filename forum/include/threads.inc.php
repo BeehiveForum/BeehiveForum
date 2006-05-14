@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.196 2006-04-22 12:57:02 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.197 2006-05-14 12:12:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -743,7 +743,7 @@ function threads_get_deleted($uid, $start = 0)
 
 }
 
-function threads_get_most_recent($limit = 10)
+function threads_get_most_recent($limit = 10, $titles_only = false)
 {
     $db_threads_get_recent = db_connect();
 
@@ -792,8 +792,15 @@ function threads_get_most_recent($limit = 10)
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            $threads_get_array[$thread['TID']] = $thread;
-            $tid_array[] = $thread['TID'];
+            if ($titles_only === true) {
+
+                $threads_get_array[$thread['TID']] = $thread['TITLE'];
+
+            }else {
+            
+                $threads_get_array[$thread['TID']] = $thread;
+                $tid_array[] = $thread['TID'];
+            }
         }
 
         threads_have_attachments($threads_get_array, $tid_array);
@@ -971,7 +978,7 @@ function threads_mark_all_read()
 
     if (db_fetch_mysql_version() >= 40116) {
 
-        $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
         $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
@@ -1013,7 +1020,7 @@ function threads_mark_50_read()
 
     if (db_fetch_mysql_version() >= 40116) {
 
-        $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
         $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
@@ -1057,7 +1064,7 @@ function threads_mark_folder_read($fid)
 
     if (db_fetch_mysql_version() >= 40116) {
 
-        $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
         $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
@@ -1104,7 +1111,7 @@ function threads_mark_read($tid_array)
 
         $tid_list = implode(",", array_keys($tid_array));
 
-        $sql = "INSERT INTO DEFAULT_USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "SELECT $uid, {$table_data['PREFIX']}THREAD.TID, {$table_data['PREFIX']}THREAD.LENGTH, NOW(), ";
         $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
@@ -1219,6 +1226,7 @@ function thread_list_draw_top($mode)
 function threads_have_attachments(&$threads_array, $tid_array)
 {
     if (!is_array($tid_array)) return false;
+    if (sizeof($tid_array) < 1) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 

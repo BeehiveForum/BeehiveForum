@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.188 2006-05-03 16:49:47 decoyduck Exp $ */
+/* $Id: messages.php,v 1.189 2006-05-14 12:12:12 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -298,6 +298,58 @@ if (isset($_GET['setinterest'])) {
 }
 
 echo "</table>\n";
+
+if ($tracking_data_array = thread_get_tracking_data($tid)) {
+
+    echo "<table class=\"text_captcha_error\" width=\"96%\">\n";
+
+    foreach ($tracking_data_array as $tracking_data) {
+        
+        if ($tracking_data['TRACK_TYPE'] == 0) { // Thread merged
+        
+            if ($tracking_data['TID'] == $tid) {
+
+                $thread_link = "messages.php?webtag=$webtag&amp;msg={$tracking_data['NEW_TID']}.1";
+                
+                echo "  <tr>\n";
+                echo "    <td>", sprintf($lang['thisthreadhasmoved'], $thread_link, $lang['threadhere']), "</td>\n";
+                echo "  </tr>\n";
+            }
+
+            if ($tracking_data['NEW_TID'] == $tid) {
+
+                $thread_link = "messages.php?webtag=$webtag&amp;msg={$tracking_data['TID']}.1";
+
+                echo "  <tr>\n";
+                echo "    <td>", sprintf($lang['thisthreadwasmergedfrom'], $thread_link, $lang['threadhere']), "</td>\n";
+                echo "  </tr>\n";
+            }
+
+        }elseif ($tracking_data['TRACK_TYPE'] == 1) { // Thread Split
+
+            if ($tracking_data['TID'] == $tid) {
+
+                $thread_link = "messages.php?webtag=$webtag&amp;msg={$tracking_data['NEW_TID']}.1";
+
+                echo "  <tr>\n";
+                echo "    <td>", sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link, $lang['threadhere']), "</td>\n";
+                echo "  </tr>\n";
+            }
+
+            if ($tracking_data['NEW_TID'] == $tid) {
+
+                $thread_link = "messages.php?webtag=$webtag&amp;msg={$tracking_data['TID']}.1";
+
+                echo "  <tr>\n";
+                echo "    <td>", sprintf($lang['somepostsinthisthreadwheremovedfrom'], $thread_link, $lang['threadhere']), "</td>\n";
+                echo "  </tr>\n";
+            }
+        }
+    }
+
+    echo "</table>\n";
+}
+
 echo "</div>\n";
 
 if ($msg_count > 0) {

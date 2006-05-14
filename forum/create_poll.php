@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.168 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.169 2006-05-14 12:12:12 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -195,6 +195,7 @@ if (isset($_POST['t_message_html'])) {
 
     $emots_enabled = !($page_prefs & POST_EMOTICONS_DISABLED);
     $links_enabled = ($page_prefs & POST_AUTO_LINKS);
+    $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 
     if (!$high_interest = bh_session_get_value('MARK_AS_OF_INT')) {
         $high_interest = "N";
@@ -440,7 +441,7 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-}else if (isset($_POST['sig_toggle_x'])) {
+}elseif (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x'])) {
 
     if (isset($_POST['t_message_text']) && strlen(trim(_stripslashes($_POST['t_message_text']))) > 0) {
         $t_message_text = trim(_stripslashes($_POST['t_message_text']));
@@ -450,22 +451,27 @@ if (isset($_POST['cancel'])) {
         $t_sig = _htmlentities($t_sig);
     }
 
-    $page_prefs ^= POST_SIGNATURE_DISPLAY;
+    if (isset($_POST['emots_toggle_x'])) {
+
+        $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
+
+    }elseif (isset($_POST['sig_toggle_x'])) {
+
+        $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
+    }
 
     $user_prefs['POST_PAGE'] = $page_prefs;
-    $user_prefs_global['POST_PAGE'] = false;
+    $user_prefs_global['POST_PAGE'] = true;
 
     user_update_prefs($uid, $user_prefs, $user_prefs_global);
 
     $fix_html = false;
-
 }
 
 if (isset($_POST['change_count'])) {
 
     $valid = true;
     unset($error_html);
-
 }
 
 if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
@@ -607,13 +613,32 @@ if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_P
     exit;
 }
 
-html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "openprofile.js", "post.js", "dictionary.js", "htmltools.js");
+html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "create_poll.js", "openprofile.js", "post.js", "dictionary.js", "htmltools.js", "emoticons.js");
 
-echo "<h1>{$lang['createpoll']}</h1>\n";
+echo "<h1>{$lang['postmessage']}</h1>\n";
+echo "<br />\n";
+echo "<form name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+
+if (isset($error_html)) {
+
+    echo "  <table class=\"posthead\" width=\"785\">\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"subhead\">{$lang['error']}</td>\n";
+    echo "    </tr>";
+    echo "    <tr>\n";
+    echo "      <td>$error_html</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+}
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h2>{$lang['preview']}:</h2>";
+    echo "<table class=\"posthead\" width=\"785\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">{$lang['preview']}</td>\n";
+    echo "  </tr>";
+
 
     $polldata['TLOGON'] = $lang['allcaps'];
     $polldata['TNICK'] = $lang['allcaps'];
@@ -709,7 +734,9 @@ if ($valid && isset($_POST['preview'])) {
     $polldata['CONTENT'].= "</div>\n";
     $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
+    echo "<tr><td>\n";
     message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
+    echo "</td></tr>\n";
 
     if (strlen($t_message_text) > 0) {
 
@@ -720,78 +747,116 @@ if ($valid && isset($_POST['preview'])) {
             $polldata['CONTENT'].= "<div class=\"sig\">". $t_sig. "</div>";
         }
 
+        echo "<tr><td>\n";
         message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
+        echo "</td></tr>\n";
     }
+
+    echo "<tr><td>&nbsp;</td></tr>\n";
+    echo "</table>\n";
 }
 
-if (isset($error_html)) echo $error_html. "\n";
-
-echo "<form name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('webtag', $webtag), "\n";
-
-if (isset($_POST['t_dedupe'])) {
-    echo form_input_hidden("t_dedupe", $_POST['t_dedupe']);
-}else{
-    echo form_input_hidden("t_dedupe", mktime());
-}
-
-echo "  <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "  <table class=\"posthead\" width=\"785\">\n";
 echo "    <tr>\n";
-echo "      <td><h2>{$lang['selectfolder']}</h2></td>\n";
+echo "      <td class=\"subhead\" colspan=\"2\">{$lang['createpoll']}</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>", $folder_dropdown, "</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td><h2>{$lang['threadtitle']}</h2></td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 30, 64), "&nbsp;", form_submit('submit', $lang['post']), "&nbsp;", form_submit('preview', $lang['preview']), "</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td><h2>{$lang['pollquestion']}</h2></td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : '', 30, 64), "</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table border=\"0\" class=\"posthead\" width=\"500\">\n";
-echo "          <tr>\n";
-echo "            <td><h2>{$lang['possibleanswers']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['enterpollquestionexp']}</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "          </tr>\n";
+echo "      <td valign=\"top\" width=\"210\">\n";
+echo "        <table class=\"posthead\" width=\"210\">\n";
 echo "          <tr>\n";
 echo "            <td>\n";
-echo "              <table border=\"0\" class=\"posthead\" cellpadding=\"0\" cellspacing=\"5\">\n";
+echo "              <h2>{$lang['folder']}:</h2>\n";
+echo "              ", $folder_dropdown, "\n";
+echo "              <h2>{$lang['threadtitle']}:</h2>\n";
+echo "              ", form_input_text("t_threadtitle", isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 0, 0, false, "thread_title"), "\n";
+echo "              <h2>{$lang['pollquestion']}</h2>\n";
+echo "              ", form_input_text('t_question', isset($t_question) ? _htmlentities($t_question) : '', 0, 0, false, "thread_title"), "\n";
+echo "              <h2>{$lang['messageoptions']}:</h2>\n";
+echo "              ", form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo "              ", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
+echo "              ", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
+echo "              ", form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y")."<br />\n";
+
+if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+    echo "              <br />\n";
+    echo "              <h2>{$lang['admin']}:</h2>\n";
+    echo "              ", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
+    echo "              ", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br />\n";
+    echo "              ", form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N"), "\n";
+    echo "              ", form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N"), "\n";
+}
+
+$emot_user = bh_session_get_value('EMOTICONS');
+$emot_prev = emoticons_preview($emot_user);
+
+if ($emot_prev != "") {
+
+    echo "<br />\n";
+    echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "  <tr>\n";
+    echo "    <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
+
+    if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
+
+        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td colspan=\"2\">{$emot_prev}</td>\n";
+
+    }else {
+
+        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "&nbsp;</td>\n";
+    }
+
+    echo "  </tr>\n";
+    echo "</table>\n";
+}
+
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "      <td valign=\"top\" width=\"530\">\n";
+echo "        <table class=\"posthead\" width=\"530\">\n";
+echo "          <tr>\n";
+echo "            <td>\n";
+echo "              <h2>{$lang['poll']}:</h2>\n";
+echo "              <div class=\"create_poll_display\">\n";
+echo "              <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), $t_answer_count), "&nbsp;", form_submit('change_count', $lang['change']), "</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>{$lang['answertext']}</td>\n";
-echo "                  <td align=\"center\">{$lang['answergroup']}</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                </tr>\n";
+echo "                  <td>\n";
+echo "                    <table border=\"0\" class=\"posthead\" width=\"450\">\n";
+echo "                      <tr>\n";
+echo "                        <td><h2>{$lang['possibleanswers']}</h2></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['enterpollquestionexp']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
+echo "                          <table border=\"0\" class=\"posthead\" cellpadding=\"0\" cellspacing=\"5\">\n";
+echo "                            <tr>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                              <td>{$lang['numberanswers']}: ", form_dropdown_array('answer_count', range(0, 3), array('5', '10', '15', '20'), $t_answer_count), "&nbsp;", form_submit('change_count', $lang['change']), "</td>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                            </tr>\n";
+echo "                            <tr>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                            </tr>\n";
+echo "                            <tr>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                              <td>{$lang['answertext']}</td>\n";
+echo "                              <td align=\"center\">{$lang['answergroup']}</td>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                            </tr>\n";
 
 $available_answers = array(5, 10, 15, 20);
 
@@ -803,144 +868,144 @@ if (isset($t_answer_count)) {
 
 for ($i = 0; $i < $answer_count; $i++) {
 
-    echo "<tr>\n";
-    echo "  <td>", $i + 1, ". </td>\n";
-    echo "  <td>", form_input_text("answers[]", isset($t_answers[$i]) ? _htmlentities($t_answers[$i]) : '', 40, 255), "</td>\n";
-    echo "  <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), (isset($t_answer_groups[$i])) ? $t_answer_groups[$i] : 1), "</td>\n";
-    echo "  <td>&nbsp;</td>\n";
-    echo "</tr>\n";
+    echo "            <tr>\n";
+    echo "              <td>", $i + 1, ". </td>\n";
+    echo "              <td>", form_input_text("answers[]", isset($t_answers[$i]) ? _htmlentities($t_answers[$i]) : '', 40, 255), "</td>\n";
+    echo "              <td align=\"center\">", form_dropdown_array("answer_groups[]", range(1, $answer_count), range(1, $answer_count), (isset($t_answer_groups[$i])) ? $t_answer_groups[$i] : 1), "</td>\n";
+    echo "              <td>&nbsp;</td>\n";
+    echo "            </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                            <tr>\n";
+echo "                              <td>&nbsp;</td>\n";
 
 if ($allow_html == true) {
-        echo "                  <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], (isset($t_post_html) && $t_post_html == 'Y')), "</td>\n";
+        echo "                              <td>", form_checkbox('t_post_html', 'Y', $lang['answerscontainHTML'], (isset($t_post_html) && $t_post_html == 'Y')), "</td>\n";
 } else {
-        echo "                  <td>", form_input_hidden('t_post_html', 'N'), "</td>\n";
+        echo "                              <td>", form_input_hidden('t_post_html', 'N'), "</td>\n";
 }
 
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td><h2>{$lang['optionsdisplay']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['optionsdisplayexp']}</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>\n";
-echo "              <table border=\"0\" width=\"400\">\n";
-echo "                <tr>\n";
-echo "                  <td width=\"30%\">", form_radio('option_type', '0', $lang['radios'], isset($t_option_type) ? $t_option_type == 0 : true), "</td>\n";
-echo "                  <td width=\"30%\">", form_radio('option_type', '1', $lang['dropdown'], isset($t_option_type) ? $t_option_type == 1 : false), "</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td><h2>{$lang['votechanging']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['votechangingexp']}</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>\n";
-echo "              <table border=\"0\" width=\"500\">\n";
-echo "                <tr>\n";
-echo "                  <td width=\"25%\">", form_radio('change_vote', '1', $lang['yes'], isset($t_change_vote) ? $t_change_vote == 1 : true), "</td>\n";
-echo "                  <td width=\"25%\">", form_radio('change_vote', '0', $lang['no'], isset($t_change_vote) ? $t_change_vote == 0 : false), "</td>\n";
-echo "                  <td>", form_radio('change_vote', '2', $lang['allowmultiplevotes'], isset($t_change_vote) ? $t_change_vote == 2 : false), "</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td><h2>{$lang['pollresults']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['pollresultsexp']}</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>\n";
-echo "              <table border=\"0\" width=\"500\">\n";
-echo "                <tr>\n";
-echo "                  <td width=\"25%\">", form_radio('poll_type', '0', $lang['horizgraph'], isset($t_poll_type) ? $t_poll_type == 0 : true), "</td>\n";
-echo "                  <td width=\"25%\">", form_radio('poll_type', '1', $lang['vertgraph'], isset($t_poll_type) ? $t_poll_type == 1 : false), "</td>\n";
-echo "                  <td>", form_radio('poll_type', '2', $lang['tablegraph'], isset($t_poll_type) ? $t_poll_type == 2 : false), "</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td><h2>{$lang['pollvotetype']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['pollvotesexp']}</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>\n";
-echo "              <table border=\"0\" width=\"400\">\n";
-echo "                <tr>\n";
-echo "                  <td width=\"50%\">", form_radio('poll_vote_type', '0', $lang['pollvoteanon'], isset($t_poll_vote_type) ? $t_poll_vote_type == 0 : true), "</td>\n";
-echo "                  <td width=\"50%\">", form_radio('poll_vote_type', '1', $lang['pollvotepub'], isset($t_poll_vote_type) ? $t_poll_vote_type == 1 : false), "</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td><h2>{$lang['expiration']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['showresultswhileopen']}</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>\n";
-echo "              <table border=\"0\" width=\"400\">\n";
-echo "                <tr>\n";
-echo "                  <td width=\"50%\">", form_radio('show_results', '1', $lang['yes'], isset($t_show_results) ? $t_show_results == 1 : true), "</td>\n";
-echo "                  <td width=\"50%\">", form_radio('show_results', '0', $lang['no'], isset($t_show_results) ? $t_show_results == 0 : false), "</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['whenlikepollclose']}</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>", form_dropdown_array('close_poll', range(0, 4), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never']), isset($t_close_poll) ? $t_close_poll : 4), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td><hr /></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td><h2>{$lang['polladditionalmessage']}</h2></td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>{$lang['polladditionalmessageexp']}</td>\n";
-echo "          </tr>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td><h2>{$lang['optionsdisplay']}</h2></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['optionsdisplayexp']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
+echo "                          <table border=\"0\" width=\"400\">\n";
+echo "                            <tr>\n";
+echo "                              <td width=\"30%\">", form_radio('option_type', '0', $lang['radios'], isset($t_option_type) ? $t_option_type == 0 : true), "</td>\n";
+echo "                              <td width=\"30%\">", form_radio('option_type', '1', $lang['dropdown'], isset($t_option_type) ? $t_option_type == 1 : false), "</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td><h2>{$lang['votechanging']}</h2></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['votechangingexp']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
+echo "                          <table border=\"0\" width=\"400\">\n";
+echo "                            <tr>\n";
+echo "                              <td width=\"25%\">", form_radio('change_vote', '1', $lang['yes'], isset($t_change_vote) ? $t_change_vote == 1 : true), "</td>\n";
+echo "                              <td width=\"25%\">", form_radio('change_vote', '0', $lang['no'], isset($t_change_vote) ? $t_change_vote == 0 : false), "</td>\n";
+echo "                              <td>", form_radio('change_vote', '2', $lang['allowmultiplevotes'], isset($t_change_vote) ? $t_change_vote == 2 : false), "</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td><h2>{$lang['pollresults']}</h2></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['pollresultsexp']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
+echo "                          <table border=\"0\" width=\"400\">\n";
+echo "                            <tr>\n";
+echo "                              <td width=\"25%\">", form_radio('poll_type', '0', $lang['horizgraph'], isset($t_poll_type) ? $t_poll_type == 0 : true), "</td>\n";
+echo "                              <td width=\"25%\">", form_radio('poll_type', '1', $lang['vertgraph'], isset($t_poll_type) ? $t_poll_type == 1 : false), "</td>\n";
+echo "                              <td>", form_radio('poll_type', '2', $lang['tablegraph'], isset($t_poll_type) ? $t_poll_type == 2 : false), "</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td><h2>{$lang['pollvotetype']}</h2></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['pollvotesexp']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
+echo "                          <table border=\"0\" width=\"400\">\n";
+echo "                            <tr>\n";
+echo "                              <td width=\"50%\">", form_radio('poll_vote_type', '0', $lang['pollvoteanon'], isset($t_poll_vote_type) ? $t_poll_vote_type == 0 : true), "</td>\n";
+echo "                              <td width=\"50%\">", form_radio('poll_vote_type', '1', $lang['pollvotepub'], isset($t_poll_vote_type) ? $t_poll_vote_type == 1 : false), "</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td><h2>{$lang['expiration']}</h2></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['showresultswhileopen']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
+echo "                          <table border=\"0\" width=\"400\">\n";
+echo "                            <tr>\n";
+echo "                              <td width=\"50%\">", form_radio('show_results', '1', $lang['yes'], isset($t_show_results) ? $t_show_results == 1 : true), "</td>\n";
+echo "                              <td width=\"50%\">", form_radio('show_results', '0', $lang['no'], isset($t_show_results) ? $t_show_results == 0 : false), "</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['whenlikepollclose']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_dropdown_array('close_poll', range(0, 4), array($lang['oneday'], $lang['threedays'], $lang['sevendays'], $lang['thirtydays'], $lang['never']), isset($t_close_poll) ? $t_close_poll : 4), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td><h2>{$lang['polladditionalmessage']}</h2></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>{$lang['polladditionalmessageexp']}</td>\n";
+echo "                      </tr>\n";
 
 $tools = new TextAreaHTML("f_poll");
 
@@ -954,18 +1019,18 @@ if ($page_prefs & POST_TOOLBAR_DISPLAY) {
 }
 
 if ($allow_html == true && $tool_type != 0) {
-        echo "          <tr>\n";
-        echo "            <td>", $tools->toolbar(), "</td>\n";
-        echo "          </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>", $tools->toolbar(), "</td>\n";
+        echo "                      </tr>\n";
 } else {
     $tools->setTinyMCE(false);
 }
 
-echo "          <tr>\n";
-echo "            <td>", $tools->textarea('t_message_text', $t_message_text, 20, 75), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td>\n";
+echo "                      <tr>\n";
+echo "                        <td>", $tools->textarea('t_message_text', $t_message_text, 20, 75), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
 
 if ($post->isDiff() && $fix_html) {
     echo $tools->compare_original("t_message_text", $post->getOriginalContent());
@@ -979,7 +1044,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
+        echo "            <h2>{$lang['htmlinmessage']}:</h2>\n";
 
         $tph_radio = $post->getHTML();
 
@@ -990,45 +1055,27 @@ if ($allow_html == true) {
         if (($page_prefs & POST_TOOLBAR_DISPLAY) > 0) {
                 echo $tools->assign_checkbox("t_message_html[1]", "t_message_html[0]");
         }
-        echo "<br />";
+        echo "            <br />";
     }
 } else {
         echo form_input_hidden("t_message_html", "disabled");
 }
 
-echo "<br />\n";
-
-echo "<h2>{$lang['messageoptions']}:</h2>\n";
-
-echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
-echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
-echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
-echo form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y")."[$high_interest]<br />\n";
-
-echo "<br />\n";
-echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']);
-
-if (forum_get_setting('attachments_enabled', 'Y')) {
-
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
-    echo form_input_hidden("aid", $aid);
-}
-
 if ($allow_sig == true) {
 
-        echo "<br /><br />\n";
-        echo "<table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-        echo "  <tr>\n";
-        echo "    <td class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
+        echo "            <br />\n";
+        echo "            <table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+        echo "              <tr>\n";
+        echo "                <td class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
 
         $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
         if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
 
-            echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td colspan=\"2\">\n";
+            echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "&nbsp;</td>\n";
+            echo "              </tr>\n";
+            echo "              <tr>\n";
+            echo "                <td colspan=\"2\">\n";
 
             echo $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content")."\n";
 
@@ -1039,30 +1086,56 @@ if ($allow_sig == true) {
 
         }else {
 
-            echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
-            echo "    ", form_input_hidden("t_sig", $t_sig), "\n";
+            echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('sig_show.png', 'sig_toggle', 'show'), "&nbsp;</td>\n";
+            echo "                ", form_input_hidden("t_sig", $t_sig), "\n";
 
         }
 
-        echo "  </tr>\n";
-        echo "</table>\n";
+        echo "              </tr>\n";
+        echo "            </table>\n";
         echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 
 }
 
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
+echo "            <td>";
+
+echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']);
+
+if (forum_get_setting('attachments_enabled', 'Y')) {
+
+    echo "            &nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
+    echo form_input_hidden("aid", $aid);
+}
+
+
+echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
+echo "  ", $tools->js(false);
 
-
-echo $tools->js(false);
-
+if (isset($_POST['t_dedupe'])) {
+    echo "  ", form_input_hidden("t_dedupe", $_POST['t_dedupe']), "\n";
+}else{
+    echo "  ", form_input_hidden("t_dedupe", mktime()), "\n";
+}
 
 echo "</form>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.91 2006-04-15 16:23:31 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.92 2006-05-14 12:12:15 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -189,15 +189,16 @@ if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
-    $forum_tables = array('ADMIN_LOG',       'BANNED',        'FILTER_LIST',
-                          'FOLDER',          'FORUM_LINKS',   'LINKS',
-                          'LINKS_COMMENT',   'LINKS_FOLDERS', 'LINKS_VOTE',
-                          'POLL',            'POLL_VOTES',    'POST',
-                          'POST_CONTENT',    'PROFILE_ITEM',  'PROFILE_SECTION',
-                          'RSS_FEEDS',       'RSS_HISTORY',   'STATS',
-                          'THREAD',          'USER_FOLDER',   'USER_PEER',
-                          'USER_POLL_VOTES', 'USER_PREFS',    'USER_PROFILE',
-                          'USER_SIG',        'USER_THREAD',   'USER_TRACK');
+    $forum_tables = array('ADMIN_LOG',     'BANNED',          'FILTER_LIST',
+                          'FOLDER',        'FORUM_LINKS',     'LINKS',
+                          'LINKS_COMMENT', 'LINKS_FOLDERS',   'LINKS_VOTE',
+                          'POLL',          'POLL_VOTES',      'POST',
+                          'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
+                          'RSS_FEEDS',     'RSS_HISTORY',     'STATS',
+                          'THREAD',        'THREAD_TRACK',    'USER_FOLDER',
+                          'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
+                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
+                          'USER_TRACK');
 
     $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
                            'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
@@ -620,7 +621,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "CREATE TABLE {$forum_webtag}_POST (";
+$sql = "CREATE TABLE DEFAULT_POST ( ";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 $sql.= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
@@ -634,11 +635,14 @@ $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  EDITED DATETIME DEFAULT NULL, ";
 $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '', ";
-$sql.= "  PRIMARY KEY (TID, PID), ";
+$sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+$sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+$sql.= "  PRIMARY KEY (TID,PID), ";
 $sql.= "  KEY TO_UID (TO_UID), ";
 $sql.= "  KEY FROM_UID (FROM_UID), ";
 $sql.= "  KEY IPADDRESS (IPADDRESS), ";
-$sql.= "  KEY CREATED (CREATED)";
+$sql.= "  KEY CREATED (CREATED), ";
+$sql.= "  KEY MOVED_TID (MOVED_TID, MOVED_PID) ";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -861,6 +865,20 @@ $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (TID), ";
 $sql.= "  KEY FID (FID), ";
 $sql.= "  KEY BY_UID (BY_UID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE {$forum_webtag}_THREAD_TRACK (";
+$sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+$sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+$sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+$sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (TID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

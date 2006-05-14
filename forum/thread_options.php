@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.47 2006-04-22 12:57:02 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.48 2006-05-14 12:12:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -62,6 +62,7 @@ include_once(BH_INCLUDE_PATH. "poll.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
+include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Check we're logged in correctly
@@ -295,6 +296,49 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
         }
     }
 
+    if (isset($_POST['thread_merge_split']) && is_numeric($_POST['thread_merge_split'])) {
+
+        if ($_POST['thread_merge_split'] == 0) {
+
+            if (isset($_POST['merge_thread']) && is_numeric($_POST['merge_thread'])
+                && isset($_POST['merge_type']) && is_numeric($_POST['merge_type'])
+                && isset($_POST['merge_thread_con']) && $_POST['merge_thread_con'] == "Y") {
+
+                $dest_tid = $_POST['merge_thread'];
+                $merge_type = $_POST['merge_type'];
+
+                if (!thread_merge($dest_tid, $tid, $merge_type)) {
+
+                    html_draw_top();
+                    echo "<h1>{$lang['error']}</h1>\n";
+                    echo "<h2>{$lang['threadmergefailed']}</h2>\n";
+                    html_draw_bottom();
+                    exit;
+                }
+            }
+
+        }elseif ($_POST['thread_merge_split'] == 1) {
+            
+            if (isset($_POST['split_thread']) && is_numeric($_POST['split_thread'])
+                && $_POST['split_thread'] > 1 && isset($_POST['split_type']) 
+                && is_numeric($_POST['split_type']) && isset($_POST['split_thread_con']) 
+                && $_POST['split_thread_con'] == "Y") {
+
+                $split_start = $_POST['split_thread'];
+                $split_type = $_POST['split_type'];
+
+                if (!thread_split($tid, $split_start, $split_type)) {
+
+                    html_draw_top();
+                    echo "<h1>{$lang['error']}</h1>\n";
+                    echo "<h2>{$lang['threadsplitfailed']}</h2>\n";
+                    html_draw_bottom();
+                    exit;
+                }
+            }
+        }
+    }
+
     if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread']) && isset($_POST['deluser_con']) && $_POST['deluser_con'] == "Y") {
 
         if ($del_uid = $_POST['t_to_uid_in_thread']) {
@@ -433,8 +477,76 @@ if ($threaddata['LENGTH'] > 0) {
         echo "          </tr>\n";
         echo "        </table>\n";
 
+
         if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
+            echo "        <br />\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+
+            if (!thread_is_poll($tid)) {
+            
+                echo "                <tr>\n";
+                echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['mergesplitthread']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td width=\"250\">", form_radio("thread_merge_split", 0, $lang['mergewiththreadid'], false, false, 'posthead'), "</td>\n";
+                echo "                  <td>", form_input_text('merge_thread', '', 30), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                  <td class=\"posthead\">", form_radio("merge_type", 0, $lang['postsinthisthreadatstart'], false), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                  <td class=\"posthead\">", form_radio("merge_type", 1, $lang['postsinthisthreadatend'], false), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                  <td class=\"posthead\">", form_radio("merge_type", 2, $lang['reorderpostsintodateorder'], false), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                  <td>", form_checkbox("merge_thread_con", "Y", $lang['confirm']), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td colspan=\"2\"><hr /></td>\n";
+                echo "                </tr>\n";
+            }
+
+            $thread_length_array = range(2, $threaddata['LENGTH']);
+            array_unshift($thread_length_array, '');
+
+            echo "                <tr>\n";
+            echo "                  <td width=\"250\">", form_radio("thread_merge_split", 1, $lang['splitthreadatpost'], false, false, 'posthead'), "</td>\n";
+            echo "                  <td>", form_dropdown_array('split_thread', $thread_length_array, $thread_length_array), "</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td class=\"posthead\">", form_radio("split_type", 0, $lang['selectedpostsandrepliesonly'], false), "</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td class=\"posthead\">", form_radio("split_type", 1, $lang['selectedandallfollowingposts'], true), "</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td>", form_checkbox("split_thread_con", "Y", $lang['confirm']), "</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
             echo "        <br />\n";
             echo "        <table class=\"box\" width=\"100%\">\n";
             echo "          <tr>\n";
@@ -447,10 +559,13 @@ if ($threaddata['LENGTH'] > 0) {
             echo "                  <td width=\"50%\" class=\"posthead\">{$lang['sticky']}:</td>\n";
 
             if ($threaddata['STICKY_UNTIL'] && $threaddata['STICKY'] == "Y") {
+
                 $year = date("Y", $threaddata['STICKY_UNTIL']);
                 $month = date("n", $threaddata['STICKY_UNTIL']);
                 $day = date("j", $threaddata['STICKY_UNTIL']);
-            } else {
+
+            }else {
+
                 $year = 0;
                 $month = 0;
                 $day = 0;

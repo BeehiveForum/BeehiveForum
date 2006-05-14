@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.4 2006-04-18 17:28:21 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.5 2006-05-14 12:12:15 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -281,6 +281,44 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD_NEW RENAME {$forum_webtag}_THREAD";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_TRACK (";
+    $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+    $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+    $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+    $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY  (TID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD MOVED_TID MEDIUMINT(8) UNSIGNED";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD MOVED_PID MEDIUMINT(8) UNSIGNED";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (MOVED_TID, MOVED_PID)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.390 2006-05-03 16:49:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.391 2006-05-14 12:12:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,9 +54,10 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
-    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
-    $sql .= "UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, POST.APPROVED_BY, APPROVED_USER.LOGON AS APPROVED_LOGON, ";
-    $sql .= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
+    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, EDIT_USER.LOGON AS EDIT_LOGON, ";
+    $sql .= "POST.IPADDRESS, POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
+    $sql .= "POST.APPROVED_BY, APPROVED_USER.LOGON AS APPROVED_LOGON, FUSER.LOGON AS FLOGON, ";
+    $sql .= "FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql .= "THREAD.FID, THREAD.LENGTH FROM {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
@@ -106,6 +107,9 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($message['TNICK'])) $message['TNICK'] = $lang['allcaps'];
             if (!isset($message['TLOGON'])) $message['TLOGON'] = $lang['allcaps'];
 
+            if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
+            if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
+
             $messages[] = $message;
         }
 
@@ -135,6 +139,9 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         if (!isset($message['TNICK'])) $message['TNICK'] = $lang['allcaps'];
         if (!isset($message['TLOGON'])) $message['TLOGON'] = $lang['allcaps'];
+
+        if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
+        if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
 
         return $messages;
     }
@@ -650,6 +657,21 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
+
+    if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
+
+        $moved_msg = "{$message['MOVED_TID']}.{$message['MOVED_PID']}";
+        
+        echo "<br />\n";
+        echo "<div align=\"center\">\n";
+        echo "<table class=\"text_captcha_error\" width=\"96%\">\n";
+        echo "  <tr>\n";
+        echo "    <td><b>Thread Split:</b> This post has been moved <a href=\"messages.php?webtag=$webtag&amp;msg=$moved_msg\" target=\"_self\">here</a>.</td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+        echo "</div>\n";
+        return;
+    }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";

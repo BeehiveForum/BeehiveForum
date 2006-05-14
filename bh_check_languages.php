@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_languages.php,v 1.25 2006-05-14 12:12:12 decoyduck Exp $ */
+/* $Id: bh_check_languages.php,v 1.26 2006-05-14 22:14:29 decoyduck Exp $ */
 
 // Compare two language files.
 
@@ -51,12 +51,14 @@ function parse_lang_data($key, $data, $prefix)
         if (!preg_match("/^_/", $key)) {
        
             if (is_string($key)) {
-                echo "{$prefix}['$key'] = \"$data\";\n";
+                return "{$prefix}['$key'] = \"$data\";";
             }else {
-                echo "{$prefix}[$key] = \"$data\";\n";
+                return "{$prefix}[$key] = \"$data\";";
             }
         }
     }
+
+    return false;
 }
 
 // Master Language File.
@@ -77,19 +79,24 @@ foreach ($slave_langs as $lang_name => $slave_lang) {
         echo $lang_name, "\n", str_repeat("=", strlen($lang_name)), "\n\n";
 
         $strings = $slave_lang['lang'];
-        $errors = false;
+
+        $error_array = array();
 
         foreach ($master_lang as $key => $value) {
 
             if (!isset($strings[$key])) {
 
-                parse_lang_data($key, $value, '+$lang');
-                $errors = true;
+                if ($error = parse_lang_data($key, $value, '+$lang')) {
+
+                    $error_array['slave_unset'][] = $error;
+                }
 
             }elseif (($strings[$key] == $value) && ($slave_lang['showut'] === true)) {
 
-                parse_lang_data($key, $value, '=$lang');
-                $errors = true;
+                if ($error = parse_lang_data($key, $value, '=$lang')) {
+
+                    $error_array['untranslated'][] = $error;
+                }
             }
         }
 
@@ -97,13 +104,42 @@ foreach ($slave_langs as $lang_name => $slave_lang) {
 
             if (!isset($master_lang[$key])) {
 
-                parse_lang_data($key, $value, '-$lang');
-                $errors = true;
+                if ($error = parse_lang_data($key, $value, '-$lang')) {
+
+                    $error_array['master_unset'][] = $error;
+                }
             }
         }
 
-        if (!$errors) echo "No errors found.\n";
-        echo "\n\n";
+        if (sizeof($error_array) > 0) {
+
+            if (isset($error_array['slave_unset']) && sizeof($error_array['slave_unset']) > 0) {
+
+                foreach($error_array['slave_unset'] as $slave_unset) {
+                    echo $slave_unset, "\n";
+                }
+            }
+
+            if (isset($error_array['untranslated']) && sizeof($error_array['untranslated']) > 0) {
+
+                foreach($error_array['untranslated'] as $untranslated) {
+                    echo $untranslated, "\n";
+                }
+            }
+
+            if (isset($error_array['master_unset']) && sizeof($error_array['master_unset']) > 0) {
+
+                foreach($error_array['master_unset'] as $master_unset) {
+                    echo $master_unset, "\n";
+                }
+            }
+
+            echo "\n\n";
+
+        }else {
+
+            echo "No Errors Found!\n\n";
+        }
     }
 }
 

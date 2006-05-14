@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.23 2006-05-01 18:30:10 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.24 2006-05-14 23:36:14 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1582,5 +1582,25 @@ $lang['pmexportonefilepermessage'] = "Un fichier pour chaque message";
 $lang['pmexportattachments'] = "Exporter les fichiers joints";
 $lang['pmexportincludestyle'] = "Inclure feuille de style du forum";
 $lang['pmexportwordfilter'] = "Appliquer le filtre des mots aux messages";
+
+// Thread merge / split options
+
+$lang['mergesplitthread'] = "Fusionner / Diviser fils de discussion";
+$lang['mergewiththreadid'] = "Fusionner avec identification de fils de discussion:";
+$lang['postsinthisthreadatstart'] = "Messages dans ce fils de discussion au début";
+$lang['postsinthisthreadatend'] = "Messages dans ce fils de discussion à la fin";
+$lang['reorderpostsintodateorder'] = "Trier par ordre de date";
+$lang['splitthreadatpost'] = "Diviser fils de discussion à message:";
+$lang['selectedpostsandrepliesonly'] = "Message sélectionné et réponses seulement";
+$lang['selectedandallfollowingposts'] = "Message sélectionné et tous les suivants";
+
+$lang['threadhere'] = "ici";
+$lang['thisthreadhasmoved'] = "<b>Fils de discussion fusionnés:</b> Ce fils de discussion a déménagé <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['thisthreadwasmergedfrom'] = "<b>Fils de discussion fusionnés:</b> Ce fils de discussion a été fusionné de <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Division de fils de discussion:</b> Certains messages dans ce fils de discussion ont été déplacé <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['somepostsinthisthreadweremovedfrom'] = "<b>Division de fils de discussion:</b> Certains messages de ce fils de discussion ont été déplacé de <a href=\"%s\" target=\"_self\">%s</a>";
+
+$lang['threadmergefailed'] = "Fusion de fils de discussion échouée";
+$lang['threadsplitfailed'] = "Division de fils de discussion échouée"
 
 ?>

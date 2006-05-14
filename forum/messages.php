@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.189 2006-05-14 12:12:12 decoyduck Exp $ */
+/* $Id: messages.php,v 1.190 2006-05-14 12:18:26 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -301,7 +301,7 @@ echo "</table>\n";
 
 if ($tracking_data_array = thread_get_tracking_data($tid)) {
 
-    echo "<table class=\"text_captcha_error\" width=\"96%\">\n";
+    echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
 
     foreach ($tracking_data_array as $tracking_data) {
         
@@ -341,7 +341,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
                 $thread_link = "messages.php?webtag=$webtag&amp;msg={$tracking_data['TID']}.1";
 
                 echo "  <tr>\n";
-                echo "    <td>", sprintf($lang['somepostsinthisthreadwheremovedfrom'], $thread_link, $lang['threadhere']), "</td>\n";
+                echo "    <td>", sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link, $lang['threadhere']), "</td>\n";
                 echo "  </tr>\n";
             }
         }

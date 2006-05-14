@@ -980,3 +980,20 @@ a {
 .user_stats_friend {
     font-style: italic;
 }
+
+.create_poll_display {
+    border: 1px solid #808080;
+    margin-right: 10px;
+    width:  540px;
+    height: 450px;
+    overflow: auto;
+    padding: 2px;
+}
+
+.thread_track_notice {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-style: dashed;
+}

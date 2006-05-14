@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.313 2006-05-14 12:12:15 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.314 2006-05-14 12:18:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -1577,7 +1577,7 @@ $lang['threadhere'] = "here";
 $lang['thisthreadhasmoved'] = "<b>Threads Merged:</b> This thread has moved <a href=\"%s\" target=\"_self\">%s</a>";
 $lang['thisthreadwasmergedfrom'] = "<b>Threads Merged:</b> This thread was merged from <a href=\"%s\" target=\"_self\">%s</a>";
 $lang['somepostsinthisthreadhavebeenmoved'] = "<b>Thread Split:</b> Some posts in this thread have been moved <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['somepostsinthisthreadwheremovedfrom'] = "<b>Thread Split:</b> Some posts in this thread were moved from <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['somepostsinthisthreadweremovedfrom'] = "<b>Thread Split:</b> Some posts in this thread were moved from <a href=\"%s\" target=\"_self\">%s</a>";
 
 $lang['threadmergefailed'] = "Thread merge failed";
 $lang['threadsplitfailed'] = "Thread split failed";

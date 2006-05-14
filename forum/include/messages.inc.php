@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.391 2006-05-14 12:12:13 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.392 2006-05-14 12:18:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -664,7 +664,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
         
         echo "<br />\n";
         echo "<div align=\"center\">\n";
-        echo "<table class=\"text_captcha_error\" width=\"96%\">\n";
+        echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
         echo "  <tr>\n";
         echo "    <td><b>Thread Split:</b> This post has been moved <a href=\"messages.php?webtag=$webtag&amp;msg=$moved_msg\" target=\"_self\">here</a>.</td>\n";
         echo "  </tr>\n";

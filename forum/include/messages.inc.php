@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.392 2006-05-14 12:18:26 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.393 2006-05-15 09:12:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -122,7 +122,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
         if (!isset($messages['VIEWED'])) $messages['VIEWED'] = 0;
 
         if (!isset($messages['APPROVED'])) $messages['APPROVED'] = 0;
-        if (!isset($messages['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
+        if (!isset($messages['APPROVED_BY'])) $messages['APPROVED_BY'] = 0;
         if (!isset($messages['APPROVED_LOGON'])) $messages['APPROVED_LOGON'] = 0;
 
         if (!isset($messages['EDITED'])) $messages['EDITED'] = 0;
@@ -133,15 +133,15 @@ function messages_get($tid, $pid = 1, $limit = 1)
         if (!isset($messages['FROM_RELATIONSHIP'])) $messages['FROM_RELATIONSHIP'] = 0;
         if (!isset($messages['TO_RELATIONSHIP'])) $messages['TO_RELATIONSHIP'] = 0;
 
-        if (!isset($message['FNICK'])) $message['FNICK'] = "Unknown User";
-        if (!isset($message['FLOGON'])) $message['FLOGON'] = "Unknown User";
-        if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
+        if (!isset($messages['FNICK'])) $messages['FNICK'] = "Unknown User";
+        if (!isset($messages['FLOGON'])) $messages['FLOGON'] = "Unknown User";
+        if (!isset($messages['FROM_UID'])) $messages['FROM_UID'] = -1;
 
-        if (!isset($message['TNICK'])) $message['TNICK'] = $lang['allcaps'];
-        if (!isset($message['TLOGON'])) $message['TLOGON'] = $lang['allcaps'];
+        if (!isset($messages['TNICK'])) $messages['TNICK'] = $lang['allcaps'];
+        if (!isset($messages['TLOGON'])) $messages['TLOGON'] = $lang['allcaps'];
 
-        if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
-        if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
+        if (!isset($messages['MOVED_TID'])) $messages['MOVED_TID'] = 0;
+        if (!isset($messages['MOVED_PID'])) $messages['MOVED_PID'] = 0;
 
         return $messages;
     }

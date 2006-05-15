@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.158 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.159 2006-05-15 09:12:22 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -170,12 +170,12 @@ function poll_get($tid)
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.VIEWED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql.= "POST.MOVED_TID, POST.MOVED_PID, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER.RELATIONSHIP, ";
     $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, POLL.OPTIONTYPE,";
     $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.QUESTION, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
-    $sql.= "THREAD.FID FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "THREAD.FID, THREAD.LENGTH FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (POST.TID = POLL.TID) ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.393 2006-05-15 09:12:22 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.394 2006-05-15 11:19:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1263,27 +1263,25 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     if ($uid > 0) {
 
-        // mysql_affected_rows() doesn't appear to be reliable and
-        // can sometimes return 0 (possible bug in some MySQL versions??)
-        // so we're a bit dirty here and simply do a INSERT IGNORE
-        // followed by an UPDATE.
-
         // Try inserting new rows first with an IGNORE.
+
         $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
         $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
 
-        if (!$result = db_query($sql, $db_message_update_read)) return false;
+        $result = db_query($sql, $db_message_update_read);
 
         // Try an update also just incase a row already exists.
+
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
         $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
         $sql.= "AND LAST_READ < '$pid'";
 
-        if (!$result = db_query($sql, $db_message_update_read)) return false;
+        $result = db_query($sql, $db_message_update_read);
 
         // Mark posts as Viewed...
+
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() ";
         $sql.= "WHERE TID = '$tid' AND PID BETWEEN '$spid' AND '$pid' ";
         $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";

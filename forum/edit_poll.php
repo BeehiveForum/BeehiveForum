@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.106 2006-05-15 21:06:57 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.107 2006-05-15 21:13:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -138,12 +138,6 @@ $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 
 $valid = true;
 
-if (isset($_POST['cancel'])) {
-
-    $uri = "./discussion.php?webtag=$webtag&msg=$edit_msg";
-    header_redirect($uri);
-}
-
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
@@ -178,7 +172,12 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
     exit;
 }
 
-if (isset($_POST['preview']) || isset($_POST['submit'])) {
+if (isset($_POST['cancel'])) {
+
+    $uri = "./discussion.php?webtag=$webtag&msg=$edit_msg";
+    header_redirect($uri);
+
+}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['submit']) || isset($_POST['change_count'])) {
 
     if (isset($_POST['t_threadtitle']) && strlen(trim(_stripslashes($_POST['t_threadtitle']))) > 0) {
         $t_threadtitle = trim(_stripslashes($_POST['t_threadtitle']));
@@ -296,13 +295,18 @@ if (isset($_POST['preview']) || isset($_POST['submit'])) {
         $valid = false;
     }
 
-}else if (isset($_POST['change_count'])) {
+}
 
-    if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
-        $t_answer_count = $_POST['answer_count'];
-    }else {
-        $t_answer_count = 5;
-    }
+if (isset($_POST['change_count'])) {
+
+    $valid = true;
+    unset($error_html);
+}
+
+if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
+    $t_answer_count = $_POST['answer_count'];
+}else {
+    $t_answer_count = 0;
 }
 
 html_draw_top("basetarget=_blank", "openprofile.js", "post.js");
@@ -313,7 +317,7 @@ if (isset($t_fid) && !bh_session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if ($valid && isset($_POST['preview'])) {
+if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) {
 
     $polldata['TLOGON'] = $lang['allcaps'];
     $polldata['TNICK'] = $lang['allcaps'];
@@ -377,17 +381,25 @@ if ($valid && isset($_POST['preview'])) {
                          'GROUP_ID'    => $poll_groups_array,
                          'VOTES'       => $poll_votes_array);
 
-    if ($t_poll_type == 1) {
+    if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
+        $pollpreviewdata['OPTIONTYPE'] = $t_option_type;
+    }else {
+        $pollpreviewdata['OPTIONTYPE'] = 0;
+    }
 
-        $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
+    if (isset($_POST['preview_form'])) {
 
-    }elseif ($t_poll_type == 0)  {
-
-        $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
+        $polldata['CONTENT'].= poll_preview_form($pollresults, $pollpreviewdata);
 
     }else {
 
-        $polldata['CONTENT'].= poll_preview_graph_table($pollresults);
+        if ($t_poll_type == 1) {
+            $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
+        }elseif ($t_poll_type == 2) {
+            $polldata['CONTENT'] .= poll_preview_graph_table($pollresults);
+        } else {
+            $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
+        }
     }
 
     $polldata['CONTENT'].= "          </td>\n";
@@ -902,7 +914,7 @@ echo "            <td>&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 
-echo form_submit("submit", $lang['apply']). "&nbsp;". form_submit("preview", $lang['preview']). "&nbsp;". form_submit("cancel", $lang['cancel']);
+echo form_submit("submit", $lang['apply']), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
 
 if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.169 2006-05-14 12:12:12 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.170 2006-05-15 10:46:34 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -258,7 +258,7 @@ if (isset($_POST['cancel'])) {
     $uri = "./discussion.php?webtag=$webtag";
     header_redirect($uri);
 
-}elseif (isset($_POST['preview']) || isset($_POST['submit']) || isset($_POST['change_count'])) {
+}elseif (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['submit']) || isset($_POST['change_count'])) {
 
     $valid = true;
 
@@ -275,8 +275,8 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
-    if (isset($_POST['question']) && strlen(trim(_stripslashes($_POST['question']))) > 0) {
-        $t_question = trim(_stripslashes($_POST['question']));
+    if (isset($_POST['t_question']) && strlen(trim(_stripslashes($_POST['t_question']))) > 0) {
+        $t_question = trim(_stripslashes($_POST['t_question']));
     }elseif (isset($t_threadtitle)) {
         $t_question = $t_threadtitle;
     }
@@ -400,11 +400,6 @@ if (isset($_POST['cancel'])) {
 
     if ($valid && $t_poll_type == 2 && sizeof(array_unique($t_answer_groups)) != 2) {
         $error_html = "<h2>{$lang['tablepollmusthave2groups']}</h2>";
-        $valid = false;
-    }
-
-    if ($valid && (sizeof(array_unique($t_answer_groups)) >= sizeof($t_answers))) {
-        $error_html = "<h2>{$lang['groupcountmustbelessthananswercount']}</h2>";
         $valid = false;
     }
 
@@ -632,7 +627,7 @@ if (isset($error_html)) {
     echo "  </table>\n";
 }
 
-if ($valid && isset($_POST['preview'])) {
+if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) {
 
     echo "<table class=\"posthead\" width=\"785\">\n";
     echo "  <tr>\n";
@@ -698,12 +693,25 @@ if ($valid && isset($_POST['preview'])) {
                          'GROUP_ID'    => $poll_groups_array,
                          'VOTES'       => $poll_votes_array);
 
-    if ($t_poll_type == 1) {
-        $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
-    }elseif ($t_poll_type == 2) {
-        $polldata['CONTENT'] .= poll_preview_graph_table($pollresults);
-    } else {
-        $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
+    if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
+        $pollpreviewdata['OPTIONTYPE'] = $t_option_type;
+    }else {
+        $pollpreviewdata['OPTIONTYPE'] = 0;
+    }
+
+    if (isset($_POST['preview_form'])) {
+
+        $polldata['CONTENT'].= poll_preview_form($pollresults, $pollpreviewdata);
+
+    }else {
+
+        if ($t_poll_type == 1) {
+            $polldata['CONTENT'].= poll_preview_graph_vert($pollresults);
+        }elseif ($t_poll_type == 2) {
+            $polldata['CONTENT'] .= poll_preview_graph_table($pollresults);
+        } else {
+            $polldata['CONTENT'].= poll_preview_graph_horz($pollresults);
+        }
     }
 
     $polldata['CONTENT'].= "          </td>\n";
@@ -943,9 +951,9 @@ echo "                      <tr>\n";
 echo "                        <td>\n";
 echo "                          <table border=\"0\" width=\"400\">\n";
 echo "                            <tr>\n";
-echo "                              <td width=\"25%\">", form_radio('poll_type', '0', $lang['horizgraph'], isset($t_poll_type) ? $t_poll_type == 0 : true), "</td>\n";
-echo "                              <td width=\"25%\">", form_radio('poll_type', '1', $lang['vertgraph'], isset($t_poll_type) ? $t_poll_type == 1 : false), "</td>\n";
-echo "                              <td>", form_radio('poll_type', '2', $lang['tablegraph'], isset($t_poll_type) ? $t_poll_type == 2 : false), "</td>\n";
+echo "                              <td width=\"25%\" nowrap=\"nowrap\">", form_radio('poll_type', '0', $lang['horizgraph'], isset($t_poll_type) ? $t_poll_type == 0 : true), "</td>\n";
+echo "                              <td width=\"25%\" nowrap=\"nowrap\">", form_radio('poll_type', '1', $lang['vertgraph'], isset($t_poll_type) ? $t_poll_type == 1 : false), "</td>\n";
+echo "                              <td nowrap=\"nowrap\">", form_radio('poll_type', '2', $lang['tablegraph'], isset($t_poll_type) ? $t_poll_type == 2 : false), "</td>\n";
 echo "                            </tr>\n";
 echo "                          </table>\n";
 echo "                        </td>\n";
@@ -1111,7 +1119,7 @@ echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td>";
 
-echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']);
+echo form_submit("submit", $lang['post'], "onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\""), "&nbsp;", form_submit("preview_poll", $lang['preview']), "&nbsp;", form_submit("preview_form", $lang['previewvotingform']), "&nbsp;", form_submit("cancel", $lang['cancel']);
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 

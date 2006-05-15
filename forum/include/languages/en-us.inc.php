@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.9 2006-05-14 22:14:29 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.10 2006-05-15 11:19:24 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -1217,6 +1217,7 @@ $lang['changevote'] = "Change vote";
 $lang['pollshavebeendisabled'] = "Polls have been disabled by the forum owner.";
 $lang['answertext'] = "Answer Text";
 $lang['answergroup'] = "Answer Group";
+$lang['previewvotingform'] = "Preview Voting Form";
 
 // Profiles (profile.php) ----------------------------------------------
 

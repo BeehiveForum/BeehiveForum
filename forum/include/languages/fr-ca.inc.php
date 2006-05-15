@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.24 2006-05-14 23:36:14 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.25 2006-05-15 21:06:57 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1239,6 +1239,7 @@ $lang['changevote'] = "Changer vote";
 $lang['pollshavebeendisabled'] = "Les scrutins ont été désactivé par le propriétaire du forum.";
 $lang['answertext'] = "Texte de réponse";
 $lang['answergroup'] = "Groupe de réponse";
+$lang['previewvotingform'] = "Prévisualisation du formulaire de scrutin";
 
 // Profiles (profile.php) ----------------------------------------------
 

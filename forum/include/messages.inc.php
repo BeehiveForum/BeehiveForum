@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.394 2006-05-15 11:19:24 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.395 2006-05-15 21:06:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1263,30 +1263,36 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     if ($uid > 0) {
 
-        // Try inserting new rows first with an IGNORE.
-
-        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-        $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+        $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
         $result = db_query($sql, $db_message_update_read);
 
-        // Try an update also just incase a row already exists.
+        if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-        $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
-        $sql.= "AND LAST_READ < '$pid'";
+            $fa = db_fetch_array($result);
 
-        $result = db_query($sql, $db_message_update_read);
+            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
+            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+
+            $result = db_query($sql, $db_message_update_read);
+
+        }else {
+
+            $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
+            $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+
+            $result = db_query($sql, $db_message_update_read);
+        }
 
         // Mark posts as Viewed...
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() ";
-        $sql.= "WHERE TID = '$tid' AND PID BETWEEN '$spid' AND '$pid' ";
-        $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NULL ";
+        $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_message_update_read)) return false;
+        $result = db_query($sql, $db_message_update_read);
     }
 
     // Update thread viewed counter

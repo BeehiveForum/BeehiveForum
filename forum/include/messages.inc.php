@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.395 2006-05-15 21:06:57 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.396 2006-05-15 22:05:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1287,10 +1287,11 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
             $result = db_query($sql, $db_message_update_read);
         }
 
-        // Mark posts as Viewed...
+        // Mark posts as Viewed
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NULL ";
-        $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
+        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() ";
+        $sql.= "WHERE TID = '$tid' AND PID BETWEEN '$spid' AND '$pid' ";
+        $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
 
         $result = db_query($sql, $db_message_update_read);
     }

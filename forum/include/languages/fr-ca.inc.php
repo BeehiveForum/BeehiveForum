@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.25 2006-05-15 21:06:57 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.26 2006-05-15 22:46:41 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -449,8 +449,7 @@ $lang['requireemailconfirmation'] = "Exiger confirmation par courriel";
 $lang['usetextcaptcha'] = "Utiliser Captcha de texte";
 $lang['textcaptchadir'] = "Répertoire de captcha de texte";
 $lang['textcaptchakey'] = "Clé de captcha de texte";
-$lang['textcaptchafonterror_1'] = "Le Captcha de texte a été désactivé automatiquement parce qu'il n'y a pas de polices truetype de disponible pour son usage. SVP téléverser des polices truetype à";
-$lang['textcaptchafonterror_2'] = "sur votre serveur.";
+$lang['textcaptchafonterror'] = "Le Captcha de texte a été désactivé automatiquement parce qu'il n'y a pas de polices truetype de disponible pour son usage. SVP téléverser des polices truetype à <b>%s</b> sur votre serveur.";
 $lang['textcaptchadirerror'] = "Le Captcha de texte a été désactivé parce que le répertoire text_captcha and ses sous-répertoires ne sont pas inscriptibles part le serveur web / processus PHP.";
 $lang['textcaptchagderror'] = "Le Captcha de texte a été désactivé parce que le réglage PHP de votre serveur ne fournit pas de support pour la manipulation d'image GD et / ou de support pour les polices TTF. Les deux sont requis pour supporter le captcha de texte.";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.124 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: register.php,v 1.125 2006-05-15 22:46:41 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -331,6 +331,8 @@ if (isset($_POST['submit'])) {
         if (isset($_POST['public_key']) && strlen(trim(_stripslashes($_POST['public_key']))) > 0) {
 
             $public_key = trim(_stripslashes($_POST['public_key']));
+
+            $text_captcha->destroy_image();
 
             if (isset($_POST['private_key']) && strlen(trim(_stripslashes($_POST['private_key']))) > 0) {
                 $private_key = trim(_stripslashes($_POST['private_key']));

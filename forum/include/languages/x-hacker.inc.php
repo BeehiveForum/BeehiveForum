@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.207 2006-05-15 11:19:24 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.208 2006-05-15 22:46:41 decoyduck Exp $ */
 
 // International English language file
 
@@ -437,8 +437,7 @@ $lang['requireemailconfirmation'] = "REQu1r3 3M41L c0NFiRm4TIoN";
 $lang['usetextcaptcha'] = "u5E teX+ caPTcH4";
 $lang['textcaptchadir'] = "+exT C4p+cH@ D1R3C+Ory";
 $lang['textcaptchakey'] = "TEx+ C4pTCH4 KEy";
-$lang['textcaptchafonterror_1'] = "t3x+ c4PtCH4 H4\$ 833N D1\$a8l3d 4UTOm@+ic@llY 83c4U\$e +hERE 4r3 N0 +ru3 tYpE Ph0n+\$ 4V41L48Le f0R 1T +0 UsE. pLe453 uPLo4D s0ME TRuE +yp3 fOnt5 t0";
-$lang['textcaptchafonterror_2'] = "oN YOuR sErv3R.";
+$lang['textcaptchafonterror'] = "t3x+ c4PtCH4 H4\$ 833N D1\$a8l3d 4UTOm@+ic@llY 83c4U\$e +hERE 4r3 N0 +ru3 tYpE Ph0n+\$ 4V41L48Le f0R 1T +0 UsE. pLe453 uPLo4D s0ME TRuE +yp3 fOnt5 t0 <b>%s</b> oN YOuR sErv3R.";
 $lang['textcaptchadirerror'] = "t3xT c4p+cH@ h@5 8E3n d15@8lED 8EcaU53 +HE teX+_C4p+cH4 DIreC+0rY 4ND i+'s 5UB-D1RECtOr1ES AR3 NOT WriT@8L3 8Y +HE W38 53Rv3R / PhP pR0C3\$\$.";
 $lang['textcaptchagderror'] = "+3x+ c4pTCh@ H4\$ BE3N D1s4bL3d bEC@Us3 y0Ur 53RV3R'\$ PHp \$eTUP D03S no+ pR0v1De 5UpPoR+ Ph0r GD Im493 M4N1PUL4+IOn @Nd / 0R ++F Ph0N+ SuPpOR+. 8o+H 4Re rEqu1red f0R t3x+ c4P+chA SUpp0R+.";
 $lang['textcaptchadirblank'] = "+EXT c4P+Ch@ DirEC+ORY i\$ bL@Nk!";

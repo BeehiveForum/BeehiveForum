@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.11 2005-08-12 17:49:48 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.12 2006-05-15 22:46:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -121,10 +121,6 @@ class captcha {
 
     function verify_keys($private_key_check)
     {
-        if (@file_exists($this->get_image_filename())) {
-            @unlink($this->get_image_filename());
-        }
-
         $this->generate_private_key();
         return (strtolower($private_key_check) == strtolower($this->private_key));
     }
@@ -143,6 +139,7 @@ class captcha {
 
         return "{$this->text_captcha_dir}/images/{$this->public_key}.jpg";
     }
+
 
     function get_num_chars()
     {
@@ -261,6 +258,13 @@ class captcha {
 
         $this->error = TEXT_CAPTCHA_GD_ERROR;
         return false;
+    }
+
+    function destroy_image()
+    {
+        if (@file_exists($this->get_image_filename())) {
+            @unlink($this->get_image_filename());
+        }
     }
 
     // PRIVATE //

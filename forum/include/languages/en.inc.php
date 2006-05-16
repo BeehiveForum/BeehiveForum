@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.316 2006-05-15 22:46:41 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.317 2006-05-16 17:59:05 decoyduck Exp $ */
 
 // International English language file
 
@@ -434,6 +434,7 @@ $lang['newuserregistrations'] = "New User Registrations";
 $lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
 $lang['requireemailconfirmation'] = "Require email confirmation";
+$lang['textcaptcha'] = "Text Captcha";
 $lang['usetextcaptcha'] = "Use Text Captcha";
 $lang['textcaptchadir'] = "Text captcha directory";
 $lang['textcaptchakey'] = "Text captcha key";

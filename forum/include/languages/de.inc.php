@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.2 2006-05-15 22:46:41 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.3 2006-05-18 09:39:32 decoyduck Exp $ */
 
 // International English language file
 
@@ -80,8 +80,8 @@ $lang['banned'] = "Gebannt";
 $lang['locked'] = "Gesperrt";
 $lang['add'] = "Hinzufügen";
 $lang['advanced'] = "Erweitert";
-$lang['active'] = "Active";
-$lang['kick'] = "Kick";
+$lang['active'] = "Aktiv";
+$lang['kick'] = "Rauswerfen";
 $lang['remove'] = "Loeschen";
 $lang['style'] = "Stil";
 $lang['go'] = "Weiter";
@@ -108,7 +108,7 @@ $lang['normal'] = "Normal";
 $lang['interested'] = "Interessiert";
 $lang['subscribe'] = "Wichtig";
 $lang['apply'] = "Bestaetigen";
-$lang['submit'] = "Submit";
+$lang['submit'] = "Absenden";
 $lang['download'] = "Download";
 $lang['save'] = "Speichern";
 $lang['savechanges'] = "Aenderungen speichern";
@@ -135,7 +135,7 @@ $lang['unknown'] = "Unbekannt";
 $lang['none'] = "keine";
 $lang['preview'] = "Voransicht";
 $lang['post'] = "Senden";
-$lang['posts'] = "Posts";
+$lang['posts'] = "Beitraege";
 $lang['change'] = "Wechsel";
 $lang['yes'] = "Ja";
 $lang['no'] = "Nein";
@@ -176,7 +176,7 @@ $lang['by'] = "durch";
 $lang['permissions'] = "Erlaubnis";
 $lang['position'] = "Position";
 $lang['type'] = "Typ";
-$lang['print'] = "Print";
+$lang['print'] = "Druck";
 $lang['sticky'] = "Sticky";
 $lang['polls'] = "Abstimmungen";
 $lang['user'] = "Benutzer";
@@ -196,7 +196,7 @@ $lang['sortasc'] = "Aufsteigend sortieren";
 $lang['sortdesc'] = "Absteigend sortieren";
 $lang['usage'] = "In Benutzung";
 $lang['show'] = "Anzeigen";
-$lang['prefix'] = "Prefix";
+$lang['prefix'] = "Praefix";
 $lang['hint'] = "Tipp";
 $lang['new'] = "Neu";
 $lang['reset'] = "Zurücksetzen";
@@ -321,7 +321,7 @@ $lang['datetime'] = "Datum Uhrzeit";
 $lang['unknownuser'] = "Unbekannter Benutzer";
 $lang['unknownfolder'] = "Unbekannter Ordner";
 $lang['ip'] = "IP";
-$lang['logged'] = "Logged";
+$lang['logged'] = "Gespeichert";
 $lang['notlogged'] = "Nicht gelogged";
 $lang['wordfilterupdated'] = "Wortfilter aktualisiert";
 $lang['editwordfilter'] = "Wortfilter editieren";
@@ -598,7 +598,7 @@ $lang['personalmessages'] = "Persoenliche Nachrichten (PM)";
 $lang['enablepersonalmessages'] = "Persoenliche Nachrichten freischalten";
 $lang['pmusermessages'] = "PM-Nachrichten je Benutzer";
 $lang['allowpmstohaveattachments'] = "Erlaube Anhaenge an PMs";
-$lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
+$lang['autopruneuserspmfoldersevery'] = "Automatische Ueberpruefung der PM-Ordner der Benutzer alle";
 $lang['guestaccount'] = "Gast Zugang";
 $lang['enableguestaccount'] = "Aktiviere Gastzugang";
 $lang['autologinguests'] = "Automatische Gastanmeldung";
@@ -653,9 +653,9 @@ $lang['forum_settings_help_46'] = "<b>Text Captcha Schluessel</b> Erlaubt Aender
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
 $lang['aidnotspecified'] = "AID nicht bekannt.";
-$lang['upload'] = "Upload";
+$lang['upload'] = "Hochlanden";
 $lang['uploadnewattachment'] = "Neuer Dateianhang hochladen";
-$lang['waitdotdot'] = "wait..";
+$lang['waitdotdot'] = "warten..";
 $lang['successfullyuploaded'] = "Erfolgreich hochgeladen";
 $lang['failedtoupload'] = "Fehler beim Hochladen";
 $lang['complete'] = "Fertig";
@@ -953,7 +953,7 @@ $lang['smaller'] = "Kleiner";
 $lang['larger'] = "Groesser";
 $lang['faq'] = "FAQ";
 $lang['docs'] = "Doks";
-$lang['support'] = "Support";
+$lang['support'] = "Hilfe";
 $lang['donateexcmark'] = "Spenden!";
 $lang['threadcouldnotbefound'] = "Der angeforderte Eintrag wurde nicht gefunden oder der Zugriff wurde verweigert.";
 $lang['mustselectpolloption'] = "Du musst eine Option auswaehlen um abzustimmen!";
@@ -1032,7 +1032,8 @@ $lang['editpm'] = "Nachricht anzeigen";
 $lang['cannoteditpm'] = "Kann diese Nachricht nicht anzeigen. Sie wurde bereits vom Empfaenger gelesen oder die Nachricht existiert nicht oder es darf nicht von Dir darauf zugegriffen werden";
 $lang['cannotviewpm'] = "Kann PM nicht anzeigen. Nachricht existiert nicht oder darf von Dir nicht angezeigt werden";
 $lang['nouserspecified'] = "Kein Benutzer definiert.";
-$lang['pmnotificationpopup'] = "Du hast %d neue PMs. Moechstest Du jetzt in Deinen Posteingang wechseln ?";
+$lang['youhavexnewpm'] = "Du hast %d neue PMs. Willst Du jetzt in den Posteingang wechseln?";
+$lang['youhave1newpm'] = "'Du hast 1 neue PM. Willst du jetzt in den Posteingang wechseln?";
 $lang['youdonothaveenoughfreespace'] = "Du hast nicht genug freien Speicher um die Nachricht zu senden.";
 $lang['notenoughfreespace'] = "Du hast nicht genug freien Speicher um die Nachricht zu erhalten";
 $lang['hasoptoutpm'] = "wurde aus dem PM-Empfang entfernt";
@@ -1089,6 +1090,7 @@ $lang['dateofbirth'] = "Geburtstag";
 $lang['homepageURL'] = "Homepage URL";
 $lang['pictureURL'] = "Eigenes Bild URL";
 $lang['forumoptions'] = "Forum-Optionen";
+$lang['pmoptions'] = "PM Optionen";
 $lang['notifybyemail'] = "Benachrichtige mich via eMail bei Antworten auf Eintraege von mir";
 $lang['notifyofnewpm'] = "Benachrichtigung via Popup bei neuen PM (Persoenliche Nachrichten) fuer mich";
 $lang['notifyofnewpmemail'] = "Benachrichtigung via eMail bei neuen PM (Persoenliche Nachrichten) fuer mich";
@@ -1139,6 +1141,7 @@ $lang['postinplaintextbydefault'] = "Poste standardmaessig in einfachem Text";
 $lang['postinhtmlwithautolinebreaksbydefault'] = "Poste standardmaessig in HTML mit Auto-Zeilenumbruch";
 $lang['postinhtmlbydefault'] = "Poste standardmaessig in HTML";
 $lang['privatemessageoptions'] = "Private Nachrichtenoptionen";
+$lang['privatemessageexportoptions'] = "Private Nachrichten Export-Optionen";
 $lang['savepminsentitems'] = "Speichere eine Kopie jeder PM die ich sende im Gesendete Nachrichten-Ordner";
 $lang['includepminreply'] = "Fuege Nachrichtentext an bei einer Antwort auf eine PM";
 $lang['autoprunemypmfoldersevery'] = "kuerze automtisch meine PM-Ordner jeden:";
@@ -1213,6 +1216,7 @@ $lang['changevote'] = "Stimme aendern";
 $lang['pollshavebeendisabled'] = "Abstimmungen wurden vom Forenadmin gesperrt.";
 $lang['answertext'] = "Antworttext";
 $lang['answergroup'] = "Antwortgruppe";
+$lang['previewvotingform'] = "Abstimmungsformular-Voransicht";
 
 // Profiles (profile.php) ----------------------------------------------
 
@@ -1376,6 +1380,7 @@ $lang['startedbyfriend'] = "Von einem Freund gestartet";
 $lang['unreadstartedbyfriend'] = "Ungelesen gestartet von einem Freund";
 $lang['startedbyme'] = "von mir gestartet";
 $lang['unreadtoday'] = "Heute ungelesen";
+$lang['deletedthreads'] = "Geloeschte Eintraege";
 $lang['goexcmark'] = "Los!";
 $lang['folderinterest'] = "Ordnerwichtigkeit";
 $lang['postnew'] = "Neue Posts";
@@ -1407,6 +1412,8 @@ $lang['onenewoflength'] = "%d neu von %d";
 $lang['manynewoflength'] = "%d neu von %d";
 $lang['ignorefolderconfirm'] = "Bist Du sicher dass Du diesen Ordner ignorieren willst?";
 $lang['unignorefolderconfirm'] = "Bist Du sicher dass Du diesen Ordner nicht mehr ignorieren willst?";
+$lang['threadviewedonetime'] = "Angezeigehaeufigkeit: 1 mal";
+$lang['threadviewedtimes'] = "Angezeigehaeufigkeit: %d mal";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Fellt";
@@ -1422,7 +1429,7 @@ $lang['numberedlist'] = "Nummerische Liste";
 $lang['list'] = "Liste";
 $lang['indenttext'] = "Texteinzug";
 $lang['code'] = "Code";
-$lang['quote'] = "Quote";
+$lang['quote'] = "Anfuehrungsstrich";
 $lang['spoiler'] = "Spoiler";
 $lang['horizontalrule'] = "Horizontale Linie";
 $lang['image'] = "Bild";
@@ -1441,7 +1448,7 @@ $lang['violet'] = "Violett";
 $lang['white'] = "Weiss";
 $lang['black'] = "Schwarz";
 $lang['grey'] = "Grau";
-$lang['pink'] = "Pink";
+$lang['pink'] = "Rosa";
 $lang['lightgreen'] = "Hellgruen";
 $lang['lightblue'] = "Hellblau";
 
@@ -1476,6 +1483,8 @@ $lang['closedforposting'] = "Geschlossen, keine Posts mehr moeglich";
 $lang['locktitleandfolder'] = "Sperre Titel und Ordner";
 $lang['deletepostsinthreadbyuser'] = "Loesche Posts in Eintraegen von Benutzer";
 $lang['deletethread'] = "Loesche Eintrag";
+$lang['undeletethread'] = "Ungeloeschte Eintraege";
+$lang['threaddeletedpermenantly'] = "Eintrag endgueltig geloescht. Keine Wiederherstellung moeglich.";
 $lang['markasunread'] = "Als Ungelesen markieren";
 $lang['makethreadsticky'] = "Eintrag festhalten";
 $lang['threareadstatusupdated'] = "Eintragslesestatus erfolgreich geaendert";
@@ -1538,5 +1547,38 @@ $lang['unknownrssuseraccount'] = "Unbekanntes RSS Benutzerkonto";
 $lang['rssfeedsupportshttpurlsonly'] = "RSS Feed unterstuetzt nur HTTP URLs. Sichere Feeds (https://) werden nicht unterstuetzt.";
 $lang['rssfeedurlformatinvalid'] = "RSS Feed URL format ist ungueltig. URL muss Schema beinhalten (e.g. http://) und einen Hostnamen (z.B. www.hostname.com).";
 $lang['rssfeeduserauthentication'] = "RSS Feed unterstuetzt keine HTTP user-authentication";
+
+// PM Export Options
+
+$lang['pmexportastype'] = "Exportieren als Dateiart";
+$lang['pmexporthtml'] = "HTML";
+$lang['pmexportxml'] = "XML";
+$lang['pmexportplaintext'] = "Reiner Text";
+$lang['pmexportmessagesas'] = "Exportiere Nachrichten als";
+$lang['pmexportonefileforallmessages'] = "Eine Datei fuer alle Nachrichten";
+$lang['pmexportonefilepermessage'] = "Eine Datei je Nachricht";
+$lang['pmexportattachments'] = "Exportiere Anhaenge";
+$lang['pmexportincludestyle'] = "Einschliesslich Forendesign";
+$lang['pmexportwordfilter'] = "Zutreffende Wortfilter in Nachrichten";
+
+// Thread merge / split options
+
+$lang['mergesplitthread'] = "Zusammenfuegen/Trennen von Eintraegen";
+$lang['mergewiththreadid'] = "Zusammenfuegen mit Eintrag Nr:";
+$lang['postsinthisthreadatstart'] = "Beitraege in diesem Eintrag starten ab";
+$lang['postsinthisthreadatend'] = "Beitraege in diesem Eintrag stoppen bei";
+$lang['reorderpostsintodateorder'] = "Sortiere Eintraege nach Datum";
+$lang['splitthreadatpost'] = "Trenne Eintrag bei Beitrag:";
+$lang['selectedpostsandrepliesonly'] = "Waehle Beitrag aus und beantworte nur";
+$lang['selectedandallfollowingposts'] = "Diesen und alle folgenden Beitraege auswaehlen";
+
+$lang['threadhere'] = "hier";
+$lang['thisthreadhasmoved'] = "<b>Eintraege zusammengefuegt:</b> Dieser Eintrag wurde verscvhoben nach <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['thisthreadwasmergedfrom'] = "<b>Eintraege zusammengefuegt:</b> Dieser Eintrag wurde angefuegt an <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Eintragsaufteilung:</b> Einige Beitraege in diesem Eintrag wurden verschoben nach <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['somepostsinthisthreadweremovedfrom'] = "<b>Eintragsaufteilung:</b> Einige Beitrage ind diesem Eintrag wurden verschoben von <a href=\"%s\" target=\"_self\">%s</a>";
+
+$lang['threadmergefailed'] = "Eintragsanfuegung fehlgeschlagen";
+$lang['threadsplitfailed'] = "Eintragsaufteilung fehlgeschlagen";
 
 ?>

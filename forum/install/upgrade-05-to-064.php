@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.2 2006-05-20 12:22:12 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.3 2006-05-20 17:33:32 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -182,7 +182,7 @@ $remove_tables = array('DEDUPE', 'GROUPS', 'GROUP_PERMS', 'GROUP_USERS',
                        'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS',
                        'RSS_FEEDS', 'RSS_HISTORY', 'SEARCH_KEYWORDS',
                        'SEARCH_MATCH', 'SEARCH_POSTS', 'SEARCH_RESULTS',
-                       'SESSIONS', 'USER_TRACK', 'VISITOR_LOG');
+                       'SESSIONS', 'VISITOR_LOG');
 
 foreach ($remove_tables as $forum_table) {
 
@@ -1156,7 +1156,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
     $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
     $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-    $sql.= "  USER_TIME DATETIME DEFAULT NULL, ";
+    $sql.= "  USER_TIME_LAST DATETIME DEFAULT NULL, ";
+    $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL, ";
     $sql.= "  PRIMARY KEY  (UID)";
     $sql.= ") TYPE=MYISAM";
 

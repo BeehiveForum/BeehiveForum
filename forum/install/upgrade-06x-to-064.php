@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.5 2006-05-14 12:12:15 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.6 2006-05-20 12:22:12 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -205,13 +205,13 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
   
     $sql = "CREATE TABLE {$forum_webtag}_USER_TRACK (";
-    $sql.= "UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-    $sql.= "DDKEY DATETIME DEFAULT NULL,";
-    $sql.= "LAST_POST DATETIME DEFAULT NULL,";
-    $sql.= "LAST_SEARCH DATETIME DEFAULT NULL,";
-    $sql.= "POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "USER_TIME MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-    $sql.= "PRIMARY KEY (UID)";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  DDKEY DATETIME DEFAULT NULL,";
+    $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
+    $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
+    $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  USER_TIME DATETIME DEFAULT NULL, ";
+    $sql.= "  PRIMARY KEY (UID)";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {

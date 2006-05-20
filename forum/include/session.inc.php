@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.219 2006-05-01 12:31:46 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.220 2006-05-20 12:22:12 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -517,7 +517,7 @@ function bh_update_user_time($uid)
 
     if ($user_track = db_fetch_array($result)) {
 
-        if (isset($user_track['LAST_LOGON']) || !is_null($user_track['LAST_LOGON'])) {
+        if (isset($user_track['LAST_LOGON']) && !is_null($user_track['LAST_LOGON'])) {
         
             $session_length = 0;
 
@@ -525,14 +525,28 @@ function bh_update_user_time($uid)
                 $session_length = $user_track['TIME'] - $user_track['LAST_LOGON'];
             }
 
-            $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
-            $sql.= "(UID, USER_TIME) VALUES ('$uid', '$session_length')";
+            $sql = "SELECT UNIX_TIMESTAMP(USER_TIME) FROM ";
+            $sql.= "{$table_data['PREFIX']}USER_TRACK ";
+            $sql.= "WHERE UID = '$uid'";
 
-            if (!$result = @db_query($sql, $db_bh_update_user_time)) {
+            $result = db_query($sql, $db_bh_update_user_time);
 
+            if (db_num_rows($result) > 0) {
+
+                list($user_time) = db_fetch_array($result, DB_RESULT_NUM);
+
+                $session_length += $user_time;
+                
                 $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
-                $sql.= "SET USER_TIME = IFNULL(USER_TIME, 0) + $session_length ";
+                $sql.= "SET USER_TIME = FROM_UNIXTIME('$session_length') ";
                 $sql.= "WHERE UID = '$uid'";
+
+                $result = db_query($sql, $db_bh_update_user_time);
+
+            }else {
+
+                $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
+                $sql.= "(UID, USER_TIME) VALUES ('$uid', FROM_UNIXTIME('$session_length'))";
 
                 $result = db_query($sql, $db_bh_update_user_time);
             }

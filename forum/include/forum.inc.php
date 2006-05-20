@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.173 2006-05-14 12:12:12 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.174 2006-05-20 12:22:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1106,11 +1106,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  LAST_POST DATETIME DEFAULT NULL, ";
         $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL, ";
         $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-        $sql.= "  USER_TIME MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql.= "  USER_TIME DATETIME DEFAULT NULL, ";
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") TYPE=MYISAM";
 
-        if (!$result = @db_query($sql, $db_forum_create)) {
+        if (!$result = db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
             return false;

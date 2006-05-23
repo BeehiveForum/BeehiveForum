@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.318 2006-05-18 09:39:32 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.319 2006-05-23 14:10:30 decoyduck Exp $ */
 
 // International English language file
 
@@ -366,6 +366,8 @@ $lang['nameanddesc'] = "Name and Description";
 $lang['movethreads'] = "Move Threads";
 $lang['threadsmovedsuccessfully'] = "Threads moved successfully";
 $lang['movethreadstofolder'] = "Move threads to folder";
+$lang['resetuserpermissions'] = "Reset user permissions";
+$lang['userpermissionsresetsuccessfully'] = "User permissions reset successfully";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
 $lang['addnewfolder'] = "Add New Folder";
 $lang['mustenterfoldername'] = "You must enter a folder name";

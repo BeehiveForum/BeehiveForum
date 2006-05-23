@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.48 2006-05-14 12:12:12 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.49 2006-05-23 14:10:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -486,6 +486,9 @@ if ($threaddata['LENGTH'] > 0) {
             echo "            <td class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
 
+            $thread_length_array = range(2, $threaddata['LENGTH']);
+            array_unshift($thread_length_array, '');
+
             if (!thread_is_poll($tid)) {
             
                 echo "                <tr>\n";
@@ -518,15 +521,22 @@ if ($threaddata['LENGTH'] > 0) {
                 echo "                <tr>\n";
                 echo "                  <td colspan=\"2\"><hr /></td>\n";
                 echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td width=\"250\">", form_radio("thread_merge_split", 1, $lang['splitthreadatpost'], false, false, 'posthead'), "</td>\n";
+                echo "                  <td>", form_dropdown_array('split_thread', $thread_length_array, $thread_length_array), "</td>\n";
+                echo "                </tr>\n";
+
+            }else {
+
+                echo "                <tr>\n";
+                echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['mergesplitthread']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td width=\"250\">", form_input_hidden("thread_merge_split", 1), $lang['splitthreadatpost'], "</td>\n";
+                echo "                  <td>", form_dropdown_array('split_thread', $thread_length_array, $thread_length_array), "</td>\n";
+                echo "                </tr>\n";
             }
 
-            $thread_length_array = range(2, $threaddata['LENGTH']);
-            array_unshift($thread_length_array, '');
-
-            echo "                <tr>\n";
-            echo "                  <td width=\"250\">", form_radio("thread_merge_split", 1, $lang['splitthreadatpost'], false, false, 'posthead'), "</td>\n";
-            echo "                  <td>", form_dropdown_array('split_thread', $thread_length_array, $thread_length_array), "</td>\n";
-            echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td>&nbsp;</td>\n";
             echo "                  <td class=\"posthead\">", form_radio("split_type", 0, $lang['selectedpostsandrepliesonly'], false), "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.38 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.39 2006-05-23 14:10:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -114,6 +114,8 @@ if (isset($_POST['submit'])) {
 
     $valid = true;
 
+    $status_html = "";
+
     if (isset($_POST['name']) && strlen(trim(_stripslashes($_POST['name']))) > 0) {
         $folder_data['TITLE'] = trim(_stripslashes($_POST['name']));
     }else {
@@ -190,12 +192,21 @@ if (isset($_POST['submit'])) {
 
                 if (folder_move_threads($fid, $_POST['move'])) {
 
-                    $status_html = "<h2>{$lang['threadsmovedsuccessfully']}</h2>\n";
+                    $status_html.= "<h2>{$lang['threadsmovedsuccessfully']}</h2>\n";
                 }
 
                 $new_folder_title = folder_get_title($_POST['move']);
 
                 admin_add_log_entry(MOVED_THREADS, array($folder_data['TITLE'], $new_folder_title));
+            }
+        }
+
+        if (isset($_POST['t_reset_user_perms']) && $_POST['t_reset_user_perms'] == "Y"
+            && isset($_POST['t_reset_user_perms_con']) && $_POST['t_reset_user_perms_con'] == "Y") {
+
+            if (perm_folder_reset_user_permissions($fid)) {
+
+                $status_html.= "<h2>{$lang['userpermissionsresetsuccessfully']}</h2>\n";
             }
         }
     }
@@ -243,15 +254,20 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['nameanddesc']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                  <td>", form_input_text("name", $folder_data['TITLE'], 30, 32), form_input_hidden("old_name", $folder_data['TITLE']), "</td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
+echo "                        <td>", form_input_text("name", $folder_data['TITLE'], 30, 32), form_input_hidden("old_name", $folder_data['TITLE']), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
+echo "                        <td>", form_input_text("description", $folder_data['DESCRIPTION'], 30, 255), form_input_hidden("old_description", $folder_data['DESCRIPTION']), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                  <td>", form_input_text("description", $folder_data['DESCRIPTION'], 30, 255), form_input_hidden("old_description", $folder_data['DESCRIPTION']), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
@@ -270,11 +286,20 @@ if ($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], "move", "",
     echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['movethreads']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"200\" class=\"posthead\">{$lang['movethreadstofolder']}:</td>\n";
-    echo "                  <td>", $folder_dropdown, "&nbsp;", form_checkbox("move_confirm", "Y", $lang['confirm']), "</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"90%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"200\" class=\"posthead\">{$lang['movethreadstofolder']}:</td>\n";
+    echo "                        <td>", $folder_dropdown, "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td>&nbsp;</td>\n";
+    echo "                        <td>", form_checkbox("move_confirm", "Y", $lang['confirm']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
@@ -331,14 +356,52 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['allow']}</td>\n";
+echo "                  <td class=\"subhead\">{$lang['resetuserpermissions']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
-echo "                  <td>", form_dropdown_array("allowed_types", $allow_values, $allow_labels, isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), form_input_hidden("old_allowed_types", isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : 0), "</td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"50%\">Reset User Perms:</td>\n";
+echo "                        <td>", form_radio("t_reset_user_perms", "Y", $lang['yes'], false), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                        <td>", form_radio("t_reset_user_perms", "N", $lang['no'], true), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                        <td>", form_checkbox("t_reset_user_perms_con", "Y", $lang['confirm'], false), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "        <br />\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['allow']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
+echo "                        <td>", form_dropdown_array("allowed_types", $allow_values, $allow_labels, isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), form_input_hidden("old_allowed_types", isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : 0), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
 echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";

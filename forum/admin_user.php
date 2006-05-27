@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.162 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.163 2006-05-27 16:39:02 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -131,6 +131,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }
 
 $user = user_get($uid);
+$user['POST_COUNT'] = user_get_post_count($uid);
+
 $user_perms = perm_get_forum_user_permissions($uid);
 
 // Draw the form
@@ -185,6 +187,23 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
             $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
             $valid = false;
+        }
+
+        if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
+
+            $user_details['POST_COUNT'] = $_POST['t_post_count'] > 0 ? $_POST['t_post_count'] : 0;
+
+            if ($user_details['POST_COUNT'] != $user['POST_COUNT']) {
+
+                user_update_post_count($uid, $user_details['POST_COUNT']);
+            }
+        }
+
+        if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
+
+            user_reset_post_count($uid);
+            $user['POST_COUNT'] = user_get_post_count($uid);
+            if (isset($_POST['t_post_count'])) unset($_POST['t_post_count']);
         }
     }
 
@@ -430,7 +449,15 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        <td>", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? $_POST['t_nickname'] : $user['NICKNAME'], 32), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td><a href=\"edit_signature.php?webtag=$webtag&amp;siguid=$uid\" target=\"right\">{$lang['editsignature']}</a></td>\n";
+        echo "                        <td width=\"150\">{$lang['postcount']}</td>\n";
+        echo "                        <td>", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td colspan=\"2\" align=\"center\">", form_button("editsignature", $lang['editsignature'], "onclick=\"document.location.href='edit_signature.php?webtag=$webtag&amp;siguid=$uid'\""), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";

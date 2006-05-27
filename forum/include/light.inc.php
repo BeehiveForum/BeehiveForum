@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.98 2006-04-18 17:28:21 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.99 2006-05-27 16:39:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -899,6 +899,8 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
+
+    $message['CONTENT'] = message_mouseover_spoiler($message['CONTENT']);
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 

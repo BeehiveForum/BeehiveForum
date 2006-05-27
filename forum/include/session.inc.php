@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.221 2006-05-20 17:33:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.222 2006-05-27 16:39:02 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -537,7 +537,7 @@ function bh_update_user_time($uid)
                 }
 
                 $sql = "SELECT UNIX_TIMESTAMP(USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
-                $sql.= "UNIX_TIMESTAMP(USER_TIME_LAST) AS USER_TIME_LAST FROM ";
+                $sql.= "UNIX_TIMESTAMP(USER_TIME_BEST) AS USER_TIME_BEST FROM ";
                 $sql.= "{$table_data['PREFIX']}USER_TRACK ";
                 $sql.= "WHERE UID = '$uid'";
 
@@ -549,7 +549,7 @@ function bh_update_user_time($uid)
 
                     $update_columns_array = array();
 
-                    if (!isset($user_time['USER_TIME_LAST']) || is_null($user_time['USER_TIME_LAST'])) {
+                    if (!isset($user_time['USER_TIME_BEST']) || is_null($user_time['USER_TIME_BEST'])) {
                         $user_time['USER_TIME'] = 0;
                     }
 
@@ -557,8 +557,8 @@ function bh_update_user_time($uid)
                         $user_time['USER_TIME_TOTAL'] = 0;
                     }
 
-                    if ($session_length > $user_time['USER_TIME_LAST']) {
-                        $update_columns_array[] = "USER_TIME_LAST = FROM_UNIXTIME('$session_length')";
+                    if ($session_length > $user_time['USER_TIME_BEST']) {
+                        $update_columns_array[] = "USER_TIME_BEST = FROM_UNIXTIME('$session_length')";
                     }
 
                     $session_length += $user_time['USER_TIME_TOTAL'];
@@ -574,7 +574,7 @@ function bh_update_user_time($uid)
                 }else {
 
                     $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
-                    $sql.= "(UID, USER_TIME_LAST, USER_TIME_TOTAL) ";
+                    $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL) ";
                     $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
                     $sql.= "FROM_UNIXTIME('$session_length'))";
 

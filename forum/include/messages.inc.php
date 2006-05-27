@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.397 2006-05-16 17:59:05 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.398 2006-05-27 16:39:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -473,6 +473,49 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
     }
 
     return $message;
+}
+
+function message_mouseover_spoiler($content)
+{
+    if ($html_parts = preg_split('/(<div[^>]*>)|(<\/div[^>]*>)/', $content, -1, PREG_SPLIT_DELIM_CAPTURE)) {
+       
+        $div_count = 0;
+        $spoiler_count = 0;
+        
+        foreach($html_parts as $key => $html) {
+
+            if (preg_match("/<div[^>]*>/", $html)) {
+
+                $div_count++;
+
+                if (preg_match("/<div class=\"spoiler\">/", $html)) {
+
+                    $spoiler_count++;
+
+                    if (isset($_SERVER['HTTP_USER_AGENT']) && stristr($_SERVER['HTTP_USER_AGENT'], "Smartphone")) {
+                        $html_parts[$key] = "<div class=\"spoiler_light\"><a href=\"Javascript:void(0)\">";
+                    }else {
+                        $html_parts[$key] = "<div class=\"spoiler\"><a href=\"Javascript:void(0)\">";
+                    }
+                }
+            }
+
+            if (preg_match("/<\/div[^>]*>/", $html) && $div_count > 0) {
+
+                $div_count--;
+
+                if ($div_count == 0 && $spoiler_count > 0) {
+
+                    $spoiler_count--;
+                    $html_parts[$key] = "</a></div>";
+                }
+            }
+        }
+
+        return implode("", $html_parts);
+    }
+
+    return $content;
 }
 
 function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false, $deleted = false)

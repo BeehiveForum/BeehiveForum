@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.319 2006-05-23 14:10:30 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.320 2006-05-27 16:39:02 decoyduck Exp $ */
 
 // International English language file
 
@@ -473,6 +473,8 @@ $lang['emailisalreadybanned'] = "That Email Address is already banned. Check you
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
+$lang['postcount'] = "Post Count:";
+$lang['resetpostcount'] = "Reset Post Count";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 

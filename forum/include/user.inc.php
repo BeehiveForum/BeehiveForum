@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.266 2006-04-12 20:31:36 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.267 2006-05-27 16:39:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -115,6 +115,36 @@ function user_update_nickname($uid, $nickname)
     $sql.= "WHERE UID = $uid";
 
     return db_query($sql, $db_user_update);
+}
+
+function user_update_post_count($uid, $post_count)
+{
+    $db_user_update_post_count = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    if (!is_numeric($post_count)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "SET POST_COUNT = '$post_count' ";
+    $sql.= "WHERE UID = '$uid'";
+
+    return db_query($sql, $db_user_update_post_count);
+}
+
+function user_reset_post_count($uid)
+{
+    $db_user_reset_post_count = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "SET POST_COUNT = NULL WHERE UID = '$uid'";
+
+    return db_query($sql, $db_user_reset_post_count);
 }
 
 function user_change_password($uid, $password, $hash)

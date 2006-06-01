@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.22 2006-04-30 23:59:50 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.23 2006-06-01 13:45:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,7 +109,7 @@ if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
 
 header('Content-type: text/xml');
 
-echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+echo "<?xml version=\"1.0\"?>\n";
 echo "<rss version=\"2.0\">\n";
 echo "<channel>\n";
 echo "<title>{$forum_name}</title>\n";
@@ -128,18 +128,15 @@ if ($threads_array = threads_get_most_recent($limit)) {
         // post in the thread. Can easily change this if it isn't right
         // by making it fetch post 1.
 
-        $modified_date   = gmdate("D, d M Y H:i:s", $thread['MODIFIED']);
+        $modified_date = gmdate("D, d M Y H:i:s", $thread['MODIFIED']);
 
         $message_content = message_get_content($thread['TID'], $thread['LENGTH']);
-        $parsed_message = new MessageTextParse($message_content, false);
+        $parsed_message  = new MessageTextParse($message_content, false);
 
-        $t_title = _htmlentities_decode($thread['TITLE']);
+        $t_title = htmlentities($thread['TITLE']);
 
         $t_content = $parsed_message->getMessage();
-        $t_content = _htmlentities_decode($t_content);
-        $t_content = strip_tags($t_content);
-        $t_content = preg_replace('/[\r|\n|\r\n]/', ' ', $t_content);
-        $t_content = trim(preg_replace('/[ ]+/', ' ', $t_content));
+        $t_content = htmlentities(strip_tags($t_content));
 
         echo "<item>\n";
         echo "<guid isPermaLink=\"true\">http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";

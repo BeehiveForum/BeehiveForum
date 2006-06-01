@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.163 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.164 2006-06-01 16:29:07 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -136,7 +136,7 @@ $user['POST_COUNT'] = user_get_post_count($uid);
 $user_perms = perm_get_forum_user_permissions($uid);
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$user['LOGON']}</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 // Do updates
 
@@ -457,7 +457,8 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        <td>&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td colspan=\"2\" align=\"center\">", form_button("editsignature", $lang['editsignature'], "onclick=\"document.location.href='edit_signature.php?webtag=$webtag&amp;siguid=$uid'\""), "</td>\n";
+        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td>", form_button("editsignature", $lang['editsignature'], "onclick=\"document.location.href='edit_signature.php?webtag=$webtag&amp;siguid=$uid'\""), "&nbsp;", form_button("editprofile", $lang['editprofile'], "onclick=\"document.location.href='edit_profile.php?webtag=$webtag&amp;profileuid=$uid'\""), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";

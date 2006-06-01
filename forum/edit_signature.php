@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.63 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.64 2006-06-01 16:29:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -86,38 +86,70 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (isset($_GET['siguid'])) {
+$admin_edit = false;
 
-    if (is_numeric($_GET['siguid'])) {
-        $uid = $_GET['siguid'];
-    } else {
-        html_draw_top();
-        echo "<h1>{$lang['invalidop']}</h1>\n";
-        echo "<h2>{$lang['nouserspecified']}</h2>\n";
-        html_draw_bottom();
-        exit;
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+    
+    if (isset($_GET['siguid'])) {
+
+        if (is_numeric($_GET['siguid'])) {
+
+            $uid = $_GET['siguid'];
+            $admin_edit = true;
+
+        } else {
+
+            html_draw_top();
+            echo "<h1>{$lang['invalidop']}</h1>\n";
+            echo "<h2>{$lang['nouserspecified']}</h2>\n";
+            html_draw_bottom();
+            exit;
+        }
+
+    } elseif (isset($_POST['siguid'])) {
+
+        if (is_numeric($_POST['siguid'])) {
+
+            $uid = $_POST['siguid'];
+            $admin_edit = true;
+
+        } else {
+            html_draw_top();
+            echo "<h1>{$lang['invalidop']}</h1>\n";
+            echo "<h2>{$lang['nouserspecified']}</h2>\n";
+            html_draw_bottom();
+            exit;
+        }
+
+    }else {
+
+        $uid = bh_session_get_value('UID');
     }
 
-} elseif (isset($_POST['siguid'])) {
+    if (isset($_POST['cancel'])) {
 
-    if (is_numeric($_POST['siguid'])) {
-        $uid = $_POST['siguid'];
-    } else {
-        html_draw_top();
-        echo "<h1>{$lang['invalidop']}</h1>\n";
-        echo "<h2>{$lang['nouserspecified']}</h2>\n";
-        html_draw_bottom();
+        header_redirect("./admin_user.php?webtag=$webtag&uid=$uid");
         exit;
     }
 
 } else {
 
     if (bh_session_get_value('UID') == 0) {
+
         html_guest_error();
         exit;
     }
 
     $uid = bh_session_get_value('UID');
+}
+
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
+
+    html_draw_top();
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_bottom();
+    exit;
 }
 
 $valid = true;
@@ -170,53 +202,16 @@ user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['SIG_HTML']);
 
 html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "dictionary.js", "htmltools.js");
 
-if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
+if ($admin_edit === true) {
 
-    echo "<h1>{$lang['accessdenied']}</h1>\n";
-    echo "<p>{$lang['accessdeniedexp']}</p>";
-    html_draw_bottom();
-    exit;
+    $user = user_get($uid);
+
+    echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+
+}else {
+
+    echo "<h1>{$lang['editsignature']}</h1>\n";
 }
-
-if (isset($_POST['preview'])) {
-
-    if ($valid) {
-
-        $preview_message['TLOGON'] = $lang['allcaps'];
-        $preview_message['TNICK'] = $lang['allcaps'];
-
-        $preview_tuser = user_get($uid);
-
-        $preview_message['FLOGON']   = $preview_tuser['LOGON'];
-        $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
-        $preview_message['FROM_UID'] = $preview_tuser['UID'];
-
-        $preview_message['CONTENT'] = $lang['signaturepreview'];
-
-        if ($t_sig_html == "Y") {
-            $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
-        }else {
-            $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
-        }
-
-        $preview_message['CREATED'] = mktime();
-
-        echo "<h1>{$lang['preview']}</h1>\n";
-
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
-        echo "    <tr>\n";
-        echo "      <td>\n";
-
-        message_display(0, $preview_message, 0, 0, true, false, false, false, true, true);
-        echo "<br />\n";
-
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-    }
-}
-
-echo "<h1>{$lang['editsignature']}</h1>\n";
 
 // Any error messages to display?
 
@@ -241,21 +236,85 @@ if (isset($t_sig_content)) {
 $tools = new TextAreaHTML("prefs");
 
 echo "<br />\n";
+
+if ($admin_edit === true) echo "<div align=\"center\">\n";
+
 echo "<form name=\"prefs\" action=\"edit_signature.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden('siguid', $uid), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+
+if ($admin_edit === true) echo "  ", form_input_hidden('siguid', $uid), "\n";
+
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
-echo "        <table class=\"box\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
+
+if (isset($_POST['preview'])) {
+
+    if ($valid) {
+
+        $preview_message['TLOGON'] = $lang['allcaps'];
+        $preview_message['TNICK'] = $lang['allcaps'];
+
+        $preview_tuser = user_get($uid);
+
+        $preview_message['FLOGON']   = $preview_tuser['LOGON'];
+        $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
+        $preview_message['FROM_UID'] = $preview_tuser['UID'];
+
+        $preview_message['CONTENT'] = $lang['signaturepreview'];
+
+        if ($t_sig_html == "Y") {
+            $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
+        }else {
+            $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
+        }
+
+        $preview_message['CREATED'] = mktime();
+
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\">{$lang['preview']}</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td>\n";
+        echo "                          <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td>\n";
+
+        message_display(0, $preview_message, 0, 0, true, false, false, false, true, true);
+        echo "<br />\n";
+
+        echo "                              </td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+    }
+}
+
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\">{$lang['signature']}</td>\n";
 echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
 
 $page_prefs = bh_session_get_post_page_prefs();
 
@@ -272,13 +331,13 @@ if ($tool_type != 0) {
     $tools->setTinyMCE(false);
 }
 
-echo $tools->textarea("sig_content", $sig_code, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
+echo $tools->textarea("sig_content", $sig_code, 5, 60, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
 
 echo $tools->js();
 
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"right\">\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"right\">\n";
 
 if ($tools->getTinyMCE()) {
 
@@ -290,7 +349,10 @@ if ($tools->getTinyMCE()) {
 
 echo $tools->assign_checkbox("sig_html");
 
-echo "                                  </td>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -301,12 +363,24 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
-echo "    </tr>\n";
+
+if ($admin_edit === true) {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
+
+}else {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("preview", $lang['preview']), "</td>\n";
+    echo "    </tr>\n";
+}
+
 echo "  </table>\n";
 echo "</form>\n";
 
+if ($admin_edit === true) echo "</div>\n";
 
 html_draw_bottom();
 

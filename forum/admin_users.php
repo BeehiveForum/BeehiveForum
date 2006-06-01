@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.108 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.109 2006-06-01 16:29:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -285,6 +285,9 @@ echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $admin_user_array['user_count'], 20), "</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

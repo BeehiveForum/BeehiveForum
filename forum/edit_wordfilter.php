@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.50 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.51 2006-06-01 16:29:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -205,7 +205,7 @@ foreach ($word_filter_array as $key => $word_filter) {
 
         if (!forum_get_setting('admin_force_word_filter', 'Y')) {
 
-            echo "                  <td align=\"center\"><sup>[A]</sup></td>\n";
+            echo "                  <td align=\"center\">&nbsp;<sup>[A]</sup></td>\n";
             echo "                  <td>", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), "</td>\n";
             echo "                  <td>", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), "</td>\n";
             echo "                  <td>&nbsp;</td>\n";
@@ -228,7 +228,7 @@ foreach ($word_filter_array as $key => $word_filter) {
 if (sizeof($word_filter_array) < 20) {
 
     echo "                <tr>\n";
-    echo "                  <td>{$lang['newcaps']}</td>\n";
+    echo "                  <td>&nbsp;{$lang['newcaps']}</td>\n";
     echo "                  <td>", form_input_text("new_match", "", 30), "</td>\n";
     echo "                  <td>", form_input_text("new_replace", "", 30), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("new_filter_option", "0", "", true), "</td>\n";
@@ -268,19 +268,27 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\">{$lang['options']}</td>\n";
 echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td>", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "</td>\n";
-echo "                </tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td>", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "</td>\n";
+echo "                      </tr>\n";
 
 if (!forum_get_setting('admin_force_word_filter', 'Y')) {
 
-    echo "                <tr>\n";
-    echo "                  <td>", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], (isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y')), "</td>\n";
-    echo "                </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td>", form_checkbox("use_admin_filter", "Y", $lang['includeadminfilter'], (isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y')), "</td>\n";
+    echo "                      </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

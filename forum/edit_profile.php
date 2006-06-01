@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.52 2005-12-21 17:32:50 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.53 2006-06-01 16:29:07 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -93,14 +93,85 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (bh_session_get_value('UID') == 0) {
-    html_guest_error();
+$admin_edit = false;
+
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+
+    if (isset($_GET['profileuid'])) {
+
+        if (is_numeric($_GET['profileuid'])) {
+
+            $uid = $_GET['profileuid'];
+            $admin_edit = true;
+
+        } else {
+
+            html_draw_top();
+            echo "<h1>{$lang['invalidop']}</h1>\n";
+            echo "<h2>{$lang['nouserspecified']}</h2>\n";
+            html_draw_bottom();
+            exit;
+        }
+
+    } elseif (isset($_POST['profileuid'])) {
+
+        if (is_numeric($_POST['profileuid'])) {
+
+            $uid = $_POST['profileuid'];
+            $admin_edit = true;
+
+        } else {
+
+            html_draw_top();
+            echo "<h1>{$lang['invalidop']}</h1>\n";
+            echo "<h2>{$lang['nouserspecified']}</h2>\n";
+            html_draw_bottom();
+            exit;
+        }
+    
+    }else {
+
+        $uid = bh_session_get_value('UID');
+    }
+
+    if (isset($_POST['cancel'])) {
+
+        header_redirect("./admin_user.php?webtag=$webtag&uid=$uid");
+        exit;
+    }
+
+} else {
+
+    if (bh_session_get_value('UID') == 0) {
+
+        html_guest_error();
+        exit;
+    }
+
+    $uid = bh_session_get_value('UID');
+}
+
+if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != bh_session_get_value('UID'))) {
+
+    html_draw_top();
+    echo "<h1>{$lang['accessdenied']}</h1>\n";
+    echo "<p>{$lang['accessdeniedexp']}</p>";
+    html_draw_bottom();
     exit;
 }
 
 html_draw_top();
 
-echo "<h1>{$lang['editprofile']}</h1>\n";
+if ($admin_edit === true) {
+
+    $user = user_get($uid);
+
+    echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+
+}else {
+
+    echo "<h1>{$lang['editprofile']}</h1>\n";
+}
 
 $uid = bh_session_get_value('UID');
 
@@ -131,18 +202,19 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
     // Draw the form
     echo "<br />\n";
+
+    if ($admin_edit === true) echo "<div align=\"center\">\n";
+
     echo "<form name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "  ", form_input_hidden('profileuid', $uid), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td>\n";
-    echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td>\n";
-    echo "              <table class=\"box\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"posthead\">\n";
-    echo "                    <table class=\"posthead\" width=\"100%\">\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
 
     $last_psid = false;
 
@@ -155,33 +227,30 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
             if ($last_psid !== false) {
 
-                echo "                      <tr>\n";
-                echo "                        <td colspan=\"2\">&nbsp;</td>\n";
-                echo "                      </tr>\n";
-                echo "                    </table>\n";
-                echo "                  </td>\n";
+                echo "                <tr>\n";
+                echo "                  <td colspan=\"3\">&nbsp;</td>\n";
                 echo "                </tr>\n";
                 echo "              </table>\n";
-                echo "            </td>\n";
-                echo "          </tr>\n";
-                echo "        </table>\n";
-                echo "        <br />\n";
-                echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-                echo "          <tr>\n";
-                echo "            <td>\n";
-                echo "              <table class=\"box\" width=\"100%\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
                 echo "                <tr>\n";
-                echo "                  <td class=\"posthead\">\n";
-                echo "                    <table class=\"posthead\" width=\"100%\">\n";
-                echo "                      <tr>\n";
-                echo "                        <td class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
-                echo "                      </tr>\n";
+                echo "                  <td class=\"subhead\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table class=\"posthead\" width=\"90%\">\n";
 
             }else {
 
-                echo "                      <tr>\n";
-                echo "                        <td class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
-                echo "                      </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td class=\"subhead\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table class=\"posthead\" width=\"90%\">\n";
             }
         }
 
@@ -196,7 +265,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
                 $field_values = explode(';', $field_values);
 
                 echo "                            <tr>\n";
-                echo "                              <td valign=\"top\" width=\"50%\" nowrap=\"nowrap\">$field_name:</td>\n";
+                echo "                              <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">$field_name:</td>\n";
 
                 if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
                     echo "                              <td align=\"right\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
@@ -204,15 +273,27 @@ if ($profile_items_array = profile_get_user_values($uid)) {
                     echo "                              <td align=\"right\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
                 }
 
-                echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+                if ($admin_edit === false) {
+                    echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+                }else {               
+                    echo "                  <td align=\"right\" nowrap=\"nowrap\">&nbsp;</td>\n";
+                }
+
+                echo "                      </tr>\n";
             }
 
         }elseif ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
             echo "                      <tr>\n";
-            echo "                        <td valign=\"top\" width=\"50%\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
+            echo "                        <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
             echo "                        <td align=\"right\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], 4, 42), "</td>\n";
-            echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+
+            if ($admin_edit === false) {
+                echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+            }else {
+                echo "                        <td align=\"right\" nowrap=\"nowrap\">&nbsp;</td>\n";
+            }
+
             echo "                      </tr>\n";
 
         }else {
@@ -220,34 +301,54 @@ if ($profile_items_array = profile_get_user_values($uid)) {
             $text_width = array(45, 30, 10);
 
             echo "                      <tr>\n";
-            echo "                        <td valign=\"top\" width=\"50%\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
+            echo "                        <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
             echo "                        <td align=\"right\" valign=\"top\">", form_field("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], $text_width[$profile_item['TYPE']], 255), "</td>\n";
-            echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+
+            if ($admin_edit === false) {
+                echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+            }else {   
+                echo "                        <td align=\"right\" nowrap=\"nowrap\">&nbsp;</td>\n";
+            }
+
             echo "                      </tr>\n";
 
         }
     }
 
-    echo "                      <tr>\n";
-    echo "                        <td colspan=\"2\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
     echo "          </tr>\n";
-    echo "            <tr>\n";
-    echo "              <td>&nbsp;</td>\n";
-    echo "            </tr>\n";
-    echo "            <tr>\n";
-    echo "              <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
-    echo "            </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+
+    if ($admin_edit === true) {
+
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "    </tr>\n";
+
+    }else {
+
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+        echo "    </tr>\n";
+    }
+
     echo "  </table>\n";
     echo "</form>\n";
+
+    if ($admin_edit === true) echo "</div>\n";
 
 }else {
 

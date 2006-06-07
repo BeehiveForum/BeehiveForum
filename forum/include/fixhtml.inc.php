@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.117 2006-02-01 19:03:22 tribalonline Exp $ */
+/* $Id: fixhtml.inc.php,v 1.118 2006-06-07 14:39:39 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1199,11 +1199,78 @@ function clean_styles ($style)
 {
     // no inline comments
     $style = preg_replace("/\*+\/+|\/+\*+/x", "", $style);
+
     // no absolute positioning
     $style = preg_replace("/position/i", "", $style);
+
+    // Prevent silly margins, widths, paddings and heights.
+
+    $attributes_array = array('top', 'left', 'height', 'width', 'margin',
+                              'margin-top', 'margin-bottom', 'margin-left', 
+                              'margin-right', 'padding', 'padding-top', 
+                              'padding-bottom', 'padding-left', 
+                              'padding-right');
+
+    $units_array = array('px', 'pt', 'em');
+
+    $attributes = implode("|", $attributes_array);
+    $units = implode("|", $units_array);
+
+    $style = preg_replace_callback("/($attributes)\s?:\s?([0-9-]+)\s?($units)?/i", "clean_styles_restrict", $style);
+
     // no XSS javascript hacks
     $style = preg_replace("/url\(|expression\(/ix", "", $style);
+
     return $style;
+}
+
+/**
+* Support function for clean_styles
+*
+* Called by clean_styles function, this function restricts the minimum and maximum
+* size of a unit (px, pt, em) for the top, left, margin, padding, height and width
+* CSS attributes to prevent disruption of the forum by use of malicious CSS.
+*
+* @return string
+* @param array $matches is the matches from a regular expression used in preg_replace_callback.
+*/
+function clean_styles_restrict($matches)
+{
+    $attribute = $matches[1];
+    
+    if (is_numeric($matches[2])) {
+
+        if (isset($matches[3])) {
+
+            switch($matches[3]) {
+
+                case 'px':
+
+                    if ($matches[2] < 0) return "$attribute: 0px";
+                    if ($matches[2] > 50) return "$attribute: 50px";
+                    break;
+
+                case 'pt':
+
+                    if ($matches[2] < 0) return "$attribute: 0pt";
+                    if ($matches[2] > 10) return "$attribute: 10pt";
+                    break;
+
+                case 'em':
+
+                    if ($matches[2] < 0) return "$attribute: 0em";
+                    if ($matches[2] > 5) return "$attribute: 5em";
+                    break;
+            }
+
+        }else {
+
+            if ($matches[2] < 0) return "$attribute: 0";
+            if ($matches[2] > 50) return "$attribute: 50";
+        }
+    }
+
+    return $matches[0];
 }
 
 /**

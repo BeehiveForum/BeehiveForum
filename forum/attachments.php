@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.116 2006-05-14 12:12:12 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.117 2006-06-07 14:39:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,13 +132,13 @@ html_draw_top('onload=add_upload_field_link()');
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "var upload_field_array = new Array();\n\n";
-echo "var upload_field_html = '<input type=\"file\" name=\"userfile[]\" id=\"userfile[]\" class=\"bhinputtext\" value=\"\" size=\"40\" />';\n";
+echo "var upload_field_html = '", form_field("userfile[]", "", 35, 0, "file"),"';\n";
 echo "var upload_field_link_html = '<img src=\"", style_image('attach.png'), "\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /><a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">Upload another file</a>';\n\n";
 echo "function add_upload_field_link()\n";
 echo "{\n";
 echo "    var upload_field_link_obj;\n\n";
 echo "    if (document.getElementById) {\n\n";
-echo "        upload_field_link_obj = eval(\"document.getElementById('upload_fields_link')\");\n";
+echo "        upload_field_link_obj = document.getElementById('upload_fields_link');\n";
 echo "        upload_field_link_obj.innerHTML = upload_field_link_html;\n";
 echo "    }\n";
 echo "}\n\n";
@@ -146,8 +146,9 @@ echo "function add_upload_field()\n";
 echo "{\n";
 echo "    var upload_fields_obj;\n\n";
 echo "    if (document.getElementById) {\n\n";
-echo "        upload_field_obj = eval(\"document.getElementById('upload_fields')\");\n\n";
-echo "        if (upload_field_array.length < 9) {\n\n";
+echo "        upload_field_obj = document.getElementById('upload_fields');\n\n";
+echo "        upload_field_child_objs = upload_field_obj.getElementsByTagName('div');\n\n";
+echo "        if (upload_field_child_objs.length < 9) {\n\n";
 echo "            new_upload_div = document.createElement('div');\n";
 echo "            upload_field_obj.appendChild(new_upload_div);\n";
 echo "            new_upload_div.innerHTML =  upload_field_html;\n\n";
@@ -278,37 +279,45 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"3\" class=\"subhead\">{$lang['uploadattachment']}</td>\n";
 echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"220\" class=\"postbody\" valign=\"top\">{$lang['enterfilenamestoupload']} :</td>\n";
-echo "                  <td class=\"postbody\">\n";
-echo "                    ", form_field("userfile[]", "", 40, 0, "file"), "\n";
-echo "                    <div id=\"upload_fields\"></div>\n";
-echo "                  </td>\n";
-echo "                  <td class=\"postbody\" valign=\"top\">", form_submit("upload", $lang['upload'], "onclick=\"this.value='{$lang['waitdotdot']}'\""), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td width=\"220\">&nbsp;</td>\n";
-echo "                  <td colspan=\"2\" class=\"smalltext\"><div id=\"upload_fields_link\"></div></td>\n";
-echo "                </tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"220\" class=\"postbody\" valign=\"top\">{$lang['enterfilenamestoupload']} :</td>\n";
+echo "                        <td class=\"postbody\">\n";
+echo "                          ", form_field("userfile[]", "", 35, 0, "file"), "\n";
+echo "                          <div id=\"upload_fields\"></div>\n";
+echo "                        </td>\n";
+echo "                        <td class=\"postbody\" valign=\"top\">", form_submit("upload", $lang['upload'], "onclick=\"this.value='{$lang['waitdotdot']}'\""), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"220\">&nbsp;</td>\n";
+echo "                        <td colspan=\"2\" class=\"smalltext\"><div id=\"upload_fields_link\"></div></td>\n";
+echo "                      </tr>\n";
 
 if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
 
-    echo "                <tr>\n";
-    echo "                  <td width=\"220\">&nbsp;</td>\n";
-    echo "                  <td colspan=\"2\"><h2>{$lang['successfullyuploaded']}:<br />", implode(",<br />", $upload_success), ".</h2></td>\n";
-    echo "                </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"220\">&nbsp;</td>\n";
+    echo "                        <td colspan=\"2\"><h2>{$lang['successfullyuploaded']}:<br />", implode(",<br />", $upload_success), ".</h2></td>\n";
+    echo "                      </tr>\n";
 }
 
 if (isset($upload_failure) && is_array($upload_failure) && sizeof($upload_failure) > 0) {
 
-    echo "                <tr>\n";
-    echo "                  <td width=\"220\">&nbsp;</td>\n";
-    echo "                  <td colspan=\"2\"><h2>{$lang['failedtoupload']}:<br />", implode(",<br />", $upload_failure), ".</h2></td>\n";
-    echo "                </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"220\">&nbsp;</td>\n";
+    echo "                        <td colspan=\"2\"><h2>{$lang['failedtoupload']}:<br />", implode(",<br />", $upload_failure), ".</h2></td>\n";
+    echo "                      </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td colspan=\"3\">&nbsp;</td>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"3\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -328,6 +337,11 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
 echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 if (get_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
 
@@ -337,13 +351,13 @@ if (get_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $imag
 
             if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
-                echo "                <tr>\n";
-                echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
-                echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-                echo "                    ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
-                echo "                  </td>\n";
-                echo "                </tr>\n";
+                echo "                      <tr>\n";
+                echo "                        <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                echo "                        <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                echo "                        <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
+                echo "                          ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
             }
@@ -356,13 +370,13 @@ if (get_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $imag
 
             if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
-                echo "                <tr>\n";
-                echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
-                echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-                echo "                    ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
-                echo "                  </td>\n";
-                echo "                </tr>\n";
+                echo "                      <tr>\n";
+                echo "                        <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                echo "                        <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                echo "                        <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
+                echo "                          ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
             }
@@ -371,13 +385,16 @@ if (get_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $imag
 
 }else {
 
-    echo "                <tr>\n";
-    echo "                  <td valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
-    echo "                </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
+    echo "                      </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"4\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -397,6 +414,11 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
 echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 if (get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
 
@@ -406,23 +428,23 @@ if (get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $
 
             if ($attachment_link = attachment_make_link($attachment, false)) {
 
-                echo "                <tr>\n";
-                echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                echo "                      <tr>\n";
+                echo "                        <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
 
-                    echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                        <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
                 }else {
 
-                    echo "                  <td>&nbsp;</td>\n";
+                    echo "                        <td>&nbsp;</td>\n";
                 }
 
-                echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-                echo "                    ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
-                echo "                  </td>\n";
-                echo "                </tr>\n";
+                echo "                        <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                echo "                        <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
+                echo "                          ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
             }
@@ -435,23 +457,23 @@ if (get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $
 
             if ($attachment_link = attachment_make_link($attachment, false)) {
 
-                echo "                <tr>\n";
-                echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                echo "                      <tr>\n";
+                echo "                        <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
 
-                    echo "                  <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                        <td valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
                 }else {
 
-                    echo "                  <td>&nbsp;</td>\n";
+                    echo "                        <td>&nbsp;</td>\n";
                 }
 
-                echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                  <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-                echo "                    ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
-                echo "                  </td>\n";
-                echo "                </tr>\n";
+                echo "                        <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                echo "                        <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
+                echo "                          ", form_submit("delete[{$attachment['hash']}]", $lang['del']), "\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
             }
@@ -460,13 +482,16 @@ if (get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $
 
 }else {
 
-    echo "                <tr>\n";
-    echo "                  <td valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
-    echo "                </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
+    echo "                      </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"4\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -486,20 +511,28 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"5\" class=\"subhead\">{$lang['usage']}</td>\n";
 echo "                </tr>\n";
+echo "              </table>\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
-echo "                  <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
-echo "                  <td class=\"postbody\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
-echo "                  <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
-echo "                  <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
-echo "                  <td class=\"postbody\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td valign=\"top\" class=\"postbody\">{$lang['totalsize']}:</td>\n";
+echo "                        <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+echo "                        <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size($total_attachment_size), "</td>\n";
+echo "                        <td class=\"postbody\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td valign=\"top\" class=\"postbody\">{$lang['freespace']}:</td>\n";
+echo "                        <td valign=\"top\" class=\"postbody\">&nbsp;</td>\n";
+echo "                        <td align=\"right\" valign=\"top\" class=\"postbody\">", format_file_size(get_free_attachment_space($uid)), "</td>\n";
+echo "                        <td class=\"postbody\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"5\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

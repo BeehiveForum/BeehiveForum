@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.160 2006-05-15 10:46:34 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.161 2006-06-07 14:39:39 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -396,7 +396,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
             $polldata['CONTENT'].= "          <tr>\n";
             $polldata['CONTENT'].= "            <td>\n";
-            $polldata['CONTENT'].= "              <table>\n";
+            $polldata['CONTENT'].= "              <table width=\"100%\">\n";
 
             array_multisort($pollresults['GROUP_ID'], SORT_NUMERIC, SORT_ASC, $pollresults['OPTION_ID'], $pollresults['OPTION_NAME'], $pollresults['VOTES']);
 
@@ -417,6 +417,11 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                             $polldata['CONTENT'].= "                  <td class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$pollresults['GROUP_ID'][$i - 1]}]", $dropdown['value'], $dropdown['label'], false, false). "</td>\n";
                             $polldata['CONTENT'].= "                </tr>\n";
 
+                        }else {
+
+                            $polldata['CONTENT'].= "                <tr>\n";
+                            $polldata['CONTENT'].= "                  <td colspan=\"2\"><hr /></td>\n";
+                            $polldata['CONTENT'].= "                <tr>\n";
                         }
 
                         unset($dropdown);
@@ -513,6 +518,10 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
                     if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
                         if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+
+                            $polldata['CONTENT'].= "                <tr>\n";
+                            $polldata['CONTENT'].= "                  <td colspan=\"2\"><hr /></td>\n";
+                            $polldata['CONTENT'].= "                <tr>\n";
 
                             $poll_group_count++;
                         }
@@ -830,6 +839,11 @@ function poll_preview_form($pollresults, $polldata)
                     $polldisplay.= "                  <td class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$pollresults['GROUP_ID'][$i - 1]}]", $dropdown['value'], $dropdown['label'], false, false). "</td>\n";
                     $polldisplay.= "                </tr>\n";
 
+                }else {
+
+                    $polldisplay.= "                <tr>\n";
+                    $polldisplay.= "                  <td colspan=\"2\"><hr /></td>\n";
+                    $polldisplay.= "                <tr>\n";
                 }
 
                 unset($dropdown);
@@ -1100,6 +1114,11 @@ function poll_horizontal_graph($tid)
             if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
                 if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
+
+                    $polldisplay.= "                            <tr>\n";
+                    $polldisplay.= "                              <td colspan=\"2\"><hr /></td>\n";
+                    $polldisplay.= "                            </tr>\n";
+
                     $poll_group_count++;
                 }
 

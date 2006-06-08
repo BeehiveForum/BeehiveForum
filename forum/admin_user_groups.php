@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.24 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.25 2006-06-08 18:10:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -133,7 +133,7 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_user_groups.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -154,8 +154,8 @@ if ($user_groups_array = perm_get_user_groups()) {
         echo "                <tr>\n";
         echo "                  <td nowrap=\"nowrap\">&nbsp;", form_checkbox("delete_group[]", $user_group['GID'], "", false), "&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
         echo "                  <td nowrap=\"nowrap\">&nbsp;{$user_group['GROUP_DESC']}</td>\n";
-        echo "                  <td>&nbsp;{$user_group['USER_COUNT']}</td>\n";
-        echo "                  <td align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
+        echo "                  <td width=\"60\">&nbsp;{$user_group['USER_COUNT']}</td>\n";
+        echo "                  <td width=\"180\" align=\"center\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
         echo "                </tr>\n";
     }
 

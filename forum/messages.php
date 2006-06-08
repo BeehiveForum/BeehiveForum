@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.190 2006-05-14 12:18:26 decoyduck Exp $ */
+/* $Id: messages.php,v 1.191 2006-06-08 18:10:13 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -408,7 +408,7 @@ echo "    <td colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr valign=\"top\">\n";
 
-if (($threaddata['CLOSED'] == 0) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
+if (($threaddata['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $threaddata['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
     echo "    <td width=\"33%\" align=\"left\"><p><img src=\"". style_image('reply_all.png') ."\" alt=\"{$lang['replyall']}\" title=\"{$lang['replyall']}\" border=\"0\" /> <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\"><b>{$lang['replyall']}</b></a></p></td>\n";
 } else {
     echo "    <td width=\"33%\" align=\"left\">&nbsp;</td>\n";

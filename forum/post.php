@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.269 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: post.php,v 1.270 2006-06-08 18:10:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -444,7 +444,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
+    if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";
@@ -475,7 +475,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         exit;
     }
 
-    if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
+    if (!bh_session_check_perm(USER_PERM_POST_CREATE, $t_fid)) {
 
         html_draw_top();
         echo "<h1>{$lang['error']}</h1>\n";

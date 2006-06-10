@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.82 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.83 2006-06-10 16:04:35 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -286,6 +286,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['guest_account_enabled'] = "Y";
     }else {
         $new_forum_settings['guest_account_enabled'] = "N";
+    }
+
+    if (isset($_POST['guest_show_recent']) && $_POST['guest_show_recent'] == "Y") {
+        $new_forum_settings['guest_show_recent'] = "Y";
+    }else {
+        $new_forum_settings['guest_show_recent'] = "N";
     }
 
     if ($valid) {
@@ -716,6 +722,10 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['allowguestaccess']}:</td>\n";
 echo "                        <td>", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "Y")), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "N") || !isset($forum_settings['guest_account_enabled'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['listguestsinvisitorlog']}:</td>\n";
+echo "                        <td>", form_radio("guest_show_recent", "Y", $lang['yes'], (isset($forum_settings['guest_show_recent']) && $forum_settings['guest_show_recent'] == 'Y') || !isset($forum_settings['guest_show_recent'])), "&nbsp;", form_radio("guest_show_recent", "N", $lang['no'], (isset($forum_settings['guest_show_recent']) && $forum_settings['guest_show_recent'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

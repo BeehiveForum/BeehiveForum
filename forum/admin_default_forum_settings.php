@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.45 2006-05-15 22:46:41 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.46 2006-06-10 16:04:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,6 +244,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['guest_account_enabled'] = "Y";
     }else {
         $new_forum_settings['guest_account_enabled'] = "N";
+    }
+
+    if (isset($_POST['guest_show_recent']) && $_POST['guest_show_recent'] == "Y") {
+        $new_forum_settings['guest_show_recent'] = "Y";
+    }else {
+        $new_forum_settings['guest_show_recent'] = "N";
     }
 
     if (isset($_POST['guest_auto_logon']) && $_POST['guest_auto_logon'] == "Y") {
@@ -641,6 +647,10 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['enableguestaccount']}:</td>\n";
 echo "                        <td>", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($default_forum_settings['guest_account_enabled']) && $default_forum_settings['guest_account_enabled'] == 'Y') || !isset($default_forum_settings['guest_account_enabled'])), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($default_forum_settings['guest_account_enabled']) && $default_forum_settings['guest_account_enabled'] == 'N')), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['listguestsinvisitorlog']}:</td>\n";
+echo "                        <td>", form_radio("guest_show_recent", "Y", $lang['yes'], (isset($default_forum_settings['guest_show_recent']) && $default_forum_settings['guest_show_recent'] == 'Y') || !isset($default_forum_settings['guest_show_recent'])), "&nbsp;", form_radio("guest_show_recent", "N", $lang['no'], (isset($default_forum_settings['guest_show_recent']) && $default_forum_settings['guest_show_recent'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['autologinguests']}:</td>\n";

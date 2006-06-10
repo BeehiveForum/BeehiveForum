@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.267 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.268 2006-06-10 16:04:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -906,10 +906,16 @@ function users_get_recent($offset, $limit)
 
     $forum_fid = $table_data['FID'];
 
+    $include_guests = "";
+
+    if (forum_get_setting('guest_show_recent', 'N')) {
+        $include_guests = "AND VISITOR_LOG.UID > 0";
+    }
+
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql.= "AND VISITOR_LOG.FORUM = $forum_fid";
+    $sql.= "AND VISITOR_LOG.FORUM = $forum_fid $include_guests";
 
     $result = db_query($sql, $db_users_get_recent);
     list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -918,8 +924,8 @@ function users_get_recent($offset, $limit)
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql.= "AND VISITOR_LOG.FORUM = $forum_fid ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT $offset, $limit";
+    $sql.= "AND VISITOR_LOG.FORUM = $forum_fid $include_guests ";
+    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, $limit";
 
     $result = db_query($sql, $db_users_get_recent);
 

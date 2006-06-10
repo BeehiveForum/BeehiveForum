@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.320 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.321 2006-06-10 16:04:35 decoyduck Exp $ */
 
 // International English language file
 
@@ -605,6 +605,7 @@ $lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachment
 $lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
+$lang['listguestsinvisitorlog'] = "List Guests in Visitor Log";
 $lang['autologinguests'] = "Automatically Login Guests";
 $lang['guestaccess'] = "Guest Access";
 $lang['allowguestaccess'] = "Allow Guest Access";

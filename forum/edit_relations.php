@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.46 2006-06-01 16:29:07 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.47 2006-06-12 22:55:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -102,17 +102,33 @@ $uid = bh_session_get_value('UID');
 $update_array = array();
 
 if (isset($_POST['submit'])) {
+
     if (isset($_POST['relationship']) && is_array($_POST['relationship'])) {
+
         foreach ($_POST['relationship'] as $peer_uid => $peer_rel) {
+
             if (isset($_POST['signature'][$peer_uid])) {
+
                 $peer_rel = $peer_rel | $_POST['signature'][$peer_uid];
             }
+
+            if (isset($_POST['nickname'][$peer_uid])) {
+                $peer_nickname = $_POST['nickname'][$peer_uid];
+            }else {
+                $peer_nickname = user_get_nickname($peer_uid);
+            }
+
             if ($peer_uid != $uid) {
-                if (user_rel_update($uid, $peer_uid, $peer_rel)) {
+
+                if (user_rel_update($uid, $peer_uid, $peer_rel, $peer_nickname)) {
+
                     if (!in_array($lang['relationshipsupdated'], $update_array)) {
+
                         $update_array[] = $lang['relationshipsupdated'];
                     }
+
                 }else {
+
                     $update_array[] = $lang['relationshipupdatefailed'];
                 }
             }
@@ -121,17 +137,33 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_POST['add'])) {
+
     if (isset($_POST['add_relationship']) && is_array($_POST['add_relationship'])) {
+
         foreach ($_POST['add_relationship'] as $peer_uid => $peer_rel) {
+
             if (isset($_POST['add_signature'][$peer_uid])) {
+
                 $peer_rel = $peer_rel | $_POST['add_signature'][$peer_uid];
             }
+
+            if (isset($_POST['add_nickname'][$peer_uid])) {
+                $peer_nickname = $_POST['add_nickname'][$peer_uid];
+            }else {
+                $peer_nickname = user_get_nickname($peer_uid);
+            }
+
             if ($peer_uid != $uid) {
-                if (user_rel_update($uid, $peer_uid, $peer_rel)) {
+
+                if (user_rel_update($uid, $peer_uid, $peer_rel, $peer_nickname)) {
+
                     if (!in_array($lang['relationshipsupdated'], $update_array)) {
+
                         $update_array[] = $lang['relationshipsupdated'];
                     }
+
                 }else {
+
                     $update_array[] = $lang['relationshipupdatefailed'];
                 }
             }
@@ -194,15 +226,11 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+echo "                  <td class=\"subhead\" width=\"200\">&nbsp;{$lang['user']}</td>\n";
+echo "                  <td class=\"subhead\">&nbsp;{$lang['nickname']}</td>\n";
 echo "                  <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
 echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
 echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 $user_peers = user_get_relationships($uid, $start_main);
 
@@ -210,33 +238,49 @@ if (sizeof($user_peers['user_array']) > 0) {
 
     foreach ($user_peers['user_array'] as $user_peer) {
 
-        echo "                      <tr>\n";
-        echo "                        <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']), "</a></td>\n";
-        echo "                        <td nowrap=\"nowrap\">\n";
-        echo "                          &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", ($user_peer['RELATIONSHIP']&USER_FRIEND)), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
-        echo "                          &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($user_peer['RELATIONSHIP']&USER_FRIEND) && !($user_peer['RELATIONSHIP']&USER_IGNORED)), "{$lang['normal']}\n";
-        echo "                          &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED, "", ($user_peer['RELATIONSHIP']&USER_IGNORED)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" />\n";
-        echo "                          &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED_COMPLETELY, "", ($user_peer['RELATIONSHIP']&USER_IGNORED_COMPLETELY)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" />\n";
-        echo "                        </td>\n";
-        echo "                        <td nowrap=\"nowrap\">\n";
-        echo "                          &nbsp;", form_radio("signature[{$user_peer['UID']}]", 0, "", !($user_peer['RELATIONSHIP']&USER_IGNORED_SIG)), "{$lang['display']}\n";
-        echo "                          &nbsp;", form_radio("signature[{$user_peer['UID']}]", USER_IGNORED_SIG, "", ($user_peer['RELATIONSHIP']&USER_IGNORED_SIG)), "{$lang['ignore']}\n";
-        echo "                        </td>\n";
-        echo "                      </tr>\n";
+        if (isset($_POST['relationship'][$user_peer['UID']])) {
+            $peer_relationship = $_POST['relationship'][$user_peer['UID']];
+        }else {
+            $peer_relationship = $user_peer['RELATIONSHIP'];
+        }
+
+        if (isset($_POST['signature'][$user_peer['UID']])) {
+            $peer_signature = $_POST['signature'][$user_peer['UID']];
+        }else {
+            $peer_signature = $user_peer['RELATIONSHIP'];
+        }
+
+        if (isset($_POST['reset_nickname'][$user_peer['UID']])) {
+            $nickname = user_get_nickname($user_peer['UID']);
+        }else {
+            $nickname = $user_peer['PEER_NICKNAME'];
+        }
+
+        echo "                <tr>\n";
+        echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">{$user_peer['LOGON']}</a></td>\n";
+        echo "                  <td>&nbsp;", form_input_text("nickname[{$user_peer['UID']}]", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y"), "</td>\n";
+        echo "                  <td nowrap=\"nowrap\">\n";
+        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", $peer_relationship & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
+        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($peer_relationship & USER_FRIEND) && !($peer_relationship & USER_IGNORED)), "{$lang['normal']}\n";
+        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED, "", ($peer_relationship & USER_IGNORED)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" />\n";
+        echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED_COMPLETELY, "", ($peer_relationship & USER_IGNORED_COMPLETELY)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" />\n";
+        echo "                  </td>\n";
+        echo "                  <td nowrap=\"nowrap\">\n";
+        echo "                    &nbsp;", form_radio("signature[{$user_peer['UID']}]", 0, "", !($peer_signature & USER_IGNORED_SIG)), "{$lang['display']}\n";
+        echo "                    &nbsp;", form_radio("signature[{$user_peer['UID']}]", USER_IGNORED_SIG, "", ($peer_signature & USER_IGNORED_SIG)), "{$lang['ignore']}\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
     }
 
 }else {
 
-    echo "                      <tr>\n";
-    echo "                        <td colspan=\"3\">&nbsp;{$lang['norelationships']}</td>\n";
-    echo "                      </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"3\">&nbsp;{$lang['norelationships']}</td>\n";
+    echo "                </tr>\n";
 }
 
-echo "                      <tr>\n";
-echo "                        <td>&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
+echo "                <tr>\n";
+echo "                  <td>&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -280,15 +324,11 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "            <td class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+    echo "                  <td class=\"subhead\">&nbsp;{$lang['nickname']}</td>\n";
     echo "                  <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
     echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
     echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
     $user_search_array = user_search($usersearch, $start_search, $uid);
 
@@ -296,33 +336,31 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
         foreach ($user_search_array['user_array'] as $user) {
 
-            echo "                      <tr>\n";
-            echo "                        <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
-            echo "                        <td>\n";
-            echo "                          &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", false), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
-            echo "                          &nbsp;", form_radio("add_relationship[{$user['UID']}]", 0, "", true), "{$lang['normal']}\n";
-            echo "                          &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED, "", false), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" />\n";
-            echo "                          &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED_COMPLETELY, "", false), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" />\n";
-            echo "                        </td>\n";
-            echo "                        <td>\n";
-            echo "                          &nbsp;", form_radio("add_signature[{$user['UID']}]", 0, "", true), "{$lang['display']}\n";
-            echo "                          &nbsp;", form_radio("add_signature[{$user['UID']}]", USER_IGNORED_SIG, "", false), "{$lang['ignore']}\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td width=\"200\">&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">{$user['LOGON']}</a></td>\n";
+            echo "                  <td>&nbsp;", form_input_text("add_nickname[{$user['UID']}]", $user['NICKNAME'], 30), "</td>\n";
+            echo "                  <td>\n";
+            echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", $user['RELATIONSHIP'] & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
+            echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", 0, "", !($user['RELATIONSHIP'] & USER_FRIEND) && !($user['RELATIONSHIP'] & USER_IGNORED)), "{$lang['normal']}\n";
+            echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED, "", ($user['RELATIONSHIP'] & USER_IGNORED)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" />\n";
+            echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED_COMPLETELY, "", ($user['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" />\n";
+            echo "                  </td>\n";
+            echo "                  <td>\n";
+            echo "                    &nbsp;", form_radio("add_signature[{$user['UID']}]", 0, "", !($user['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['display']}\n";
+            echo "                    &nbsp;", form_radio("add_signature[{$user['UID']}]", USER_IGNORED_SIG, "", ($user['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['ignore']}\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
         }
 
     }else {
 
-        echo "                      <tr>\n";
-        echo "                        <td class=\"posthead\" colspan=\"7\" align=\"left\">&nbsp;{$lang['nomatches']}</td>\n";
-        echo "                      </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"posthead\" colspan=\"7\" align=\"left\">&nbsp;{$lang['nomatches']}</td>\n";
+        echo "                </tr>\n";
     }
 
-    echo "                      <tr>\n";
-    echo "                        <td>&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";

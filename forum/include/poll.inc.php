@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.161 2006-06-07 14:39:39 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.162 2006-06-12 22:55:33 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -172,8 +172,8 @@ function poll_get($tid)
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, POST.VIEWED, ";
     $sql.= "POST.MOVED_TID, POST.MOVED_PID, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
     $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER.RELATIONSHIP, ";
-    $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, POLL.OPTIONTYPE,";
-    $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.QUESTION, ";
+    $sql.= "USER_PEER.PEER_NICKNAME, POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, ";
+    $sql.= "POLL.VOTETYPE, POLL.OPTIONTYPE, UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.QUESTION, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, EDIT_USER.LOGON AS EDIT_LOGON, POST.IPADDRESS, ";
     $sql.= "THREAD.FID, THREAD.LENGTH FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
@@ -217,8 +217,13 @@ function poll_get($tid)
         $polldata['OPTIONTYPE'] = 0;
     }
 
-    return $polldata;
+    if (isset($polldata['PEER_NICKNAME'])) {
+        if (!is_null($polldata['PEER_NICKNAME']) && strlen($polldata['PEER_NICKNAME']) > 0) {
+            $polldata['NICKNAME'] = $polldata['PEER_NICKNAME'];
+        }
+    }
 
+    return $polldata;
 }
 
 function poll_get_votes($tid)

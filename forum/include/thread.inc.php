@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.78 2006-05-15 09:12:22 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.79 2006-06-12 22:55:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -71,12 +71,16 @@ function thread_get($tid, $inc_deleted = false)
     $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
     $sql.= "USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, FOLDER.TITLE AS FOLDER_TITLE ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql.= "USER_PEER.RELATIONSHIP, FOLDER.TITLE AS FOLDER_TITLE ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE THREAD.TID = '$tid' ";
     
     if ($inc_deleted === false) $sql.= "AND THREAD.LENGTH > 0 ";
@@ -105,6 +109,12 @@ function thread_get($tid, $inc_deleted = false)
 
         if (!isset($threaddata['CLOSED'])) {
             $threaddata['CLOSED'] = 0;
+        }
+
+        if (isset($threaddata['PEER_NICKNAME'])) {
+            if (!is_null($threaddata['PEER_NICKNAME']) && strlen($threaddata['PEER_NICKNAME']) > 0) {
+                $threaddata['NICKNAME'] = $threaddata['PEER_NICKNAME'];
+            }
         }
 
         return $threaddata;

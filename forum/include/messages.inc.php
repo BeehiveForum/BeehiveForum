@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.398 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.399 2006-06-12 22:55:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,6 +59,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "POST.APPROVED_BY, APPROVED_USER.LOGON AS APPROVED_LOGON, FUSER.LOGON AS FLOGON, ";
     $sql .= "FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
+    $sql .= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
     $sql .= "THREAD.FID, THREAD.LENGTH FROM {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql .= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
@@ -110,6 +111,18 @@ function messages_get($tid, $pid = 1, $limit = 1)
             if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
             if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
 
+            if (isset($message['PTNICK'])) {
+                if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
+                    $message['TNICK'] = $message['PTNICK'];
+                }
+            }
+
+            if (isset($message['PFNICK'])) {
+                if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
+                    $message['FNICK'] = $message['PFNICK'];
+                }
+            }
+
             $messages[] = $message;
         }
 
@@ -142,6 +155,18 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         if (!isset($messages['MOVED_TID'])) $messages['MOVED_TID'] = 0;
         if (!isset($messages['MOVED_PID'])) $messages['MOVED_PID'] = 0;
+
+        if (isset($messages['PTNICK'])) {
+            if (!is_null($messages['PTNICK']) && strlen($messages['PTNICK']) > 0) {
+                $messages['TNICK'] = $messages['PTNICK'];
+            }
+        }
+
+        if (isset($messages['PFNICK'])) {
+            if (!is_null($messages['PFNICK']) && strlen($messages['PFNICK']) > 0) {
+                $messages['FNICK'] = $messages['PFNICK'];
+            }
+        }
 
         return $messages;
     }

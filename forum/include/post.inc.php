@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.143 2006-04-14 16:38:51 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.144 2006-06-12 22:55:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -216,16 +216,30 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     $forum_fid = $table_data['FID'];
 
-    if (isset($default_uid) && $default_uid != 0){
+    $uid = bh_session_get_value('UID');
 
-        $top_sql = "SELECT LOGON, NICKNAME FROM USER where UID = '$default_uid'";
-        $result = db_query($top_sql,$db_post_draw_to_dropdown);
+    if (isset($default_uid) && $default_uid != 0) {
+
+        $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
+        $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "WHERE USER.UID = '$default_uid' ";
+
+        $result = db_query($sql, $db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
 
-            $top_user = db_fetch_array($result);
-            $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+            if ($top_user = db_fetch_array($result)) {
+                
+                if (isset($top_user['PEER_NICKNAME'])) {
+                    if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
+                        $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
+                    }
+                }
+            
+                $fmt_username = format_user_name($top_user['LOGON'], $top_user['NICKNAME']);
+                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+            }
         }
     }
 
@@ -233,40 +247,33 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         $html .= "<option value=\"0\">{$lang['allcaps']}</option>\n";
     }
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE VISITOR_LOG.FORUM = $forum_fid ";
-    $sql.= "AND USER.UID <> $default_uid ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID <> '$default_uid' ";
+    $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
     while ($row = db_fetch_array($result)) {
 
-        if (isset($row['LOGON'])) {
-           $logon = $row['LOGON'];
-        } else {
-           $logon = "";
-        }
+        if (isset($row['LOGON']) && isset($row['NICKNAME'])) {
 
-        if(isset($row['NICKNAME'])){
-            $nickname = $row['NICKNAME'];
-        } else {
-            $nickname = "";
-        }
-
-        $fmt_uid = $row['UID'];
-        $fmt_username = format_user_name($logon,$nickname);
-
-        if($fmt_uid != $default_uid && $fmt_uid != 0){
-            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
+            if (isset($row['PEER_NICKNAME'])) {
+                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
+                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+                }
+            }
+        
+            $fmt_username = format_user_name($row['LOGON'], $row['NICKNAME']);
+            $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
         }
     }
 
-    $html .= "</select>";
+    $html.= "</select>";
     return $html;
 }
 
@@ -282,16 +289,30 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
 
     $forum_fid = $table_data['FID'];
 
+    $uid = bh_session_get_value('UID');
+
     if (isset($default_uid) && $default_uid != 0) {
 
-        $top_sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$default_uid'";
-        $result = db_query($top_sql,$db_post_draw_to_dropdown);
+        $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
+        $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "WHERE USER.UID = '$default_uid' ";
+
+        $result = db_query($sql, $db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
 
-            $top_user = db_fetch_array($result);
-            $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+            if ($top_user = db_fetch_array($result)) {
+                
+                if (isset($top_user['PEER_NICKNAME'])) {
+                    if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
+                        $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
+                    }
+                }
+            
+                $fmt_username = format_user_name($top_user['LOGON'], $top_user['NICKNAME']);
+                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+            }
         }
     }
 
@@ -299,40 +320,33 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
         $html .= "<option value=\"0\">{$lang['allcaps']}</option>\n";
     }
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "WHERE VISITOR_LOG.FORUM = $forum_fid ";
-    $sql.= "AND USER.UID <> $default_uid ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID <> '$default_uid' ";
+    $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
     while ($row = db_fetch_array($result)) {
+        
+        if (isset($row['LOGON']) && isset($row['NICKNAME'])) {
 
-        if (isset($row['LOGON'])) {
-           $logon = $row['LOGON'];
-        } else {
-           $logon = "";
-        }
-
-        if(isset($row['NICKNAME'])){
-            $nickname = $row['NICKNAME'];
-        } else {
-            $nickname = "";
-        }
-
-        $fmt_uid = $row['UID'];
-        $fmt_username = format_user_name($logon,$nickname);
-
-        if($fmt_uid != $default_uid && $fmt_uid != 0){
-            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
+            if (isset($row['PEER_NICKNAME'])) {
+                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
+                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+                }
+            }
+        
+            $fmt_username = format_user_name($row['LOGON'], $row['NICKNAME']);
+            $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
         }
     }
 
-    $html .= "</select>";
+    $html.= "</select>";
     return $html;
 }
 
@@ -348,16 +362,30 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
     if (!$table_data = get_table_prefix()) return "";
 
+    $uid = bh_session_get_value('UID');
+
     if (isset($default_uid) && $default_uid != 0) {
 
-        $top_sql = "SELECT LOGON, NICKNAME FROM USER WHERE UID = '$default_uid'";
-        $result = db_query($top_sql,$db_post_draw_to_dropdown);
+        $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
+        $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "WHERE USER.UID = '$default_uid' ";
+
+        $result = db_query($sql, $db_post_draw_to_dropdown);
 
         if (db_num_rows($result) > 0) {
 
-            $top_user = db_fetch_array($result);
-            $fmt_username = format_user_name($top_user['LOGON'],$top_user['NICKNAME']);
-            $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+            if ($top_user = db_fetch_array($result)) {
+                
+                if (isset($top_user['PEER_NICKNAME'])) {
+                    if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
+                        $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
+                    }
+                }
+            
+                $fmt_username = format_user_name($top_user['LOGON'], $top_user['NICKNAME']);
+                $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
+            }
         }
     }
 
@@ -374,33 +402,28 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
         }
     }
 
-    $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "WHERE POST.TID = $tid ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE POST.TID = '$tid' AND POST.FROM_UID <> '$default_uid' ";
     $sql.= "GROUP BY POST.FROM_UID LIMIT 0, 20";
 
     $result = db_query($sql, $db_post_draw_to_dropdown);
 
     while ($row = db_fetch_array($result)) {
 
-        if (isset($row['LOGON'])) {
-           $logon = $row['LOGON'];
-        } else {
-           $logon = "";
-        }
+        if (isset($row['LOGON']) && isset($row['NICKNAME'])) {
 
-        if(isset($row['NICKNAME'])){
-            $nickname = $row['NICKNAME'];
-        } else {
-            $nickname = "";
-        }
-
-        $fmt_uid = $row['UID'];
-        $fmt_username = format_user_name($logon,$nickname);
-
-        if ($fmt_uid != $default_uid && $fmt_uid != 0) {
-            $html .= "<option value=\"$fmt_uid\">$fmt_username</option>\n";
+            if (isset($row['PEER_NICKNAME'])) {
+                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
+                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+                }
+            }
+        
+            $fmt_username = format_user_name($row['LOGON'], $row['NICKNAME']);
+            $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
         }
     }
 

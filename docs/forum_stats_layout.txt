@@ -1,0 +1,30 @@
+[[Forum Stats]]
+
+[Session Stats]
+
+Active users
+Active guests
+
+Most users ever online
+Most guests ever online
+
+Most active user
+Longest user session
+
+[User Stats]
+
+Number of registered users
+Newest user
+
+[Post Stats]
+
+Total number of posts
+Number of posts made in last 60 minutes
+Most posts made in a single 60 minute period
+Top 20 posters (link to existing admin_post_stats.php)
+
+[Thread Stats]
+
+Total number of threads
+Longest thread
+Most read thread

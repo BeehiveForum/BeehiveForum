@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.95 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.96 2006-06-12 22:55:34 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -916,6 +916,7 @@ $sql = "CREATE TABLE {$forum_webtag}_USER_PEER (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL, ";
+$sql.= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID, PEER_UID), ";
 $sql.= "  KEY RELATIONSHIP (RELATIONSHIP)";
 $sql.= ") TYPE=MYISAM";

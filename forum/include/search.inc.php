@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.157 2006-04-14 16:38:51 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.158 2006-06-12 22:55:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -569,47 +569,6 @@ function folder_search_dropdown()
             return form_dropdown_array("fid", $folders['FIDS'], $folders['TITLES'], 0, false, "search_dropdown");
         }
     }
-}
-
-function search_draw_user_dropdown($name)
-{
-    $lang = load_language_file();
-
-    $db_search_draw_user_dropdown = db_connect();
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
-    if (!$table_data = get_table_prefix()) return "";
-
-    $forum_fid = $table_data['FID'];
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON ";
-    $sql.= "(USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
-    $sql.= "WHERE USER.UID <> '$uid' ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 20";
-
-    $result = db_query($sql, $db_search_draw_user_dropdown);
-
-    $uids[]  = 0;
-    $names[] = $lang['all_caps'];
-
-    if ($uid > 0) {
-
-        $uids[]  = $uid;
-        $names[] = $lang['me_caps'];
-    }
-
-    while($row = db_fetch_array($result)) {
-
-      $uids[]  = $row['UID'];
-      $names[] = format_user_name($row['LOGON'], $row['NICKNAME']);
-
-    }
-
-    return form_dropdown_array($name, $uids, $names, 0, false, "search_dropdown");
 }
 
 function check_search_frequency()

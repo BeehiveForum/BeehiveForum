@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.47 2006-04-14 16:38:51 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.48 2006-06-12 22:55:34 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -82,7 +82,7 @@ function user_get_profile($uid)
 
     $user_prefs = user_get_prefs($uid);
 
-    $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = $peer_uid) ";
@@ -117,6 +117,12 @@ function user_get_profile($uid)
 
         if (!isset($user_profile['RELATIONSHIP'])) {
             $user_profile['RELATIONSHIP'] = 0;
+        }
+
+        if (isset($user_profile['PEER_NICKNAME'])) {
+            if (!is_null($user_profile['PEER_NICKNAME']) && strlen($user_profile['PEER_NICKNAME']) > 0) {
+                $user_profile['NICKNAME'] = $user_profile['PEER_NICKNAME'];
+            }
         }
 
         $user_profile['POST_COUNT'] = user_get_post_count($uid);

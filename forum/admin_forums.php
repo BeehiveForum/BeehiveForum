@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.43 2006-04-09 21:03:18 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.44 2006-06-12 22:55:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -214,7 +214,7 @@ if (isset($message_html) && strlen($message_html) > 0) {
 $forums_array = admin_get_forum_list();
 
 echo "<div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.27 2005-07-23 22:53:35 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.28 2006-06-12 22:55:34 decoyduck Exp $ */
 
 /**
 * User relation functions
@@ -42,30 +42,42 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-function user_rel_update($uid, $peer_uid, $value)
+function user_rel_update($uid, $peer_uid, $relationship, $nickname)
 {
     $db_user_rel_update = db_connect();
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($peer_uid)) return false;
-    if (!is_numeric($value)) return false;
+    if (!is_numeric($relationship)) return false;
+
+    $nickname = addslashes($nickname);
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PEER ";
-    $sql.= "WHERE UID = $uid AND PEER_UID = $peer_uid";
+    if ($relationship == 0 && ($nickname == user_get_nickname($peer_uid))) {
 
-    $result = db_query($sql, $db_user_rel_update);
-
-    if (db_num_rows($result) > 0) {
-
-        $sql = "UPDATE {$table_data['PREFIX']}USER_PEER SET RELATIONSHIP = $value ";
+        $sql = "DELETE FROM {$table_data['PREFIX']}USER_PEER ";
         $sql.= "WHERE UID = $uid AND PEER_UID = $peer_uid";
 
     }else {
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_PEER (UID, PEER_UID, RELATIONSHIP) ";
-        $sql.= "VALUES ($uid, $peer_uid, $value)";
+        $sql = "SELECT UID FROM {$table_data['PREFIX']}USER_PEER ";
+        $sql.= "WHERE UID = $uid AND PEER_UID = $peer_uid";
+
+        $result = db_query($sql, $db_user_rel_update);
+
+        if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE {$table_data['PREFIX']}USER_PEER ";
+            $sql.= "SET RELATIONSHIP = '$relationship', PEER_NICKNAME = '$nickname' ";
+            $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+
+        }else {
+
+            $sql = "INSERT INTO {$table_data['PREFIX']}USER_PEER ";
+            $sql.= "(UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
+            $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', '$nickname')";
+        }
     }
 
     return db_query($sql, $db_user_rel_update);

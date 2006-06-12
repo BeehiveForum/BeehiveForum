@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.8 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.9 2006-06-12 22:55:34 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -320,6 +320,14 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (MOVED_TID, MOVED_PID)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD PEER_NICKNAME VARCHAR(32)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

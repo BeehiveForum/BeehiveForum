@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.117 2006-06-07 14:39:39 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.118 2006-06-12 22:55:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,7 +132,7 @@ html_draw_top('onload=add_upload_field_link()');
 echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 echo "<!--\n\n";
 echo "var upload_field_array = new Array();\n\n";
-echo "var upload_field_html = '", form_field("userfile[]", "", 35, 0, "file"),"';\n";
+echo "var upload_field_html = '", form_field("userfile[]", "", 30, 0, "file"),"';\n";
 echo "var upload_field_link_html = '<img src=\"", style_image('attach.png'), "\" border=\"0\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /><a href=\"javascript:void(0)\" onclick=\"add_upload_field()\">Upload another file</a>';\n\n";
 echo "function add_upload_field_link()\n";
 echo "{\n";
@@ -287,7 +287,7 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"220\" class=\"postbody\" valign=\"top\">{$lang['enterfilenamestoupload']} :</td>\n";
 echo "                        <td class=\"postbody\">\n";
-echo "                          ", form_field("userfile[]", "", 35, 0, "file"), "\n";
+echo "                          ", form_field("userfile[]", "", 30, 0, "file"), "\n";
 echo "                          <div id=\"upload_fields\"></div>\n";
 echo "                        </td>\n";
 echo "                        <td class=\"postbody\" valign=\"top\">", form_submit("upload", $lang['upload'], "onclick=\"this.value='{$lang['waitdotdot']}'\""), "</td>\n";

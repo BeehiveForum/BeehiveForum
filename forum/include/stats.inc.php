@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.58 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.59 2006-06-12 22:55:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -135,8 +135,8 @@ function get_active_users()
     $sql = "SELECT SESSIONS.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, ";
     $sql.= "USER_PREFS.ANON_LOGON, USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, ";
-    $sql.= "USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP FROM SESSIONS SESSIONS ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+    $sql.= "USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, USER_PEER2.PEER_NICKNAME ";
+    $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = $uid) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER2 ";
@@ -166,6 +166,12 @@ function get_active_users()
 
         if (!isset($row['PEER_RELATIONSHIP'])) {
             $row['PEER_RELATIONSHIP'] = 0;
+        }
+
+        if (isset($row['PEER_NICKNAME'])) {
+            if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
+                $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            }
         }
 
         if ($anon_logon > 0) {
@@ -295,7 +301,7 @@ function get_most_posts()
 {
     $db_get_most_posts = db_connect();
 
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
     $sql.= "FROM {$table_data['PREFIX']}STATS";
@@ -315,9 +321,13 @@ function get_newest_user()
 {
     $db_get_newest_user = db_connect();
 
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT UID, LOGON, NICKNAME FROM USER ";
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
+    $sql.= "FROM USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "ORDER BY UID DESC LIMIT 0, 1";
 
     $result = db_query($sql, $db_get_newest_user);
@@ -325,6 +335,13 @@ function get_newest_user()
     if (db_num_rows($result) > 0) {
 
         $row = db_fetch_array($result);
+
+        if (isset($row['PEER_NICKNAME'])) {
+            if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
+                $row['NICKNAME'] = $row['PEER_NICKNAME'];
+            }
+        }
+
         return $row;
     }
 
@@ -342,15 +359,24 @@ function get_post_tallys($start_stamp, $end_stamp)
 
     $post_tallys = array('user_stats' => array(), 'post_count' => 0);
 
-    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT FROM {$table_data['PREFIX']}POST POST ";
-    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) AND POST.CREATED < FROM_UNIXTIME($end_stamp)";
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT COUNT(POST.PID) AS TOTAL_POST_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "WHERE POST.CREATED > FROM_UNIXTIME($start_stamp) ";
+    $sql.= "AND POST.CREATED < FROM_UNIXTIME($end_stamp)";
 
     $result = db_query($sql, $db_get_month_post_tallys);
     list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}POST POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "WHERE POST.CREATED >= FROM_UNIXTIME($start_stamp) AND POST.CREATED <= FROM_UNIXTIME($end_stamp) ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "USER_PEER.PEER_NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "WHERE POST.CREATED >= FROM_UNIXTIME($start_stamp) ";
+    $sql.= "AND POST.CREATED <= FROM_UNIXTIME($end_stamp) ";
     $sql.= "GROUP BY USER.UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 20";
 
@@ -359,6 +385,13 @@ function get_post_tallys($start_stamp, $end_stamp)
     if (db_num_rows($result) > 0) {
 
         while ($row = db_fetch_array($result)) {
+
+            if (isset($row['PEER_NICKNAME'])) {
+                if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
+                    $row['NICKNAME'] = $row['PEER_NICKNAME'];
+                }
+            }
+
             $post_tallys['user_stats'][] = $row;
         }
     }

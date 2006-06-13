@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.270 2006-06-13 11:54:06 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.271 2006-06-13 20:14:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1002,8 +1002,14 @@ function users_get_recent($offset, $limit)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql.= "AND VISITOR_LOG.FORUM = $forum_fid $include_guests ";
+    $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+    $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, $limit";
 
     $result = db_query($sql, $db_users_get_recent);
@@ -1065,8 +1071,14 @@ function users_search_recent($usersearch, $offset)
     $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+    $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+    $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, 20";
 

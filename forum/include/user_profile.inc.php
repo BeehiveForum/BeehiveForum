@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.48 2006-06-12 22:55:34 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.49 2006-06-13 20:14:43 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -83,11 +83,16 @@ function user_get_profile($uid)
     $user_prefs = user_get_prefs($uid);
 
     $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "USER_PREFS_FORUM.ANON_LOGON AS FORUM_ANON_LOGON, ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON FROM USER USER ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = $peer_uid) ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
-    $sql.= "ON (VISITOR_LOG.UID = USER.UID) ";
+    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID) ";
     $sql.= "WHERE USER.UID = $uid ";
     $sql.= "GROUP BY USER.UID";
 
@@ -97,7 +102,15 @@ function user_get_profile($uid)
 
         $user_profile = db_fetch_array($result);
 
-        if (isset($user_profile['LAST_LOGON']) && $user_profile['LAST_LOGON'] > 0) {
+        if (isset($user_profile['FORUM_LAST_LOGON']) && !is_null($user_profile['FORUM_LAST_LOGON'])) {
+            $anon_logon = $user_profile['FORUM_LAST_LOGON'];
+        }elseif (isset($user_profile['GLOBAL_ANON_LOGON']) && !is_null($user_profile['GLOBAL_ANON_LOGON'])) {
+            $anon_logon = $user_profile['GLOBAL_ANON_LOGON'];
+        }else {
+            $anon_logon = 0;
+        }
+
+        if ($anon_logon == 0 && isset($user_profile['LAST_LOGON']) && $user_profile['LAST_LOGON'] > 0) {
             $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_LOGON']);
         }else {
             $user_profile['LAST_LOGON'] = "Unknown";

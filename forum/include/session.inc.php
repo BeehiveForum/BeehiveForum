@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.222 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.223 2006-06-13 20:14:43 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -465,12 +465,6 @@ function bh_update_visitor_log($uid)
 
         $user_prefs = user_get_prefs($uid);
 
-        if (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] > 0) {
-            $last_logon = 'NULL';
-        }else {
-            $last_logon = 'NOW()';
-        }
-
         $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE UID = '$uid'";
         $sql.= "AND FORUM = '$forum_fid'";
 
@@ -478,13 +472,13 @@ function bh_update_visitor_log($uid)
 
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = $last_logon ";
+            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
             $sql.= "WHERE UID = '$uid' AND FORUM = '$forum_fid'";
 
         }else {
 
             $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
-            $sql.= "VALUES ($forum_fid, $uid, $last_logon)";
+            $sql.= "VALUES ($forum_fid, $uid, NOW())";
         }
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;

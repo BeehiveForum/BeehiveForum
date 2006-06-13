@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.93 2005-12-21 17:32:51 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.94 2006-06-13 21:03:22 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -187,7 +187,6 @@ echo "                  <td class=\"subhead\">&nbsp;</td>\n";
 echo "                  <td class=\"subhead\" align=\"right\" class=\"smalltext\">{$lang['posts']}: {$user_profile['POST_COUNT']}&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
-
 echo "              <table width=\"550\" class=\"subhead\" border=\"0\">\n";
 echo "                <tr>\n";
 
@@ -264,6 +263,10 @@ foreach ($user_profile_array as $profile_entry) {
     }
 }
 
+echo "                      <tr>\n";
+echo "                        <td width=\"33%\">&nbsp;</td>\n";
+echo "                        <td width=\"67%\">&nbsp;</td>\n";
+echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                  <td width=\"150\" valign=\"top\">\n";
@@ -326,8 +329,20 @@ if (bh_session_get_value('UID') != 0) {
     }
 }
 
+echo "                      <tr>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\" align=\"right\">{$lang['longesttimeinforum']}: {$user_profile['USER_TIME_BEST']}&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\" align=\"right\">{$lang['totaltimeinforum']}: {$user_profile['USER_TIME_TOTAL']}&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"2\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -340,6 +355,8 @@ echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</div>\n";
+
+
 
 html_draw_bottom();
 

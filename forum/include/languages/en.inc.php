@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.321 2006-06-10 16:04:35 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.322 2006-06-13 11:54:06 decoyduck Exp $ */
 
 // International English language file
 
@@ -581,6 +581,7 @@ $lang['passwordprotected'] = "Password Protected";
 $lang['postoptions'] = "Post Options";
 $lang['allowpostoptions'] = "Allow Post Editing";
 $lang['postedittimeout'] = "Post Edit Timeout";
+$lang['posteditgraceperiod'] = "Post Edit Grace Period";
 $lang['wikiintegration'] = "WikiWiki Integration";
 $lang['enablewikiintegration'] = "Enable WikiWiki Integration";
 $lang['enablewikiquicklinks'] = "Enable WikiWiki Quick Links";
@@ -618,7 +619,7 @@ $lang['forumsettingsupdated'] = "Forum settings successfully updated";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
-$lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in hours after posting that a user can edit their post. If set to 0 there is no limit.";
+$lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in minutes after posting that a user can edit their post. If set to 0 there is no limit.";
 $lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a separate page.";
 $lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
 $lang['forum_settings_help_13'] = "The Links section of Beehive provides a place for your users to maintain a list of sites they frequently visit that other users may find useful. Links can be divided into categories by folder and allow for comments and ratings to be given. In order to moderate the links section a user must be ranted Global Moderator status.";
@@ -654,6 +655,7 @@ $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enable
 $lang['forum_settings_help_44'] = "<b>Use Text Captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
 $lang['forum_settings_help_45'] = "<b>Text Captcha directory</b> specifies the location that Beehive will store it's text captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text captcha you must upload some true type fonts into the fonts sub-directory of your main text captcha directory otherwise Beehive will skip the text captcha during user registration.";
 $lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\" the code.";
+$lang['forum_settings_help_46'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

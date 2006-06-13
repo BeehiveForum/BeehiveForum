@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.3 2006-05-18 09:39:32 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.4 2006-06-13 11:54:06 decoyduck Exp $ */
 
 // International English language file
 
@@ -613,7 +613,7 @@ $lang['forumsettingsupdated'] = "Forumeinstellungen erfolgreich geaendert";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
-$lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> Ist die Zeit in Stunden nachdem ein Benutzer sein Posting noch aendern kann. 0 heisst keine Einschraenkung.";
+$lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> Ist die Zeit in Sekunden nachdem ein Benutzer sein Posting noch aendern kann. 0 heisst keine Einschraenkung.";
 $lang['forum_settings_help_11'] = "<b>Max Post Laenge</b> maximale Anzahl von Zeichen die in einem Post angezeigt werden. Ist ein Post laenger wird dieser abgeshnitten und ein Link ans Ende gesetzt um den Benutzern den ganzen Post auf einer Extraseite anzuzeigen.";
 $lang['forum_settings_help_12'] = "Wenn Du nicht willst dass Benutzer Abstimmungen erstellen koennen deaktiviere diese Option.";
 $lang['forum_settings_help_13'] = "Der Links-Bereich zeigt eine Liste von Seiten die haeufig besucht wurden, die andere Benutzer interessant finden koennten. Links koennen getrennt in Kategorien angezeigt werden und erlauben Kommentare und Benotung. Zur Moderation dieser Links muss der Benutzer globalen Moderator-Status haben.";

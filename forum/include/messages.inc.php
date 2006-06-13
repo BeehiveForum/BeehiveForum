@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.399 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.400 2006-06-13 11:54:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -925,9 +925,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
-            echo "              <tr>\n";
-            echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$message['EDIT_LOGON']}</p></td>\n";
-            echo "              </tr>\n";
+            $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
+
+            if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
+
+                echo "              <tr>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$message['EDIT_LOGON']}</p></td>\n";
+                echo "              </tr>\n";
+            }
         }
 
         if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] > 0 && $perm_is_moderator) {

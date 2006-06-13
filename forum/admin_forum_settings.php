@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.83 2006-06-10 16:04:35 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.84 2006-06-13 11:54:06 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -226,6 +226,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['post_edit_time'] = $_POST['post_edit_time'];
     }else {
         $new_forum_settings['post_edit_time'] = 0;
+    }
+
+    if (isset($_POST['post_edit_grace_period']) && is_numeric($_POST['post_edit_grace_time'])) {
+        $new_forum_settings['post_edit_grace_period'] = $_POST['post_edit_grace_time'];
+    }else {
+        $new_forum_settings['post_edit_grace_period'] = 0;
     }
 
     if (isset($_POST['maximum_post_length']) && is_numeric($_POST['maximum_post_length'])) {
@@ -506,6 +512,10 @@ echo "                        <td width=\"220\">{$lang['postedittimeout']}:</td>
 echo "                        <td>", form_input_text("post_edit_time", (isset($forum_settings['post_edit_time']) && is_numeric($forum_settings['post_edit_time']) ? $forum_settings['post_edit_time'] : '0'), 20, 32), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
+echo "                        <td width=\"220\">{$lang['posteditgraceperiod']}:</td>\n";
+echo "                        <td>", form_input_text("post_edit_grace_period", (isset($forum_settings['post_edit_grace_period']) && is_numeric($forum_settings['post_edit_grace_period']) ? $forum_settings['post_edit_grace_period'] : '0'), 20, 32), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td width=\"220\">{$lang['maximumpostlength']}:</td>\n";
 echo "                        <td>", form_input_text("maximum_post_length", (isset($forum_settings['maximum_post_length']) && is_numeric($forum_settings['maximum_post_length']) ? $forum_settings['maximum_post_length'] : '6226'), 20, 32), "&nbsp;</td>\n";
 echo "                      </tr>\n";
@@ -516,6 +526,7 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_10']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_46']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_11']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_40']}</p>\n";
 echo "                        </td>\n";

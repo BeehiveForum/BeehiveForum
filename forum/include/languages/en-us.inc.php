@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.12 2006-05-16 17:06:52 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.13 2006-06-13 11:54:06 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -366,6 +366,8 @@ $lang['nameanddesc'] = "Name and Description";
 $lang['movethreads'] = "Move Threads";
 $lang['threadsmovedsuccessfully'] = "Threads moved successfully";
 $lang['movethreadstofolder'] = "Move threads to folder";
+$lang['resetuserpermissions'] = "Reset user permissions";
+$lang['userpermissionsresetsuccessfully'] = "User permissions reset successfully";
 $lang['allowfoldertocontain'] = "Allow folder to contain";
 $lang['addnewfolder'] = "Add New Folder";
 $lang['mustenterfoldername'] = "You must enter a folder name";
@@ -471,6 +473,8 @@ $lang['emailisalreadybanned'] = "That Email Address is already banned. Check you
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
+$lang['postcount'] = "Post Count:";
+$lang['resetpostcount'] = "Reset Post Count";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -577,6 +581,7 @@ $lang['passwordprotected'] = "Password Protected";
 $lang['postoptions'] = "Post Options";
 $lang['allowpostoptions'] = "Allow Post Editing";
 $lang['postedittimeout'] = "Post Edit Timeout";
+$lang['posteditgraceperiod'] = "Post Edit Grace Period";
 $lang['wikiintegration'] = "WikiWiki Integration";
 $lang['enablewikiintegration'] = "Enable WikiWiki Integration";
 $lang['enablewikiquicklinks'] = "Enable WikiWiki Quick Links";
@@ -601,6 +606,7 @@ $lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachment
 $lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
+$lang['listguestsinvisitorlog'] = "List Guests in Visitor Log";
 $lang['autologinguests'] = "Automatically Login Guests";
 $lang['guestaccess'] = "Guest Access";
 $lang['allowguestaccess'] = "Allow Guest Access";
@@ -613,7 +619,7 @@ $lang['forumsettingsupdated'] = "Forum settings successfully updated";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
-$lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in hours after posting that a user can edit their post. If set to 0 there is no limit.";
+$lang['forum_settings_help_10'] = "<b>Post Edit Timeout</b> is the time in minutes after posting that a user can edit their post. If set to 0 there is no limit.";
 $lang['forum_settings_help_11'] = "<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a separate page.";
 $lang['forum_settings_help_12'] = "If you don't want your users to be able to create polls you can disable the above option.";
 $lang['forum_settings_help_13'] = "The Links section of Beehive provides a place for your users to maintain a list of sites they frequently visit that other users may find useful. Links can be divided into categories by folder and allow for comments and ratings to be given. In order to moderate the links section a user must be ranted Global Moderator status.";

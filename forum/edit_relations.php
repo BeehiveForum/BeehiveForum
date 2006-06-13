@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.47 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.48 2006-06-13 11:54:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -112,8 +112,8 @@ if (isset($_POST['submit'])) {
                 $peer_rel = $peer_rel | $_POST['signature'][$peer_uid];
             }
 
-            if (isset($_POST['nickname'][$peer_uid])) {
-                $peer_nickname = $_POST['nickname'][$peer_uid];
+            if (isset($_POST['nickname'][$peer_uid]) && strlen(_stripslashes($_POST['nickname'][$peer_uid])) > 0) {
+                $peer_nickname = strip_tags(_stripslashes($_POST['nickname'][$peer_uid]));
             }else {
                 $peer_nickname = user_get_nickname($peer_uid);
             }
@@ -200,6 +200,22 @@ if (isset($_GET['usersearch']) && strlen(trim(_stripslashes($_GET['usersearch'])
 }else {
     $usersearch = "";
 }
+
+if (isset($_POST['reset_nickname'])) {
+
+    list($peer_uid) = array_keys($_POST['reset_nickname']);
+
+    $peer_nickname = user_get_nickname($peer_uid);
+    $peer_rel = user_get_peer_relationship($uid, $peer_uid);
+
+    if (user_rel_update($uid, $peer_uid, $peer_rel, $peer_nickname)) {
+
+        if (!in_array($lang['relationshipsupdated'], $update_array)) {
+
+            $update_array[] = $lang['relationshipsupdated'];
+        }
+    }
+}            
 
 // Any error messages to display?
 

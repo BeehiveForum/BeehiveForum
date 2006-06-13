@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.269 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.270 2006-06-13 11:54:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1266,6 +1266,29 @@ function user_get_relationships($uid, $offset = 0)
 
     return array('user_count' => $user_get_peers_count,
                  'user_array' => $user_get_peers_array);
+}
+
+function user_get_peer_relationship($uid, $peer_uid)
+{
+    $db_user_get_peer_relationship = db_connect();
+
+    if (!is_numeric($uid)) return false;
+    if (!is_numeric($peer_uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER ";
+    $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+
+    $result = db_query($sql, $db_user_get_peer_relationship);
+
+    if (db_num_rows($result) > 0) {
+
+        list($relationship) = db_fetch_array($result, DB_RESULT_NUM);
+        return $relationship;
+    }
+
+    return 0;
 }
 
 function user_get_word_filter()

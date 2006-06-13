@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.49 2006-06-13 20:14:43 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.50 2006-06-13 21:03:22 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -82,10 +82,13 @@ function user_get_profile($uid)
 
     $user_prefs = user_get_prefs($uid);
 
-    $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "USER_PREFS_FORUM.ANON_LOGON AS FORUM_ANON_LOGON, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON FROM USER USER ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON, ";
+    $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
+    $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
+    $sql.= "USER_PEER.RELATIONSHIP FROM USER USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
@@ -93,6 +96,8 @@ function user_get_profile($uid)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = $peer_uid) ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (VISITOR_LOG.UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+    $sql.= "ON (USER_TRACK.UID = USER.UID) ";
     $sql.= "WHERE USER.UID = $uid ";
     $sql.= "GROUP BY USER.UID";
 
@@ -114,6 +119,18 @@ function user_get_profile($uid)
             $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_LOGON']);
         }else {
             $user_profile['LAST_LOGON'] = "Unknown";
+        }
+
+        if (isset($user_profile['USER_TIME_BEST']) && $user_profile['USER_TIME_BEST'] > 0) {
+            $user_profile['USER_TIME_BEST'] = format_time_display($user_profile['USER_TIME_BEST']);
+        }else {
+            $user_profile['USER_TIME_BEST'] = "Unknown";
+        }
+
+        if (isset($user_profile['USER_TIME_TOTAL']) && $user_profile['USER_TIME_TOTAL'] > 0) {
+            $user_profile['USER_TIME_TOTAL'] = format_time_display($user_profile['USER_TIME_TOTAL']);
+        }else {
+            $user_profile['USER_TIME_TOTAL'] = "Unknown";
         }
 
         if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 2 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {

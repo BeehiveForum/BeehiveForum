@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.322 2006-06-13 11:54:06 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.323 2006-06-13 21:03:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -1233,6 +1233,8 @@ $lang['profilesnotsetup'] = "The forum owner has not set up Profiles.";
 $lang['nouserspecified'] = "No user specified";
 $lang['ignoreduser'] = "Ignored user";
 $lang['lastvisit'] = "Last Visit";
+$lang['totaltimeinforum'] = "Total time";
+$lang['longesttimeinforum'] = "Longest session";
 $lang['sendemail'] = "Send email";
 $lang['sendpm'] = "Send PM";
 $lang['removefromfriends'] = "Remove from friends";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.72 2005-12-21 17:32:51 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.73 2006-06-14 20:20:51 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -152,9 +152,15 @@ if (isset($_POST['submit'])) {
         $view_sigs_global = false;
     }
 
+    if (isset($_POST['nickname']) && strlen(_stripslashes($_POST['nickname'])) > 0) {
+        $peer_nickname = strip_tags(_stripslashes($_POST['nickname']));
+    }else {
+        $peer_nickname = user_get_nickname($peer_uid);
+    }
+
     if ($valid) {
 
-        user_rel_update($uid, $peer_uid, $t_rel);
+        user_rel_update($uid, $peer_uid, $t_rel, $peer_nickname);
 
         user_update_global_sig($uid, $view_sigs, $view_sigs_global);
 
@@ -163,6 +169,25 @@ if (isset($_POST['submit'])) {
         bh_session_init($uid, false);
 
         header_redirect("./messages.php?webtag=$webtag&msg=$msg", $lang['preferencesupdated']);
+    }
+}
+
+if (isset($_POST['reset_nickname'])) {
+
+    $valid = true;
+
+    if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+        $peer_uid = $_POST['uid'];
+    }else {
+        $valid = false;
+    }
+
+    if ($valid) {
+
+        $peer_nickname = user_get_nickname($peer_uid);
+        $peer_rel = user_get_peer_relationship($uid, $peer_uid);
+
+        user_rel_update($uid, $peer_uid, $peer_rel, $peer_nickname);
     }
 }
 
@@ -179,16 +204,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $peer_uid = $_GET['uid'];
 
-    if (!$user = user_get($peer_uid)) {
-
-        html_draw_top();
-        echo "<h1>{$lang['invalidop']}:</h1>";
-        echo "<h2>{$lang['invalidusername']}</h2>";
-        html_draw_bottom();
-        exit;
-    }
-
-}else {
+}elseif (!isset($peer_uid)) {
 
     html_draw_top();
     echo "<h1>{$lang['invalidop']}:</h1>";
@@ -197,9 +213,20 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     exit;
 }
 
+if (!$user = user_get($peer_uid)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['invalidop']}:</h1>";
+    echo "<h2>{$lang['invalidusername']}</h2>";
+    html_draw_bottom();
+    exit;
+}
+
 html_draw_top("openprofile.js");
 
 $rel = user_rel_get($uid, $peer_uid);
+
+$user_peer = user_get($peer_uid);
 
 $user_prefs = user_get_prefs($uid);
 
@@ -303,6 +330,51 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+
+if (isset($peer_uid)) {
+
+    if (isset($_POST['reset_nickname'])) {
+
+        $nickname = user_get_nickname($peer_uid);
+
+    }else if (isset($user_peer['PEER_NICKNAME']) && 
+             !is_null($user_peer['PEER_NICKNAME']) && 
+             strlen($user_peer['PEER_NICKNAME']) > 0) {
+    
+        $nickname = $user_peer['PEER_NICKNAME'];
+
+    }else {
+
+        $nickname = $user_peer['NICKNAME'];
+    }
+
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['nickname']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"200\" valign=\"top\">{$lang['nickname']}</td>\n";
+    echo "                  <td width=\"400\">", form_input_text("nickname", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+}
+
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";

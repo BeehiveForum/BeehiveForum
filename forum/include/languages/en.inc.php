@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.323 2006-06-13 21:03:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.324 2006-06-14 20:20:51 decoyduck Exp $ */
 
 // International English language file
 
@@ -1301,6 +1301,7 @@ $lang['userrelationships'] = "User Relationships";
 $lang['friends'] = "Friends";
 $lang['ignoredcompletely'] = "Ignored Completely";
 $lang['relationship'] = "Relationship";
+$lang['restorenickname'] = "Restore User's Nickname";
 $lang['friend_exp'] = "User's posts marked with a &quot;Friend&quot; icon.";
 $lang['normal_exp'] = "User's posts appear as normal.";
 $lang['ignore_exp'] = "User's posts are hidden.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.184 2006-05-01 14:13:37 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.185 2006-06-15 21:42:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -181,24 +181,32 @@ function html_get_style_sheet()
 
     if ($user_style !== false) {
 
-        if (@is_dir("./styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
-            return "./styles/$user_style/style.css";
-        }
+        if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
 
-        if (@is_dir("./forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
-            return "./forums/$webtag/styles/$user_style/style.css";
+            $modified_time = filemtime("styles/$user_style/style.css");
+            return "styles/$user_style/style.css?$modified_time";
+        }
+                     
+        if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
+            
+            $modified_time = filemtime("forums/$webtag/styles/$user_style/style.css");
+            return "forums/$webtag/styles/$user_style/style.css?$modified_time";
         }
     }
 
     if ($webtag !== false) {
 
-        if (@is_dir("./forums/$webtag") && @file_exists("./forums/$webtag/style.css")) {
-            return "./forums/$webtag/style.css";
+        if (@is_dir("forums/$webtag") && @file_exists("forums/$webtag/style.css")) {
+            
+            $modified_time = filemtime("./forums/$webtag/style.css");
+            return "forums/$webtag/style.css?$modified_time";
         }
     }
 
-    if (@is_dir("./styles") && @file_exists("./styles/style.css")) {
-        return "./styles/style.css";
+    if (@is_dir("styles") && @file_exists("styles/style.css")) {
+        
+        $modified_time = filemtime("./styles/style.css");
+        return "styles/style.css?$modified_time";
     }
 
     return false;
@@ -216,8 +224,10 @@ function html_get_emoticon_style_sheet()
 
     if ($user_emots !== false) {
 
-        if (@is_dir("./emoticons/$user_emots") && file_exists("./emoticons/$user_emots/style.css")) {
-            return "emoticons/$user_emots/style.css";
+        if (@is_dir("emoticons/$user_emots") && file_exists("emoticons/$user_emots/style.css")) {
+
+            $modified_time = filemtime("emoticons/$user_emots/style.css");
+            return "emoticons/$user_emots/style.css?$modified_time";
         }
     }
 

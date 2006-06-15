@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.324 2006-06-14 20:20:51 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.325 2006-06-15 20:02:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -655,7 +655,7 @@ $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enable
 $lang['forum_settings_help_44'] = "<b>Use Text Captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
 $lang['forum_settings_help_45'] = "<b>Text Captcha directory</b> specifies the location that Beehive will store it's text captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text captcha you must upload some true type fonts into the fonts sub-directory of your main text captcha directory otherwise Beehive will skip the text captcha during user registration.";
 $lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\" the code.";
-$lang['forum_settings_help_46'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
+$lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1365,7 +1365,7 @@ $lang['forthcomingbirthdays'] = "Forthcoming Birthdays";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "You can edit this page from the admin interface";
-$lang['uploadstartpage'] = "Upload Start Page (*.txt, *.htm, *.html)";
+$lang['uploadstartpage'] = "Upload Start Page (%s)";
 $lang['invalidfiletypeerror'] = "File type not supported. You can only use *.txt, *.php and *.htm files as your start page.";
 
 // Thread navigation (thread_list.php) ---------------------------------

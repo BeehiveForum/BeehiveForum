@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_startpage.php,v 1.73 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_startpage.php,v 1.74 2006-06-15 20:02:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,7 +88,8 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
-$allowed_file_exts = array('html', 'htm', 'php', 'txt');
+$allowed_file_exts_array = array('html', 'htm', 'php', 'txt');
+$allowed_file_exts = "*.". implode(", *.", $allowed_file_exts_array);
 
 if (isset($_POST['submit'])) {
 
@@ -205,7 +206,7 @@ if (isset($_POST['submit'])) {
 
         $path_parts = pathinfo($_FILES['userfile']['name']);
 
-        if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_file_exts)) {
+        if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_file_exts_array)) {
 
             if (@move_uploaded_file($_FILES['userfile']['tmp_name'], "forums/$webtag/start_main.php")) {
 
@@ -353,7 +354,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">{$lang['uploadstartpage']}</td>\n";
+echo "                  <td class=\"subhead\">", sprintf($lang['uploadstartpage'], $allowed_file_exts), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>{$lang['filename']}: ", form_field("userfile", "", 45, 0, "file"), "</td>\n";

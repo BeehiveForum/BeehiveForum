@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.4 2006-06-13 11:54:06 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.5 2006-06-15 20:02:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -1355,7 +1355,7 @@ $lang['forthcomingbirthdays'] = "Bevorstehende Geburtstage";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "Aendern dieser Seite ueber das Admin-Interface";
-$lang['uploadstartpage'] = "Upload Startseite (*.txt, *.htm, *.html)";
+$lang['uploadstartpage'] = "Upload Startseite (%s)";
 $lang['invalidfiletypeerror'] = "Dateityp nicht unterstuetzt. Bitte nur *.txt, *.php und *.htm Dateien fuer die Startseite laden.";
 
 // Thread navigation (thread_list.php) ---------------------------------

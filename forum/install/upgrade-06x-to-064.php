@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.10 2006-06-13 11:54:07 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.11 2006-06-15 18:07:11 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -336,6 +336,57 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "DELETE FROM {$forum_webtag}_USER_PEER WHERE RELATIONSHIP = 0";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "CREATE TABLE SEARCH_ENGINE_BOTS (";
+    $sql.= "  SID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
+    $sql.= "  NAME VARCHAR(32) DEFAULT NULL,";
+    $sql.= "  URL VARCHAR(255) DEFAULT NULL,";
+    $sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL,";
+    $sql.= "  PRIMARY KEY  (SID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'http://www.alexa.com/'),
+                        'Ask Jeeves/Teoma' => array('NAME' => 'Ask.com', 'URL' => 'http://www.ask.com/'),
+                        'Baiduspider'      => array('NAME' => 'Baidu', 'URL' => 'http://www.baidu.com/'),
+                        'GameSpyHTTP'      => array('NAME' => 'GameSpy', 'URL' => 'http://www.gamespy.com/'),
+                        'Gigabot'          => array('NAME' => 'Gigablast', 'URL' => 'http://www.gigablast.com/'),
+                        'Googlebot'        => array('NAME' => 'Google', 'URL' => 'http://www.google.com/'),
+                        'Googlebot-Image'  => array('NAME' => 'Google Images', 'URL' => 'http://images.google.com/'),
+                        'Slurp/si'         => array('NAME' => 'Inktomi', 'URL' => 'http://searchmarketing.yahoo.com/'),
+                        'msnbot'           => array('NAME' => 'MSN Search', 'URL' => 'http://search.msn.com/'),
+                        'Scooter'          => array('NAME' => 'Altavista', 'URL' => 'http://www.altavista.com/'),
+                        'Yahoo! Slurp;'    => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'),
+                        'Yahoo-MMCrawler'  => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'));
+
+    foreach ($bots_array as $agent => $details) {
+
+        $agent = addslashes($agent);
+        $name  = addslashes($details['NAME']);
+        $url   = addslashes($details['URL']);
+        
+        $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
+        $sql.= "VALUES ('$name', '$url', '%$agent%')";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    $sql = "ALTER TABLE VISITOR_LOG ADD SID MEDIUMINT(8)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

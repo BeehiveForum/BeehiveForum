@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.4 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.5 2006-06-15 18:07:11 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -273,6 +273,49 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+$sql = "CREATE TABLE SEARCH_ENGINE_BOTS (";
+$sql.= "  SID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
+$sql.= "  NAME VARCHAR(32) DEFAULT NULL,";
+$sql.= "  URL VARCHAR(255) DEFAULT NULL,";
+$sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (SID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'http://www.alexa.com/'),
+                    'Ask Jeeves/Teoma' => array('NAME' => 'Ask.com', 'URL' => 'http://www.ask.com/'),
+                    'Baiduspider'      => array('NAME' => 'Baidu', 'URL' => 'http://www.baidu.com/'),
+                    'GameSpyHTTP'      => array('NAME' => 'GameSpy', 'URL' => 'http://www.gamespy.com/'),
+                    'Gigabot'          => array('NAME' => 'Gigablast', 'URL' => 'http://www.gigablast.com/'),
+                    'Googlebot'        => array('NAME' => 'Google', 'URL' => 'http://www.google.com/'),
+                    'Googlebot-Image'  => array('NAME' => 'Google Images', 'URL' => 'http://images.google.com/'),
+                    'Slurp/si'         => array('NAME' => 'Inktomi', 'URL' => 'http://searchmarketing.yahoo.com/'),
+                    'msnbot'           => array('NAME' => 'MSN Search', 'URL' => 'http://search.msn.com/'),
+                    'Scooter'          => array('NAME' => 'Altavista', 'URL' => 'http://www.altavista.com/'),
+                    'Yahoo! Slurp;'    => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'),
+                    'Yahoo-MMCrawler'  => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'));
+
+foreach ($bots_array as $agent => $details) {
+
+    $agent = addslashes($agent);
+    $name  = addslashes($details['NAME']);
+    $url   = addslashes($details['URL']);
+
+    $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
+    $sql.= "VALUES ('$name', '$url', '%$agent%')";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
 $sql = "CREATE TABLE SEARCH_RESULTS (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -300,6 +343,7 @@ $sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
+$sql.= "  SID MEDIUMINT(8) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (VID),";
 $sql.= "  KEY UID (UID,VID)";
 $sql.= ") TYPE=MYISAM";
@@ -394,6 +438,46 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "UPDATE USER_PREFS SET SHOW_STATS = 'N' WHERE SHOW_STATS = 0;";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_TYPE CHAR(1) DEFAULT '0' NOT NULL AFTER PM_AUTO_PRUNE";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_FILE CHAR(1) DEFAULT '0' NOT NULL AFTER PM_EXPORT_TYPE";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_ATTACHMENTS CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_FILE";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_STYLE CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_ATTACHMENTS";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_WORDFILTER CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_STYLE";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -674,6 +758,20 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
+    $sql = "CREATE TABLE DEFAULT_THREAD_TRACK (";
+    $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+    $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
+    $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+    $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY  (TID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // Need to recreate the THREAD table so we can add the
     // CREATED column from the POST table.
 
@@ -686,18 +784,19 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_THREAD_NEW (";
-    $sql.= "  TID mediumint(8) unsigned NOT NULL auto_increment,";
-    $sql.= "  FID mediumint(8) unsigned default NULL,";
-    $sql.= "  BY_UID mediumint(8) unsigned default NULL,";
-    $sql.= "  TITLE varchar(64) default NULL,";
-    $sql.= "  LENGTH mediumint(8) unsigned default NULL,";
-    $sql.= "  POLL_FLAG char(1) default NULL,";
-    $sql.= "  CREATED datetime default NULL,";
-    $sql.= "  MODIFIED datetime default NULL,";
-    $sql.= "  CLOSED datetime default NULL,";
-    $sql.= "  STICKY char(1) default NULL,";
-    $sql.= "  STICKY_UNTIL datetime default NULL,";
-    $sql.= "  ADMIN_LOCK datetime default NULL,";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  FID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  TITLE VARCHAR(64) DEFAULT NULL,";
+    $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  POLL_FLAG CHAR(1) DEFAULT NULL,";
+    $sql.= "  CREATED DATETIME DEFAULT NULL,";
+    $sql.= "  MODIFIED DATETIME DEFAULT NULL,";
+    $sql.= "  CLOSED DATETIME DEFAULT NULL,";
+    $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
+    $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
+    $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
+    $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  PRIMARY KEY  (TID),";
     $sql.= "  KEY FID (FID),";
     $sql.= "  KEY BY_UID (BY_UID)";
@@ -768,11 +867,14 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  EDITED DATETIME DEFAULT NULL,";
     $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
+    $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
     $sql.= "  PRIMARY KEY (TID, PID),";
     $sql.= "  KEY TO_UID (TO_UID),";
     $sql.= "  KEY FROM_UID (FROM_UID),";
     $sql.= "  KEY IPADDRESS (IPADDRESS),";
-    $sql.= "  KEY CREATED (CREATED)";
+    $sql.= "  KEY CREATED (CREATED),";
+    $sql.= "  KEY MOVED_TID (MOVED_TID,MOVED_PID)";
     $sql.= ") TYPE = MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -943,6 +1045,14 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD INDEX (RELATIONSHIP)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD PEER_NICKNAME VARCHAR(32)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -1160,6 +1270,57 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL, ";
     $sql.= "  PRIMARY KEY  (UID)";
     $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+$sql = "SHOW TABLES LIKE 'DICTIONARY'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
+    $valid = false;
+    return;
+}
+
+if (db_num_rows($result) > 0) {
+
+    $sql = "CREATE TABLE DICTIONARY_NEW (";
+    $sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '',";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '',";
+    $sql.= "  PRIMARY KEY  (WORD, UID),";
+    $sql.= "  KEY SOUND (SOUND)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "INSERT IGNORE INTO DICTIONARY_NEW (WORD, SOUND, UID) ";
+    $sql.= "SELECT LOWER(TRIM(WORD)), TRIM(SOUND), UID FROM DICTIONARY";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "DROP TABLE IF EXISTS DICTIONARY";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE DICTIONARY_NEW RENAME DICTIONARY";
 
     if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.96 2006-06-12 22:55:34 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.97 2006-06-15 18:07:11 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -315,7 +315,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
-$sql.= "VALUES ('General', NULL, NULL, 0);";
+$sql.= "VALUES ('General', NULL, NULL, 0)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -456,7 +456,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-$sql.= "VALUES (1, NULL, NULL, 1);";
+$sql.= "VALUES (1, NULL, NULL, 1)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -465,7 +465,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO GROUPS (FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP) ";
-$sql.= "VALUES (0, NULL, NULL, 1);";
+$sql.= "VALUES (0, NULL, NULL, 1)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -524,7 +524,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_LINKS_FOLDERS (PARENT_FID, NAME, VISIBLE) ";
-$sql.= "VALUES (NULL, 'Top Level', 'Y');";
+$sql.= "VALUES (NULL, 'Top Level', 'Y')";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -655,7 +655,7 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "INSERT INTO {$forum_webtag}_POST ";
 $sql.= "(TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, ";
 $sql.= "APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) VALUES (1, 0, 1, 0, NULL, NOW(), ";
-$sql.= "0, NOW(), 1, NULL, 0, '');";
+$sql.= "0, NOW(), 1, NULL, 0, '')";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -713,7 +713,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_POST_CONTENT (TID, PID, CONTENT) ";
-$sql.= "VALUES (1, 1, 'Welcome to your new Beehive Forum');";
+$sql.= "VALUES (1, 1, 'Welcome to your new Beehive Forum')";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -737,7 +737,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Location', 0, 1);";
+$sql.= "VALUES (1, 'Location', 0, 1)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -746,7 +746,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Age', 0, 2);";
+$sql.= "VALUES (1, 'Age', 0, 2)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -755,7 +755,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Gender', 0, 3);";
+$sql.= "VALUES (1, 'Gender', 0, 3)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -764,7 +764,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Quote', 0, 4);";
+$sql.= "VALUES (1, 'Quote', 0, 4)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -773,7 +773,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_ITEM (PSID, NAME, TYPE, POSITION) ";
-$sql.= "VALUES (1, 'Occupation', 0, 5);";
+$sql.= "VALUES (1, 'Occupation', 0, 5)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -795,7 +795,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO {$forum_webtag}_PROFILE_SECTION (NAME, POSITION) ";
-$sql.= "VALUES ('Personal', 1);";
+$sql.= "VALUES ('Personal', 1)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -890,7 +890,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "INSERT INTO {$forum_webtag}_THREAD ";
 $sql.= "(FID, BY_UID, TITLE, LENGTH, POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-$sql.= "VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NOW(), NULL, 'N', NULL, NULL);";
+$sql.= "VALUES (1, 1, 'Welcome', 1, 'N', NOW(), NOW(), NULL, 'N', NULL, NULL)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1130,12 +1130,55 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM, ACCESS_LEVEL) ";
-$sql.= "VALUES ('{$forum_webtag}', 1, 0);";
+$sql.= "VALUES ('{$forum_webtag}', 1, 0)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
     return;
+}
+
+$sql = "CREATE TABLE SEARCH_ENGINE_BOTS (";
+$sql.= "  SID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
+$sql.= "  NAME VARCHAR(32) DEFAULT NULL,";
+$sql.= "  URL VARCHAR(255) DEFAULT NULL,";
+$sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (SID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'http://www.alexa.com/'),
+                    'Ask Jeeves/Teoma' => array('NAME' => 'Ask.com', 'URL' => 'http://www.ask.com/'),
+                    'Baiduspider'      => array('NAME' => 'Baidu', 'URL' => 'http://www.baidu.com/'),
+                    'GameSpyHTTP'      => array('NAME' => 'GameSpy', 'URL' => 'http://www.gamespy.com/'),
+                    'Gigabot'          => array('NAME' => 'Gigablast', 'URL' => 'http://www.gigablast.com/'),
+                    'Googlebot'        => array('NAME' => 'Google', 'URL' => 'http://www.google.com/'),
+                    'Googlebot-Image'  => array('NAME' => 'Google Images', 'URL' => 'http://images.google.com/'),
+                    'Slurp/si'         => array('NAME' => 'Inktomi', 'URL' => 'http://searchmarketing.yahoo.com/'),
+                    'msnbot'           => array('NAME' => 'MSN Search', 'URL' => 'http://search.msn.com/'),
+                    'Scooter'          => array('NAME' => 'Altavista', 'URL' => 'http://www.altavista.com/'),
+                    'Yahoo! Slurp;'    => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'),
+                    'Yahoo-MMCrawler'  => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'));
+
+foreach ($bots_array as $agent => $details) {
+
+    $agent = addslashes($agent);
+    $name  = addslashes($details['NAME']);
+    $url   = addslashes($details['URL']);
+
+    $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
+    $sql.= "VALUES ('$name', '$url', '%$agent%')";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 $sql = "CREATE TABLE SEARCH_RESULTS (";
@@ -1192,7 +1235,7 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
-$sql.= "VALUES (UPPER('$admin_username'), MD5('$admin_password'), '$admin_username', '$admin_email');";
+$sql.= "VALUES (UPPER('$admin_username'), MD5('$admin_password'), '$admin_username', '$admin_email')";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1267,6 +1310,7 @@ $sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL, ";
+$sql.= "  SID MEDIUMINT(8) DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (VID), ";
 $sql.= "  KEY UID (UID, VID)";
 $sql.= ") TYPE=MYISAM";

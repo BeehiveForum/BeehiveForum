@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.65 2005-12-21 17:32:51 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.66 2006-06-15 18:07:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,9 +127,16 @@ if (sizeof($user_search_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
 
-        if ($user_search['UID'] > 0) {
+        if (isset($user_search['SID']) && !is_null($user_search['SID'])) {
+
+            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"{$user_search['URL']}\" target=\"_blank\">{$user_search['NAME']}</a></td>\n";
+
+        }elseif ($user_search['UID'] > 0) {
+
             echo "                   <td class=\"postbody\" align=\"left\"><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$user_search['UID']}, '$webtag')\">", apply_wordfilter(format_user_name($user_search['LOGON'], $user_search['NICKNAME'])), "</a></td>\n";
+
         }else {
+
             echo "                   <td class=\"postbody\" align=\"left\">", apply_wordfilter(format_user_name($user_search['LOGON'], $user_search['NICKNAME'])), "</td>\n";
         }
 

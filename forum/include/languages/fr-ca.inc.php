@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.27 2006-06-13 11:54:06 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.28 2006-06-15 20:02:26 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1377,7 +1377,7 @@ $lang['forthcomingbirthdays'] = "Anniversaires à venir";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "Vous pouvez modifier cette page de l'interface admin";
-$lang['uploadstartpage'] = "Téléverser page de démarrage (*.txt, *.htm, *.html)";
+$lang['uploadstartpage'] = "Téléverser page de démarrage (%s)";
 $lang['invalidfiletypeerror'] = "Type de fichier invalide. Vous pouvez utiliser seulement les fichiers *.txt, *.php et *.htm pour votre page de démarrage.";
 
 // Thread navigation (thread_list.php) ---------------------------------

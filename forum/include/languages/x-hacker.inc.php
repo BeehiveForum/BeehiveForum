@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.209 2006-06-13 11:54:06 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.210 2006-06-15 20:02:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -1362,7 +1362,7 @@ $lang['forthcomingbirthdays'] = "PhORthC0m1N9 bIR+HD4Y\$";
 // Start page (start_main.php) -----------------------------------------
 
 $lang['editstartpage_help'] = "j00 C4n 3dIT +H15 p@9E From th3 4DM1N 1NTerF4C3";
-$lang['uploadstartpage'] = "uPLo4D STarT p4gE (*.tx+, *.HTM, *.hTml)";
+$lang['uploadstartpage'] = "uPLo4D STarT p4gE (%s)";
 $lang['invalidfiletypeerror'] = "FiL3 +Yp3 noT sUPp0R+3d. j00 C4N 0NLY USe *.tx+, *.PHP 4nD *.h+M FilEs 4s yoUR St4R+ P493.";
 
 // Thread navigation (thread_list.php) ---------------------------------

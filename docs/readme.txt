@@ -12,6 +12,7 @@ in release.txt.
 
 1.    Installation
   1.1    Requirements
+  1.1.1  Requirements Notes
   1.2    Instructions
     1.2.1    Archive Extraction
     1.2.2    Database setup
@@ -65,12 +66,27 @@ in release.txt.
 
 You need web hosting which provides:
 
-  - PHP 4.1.0 or above (tested on 4.1.x, 4.2.x, 4.3.x and 5.0.3) and
+  - PHP 4.2.0 or above
   - MySQL 3.5 or above (must support compound AUTO_INCREMENT).
 
-As a minimum BeehiveForum requires: SELECT, CREATE, CREATE TEMPORARY TABLES,
-GRANT, INSERT, ALTER, UPDATE, INDEX, DELETE and DROP privileges
-on the database / tables it creates.
+1.1.1 Requirements Notes
+========================
+
+- The BeehiveForum team can't stress enough how much of an improvement
+  MySQL 4.1 is compared to older versions. You may continue to use an
+  older version of MySQL (so long as they support compound AUTO_INCREMENT)
+  but performance will improve greatly through the use of MySQL 4.1.
+
+- As a minimum BeehiveForum requires the following privileges on the
+  database and tables it runs from:
+
+  SELECT, CREATE, CREATE TEMPORARY TABLES, 
+  GRANT, INSERT, ALTER, UPDATE,
+  INDEX, DELETE and DROP.
+
+- You may optionally grant the FILE permission to speed up the creation
+  of the dictionary during installation but BeehiveForum doesn't require
+  it to remain enabled.
 
 1.2 Instructions
 ================

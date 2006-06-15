@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.118 2006-06-07 14:39:39 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.119 2006-06-15 22:41:40 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -1247,26 +1247,26 @@ function clean_styles_restrict($matches)
                 case 'px':
 
                     if ($matches[2] < 0) return "$attribute: 0px";
-                    if ($matches[2] > 50) return "$attribute: 50px";
+                    if ($matches[2] > 350) return "$attribute: 350px";
                     break;
 
                 case 'pt':
 
                     if ($matches[2] < 0) return "$attribute: 0pt";
-                    if ($matches[2] > 10) return "$attribute: 10pt";
+                    if ($matches[2] > 250) return "$attribute: 250pt";
                     break;
 
                 case 'em':
 
                     if ($matches[2] < 0) return "$attribute: 0em";
-                    if ($matches[2] > 5) return "$attribute: 5em";
+                    if ($matches[2] > 25) return "$attribute: 25em";
                     break;
             }
 
         }else {
 
             if ($matches[2] < 0) return "$attribute: 0";
-            if ($matches[2] > 50) return "$attribute: 50";
+            if ($matches[2] > 50) return "$attribute: 350";
         }
     }
 

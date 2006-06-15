@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.106 2006-04-15 16:58:38 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.107 2006-06-15 18:07:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -200,16 +200,23 @@ if ($users_array['user_count'] > 0) {
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
 
-        if ($recent_user['UID'] > 0) {
-            echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", apply_wordfilter($recent_user['NICKNAME']), "</a></td>\n";
+        if (isset($recent_user['SID']) && !is_null($recent_user['SID'])) {
+
+            echo "                   <td><a href=\"{$recent_user['URL']}\" target=\"_blank\">{$recent_user['NAME']}</a></td>\n";
+
+        }elseif ($recent_user['UID'] > 0) {
+
+            echo "                   <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", apply_wordfilter(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME'])), "</a></td>\n";
+
         }else {
-            echo "          <td>", apply_wordfilter($recent_user['NICKNAME']), "</td>\n";
+
+            echo "                   <td>", apply_wordfilter(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME'])), "</td>\n";
         }
 
         if (isset($recent_user['LAST_LOGON']) && $recent_user['LAST_LOGON'] > 0) {
-            echo "          <td align=\"right\" nowrap=\"nowrap\">", format_time($recent_user['LAST_LOGON']), "&nbsp;</td>\n";
+            echo "                   <td align=\"right\" nowrap=\"nowrap\">", format_time($recent_user['LAST_LOGON']), "&nbsp;</td>\n";
         }else {
-            echo "          <td align=\"right\" nowrap=\"nowrap\">{$lang['unknown']}&nbsp;</td>\n";
+            echo "                   <td align=\"right\" nowrap=\"nowrap\">{$lang['unknown']}&nbsp;</td>\n";
         }
 
         echo "        </tr>\n";

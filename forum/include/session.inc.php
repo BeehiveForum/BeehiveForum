@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.223 2006-06-13 20:14:43 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.224 2006-06-15 18:07:11 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -478,15 +478,23 @@ function bh_update_visitor_log($uid)
         }else {
 
             $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
-            $sql.= "VALUES ($forum_fid, $uid, NOW())";
+            $sql.= "VALUES ('$forum_fid', '$uid', NOW())";
         }
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
 
     }else {
 
-        $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
-        $sql.= "VALUES ($forum_fid, 0, NOW())";
+        if (($search_id = bh_session_is_search_engine()) !== false) {
+
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, SID) ";
+            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$sid')";
+
+        }else {
+
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
+            $sql.= "VALUES ('$forum_fid', 0, NOW())";
+        }
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
     }
@@ -698,6 +706,8 @@ function bh_session_get_perm_array($uid)
     $user_perm_array = array();
 
     $db_bh_session_get_perm_array = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;   
 
     $sql = "SELECT GP.GID, GP.FORUM, GP.FID, BIT_OR(GP.PERM) AS PERM ";
     $sql.= "FROM GROUP_PERMS GP LEFT JOIN GROUP_USERS GU ON (GU.GID = GP.GID) ";
@@ -952,6 +962,31 @@ function bh_session_get_post_page_prefs()
     }
 
     return $page_prefs;
+}
+
+function bh_session_is_search_engine()
+{
+    $db_bh_session_is_search_engine = db_connect();
+        
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (isset($_SERVER['HTTP_USER_AGENT']) && strlen(trim($_SERVER['HTTP_USER_AGENT'])) > 0) {
+
+        $http_user_agent = addslashes($_SERVER['HTTP_USER_AGENT']);
+    
+        $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
+        $sql.= "WHERE  '$http_user_agent' LIKE AGENT_MATCH ";
+
+        $result = db_query($sql, $db_bh_session_is_search_engine);
+
+        if (db_num_rows($result) > 0) {
+
+            list($search_engine_id) = db_fetch_array($result, DB_RESULT_NUM);
+            return $search_engine_id;
+        }
+    }
+
+    return false;
 }
 
 ?>

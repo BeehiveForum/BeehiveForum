@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.325 2006-06-15 20:02:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.326 2006-06-16 16:24:18 decoyduck Exp $ */
 
 // International English language file
 
@@ -1468,6 +1468,8 @@ $lang['forumstats'] = "Forum Stats";
 $lang['guests'] = "guests";
 $lang['members'] = "members";
 $lang['anonymousmembers'] = "anonymous members";
+$lang['younormal'] = "You";
+$lang['youinvisible'] = "You (Invisible)";
 $lang['viewcompletelist'] = "View Complete List";
 $lang['ourmembershavemadeatotalof'] = "Our members have made a total of";
 $lang['threadsand'] = "threads and";

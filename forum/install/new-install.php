@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.97 2006-06-15 18:07:11 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.98 2006-06-16 16:24:18 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1143,7 +1143,8 @@ $sql.= "  SID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
 $sql.= "  NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  URL VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (SID)";
+$sql.= "  PRIMARY KEY  (SID),";
+$sql.= "  FULLTEXT KEY AGENT_MATCH (AGENT_MATCH)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

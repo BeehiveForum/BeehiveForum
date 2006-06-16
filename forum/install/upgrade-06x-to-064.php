@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.12 2006-06-16 16:24:18 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.13 2006-06-16 16:53:03 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -388,6 +388,38 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE VISITOR_LOG ADD SID MEDIUMINT(8)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_BANNED ADD FULLTEXT (IPADDRESS)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_BANNED ADD FULLTEXT (LOGON)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_BANNED ADD FULLTEXT (NICKNAME)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_BANNED ADD FULLTEXT (EMAIL)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

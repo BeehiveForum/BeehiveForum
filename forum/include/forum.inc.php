@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.176 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.177 2006-06-16 16:53:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -634,7 +634,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
         $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
         $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY  (ID)";
+        $sql.= "  PRIMARY KEY  (ID),";
+        $sql.= "  FULLTEXT KEY IPADDRESS (IPADDRESS),";
+        $sql.= "  FULLTEXT KEY LOGON (LOGON),";
+        $sql.= "  FULLTEXT KEY NICKNAME (NICKNAME),";
+        $sql.= "  FULLTEXT KEY EMAIL (EMAIL)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = db_query($sql, $db_forum_create)) {
@@ -991,6 +995,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  RELATIONSHIP TINYINT(4) DEFAULT NULL,";
+        $sql.= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL, ";
         $sql.= "  PRIMARY KEY  (UID,PEER_UID)";
         $sql.= ") TYPE=MYISAM";
 
@@ -1142,6 +1147,19 @@ function forum_create($webtag, $forum_name, $access)
             return false;
         }
 
+        $folder_fid = db_insert_id($db_forum_create);
+
+        // Create folder permissions
+
+        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
+        $sql.= "VALUES (0, '$forum_fid', '$folder_fid', 14588);";
+
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete($forum_fid);
+            return false;
+        }
+
         // Add some default forum links
 
         $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
@@ -1164,17 +1182,6 @@ function forum_create($webtag, $forum_name, $access)
 
         $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
-
-        if (!$result = db_query($sql, $db_forum_create)) {
-
-            forum_delete($forum_fid);
-            return false;
-        }
-
-        // Create folder permissions
-
-        $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-        $sql.= "VALUES (0, '$forum_fid', 0, 14588);";
 
         if (!$result = db_query($sql, $db_forum_create)) {
 

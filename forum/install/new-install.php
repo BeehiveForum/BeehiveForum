@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.98 2006-06-16 16:24:18 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.99 2006-06-17 19:01:38 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -1351,7 +1351,7 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
         // find the file or permission denied. To continue we now
         // process the dictionary script using PHP.
 
-        if ($fp = @fopen('english.dic', 'r')) {
+        if ($fp = @fopen($dictionary_file, 'r')) {
 
             while (!feof($fp)) {
 
@@ -1365,7 +1365,7 @@ if (!isset($skip_dictionary) || $skip_dictionary === false) {
                 $sql = "INSERT INTO DICTIONARY (WORD, SOUND, UID) ";
                 $sql.= "VALUES ('$word', '$metaphone', 0)";
 
-                if (!$result = @db_query($sql, $db_install)) {
+                if (!$result = db_query($sql, $db_install)) {
 
                     $valid = false;
                     return;

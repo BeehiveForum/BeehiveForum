@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.158 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.159 2006-06-17 19:40:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -551,8 +551,16 @@ function folder_search_dropdown()
 
         while($folder_data = db_fetch_array($result)) {
 
-            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
+            if (user_is_guest()) {
 
+                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+
+                    $folders['FIDS'][]   = $folder_data['FID'];
+                    $folders['TITLES'][] = $folder_data['TITLE'];
+                }
+
+            }else {
+            
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
                     $folders['FIDS'][]   = $folder_data['FID'];

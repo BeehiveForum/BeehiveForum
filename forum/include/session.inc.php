@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.224 2006-06-15 18:07:11 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.225 2006-06-17 19:40:25 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -842,7 +842,7 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    // Test each folder against the rpovided perm at both the folder
+    // Test each folder against the provided perm at both the folder
     // and user levels.
 
     if (isset($user_sess['PERMS'][$forum_fid][0]) && is_array($user_sess['PERMS'][$forum_fid][0])) {
@@ -850,14 +850,15 @@ function bh_session_get_folders_by_perm($perm, $forum_fid = false)
         foreach($user_sess['PERMS'][$forum_fid][0] as $folder_fid => $folder_perm) {
 
             if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
+                
+                if (($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm) == $perm) {
 
-                if ($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm) {
                     $folder_fid_array[$folder_fid] = $folder_fid;
                 }
 
             }else {
 
-                if ($folder_perm & $perm) $folder_fid_array[$folder_fid] = $folder_fid;
+                if (($folder_perm & $perm) == $perm) $folder_fid_array[$folder_fid] = $folder_fid;
             }
         }
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.198 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.199 2006-06-17 19:40:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -64,8 +64,24 @@ function threads_get_folders()
 
         while ($folder_data = db_fetch_array($result)) {
 
-            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
+            if (user_is_guest()) {
 
+                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+
+                    $folder_data['STATUS'] = bh_session_get_perm($folder_data['FID']);
+
+                    if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
+                    if (!isset($folder_data['INTEREST'])) $folder_data['INTEREST'] = 0;
+
+                    if (!isset($folder_data['ALLOWED_TYPES']) || is_null($folder_data['ALLOWED_TYPES'])) {
+                        $folder_data['ALLOWED_TYPES'] = FOLDER_ALLOW_ALL_THREAD;
+                    }
+
+                    $folder_info[$folder_data['FID']] = $folder_data;
+                }
+
+            }else {
+            
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
                     $folder_data['STATUS'] = bh_session_get_perm($folder_data['FID']);
@@ -75,7 +91,7 @@ function threads_get_folders()
 
                     if (!isset($folder_data['ALLOWED_TYPES']) || is_null($folder_data['ALLOWED_TYPES'])) {
                         $folder_data['ALLOWED_TYPES'] = FOLDER_ALLOW_ALL_THREAD;
-                    }                   
+                    }
 
                     $folder_info[$folder_data['FID']] = $folder_data;
                 }
@@ -665,6 +681,12 @@ function threads_get_folder($uid, $fid, $start = 0)
     if (!is_numeric($start)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    if ($folders = folder_get_available_array()) {
+        if (!in_array($fid, $folders)) $fid = 0;
+    }else {
+        $fid = 0;
+    }
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;

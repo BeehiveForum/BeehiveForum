@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.108 2006-03-25 18:12:44 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.109 2006-06-17 19:40:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -65,8 +65,16 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
         while($folder_data = db_fetch_array($result)) {
 
-            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
+            if (user_is_guest()) {
 
+                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+
+                    $folders['FIDS'][]   = $folder_data['FID'];
+                    $folders['TITLES'][] = $folder_data['TITLE'];
+                }
+
+            }else {
+            
                 if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
 
                     $folders['FIDS'][]   = $folder_data['FID'];
@@ -254,40 +262,17 @@ function folder_move_threads($from, $to)
 
 function folder_get_available()
 {
-    /*$db_folder_get_available = db_connect();
+    if (user_is_guest()) {
 
-    if (!$uid = bh_session_get_value('UID')) $uid = 0;
-
-    if (!$table_data = get_table_prefix()) return '0';
-    $forum_fid = $table_data['FID'];
-
-    $access_allowed = USER_PERM_POST_READ;
-
-    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ORDER BY FID ";
-    $result = db_query($sql, $db_folder_get_available);
-
-    if (db_num_rows($result) > 0) {
-
-        $folder_list = array();
-
-        while($folder_data = db_fetch_array($result)) {
-
-            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID']) || !user_is_guest()) {
-
-                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
-
-                    $folder_list[] = $folder_data['FID'];
-                }
-            }
+        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS)) {
+            return implode(',', $folder_list);
         }
 
-        if (sizeof($folder_list) > 0) return implode(',', $folder_list);
-    }*/
+    }else {
 
-    $access_allowed = USER_PERM_POST_READ | USER_PERM_GUEST_ACCESS;
-
-    if ($folder_list = bh_session_get_folders_by_perm($access_allowed)) {
-        return implode(',', $folder_list);
+        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ)) {
+            return implode(',', $folder_list);
+        }
     }
 
     return '0';
@@ -295,40 +280,53 @@ function folder_get_available()
 
 function folder_get_available_by_forum($forum_fid)
 {
-    /*$db_folder_get_available_by_forum = db_connect();
+    if (user_is_guest()) {
 
-    if (!$uid = bh_session_get_value('UID')) $uid = 0;
-
-    if (!is_numeric($forum_fid)) return '0';
-    if (!$table_data = forum_get_table_prefix($forum_fid)) return '0';
-
-    $access_allowed = USER_PERM_POST_READ;
-
-    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ORDER BY FID ";
-    $result = db_query($sql, $db_folder_get_available_by_forum);
-
-    if (db_num_rows($result) > 0) {
-
-        $folder_list = array();
-
-        while($folder_data = db_fetch_array($result)) {
-
-            if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'], $forum_fid) || !user_is_guest()) {
-
-                if (bh_session_check_perm($access_allowed, $folder_data['FID'], $forum_fid)) {
-
-                    $folder_list[] = $folder_data['FID'];
-                }
-            }
+        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid)) {
+            return implode(',', $folder_list);
         }
 
-        if (sizeof($folder_list) > 0) return implode(',', $folder_list);
-    }*/
+    }else {
 
-    $access_allowed = USER_PERM_POST_READ | USER_PERM_GUEST_ACCESS;
+        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid)) {
+            return implode(',', $folder_list);
+        }
+    }
 
-    if ($folder_list = bh_session_get_folders_by_perm($access_allowed, $forum_fid)) {
-        return implode(',', $folder_list);
+    return '0';
+}
+
+function folder_get_available_array()
+{
+    if (user_is_guest()) {
+
+        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS)) {
+            return $folder_list;
+        }
+
+    }else {
+
+        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ)) {
+            return $folder_list;
+        }
+    }
+
+    return '0';
+}
+
+function folder_get_available_array_by_forum($forum_fid)
+{
+    if (user_is_guest()) {
+
+        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid)) {
+            return $folder_list;
+        }
+
+    }else {
+
+        if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_POST_READ, $forum_fid)) {
+            return $folder_list;
+        }
     }
 
     return '0';

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.177 2006-06-16 16:53:03 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.178 2006-06-17 19:01:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1307,10 +1307,37 @@ function forum_delete($fid)
 
             list($webtag) = db_fetch_array($result, DB_RESULT_NUM);
 
+            $sql = "DELETE FROM FORUMS WHERE FID = '$fid'";
+            $result = db_query($sql, $db_forum_delete);
+
             $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$fid'";
             $result = db_query($sql, $db_forum_delete);
 
-            $sql = "DELETE FROM FORUMS WHERE FID = '$fid'";
+            $sql = "DELETE FROM GROUP_PERMS WHERE FORUM = '$fid'";
+            $result_remove = db_query($sql, $db_forum_delete);
+
+            $sql = "SELECT GID FROM GROUPS WHERE FORUM = '$fid'";
+            $result = db_query($sql, $db_forum_delete);
+
+            while($user_perms = db_fetch_array($result)) {
+
+                $sql = "DELETE FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
+                $result_remove = db_query($sql, $db_forum_delete);
+            }
+
+            $sql = "DELETE FROM GROUPS WHERE FORUM = '$fid'";
+            $result = db_query($sql, $db_forum_delete);
+
+            $sql = "DELETE FROM USER_FORUM WHERE FID = '$fid'";
+            $result = db_query($sql, $db_forum_delete);
+
+            $sql = "DELETE FROM VISITOR_LOG WHERE FORUM = '$fid'";
+            $result = db_query($sql, $db_forum_delete);
+
+            $sql = "DELETE FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
+            $result = db_query($sql, $db_forum_delete);
+
+            $sql = "DELETE FROM SESSIONS WHERE FID = '$fid'";
             $result = db_query($sql, $db_forum_delete);
 
             $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
@@ -1333,16 +1360,17 @@ function forum_delete_tables($webtag)
 
         $db_forum_delete_tables = db_connect();
 
-        $table_array = array('ADMIN_LOG', 'BANNED', 'FILTER_LIST',
-                             'FOLDER', 'FORUM_LINKS', 'GROUPS',
-                             'GROUP_PERMS', 'GROUP_USERS', 'LINKS',
+        $table_array = array('ADMIN_LOG',     'BANNED',        'FILTER_LIST',
+                             'FOLDER',        'FORUM_LINKS',   'GROUPS',
+                             'GROUP_PERMS',   'GROUP_USERS',   'LINKS',
                              'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
-                             'POLL', 'POLL_VOTES', 'POST',
-                             'POST_CONTENT', 'PROFILE_ITEM', 'PROFILE_SECTION',
-                             'RSS_FEEDS', 'RSS_HISTORY', 'STATS', 'THREAD',
-                             'USER_FOLDER', 'USER_PEER', 'USER_POLL_VOTES',
-                             'USER_PREFS', 'USER_PROFILE', 'USER_SIG',
-                             'USER_THREAD', 'VISITOR_LOG');
+                             'POLL',          'POLL_VOTES',    'POST',
+                             'POST_CONTENT',  'PROFILE_ITEM',  'PROFILE_SECTION',
+                             'RSS_FEEDS',     'RSS_HISTORY',   'STATS',
+                             'THREAD',        'THREAD_TRACK',  'USER_TRACK', 
+                             'USER_FOLDER',   'USER_PEER',     'USER_POLL_VOTES',
+                             'USER_PREFS',    'USER_PROFILE',  'USER_SIG',
+                             'USER_THREAD',   'VISITOR_LOG');
 
         foreach ($table_array as $table_name) {
 

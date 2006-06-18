@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.49 2006-06-14 20:20:51 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.50 2006-06-18 13:00:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -267,9 +267,11 @@ if (sizeof($user_peers['user_array']) > 0) {
         }
 
         if (isset($_POST['reset_nickname'][$user_peer['UID']])) {
-            $nickname = user_get_nickname($user_peer['UID']);
-        }else {
+            $nickname = $user_peer['NICKNAME'];
+        }elseif (isset($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
             $nickname = $user_peer['PEER_NICKNAME'];
+        }else {
+            $nickname = $user_peer['NICKNAME'];
         }
 
         echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.138 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.139 2006-06-18 13:00:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -163,6 +163,7 @@ function pm_get_inbox($offset = false)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_inbox_array = array();
+    $mid_array = array();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -230,6 +231,7 @@ function pm_get_outbox($offset = false)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_outbox_array = array();
+    $mid_array = array();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -297,6 +299,7 @@ function pm_get_sent($offset = false)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_sent_array = array();
+    $mid_array = array();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -366,6 +369,7 @@ function pm_get_saveditems($offset = false)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $pm_get_saveditems_array = array();
+    $mid_array = array();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -487,7 +491,7 @@ function pm_get_user($mid)
 
 function pm_user_get_friends()
 {
-    $db_user_get_relationships = db_connect();
+    $db_pm_user_get_friends = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -501,7 +505,7 @@ function pm_user_get_friends()
     $sql.= "WHERE USER_PEER.UID = $uid AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
-    $result = db_query($sql, $db_user_get_relationships);
+    $result = db_query($sql, $db_pm_user_get_friends);
 
     $user_get_peers_array = array();
 

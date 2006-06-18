@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.272 2006-06-15 18:07:11 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.273 2006-06-18 13:00:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1270,12 +1270,6 @@ function user_get_relationships($uid, $offset = 0)
         while ($row = db_fetch_array($result)) {
 
             if (!isset($user_search_array[$row['UID']])) {
-
-                if (isset($row['PEER_NICKNAME'])) {
-                    if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
-                        $row['NICKNAME'] = $row['PEER_NICKNAME'];
-                    }
-                }
 
                 $user_get_peers_array[$row['UID']] = $row;
             }

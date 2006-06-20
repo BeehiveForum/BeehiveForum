@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.40 2006-04-18 17:28:21 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.41 2006-06-20 20:44:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -244,32 +244,41 @@ function install_table_exists($table_name)
     return db_num_rows($result) > 0;
 }
 
-function install_check_tables($webtag)
+function install_check_tables($webtag = false, $forum_tables = false, $global_tables = false)
 {
     $db_install_check_tables = db_connect();
 
-    $forum_tables = array('ADMIN_LOG',     'BANNED',          'FILTER_LIST',
-                          'FOLDER',        'FORUM_LINKS',     'LINKS',
-                          'LINKS_COMMENT', 'LINKS_FOLDERS',   'LINKS_VOTE',
-                          'POLL',          'POLL_VOTES',      'POST',
-                          'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
-                          'STATS',         'THREAD',          'USER_FOLDER',
-                          'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
-                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD');
+    if ($forum_tables === false) {
 
-    $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
-                           'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
-                           'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
-                           'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SESSIONS',
-                           'USER',         'USER_FORUM',          'USER_PREFS',
-                           'USER_TRACK',   'VISITOR_LOG');
+        $forum_tables = array('ADMIN_LOG',     'BANNED',          'FILTER_LIST',
+                              'FOLDER',        'FORUM_LINKS',     'LINKS',
+                              'LINKS_COMMENT', 'LINKS_FOLDERS',   'LINKS_VOTE',
+                              'POLL',          'POLL_VOTES',      'POST',
+                              'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
+                              'STATS',         'THREAD',          'USER_FOLDER',
+                              'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
+                              'USER_PROFILE',  'USER_SIG',        'USER_THREAD');
+    }
 
-    foreach ($forum_tables as $forum_table) {
+    if ($global_tables === false) {
 
-        $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
-        $result = db_query($sql, $db_install_check_tables);
+        $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
+                               'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
+                               'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
+                               'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SESSIONS',
+                               'USER',         'USER_FORUM',          'USER_PREFS',
+                               'USER_TRACK',   'VISITOR_LOG');
+    }
 
-        if (db_num_rows($result) > 0) return false;
+    if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
+
+        foreach ($forum_tables as $forum_table) {
+
+            $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
+            $result = db_query($sql, $db_install_check_tables);
+
+            if (db_num_rows($result) > 0) return false;
+        }
     }
 
     foreach ($global_tables as $global_table) {

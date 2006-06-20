@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.99 2006-06-17 19:01:38 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.100 2006-06-20 20:44:26 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -228,11 +228,15 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
             return;
         }
     }
-}
 
-if (!install_check_tables($forum_webtag)) {
+}else if (!install_check_tables($forum_webtag)) {
 
-    $error_array[] = "<h2>Selected database contains tables which conflict with BeehiveForum. If this database contains an existing BeehiveForum installation please check that you have selected the correct install / upgrade method.</h2>\n";
+    $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum.";
+    $error_str.= "If this database contains an existing BeehiveForum installation please ";
+    $error_str.= "check that you have selected the correct install / upgrade method.</h2>\n";
+
+    $error_array[] = $error_str;
+
     $valid = false;
     return;
 }

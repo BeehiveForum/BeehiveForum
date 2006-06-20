@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.100 2006-06-20 20:44:26 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.101 2006-06-20 20:48:43 decoyduck Exp $ */
 
 if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
 
@@ -200,12 +200,12 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
                           'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
                           'USER_TRACK');
 
-    $global_tables = array('DICTIONARY',   'FORUMS',              'FORUM_SETTINGS',
-                           'GROUPS',       'GROUP_PERMS',         'GROUP_USERS',
-                           'PM',           'PM_ATTACHMENT_IDS',   'POST_ATTACHMENT_FILES',
-                           'PM_CONTENT',   'POST_ATTACHMENT_IDS', 'SEARCH_RESULTS',
-                           'SESSIONS',     'USER',                'USER_FORUM',
-                           'USER_PREFS',   'VISITOR_LOG');
+    $global_tables = array('DICTIONARY',            'FORUM_SETTINGS',      'FORUMS',
+                           'GROUP_PERMS',           'GROUP_USERS',         'GROUPS',
+                           'PM',                    'PM_ATTACHMENT_IDS',   'PM_CONTENT',
+                           'POST_ATTACHMENT_FILES', 'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',
+                           'SEARCH_RESULTS',        'SESSIONS',            'USER',
+                           'USER_FORUM',            'USER_PREFS',          'VISITOR_LOG');
 
     foreach ($forum_tables as $forum_table) {
 

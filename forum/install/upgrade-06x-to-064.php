@@ -21,125 +21,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.14 2006-06-20 20:44:26 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.15 2006-06-21 22:41:33 decoyduck Exp $ */
 
-if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
-
-    if (strstr(php_sapi_name(), 'cgi')) {
-
-        $install_cgi_mode  = true;
-        $install_cgi_valid = false;
-
-        $current_directory = basename(getcwd());
-
-    }else {
-
-        $install_cgi_mode  = false;
-        $install_cgi_valid = false;
-
-        $current_directory = preg_replace('/\\\/', '/', getcwd());
-
-        if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
-            echo "Error: CLI Upgrade must be run from within install directory.\n";
-            exit;
-        }
-    }
-
-    define("BH_INCLUDE_PATH", "../include/");
-
-    include_once(BH_INCLUDE_PATH. "constants.inc.php");
-    include_once(BH_INCLUDE_PATH. "db.inc.php");
-    include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-    $remove_conflicts = true;
-
-    $beehive_version = BEEHIVE_VERSION;
-
-    foreach($_SERVER['argv'] as $arg) {
-
-        if (preg_match("/^-h(.+)/", $arg, $hostname_matches) > 0) {
-            $db_server = $hostname_matches[1];
-        }
-
-        if (preg_match("/^-u(.+)/", $arg, $username_matches) > 0) {
-            $db_username = $username_matches[1];
-        }
-
-        if (preg_match("/^-p(.+)/", $arg, $password_matches) > 0) {
-            $db_password = $password_matches[1];
-        }
-
-        if (preg_match("/^-D(.+)/", $arg, $database_matches) > 0) {
-            $db_database = $database_matches[1];
-        }
-
-        if (preg_match("/^-Cq/", $arg) > 0) {
-            $install_cgi_valid = true;
-        }
-
-        if (preg_match("/^--help/", $arg) > 0) {
-
-            install_cli_show_upgrade_help();
-            exit;
-        }
-    }
-
-    if ($install_cgi_mode === true && $install_cgi_valid === false) {
-        echo "When using PHP CGI binary you must specify -Cq option.\n\n";
-        install_cli_show_help();
-        exit;
-    }
-
-    if (!isset($db_server)) {
-        echo "Must provide a MySQL hostname with -h option.\n";
-        install_cli_show_upgrade_help();
-        exit;
-    }
-
-    if (!isset($db_username)) {
-        echo "Must provide a MySQL username with -u option.\n";
-        install_cli_show_upgrade_help();
-        exit;
-    }
-
-    if (!isset($db_password)) {
-        echo "Must provide a MySQL password with -p option.\n";
-        install_cli_show_upgrade_help();
-        exit;
-    }
-
-    if (!isset($db_database)) {
-        echo "Must provide a MySQL database name with -D option.\n";
-        install_cli_show_upgrade_help();
-        exit;
-    }
-
-    if (!$db_install = @db_connect()) {
-        echo "Database connection to '$db_server' could not be established or permission is denied.\n";
-        exit;
-    }
-
-    echo "Upgrading BeehiveForum to $beehive_version. Please wait...\n\n";
-
-}elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-061-to-062.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
     header("Location: ../install.php");
     exit;
-
-}else {
-
-    if (strstr(php_sapi_name(), 'cgi')) {
-        $install_cgi_mode = true;
-    }else {
-        $install_cgi_mode = false;
-    }
-
-    include_once(BH_INCLUDE_PATH. "constants.inc.php");
-    include_once(BH_INCLUDE_PATH. "db.inc.php");
-    include_once(BH_INCLUDE_PATH. "install.inc.php");
 }
+
+if (!isset($_SERVER['SCRIPT_FILENAME'])) {
+    $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
+}
+
+$dictionary_file = preg_replace('/\\\/', '/', dirname($_SERVER['SCRIPT_FILENAME']));
+$dictionary_file.= "/install/english.dic";
+
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 @set_time_limit(0);
 
@@ -178,29 +79,36 @@ if (db_num_rows($result) > 0) {
     }
 }
 
-$remove_tables = array('SEARCH_KEYWORDS', 'SEARCH_MATCH', 'SEARCH_POSTS', 'SEARCH_RESULTS');
+// Check that we have no global tables which conflict
+// with those we're about to create or remove.
 
-foreach ($remove_tables as $forum_table) {
+$global_tables = array('DICTIONARY_NEW', 'SEARCH_ENGINE_BOTS', 'SEARCH_KEYWORDS',
+                       'SEARCH_MATCH', 'SEARCH_POSTS', 'SEARCH_RESULTS');
 
-    $sql = "DROP TABLE IF EXISTS {$forum_table}";
+if (isset($remove_conflicts) && $remove_conflicts === true) {
 
-    if (!$result = @db_query($sql, $db_install)) {
+    foreach ($global_tables as $global_table) {
 
-        $valid = false;
-        return;
+        $sql = "DROP TABLE IF EXISTS $global_table";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
     }
 }
 
-// Check that we have no tables which conflict with those
-// we're about to create.
+// Check that we have no per-forum tables which conflict
+// with those we're about to create.
 
-foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+$forum_tables  = array('USER_TRACK', 'THREAD_TRACK');
 
-    $create_tables = array('USER_TRACK', 'THREAD_TRACK');
+if (isset($remove_conflicts) && $remove_conflicts === true) {
 
-    if (isset($remove_conflicts) && $remove_conflicts === true) {
+    foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
-        foreach ($create_tables as $forum_table) {
+        foreach ($forum_tables as $forum_table) {
 
             $sql = "DROP TABLE IF EXISTS {$forum_webtag}_{$forum_table}";
 
@@ -211,13 +119,25 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             }
         }
 
-    }else if (!install_check_tables($forum_webtag, $create_tables)) {
+    }
+}
+
+// Now we call install_check_tables for each forum we've found
+// with our list of tables to create to make sure they're well
+// and truely not going to conflict.
+
+foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    if (!install_check_tables($forum_webtag, $forum_tables, $global_tables)) {
 
         $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum.";
         $error_str.= "If this database contains an existing BeehiveForum installation please ";
-        $error_str.= "check that you have selected the correct install / upgrade method. If ";
-        $error_str.= "you still encounter errors you may want to consider using the remove ";
-        $error_str.= "conflicts option at the bottom of the installer.</h2>\n";
+        $error_str.= "check that you have selected the correct install / upgrade method.<h2>\n";
+
+        $error_array[] = $error_str;
+
+        $error_str = "<h2>If you continue to encounter errors you may want to consider enabling ";
+        $error_str.= "the remove conflicts option at the bottom of the installer.</h2>\n";
 
         $error_array[] = $error_str;
 
@@ -322,38 +242,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
     $result = @db_query($sql, $db_install);
-}
-
-// Same check as above but for our global tables. Any problems encountered 
-// can be over-ridden by the installer's remove conflicts option.
-
-$create_tables = array('SEARCH_ENGINE_BOTS', 'SEARCH_RESULTS', 'DICTIONARY_NEW');
-
-if (isset($remove_conflicts) && $remove_conflicts === true) {
-
-    foreach ($create_tables as $forum_table) {
-
-        $sql = "DROP TABLE IF EXISTS {$forum_table}";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-    }
-
-}else if (!install_check_tables($forum_webtag, $create_tables)) {
-
-    $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum.";
-    $error_str.= "If this database contains an existing BeehiveForum installation please ";
-    $error_str.= "check that you have selected the correct install / upgrade method. If ";
-    $error_str.= "you still encounter errors you may want to consider using the remove ";
-    $error_str.= "conflicts option at the bottom of the installer.</h2>\n";
-
-    $error_array[] = $error_str;
-
-    $valid = false;
-    return;
 }
 
 // New table for our search engine bot data. This is designed

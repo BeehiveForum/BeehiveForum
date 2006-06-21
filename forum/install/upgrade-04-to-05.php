@@ -21,144 +21,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.42 2006-01-23 01:01:53 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.43 2006-06-21 22:41:33 decoyduck Exp $ */
 
-if (isset($_SERVER['argc']) && $_SERVER['argc'] > 0) {
-
-    if (strstr(php_sapi_name(), 'cgi')) {
-
-        $install_cgi_mode  = true;
-        $install_cgi_valid = false;
-
-        $current_directory = basename(getcwd());
-
-    }else {
-
-        $install_cgi_mode  = false;
-        $install_cgi_valid = false;
-
-        $current_directory = preg_replace('/\\\/', '/', getcwd());
-
-        if (!strstr(basename($_SERVER['PHP_SELF']), $_SERVER['argv'][0])) {
-            echo "Error: CLI Upgrade must be run from within install directory.\n";
-            exit;
-        }
-    }
-
-    define("BH_INCLUDE_PATH", "../include/");
-
-    include_once(BH_INCLUDE_PATH. "constants.inc.php");
-    include_once(BH_INCLUDE_PATH. "db.inc.php");
-    include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-    $remove_conflicts = true;
-
-    $dictionary_file = "$current_directory/english.dic";
-
-    $beehive_version = BEEHIVE_VERSION;
-
-    foreach($_SERVER['argv'] as $arg) {
-
-        if (preg_match("/^-h(.+)/", $arg, $hostname_matches) > 0) {
-            $db_server = $hostname_matches[1];
-        }
-
-        if (preg_match("/^-u(.+)/", $arg, $username_matches) > 0) {
-            $db_username = $username_matches[1];
-        }
-
-        if (preg_match("/^-p(.+)/", $arg, $password_matches) > 0) {
-            $db_password = $password_matches[1];
-        }
-
-        if (preg_match("/^-D(.+)/", $arg, $database_matches) > 0) {
-            $db_database = $database_matches[1];
-        }
-
-        if (preg_match("/^-w(.+)/", $arg, $webtag_matches) > 0) {
-            $forum_webtag = $webtag_matches[1];
-        }
-
-        if (preg_match("/^-Cq/", $arg) > 0) {
-            $install_cgi_valid = true;
-        }
-
-        if (preg_match("/^--help/", $arg) > 0) {
-
-            install_cli_show_upgrade_help();
-            exit;
-        }
-    }
-
-    if ($install_cgi_mode === true && $install_cgi_valid === false) {
-        echo "When using PHP CGI binary you must specify -Cq option.\n\n";
-        install_cli_show_help();
-        exit;
-    }
-
-    if (!isset($db_server)) {
-        echo "Must provide a MySQL hostname with -h option.\n";
-        install_cli_show_upgrade_help();
-        exit;
-    }
-
-    if (!isset($db_username)) {
-        echo "Must provide a MySQL username with -u option.\n";
-        install_cli_show_upgrade_help();
-        exit;
-    }
-
-    if (!isset($db_password)) {
-        echo "Must provide a MySQL password with -p option.\n";
-        install_cli_show_upgrade_help();
-        exit;
-    }
-
-    if (!isset($db_database)) {
-        echo "Must provide a MySQL database name with -D option.\n";
-        install_cli_show_upgrade_help();
-        exit;
-    }
-
-    if (!isset($forum_webtag)) {
-        echo "Must provide a forum webtag with -w option.\n";
-        install_cli_show_help();
-        exit;
-    }
-
-    if (!$db_install = db_connect()) {
-        echo "Database connection to '$db_server' could not be established or permission is denied.\n";
-        exit;
-    }
-
-    echo "Upgrading BeehiveForum to $beehive_version. Please wait...\n\n";
-
-}elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
     header("Location: ../install.php");
     exit;
 
-}else {
-
-    if (strstr(php_sapi_name(), 'cgi')) {
-        $install_cgi_mode = true;
-    }else {
-        $install_cgi_mode = false;
-    }
-
-    if (!isset($_SERVER['SCRIPT_FILENAME'])) {
-        $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
-    }
-
-    $dictionary_file = preg_replace('/\\\/', '/', dirname($_SERVER['SCRIPT_FILENAME']));
-    $dictionary_file.= "/install/english.dic";
-
-    include_once(BH_INCLUDE_PATH. "constants.inc.php");
-    include_once(BH_INCLUDE_PATH. "db.inc.php");
-    include_once(BH_INCLUDE_PATH. "install.inc.php");
 }
+
+if (!isset($_SERVER['SCRIPT_FILENAME'])) {
+    $_SERVER['SCRIPT_FILENAME'] = $_SERVER['SCRIPT_NAME'];
+}
+
+$dictionary_file = preg_replace('/\\\/', '/', dirname($_SERVER['SCRIPT_FILENAME']));
+$dictionary_file.= "/install/english.dic";
+
+include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 @set_time_limit(0);
 

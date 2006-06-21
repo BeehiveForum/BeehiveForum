@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.15 2006-06-21 22:41:33 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.16 2006-06-21 23:04:03 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -82,8 +82,9 @@ if (db_num_rows($result) > 0) {
 // Check that we have no global tables which conflict
 // with those we're about to create or remove.
 
-$global_tables = array('DICTIONARY_NEW', 'SEARCH_ENGINE_BOTS', 'SEARCH_KEYWORDS',
-                       'SEARCH_MATCH', 'SEARCH_POSTS', 'SEARCH_RESULTS');
+$global_tables = array('SEARCH_ENGINE_BOTS', 'SEARCH_KEYWORDS',
+                       'SEARCH_MATCH', 'SEARCH_POSTS',
+                       'SEARCH_RESULTS');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -351,9 +352,24 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+// Dictionary has been updated to be less resource intensive
+// and more precise by moving a lot of the processing to PHP
+// and away from MySQL.
+
 if (db_num_rows($result) > 0) {
 
-    $sql = "CREATE TABLE DICTIONARY_NEW (";
+    // Generate a unique random table name and keep
+    // doing so until we have one that doesn't exist.
+
+    $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+
+    while (!install_check_tables(false, false, array($dictionary_new))) {
+        $dictionary_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    }
+
+    // Create our new table.
+    
+    $sql = "CREATE TABLE $dictionary_new (";
     $sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '',";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '',";
@@ -367,7 +383,11 @@ if (db_num_rows($result) > 0) {
         return;
     }
 
-    $sql = "INSERT IGNORE INTO DICTIONARY_NEW (WORD, SOUND, UID) ";
+    // Move the data from the old DICTIONARY table
+    // into our new one and remove duplicates and
+    // lower-case and trim the words and sounds.
+
+    $sql = "INSERT IGNORE INTO $dictionary_new (WORD, SOUND, UID) ";
     $sql.= "SELECT LOWER(TRIM(WORD)), TRIM(SOUND), UID FROM DICTIONARY";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -375,6 +395,8 @@ if (db_num_rows($result) > 0) {
         $valid = false;
         return;
     }
+
+    // Remove the old table.
 
     $sql = "DROP TABLE IF EXISTS DICTIONARY";
 
@@ -384,7 +406,9 @@ if (db_num_rows($result) > 0) {
         return;
     }
 
-    $sql = "ALTER TABLE DICTIONARY_NEW RENAME DICTIONARY";
+    // Rename our new table to DICTIONARY.
+
+    $sql = "ALTER TABLE $dictionary_new RENAME DICTIONARY";
 
     if (!$result = @db_query($sql, $db_install)) {
 

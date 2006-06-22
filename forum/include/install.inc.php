@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.41 2006-06-20 20:44:26 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.42 2006-06-22 20:02:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -272,21 +272,27 @@ function install_check_tables($webtag = false, $forum_tables = false, $global_ta
 
     if (($webtag !== false) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
 
-        foreach ($forum_tables as $forum_table) {
+        if (is_array($forum_tables) && sizeof($forum_tables) > 0) {
+        
+            foreach ($forum_tables as $forum_table) {
 
-            $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
+                $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
+                $result = db_query($sql, $db_install_check_tables);
+
+                if (db_num_rows($result) > 0) return false;
+            }
+        }
+    }
+
+    if (is_array($forum_tables) && sizeof($forum_tables) > 0) {
+
+        foreach ($global_tables as $global_table) {
+
+            $sql = "SHOW TABLES LIKE '$global_table' ";
             $result = db_query($sql, $db_install_check_tables);
 
             if (db_num_rows($result) > 0) return false;
         }
-    }
-
-    foreach ($global_tables as $global_table) {
-
-        $sql = "SHOW TABLES LIKE '$global_table' ";
-        $result = db_query($sql, $db_install_check_tables);
-
-        if (db_num_rows($result) > 0) return false;
     }
 
     return true;

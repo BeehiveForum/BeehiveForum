@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.29 2006-06-16 16:24:18 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.30 2006-06-22 20:02:40 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -534,29 +534,29 @@ $lang['deletedprofileitem'] = "A supprimé l'item de Profil '%s'";
 $lang['editedstartpage'] = "A modifié la page de démarrage";
 $lang['savednewstyle'] = "A enregistré le nouveau style '%s'";
 
-$lang['movedthread'] = "A déplacé le fil de discussion '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' de '%s' à '%s'";
-$lang['closedthread'] = "A fermé le fil de discussion '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['openedthread'] = "A ouvert le fil de discussion '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['renamedthread'] = "A renommé le fil de discussion '%s' de '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['deletedthread'] = "A supprimé le fil de discussion '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['movedthread'] = "A déplacé le fil de discussion '%s' de '%s' à '%s'";
+$lang['closedthread'] = "A fermé le fil de discussion '%s'";
+$lang['openedthread'] = "A ouvert le fil de discussion '%s'";
+$lang['renamedthread'] = "A renommé le fil de discussion '%s' de '%s'";
+$lang['deletedthread'] = "A supprimé le fil de discussion '%s'";
 
-$lang['lockedthreadtitlefolder'] = "A verrouillé les options de fil de discussion sur '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['unlockedthreadtitlefolder'] = "A déverrouillé les options de fil de discussion sur '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['lockedthreadtitlefolder'] = "A verrouillé les options de fil de discussion sur '%s'";
+$lang['unlockedthreadtitlefolder'] = "A déverrouillé les options de fil de discussion sur '%s'";
 
-$lang['deletedpostsfrominthread'] = "A supprimé les messages de '%s' dans fil de discussion '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['deletedattachmentfrompost'] = "A supprimé le fichier joint '%s' du message '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['deletedpostsfrominthread'] = "A supprimé les messages de '%s' dans fil de discussion '%s'";
+$lang['deletedattachmentfrompost'] = "A supprimé le fichier joint '%s' du message '%s'";
 
 $lang['editedforumlinks'] = "A modifié les liens de forum";
 
-$lang['deletedpost'] = "A supprimé le message '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
-$lang['editedpost'] = "A révisé le message '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['deletedpost'] = "A supprimé le message '%s'";
+$lang['editedpost'] = "A révisé le message '%s'";
 
-$lang['madethreadsticky'] = "A rendu le fil de discussion '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' collant";
-$lang['madethreadnonsticky'] = "A rendu le fil de discussion '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' non-collant";
+$lang['madethreadsticky'] = "A rendu le fil de discussion '%s' collant";
+$lang['madethreadnonsticky'] = "A rendu le fil de discussion '%s' non-collant";
 
 $lang['endedsessionforuser'] = "A terminé la session pour l'utilisateur '%s'";
 
-$lang['approvedpost'] = "A approuvé le message '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['approvedpost'] = "A approuvé le message '%s'";
 
 $lang['editedwordfilter'] = "A modifié le filtre de mots";
 
@@ -655,7 +655,7 @@ $lang['forum_settings_help_28'] = "Cette option permet le balayage de votre foru
 $lang['forum_settings_help_29'] = "<b>Permettre enregistrement de nouveaux comptes</b> permet ou empêche la céation de nouveaux comptes d'utilisateurs. Si vous le réglé à non, le formulaire d'enregistrement sera complètement désactivé.";
 $lang['forum_settings_help_30'] = "<b>Activer intégration WikiWiki</b> fournit un support WikiWord dans les messages sur votre forum. Un mot WikiWord consiste de deux ou plusieurs mots concaténés avec capitales (qu'on appelle aussi CamelCase). Si vous écrivez un mot de cette façon, il sera converti automatiquement en hyperlien pointant à votre Wiki de choix.";
 $lang['forum_settings_help_31'] = "<b>Activer hyperliens rapides WikiWiki</b> active l'usage de liens étendues du style msg:1.1 et User:Logon qui créent des hyperliens au message spécifié / profile d'utilisateur de l'utilisateur spécifié.";
-$lang['forum_settings_help_32'] = "<b>Localisation WikiWiki</b> est utilisée pour spécifier le URI de votre WikiWiki. Lorsque vous entrer le URI, utilisez [WikiWord] pour indiquer où dans le URI le WikiWord devrait apparaître, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> hyperlierait vos WikiWords à <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
+$lang['forum_settings_help_32'] = "<b>Localisation WikiWiki</b> est utilisée pour spécifier le URI de votre WikiWiki. Lorsque vous entrer le URI, utilisez [WikiWord] pour indiquer où dans le URI le WikiWord devrait apparaître, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> hyperlierait vos WikiWords à %s";
 $lang['forum_settings_help_33'] = "<b>Statut d'accès au forum</b> contrôle de quelle façon les utilisateurs peuvent accéder à votre forum.";
 $lang['forum_settings_help_34'] = "<b>Ouvert</b> permettra à tous les utilisateurs et visiteurs d'avoir accès à votre forum sans restrictions.";
 $lang['forum_settings_help_35'] = "<b>Fermé</b> empêche l'accès à tous les utilisateurs, à l'exception des Admins qui pourront toujours accéder au panneau admin.";
@@ -1597,10 +1597,10 @@ $lang['selectedpostsandrepliesonly'] = "Message sélectionné et réponses seule
 $lang['selectedandallfollowingposts'] = "Message sélectionné et tous les suivants";
 
 $lang['threadhere'] = "ici";
-$lang['thisthreadhasmoved'] = "<b>Fils de discussion fusionnés:</b> Ce fils de discussion a déménagé <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['thisthreadwasmergedfrom'] = "<b>Fils de discussion fusionnés:</b> Ce fils de discussion a été fusionné de <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Division de fils de discussion:</b> Certains messages dans ce fils de discussion ont été déplacé <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['somepostsinthisthreadweremovedfrom'] = "<b>Division de fils de discussion:</b> Certains messages de ce fils de discussion ont été déplacé de <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['thisthreadhasmoved'] = "<b>Fils de discussion fusionnés:</b> Ce fils de discussion a déménagé %s";
+$lang['thisthreadwasmergedfrom'] = "<b>Fils de discussion fusionnés:</b> Ce fils de discussion a été fusionné de %s";
+$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Division de fils de discussion:</b> Certains messages dans ce fils de discussion ont été déplacé %s";
+$lang['somepostsinthisthreadweremovedfrom'] = "<b>Division de fils de discussion:</b> Certains messages de ce fils de discussion ont été déplacé de %s";
 
 $lang['threadmergefailed'] = "Fusion de fils de discussion échouée";
 $lang['threadsplitfailed'] = "Division de fils de discussion échouée"

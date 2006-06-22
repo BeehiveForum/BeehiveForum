@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.6 2006-06-16 16:24:18 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.7 2006-06-22 20:02:40 decoyduck Exp $ */
 
 // International English language file
 
@@ -513,29 +513,29 @@ $lang['deletedprofileitem'] = "Profileintrag '%s' geloescht";
 $lang['editedstartpage'] = "Startseite editiert";
 $lang['savednewstyle'] = "Neuer Stil '%s' gespeichert";
 
-$lang['movedthread'] = "Verschobener Eintrag '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' von '%s' nach '%s'";
-$lang['closedthread'] = "Eintrag geschlossen '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['openedthread'] = "Eintrag geoeffnet '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['renamedthread'] = "Umbenannter Eintrag '%s' to '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['deletedthread'] = "Geloeschter Eintrag '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['movedthread'] = "Verschobener Eintrag '%s' von '%s' nach '%s'";
+$lang['closedthread'] = "Eintrag geschlossen '%s'";
+$lang['openedthread'] = "Eintrag geoeffnet '%s'";
+$lang['renamedthread'] = "Umbenannter Eintrag '%s' to '%s'";
+$lang['deletedthread'] = "Geloeschter Eintrag '%s'";
 
-$lang['lockedthreadtitlefolder'] = "Gesperrte Eintragsoptionen auf '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['unlockedthreadtitlefolder'] = "Geoeffnete Eintragsoptionen auf '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['lockedthreadtitlefolder'] = "Gesperrte Eintragsoptionen auf '%s'";
+$lang['unlockedthreadtitlefolder'] = "Geoeffnete Eintragsoptionen auf '%s'";
 
-$lang['deletedpostsfrominthread'] = "Geloeschte Posts von '%s' in Eintrag '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['deletedattachmentfrompost'] = "Geloeschter Anhang '%s' von Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['deletedpostsfrominthread'] = "Geloeschte Posts von '%s' in Eintrag '%s'";
+$lang['deletedattachmentfrompost'] = "Geloeschter Anhang '%s' von Post '%s'";
 
 $lang['editedforumlinks'] = "Editierte Foren-Links";
 
-$lang['deletedpost'] = "Geloeschter Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
-$lang['editedpost'] = "Editierter Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['deletedpost'] = "Geloeschter Post '%s'";
+$lang['editedpost'] = "Editierter Post '%s'";
 
-$lang['madethreadsticky'] = "Eintrag erstellt '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' sticky";
-$lang['madethreadnonsticky'] = "Eintrag erstellt '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' non-sticky";
+$lang['madethreadsticky'] = "Eintrag erstellt '%s' sticky";
+$lang['madethreadnonsticky'] = "Eintrag erstellt '%s' non-sticky";
 
 $lang['endedsessionforuser'] = "Beendete Sitzung fuer Benutzer '%s'";
 
-$lang['approvedpost'] = "Akzeptierter Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['approvedpost'] = "Akzeptierter Post '%s'";
 
 $lang['editedwordfilter'] = "Editierter Wortfilter";
 
@@ -634,7 +634,7 @@ $lang['forum_settings_help_28'] = "Diese Einstellung erlaubt Suchmaschinen Dein 
 $lang['forum_settings_help_29'] = "<b>Erlaubt neuen Benutzern sich zu registrieren</b> ist dies abgeschaltet koennen sich keine neuen Benutzer registrieren.";
 $lang['forum_settings_help_30'] = "<b>Aktiviert WikiWiki Integration</b> erlaubt WikiWord-Zugriff in den Foren-Posts. WikiWords sind miteinander verkettete Woerter in Grossbuchstaben. Wenn Du so ein Wort schreibst wird es automatisch in ein Hyperlink geaendert das auf den WikiWiki-Seiten gesucht/erklaert wird.";
 $lang['forum_settings_help_31'] = "<b>Aktivert WikiWiki Quick Links</b> aktiviert die Benutzung von msg:1.1 und User:Logon-Stilen erweiterten WikiLinks die Hyperlinks zu den spezifizierten Nachrichten / Benutzerprofilen erstellen.";
-$lang['forum_settings_help_32'] = "<b>WikiWiki Position</b> hier wird der Pfad zu deinem gewuenschten WikiWiki angegeben. Bei Eingabe der URL sollte dies: [WikiWord] als Platzhalter fuer das betreffende Wort angegeben werden, z.B.: <i>http://de.wikipedia.org/wiki/[WikiWord]</i> sendet das WikiWord an <a href=\"http://de.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
+$lang['forum_settings_help_32'] = "<b>WikiWiki Position</b> hier wird der Pfad zu deinem gewuenschten WikiWiki angegeben. Bei Eingabe der URL sollte dies: [WikiWord] als Platzhalter fuer das betreffende Wort angegeben werden, z.B.: <i>http://de.wikipedia.org/wiki/[WikiWord]</i> sendet das WikiWord an %s";
 $lang['forum_settings_help_33'] = "<b>Forum Access Status</b> ueberprueft wielvie Benutzer das Forum nutzen.";
 $lang['forum_settings_help_34'] = "<b>Offen</b> Erlaubt allen Benutzern und Gaesten das Forum zu nutzen.";
 $lang['forum_settings_help_35'] = "<b>Geschlossen</b> Laesst keinen Zugriff mehr zu ausser dem Admin in die Admin-Tools.";
@@ -1575,10 +1575,10 @@ $lang['selectedpostsandrepliesonly'] = "Waehle Beitrag aus und beantworte nur";
 $lang['selectedandallfollowingposts'] = "Diesen und alle folgenden Beitraege auswaehlen";
 
 $lang['threadhere'] = "hier";
-$lang['thisthreadhasmoved'] = "<b>Eintraege zusammengefuegt:</b> Dieser Eintrag wurde verscvhoben nach <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['thisthreadwasmergedfrom'] = "<b>Eintraege zusammengefuegt:</b> Dieser Eintrag wurde angefuegt an <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Eintragsaufteilung:</b> Einige Beitraege in diesem Eintrag wurden verschoben nach <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['somepostsinthisthreadweremovedfrom'] = "<b>Eintragsaufteilung:</b> Einige Beitrage ind diesem Eintrag wurden verschoben von <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['thisthreadhasmoved'] = "<b>Eintraege zusammengefuegt:</b> Dieser Eintrag wurde verscvhoben nach %s";
+$lang['thisthreadwasmergedfrom'] = "<b>Eintraege zusammengefuegt:</b> Dieser Eintrag wurde angefuegt an %s";
+$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Eintragsaufteilung:</b> Einige Beitraege in diesem Eintrag wurden verschoben nach %s";
+$lang['somepostsinthisthreadweremovedfrom'] = "<b>Eintragsaufteilung:</b> Einige Beitrage ind diesem Eintrag wurden verschoben von %s";
 
 $lang['threadmergefailed'] = "Eintragsanfuegung fehlgeschlagen";
 $lang['threadsplitfailed'] = "Eintragsaufteilung fehlgeschlagen";

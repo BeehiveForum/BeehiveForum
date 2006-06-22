@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.15 2006-06-16 16:24:18 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.16 2006-06-22 20:02:40 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -517,29 +517,29 @@ $lang['deletedprofileitem'] = "Deleted Profile Item '%s'";
 $lang['editedstartpage'] = "Edited Start Page";
 $lang['savednewstyle'] = "Saved New Style '%s'";
 
-$lang['movedthread'] = "Moved Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' from '%s' to '%s'";
-$lang['closedthread'] = "Closed Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['openedthread'] = "Opened Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['renamedthread'] = "Renamed Thread '%s' to '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['deletedthread'] = "Deleted Thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['movedthread'] = "Moved Thread '%s' from '%s' to '%s'";
+$lang['closedthread'] = "Closed Thread '%s'";
+$lang['openedthread'] = "Opened Thread '%s'";
+$lang['renamedthread'] = "Renamed Thread '%s' to '%s'";
+$lang['deletedthread'] = "Deleted Thread '%s'";
 
-$lang['lockedthreadtitlefolder'] = "Locked thread options on '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['unlockedthreadtitlefolder'] = "Unlocked thread options on '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
+$lang['lockedthreadtitlefolder'] = "Locked thread options on '%s'";
+$lang['unlockedthreadtitlefolder'] = "Unlocked thread options on '%s'";
 
-$lang['deletedpostsfrominthread'] = "Deleted posts from '%s' in thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>'";
-$lang['deletedattachmentfrompost'] = "Deleted attachment '%s' from post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['deletedpostsfrominthread'] = "Deleted posts from '%s' in thread '%s'";
+$lang['deletedattachmentfrompost'] = "Deleted attachment '%s' from post '%s'";
 
 $lang['editedforumlinks'] = "Edited Forum Links";
 
-$lang['deletedpost'] = "Deleted Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
-$lang['editedpost'] = "Edited Post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['deletedpost'] = "Deleted Post '%s'";
+$lang['editedpost'] = "Edited Post '%s'";
 
-$lang['madethreadsticky'] = "Made thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' sticky";
-$lang['madethreadnonsticky'] = "Made thread '<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>' non-sticky";
+$lang['madethreadsticky'] = "Made thread '%s' sticky";
+$lang['madethreadnonsticky'] = "Made thread '%s' non-sticky";
 
 $lang['endedsessionforuser'] = "Ended session for user '%s'";
 
-$lang['approvedpost'] = "Approved post '<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>'";
+$lang['approvedpost'] = "Approved post '%s'";
 
 $lang['editedwordfilter'] = "Edited Word Filter";
 
@@ -640,7 +640,7 @@ $lang['forum_settings_help_28'] = "This setting allows your forum to be spider-e
 $lang['forum_settings_help_29'] = "<b>Allow new user registrations</b> allows or disallows the creation of new user accounts. Setting the option to no completely disables the registration form.";
 $lang['forum_settings_help_30'] = "<b>Enable WikiWiki Integration</b> provides WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your chosen WikiWiki.";
 $lang['forum_settings_help_31'] = "<b>Enable WikiWiki Quick Links</b> enables the use of msg:1.1 and User:Logon style extended WikiLinks which create hyperlinks to the specified message / user profile of the specified user.";
-$lang['forum_settings_help_32'] = "<b>WikiWiki Location</b> is used to specify the URI of your WikiWiki. When entering the URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to <a href=\"http://en.wikipedia.org/\" target=\"_blank\">Wikipedia.org</a>";
+$lang['forum_settings_help_32'] = "<b>WikiWiki Location</b> is used to specify the URI of your WikiWiki. When entering the URI use [WikiWord] to indicate where in the URI the WikiWord should appear, i.e.: <i>http://en.wikipedia.org/wiki/[WikiWord]</i> would link your WikiWords to %s";
 $lang['forum_settings_help_33'] = "<b>Forum Access Status</b> controls how users may access your forum.";
 $lang['forum_settings_help_34'] = "<b>Open</b> will allow all users and guests access to your forum without restriction.";
 $lang['forum_settings_help_35'] = "<b>Closed</b> prevents access for all users, with the exception of the admin who may still access the admin panel.";
@@ -1581,10 +1581,10 @@ $lang['selectedpostsandrepliesonly'] = "Selected post and replies only";
 $lang['selectedandallfollowingposts'] = "Selected and all following posts";
 
 $lang['threadhere'] = "here";
-$lang['thisthreadhasmoved'] = "<b>Threads Merged:</b> This thread has moved <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['thisthreadwasmergedfrom'] = "<b>Threads Merged:</b> This thread was merged from <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Thread Split:</b> Some posts in this thread have been moved <a href=\"%s\" target=\"_self\">%s</a>";
-$lang['somepostsinthisthreadweremovedfrom'] = "<b>Thread Split:</b> Some posts in this thread were moved from <a href=\"%s\" target=\"_self\">%s</a>";
+$lang['thisthreadhasmoved'] = "<b>Threads Merged:</b> This thread has moved %s";
+$lang['thisthreadwasmergedfrom'] = "<b>Threads Merged:</b> This thread was merged from %s";
+$lang['somepostsinthisthreadhavebeenmoved'] = "<b>Thread Split:</b> Some posts in this thread have been moved %s";
+$lang['somepostsinthisthreadweremovedfrom'] = "<b>Thread Split:</b> Some posts in this thread were moved from %s";
 
 $lang['threadmergefailed'] = "Thread merge failed";
 $lang['threadsplitfailed'] = "Thread split failed";

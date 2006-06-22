@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.87 2006-03-16 16:29:22 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.88 2006-06-22 20:02:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -308,32 +308,38 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case MOVED_THREAD:
 
-                $action_text = sprintf($lang['movedthread'], $entry_array[0], $entry_array[1], $entry_array[2], $entry_array[3]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[2], $entry_array[3]);
+                $action_text = sprintf($lang['movedthread'], $entry_array[0], $entry_array[1], $thread_link);
                 break;
 
             case CLOSED_THREAD:
 
-                $action_text = sprintf($lang['closedthread'], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['closedthread'], $thread_link);
                 break;
 
             case OPENED_THREAD:
 
-                $action_text = sprintf($lang['openedthread'], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['openedthread'], $thread_link);
                 break;
 
             case RENAME_THREAD:
 
-                $action_text = sprintf($lang['renamedthread'], $entry_array[1], $entry_array[0], $entry_array[2]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[2]);
+                $action_text = sprintf($lang['renamedthread'], $entry_array[1], $thread_link);
                 break;
 
             case DELETE_POST:
 
-                $action_text = sprintf($lang['deletedpost'], $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
+                $action_text = sprintf($lang['deletedpost'], $thread_link);
                 break;
 
             case EDIT_POST:
 
-                $action_text = sprintf($lang['editedpost'], $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
+                $action_text = sprintf($lang['editedpost'], $thread_link);
                 break;
 
             case EDIT_WORD_FILTER:
@@ -343,12 +349,14 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case CREATE_THREAD_STICKY:
 
-                $action_text = sprintf($lang['madethreadsticky'], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['madethreadsticky'], $thread_link);
                 break;
 
             case REMOVE_THREAD_STICKY:
 
-                $action_text = sprintf($lang['madethreadnonsticky'], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]); 
+                $action_text = sprintf($lang['madethreadnonsticky'], $thread_link);
                 break;
 
             case END_USER_SESSION:
@@ -363,27 +371,32 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case LOCKED_THREAD:
 
-                $action_text = sprintf($lang['lockedthreadtitlefolder'], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['lockedthreadtitlefolder'], $thread_link);
                 break;
 
             case UNLOCKED_THREAD:
 
-                $action_text = sprintf($lang['unlockedthreadtitlefolder'], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['unlockedthreadtitlefolder'], $thread_link);
                 break;
 
             case DELETE_USER_THREAD_POSTS:
 
-                $action_text = sprintf($lang['deletedpostsfrominthread'], $entry_array[2], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['deletedpostsfrominthread'], $entry_array[2], $thread_link);
                 break;
 
             case DELETE_THREAD:
 
-                $action_text = sprintf($lang['deletedthread'], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['deletedthread'], $thread_link);
                 break;
 
             case DELETE_ATTACHMENT:
 
-                $action_text = sprintf($lang['deletedattachmentfrompost'], $entry_array[2], $entry_array[0], $entry_array[1], $entry_array[0], $entry_array[1]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[0], $entry_array[1], $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['deletedattachmentfrompost'], $entry_array[2], $thread_link);
                 break;
 
             case EDIT_FORUM_LINKS:
@@ -393,7 +406,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case APPROVED_POST:
 
-                $action_text = sprintf($lang['approvedpost'], $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[1], $entry_array[2], $entry_array[1], $entry_array[2]);
+                $action_text = sprintf($lang['approvedpost'], $thread_link);
                 break;
 
             case CREATE_USER_GROUP:

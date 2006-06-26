@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.95 2005-08-24 21:09:23 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.96 2006-06-26 22:10:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -97,7 +97,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-            $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+            $header.= "Content-type: text/plain; charset=UTF-8\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
             // SF.net Bug #1040563:
@@ -180,7 +180,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-            $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+            $header.= "Content-type: text/plain; charset=UTF-8\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
             // SF.net Bug #1040563:
@@ -254,7 +254,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-            $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+            $header.= "Content-type: text/plain; charset=UTF-8\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
             // SF.net Bug #1040563:
@@ -310,7 +310,7 @@ function email_send_pw_reminder($logon)
             $header = "Return-path: $forum_email\n";
             $header.= "From: \"$forum_name\" <$forum_email>\n";
             $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-            $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+            $header.= "Content-type: text/plain; charset=UTF-8\n";
             $header.= "X-Mailer: PHP/". phpversion();
 
             // SF.net Bug #1040563:
@@ -363,7 +363,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
         $header = "Return-path: $forum_email\n";
         $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-        $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+        $header.= "Content-type: text/plain; charset=UTF-8\n";
         $header.= "X-Mailer: PHP/". phpversion();
 
         // SF.net Bug #1040563:
@@ -424,7 +424,7 @@ function email_send_user_confirmation($tuid)
         $header = "Return-path: $forum_email\n";
         $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-        $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+        $header.= "Content-type: text/plain; charset=UTF-8\n";
         $header.= "X-Mailer: PHP/". phpversion();
 
         // SF.net Bug #1040563:
@@ -471,7 +471,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
         $header = "Return-path: $forum_email\n";
         $header.= "From: \"$forum_name\" <$forum_email>\n";
         $header.= "Reply-To: \"$forum_name\" <$forum_email>\n";
-        $header.= "Content-type: text/plain; charset={$lang['_charset']}\n";
+        $header.= "Content-type: text/plain; charset=UTF-8\n";
         $header.= "X-Mailer: PHP/". phpversion();
 
         // SF.net Bug #1040563:

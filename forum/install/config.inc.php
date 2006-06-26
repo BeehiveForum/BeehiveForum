@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: config.inc.php,v 1.7 2005-07-24 21:36:14 decoyduck Exp $ */
+/* $Id: config.inc.php,v 1.8 2006-06-26 22:10:58 decoyduck Exp $ */
 
 // MAIN CONFIGURATION FILE
 
@@ -64,7 +64,7 @@ $cookie_domain = "";
 //
 // WARNING: DO NOT CHANGE THIS OPTION IF YOU DO NOT UNDERSTAND WHAT
 //          IT DOES. SETTING THIS OPTION TO AN INVALID OR INCORRECT
-//          VALUE CAN MAKE YOUR FORUM UNUSABLE.	IF YOU ARE IN DOUBT
+//          VALUE CAN MAKE YOUR FORUM UNUSABLE. IF YOU ARE IN DOUBT
 //          LEAVE THIS SETTING AS IS.
 //
 // This option is useful for situations where there is more than one

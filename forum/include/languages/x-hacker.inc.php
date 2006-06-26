@@ -21,13 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.211 2006-06-22 20:02:40 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.212 2006-06-26 22:10:57 decoyduck Exp $ */
 
 // International English language file
 
 // Language character set and text direction options -------------------
 
-$lang['_charset'] = "UTF-8";
 $lang['_isocode'] = "en";
 $lang['_textdir'] = "ltr";
 

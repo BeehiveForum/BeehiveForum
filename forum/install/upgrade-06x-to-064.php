@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.17 2006-06-26 11:04:49 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.18 2006-06-26 12:00:59 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -391,11 +391,11 @@ $global_table_keys = array('DICTIONARY'            => array('SOUND (SOUND)'),
                            'USER_PREFS'            => array('DOB (DOB)', 'DOB_DISPLAY (DOB_DISPLAY)', 'ANON_LOGON (ANON_LOGON)'),
                            'VISITOR_LOG'           => array('UID (UID)', 'SID (SID)', 'LAST_LOGON (LAST_LOGON)', 'FORUM (FORUM)'));
 
-foreach ($global_table_keys as $forum_table) {
+foreach ($global_table_keys as $global_table) {
 
-    foreach($forum_table as $column_name) {
+    foreach($global_table as $column_name) {
 
-        $sql = "ALTER TABLE {$forum_webtag}_{$forum_table} ADD INDEX {$column_name} ({$column_name})";
+        $sql = "ALTER TABLE {$global_table} ADD INDEX {$column_name} ({$column_name})";
         $result = @db_query($sql, $db_install);
     }
 }

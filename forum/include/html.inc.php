@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.186 2006-06-26 11:04:48 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.187 2006-06-26 22:10:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -425,12 +425,12 @@ function html_draw_top()
 
     $dtdpath = html_get_forum_uri();
 
-    echo "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehiveforum.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
     echo "<meta name=\"generator\" content=\"BeehiveForums ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"reply-to\" content=\"$forum_email\" />\n";
     echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";

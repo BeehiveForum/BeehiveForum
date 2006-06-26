@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.100 2006-06-17 19:40:25 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.101 2006-06-26 22:10:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,12 +50,12 @@ function light_html_draw_top ($title = false)
         $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
     }
 
-    echo "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset={$lang['_charset']}\" />\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
 
     $stylesheet = html_get_style_sheet();
     echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";

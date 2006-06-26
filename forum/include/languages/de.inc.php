@@ -21,13 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.7 2006-06-22 20:02:40 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.8 2006-06-26 22:10:57 decoyduck Exp $ */
 
 // International English language file
 
 // Language character set and text direction options -------------------
 
-$lang['_charset'] = "UTF-8";
 $lang['_isocode'] = "de";
 $lang['_textdir'] = "ltr";
 
@@ -78,7 +77,7 @@ $lang['average'] = "Durchschnitt";
 $lang['approve'] = "Genehmigt";
 $lang['banned'] = "Gebannt";
 $lang['locked'] = "Gesperrt";
-$lang['add'] = "Hinzufügen";
+$lang['add'] = "HinzufÃ¼gen";
 $lang['advanced'] = "Erweitert";
 $lang['active'] = "Aktiv";
 $lang['kick'] = "Rauswerfen";
@@ -143,7 +142,7 @@ $lang['signature'] = "Signatur";
 $lang['signaturepreview'] = "Signatur Voransicht";
 $lang['signatureupdated'] = "Signature aktualisiert";
 $lang['wasnotfound'] = "nicht gefunden";
-$lang['back'] = "Zurück";
+$lang['back'] = "ZurÃ¼ck";
 $lang['subject'] = "Thema";
 $lang['close'] = "Schliessen";
 $lang['name'] = "Name";
@@ -199,7 +198,7 @@ $lang['show'] = "Anzeigen";
 $lang['prefix'] = "Praefix";
 $lang['hint'] = "Tipp";
 $lang['new'] = "Neu";
-$lang['reset'] = "Zurücksetzen";
+$lang['reset'] = "ZurÃ¼cksetzen";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -221,7 +220,7 @@ $lang['toapplyforaccessplease'] = "Um Zugriff zu erhalten bitte den Admin kontak
 $lang['adminforumclosedtip'] = "Wenn Du einige Einstellungen aendern willst klicke auf den Admin-Link.";
 $lang['newfolder'] = "Neuer Ordner";
 $lang['forumadmin'] = "Forum Admin";
-$lang['adminexp_1'] = "Benutze das linke Menü um dein Forum zu bearbeiten.";
+$lang['adminexp_1'] = "Benutze das linke MenÃ¼ um dein Forum zu bearbeiten.";
 $lang['adminexp_2'] = "<b>Benutzer</b> ist zum Setzen von Benutzerberechtigungen und Einstellungen.";
 $lang['adminexp_3'] = "<b>Benutzergruppen</b> ist zum Setzen von Gruppenberechtigungen und Einstellungen.";
 $lang['adminexp_4'] = "<b>Bann-Steuerung</b> ist zum Bannen/Aussperren von IP Addressen, Benutzernamen, Emailaddressen und Nicknamen.";
@@ -240,7 +239,7 @@ $lang['createforumstyle'] = "Forenstil erstellen";
 $lang['newstyle'] = "Neuer Stil";
 $lang['successfullycreated'] = "erfolgreich erstellt.";
 $lang['stylealreadyexists'] = "Ein Stil mit diesem Dateinamen existiert bereits.";
-$lang['stylenofilename'] = "Sie haben keinen Dateinamen eingeben für diesen Stil.";
+$lang['stylenofilename'] = "Sie haben keinen Dateinamen eingeben fÃ¼r diesen Stil.";
 $lang['stylenodatasubmitted'] = "Kann Forenstil-Daten nicht lesen.";
 $lang['styleexp'] = "Diese Seite hilft Ihnen einen zufaellig generierten Stil fuer Ihr Forum zu erstellen.";
 $lang['stylecontrols'] = "Steuerung";
@@ -425,7 +424,7 @@ $lang['editforumlinks_exp'] = "Benutze diese Seite um Links in der Drop-Down-Lis
 $lang['notoplevellinkidspecified'] = "Keine top level link ID angegeben";
 $lang['notoplevellinktitlespecified'] = "Kein top level link Titel angegeben";
 $lang['youmustenteratitleforalllinks'] = "Du musst einen Titel fuer alle Links eingeben";
-$lang['youmustprovideapositionforalllinks'] = "Du musst einen Link-Bereich füer alle Links zur Verfügung stellen";
+$lang['youmustprovideapositionforalllinks'] = "Du musst einen Link-Bereich fÃ¼er alle Links zur VerfÃ¼gung stellen";
 $lang['alllinkurismuststartwithaschema'] = "All Link-URLs muessen so beginnen (z.B. http://, ftp://, irc://)";
 $lang['allowguestaccess'] = "Erlaube Gast-Zugriff";
 $lang['searchenginespidering'] = "Suche ueber Engine Spider-ing";
@@ -643,11 +642,11 @@ $lang['forum_settings_help_37'] = "<b>Passwortgeschuetzt</b> Erlaubt ein Passwor
 $lang['forum_settings_help_38'] = "Bei Eingeschraenkt oder Passwortgeschuetzt muss vorher gespeichert werden bevor die Berechtigungen definiert werden.";
 $lang['forum_settings_help_39'] = "<b>suchhaeufigkeit</b> definiert wie lange ein Benutzer warten muss bis er weitersuchen kann. Sucharbeiten sind auf einem Server sehr rechenintensiv, daher ist es wichtig dass eine weitere Suche erst nach fruehestens 30 Sek. stattfinden kann \"search spamming\" sonst bremst das den Server bis zum Stillstand.";
 $lang['forum_settings_help_40'] = "<b>Post Haeufigkeit</b> Minimum an Zeit die ein Benutzer warten muss bevor er einen weiteren Post erstellen kann. Dies betrifft ebenso auch Abstimmungen. 0 deaktiviert die Einschraenkung.";
-$lang['forum_settings_help_41'] = "Die oben genannten Optionen aendern die Einstellungen für Benutzerregistrierungen. Ansonsten werden die Standardeinstellungen verwendet.";
+$lang['forum_settings_help_41'] = "Die oben genannten Optionen aendern die Einstellungen fÃ¼r Benutzerregistrierungen. Ansonsten werden die Standardeinstellungen verwendet.";
 $lang['forum_settings_help_42'] = "<b>Verhindere Benutzung doppelter e-Mailadressen</b> laesst bei Benutzerregistrierungen keine gleichen eMail-Adressen zu.";
 $lang['forum_settings_help_43'] = "<b>Benoetigt eMail-Bestaetigung</b> wenn aktiv wird eine email an jeden neuen Benutzer gesendet mit einem Link der zur Bestaetigung der eMail-Adresse notwendig ist. Bis zur Bestaetigung ist der Anwender nicht in der Lage zu posten ausser wenn der Admin die Berechtigungen manuell vorher freigibt.";
 $lang['forum_settings_help_44'] = "<b>Benutze Text Captcha</b> zeigt dem neuen Benutzer ein Bild von dem die Nummer in ein Textfeld der Registrierung eingetragen werden muss. Benutz diese Option um automatisierte Registrierungen durchzufuehren.";
-$lang['forum_settings_help_45'] = "<b>Text Captcha Verzeichnis</b> Definiert den Ordner in dem die Bilder und Schriften für Text-Captcha abgelegt werden. Dieser Ordner muss Schreibrechte haben. Nachdem Text-Captcha angeschaltet wurde muessen einige True-Type-Fonts in das fonts-Unterverzeichnis des Text-Captcha-Ordners kopiert werden sonst uebergeht die Registrierung Text-Captcha.";
+$lang['forum_settings_help_45'] = "<b>Text Captcha Verzeichnis</b> Definiert den Ordner in dem die Bilder und Schriften fÃ¼r Text-Captcha abgelegt werden. Dieser Ordner muss Schreibrechte haben. Nachdem Text-Captcha angeschaltet wurde muessen einige True-Type-Fonts in das fonts-Unterverzeichnis des Text-Captcha-Ordners kopiert werden sonst uebergeht die Registrierung Text-Captcha.";
 $lang['forum_settings_help_46'] = "<b>Text Captcha Schluessel</b> Erlaubt Aenderungen des Schluessel der zur Generierung des Text-Captcha-Codes im Bild verwendet wird. Je einzigartiger der schluessel desto schwerer wird es eine Automatisierung zur Entschluesselung zu entwickeln \"guess\"  ";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
@@ -661,7 +660,7 @@ $lang['failedtoupload'] = "Fehler beim Hochladen";
 $lang['complete'] = "Fertig";
 $lang['uploadattachment'] = "Dateianhang fuer eine Nachricht hochladen";
 $lang['enterfilenamestoupload'] = "Dateinamen zum Hochladen eingeben";
-$lang['attachmentsforthismessage'] = "Anhaenge für diese Nachricht";
+$lang['attachmentsforthismessage'] = "Anhaenge fÃ¼r diese Nachricht";
 $lang['otherattachmentsincludingpm'] = "andere Anhaenge (inkl. PMs und andere Foren)";
 $lang['totalsize'] = "Gesamtgroesse";
 $lang['freespace'] = "Freier Speicher";

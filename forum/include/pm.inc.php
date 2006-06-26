@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.140 2006-06-26 11:04:48 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.141 2006-06-26 22:10:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1267,7 +1267,7 @@ function pm_export_html_top($mid)
 {
     $lang = load_language_file();
     
-    $html = "<?xml version=\"1.0\" encoding=\"{$lang['_charset']}\"?>\n";
+    $html = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     $html.= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     $html.= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     $html.= "<head>\n";

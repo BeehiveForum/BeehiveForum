@@ -21,13 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.30 2006-06-22 20:02:40 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.31 2006-06-26 22:10:57 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
 // Language character set and text direction options -------------------
 
-$lang['_charset'] = "UTF-8";    // ISO Charset code
 $lang['_isocode'] = "fr-ca";    // ISO-639 language code
 $lang['_textdir'] = "ltr";      // ltr or rtl; left to right or vice versa
 

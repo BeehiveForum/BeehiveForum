@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.73 2006-06-14 20:20:51 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.74 2006-06-26 11:04:48 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -36,6 +36,9 @@ define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
+
+// Enable UTF-8 encoding via mb_string functions if supported
+include_once(BH_INCLUDE_PATH. "utf8.inc.php");
 
 // Enable the error handler
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");

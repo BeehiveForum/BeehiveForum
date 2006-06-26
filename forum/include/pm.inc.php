@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.139 2006-06-18 13:00:37 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.140 2006-06-26 11:04:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -111,7 +111,6 @@ function pm_add_sentitem($mid)
 
     $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, ";
     $sql.= "PM.SUBJECT, PM.CREATED, AT.AID FROM PM PM ";
-    $sql.= "LEFT JOIN PM_CONTENT PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
     $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
     $sql.= "WHERE PM.MID = '$mid' GROUP BY PM.MID LIMIT 0,1";
 

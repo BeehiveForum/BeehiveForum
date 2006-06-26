@@ -21,13 +21,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.23 2006-06-01 13:45:35 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.24 2006-06-26 11:04:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
+
+// Enable UTF-8 encoding via mb_string functions if supported
+include_once(BH_INCLUDE_PATH. "utf8.inc.php");
 
 // Enable the error handler
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
@@ -130,13 +133,13 @@ if ($threads_array = threads_get_most_recent($limit)) {
 
         $modified_date = gmdate("D, d M Y H:i:s", $thread['MODIFIED']);
 
-        $message_content = message_get_content($thread['TID'], $thread['LENGTH']);
+        $message_content = trim(message_get_content($thread['TID'], $thread['LENGTH']));
         $parsed_message  = new MessageTextParse($message_content, false);
 
         $t_title = htmlentities($thread['TITLE']);
 
         $t_content = $parsed_message->getMessage();
-        $t_content = htmlentities(strip_tags($t_content));
+        $t_content = htmlentities(strip_tags(trim($t_content)));
 
         echo "<item>\n";
         echo "<guid isPermaLink=\"true\">http://{$forum_location}?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";

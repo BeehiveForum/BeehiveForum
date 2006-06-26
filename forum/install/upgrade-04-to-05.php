@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.43 2006-06-21 22:41:33 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.44 2006-06-26 11:04:49 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1077,14 +1077,6 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             return;
         }
 
-        $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_FILES ADD DELETED TINYINT UNSIGNED DEFAULT '0' NOT NULL";
-
-        if (!$result = @db_query($sql, $db_install)) {
-
-            $valid = false;
-            return;
-        }
-
         $sql = "CREATE TABLE {$forum_webtag}_FORUM_LINKS (";
         $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  POS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1392,7 +1384,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $sql.= "FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\n' ";
             $sql.= "(WORD, SOUND)";
 
-            if ($install_cgi_mode || !$result = @db_query($sql, $db_install)) {
+            if (!$result = @db_query($sql, $db_install)) {
 
                 if ($fp = @fopen($dictionary_file, 'r')) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.8 2006-06-21 22:41:33 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.9 2006-06-26 11:04:49 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -104,7 +104,6 @@ $sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  DELETED TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (ID),";
 $sql.= "  KEY AID (AID),";
 $sql.= "  KEY HASH (HASH)";
@@ -387,6 +386,38 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
+// Loads more indexes to add, this time to global tables.
+// Again, this is the whole list of indexes that Beehive
+// uses. Some of them will exist from previous Beehive
+// versions so we skip on failing.
+
+$global_table_keys = array('DICTIONARY'            => array('SOUND (SOUND)'),
+                           'FORUM_SETTINGS'        => array('SVALUE (SVALUE)'),
+                           'FORUMS'                => array('WEBTAG (WEBTAG)', 'ACCESS_LEVEL (ACCESS_LEVEL)'),
+                           'GROUP_PERMS'           => array('PERM (PERM)'),
+                           'GROUP_USERS'           => array('UID (UID,GID)'),
+                           'GROUPS'                => array('FORUM (FORUM)', 'AUTO_GROUP (AUTO_GROUP)'),
+                           'PM'                    => array('TO_UID (TO_UID)', 'TYPE (TYPE)', 'FROM_UID (FROM_UID)', 'CREATED (CREATED)', 'NOTIFIED (NOTIFIED)'),
+                           'PM_ATTACHMENT_IDS'     => array('AID (AID)'),
+                           'POST_ATTACHMENT_FILES' => array('AID (AID)', 'HASH (HASH)', 'FILENAME (FILENAME)', 'UID (UID)'),
+                           'POST_ATTACHMENT_IDS'   => array('AID (AID)'),
+                           'SEARCH_ENGINE_BOTS'    => array('AGENT_MATCH (AGENT_MATCH)'),
+                           'SEARCH_RESULTS'        => array('CREATED (CREATED)'),
+                           'SESSIONS'              => array('UID (UID)', 'IPADDRESS (IPADDRESS)', 'TIME (TIME)', 'FID (FID)'),
+                           'USER'                  => array('LOGON (LOGON)', 'PASSWD (PASSWD)', 'NICKNAME (NICKNAME)', 'EMAIL (EMAIL)'),
+                           'USER_FORUM'            => array('ALLOWED (ALLOWED)'),
+                           'USER_PREFS'            => array('DOB (DOB)', 'DOB_DISPLAY (DOB_DISPLAY)', 'ANON_LOGON (ANON_LOGON)'),
+                           'VISITOR_LOG'           => array('UID (UID)', 'SID (SID)', 'LAST_LOGON (LAST_LOGON)', 'FORUM (FORUM)'));
+
+foreach ($global_table_keys as $forum_table) {
+
+    foreach($forum_table as $column_name) {
+
+        $sql = "ALTER TABLE {$forum_webtag}_{$forum_table} ADD INDEX {$column_name} ({$column_name})";
+        $result = @db_query($sql, $db_install);
+    }
+}
+
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Globalise the VISITOR_LOG table
@@ -625,8 +656,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Move the attachment file records into a global PAF table
 
     $sql = "INSERT INTO POST_ATTACHMENT_FILES (AID, UID, FILENAME, ";
-    $sql.= "MIMETYPE, HASH, DOWNLOADS, DELETED) SELECT AID, UID, ";
-    $sql.= "FILENAME, MIMETYPE, HASH, DOWNLOADS, DELETED ";
+    $sql.= "MIMETYPE, HASH, DOWNLOADS) SELECT AID, UID, ";
+    $sql.= "FILENAME, MIMETYPE, HASH, DOWNLOADS ";
     $sql.= "FROM {$forum_webtag}_POST_ATTACHMENT_FILES ";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -908,65 +939,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Lots of other indexes to make things go /fast/ (maybe)
-
-    $sql = "ALTER TABLE FORUMS ADD INDEX (WEBTAG) ";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE FORUM_SETTINGS ADD INDEX (SVALUE) ";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (LAST_READ) ";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (INTEREST) ";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_FOLDER ADD INDEX (INTEREST)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD INDEX (RELATIONSHIP)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
     $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD PEER_NICKNAME VARCHAR(32)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE PM ADD INDEX (TYPE)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -1181,6 +1154,42 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
         $valid = false;
         return;
+    }
+
+    // Loads of indexes to add. This is the whole list of indexes that Beehive
+    // uses. Some of them will exist from previous Beehive versions so
+    // we skip on failing on an error and continue on.
+
+    $forum_table_keys = array('ADMIN_LOG'       => array('UID (UID)', 'CREATED (CREATED)', 'ACTION (ACTION)'),
+                              'BANNED'          => array('LOGON (LOGON)', 'NICKNAME (NICKNAME)', 'EMAIL (EMAIL)', 'IPADDRESS (IPADDRESS)'),
+                              'FOLDER'          => array('ALLOWED_TYPES (ALLOWED_TYPES)', 'POSITION (POSITION)', 'TITLE (TITLE)'),
+                              'FORUM_LINKS'     => array('POS (POS)'),
+                              'LINKS'           => array('FID (FID)', 'VISIBLE (VISIBLE)', 'TITLE (TITLE)', 'CREATED (CREATED)'),
+                              'LINKS_COMMENT'   => array('LID (LID)'),
+                              'LINKS_FOLDERS'   => array('PARENT_FID (PARENT_FID)', 'NAME (NAME)'),
+                              'LINKS_VOTE'      => array('RATING (RATING)'),
+                              'POLL'            => array('VOTETYPE (VOTETYPE)'),
+                              'POST'            => array('TO_UID (TO_UID)', 'FROM_UID (FROM_UID)', 'IPADDRESS (IPADDRESS)', 'CREATED (CREATED)', 'MOVED_TID (MOVED_TID,MOVED_PID)', 'REPLY_TO_PID (REPLY_TO_PID)', 'EDITED_BY (EDITED_BY)', 'VIEWED (VIEWED)'),
+                              'POST_CONTENT'    => array('FULLTEXT KEY CONTENT (CONTENT)'),
+                              'PROFILE_ITEM'    => array('PSID (PSID)', 'POSITION (POSITION)'),
+                              'PROFILE_SECTION' => array('POSITION (POSITION)'),
+                              'RSS_FEEDS'       => array('FREQUENCY (FREQUENCY)', 'LAST_RUN (LAST_RUN)'),
+                              'RSS_HISTORY'     => array('RSSID (RSSID)', 'LINK (LINK)'),
+                              'THREAD'          => array('FID (FID)', 'BY_UID (BY_UID)', 'LENGTH (LENGTH)', 'STICKY (STICKY)', 'MODIFIED (MODIFIED)'),
+                              'THREAD_TRACK'    => array('NEW_TID (NEW_TID)'),
+                              'USER_FOLDER'     => array('INTEREST (INTEREST)'),
+                              'USER_PEER'       => array('RELATIONSHIP (RELATIONSHIP)'),
+                              'USER_POLL_VOTES' => array('UID (UID)', 'TID (TID)', 'OPTION_ID (OPTION_ID)'),
+                              'USER_PREFS'      => array('DOB_DISPLAY (DOB_DISPLAY)', 'ANON_LOGON (ANON_LOGON)'),
+                              'USER_THREAD'     => array('LAST_READ (LAST_READ)', 'INTEREST (INTEREST)'));
+
+    foreach ($forum_table_keys as $forum_table) {
+
+        foreach($forum_table as $column_name) {
+
+            $sql = "ALTER TABLE {$forum_webtag}_{$forum_table} ADD INDEX {$column_name} ({$column_name})";
+            $result = @db_query($sql, $db_install);
+        }
     }
 }
 

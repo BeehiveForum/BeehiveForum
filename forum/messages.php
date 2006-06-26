@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.192 2006-06-22 20:02:40 decoyduck Exp $ */
+/* $Id: messages.php,v 1.193 2006-06-26 11:04:45 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -32,6 +32,9 @@ define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
+
+// Enable UTF-8 encoding via mb_string functions if supported
+include_once(BH_INCLUDE_PATH. "utf8.inc.php");
 
 // Enable the error handler
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");

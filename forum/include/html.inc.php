@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.185 2006-06-15 21:42:38 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.186 2006-06-26 11:04:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -559,15 +559,6 @@ function html_draw_top()
 
 function html_draw_bottom($include_body_tag = true)
 {
-    global $db_query_cache_array;
-
-    $log_filename = basename($_SERVER['PHP_SELF']);
-
-    if ($fp = @fopen("db_logs/$log_filename.log", "w")) {
-        fwrite($fp, implode("\r\n", $db_query_cache_array));
-        fclose($fp);
-    }
-
     if ($include_body_tag === true) {
         echo "</body>\n";
     }

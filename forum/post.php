@@ -23,13 +23,16 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.270 2006-06-08 18:10:13 decoyduck Exp $ */
+/* $Id: post.php,v 1.271 2006-06-26 11:04:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
+
+// Enable UTF-8 encoding via mb_string functions if supported
+include_once(BH_INCLUDE_PATH. "utf8.inc.php");
 
 // Enable the error handler
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");

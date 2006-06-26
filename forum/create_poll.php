@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.170 2006-05-15 10:46:34 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.171 2006-06-26 11:04:39 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -35,6 +35,9 @@ define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
+
+// Enable UTF-8 encoding via mb_string functions if supported
+include_once(BH_INCLUDE_PATH. "utf8.inc.php");
 
 // Enable the error handler
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");

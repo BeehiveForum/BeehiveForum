@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.43 2006-06-22 20:04:04 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.44 2006-06-26 11:04:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -244,9 +244,11 @@ function install_table_exists($table_name)
     return db_num_rows($result) > 0;
 }
 
-function install_check_tables($webtag = false, $forum_tables = false, $global_tables = false)
+function install_get_table_conflicts($webtag = false, $forum_tables = false, $global_tables = false)
 {
-    $db_install_check_tables = db_connect();
+    $db_install_get_table_conflicts = db_connect();
+
+    $conflicting_tables_array = array();
 
     if (!is_array($forum_tables) && $forum_tables !== true) $forum_tables = false;
     if (!is_array($global_tables) && $global_tables !== true) $global_tables = false;
@@ -282,9 +284,11 @@ function install_check_tables($webtag = false, $forum_tables = false, $global_ta
                 $forum_table = addslashes($forum_table);
                 
                 $sql = "SHOW TABLES LIKE '{$webtag}_{$forum_table}' ";
-                $result = db_query($sql, $db_install_check_tables);
+                $result = db_query($sql, $db_install_get_table_conflicts);
 
-                if (db_num_rows($result) > 0) return false;
+                if (db_num_rows($result) > 0) {
+                    $conflicting_tables_array[] = "'{$webtag}_{$forum_table}'";                
+                }
             }
         }
     }
@@ -296,13 +300,38 @@ function install_check_tables($webtag = false, $forum_tables = false, $global_ta
             $global_table = addslashes($global_table);
 
             $sql = "SHOW TABLES LIKE '$global_table' ";
-            $result = db_query($sql, $db_install_check_tables);
+            $result = db_query($sql, $db_install_get_table_conflicts);
 
-            if (db_num_rows($result) > 0) return false;
+            if (db_num_rows($result) > 0) {
+                $conflicting_tables_array[] = "'{$global_table}'";
+            }
         }
     }
 
-    return true;
+    if (sizeof($conflicting_tables_array) > 0) {
+        return $conflicting_tables_array;
+    }
+
+    return false;
+}
+
+function install_check_index($table_name, $column_name)
+{
+    $db_install_check_index = db_connect();
+
+    $table_name = addslashes($table_name);
+    
+    $sql = "SHOW INDEX FROM '$table_name'";
+    $result = db_query($sql, $db_install_check_index);
+
+    while ($row = db_fetch_array($result)) {
+
+        if (strtolower($row['Column_name']) == strtolower($column_name)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function install_cli_show_help()

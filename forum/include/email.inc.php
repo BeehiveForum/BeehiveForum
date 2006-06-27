@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.96 2006-06-26 22:10:57 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.97 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -66,7 +66,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
         if (isset($to_user_prefs['EMAIL_NOTIFY']) && $to_user_prefs['EMAIL_NOTIFY'] == 'Y') {
 
-            $thread = thread_get($tid);
+            if (!$thread = thread_get($tid)) return false;
 
              // get the right language for the email
             $lang = email_get_language($tuid);
@@ -150,7 +150,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
 
             if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $to_user['EMAIL'])) return false;
 
-            $thread = thread_get($tid);
+            if (!$thread = thread_get($tid)) return false;
 
             // get the right language for the email
             $lang = email_get_language($tuid);

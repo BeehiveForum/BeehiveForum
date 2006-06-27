@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.60 2006-06-27 16:09:32 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.61 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -95,8 +95,11 @@ if (!forum_check_access_level()) {
 // default to display most recent discussion for user
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
     $msg = $_GET['msg'];
+
 }else {
+
     if (bh_session_get_value('UID')) {
         $msg = messages_get_most_recent(bh_session_get_value('UID'));
     } else {
@@ -109,32 +112,23 @@ list($tid, $pid) = explode('.', $msg);
 if (!is_numeric($pid)) $pid = 1;
 if (!is_numeric($tid)) $tid = 1;
 
-if (!thread_can_view($tid, bh_session_get_value('UID'))) {
-
-    light_html_draw_top();
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-    light_html_draw_bottom();
-    exit;
-}
-
 // Poll stuff
 
 if (isset($_POST['pollsubmit'])) {
 
-  if (isset($_POST['pollvote'])) {
+    if (isset($_POST['pollvote'])) {
 
-    poll_vote($_POST['tid'], $_POST['pollvote']);
-    header_redirect("lmessages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
+        poll_vote($_POST['tid'], $_POST['pollvote']);
+        header_redirect("lmessages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
 
-  }else {
+    }else {
 
-    light_html_draw_top();
-    echo "<h2>{$lang['mustselectpolloption']}</h2>";
-    light_html_draw_bottom();
-    exit;
-
-  }
-
+        light_html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['mustselectpolloption']}</h2>";
+        light_html_draw_bottom();
+        exit;
+    }
 }
 
 // Output XHTML header
@@ -150,8 +144,24 @@ if ($posts_per_page = bh_session_get_value('POSTS_PER_PAGE')) {
     $posts_per_page = 20;
 }
 
-$messages = messages_get($tid,$pid,$posts_per_page);
-$threaddata = thread_get($tid);
+if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
+
+    light_html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['postdoesnotexist']}</h2>\n";
+    light_html_draw_bottom();
+    exit;
+}
+
+if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+
+    light_html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    light_html_draw_bottom();
+    exit;
+}
+
 $foldertitle = folder_get_title($threaddata['FID']);
 
 $msg_count = count($messages);

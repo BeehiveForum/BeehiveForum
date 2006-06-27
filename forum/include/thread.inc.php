@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.79 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.80 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,6 +59,8 @@ function thread_get($tid, $inc_deleted = false)
 {
     $db_thread_get = db_connect();
 
+    $fidlist = folder_get_available();
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -82,6 +84,7 @@ function thread_get($tid, $inc_deleted = false)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE THREAD.TID = '$tid' ";
+    $sql.= "AND THREAD.FID IN ($fidlist) ";
     
     if ($inc_deleted === false) $sql.= "AND THREAD.LENGTH > 0 ";
 
@@ -550,7 +553,7 @@ function thread_merge($tida, $tidb, $merge_type)
             case THREAD_MERGE_BY_CREATED:
         
                 $post_data_array = thread_merge_get_by_created($tida, $tidb);
-                $new_thread = thread_get($post_data_array[1]['TID']);
+                if (!$new_thread = thread_get($post_data_array[1]['TID'])) return false;
                 $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], $new_thread['TITLE'], 'N', 'N', true);
                 break;
 
@@ -681,43 +684,44 @@ function thread_merge_get($tida, $tidb)
 
     $post_data_array = array();
 
-    $tida_length = thread_get_length($tida);
+    if ($threaddata = thread_get($tida)) {
 
-    $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
-    $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID IN ($tida, $tidb) ";
-    $sql.= "ORDER BY CREATED";
+        $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
+        $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
+        $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID IN ($tida, $tidb) ";
+        $sql.= "ORDER BY CREATED";
 
-    $result = db_query($sql, $db_thread_merge_get_by_created);
+        $result = db_query($sql, $db_thread_merge_get_by_created);
 
-    if (db_num_rows($result) > 0) {
+        if (db_num_rows($result) > 0) {
 
-        $tida_post_array = array();
-        $tidb_post_array   = array();
+            $tida_post_array = array();
+            $tidb_post_array   = array();
 
-        $new_post_pid = 0;
+            $new_post_pid = 0;
 
-        while ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
+            while ($post_data = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
-            $new_post_pid++;
+                $new_post_pid++;
 
-            if ($post_data['TID'] == $tida) {
+                if ($post_data['TID'] == $tida) {
 
-                $tida_post_array[$new_post_pid] = $post_data;
+                    $tida_post_array[$new_post_pid] = $post_data;
 
-            }else {
+                }else {
 
-                $tidb_post_array[$new_post_pid] = $post_data;
-                
-                $tidb_post_array[$new_post_pid]['PID'] += ($tida_length - 1);
-                
-                if ($tidb_post_array[$new_post_pid]['REPLY_TO_PID'] > 0) {
-                    $tidb_post_array[$new_post_pid]['REPLY_TO_PID'] += ($tida_length - 1);
+                    $tidb_post_array[$new_post_pid] = $post_data;
+
+                    $tidb_post_array[$new_post_pid]['PID'] += ($threaddata['LENGTH'] - 1);
+
+                    if ($tidb_post_array[$new_post_pid]['REPLY_TO_PID'] > 0) {
+                        $tidb_post_array[$new_post_pid]['REPLY_TO_PID'] += ($threaddata['LENGTH'] - 1);
+                    }
                 }
             }
-        }
 
-        $post_data_array = array_merge($tida_post_array, $tidb_post_array);
+            $post_data_array = array_merge($tida_post_array, $tidb_post_array);
+        }
     }
 
     return (sizeof($post_data_array) > 0) ? $post_data_array : false;

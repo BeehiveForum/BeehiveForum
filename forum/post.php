@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.272 2006-06-27 16:09:32 decoyduck Exp $ */
+/* $Id: post.php,v 1.273 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -560,7 +560,15 @@ if (!$newthread) {
 
     $reply_message = messages_get($reply_to_tid, $reply_to_pid);
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
-    $threaddata = thread_get($reply_to_tid);
+    
+    if (!$threaddata = thread_get($reply_to_tid)) {
+
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+        html_draw_bottom();
+        exit;
+    }
 
     if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $threaddata['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
 

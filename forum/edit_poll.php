@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.109 2006-06-27 16:09:32 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.110 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -171,6 +171,15 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
 
+    html_draw_bottom();
+    exit;
+}
+
+if (!$threaddata = thread_get($tid)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
     html_draw_bottom();
     exit;
 }
@@ -338,7 +347,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "    <td align=\"center\">\n";
     $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td><h2>". (isset($t_question) ? _htmlentities($t_question) : thread_get_title($tid)). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td><h2>". (isset($t_question) ? _htmlentities($t_question) : $threaddata['TITLE']). "</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
@@ -528,7 +537,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "    <td align=\"center\">\n";
     $polldata['CONTENT'].= "      <table width=\"95%\">\n";
     $polldata['CONTENT'].= "        <tr>\n";
-    $polldata['CONTENT'].= "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
+    $polldata['CONTENT'].= "          <td><h2>{$threaddata['TITLE']}</h2></td>\n";
     $polldata['CONTENT'].= "        </tr>\n";
     $polldata['CONTENT'].= "        <tr>\n";
     $polldata['CONTENT'].= "          <td class=\"postbody\">\n";
@@ -621,7 +630,7 @@ echo "        <table class=\"posthead\" width=\"210\">\n";
 echo "          <tr>\n";
 echo "            <td>\n";
 echo "              <h2>{$lang['threadtitle']}</h2>\n";
-echo "              ", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : thread_get_title($tid), 30, 64), "\n";
+echo "              ", form_input_text('t_threadtitle', isset($t_threadtitle) ? _htmlentities($t_threadtitle) : $threaddata['TITLE'], 30, 64), "\n";
 echo "              <h2>{$lang['pollquestion']}</h2>\n";
 echo "              ", form_input_text('question', isset($t_question) ? _htmlentities($t_question) : _htmlentities($polldata['QUESTION']), 30, 64), "\n";
 echo "            </td>\n";
@@ -925,16 +934,12 @@ if (forum_get_setting('attachments_enabled', 'Y') && bh_session_check_perm(USER_
     echo form_input_hidden('aid', $aid);
 }
 
-
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-
-
-$threaddata = thread_get($tid);
 
 if ($valid) {
 

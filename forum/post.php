@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.271 2006-06-26 11:04:46 decoyduck Exp $ */
+/* $Id: post.php,v 1.272 2006-06-27 16:09:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -799,7 +799,7 @@ if ($valid && isset($_POST['preview'])) {
     $preview_message['AID'] = $aid;
 
     echo "<tr><td>\n";
-    message_display(0, $preview_message, 0, 0, true, false, false, false, $show_sigs, true);
+    message_display(0, $preview_message, 0, 0, 0, true, false, false, false, $show_sigs, true);
     echo "</td></tr>\n";
 
     echo "<tr><td>&nbsp;</td></tr>\n";
@@ -1062,11 +1062,11 @@ if (!$newthread && $reply_to_pid > 0) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-        poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, $show_sigs, true);
+        poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, $threaddata['FID'], false, false, false, true, $show_sigs, true);
 
     }else {
 
-        message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, $show_sigs, true);
+        message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
     }
 
     echo "      <br />\n";

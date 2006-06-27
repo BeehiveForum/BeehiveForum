@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.65 2006-06-26 11:04:39 decoyduck Exp $ */
+/* $Id: display.php,v 1.66 2006-06-27 16:09:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -188,19 +188,19 @@ if ($message) {
 
         if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, true, $show_sigs, true);
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, true, $show_sigs, true);
             $last_pid = $message['PID'];
 
         }else {
 
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, false, $show_sigs, true);
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, false, $show_sigs, true);
             $last_pid = $message['PID'];
 
         }
 
     }else {
 
-        message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, false, $show_sigs, true);
+        message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, false, $show_sigs, true);
         $last_pid = $message['PID'];
 
     }

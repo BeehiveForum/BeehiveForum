@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.99 2006-06-26 11:04:39 decoyduck Exp $ */
+/* $Id: delete.php,v 1.100 2006-06-27 16:09:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -283,11 +283,11 @@ if ($valid) {
 
     if (thread_is_poll($tid) && $pid == 1) {
 
-        poll_display($tid, $threaddata['LENGTH'], $pid, false, false, false, true, true, true);
+        poll_display($tid, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, true, true, true);
 
     }else {
 
-        message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
+        message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
 
     }
 }

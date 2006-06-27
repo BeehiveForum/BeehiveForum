@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.187 2006-06-26 11:04:39 decoyduck Exp $ */
+/* $Id: edit.php,v 1.188 2006-06-27 16:09:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -748,7 +748,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "<tr><td class=\"subhead\">{$lang['messagepreview']}</td></tr>";
 
     echo "<tr><td>\n";
-    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, true, false, false, false, $show_sigs, true);
+    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
     echo "</td></tr>\n";
 
     echo "<tr><td>&nbsp;</td></tr>\n";

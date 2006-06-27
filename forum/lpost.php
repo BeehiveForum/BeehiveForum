@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.84 2006-06-26 11:04:45 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.85 2006-06-27 16:09:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -529,7 +529,7 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
     }
 
-    light_message_display(0, $preview_message, 0, 0, false, false, false, false, false, true);
+    light_message_display(0, $preview_message, 0, 0, 0, false, false, false, false, false, true);
     echo "<br />\n";
 }
 
@@ -627,11 +627,11 @@ if (!$newthread && $reply_to_pid > 0) {
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
-        light_poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, false, false, false, true, false, true);
+        light_poll_display($reply_to_tid, $threaddata['LENGTH'], $reply_to_pid, $threaddata['FID'], false, false, false, true, false, true);
 
     }else {
 
-        light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, true, false, false, false, false, true);
+        light_message_display($reply_to_tid, $reply_message, $threaddata['LENGTH'], $reply_to_pid, $threaddata['FID'], true, false, false, false, false, true);
     }
 }
 

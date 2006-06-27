@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.101 2006-06-26 22:10:57 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.102 2006-06-27 16:09:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -601,7 +601,7 @@ function light_poll_confirm_close($tid)
 
     echo "<h2>{$lang['pollconfirmclose']}</h2>\n";
 
-    light_poll_display($tid, $preview_message, 0, 0, false);
+    light_poll_display($tid, $preview_message, 0, $threaddata['FID'], 0, false);
 
     echo "<p><form name=\"f_delete\" action=\"{$_SERVER['PHP_SELF']}\" method=\"post\" target=\"_self\">";
     echo form_input_hidden('webtag', $webtag), "\n";
@@ -637,7 +637,7 @@ function light_form_radio($name, $value, $text, $checked = false)
     return $html . " />$text";
 }
 
-function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
+function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
     $webtag = get_webtag($webtag_search);
 
@@ -853,11 +853,10 @@ function light_poll_display($tid, $msg_count, $first_msg, $in_list = true, $clos
     // Work out what relationship the user has to the user who posted the poll
     $polldata['FROM_RELATIONSHIP'] = user_rel_get(bh_session_get_value('UID'), $polldata['FROM_UID']);
 
-    light_message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
-
+    light_message_display($tid, $polldata, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
 }
 
-function light_message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false)
+function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false)
 {
     $lang = load_language_file();
 
@@ -869,10 +868,10 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
     }
 
     if (bh_session_get_value('UID') != $message['FROM_UID']) {
-      if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $message['FID'])) {
-        light_message_display_deleted($tid, $message['PID']);
-        return;
-      }
+        if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+            light_message_display_deleted($tid, $message['PID']);
+            return;
+        }
     }
 
     if(!isset($message['FROM_RELATIONSHIP'])) {
@@ -1052,7 +1051,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $in_list 
 
         if ($in_list && $limit_text != false) {
 
-            if (!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $message['FID'])) {
+            if (!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
                 echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
             }

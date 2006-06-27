@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.162 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.163 2006-06-27 16:09:32 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -350,7 +350,7 @@ function poll_sort_groups($a, $b) {
     return ($a['GROUP_ID'] > $b['GROUP_ID']) ? 1 : - 1;
 }
 
-function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
+function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
 {
     $lang = load_language_file();
 
@@ -803,7 +803,7 @@ function poll_display($tid, $msg_count, $first_msg, $in_list = true, $closed = f
 
     $polldata['FROM_RELATIONSHIP'] = user_rel_get(bh_session_get_value('UID'), $polldata['FROM_UID']);
 
-    message_display($tid, $polldata, $msg_count, $first_msg, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
+    message_display($tid, $polldata, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
 }
 
 
@@ -1830,7 +1830,7 @@ function poll_confirm_close($tid)
     echo "<h1>{$lang['endpoll']}</h1>\n";
     echo "<h2>{$lang['pollconfirmclose']}</h2>\n";
 
-    poll_display($tid, $threaddata['LENGTH'], 1, false, false, false, true, $show_sigs, true);
+    poll_display($tid, $threaddata['LENGTH'], 1, $threaddata['FID'], false, false, false, true, $show_sigs, true);
 
     echo "<form name=\"f_delete\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">";
     echo form_input_hidden("webtag", $webtag);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.193 2006-06-26 11:04:45 decoyduck Exp $ */
+/* $Id: messages.php,v 1.194 2006-06-27 16:09:32 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -383,19 +383,19 @@ if ($msg_count > 0) {
 
           if ($message['PID'] == 1) {
 
-            poll_display($tid, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], false, true, true, false, $highlight_array);
+            poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], false, true, true, false, $highlight_array);
             $last_pid = $message['PID'];
 
           }else {
 
-            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, true, $show_sigs, false, $highlight_array);
+            message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, true, $show_sigs, false, $highlight_array);
             $last_pid = $message['PID'];
 
           }
 
         }else {
 
-          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, true, $threaddata['CLOSED'], true, false, $show_sigs, false, $highlight_array);
+          message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, false, $show_sigs, false, $highlight_array);
           $last_pid = $message['PID'];
 
         }

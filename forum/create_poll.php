@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.171 2006-06-26 11:04:39 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.172 2006-06-27 16:09:32 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -746,7 +746,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $polldata['CONTENT'].= "<p class=\"postbody\" align=\"center\">{$lang['pollvotesrandom']}</p>\n";
 
     echo "<tr><td>\n";
-    message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
+    message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true);
     echo "</td></tr>\n";
 
     if (strlen($t_message_text) > 0) {
@@ -759,7 +759,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         }
 
         echo "<tr><td>\n";
-        message_display(0, $polldata, 0, 0, false, false, false, true, $show_sigs, true);
+        message_display(0, $polldata, 0, 0, 0, false, false, false, true, $show_sigs, true);
         echo "</td></tr>\n";
     }
 

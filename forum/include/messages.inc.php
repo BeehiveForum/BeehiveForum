@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.400 2006-06-13 11:54:06 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.401 2006-06-27 16:09:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,8 +59,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "POST.APPROVED_BY, APPROVED_USER.LOGON AS APPROVED_LOGON, FUSER.LOGON AS FLOGON, ";
     $sql .= "FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
     $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
-    $sql .= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
-    $sql .= "THREAD.FID, THREAD.LENGTH FROM {$table_data['PREFIX']}POST POST ";
+    $sql .= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK ";
+    $sql .= "FROM {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql .= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_TO ";
@@ -69,7 +69,6 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql .= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";
     $sql .= "LEFT JOIN USER APPROVED_USER ON (POST.APPROVED_BY = APPROVED_USER.UID) ";
-    $sql .= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
     $sql .= "WHERE POST.TID = '$tid' ";
     $sql .= "AND POST.PID >= '$pid' ";
     $sql .= "ORDER BY POST.PID ";
@@ -564,21 +563,13 @@ function messages_bottom()
     echo "<p align=\"right\">BeehiveForum 2002</p>\n";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
+function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
     global $frame_top_target;
     
     $lang = load_language_file();
 
-    if (!isset($message['FID']) || !is_numeric($message['FID'])) {
-
-        if (!$message['FID'] = thread_get_folder($tid)) {
-
-            $message['FID'] = 0;
-        }
-    }
-
-    $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $message['FID']);
+    $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
     $perm_has_admin_access = bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0);
 
     $webtag = get_webtag($webtag_search);
@@ -985,7 +976,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
 
         echo "            </table>\n";
 
-        //if (($is_preview == false && $limit_text != false) || ($is_poll && $is_preview == false)) {
         if (!$is_preview) {
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
@@ -993,20 +983,20 @@ function message_display($tid, $message, $msg_count, $first_msg, $in_list = true
             echo "                <td width=\"25%\">&nbsp;</td>\n";
             echo "                <td width=\"50%\" nowrap=\"nowrap\">";
 
-            if ($message['LENGTH'] > 0) {
+            if ($msg_count > 0) {
             
-                if ((!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $message['FID'])) || $perm_is_moderator) {
+                if ((!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) || $perm_is_moderator) {
 
                     echo "<img src=\"", style_image('post.png'), "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />";
                     echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\">{$lang['reply']}</a>";
                 }
 
-                if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $message['FID']) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
+                if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
                     echo "&nbsp;&nbsp;<img src=\"", style_image('delete.png'), "\" border=\"0\" alt=\"{$lang['delete']}\" title=\"{$lang['delete']}\" />";
                     echo "&nbsp;<a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">{$lang['delete']}</a>";
                 }
 
-                if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $message['FID']) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+                if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                     if ($is_poll && $message['PID'] == 1) {
 

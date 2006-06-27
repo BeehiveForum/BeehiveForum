@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.188 2006-06-27 16:09:32 decoyduck Exp $ */
+/* $Id: edit.php,v 1.189 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -222,6 +222,15 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
 
+    html_draw_bottom();
+    exit;
+}
+
+if (!$threaddata = thread_get($tid)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
     html_draw_bottom();
     exit;
 }
@@ -659,9 +668,7 @@ if (isset($_POST['preview'])) {
            echo "  <tr>\n";
            echo "    <td align=\"center\">\n";
 
-           $thread_length = thread_get_length($tid);
-
-           if ($thread_length < 1) {
+           if ($threaddata['LENGTH'] < 1) {
 
                if ($msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
 
@@ -697,9 +704,7 @@ if (isset($_POST['preview'])) {
            echo "  <tr>\n";
            echo "    <td align=\"center\">\n";
 
-           $thread_length = thread_get_length($tid);
-
-           if ($thread_length < 1) {
+           if ($threaddata['LENGTH'] < 1) {
 
                if ($msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
 
@@ -739,8 +744,6 @@ if (isset($error_html)) {
     echo "</td></tr>\n";
     echo "</table>\n";
 }
-
-$threaddata = thread_get($tid);
 
 if ($valid && isset($_POST['preview'])) {
 

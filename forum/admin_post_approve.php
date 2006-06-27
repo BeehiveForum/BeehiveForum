@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.18 2006-06-27 16:09:32 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.19 2006-06-27 19:51:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -160,6 +160,15 @@ if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
     exit;
 }
 
+if (!$threaddata = thread_get($tid)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
+    html_draw_bottom();
+    exit;
+}
+
 if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
     $preview_message = messages_get($tid, $pid, 1);
@@ -215,9 +224,7 @@ if ($valid) {
             echo "  <tr>\n";
             echo "    <td align=\"center\">\n";
 
-            $thread_length = thread_get_length($tid);
-
-            if ($thread_length < 1) {
+            if ($threaddata['LENGTH'] < 1) {
 
                 if ($msg = messages_get_most_recent_unread(bh_session_get_value('UID'))) {
 
@@ -249,7 +256,7 @@ if ($valid) {
     }
 
     echo "<h1>{$lang['approvepost']}</h1>";
-    echo "<h2>", apply_wordfilter(thread_get_title($tid)), "</h2>";
+    echo "<h2>", apply_wordfilter($threaddata['TITLE']), "</h2>";
 
     if ($to_uid == 0) {
 
@@ -266,8 +273,6 @@ if ($valid) {
     $preview_tuser = user_get($from_uid);
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
-
-    $threaddata = thread_get($tid);
 
     if (thread_is_poll($tid) && $pid == 1) {
 

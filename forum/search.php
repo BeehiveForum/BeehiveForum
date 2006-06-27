@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.136 2006-06-26 11:04:46 decoyduck Exp $ */
+/* $Id: search.php,v 1.137 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -282,62 +282,63 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
             $message = messages_get($search_result['TID'], $search_result['PID'], 1);
             $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
 
-            $threaddata = thread_get($search_result['TID']);
+            if ($threaddata = thread_get($search_result['TID'])) {
 
-            if (thread_is_poll($search_result['TID'])) {
+                if (thread_is_poll($search_result['TID'])) {
 
-                $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
-                $message['CONTENT'] = '';
-
-            }else {
-
-                $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
-                $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
-
-            }
-
-            $message['TITLE'] = apply_wordfilter($message['TITLE']);
-
-            // trunicate the search result at the last space in the first 50 chars.
-
-            if (strlen($message['TITLE']) > 20) {
-
-                $message['TITLE'] = substr($message['TITLE'], 0, 20);
-
-                if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
-
-                    $message['TITLE'] = substr($message['TITLE'], 0, $pos);
+                    $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
+                    $message['CONTENT'] = '';
 
                 }else {
 
-                    $message['TITLE'] = substr($message['TITLE'], 0, 17). "&hellip;";
+                    $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
+                    $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
+
                 }
-            }
 
-            if (strlen($message['CONTENT']) > 35) {
+                $message['TITLE'] = apply_wordfilter($message['TITLE']);
 
-                $message['CONTENT'] = substr($message['CONTENT'], 0, 35);
+                // trunicate the search result at the last space in the first 50 chars.
 
-                if (($pos = strrpos($message['CONTENT'], ' ')) !== false) {
+                if (strlen($message['TITLE']) > 20) {
 
-                    $message['CONTENT'] = substr($message['CONTENT'], 0, $pos);
+                    $message['TITLE'] = substr($message['TITLE'], 0, 20);
+
+                    if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
+
+                        $message['TITLE'] = substr($message['TITLE'], 0, $pos);
+
+                    }else {
+
+                        $message['TITLE'] = substr($message['TITLE'], 0, 17). "&hellip;";
+                    }
+                }
+
+                if (strlen($message['CONTENT']) > 35) {
+
+                    $message['CONTENT'] = substr($message['CONTENT'], 0, 35);
+
+                    if (($pos = strrpos($message['CONTENT'], ' ')) !== false) {
+
+                        $message['CONTENT'] = substr($message['CONTENT'], 0, $pos);
+
+                    }else {
+
+                        $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "&hellip;";
+                    }
+                }
+
+                if (strlen($message['CONTENT']) > 0) {
+
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
+                    echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
+                    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
 
                 }else {
 
-                    $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "&hellip;";
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+                    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                 }
-            }
-
-            if (strlen($message['CONTENT']) > 0) {
-
-                echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
-                echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
-                echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
-
-            }else {
-
-                echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-                echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
             }
         }
 

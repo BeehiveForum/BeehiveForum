@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.51 2006-06-26 11:04:47 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.52 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,15 +132,6 @@ if (!$fid = thread_get_folder($tid)) {
 // UID of the current user.
 
 $uid = bh_session_get_value('UID');
-
-if (!thread_can_view($tid, $uid)) {
-
-    html_draw_top();
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-    html_draw_bottom();
-    exit;
-}
 
 if (!$threaddata = thread_get($tid, true)) {
 

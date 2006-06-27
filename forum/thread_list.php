@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.266 2006-06-26 11:04:47 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.267 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -289,31 +289,28 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_GET['msg']);
 
-    if (thread_can_view($tid, bh_session_get_value('UID'))) {
+    if ($thread = thread_get($tid)) {
 
-        if ($thread = thread_get($tid)) {
+        if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
+        if ($thread['TID'] == $tid) {
 
-            if ($thread['TID'] == $tid) {
-
-                if (in_array($thread['FID'], $folder_order)) {
-                    array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
-                }
-
-                array_unshift($folder_order, $thread['FID']);
-
-                if (!is_array($thread_info)) $thread_info = array();
-
-                foreach ($thread_info as $key => $thread_data) {
-                    if ($thread_data['TID'] == $tid) {
-                        unset($thread_info[$key]);
-                        break;
-                    }
-                }
-
-                array_unshift($thread_info, $thread);
+            if (in_array($thread['FID'], $folder_order)) {
+                array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
             }
+
+            array_unshift($folder_order, $thread['FID']);
+
+            if (!is_array($thread_info)) $thread_info = array();
+
+            foreach ($thread_info as $key => $thread_data) {
+                if ($thread_data['TID'] == $tid) {
+                    unset($thread_info[$key]);
+                    break;
+                }
+            }
+
+            array_unshift($thread_info, $thread);
         }
     }
 }
@@ -327,23 +324,23 @@ if (bh_session_get_value('UID') > 0) {
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (thread_can_view($tid, bh_session_get_value('UID'))) {
-            list(,$selectedfolder) = thread_get($tid);
+        if ($thread = thread_get($tid)) {
+            $selected_folder = $thread['FID'];
         }
 
     }elseif (isset($_GET['folder'])) {
 
-        $selectedfolder = $_GET['folder'];
+        $selected_folder = $_GET['folder'];
 
     }else {
 
-        $selectedfolder = 0;
+        $selected_folder = 0;
     }
 
     $ignored_folders = array();
 
     while (list($fid, $folder_data) = each($folder_info)) {
-        if ($folder_data['INTEREST'] == 0 || (isset($selectedfolder) && $selectedfolder == $fid)) {
+        if ($folder_data['INTEREST'] == 0 || (isset($selected_folder) && $selected_folder == $fid)) {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
         }else {
             if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -411,7 +408,7 @@ foreach ($folder_order as $key1 => $folder_number) {
         echo "    </td>\n";
         echo "  </tr>\n";
 
-        if ((bh_session_get_value('UID') == 0) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
+        if ((bh_session_get_value('UID') == 0) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == 2) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
             if (is_array($thread_info)) {
 

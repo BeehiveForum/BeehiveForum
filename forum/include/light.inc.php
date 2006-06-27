@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.102 2006-06-27 16:09:32 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.103 2006-06-27 19:51:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -196,31 +196,28 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (thread_can_view($tid, bh_session_get_value('UID'))) {
+        if ($thread = thread_get($tid)) {
 
-            if ($thread = thread_get($tid)) {
+            if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-                if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
+            if ($thread['TID'] == $tid) {
 
-                if ($thread['TID'] == $tid) {
-
-                    if (in_array($thread['FID'], $folder_order)) {
-                        array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
-                    }
-
-                    array_unshift($folder_order, $thread['FID']);
-
-                    if (!is_array($thread_info)) $thread_info = array();
-
-                    foreach ($thread_info as $key => $thread_data) {
-                        if ($thread_data['TID'] == $tid) {
-                            unset($thread_info[$key]);
-                            break;
-                        }
-                    }
-
-                    array_unshift($thread_info, $thread);
+                if (in_array($thread['FID'], $folder_order)) {
+                    array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
                 }
+
+                array_unshift($folder_order, $thread['FID']);
+
+                if (!is_array($thread_info)) $thread_info = array();
+
+                foreach ($thread_info as $key => $thread_data) {
+                    if ($thread_data['TID'] == $tid) {
+                        unset($thread_info[$key]);
+                        break;
+                    }
+                }
+
+                array_unshift($thread_info, $thread);
             }
         }
     }
@@ -234,24 +231,24 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
             list($tid, $pid) = explode('.', $_GET['msg']);
 
-            if (thread_can_view($tid, bh_session_get_value('UID'))) {
+            if ($thread = thread_get($tid)) {
 
-                list(,$selectedfolder) = thread_get($tid);
+                $selected_folder = $thread['FID'];
             }
 
         }elseif (isset($_GET['folder'])) {
 
-            $selectedfolder = $_GET['folder'];
+            $selected_folder = $_GET['folder'];
 
         }else {
 
-            $selectedfolder = 0;
+            $selected_folder = 0;
         }
 
         $ignored_folders = array();
 
         while (list($fid, $folder_data) = each($folder_info)) {
-            if ($folder_data['INTEREST'] == 0 || (isset($selectedfolder) && $selectedfolder == $fid)) {
+            if ($folder_data['INTEREST'] == 0 || (isset($selected_folder) && $selected_folder == $fid)) {
                 if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
             }else {
                 if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
@@ -287,7 +284,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
             echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">". apply_wordfilter($folder_info[$folder_number]['TITLE']) . "</a></h3>";
 
-            if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selectedfolder) && $selectedfolder == $folder_number)) {
+            if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
                 if (is_array($thread_info)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.165 2006-06-27 19:51:57 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.166 2006-06-28 08:41:40 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -712,7 +712,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">";
 
-                if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $polldata['FID'])) {
+                if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
                     if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
@@ -725,7 +725,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     }
                 }
 
-                if (bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, false, $polldata['FID'])) {
+                if (bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, false, $folder_fid)) {
 
                     $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
                 }
@@ -758,7 +758,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">";
 
-                if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $polldata['FID'])) {
+                if (($polldata['SHOWRESULTS'] == 1 && $totalvotes > 0) || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
                     if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
@@ -770,7 +770,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     }
                 }
 
-                if (bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $polldata['FID'])) {
+                if (bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
 
                     $polldata['CONTENT'].= "&nbsp;". form_submit('pollclose', $lang['endpoll']);
 
@@ -1798,15 +1798,19 @@ function poll_confirm_close($tid)
 
     $webtag = get_webtag($webtag_search);
 
-    $preview_message = messages_get($tid, 1, 1);
+    if (!$preview_message = messages_get($tid, 1, 1)) {
 
-    if (bh_session_get_value('UID') != $preview_message['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $preview_message['FID'])) {
+        edit_refuse($tid, 1);
+        return;
+    }
+    
+    if (!$threaddata = thread_get($tid)) {
 
         edit_refuse($tid, 1);
         return;
     }
 
-    if (!$threaddata = thread_get($tid)) {
+    if (bh_session_get_value('UID') != $preview_message['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
 
         edit_refuse($tid, 1);
         return;
@@ -1827,8 +1831,6 @@ function poll_confirm_close($tid)
     $preview_fuser = user_get($preview_message['FROM_UID']);
     $preview_message['FLOGON'] = $preview_fuser['LOGON'];
     $preview_message['FNICK'] = $preview_fuser['NICKNAME'];
-
-    
 
     $show_sigs = !(bh_session_get_value('VIEW_SIGS'));
 

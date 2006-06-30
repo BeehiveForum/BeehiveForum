@@ -21,16 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.27 2006-06-26 11:04:38 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.28 2006-06-30 18:07:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable UTF-8 encoding via mb_string functions if supported
-include_once(BH_INCLUDE_PATH. "utf8.inc.php");
 
 // Enable the error handler
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");

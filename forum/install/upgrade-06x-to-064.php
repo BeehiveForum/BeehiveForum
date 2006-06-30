@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.19 2006-06-26 17:38:23 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.20 2006-06-30 18:07:34 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -227,43 +227,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_LINKS_FOLDERS CHANGE ";
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
-    $result = @db_query($sql, $db_install);
-
-    // Loads of indexes to add. This is the whole list of indexes that Beehive
-    // uses. Some of them will exist from previous Beehive versions so
-    // we skip on failing on an error and continue on.
-
-    $forum_table_keys = array('ADMIN_LOG'       => array('UID' => 'UID', 'CREATED' => 'CREATED', 'ACTION' => 'ACTION'),
-                              'BANNED'          => array('LOGON' => 'LOGON', 'NICKNAME' => 'NICKNAME', 'EMAIL' => 'EMAIL', 'IPADDRESS' => 'IPADDRESS'),
-                              'FOLDER'          => array('ALLOWED_TYPES' => 'ALLOWED_TYPES', 'POSITION' => 'POSITION', 'TITLE' => 'TITLE'),
-                              'FORUM_LINKS'     => array('POS' => 'POS'),
-                              'LINKS'           => array('FID' => 'FID', 'VISIBLE' => 'VISIBLE', 'TITLE' => 'TITLE', 'CREATED' => 'CREATED'),
-                              'LINKS_COMMENT'   => array('LID' => 'LID'),
-                              'LINKS_FOLDERS'   => array('PARENT_FID' => 'PARENT_FID', 'NAME' => 'NAME'),
-                              'LINKS_VOTE'      => array('RATING' => 'RATING'),
-                              'POLL'            => array('VOTETYPE' => 'VOTETYPE'),
-                              'POST'            => array('TO_UID' => 'TO_UID', 'FROM_UID' => 'FROM_UID', 'IPADDRESS' => 'IPADDRESS', 'CREATED' => 'CREATED', 'MOVED_TID' => 'MOVED_TID, MOVED_PID', 'REPLY_TO_PID' => 'REPLY_TO_PID', 'EDITED_BY' => 'EDITED_BY', 'VIEWED' => 'VIEWED'),
-                              'POST_CONTENT'    => array('FULLTEXT KEY CONTENT' => 'CONTENT'),
-                              'PROFILE_ITEM'    => array('PSID' => 'PSID', 'POSITION' => 'POSITION'),
-                              'PROFILE_SECTION' => array('POSITION' => 'POSITION'),
-                              'RSS_FEEDS'       => array('FREQUENCY' => 'FREQUENCY', 'LAST_RUN' => 'LAST_RUN'),
-                              'RSS_HISTORY'     => array('RSSID' => 'RSSID', 'LINK' => 'LINK'),
-                              'THREAD'          => array('FID' => 'FID', 'BY_UID' => 'BY_UID', 'LENGTH' => 'LENGTH', 'STICKY' => 'STICKY', 'MODIFIED' => 'MODIFIED'),
-                              'THREAD_TRACK'    => array('NEW_TID' => 'NEW_TID'),
-                              'USER_FOLDER'     => array('INTEREST' => 'INTEREST'),
-                              'USER_PEER'       => array('RELATIONSHIP' => 'RELATIONSHIP'),
-                              'USER_POLL_VOTES' => array('UID' => 'UID', 'TID' => 'TID', 'OPTION_ID' => 'OPTION_ID'),
-                              'USER_PREFS'      => array('DOB_DISPLAY' => 'DOB_DISPLAY', 'ANON_LOGON' => 'ANON_LOGON'),
-                              'USER_THREAD'     => array('LAST_READ' => 'LAST_READ', 'INTEREST' => 'INTEREST'));
-
-    foreach ($forum_table_keys as $forum_table => $keys_array) {
-
-        foreach ($keys_array as $column_name => $key_name) {
-
-            $sql = "ALTER TABLE {$forum_webtag}_{$forum_table} ADD INDEX {$column_name} ({$key_name})";
-            $result = @db_query($sql, $db_install);
-        }
-    }            
+    $result = @db_query($sql, $db_install);           
 }
 
 // New table for our search engine bot data. This is designed
@@ -367,38 +331,6 @@ $result = @db_query($sql, $db_install);
 
 $sql.= "ALTER TABLE USER_PREFS ADD PM_EXPORT_WORDFILTER CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_STYLE";
 $result = @db_query($sql, $db_install);
-
-// Loads more indexes to add, this time to global tables.
-// Again, this is the whole list of indexes that Beehive
-// uses. Some of them will exist from previous Beehive
-// versions so we skip on failing.
-
-$global_table_keys = array('DICTIONARY'            => array('SOUND' => 'SOUND'),
-                           'FORUM_SETTINGS'        => array('SVALUE' => 'SVALUE'),
-                           'FORUMS'                => array('WEBTAG' => 'WEBTAG', 'ACCESS_LEVEL' => 'ACCESS_LEVEL'),
-                           'GROUP_PERMS'           => array('PERM' => 'PERM'),
-                           'GROUP_USERS'           => array('UID' => 'UID,GID'),
-                           'GROUPS'                => array('FORUM' => 'FORUM', 'AUTO_GROUP' => 'AUTO_GROUP'),
-                           'PM'                    => array('TO_UID' => 'TO_UID', 'TYPE' => 'TYPE', 'FROM_UID' => 'FROM_UID', 'CREATED' => 'CREATED', 'NOTIFIED' => 'NOTIFIED'),
-                           'PM_ATTACHMENT_IDS'     => array('AID' => 'AID'),
-                           'POST_ATTACHMENT_FILES' => array('AID' => 'AID', 'HASH' => 'HASH', 'FILENAME' => 'FILENAME', 'UID' => 'UID'),
-                           'POST_ATTACHMENT_IDS'   => array('AID' => 'AID'),
-                           'SEARCH_ENGINE_BOTS'    => array('AGENT_MATCH' => 'AGENT_MATCH'),
-                           'SEARCH_RESULTS'        => array('CREATED' => 'CREATED'),
-                           'SESSIONS'              => array('UID' => 'UID', 'IPADDRESS' => 'IPADDRESS', 'TIME' => 'TIME', 'FID' => 'FID'),
-                           'USER'                  => array('LOGON' => 'LOGON', 'PASSWD' => 'PASSWD', 'NICKNAME' => 'NICKNAME', 'EMAIL' => 'EMAIL'),
-                           'USER_FORUM'            => array('ALLOWED' => 'ALLOWED'),
-                           'USER_PREFS'            => array('DOB' => 'DOB', 'DOB_DISPLAY' => 'DOB_DISPLAY', 'ANON_LOGON' => 'ANON_LOGON'),
-                           'VISITOR_LOG'           => array('UID' => 'UID', 'SID' => 'SID', 'LAST_LOGON' => 'LAST_LOGON', 'FORUM' => 'FORUM'));
-
-foreach ($global_table_keys as $global_table => $keys_array) {
-
-    foreach ($keys_array as $column_name => $key_name) {
-
-        $sql = "ALTER TABLE {$global_table} ADD INDEX {$column_name} ({$key_name})";
-        $result = @db_query($sql, $db_install);
-    }
-}
 
 // The dictionary has been optimised a bit by making sure the
 // data held in the table is lower-case.

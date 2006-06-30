@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.11 2006-06-26 17:38:23 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.12 2006-06-30 18:07:34 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -104,9 +104,7 @@ $sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (ID),";
-$sql.= "  KEY AID (AID),";
-$sql.= "  KEY HASH (HASH)";
+$sql.= "  PRIMARY KEY  (ID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -120,8 +118,7 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (FID, TID, PID),";
-$sql.= "  KEY AID (AID)";
+$sql.= "  PRIMARY KEY  (FID, TID, PID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -135,7 +132,7 @@ $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (GID,FORUM,FID)";
+$sql.= "  PRIMARY KEY  (GID, FORUM, FID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -147,8 +144,7 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "CREATE TABLE GROUP_USERS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (GID,UID),";
-$sql.= "  INDEX (UID, GID)";
+$sql.= "  PRIMARY KEY  (GID, UID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -163,8 +159,7 @@ $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AUTO_GROUP TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (GID),";
-$sql.= "  KEY FORUM (FORUM)";
+$sql.= "  PRIMARY KEY  (GID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -178,8 +173,7 @@ $sql.= "  SID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
 $sql.= "  NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  URL VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (SID),";
-$sql.= "  FULLTEXT KEY AGENT_MATCH (AGENT_MATCH)";
+$sql.= "  PRIMARY KEY  (SID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -229,8 +223,7 @@ $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  KEYWORDS TEXT NOT NULL,";
-$sql.= "  PRIMARY KEY  (UID,FORUM,TID,PID),";
-$sql.= "  KEY CREATED (CREATED)";
+$sql.= "  PRIMARY KEY  (UID, FORUM, TID, PID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -245,8 +238,7 @@ $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
 $sql.= "  SID MEDIUMINT(8) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY (VID),";
-$sql.= "  KEY UID (UID,VID)";
+$sql.= "  PRIMARY KEY (VID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -261,8 +253,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (HASH),";
-$sql.= "  KEY UID (UID,IPADDRESS,TIME,FID)";
+$sql.= "  PRIMARY KEY  (HASH)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -384,38 +375,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
     return;
-}
-
-// Loads more indexes to add, this time to global tables.
-// Again, this is the whole list of indexes that Beehive
-// uses. Some of them will exist from previous Beehive
-// versions so we skip on failing.
-
-$global_table_keys = array('DICTIONARY'            => array('SOUND' => 'SOUND'),
-                           'FORUM_SETTINGS'        => array('SVALUE' => 'SVALUE'),
-                           'FORUMS'                => array('WEBTAG' => 'WEBTAG', 'ACCESS_LEVEL' => 'ACCESS_LEVEL'),
-                           'GROUP_PERMS'           => array('PERM' => 'PERM'),
-                           'GROUP_USERS'           => array('UID' => 'UID,GID'),
-                           'GROUPS'                => array('FORUM' => 'FORUM', 'AUTO_GROUP' => 'AUTO_GROUP'),
-                           'PM'                    => array('TO_UID' => 'TO_UID', 'TYPE' => 'TYPE', 'FROM_UID' => 'FROM_UID', 'CREATED' => 'CREATED', 'NOTIFIED' => 'NOTIFIED'),
-                           'PM_ATTACHMENT_IDS'     => array('AID' => 'AID'),
-                           'POST_ATTACHMENT_FILES' => array('AID' => 'AID', 'HASH' => 'HASH', 'FILENAME' => 'FILENAME', 'UID' => 'UID'),
-                           'POST_ATTACHMENT_IDS'   => array('AID' => 'AID'),
-                           'SEARCH_ENGINE_BOTS'    => array('AGENT_MATCH' => 'AGENT_MATCH'),
-                           'SEARCH_RESULTS'        => array('CREATED' => 'CREATED'),
-                           'SESSIONS'              => array('UID' => 'UID', 'IPADDRESS' => 'IPADDRESS', 'TIME' => 'TIME', 'FID' => 'FID'),
-                           'USER'                  => array('LOGON' => 'LOGON', 'PASSWD' => 'PASSWD', 'NICKNAME' => 'NICKNAME', 'EMAIL' => 'EMAIL'),
-                           'USER_FORUM'            => array('ALLOWED' => 'ALLOWED'),
-                           'USER_PREFS'            => array('DOB' => 'DOB', 'DOB_DISPLAY' => 'DOB_DISPLAY', 'ANON_LOGON' => 'ANON_LOGON'),
-                           'VISITOR_LOG'           => array('UID' => 'UID', 'SID' => 'SID', 'LAST_LOGON' => 'LAST_LOGON', 'FORUM' => 'FORUM'));
-
-foreach ($global_table_keys as $global_table => $keys_array) {
-
-    foreach ($keys_array as $column_name => $key_name) {
-
-        $sql = "ALTER TABLE {$global_table} ADD INDEX {$column_name} ({$key_name})";
-        $result = @db_query($sql, $db_install);
-    }
 }
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
@@ -621,11 +580,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
     $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
     $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
-    $sql.= "  PRIMARY KEY  (ID),";
-    $sql.= "  FULLTEXT KEY IPADDRESS (IPADDRESS),";
-    $sql.= "  FULLTEXT KEY LOGON (LOGON),";
-    $sql.= "  FULLTEXT KEY NICKNAME (NICKNAME),";
-    $sql.= "  FULLTEXT KEY EMAIL (EMAIL)";
+    $sql.= "  PRIMARY KEY  (ID)";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -735,7 +690,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
     $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  PRIMARY KEY  (TID),";
-    $sql.= "  KEY FID (FID),";
     $sql.= "  KEY BY_UID (BY_UID)";
     $sql.= ") TYPE=MYISAM";
 
@@ -810,8 +764,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  KEY TO_UID (TO_UID),";
     $sql.= "  KEY FROM_UID (FROM_UID),";
     $sql.= "  KEY IPADDRESS (IPADDRESS),";
-    $sql.= "  KEY CREATED (CREATED),";
-    $sql.= "  KEY MOVED_TID (MOVED_TID,MOVED_PID)";
+    $sql.= "  KEY CREATED (CREATED)";
     $sql.= ") TYPE = MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -877,9 +830,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  PRIMARY KEY  (ID), ";
-    $sql.= "  KEY TID (TID, OPTION_ID),";
-    $sql.= "  KEY UID (UID)";
+    $sql.= "  PRIMARY KEY  (ID) ";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -1130,7 +1081,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "CREATE TABLE {$forum_webtag}_RSS_HISTORY (";
     $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  LINK VARCHAR(255) DEFAULT NULL,";
-    $sql.= "  KEY RSSID (RSSID)";
+    $sql.= "  PRIMARY KEY RSSID (RSSID)";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -1155,42 +1106,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-
-    // Loads of indexes to add. This is the whole list of indexes that Beehive
-    // uses. Some of them will exist from previous Beehive versions so
-    // we skip on failing on an error and continue on.
-
-    $forum_table_keys = array('ADMIN_LOG'       => array('UID' => 'UID', 'CREATED' => 'CREATED', 'ACTION' => 'ACTION'),
-                              'BANNED'          => array('LOGON' => 'LOGON', 'NICKNAME' => 'NICKNAME', 'EMAIL' => 'EMAIL', 'IPADDRESS' => 'IPADDRESS'),
-                              'FOLDER'          => array('ALLOWED_TYPES' => 'ALLOWED_TYPES', 'POSITION' => 'POSITION', 'TITLE' => 'TITLE'),
-                              'FORUM_LINKS'     => array('POS' => 'POS'),
-                              'LINKS'           => array('FID' => 'FID', 'VISIBLE' => 'VISIBLE', 'TITLE' => 'TITLE', 'CREATED' => 'CREATED'),
-                              'LINKS_COMMENT'   => array('LID' => 'LID'),
-                              'LINKS_FOLDERS'   => array('PARENT_FID' => 'PARENT_FID', 'NAME' => 'NAME'),
-                              'LINKS_VOTE'      => array('RATING' => 'RATING'),
-                              'POLL'            => array('VOTETYPE' => 'VOTETYPE'),
-                              'POST'            => array('TO_UID' => 'TO_UID', 'FROM_UID' => 'FROM_UID', 'IPADDRESS' => 'IPADDRESS', 'CREATED' => 'CREATED', 'MOVED_TID' => 'MOVED_TID, MOVED_PID', 'REPLY_TO_PID' => 'REPLY_TO_PID', 'EDITED_BY' => 'EDITED_BY', 'VIEWED' => 'VIEWED'),
-                              'POST_CONTENT'    => array('FULLTEXT KEY CONTENT' => 'CONTENT'),
-                              'PROFILE_ITEM'    => array('PSID' => 'PSID', 'POSITION' => 'POSITION'),
-                              'PROFILE_SECTION' => array('POSITION' => 'POSITION'),
-                              'RSS_FEEDS'       => array('FREQUENCY' => 'FREQUENCY', 'LAST_RUN' => 'LAST_RUN'),
-                              'RSS_HISTORY'     => array('RSSID' => 'RSSID', 'LINK' => 'LINK'),
-                              'THREAD'          => array('FID' => 'FID', 'BY_UID' => 'BY_UID', 'LENGTH' => 'LENGTH', 'STICKY' => 'STICKY', 'MODIFIED' => 'MODIFIED'),
-                              'THREAD_TRACK'    => array('NEW_TID' => 'NEW_TID'),
-                              'USER_FOLDER'     => array('INTEREST' => 'INTEREST'),
-                              'USER_PEER'       => array('RELATIONSHIP' => 'RELATIONSHIP'),
-                              'USER_POLL_VOTES' => array('UID' => 'UID', 'TID' => 'TID', 'OPTION_ID' => 'OPTION_ID'),
-                              'USER_PREFS'      => array('DOB_DISPLAY' => 'DOB_DISPLAY', 'ANON_LOGON' => 'ANON_LOGON'),
-                              'USER_THREAD'     => array('LAST_READ' => 'LAST_READ', 'INTEREST' => 'INTEREST'));
-
-    foreach ($forum_table_keys as $forum_table => $keys_array) {
-
-        foreach ($keys_array as $column_name => $key_name) {
-
-            $sql = "ALTER TABLE {$forum_webtag}_{$forum_table} ADD INDEX {$column_name} ({$key_name})";
-            $result = @db_query($sql, $db_install);
-        }
-    }
 }
 
 $sql = "SHOW TABLES LIKE 'DICTIONARY'";
@@ -1208,8 +1123,7 @@ if (db_num_rows($result) > 0) {
     $sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '',";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '',";
-    $sql.= "  PRIMARY KEY  (WORD, UID),";
-    $sql.= "  KEY SOUND (SOUND)";
+    $sql.= "  PRIMARY KEY  (WORD, UID)";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {

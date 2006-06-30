@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.20 2006-06-30 18:07:34 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.21 2006-06-30 20:20:59 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -228,6 +228,57 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
     $result = @db_query($sql, $db_install);           
+}
+
+// Table structure for POST_ATTACHMENT_FILES has changed.
+
+$paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+
+while (install_get_table_conflicts(false, false, array($dictionary_new))) {
+    $paf_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+}
+
+$sql = "CREATE TABLE $paf_new (";
+$sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY (AID, ID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO $paf_new (AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS) ";
+$sql.= "SELECT AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS) FROM ";
+$sql.= "POST_ATTACHMENT_FILES";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE POST_ATTACHMENT_FILES";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE $paf_new RENAME POST_ATTACHMENT_FILES";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
 // New table for our search engine bot data. This is designed

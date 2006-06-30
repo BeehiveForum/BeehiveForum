@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.142 2006-06-30 19:40:22 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.143 2006-06-30 20:20:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1202,19 +1202,17 @@ function pms_have_attachments(&$pm_array, $mid_array)
 
     $mid_list = implode(",", preg_grep("/^[0-9]+$/", $mid_array));
 
-    $db_pms_have_attachments = db_connect();
+    $db_thread_has_attachments = db_connect();
 
-    $sql = "SELECT PMI.MID, PAF.AID FROM PM_ATTACHMENT_IDS PMI ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PMI.AID) ";
-    $sql.= "WHERE PMI.MID IN ($mid_list)";
+    $sql = "SELECT PMI.MID, PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PMI ON (PMI.AID = PAF.AID) ";
+    $sql.= "WHERE PMI.MID IN ($mid_list) ";
 
-    $result = db_query($sql, $db_pms_have_attachments);
+    $result = db_query($sql, $db_thread_has_attachments);
 
     while ($row = db_fetch_array($result)) {
 
-        if (isset($row['AID']) && !is_null($row['AID'])) {
-            $pm_array[$row['MID']]['AID'] = $row['AID'];
-        }
+        $pm_array[$row['MID']]['AID'] = $row['AID'];
     }
 }
 
@@ -1224,16 +1222,23 @@ function pm_has_attachments($mid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $db_pm_has_attachments = db_connect();
+    $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT PMI.MID, PAF.AID FROM PM_ATTACHMENT_IDS PMI ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PMI.AID) ";
-    $sql.= "WHERE PMI.MID = '$mid'";
+    $db_thread_has_attachments = db_connect();
 
-    $result = db_query($sql, $db_pm_has_attachments);
-    list($aid) = db_fetch_array($result, DB_RESULT_NUM);
+    $sql = "SELECT PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PMI ON (PMI.AID = PAF.AID) ";
+    $sql.= "WHERE PMI.MID = '$mid' ";
 
-    return (isset($aid) && !is_null($aid));
+    $result = db_query($sql, $db_thread_has_attachments);
+
+    if (db_num_rows($result) > 0) {
+
+        list($aid) = db_fetch_array($result, DB_RESULT_NUM);
+        return $aid;
+    }
+
+    return false;
 }
 
 function pm_export_get_messages($folder)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.200 2006-06-30 19:40:22 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.201 2006-06-30 20:20:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1265,17 +1265,15 @@ function threads_have_attachments(&$threads_array, $tid_array)
 
     $db_thread_has_attachments = db_connect();
 
-    $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
-    $sql.= "WHERE PAI.TID IN ($tid_list) AND PAI.FID = '$forum_fid'";
+    $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "WHERE PAI.FID = $forum_fid AND PAI.TID IN ($tid_list) ";
 
     $result = db_query($sql, $db_thread_has_attachments);
 
     while ($row = db_fetch_array($result)) {
 
-        if (isset($row['AID']) && !is_null($row['AID'])) {        
-            $threads_array[$row['TID']]['AID'] = $row['AID'];
-        }
+        $threads_array[$row['TID']]['AID'] = $row['AID'];
     }
 }
 
@@ -1289,15 +1287,14 @@ function thread_has_attachments($tid)
 
     $db_thread_has_attachments = db_connect();
 
-    $sql = "SELECT PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
-    $sql.= "WHERE PAI.TID = '$tid' AND PAI.FID = '$forum_fid' ";
+    $sql = "SELECT PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "WHERE PAI.FID = $forum_fid AND PAI.TID = $tid ";
     $sql.= "LIMIT 0, 1";
 
     $result = db_query($sql, $db_thread_has_attachments);
-    list($aid) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return (isset($aid) && !is_null($aid));
+    return (db_num_rows($result) > 0);
 }
 
 ?>

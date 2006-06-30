@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.12 2006-06-30 18:07:34 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.13 2006-06-30 20:20:59 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -97,14 +97,14 @@ foreach ($remove_tables as $forum_table) {
 }
 
 $sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
-$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '',";
+$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (ID)";
+$sql.= "  PRIMARY KEY (AID, ID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

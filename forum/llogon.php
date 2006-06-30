@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.50 2006-06-26 11:04:44 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.51 2006-06-30 18:07:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -31,9 +31,6 @@ define("BEEHIVEMODE_LIGHT", true);
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable UTF-8 encoding via mb_string functions if supported
-include_once(BH_INCLUDE_PATH. "utf8.inc.php");
 
 // Enable the error handler
 include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");

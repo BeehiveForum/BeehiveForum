@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.80 2006-06-27 19:51:57 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.81 2006-07-02 20:32:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -339,25 +339,6 @@ function thread_set_high_interest($tid, $interest, $new = false)
 
     $db_thread_set_interest = db_connect();
     db_query($sql, $db_thread_set_interest);
-}
-
-function thread_can_view($tid = 0, $uid = 0)
-{
-    $fidlist = folder_get_available();
-    $db_thread_can_view = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($uid)) return false;
-
-    $sql = "SELECT COUNT(*) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD ";
-    $sql.= "WHERE TID = '$tid' AND FID IN ($fidlist)";
-
-    $result = db_query($sql,$db_thread_can_view);
-
-    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
-    return ($thread_count > 0);
 }
 
 function thread_set_sticky($tid, $sticky = true, $sticky_until = false)

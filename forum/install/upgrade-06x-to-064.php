@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.21 2006-06-30 20:20:59 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.22 2006-07-02 20:32:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -195,6 +195,55 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
+    // Table structure for USER_POLL_VOTES has changed to make
+    // lookups use the TID primary key.
+
+    $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+
+    while (install_get_table_conflicts(false, false, array($dictionary_new))) {
+        $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    }
+
+    $sql = "CREATE TABLE {$forum_webtag}_{$upv_new} (";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  VOTE_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+    $sql.= "  PRIMARY KEY  (TID,UID,VOTE_ID,OPTION_ID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+    
+    $sql = "INSERT IGNORE INTO {$forum_webtag}_{$upv_new} (`TID`, `UID`, `OPTION_ID`, `TSTAMP`) ";
+    $sql.= "SELECT `TID`, `UID`, `OPTION_ID`, `TSTAMP` FROM {$forum_webtag}_USER_POLL_VOTES";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+    
+    $sql = "DROP TABLE {$forum_webtag}_USER_POLL_VOTES";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+    
+    $sql = "ALTER TABLE {$forum_webtag}_{$upv_new} RENAME {$forum_webtag}_USER_POLL_VOTES";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // Adding a new column to the THREAD table to track
     // thread view count.
 
@@ -228,6 +277,11 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
     $result = @db_query($sql, $db_install);           
+
+    // Index on USER_THREAD to make email notification queries run quicker
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX (TID)";
+    $result = @db_query($sql, $db_install);
 }
 
 // Table structure for POST_ATTACHMENT_FILES has changed.

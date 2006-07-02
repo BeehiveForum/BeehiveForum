@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.86 2006-05-23 14:10:30 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.87 2006-07-02 20:32:25 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -1099,7 +1099,11 @@ function perm_folder_get_permissions($fid)
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT PERM AS STATUS FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid'";
+    $forum_fid = $table_data['FID'];
+
+    $sql = "SELECT PERM AS STATUS FROM GROUP_PERMS ";
+    $sql.= "WHERE FID = '$fid' AND GID = 0 AND FORUM = '$forum_fid'";
+    
     $result = db_query($sql, $db_perm_folder_get_permissions);
 
     if (db_num_rows($result) > 0) {
@@ -1122,8 +1126,27 @@ function perm_folder_reset_user_permissions($fid)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "DELETE FROM GROUP_PERMS WHERE FID = '$fid' AND GID <> '0' ";
-    $sql.= "AND FORUM = '$forum_fid'";
+    // Fetch the folder's permissions
+    
+    $folder_perms = perm_folder_get_permissions($fid);
+
+    $upfm = USER_PERM_FOLDER_MODERATE;
+
+    // Remove the permissions don't apply at the user to folder level
+
+    $remove_perms = (double) USER_PERM_BANNED | USER_PERM_WORMED;
+    $remove_perms = (double) $remove_perms | USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS;
+    $remove_perms = (double) $remove_perms | USER_PERM_GUEST_ACCESS | USER_PERM_LINKS_MODERATE;
+    $remove_perms = (double) $remove_perms | USER_PERM_EMAIL_CONFIRM | USER_PERM_CAN_IGNORE_ADMIN;
+    $remove_perms = (double) $remove_perms | USER_PERM_PILLORIED;
+
+    $folder_perms = $folder_perms ^ $remove_perms;
+
+    // Process the permissions without affecting the user's
+    // moderation level on the forum or the groups they're in.
+
+    $sql = "UPDATE GROUP_PERMS SET PERM = $folder_perms | (PERM & $upfm) ";
+    $sql.= "WHERE FID = '$fid' AND GID <> '0' AND FORUM = '$forum_fid'";
 
     return db_query($sql, $db_perm_folder_reset_user_permissions);
 }

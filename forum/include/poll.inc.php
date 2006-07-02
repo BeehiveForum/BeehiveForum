@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.166 2006-06-28 08:41:40 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.167 2006-07-02 20:32:25 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -234,7 +234,7 @@ function poll_get_votes($tid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME, ";
-    $sql.= "POLL_VOTES.GROUP_ID, COUNT(USER_POLL_VOTES.ID) AS VOTE_COUNT ";
+    $sql.= "POLL_VOTES.GROUP_ID, COUNT(USER_POLL_VOTES.UID) AS VOTE_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}POLL_VOTES POLL_VOTES LEFT JOIN ";
     $sql.= "{$table_data['PREFIX']}USER_POLL_VOTES USER_POLL_VOTES ";
     $sql.= "ON (USER_POLL_VOTES.TID = POLL_VOTES.TID ";
@@ -733,7 +733,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $polldata['CONTENT'].= "</td>\n";
                 $polldata['CONTENT'].= "                </tr>\n";
 
-                if ($polldata['CHANGEVOTE'] == 1) {
+                if ($polldata['CHANGEVOTE'] != 0) {
 
                     $polldata['CONTENT'].= "                <tr>\n";
                     $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', $lang['changevote']). "</td>\n";
@@ -1910,20 +1910,12 @@ function poll_vote($tid, $vote_array)
 
     $timestamp = mktime();
 
-    if (!poll_get_user_vote($tid) || $polldata['CHANGEVOTE'] == 2) {
+    if ((!poll_get_user_vote($tid)) || ($polldata['CHANGEVOTE'] == 2)) {
 
         foreach ($vote_array as $user_vote) {
 
-            if ($polldata['VOTETYPE'] == 0) {
-
-                $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
-                $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME($timestamp))";
-
-            }else {
-
-                $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
-                $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME($timestamp))";
-            }
+            $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
+            $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME($timestamp))";
 
             $result = db_query($sql, $db_poll_vote);
         }
@@ -1941,7 +1933,7 @@ function poll_delete_vote($tid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE TID = $tid AND UID = $uid";
+    $sql.= "WHERE TID = '$tid' AND UID = '$uid'";
 
     $result = db_query($sql, $db_poll_delete_vote);
 }

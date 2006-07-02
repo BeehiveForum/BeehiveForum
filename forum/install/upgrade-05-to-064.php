@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.13 2006-06-30 20:20:59 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.14 2006-07-02 20:38:25 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -825,12 +825,12 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "CREATE TABLE {$forum_webtag}_USER_POLL_VOTES_NEW (";
-    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
     $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  VOTE_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
     $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-    $sql.= "  PRIMARY KEY  (ID) ";
+    $sql.= "  PRIMARY KEY  (TID,UID,VOTE_ID,OPTION_ID)";
     $sql.= ") TYPE=MYISAM";
 
     if (!$result = @db_query($sql, $db_install)) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.187 2006-06-26 22:10:57 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.188 2006-07-03 22:17:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -762,7 +762,7 @@ function html_get_forum_uri($path_only = false)
     $uri_array = array();
 
     if (isset($_SERVER['REQUEST_URI']) && strlen(trim($_SERVER['REQUEST_URI'])) > 0) {
-        $uri_array = parse_url($_SERVER['REQUEST_URI']);
+        $uri_array = @parse_url($_SERVER['REQUEST_URI']);
     }
 
     if (!isset($uri_array['scheme']) || strlen(trim($uri_array['scheme'])) < 1) {
@@ -811,11 +811,11 @@ function html_get_forum_uri($path_only = false)
 
             if (isset($_SERVER['PATH_INFO']) && strlen(trim($_SERVER['PATH_INFO'])) > 0) {
 
-                $path = parse_url($_SERVER['PATH_INFO']);
+                $path = @parse_url($_SERVER['PATH_INFO']);
 
             }else {
 
-                $path = parse_url($_SERVER['PHP_SELF']);
+                $path = @parse_url($_SERVER['PHP_SELF']);
             }
 
             $uri_array['path'] = $path['path'];

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.202 2006-07-02 20:32:25 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.203 2006-07-03 18:09:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -982,7 +982,7 @@ function threads_any_unread()
 
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-    $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql = "SELECT THREAD.TID FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.273 2006-06-18 13:00:37 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.274 2006-07-03 18:09:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -552,12 +552,10 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
         // Is there an entry in USER_PREFS already for this user?
 
-        $sql = "SELECT COUNT(*) FROM USER_PREFS WHERE UID = $uid";
+        $sql = "SELECT UID FROM USER_PREFS WHERE UID = '$uid'";
         $result_global = db_query($sql, $db_user_update_prefs);
 
-        list($user_pref_count) = db_fetch_array($result_global, DB_RESULT_NUM);
-
-        if ($user_pref_count > 0) {
+        if (db_num_rows($result) > 0) {
 
             // previous entry which we will UPDATE
 
@@ -1390,14 +1388,12 @@ function user_is_active($uid)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT COUNT(*) AS USER_ACTIVE FROM SESSIONS ";
-    $sql.= "WHERE UID = $uid AND FID = $forum_fid";
+    $sql = "SELECT UID FROM SESSIONS WHERE UID = '$uid' ";
+    $sql.= "AND FID = '$forum_fid' LIMIT 0, 1";
 
     $result = db_query($sql, $db_user_is_active);
 
-    list($user_active) = db_fetch_array($result);
-
-    return ($user_active > 0);
+    return (db_num_rows($result) > 0);
 }
 
 function user_allow_pm($uid)

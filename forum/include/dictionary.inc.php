@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.34 2006-04-23 10:27:21 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.35 2006-07-03 18:09:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -87,14 +87,10 @@ class dictionary {
     {
         $db_dictionary_check_setup = db_connect();
 
-        $sql = "SELECT COUNT(*) AS WORD_COUNT FROM DICTIONARY";
+        $sql = "SELECT WORD FROM DICTIONARY LIMIT 0, 1";
         $result = db_query($sql, $db_dictionary_check_setup);
 
-        list($word_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-        if ($word_count > 0) return true;
-
-        return false;
+        return (db_num_rows($result) > 0);
     }
 
     function get_obj_id()
@@ -268,8 +264,6 @@ class dictionary {
 
         $word = addslashes(strtolower($this->get_current_word()));
 
-        
-
         if (!$this->word_is_valid($word)) return;
 
         // The offset of the metaphone results
@@ -302,44 +296,35 @@ class dictionary {
 
             $metaphone = addslashes($metaphone);
 
-            $sql = "SELECT COUNT(WORD) AS COUNT FROM DICTIONARY WHERE SOUND = '$metaphone' ";
-            $sql.= "AND (UID = 0 OR UID = '$uid')";
+            $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
+            $sql.= "AND (UID = 0 OR UID = '$uid') ";
+            $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
 
             $result = db_query($sql, $db_dictionary_word_get_suggestions);
-            list($this->word_suggestion_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-            if ($this->word_suggestion_count > 0) {
+            if (db_num_rows($result) > 0) {
 
-                $sql = "SELECT WORD FROM DICTIONARY WHERE SOUND = '$metaphone' ";
-                $sql.= "AND (UID = 0 OR UID = '$uid') ";
-                $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
+                while($row = db_fetch_array($result)) {
 
-                $result = db_query($sql, $db_dictionary_word_get_suggestions);
-
-                if (db_num_rows($result) > 0) {
-
-                    while($row = db_fetch_array($result)) {
-
-                        $this->suggestions_array[] = $row['WORD'];
-                    }
-
-                }else {
-
-                    if ($this->offset_match == 0) {
-
-                        $this->word_suggestion_result = DICTIONARY_NOMATCH;
-                        return;
-                    }
-
-                    $this->offset_match = 0;
-                    return $this->word_get_suggestions();
+                    $this->suggestions_array[] = $row['WORD'];
                 }
 
-                if (sizeof($this->suggestions_array) > 0) {
+            }else {
 
-                    $this->word_suggestion_result = DICTIONARY_SUGGEST;
+                if ($this->offset_match == 0) {
+
+                    $this->word_suggestion_result = DICTIONARY_NOMATCH;
                     return;
                 }
+
+                $this->offset_match = 0;
+                return $this->word_get_suggestions();
+            }
+
+            if (sizeof($this->suggestions_array) > 0) {
+
+                $this->word_suggestion_result = DICTIONARY_SUGGEST;
+                return;
             }
         }
 

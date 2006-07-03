@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.54 2006-03-20 18:26:07 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.55 2006-07-03 18:09:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -72,7 +72,7 @@ function get_forum_list()
 
             // Get number of messages on forum
 
-            $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+            $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
             $result_post_count = db_query($sql, $db_get_forum_list);
 
             $row = db_fetch_array($result_post_count);

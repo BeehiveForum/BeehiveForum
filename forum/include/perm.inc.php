@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.87 2006-07-02 20:32:25 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.88 2006-07-03 18:09:47 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -365,14 +365,12 @@ function perm_update_group($gid, $group_name, $group_desc, $perm)
 
         $result = db_query($sql, $db_perm_update_group);
 
-        $sql = "SELECT COUNT(*) AS PERM_COUNT FROM GROUP_PERMS WHERE ";
-        $sql.= "GID = $gid AND FORUM = $forum_fid AND FID = 0";
+        $sql = "SELECT PERM FROM GROUP_PERMS WHERE GID = '$gid' ";
+        $sql.= "AND FORUM = '$forum_fid' AND FID = 0 LIMIT 0, 1";
 
         $result = db_query($sql, $db_perm_update_group);
 
-        list($perm_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-        if ($perm_count > 0) {
+        if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
             $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = 0";
@@ -399,18 +397,10 @@ function perm_remove_group($gid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(*) AS GROUP_COUNT FROM GROUP_USERS WHERE GID = '$gid'";
+    $sql = "DELETE FROM GROUPS WHERE GID = $gid";
     $result = db_query($sql, $db_perm_remove_group);
 
-    list($group_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    if ($group_count < 1) {
-
-        $sql = "DELETE FROM GROUPS WHERE GID = $gid";
-        return db_query($sql, $db_perm_remove_group);
-    }
-
-    return false;
+    return (db_affected_rows($result) > 0);
 }
 
 function perm_get_group($gid)
@@ -421,7 +411,9 @@ function perm_get_group($gid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM GROUPS WHERE GID = '$gid' AND AUTO_GROUP = 0";
+    $sql = "SELECT GID, FORUM, GROUP_NAME, GROUP_DESC, AUTO_GROUP ";
+    $sql.= "FROM GROUPS WHERE GID = '$gid' AND AUTO_GROUP = 0";
+
     $result = db_query($sql, $db_perm_get_group);
 
     if (db_num_rows($result) > 0) {
@@ -459,13 +451,12 @@ function perm_is_group($gid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(*) AS GROUP_COUNT FROM GROUPS ";
-    $sql.= "WHERE GID = '$gid' AND AUTO_GROUP = 0";
+    $sql = "SELECT GID FROM GROUPS WHERE GID = '$gid' ";
+    $sql.= "AND AUTO_GROUP = 0 LIMIT 0, 1";
 
     $result = db_query($sql, $db_perm_is_group);
 
-    list($group_count) = db_fetch_array($result, DB_RESULT_NUM);
-    return ($group_count > 0);
+    return (db_num_rows($result) > 0);
 }
 
 function perm_user_in_group($uid, $gid)
@@ -477,13 +468,12 @@ function perm_user_in_group($uid, $gid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT COUNT(*) AS USER_COUNT FROM GROUP_USERS ";
-    $sql.= "WHERE UID = '$uid' AND GID = '$gid'";
+    $sql = "SELECT GID FROM GROUP_USERS WHERE UID = '$uid' ";
+    $sql.= "AND GID = '$gid' LIMIT 0, 1";
 
     $result = db_query($sql, $db_perm_user_in_group);
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
-    return ($user_count > 0);
+    return (db_num_rows($result) > 0);
 }
 
 function perm_get_global_user_permissions($uid)
@@ -605,13 +595,12 @@ function perm_update_global_perms($uid, $perm)
 
     if ($gid = perm_get_global_user_gid($uid)) {
 
-        $sql = "SELECT COUNT(*) FROM GROUP_PERMS WHERE GID = $gid ";
-        $sql.= "AND FORUM = 0 AND FID = 0";
+        $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
+        $sql.= "AND FORUM = 0 AND FID = 0 LIMIT 0, 1";
 
         $result = db_query($sql, $db_perm_add_global_perms);
-        list($perm_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-        if ($perm_count > 0) {
+        
+        if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE GROUP_PERMS SET PERM = $perm WHERE GID = $gid ";
             $sql.= "AND FORUM = 0 AND FID = 0";
@@ -963,24 +952,22 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
 
     if ($gid = perm_get_user_gid($uid)) {
 
-        $sql = "SELECT COUNT(*) AS PERM_COUNT FROM GROUP_PERMS WHERE ";
-        $sql.= "GID = $gid AND FORUM = $forum_fid AND FID = $fid";
+        $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
+        $sql.= "AND FORUM = '$forum_fid' AND FID = '$fid' LIMIT 0, 1";
 
         $result = db_query($sql, $db_perm_update_user_folder_perms);
 
-        list($perm_count) = db_fetch_array($result, DB_RESULT_NUM);
+        if (db_num_rows($result) > 0) {
 
-        if ($perm_count > 0) {
-
-            $sql = "UPDATE GROUP_PERMS SET PERM = $perm WHERE ";
-            $sql.= "GID = $gid AND FORUM = $forum_fid AND FID = $fid";
+            $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
+            $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = '$fid'";
 
             return db_query($sql, $db_perm_update_user_folder_perms);
 
         }else {
 
             $sql = "INSERT INTO GROUP_PERMS (PERM, GID, FORUM, FID) ";
-            $sql.= "VALUES ($perm, $gid, $forum_fid, $fid)";
+            $sql.= "VALUES ('$perm', '$gid', '$forum_fid', '$fid')";
 
             return db_query($sql, $db_perm_update_user_folder_perms);
         }
@@ -1003,14 +990,12 @@ function perm_update_group_folder_perms($gid, $fid, $perm)
 
     if (perm_is_group($gid)) {
 
-        $sql = "SELECT COUNT(*) AS PERM_COUNT FROM GROUP_PERMS WHERE ";
-        $sql.= "GID = $gid AND FORUM = $forum_fid AND FID = $fid";
+        $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
+        $sql.= "AND FORUM = '$forum_fid' AND FID = '$fid' LIMIT 0, 1";
 
         $result = db_query($sql, $db_perm_update_group_folder_perms);
 
-        list($perm_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-        if ($perm_count > 0) {
+        if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' ";
             $sql.= "WHERE GID = '$gid' AND FID = '$fid' ";
@@ -1043,13 +1028,12 @@ function perm_update_user_permissions($uid, $perm)
 
     if ($gid = perm_get_user_gid($uid)) {
 
-        $sql = "SELECT COUNT(*) FROM GROUP_PERMS WHERE GID = $gid ";
-        $sql.= "AND FORUM = $forum_fid AND FID = 0";
+        $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
+        $sql.= "AND FORUM = '$forum_fid' AND FID = 0 LIMIT 0, 1";
 
         $result = db_query($sql, $db_perm_update_user_permissions);
-        list($perm_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        if ($perm_count > 0) {
+        if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE GROUP_PERMS SET PERM = $perm WHERE ";
             $sql.= "GID = $gid AND FORUM = $forum_fid AND FID = 0";
@@ -1109,7 +1093,6 @@ function perm_folder_get_permissions($fid)
     if (db_num_rows($result) > 0) {
 
         $row = db_fetch_array($result);
-
         if (!is_null($row['STATUS'])) return $row['STATUS'];
     }
 

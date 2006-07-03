@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.113 2006-04-14 16:38:51 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.114 2006-07-03 18:09:47 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -647,13 +647,10 @@ function get_num_attachments($aid)
 
     if (!$table_data = get_table_prefix()) return 0;
 
-    $sql = "SELECT COUNT(*) AS ATTACHMENT_COUNT ";
-    $sql.= "FROM POST_ATTACHMENT_FILES WHERE AID = '$aid'";
-
+    $sql = "SELECT AID FROM POST_ATTACHMENT_FILES WHERE AID = '$aid' LIMIT 0, 1";
     $result = db_query($sql, $db_get_num_attachments);
 
-    list($attachment_count) = db_fetch_array($result, DB_RESULT_NUM);
-    return $attachment_count;
+    return (db_num_rows($result) > 0);
 }
 
 /**
@@ -673,14 +670,16 @@ function get_attachment_by_hash($hash)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
+    $sql = "SELECT AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS ";
+    $sql.= "FROM POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
+
     $result = db_query($sql, $db_get_attachment_by_hash);
 
     if (db_num_rows($result) > 0) {
         return db_fetch_array($result);
-    }else {
-        return false;
     }
+
+    return false;
 }
 
 /**

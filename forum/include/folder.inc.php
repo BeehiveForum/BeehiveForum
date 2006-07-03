@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.109 2006-06-17 19:40:25 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.110 2006-07-03 18:09:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -423,14 +423,10 @@ function folder_is_valid($fid)
 
     if (!is_numeric($fid)) return false;
 
-    $sql = "SELECT COUNT(*) AS FOLDER_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER ";
-    $sql.= "WHERE FID = '$fid'";
-
+    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER WHERE FID = '$fid' LIMIT 0, 1";
     $result = db_query($sql, $db_folder_get_available);
 
-    list($folder_count) = db_fetch_array($result, DB_RESULT_NUM);
-    return ($folder_count > 0);
+    return (db_num_rows($result) > 0);
 }
 
 function folder_is_accessible($fid)

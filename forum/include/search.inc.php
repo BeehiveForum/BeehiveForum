@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.159 2006-06-17 19:40:25 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.160 2006-07-03 18:09:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -317,12 +317,10 @@ function search_fetch_results($offset, $order_by)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = $uid";
+    $sql = "SELECT UID FROM SEARCH_RESULTS WHERE UID = '$uid' LIMIT 0, 1";
     $result = db_query($sql, $db_search_fetch_results);
 
-    list($result_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-    if ($result_count > 0) {
+    if (db_num_rows($result) > 0) {
 
         if ($order_by == 1) {
 

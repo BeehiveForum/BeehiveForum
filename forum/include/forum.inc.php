@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.181 2006-06-26 11:04:48 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.182 2006-07-03 18:09:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1377,13 +1377,10 @@ function forum_update_access($fid, $access, $passwd = false)
 
         $db_forum_update_access = db_connect();
 
-        $sql = "SELECT COUNT(*) AS FORUM_COUNT ";
-        $sql.= "FROM FORUMS WHERE FID = '$fid'";
-
+        $sql = "SELECT FID FROM FORUMS WHERE FID = '$fid' LIMIT 0, 1";
         $result = db_query($sql, $db_forum_update_access);
-        list($forum_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        if ($forum_count > 0) {
+        if (db_num_rows($result) > 0) {
 
             if ($passwd) {
 
@@ -1400,14 +1397,10 @@ function forum_update_access($fid, $access, $passwd = false)
 
             $result = db_query($sql, $db_forum_update_access);
 
-            $sql = "SELECT COUNT(*) AS USER_COUNT FROM ";
-            $sql.= "USER_FORUM WHERE FID = '$fid' AND UID = '$uid'";
-
+            $sql = "SELECT UID FROM USER_FORUM WHERE FID = '$fid' AND UID = '$uid' LIMIT 0, 1";
             $result = db_query($sql, $db_forum_update_access);
 
-            list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
-
-            if ($user_count > 0) {
+            if (db_num_rows($result) > 0) {
 
                 $sql = "UPDATE USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
                 $result = db_query($sql, $db_forum_update_access);
@@ -1515,7 +1508,7 @@ function forum_get_post_count($webtag)
 
     if (!preg_match("/[^a-z|0-9|'_']/", $webtag)) return 0;
 
-    $sql = "SELECT COUNT(*) AS POST_COUNT FROM {$webtag}_POST POST ";
+    $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$webtag}_POST POST ";
     $result_post_count = db_query($sql, $db_forum_get_post_count);
 
     if (db_num_rows($result_post_count) > 0) {

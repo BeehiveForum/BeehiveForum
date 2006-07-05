@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: emoticons.inc.php,v 1.55 2006-02-18 18:49:23 decoyduck Exp $ */
+/* $Id: emoticons.inc.php,v 1.56 2006-07-05 21:15:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -42,23 +42,30 @@ class Emoticons
 {
     var $emoticons;
     var $emoticons_text;
-    var $pattern_array;
-    var $replace_array;
-    var $user_emots;
 
     function Emoticons ()
     {
         if (!isset($this->emoticons) || !is_array($this->emoticons) || sizeof($this->emoticons) == 0) {
 
-            if (($user_emots = bh_session_get_value('EMOTICONS')) !== false) {
-                $this->user_emots = $user_emots;
-            }else {
-                $this->user_emots = forum_get_setting('default_emoticons', false, 'default');
+            // Get the user's emoticon set from their sesion.
+            // Fall back to using the forum default or Beehive default.
+            
+            if (($user_emots = bh_session_get_value('EMOTICONS')) === false) {
+                $user_emots = forum_get_setting('default_emoticons', false, 'default');
             }
+
+            // Initialize the array incase it's not been done in
+            // the definitions.php file by the emoticon authors.
 
             $emoticon = array();
 
-            if ($this->user_emots == 'none') {
+            // If the user has emoticons set to none (hides them completely)
+            // we need to load *all* the emoticon definition files so we can
+            // strip them out.
+            //
+            // If the user has a set specified we load only that set.
+
+            if ($user_emots == 'none') {
 
                 if (@$dir = opendir('emoticons')) {
 
@@ -66,70 +73,52 @@ class Emoticons
 
                         if ($file != '.' && $file != '..' && @is_dir("emoticons/$file")) {
 
-                            if (@file_exists("./emoticons/$file/definitions.php")) {
-
-                                include ("./emoticons/$file/definitions.php");
-                            }
+                            @include ("./emoticons/$file/definitions.php");
                         }
                     }
                 }
 
             }else {
 
-                if (@file_exists("./emoticons/{$this->user_emots}/definitions.php")) {
-                    include ("./emoticons/{$this->user_emots}/definitions.php");
-                }
+                @include ("./emoticons/{$user_emots}/definitions.php");
             }
 
+            // Check that we have successfully loaded the emoticons.
+            // If we have we need to process them a bit, otherwise
+            // we bail out.
+
             if (sizeof($emoticon) > 0) {
+                
+                // Reverse the order of the keys and reset the
+                // internal pointer.
 
                 krsort($emoticon);
                 reset($emoticon);
 
+                // Set up our emoticon text array for display
+                // of the selection box on post.php etc.
+
                 $emoticon_text = array();
 
-                foreach ($emoticon as $k => $v) {
+                // Group similar named emoticons together
 
-                    $emoticon_text[$v][] = $k;
+                foreach ($emoticon as $key => $value) {
+                    $emoticon_text[$value][] = $key;
                 }
 
-                $pattern_array = array();
-                $replace_array = array();
+                // Sort our array by key length so we don't have
+                // the match text for emoticons inadvertantly matching
+                // the wrong emoticon.
 
-                $e_keys = array_keys($emoticon);
+                uksort($emoticon, 'sort_by_length_callback');
 
-                for ($i = 0; $i < count($e_keys); $i++) {
-
-                    for ($j = 0; $j < count($e_keys); $j++) {
-
-                        if ($i != $j) {
-
-                            if (($pos = strpos(strtolower($e_keys[$j]), strtolower($e_keys[$i]))) !== false) {
-
-                                $a = $e_keys[$j];
-                                $b = $e_keys[$i];
-                                $v = $emoticon[$a];
-                                $a2 = urlencode($a);
-
-                                $a_f = preg_quote(substr($a, 0, $pos), "/");
-                                $a_m = preg_quote(urlencode(substr($a, $pos, strlen($b))), "/");
-                                $a_e = preg_quote(substr($a, $pos +strlen($b)), "/");
-
-                                $pattern_array[] = "/". $a_f."<span class=[^>]+><span[^>]*>".$a_m."<\/span><\/span>".$a_e ."/";
-                                $replace_array[] = "<span class=\"e_$v\" title=\"$a2\"><span class=\"e__\">$a2</span></span>";
-                            }
-                        }
-                    }
-                }
+                // Set our class vars for the convert function
 
                 $this->emoticons      = $emoticon;
                 $this->emoticons_text = $emoticon_text;
-                $this->pattern_array  = $pattern_array;
-                $this->replace_array  = $replace_array;
 
             }else {
 
-                // marker to show that there are no defined emoticons
                 $this->emoticons = false;
             }
         }
@@ -247,6 +236,12 @@ function emoticons_get_available($include_text_none = true)
     $available_sets = array_merge($sets_txtnon, $sets_normal);
 
     return $available_sets;
+}
+
+function sort_by_length_callback($a, $b)
+{
+    if ($a == $b) return 0;
+    return (strlen($a) > strlen($b) ? -1 : 1);
 }
 
 function emoticons_set_exists($set)

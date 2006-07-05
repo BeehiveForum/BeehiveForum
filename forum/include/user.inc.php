@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.274 2006-07-03 18:09:47 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.275 2006-07-05 18:40:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -555,7 +555,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         $sql = "SELECT UID FROM USER_PREFS WHERE UID = '$uid'";
         $result_global = db_query($sql, $db_user_update_prefs);
 
-        if (db_num_rows($result) > 0) {
+        if (db_num_rows($result_global) > 0) {
 
             // previous entry which we will UPDATE
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.401 2006-06-27 16:09:32 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.402 2006-07-05 18:40:42 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,11 +54,11 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $sql  = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql .= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
-    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, EDIT_USER.LOGON AS EDIT_LOGON, ";
-    $sql .= "POST.IPADDRESS, POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
-    $sql .= "POST.APPROVED_BY, APPROVED_USER.LOGON AS APPROVED_LOGON, FUSER.LOGON AS FLOGON, ";
-    $sql .= "FUSER.NICKNAME AS FNICK, USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, ";
-    $sql .= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
+    $sql .= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
+    $sql .= "POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
+    $sql .= "POST.APPROVED_BY, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
+    $sql .= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
+    $sql .= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql .= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK ";
     $sql .= "FROM {$table_data['PREFIX']}POST POST ";
     $sql .= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
@@ -67,8 +67,6 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
     $sql .= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER_FROM ";
     $sql .= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
-    $sql .= "LEFT JOIN USER EDIT_USER ON (POST.EDITED_BY = EDIT_USER.UID) ";
-    $sql .= "LEFT JOIN USER APPROVED_USER ON (POST.APPROVED_BY = APPROVED_USER.UID) ";
     $sql .= "WHERE POST.TID = '$tid' ";
     $sql .= "AND POST.PID >= '$pid' ";
     $sql .= "ORDER BY POST.PID ";
@@ -90,10 +88,9 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
             if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
             if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
-            if (!isset($message['APPROVED_LOGON'])) $message['APPROVED_LOGON'] = 0;
 
             if (!isset($message['EDITED'])) $message['EDITED'] = 0;
-            if (!isset($message['EDIT_LOGON'])) $message['EDIT_LOGON'] = 0;
+            if (!isset($message['EDITED_BY'])) $message['EDITED_BY'] = 0;
 
             if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
 
@@ -135,10 +132,9 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         if (!isset($messages['APPROVED'])) $messages['APPROVED'] = 0;
         if (!isset($messages['APPROVED_BY'])) $messages['APPROVED_BY'] = 0;
-        if (!isset($messages['APPROVED_LOGON'])) $messages['APPROVED_LOGON'] = 0;
 
         if (!isset($messages['EDITED'])) $messages['EDITED'] = 0;
-        if (!isset($messages['EDIT_LOGON'])) $messages['EDIT_LOGON'] = 0;
+        if (!isset($messages['EDITED_BY'])) $messages['EDITED_BY'] = 0;
 
         if (!isset($messages['IPADDRESS'])) $messages['IPADDRESS'] = "";
 
@@ -920,8 +916,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
+                $edit_user = user_get_logon($message['EDITED_BY']);
+                
                 echo "              <tr>\n";
-                echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$message['EDIT_LOGON']}</p></td>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">{$lang['edited_caps']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$edit_user}</p></td>\n";
                 echo "              </tr>\n";
             }
         }
@@ -930,8 +928,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
+                $approved_user = user_get_logon($message['APPROVED_BY']);
+                
                 echo "              <tr>\n";
-                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">{$lang['approvedcaps']}: ", format_time($message['APPROVED'], 1), " {$lang['by']} {$message['APPROVED_LOGON']}</p></td>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">{$lang['approvedcaps']}: ", format_time($message['APPROVED'], 1), " {$lang['by']} {$approved_user}</p></td>\n";
                 echo "              </tr>\n";
             }
         }
@@ -1116,10 +1116,12 @@ function message_display_deleted($tid, $pid, $message)
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
+        $edit_logon = user_get_logon($message['EDITED_BY']);
+        
         echo "<br /><div align=\"center\">";
         echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td>\n";
         echo "<table class=\"posthead\" width=\"100%\"><tr><td>\n";
-        echo "{$lang['message']} ${tid}.${pid} {$lang['deleted']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$message['EDIT_LOGON']}\n";
+        echo "{$lang['message']} ${tid}.${pid} {$lang['deleted']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$edit_logon}\n";
         echo "</td></tr></table>\n";
         echo "</td></tr></table></div>\n";
 
@@ -1507,7 +1509,9 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-    $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
+    $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ ";
+    $sql.= "OR USER_THREAD.LAST_READ IS NULL ";
+    $sql.= "OR USER_THREAD.LAST_READ = THREAD.LENGTH) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";

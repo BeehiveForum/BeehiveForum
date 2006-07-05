@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.23 2006-07-03 22:17:23 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.24 2006-07-05 18:58:03 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -328,6 +328,14 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "ALTER TABLE $paf_new RENAME POST_ATTACHMENT_FILES";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE VISITOR_LOG ADD SID MEDIUMINT(8) UNSIGNED";
 
 if (!$result = @db_query($sql, $db_install)) {
 

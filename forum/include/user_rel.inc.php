@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.inc.php,v 1.29 2006-06-13 11:54:06 decoyduck Exp $ */
+/* $Id: user_rel.inc.php,v 1.30 2006-07-06 19:12:17 decoyduck Exp $ */
 
 /**
 * User relation functions
@@ -42,7 +42,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
-function user_rel_update($uid, $peer_uid, $relationship, $nickname)
+function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
 {
     $db_user_rel_update = db_connect();
 
@@ -107,18 +107,18 @@ function user_rel_get($uid, $peer_uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT RELATIONSHIP FROM {$table_data['PREFIX']}USER_PEER ";
-    $sql.= "WHERE UID = $uid AND PEER_UID = $peer_uid";
+    $sql = "SELECT RELATIONSHIP, PEER_NICKNAME FROM {$table_data['PREFIX']}USER_PEER ";
+    $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     $result = db_query($sql, $db_user_rel_get);
 
     if (db_num_rows($result) > 0) {
 
-        list($relationship) = db_fetch_array($result, DB_RESULT_NUM);
-        return $relationship;
+        $relationship_array = db_fetch_array($result);
+        return $relationship_array;
     }
 
-    return 0;
+    return false;
 }
 
 ?>

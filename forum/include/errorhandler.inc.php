@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.74 2005-07-23 22:53:31 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.75 2006-07-06 19:12:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -104,7 +104,9 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         ob_start("bh_gzhandler");
         ob_implicit_flush(0);
 
-        if ($errno == ER_NO_SUCH_TABLE && !defined("BEEHIVE_INSTALL_NOWARN")) install_incomplete();
+        if ($errno == ER_NO_SUCH_TABLE || $errno == ER_WRONG_COLUMN_NAME) && !defined("BEEHIVE_INSTALL_NOWARN")) {
+            install_incomplete();
+        }
 
         srand((double)microtime() * 1000000);
 

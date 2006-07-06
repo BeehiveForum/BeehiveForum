@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.78 2006-06-13 11:54:06 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.79 2006-07-06 19:12:17 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -86,6 +86,7 @@ define("PERM_CHECK_SOLDIER", USER_PERM_SOLDIER|USER_PERM_QUEEN);
 // MySQL error codes
 
 define("ER_NO_SUCH_TABLE", 1146);
+define("ER_WRONG_COLUMN_NAME", 1166);
 
 // Constants for relationship system
 

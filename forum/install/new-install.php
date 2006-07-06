@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.106 2006-07-02 20:32:25 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.107 2006-07-06 21:29:47 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -420,6 +420,18 @@ $sql.= ") TYPE=MYISAM";
 if (!$result = @db_query($sql, $db_install)) {
 
     $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE {$forum_webtag}_THREAD_STATS (";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY  (TID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    forum_delete_tables($webtag);
     return;
 }
 

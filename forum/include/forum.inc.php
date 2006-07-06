@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.182 2006-07-03 18:09:47 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.183 2006-07-06 21:29:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -932,13 +932,22 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
         $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
         $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
-        $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (TID),";
-        $sql.= "  KEY FID (FID),";
         $sql.= "  KEY BY_UID (BY_UID),";
-        $sql.= "  KEY LENGTH (LENGTH),";
-        $sql.= "  KEY STICKY (STICKY),";
-        $sql.= "  KEY MODIFIED (MODIFIED)";
+        $sql.= "  KEY STICKY (STICKY, MODIFIED), ";
+        $sql.= "  KEY LENGTH (LENGTH)";
+        $sql.= ") TYPE=MYISAM";
+
+        if (!$result = @db_query($sql, $db_install)) {
+
+            forum_delete_tables($webtag);
+            return;
+        }
+
+        $sql = "CREATE TABLE {$forum_webtag}_THREAD_STATS (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  PRIMARY KEY  (TID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_install)) {

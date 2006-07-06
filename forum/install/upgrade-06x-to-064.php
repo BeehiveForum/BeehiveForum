@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.25 2006-07-05 18:59:20 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.26 2006-07-06 21:29:47 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -157,6 +157,23 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
+    // New table to track thread view counts. This is in a
+    // seperate table so that messages.php can update it quicker
+    // than it can by hitting THREAD which causes locks on the
+    // tables.
+
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_STATS (";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY  (TID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        forum_delete_tables($webtag);
+        return;
+    }
+
     // Counter-change to older 0.6 builds. USER_TRACK is now
     // a per-forum table so we can use it to store user's
     // post counts for each forum they visit.
@@ -243,12 +260,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
-
-    // Adding a new column to the THREAD table to track
-    // thread view count.
-
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'";
-    $result = @db_query($sql, $db_install);
 
     // User's can now give each other nicknames without them knowing about it.
 

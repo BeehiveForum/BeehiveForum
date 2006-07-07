@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.403 2006-07-06 21:29:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.404 2006-07-07 11:03:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1324,6 +1324,8 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    if ($uid == 79) echo "<p>Hello Chris, can you view that thread you can't mark as read and PM the queries you can see to Matt.</p>\n";
+
     // Guest users' can't mark as read!
 
     if ($uid > 0) {
@@ -1333,13 +1335,17 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
         $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
         $sql.= "AND '$pid' > LAST_READ";
 
+        if ($uid == 79) echo "<p>$sql</p>\n";
+
         $result = db_query($sql, $db_message_update_read);
 
-        if (db_affected_rows($result) < 1) {
+        if (db_affected_rows($db_message_update_read) < 1) {
 
             $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
             $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
             $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+
+            if ($uid == 79) echo "<p>$sql</p>\n";
 
             $result = db_query($sql, $db_message_update_read);
         }
@@ -1350,6 +1356,8 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
         $sql.= "WHERE TID = '$tid' AND PID BETWEEN '$spid' AND '$pid' ";
         $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
 
+        if ($uid == 79) echo "<p>$sql</p>\n";
+
         if (!$result = db_query($sql, $db_message_update_read)) return false;
     }
 
@@ -1358,12 +1366,16 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS ";
     $sql.= "SET VIEWCOUNT = VIEWCOUNT + 1 WHERE TID = '$tid'";
 
+    if ($uid == 79) echo "<p>$sql</p>\n";
+
     $result = db_query($sql, $db_message_update_read);
 
-    if (db_affected_rows($result) < 1) {
+    if (db_affected_rows($db_message_update_read) < 1) {
 
         $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}THREAD_STATS ";
         $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1)";
+
+        if ($uid == 79) echo "<p>$sql</p>\n";
 
         $result = db_query($sql, $db_message_update_read);
     }

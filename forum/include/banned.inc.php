@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.9 2006-07-03 18:09:47 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.10 2006-07-08 11:17:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -118,7 +118,7 @@ function logon_is_banned($logon)
    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
    $sql.= "WHERE '$logon' LIKE LOGON LIMIT 0, 1";
 
-   $result = db_query($sql, $db_ip_is_banned);
+   $result = db_query($sql, $db_logon_is_banned);
 
    return (db_num_rows($result) > 0);
 }
@@ -134,7 +134,7 @@ function nickname_is_banned($nickname)
    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
    $sql.= "WHERE '$nickname' LIKE NICKNAME LIMIT 0, 1";
 
-   $result = db_query($sql, $db_ip_is_banned);
+   $result = db_query($sql, $db_nickname_is_banned);
 
    return (db_num_rows($result) > 0);
 }
@@ -150,7 +150,7 @@ function email_is_banned($email)
    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
    $sql.= "WHERE '$email' LIKE EMAIL LIMIT 0, 1";
 
-   $result = db_query($sql, $db_ip_is_banned);
+   $result = db_query($sql, $db_email_is_banned);
 
    return (db_num_rows($result) > 0);
 }
@@ -175,7 +175,7 @@ function add_ban_data($type, $data)
 
 function remove_ban_data($type, $data)
 {
-    $db_add_ban_data = db_connect();
+    $db_remove_ban_data = db_connect();
 
     $data_types_array = array('IPADDRESS', 'LOGON', 'NICKNAME', 'EMAIL');
 
@@ -188,7 +188,7 @@ function remove_ban_data($type, $data)
     $sql = "DELETE FROM {$table_data['PREFIX']}BANNED ";
     $sql.= "WHERE $type = '$data'";
 
-    return db_query($sql, $db_add_ban_data);
+    return db_query($sql, $db_remove_ban_data);
 }
 
 ?>

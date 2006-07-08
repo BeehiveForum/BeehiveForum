@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.44 2006-06-26 11:04:48 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.45 2006-07-08 11:17:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -315,64 +315,26 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
     return false;
 }
 
-function install_check_index($table_name, $column_name)
+function install_remove_table_keys($table_name)
 {
     $db_install_check_index = db_connect();
 
-    $table_name = addslashes($table_name);
-    
-    $sql = "SHOW INDEX FROM '$table_name'";
+    if ($table_name !== addslashes($table_name)) return false;
+
+    $sql = "SHOW INDEX FROM $table_name";
     $result = db_query($sql, $db_install_check_index);
 
     while ($row = db_fetch_array($result)) {
-
-        if (strtolower($row['Column_name']) == strtolower($column_name)) {
-            return true;
-        }
+        $table_index[$row['Key_name']] = $row['Column_name'];
     }
 
-    return false;
-}
+    foreach ($table_index as $key_name => $column_name) {
+        
+        $sql = "ALTER TABLE $table_name DROP INDEX $key_name";
+        if (!$result_remove = @db_query($sql, $db_install_check_index)) return false;
+    }
 
-function install_cli_show_help()
-{
-    $beehive_version = BEEHIVE_VERSION;
-
-    echo "BeehiveForum $beehive_version CLI installer\n";
-    echo "Copyright Project BeehiveForum 2002\n";
-    echo "Usage: php [-Cq] new-install.php [OPTIONS]\n";
-    echo "  --help      Display this help and exit\n";
-    echo "  -h          MySQL hostname to connect to\n";
-    echo "  -u          Username to use when connecting to MySQL server\n";
-    echo "  -p          Password to use when connecting to MySQL server\n";
-    echo "  -D          Database to use\n";
-    echo "  -w          Webtag to use for forum\n";
-    echo "  -U          Admin user account to create [Default: ADMIN]\n";
-    echo "  -P          Password to use for Admin account [Default: honey]\n";
-    echo "  -E          Email address to use [Default: admin@abeehiveforum.net]\n";
-    echo "  -Cq         Required when using PHP CGI binary to install.\n";
-}
-
-function install_cli_show_upgrade_help()
-{
-    $beehive_version = BEEHIVE_VERSION;
-
-    echo "BeehiveForum $beehive_version CLI upgrader\n";
-    echo "Copyright Project BeehiveForum 2002 - ", date("Y", mktime()), "\n";
-    echo "Usage: php [-Cq] new-install.php [OPTIONS]\n";
-    echo "  --help      Display this help and exit\n";
-    echo "  -h          MySQL hostname to connect to\n";
-    echo "  -u          Username to use when connecting to MySQL server\n";
-    echo "  -p          Password to use when connecting to MySQL server\n";
-    echo "  -D          Database to use\n\n";
-    echo "  -w          Webtag to use for forum\n";
-    echo "  -U          Admin user account to create [Default: ADMIN]\n";
-    echo "  -P          Password to use for Admin account [Default: honey]\n";
-    echo "  -E          Email address to use [Default: admin@abeehiveforum.net]\n";
-    echo "  -Cq         Required when using PHP CGI binary to install.\n\n";
-    echo "Depending on the version of Beehive you're upgrading to you may not\n";
-    echo "need to specify all of these options. Any options not required by\n";
-    echo "this script will be ignored.\n";
+    return true;
 }
 
 function install_msie_buffer_fix()

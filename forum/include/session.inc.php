@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.226 2006-07-02 20:32:25 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.227 2006-07-08 11:17:00 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -160,7 +160,12 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
             if ($user_sess['FID'] != $forum_fid) {
 
-                bh_update_visitor_log($user_sess['UID']);
+                $user_sess['FID'] = $forum_fid;
+                
+                $sql = "UPDATE SESSIONS SET FID = '$forum_fid' WHERE HASH = '$user_hash'";
+                $result = db_query($sql, $db_bh_session_check);
+                
+                bh_update_visitor_log($user_sess['UID'], $forum_fid);
             }
 
             // Everything checks out OK. If the user's session is older
@@ -168,8 +173,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
             if (($current_time - $user_sess['TIME']) > $active_sess_cutoff) {
 
-                $sql = "UPDATE SESSIONS SET TIME = NOW(), ";
-                $sql.= "FID = '$forum_fid', IPADDRESS = '$ipaddress' ";
+                $sql = "UPDATE SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
 
                 $result = db_query($sql, $db_bh_session_check);
@@ -451,13 +455,13 @@ function bh_remove_stale_sessions()
 * @param integer $uid - UID of the user account we're updating the visitor log for.
 */
 
-function bh_update_visitor_log($uid)
+function bh_update_visitor_log($uid, $forum_fid = false)
 {
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!is_numeric($forum_fid)) $forum_fid = $table_data['FID'];
 
     $db_bh_update_visitor_log = db_connect();
 

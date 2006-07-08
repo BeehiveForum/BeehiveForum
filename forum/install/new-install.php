@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.107 2006-07-06 21:29:47 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.108 2006-07-08 11:17:01 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -412,9 +412,10 @@ $sql.= "  CLOSED DATETIME DEFAULT NULL,";
 $sql.= "  STICKY CHAR(1) DEFAULT NULL,";
 $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL,";
 $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL,";
-$sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (TID),";
-$sql.= "  KEY BY_UID (BY_UID)";
+$sql.= "  KEY BY_UID (BY_UID),";
+$sql.= "  KEY STICKY (STICKY, MODIFIED), ";
+$sql.= "  KEY LENGTH (LENGTH)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -557,7 +558,8 @@ $sql.= "  LAST_READ MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  LAST_READ_AT DATETIME DEFAULT NULL,";
 $sql.= "  INTEREST TINYINT(4) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID,TID),";
-$sql.= "  KEY TID (TID)";
+$sql.= "  KEY TID (TID),";
+$sql.= "  KEY LAST_READ (LAST_READ)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -871,7 +873,8 @@ $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
 $sql.= "  SID MEDIUMINT(8) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (VID)";
+$sql.= "  PRIMARY KEY  (VID),";
+$sql.= "  KEY UID (UID, LAST_LOGON)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

@@ -32,3 +32,40 @@ function launchAttachWin (aid, webtag) {
 function checkToRadio(num) {
 	document.f_post.to_radio[num].checked=true;
 }
+
+function resizeImages() {
+
+	var body_tag = document.getElementsByTagName('body');
+	var body_tag = body_tag[0];
+
+	var td_tags = document.getElementsByTagName('td');
+	var td_count = td_tags.length;
+
+	for (var i = 0; i < td_count; i++)  {
+
+		if (td_tags[i].className == 'postbody') {
+			
+			if (td_tags[i].clientWidth > body_tag.clientWidth) {
+
+				var img_tags = td_tags[i].getElementsByTagName('img');
+				var img_count = img_tags.length;
+
+				for (var j = 0; j < img_count; j++)  {
+
+					if (img_tags[j].width > body_tag.clientWidth) {
+
+						img_tags[j].width = (body_tag.clientWidth * 0.9);
+					}
+				}
+				
+				new_div = document.createElement('div')
+				new_div.innerHTML = td_tags[i].innerHTML;
+
+				td_tags[i].width = body_tag.clientWidth;
+				td_tags[i].innerHTML = '<div style="overflow: auto">' + new_div.innerHTML + '</div>';
+
+				delete new_div;
+			}
+		}
+	}
+}

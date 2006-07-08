@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.404 2006-07-07 11:03:37 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.405 2006-07-08 11:17:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1324,8 +1324,6 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if ($uid == 79) echo "<p>Hello Chris, can you view that thread you can't mark as read and PM the queries you can see to Matt.</p>\n";
-
     // Guest users' can't mark as read!
 
     if ($uid > 0) {
@@ -1333,21 +1331,17 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
         $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
         $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
-        $sql.= "AND '$pid' > LAST_READ";
-
-        if ($uid == 79) echo "<p>$sql</p>\n";
+        $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
 
         $result = db_query($sql, $db_message_update_read);
 
         if (db_affected_rows($db_message_update_read) < 1) {
 
             $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
-            $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-            $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
+            $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
+            $sql.= "VALUES ($uid, $tid, $pid, NOW())";
 
-            if ($uid == 79) echo "<p>$sql</p>\n";
-
-            $result = db_query($sql, $db_message_update_read);
+            if (!$result = db_query($sql, $db_message_update_read)) return false;
         }
 
         // Mark posts as Viewed
@@ -1355,8 +1349,6 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() ";
         $sql.= "WHERE TID = '$tid' AND PID BETWEEN '$spid' AND '$pid' ";
         $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
-
-        if ($uid == 79) echo "<p>$sql</p>\n";
 
         if (!$result = db_query($sql, $db_message_update_read)) return false;
     }
@@ -1366,16 +1358,12 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS ";
     $sql.= "SET VIEWCOUNT = VIEWCOUNT + 1 WHERE TID = '$tid'";
 
-    if ($uid == 79) echo "<p>$sql</p>\n";
-
     $result = db_query($sql, $db_message_update_read);
 
     if (db_affected_rows($db_message_update_read) < 1) {
 
         $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}THREAD_STATS ";
         $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1)";
-
-        if ($uid == 79) echo "<p>$sql</p>\n";
 
         $result = db_query($sql, $db_message_update_read);
     }
@@ -1399,28 +1387,20 @@ function messages_set_read($tid, $pid, $uid)
 
     if ($uid == 0) return false;
 
-    $sql = "SELECT LAST_READ FROM {$table_data['PREFIX']}USER_THREAD ";
-    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+    $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
+    $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
+    $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
 
     $result = db_query($sql, $db_message_set_read);
 
-    if (db_num_rows($result) > 0) {
+    if (db_affected_rows($db_message_set_read) < 1) {
 
-        $fa = db_fetch_array($result);
+        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
+        $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
+        $sql.= "VALUES ($uid, $tid, $pid, NOW())";
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-        $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
-
-        $result = db_query($sql, $db_message_set_read);
-
-    }else {
-
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "(UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-        $sql.= "VALUES ($uid, $tid, $pid, NOW(), 0)";
-
-        $result = db_query($sql, $db_message_set_read);
+        if (!$result = db_query($sql, $db_message_set_read)) return false;
     }
 
     // Mark posts as Viewed...
@@ -1428,7 +1408,7 @@ function messages_set_read($tid, $pid, $uid)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
-    $result = db_query($sql, $db_message_set_read);
+    if (!$result = db_query($sql, $db_message_set_read)) return false;
 }
 
 function messages_get_most_recent($uid, $fid = false)

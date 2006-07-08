@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.70 2006-03-20 18:26:06 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.71 2006-07-08 11:17:00 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -343,7 +343,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON');
     $sort_dir_array = array('ASC', 'DESC');
 
-    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'LAST_LOGON';
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
     if (!is_numeric($offset)) $offset = 0;
@@ -363,6 +363,8 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
         $sql.= "FROM USER USER LEFT JOIN VISITOR_LOG VISITOR_LOG ";
         $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+
+        echo $sql; exit;
 
     }else {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.26 2006-07-06 21:29:47 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.27 2006-07-08 11:17:01 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -103,7 +103,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 // Check that we have no per-forum tables which conflict
 // with those we're about to create.
 
-$forum_tables  = array('USER_TRACK', 'THREAD_TRACK');
+$forum_tables  = array('USER_TRACK', 'THREAD_STATS', 'THREAD_TRACK');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -170,7 +170,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     if (!$result = @db_query($sql, $db_install)) {
 
-        forum_delete_tables($webtag);
+        $valid = false;
         return;
     }
 
@@ -289,9 +289,28 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $result = @db_query($sql, $db_install);           
 
-    // Index on USER_THREAD to make email notification queries run quicker
+    // Indexes on USER_THREAD to make email notification queries run quicker
+
+    install_remove_table_keys("{$forum_webtag}_USER_THREAD");
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX TID (TID)";
+    $result = @db_query($sql, $db_install);
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX LAST_READ (LAST_READ)";
+    $result = @db_query($sql, $db_install);
+
+    // Indexes on THREAD table to prevent thread list requiring creating of
+    // temporary tables.
+
+    install_remove_table_keys("{$forum_webtag}_THREAD");
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX BY_UID (BY_UID)";
+    $result = @db_query($sql, $db_install);
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX STICKY (STICKY, MODIFIED)";
+    $result = @db_query($sql, $db_install);
+
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX LENGTH (LENGTH)";
     $result = @db_query($sql, $db_install);
 }
 

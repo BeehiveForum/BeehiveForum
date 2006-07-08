@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.82 2006-07-06 21:29:47 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.83 2006-07-08 11:17:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -293,6 +293,8 @@ function thread_get_interest($tid)
 
 function thread_set_interest($tid, $interest, $new = false)
 {
+    $db_thread_set_interest = db_connect();
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
@@ -310,9 +312,8 @@ function thread_set_interest($tid, $interest, $new = false)
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
         $sql.= "SET INTEREST = $interest WHERE UID = $uid AND TID = $tid";
     }
-
-    $db_thread_set_interest = db_connect();
-    db_query($sql, $db_thread_set_interest);
+    
+    return db_query($sql, $db_thread_set_interest);
 }
 
 // Same as thread_set_interest but this one won't
@@ -320,6 +321,8 @@ function thread_set_interest($tid, $interest, $new = false)
 
 function thread_set_high_interest($tid, $interest, $new = false)
 {
+    $db_thread_set_interest = db_connect();
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_numeric($tid)) return false;
@@ -330,17 +333,16 @@ function thread_set_high_interest($tid, $interest, $new = false)
     if ($new) {
 
         $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
-        $sql.= "VALUES ($uid, $tid, $interest)";
+        $sql.= "VALUES ('$uid', '$tid', '$interest')";
 
     }else {
 
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "SET INTEREST = $interest WHERE UID = $uid AND TID = $tid ";
-        $sql.= "AND INTEREST = 0";
+        $sql.= "SET INTEREST = '$interest' WHERE UID = '$uid' AND TID = '$tid' ";
+        $sql.= "AND (INTEREST = 0 OR INTEREST IS NULL)";
     }
 
-    $db_thread_set_interest = db_connect();
-    db_query($sql, $db_thread_set_interest);
+    return db_query($sql, $db_thread_set_interest);
 }
 
 function thread_set_sticky($tid, $sticky = true, $sticky_until = false)

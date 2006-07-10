@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.67 2006-06-30 18:07:32 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.68 2006-07-10 15:56:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -228,9 +228,26 @@ if (isset($t_sig_html)) {
 }
 
 if (isset($t_sig_content)) {
-    $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($t_sig_content, false) : $t_sig_content);
-} else {
-    $sig_code = _htmlentities($sig_html == "Y" ? tidy_html($user_sig['SIG_CONTENT'], false) : $user_sig['SIG_CONTENT']);
+
+    if ($sig_html == "Y") {
+
+        $sig_code = _htmlentities(tidy_html($t_sig_content, false, false));
+
+    }else {
+
+        $sig_code = $t_sig_content;
+    }
+
+}else {
+
+    if ($sig_html == "Y") {
+
+        $sig_code = _htmlentities(tidy_html($user_sig['SIG_CONTENT'], false, false));
+
+    }else {
+
+        $sig_code = $user_sig['SIG_CONTENT'];
+    }
 }
 
 $tools = new TextAreaHTML("prefs");
@@ -319,30 +336,32 @@ echo "                        <td>\n";
 $page_prefs = bh_session_get_post_page_prefs();
 
 $tool_type = 0;
+
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
     $tool_type = 1;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+}else if ($page_prefs & POST_TINYMCE_DISPLAY) {
     $tool_type = 2;
 }
 
 if ($tool_type != 0) {
     echo $tools->toolbar();
-} else {
+}else {
     $tools->setTinyMCE(false);
 }
 
-echo $tools->textarea("sig_content", $sig_code, 5, 60, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
+echo $tools->textarea("sig_content", $sig_code, 10, 60, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
 
 echo $tools->js();
 
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"right\">\n";
+echo "                        <td>\n";
 
 if ($tools->getTinyMCE()) {
 
     echo form_input_hidden("sig_html", "Y");
-} else {
+
+}else {
 
     echo form_checkbox("sig_html", "Y", $lang['containsHTML'], $sig_html);
 }

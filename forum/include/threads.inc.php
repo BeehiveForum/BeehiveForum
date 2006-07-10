@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.206 2006-07-10 11:07:35 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.207 2006-07-10 16:37:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -204,6 +204,9 @@ function threads_get_unread($uid) // get unread messages for $uid
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
+    $unread_cutoff = forum_get_setting('unread_cutoff', false, 31536000);
+    $unread_cutoff_stamp = time() - $unread_cutoff;
+
     // Formulate query
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
@@ -228,7 +231,7 @@ function threads_get_unread($uid) // get unread messages for $uid
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
+    $sql.= "AND THREAD.LENGTH > 0 AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -250,6 +253,9 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    $unread_cutoff = forum_get_setting('unread_cutoff', false, 31536000);
+    $unread_cutoff_stamp = time() - $unread_cutoff;
 
     // Formulate query
 
@@ -274,7 +280,7 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND POST.TID = THREAD.TID AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
+    $sql.= "AND THREAD.LENGTH > 0 AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
     $sql.= "GROUP BY THREAD.TID ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -393,6 +399,9 @@ function threads_get_unread_by_interest($uid, $interest = 1) // get unread messa
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
+    $unread_cutoff = forum_get_setting('unread_cutoff', false, 31536000);
+    $unread_cutoff_stamp = time() - $unread_cutoff;
+
     // Formulate query
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
@@ -418,7 +427,7 @@ function threads_get_unread_by_interest($uid, $interest = 1) // get unread messa
     $sql.= "AND USER_THREAD.LAST_READ < THREAD.LENGTH ";
     $sql.= "AND USER_THREAD.INTEREST = $interest ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
+    $sql.= "AND THREAD.LENGTH > 0 AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -526,6 +535,9 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
 
     $folders = folder_get_available();
 
+    $unread_cutoff = forum_get_setting('unread_cutoff', false, 31536000);
+    $unread_cutoff_stamp = time() - $unread_cutoff;
+
     // Formulate query
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
@@ -548,7 +560,7 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
+    $sql.= "AND THREAD.LENGTH > 0 AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -666,6 +678,9 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
+    $unread_cutoff = forum_get_setting('unread_cutoff', false, 31536000);
+    $unread_cutoff_stamp = time() - $unread_cutoff;
+
     // Formulate query
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
@@ -692,7 +707,7 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
+    $sql.= "AND THREAD.LENGTH > 0 AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
     $sql.= "ORDER BY T_LENGTH DESC, THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -882,6 +897,9 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
+    $unread_cutoff = forum_get_setting('unread_cutoff', false, 31536000);
+    $unread_cutoff_stamp = time() - $unread_cutoff;
+
     // Formulate query
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
@@ -908,7 +926,7 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
+    $sql.= "AND THREAD.LENGTH > 0 AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
@@ -919,13 +937,18 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
 
 // Arrange the results of a query into the right order for display
 
-function threads_process_list($result, $allow_ignored_completely = false)
+function threads_process_list($result)
 {
     // Default to returning no threads.
 
     $threads_array = 0;
     $folder = 0;
     $folder_order = 0;
+
+    // Thread cut off period for unread type messages
+
+    $unread_cutoff = forum_get_setting('unread_cutoff', false, 31536000);
+    $unread_cutoff_stamp = time() - $unread_cutoff;
 
     // Check that the set of threads returned is not empty
 
@@ -962,11 +985,24 @@ function threads_process_list($result, $allow_ignored_completely = false)
 
             if (!is_array($threads_array)) $threads_array = array();
 
-            // LAST_READ, INTEREST, RELATIONSHIP and STICKY keys may be null.
-            // If they are we need to set them otherwise PHP will complain
-            // that the keys don't exist.
+            // LAST_READ may not be set or may be null. If the user
+            // is viewing posts in an unread state and LAST_READ is
+            // not set we check to see how old the thread is before
+            // we mark it as unread.
 
-            if (!isset($thread['LAST_READ'])) $thread['LAST_READ'] = 0;
+            if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
+
+                if ($thread['MODIFIED'] > $unread_cutoff_stamp) {
+                    $thread['LAST_READ'] = 0;
+                }else {
+                    $thread['LAST_READ'] = $thread['LENGTH'];
+                }
+            }
+
+            // INTEREST, RELATIONSHIP and STICKY keys may be null.
+            // If they are we need to set them otherwise PHP will
+            // complain that the keys don't exist.
+
             if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
             if (!isset($thread['STICKY'])) $thread['STICKY'] = 0;

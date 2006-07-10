@@ -53,14 +53,14 @@ function addOverflow() {
 				new_div.style.overflowY = 'visible';
 
 				new_div.style.overflow = 'auto';
-
+			
 				new_div.style.width = (body_tag.clientWidth * 0.94) + 'px';
 
 				while (td_tags[i].hasChildNodes()) {
 					new_div.appendChild(td_tags[i].firstChild);
 				}
 
-				td_tags[i].style.width = body_tag.clientWidth;
+				td_tags[i].style.width = body_tag.clientWidth + 'px';
 				td_tags[i].appendChild(new_div);
 			}
 		}
@@ -78,8 +78,8 @@ function resizeImages() {
 	for (var i = 0; i < img_count; i++)  {
 
 		if (img_tags[i].width > body_tag.clientWidth) {
-
-			img_tags[i].width = (body_tag.clientWidth * 0.9);
+			
+			img_tags[i].style.width = Math.round(body_tag.clientWidth * 0.9) + 'px';
 			img_tags[i].style.cursor = 'pointer';
 
 			if (img_tags[i].attachEvent) {

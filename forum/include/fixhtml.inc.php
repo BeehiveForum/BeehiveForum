@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.120 2006-06-20 20:44:26 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.121 2006-07-10 15:56:26 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -908,6 +908,7 @@ function clean_attributes ($tag)
 function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
 {
     if ($tidymce) {
+
         $html = str_replace("<noemots>", "<span class=\"noemots\">", $html);
         $html = str_replace("</noemots>", "</span>", $html);
 
@@ -929,6 +930,7 @@ function tidy_html ($html, $linebreaks = true, $links = true, $tidymce = false)
     // turn autoconverted links back into text
 
     if ($links == true) {
+
         $html = preg_replace("/<a href=\"(http:\/\/)?([^\"]*)\">((http:\/\/)?\\2)<\/a>/", "$3", $html);
         $html = preg_replace("/<a href=\"(mailto:)?([^\"]*)\">((mailto:)?\\2)<\/a>/", "$3", $html);
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.405 2006-07-08 11:17:00 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.406 2006-07-10 11:07:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1388,20 +1388,10 @@ function messages_set_read($tid, $pid, $uid)
     if ($uid == 0) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
-    $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-    $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
-    $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
+    $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
+    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
     $result = db_query($sql, $db_message_set_read);
-
-    if (db_affected_rows($db_message_set_read) < 1) {
-
-        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
-        $sql.= "VALUES ($uid, $tid, $pid, NOW())";
-
-        if (!$result = db_query($sql, $db_message_set_read)) return false;
-    }
 
     // Mark posts as Viewed...
 
@@ -1412,62 +1402,6 @@ function messages_set_read($tid, $pid, $uid)
 }
 
 function messages_get_most_recent($uid, $fid = false)
-{
-    $db_messages_get_most_recent = db_connect();
-
-    if (is_numeric($fid)) {
-        $fidlist = $fid;
-    }else {
-        $fidlist = folder_get_available();
-    }
-
-    if (!is_numeric($uid)) return false;
-
-    if (!$table_data = get_table_prefix()) return "1.1";
-
-    $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql.= "WHERE THREAD.FID in ($fidlist) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
-    $sql.= "ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 1";
-
-    $result = db_query($sql, $db_messages_get_most_recent);
-
-    if (db_num_rows($result) > 0) {
-
-        $row = db_fetch_array($result);
-
-        if (isset($row['LAST_READ'])) {
-
-            if ($row['LAST_READ'] < $row['LENGTH']) {
-                $row['LAST_READ']++;
-            }
-
-            return "{$row['TID']}.{$row['LAST_READ']}";
-
-        }else {
-
-            return "{$row['TID']}.1";
-        }
-    }
-
-    return "1.1";
-}
-
-function messages_get_most_recent_unread($uid, $fid = false)
 {
     $db_messages_get_most_recent = db_connect();
 
@@ -1523,7 +1457,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
         }
     }
 
-    return false;
+    return "1.1";
 }
 
 function messages_fontsize_form($tid, $pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.88 2006-07-05 18:40:42 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.89 2006-07-10 11:07:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,18 +107,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
 }else {
 
-    if ($msg = messages_get_most_recent_unread($uid)) {
+    $msg = messages_get_most_recent($uid);
 
-        echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
-        echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    bh_setcookie('bh_thread_mode', 0, time() - YEAR_IN_SECONDS);
 
-    }else {
-
-        bh_setcookie('bh_thread_mode', 0);
-
-        echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg=1.1\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
-        echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=1.1\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
-    }
+    echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
 }
 
 echo "</frameset>\n";

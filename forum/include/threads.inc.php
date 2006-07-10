@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.205 2006-07-06 21:29:47 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.206 2006-07-10 11:07:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1017,16 +1017,18 @@ function threads_any_unread()
 
     if (!$table_data = get_table_prefix()) return false;
 
+    $fidlist = folder_get_available();
+
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-    $sql = "SELECT USER_THREAD.LAST_READ FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql = "SELECT THREAD.TID FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
     $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
+    $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT 0,1";
 
     $result = db_query($sql, $db_threads_any_unread);

@@ -82,11 +82,11 @@ function resizeImages() {
 			img_tags[i].width = (body_tag.clientWidth * 0.9);
 			img_tags[i].style.cursor = 'pointer';
 
-			if (IE) {
+			if (img_tags[i].attachEvent) {
 
 				img_tags[i].attachEvent("onclick", showFullImage);
 
-			}else {
+			}else if (img_tags[i].addEventListener) {
 
 				img_tags[i].addEventListener("click", showFullImage, false);
 			}			

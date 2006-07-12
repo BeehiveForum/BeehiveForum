@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.83 2006-07-08 11:17:01 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.84 2006-07-12 17:41:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -291,7 +291,7 @@ function thread_get_interest($tid)
     }
 }
 
-function thread_set_interest($tid, $interest, $new = false)
+function thread_set_interest($tid, $interest)
 {
     $db_thread_set_interest = db_connect();
 
@@ -302,26 +302,28 @@ function thread_set_interest($tid, $interest, $new = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if ($new) {
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "SET INTEREST = '$interest' WHERE UID = '$uid' AND TID = '$tid'";
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
-        $sql.= "VALUES ($uid, $tid, $interest)";
+    $result = db_query($sql, $db_thread_set_interest);
 
-    }else {
+    if (db_affected_rows($db_thread_set_interest) < 1) {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "SET INTEREST = $interest WHERE UID = $uid AND TID = $tid";
+        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
+        $sql.= "VALUES ('$uid', '$tid', '$interest')";
+
+        $result = db_query($sql, $db_thread_set_interest);
     }
     
-    return db_query($sql, $db_thread_set_interest);
+    return $result;
 }
 
 // Same as thread_set_interest but this one won't
 // change the interest of a thread unless it is 'normal'
 
-function thread_set_high_interest($tid, $interest, $new = false)
+function thread_set_high_interest($tid)
 {
-    $db_thread_set_interest = db_connect();
+    $db_thread_set_high_interest = db_connect();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -330,19 +332,21 @@ function thread_set_high_interest($tid, $interest, $new = false)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if ($new) {
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
+    $sql.= "SET INTEREST = 1 WHERE UID = '$uid' AND TID = '$tid' ";
+    $sql.= "AND (INTEREST = 0 OR INTEREST IS NULL)";
 
-        $sql = "INSERT INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
-        $sql.= "VALUES ('$uid', '$tid', '$interest')";
+    $result = db_query($sql, $db_thread_set_high_interest);
 
-    }else {
+    if (db_affected_rows($db_thread_set_high_interest) < 1) {
 
-        $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "SET INTEREST = '$interest' WHERE UID = '$uid' AND TID = '$tid' ";
-        $sql.= "AND (INTEREST = 0 OR INTEREST IS NULL)";
+        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
+        $sql.= "VALUES ('$uid', '$tid', 1)";
+
+        $result = db_query($sql, $db_thread_set_high_interest);
     }
-
-    return db_query($sql, $db_thread_set_interest);
+    
+    return $result;
 }
 
 function thread_set_sticky($tid, $sticky = true, $sticky_until = false)

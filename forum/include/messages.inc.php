@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.406 2006-07-10 11:07:35 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.407 2006-07-12 17:41:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1307,47 +1307,53 @@ function message_get_user($tid, $pid)
 * @param integer $tid  - Thread ID
 * @param integer $pid  - Post ID
 * @param integer $uid  - User UID
-* @param integer $spid - Starting PID for marking threads to user as read.
-* @param bool    $chk_lr - Check current LAST_READ and only update if PID is newer
+* @param integer $modified - Unix Timestamp thread modified date for mark as read cutoff.
 */
 
-function messages_update_read($tid, $pid, $uid, $spid = 1)
+function messages_update_read($tid, $pid, $uid, $modified)
 {
     $db_message_update_read = db_connect();
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
     if (!is_numeric($uid)) return false;
-    if (!is_numeric($spid)) return false;
+    if (!is_numeric($modified)) return false;
 
     // Check for existing entry in USER_THREAD
 
     if (!$table_data = get_table_prefix()) return false;
 
+    // Mark as read cut off
+
+    $unread_cutoff_stamp = forum_get_unread_cutoff();
+
     // Guest users' can't mark as read!
 
     if ($uid > 0) {
 
-        $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
-        $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
-        $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
-        $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
+        if ($unread_cutoff_stamp !== false && ($modified > $unread_cutoff_stamp)) {
 
-        $result = db_query($sql, $db_message_update_read);
+            $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NOW() ";
+            $sql.= "WHERE UID = '$uid' AND TID = '$tid' ";
+            $sql.= "AND (LAST_READ < '$pid' OR LAST_READ IS NULL)";
 
-        if (db_affected_rows($db_message_update_read) < 1) {
+            $result = db_query($sql, $db_message_update_read);
 
-            $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
-            $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
-            $sql.= "VALUES ($uid, $tid, $pid, NOW())";
+            if (db_affected_rows($db_message_update_read) < 1) {
 
-            if (!$result = db_query($sql, $db_message_update_read)) return false;
+                $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
+                $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
+                $sql.= "VALUES ($uid, $tid, $pid, NOW())";
+
+                if (!$result = db_query($sql, $db_message_update_read)) return false;
+            }
         }
 
         // Mark posts as Viewed
 
         $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}POST SET VIEWED = NOW() ";
-        $sql.= "WHERE TID = '$tid' AND PID BETWEEN '$spid' AND '$pid' ";
+        $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' ";
         $sql.= "AND TO_UID = '$uid' AND VIEWED IS NULL";
 
         if (!$result = db_query($sql, $db_message_update_read)) return false;
@@ -1371,7 +1377,7 @@ function messages_update_read($tid, $pid, $uid, $spid = 1)
     return true;
 }
 
-function messages_set_read($tid, $pid, $uid)
+function messages_set_read($tid, $pid, $uid, $modified)
 {
     $db_message_set_read = db_connect();
 
@@ -1383,15 +1389,32 @@ function messages_set_read($tid, $pid, $uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    // Mark as read cut off
+
+    $unread_cutoff_stamp = forum_get_unread_cutoff();
+
     // Guest can't mark as read
 
-    if ($uid == 0) return false;
+    if ($uid > 0) {
 
-    $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
-    $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
-    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+        if ($unread_cutoff_stamp !== false && ($modified > $unread_cutoff_stamp)) {
 
-    $result = db_query($sql, $db_message_set_read);
+            $sql = "UPDATE {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
+            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+
+            $result = db_query($sql, $db_message_set_read);
+
+            if (db_affected_rows($db_message_update_read) < 1) {
+
+                $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
+                $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
+                $sql.= "VALUES ($uid, $tid, $pid, NOW())";
+
+                if (!$result = db_query($sql, $db_message_update_read)) return false;
+            }
+        }
+    }
 
     // Mark posts as Viewed...
 
@@ -1415,6 +1438,8 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (!$table_data = get_table_prefix()) return "1.1";
 
+    $unread_cutoff_stamp = forum_get_unread_cutoff();
+
     $sql = "SELECT THREAD.TID, THREAD.MODIFIED, THREAD.LENGTH, USER_THREAD.LAST_READ, ";
     $sql.= "USER_PEER.RELATIONSHIP FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
@@ -1428,9 +1453,15 @@ function messages_get_most_recent($uid, $fid = false)
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-    $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ ";
-    $sql.= "OR USER_THREAD.LAST_READ IS NULL ";
-    $sql.= "OR USER_THREAD.LAST_READ = THREAD.LENGTH) ";
+
+    if ($unread_cutoff_stamp !== false) {
+
+        $sql.= "AND ((THREAD.LENGTH > USER_THREAD.LAST_READ ";
+        $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp')) ";
+        $sql.= "OR USER_THREAD.LAST_READ IS NULL ";
+        $sql.= "OR USER_THREAD.LAST_READ = THREAD.LENGTH) ";
+    }
+
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "AND THREAD.LENGTH > 0 ";

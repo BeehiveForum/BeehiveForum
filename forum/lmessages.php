@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.62 2006-06-30 18:07:33 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.63 2006-07-12 17:41:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,12 +93,13 @@ if (!forum_check_access_level()) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
+    $uid = bh_session_get_value('UID')    
     $msg = $_GET['msg'];
 
 }else {
 
-    if (bh_session_get_value('UID')) {
-        $msg = messages_get_most_recent(bh_session_get_value('UID'));
+    if ($uid = bh_session_get_value('UID')) {
+        $msg = messages_get_most_recent($uid);
     } else {
         $msg = "1.1";
     }
@@ -219,7 +220,7 @@ light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $posts_per_page);
 
 echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></p>\n";
 
-if (bh_session_get_value('UID') == 0) {
+if ($uid == 0) {
     echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>\n";
 }else {
     echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
@@ -229,8 +230,8 @@ echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target
 
 light_html_draw_bottom();
 
-if ($msg_count > 0 && bh_session_get_value('UID') && bh_session_get_value('UID') != 0) {
-    messages_update_read($tid, $last_pid, bh_session_get_value('UID'));
+if ($msg_count > 0 && $uid > 0) {
+    messages_update_read($tid, $last_pid, $uid, $threaddata['MODIFIED']);
 }
 
 ?>

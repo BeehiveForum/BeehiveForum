@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.198 2006-07-08 13:38:45 decoyduck Exp $ */
+/* $Id: messages.php,v 1.199 2006-07-12 17:41:54 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -98,11 +98,16 @@ if (!forum_check_access_level()) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
+    $uid = bh_session_get_value('UID');
     $msg = $_GET['msg'];
 
 }else {
 
-    $msg = messages_get_most_recent(bh_session_get_value('UID'));
+    if ($uid = bh_session_get_value('UID')) {
+        $msg = messages_get_most_recent($uid);
+    } else {
+        $msg = "1.1";
+    }
 }
 
 @list($tid, $pid) = explode('.', $msg);
@@ -392,8 +397,8 @@ if ($msg_count > 0) {
 
 unset($messages, $message);
 
-if ($msg_count > 0 && bh_session_get_value('UID') != 0 && !isset($_GET['markasread'])) {
-    messages_update_read($tid, $last_pid, bh_session_get_value('UID'));
+if ($msg_count > 0 && $uid > 0 && !isset($_GET['markasread'])) {
+    messages_update_read($tid, $last_pid, $uid, $threaddata['MODIFIED']);
 }
 
 echo "<div align=\"center\">\n";
@@ -411,13 +416,16 @@ if (($threaddata['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, 
 
 echo "    <td width=\"33%\" align=\"center\"><p>";
 
-if (bh_session_get_value('UID') != 0) {
+if ($uid > 0) {
+
     if ($threaddata['LENGTH'] > 0) {
         echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['editthreadoptions']}\" title=\"{$lang['editthreadoptions']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['editthreadoptions']}</b></a>";
     }else {
         echo "<img src=\"". style_image('thread_options.png') ."\" alt=\"{$lang['undeletethread']}\" title=\"{$lang['undeletethread']}\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>{$lang['undeletethread']}</b></a>";
     }
+
 }else {
+
     echo "&nbsp;";
 }
 
@@ -446,7 +454,7 @@ if ($threaddata['POLL_FLAG'] == 'Y') {
     echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
 }
 
-if (bh_session_get_value('UID') != 0) {
+if ($uid > 0) {
 
     messages_interest_form($tid,$pid);
     messages_fontsize_form($tid, $pid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.275 2006-07-05 18:40:42 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.276 2006-07-12 17:47:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -880,7 +880,7 @@ function user_get_aliases($uid)
     // Fetch the user's last 20 IP addresses from the POST table
 
     $sql = "SELECT IPADDRESS FROM {$table_data['PREFIX']}POST ";
-    $sql.= "WHERE FROM_UID =19 AND IPADDRESS IS NOT NULL ";
+    $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL ";
     $sql.= "AND LENGTH(IPADDRESS)>0 GROUP BY IPADDRESS LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_aliases);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.166 2006-06-30 18:07:32 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.167 2006-07-13 16:01:14 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -146,7 +146,6 @@ if (isset($_POST['delete'])) {
 
         delete_attachment($_POST['hash']);
     }
-
 }
 
 if (isset($_POST['t_confirm_delete_posts'])) {
@@ -451,6 +450,24 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                      <tr>\n";
         echo "                        <td width=\"150\">{$lang['postcount']}</td>\n";
         echo "                        <td>", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td width=\"150\">Sign-up Referer:</td>\n";
+        echo "                        <td>", (isset($user['REFERER']) && strlen($user['REFERER']) > 0) ? $user['REFERER'] : $lang['unknown'], "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td width=\"150\">{$lang['lastipaddress']}:</td>\n";
+
+        if (ip_is_banned($user['IPADDRESS'])) {
+
+            echo "                        <td><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
+
+        }else {
+
+            echo "                        <td><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
+        }
+
+        echo "                        \n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td>&nbsp;</td>\n";

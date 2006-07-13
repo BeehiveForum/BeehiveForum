@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.276 2006-07-12 17:47:54 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.277 2006-07-13 16:01:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -33,6 +33,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "ip.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
@@ -74,8 +75,14 @@ function user_create($logon, $password, $nickname, $email)
     $email     = addslashes($email);
     $md5pass   = md5($password);
 
-    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
-    $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email')";
+    if ($http_referer = bh_session_get_value('REFERER')) {
+        $http_referer = addslashes($http_referer);
+    }else {
+        $http_referer = "";
+    }
+
+    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REFERER) ";
+    $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email', '$http_referer')";
 
     if ($result = db_query($sql, $db_user_create)) {
         return db_insert_id($db_user_create);
@@ -221,6 +228,8 @@ function user_logon($logon, $passhash)
     $logon = addslashes(strtoupper($logon));
     $passhash = addslashes($passhash);
 
+    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+
     if ($table_data = get_table_prefix()) {
 
         $forum_fid = $table_data['FID'];
@@ -260,6 +269,11 @@ function user_logon($logon, $passhash)
             }
         }
 
+        // Log the user's IP address
+
+        $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$row['UID']}'";
+        $result = db_query($sql, $db_user_logon);
+
         return $row['UID'];
     }
 
@@ -277,7 +291,7 @@ function user_get($uid)
     $sess_uid = bh_session_get_value('UID');
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.NICKNAME, ";
-    $sql.= "USER.EMAIL, USER_PEER.PEER_NICKNAME FROM USER ";
+    $sql.= "USER.EMAIL, USER.IPADDRESS, USER.REFERER, USER_PEER.PEER_NICKNAME FROM USER ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE USER.UID = '$uid'";
@@ -398,6 +412,26 @@ function user_get_sig($uid, &$content, &$html)
 
         list($content, $html) = db_fetch_array($result, DB_RESULT_NUM);
         return true;
+    }
+
+    return false;
+}
+
+function user_get_last_ip_address($uid)
+{
+    $db_user_get_last_ip_address = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT IPADDRESS FROM USER WHERE UID = '$uid'";
+    $result = db_query($sql, $db_user_get_last_ip_address);
+
+    if (db_num_rows($result) > 0) {
+
+        list($ipaddress) = db_fetch_array($result, DB_RESULT_NUM);
+        return $ipaddress;
     }
 
     return false;
@@ -881,7 +915,7 @@ function user_get_aliases($uid)
 
     $sql = "SELECT IPADDRESS FROM {$table_data['PREFIX']}POST ";
     $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL ";
-    $sql.= "AND LENGTH(IPADDRESS)>0 GROUP BY IPADDRESS LIMIT 0, 20";
+    $sql.= "AND LENGTH(IPADDRESS) > 0 GROUP BY IPADDRESS LIMIT 0, 20";
 
     $result = db_query($sql, $db_user_get_aliases);
 
@@ -894,6 +928,10 @@ function user_get_aliases($uid)
                 $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
             }
         }
+    }
+
+    if ($ipaddress = user_get_last_ip_address($uid)) {
+        $user_ip_address_array[] = $ipaddress;
     }
 
     // Search the POST table for any matches - limit 10 matches

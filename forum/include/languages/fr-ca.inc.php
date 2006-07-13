@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.31 2006-06-26 22:10:57 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.32 2006-07-13 16:01:18 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -320,6 +320,7 @@ $lang['datetime'] = "Date/Heure";
 $lang['unknownuser'] = "Utilisateur inconnu";
 $lang['unknownfolder'] = "Dossier inconnu";
 $lang['ip'] = "IP";
+$lang['ipaddress'] = "Last IP Address";
 $lang['logged'] = "Journalisé";
 $lang['notlogged'] = "Non journalisé";
 $lang['wordfilterupdated'] = "Mise à jour du filtre de mots";

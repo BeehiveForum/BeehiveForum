@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.72 2006-07-10 15:56:26 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.73 2006-07-14 21:46:13 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -272,7 +272,7 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
 {
     $db_user_search = db_connect();
 
-    $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON');
+    $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSION.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
 
     $usersearch = addslashes($usersearch);
@@ -294,17 +294,20 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
 
         $forum_fid = $table_data['FID'];
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-        $sql.= "FROM USER USER LEFT JOIN VISITOR_LOG VISITOR_LOG ";
-        $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, SESSIONS.REFERER, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
+        $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
+        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
         $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     }else {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
-        $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE ";
-        $sql.= "'$usersearch%') ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "SESSIONS.HASH, SESSIONS.REFERER FROM USER USER ";
+        $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
+        $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
     }
 
     $result = db_query($sql, $db_user_search);
@@ -359,14 +362,17 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
         $forum_fid = $table_data['FID'];
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON ";
-        $sql.= "FROM USER USER LEFT JOIN VISITOR_LOG VISITOR_LOG ";
-        $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, SESSIONS.REFERER, ";
+        $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM USER USER ";
+        $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
+        $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
 
     }else {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
+        $sql.= "SESSIONS.HASH, SESSIONS.REFERER FROM USER USER ";
+        $sql.= "LEFT JOIN SESSIONS SESSIONS ON (SESSIONS.UID = USER.UID) ";
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
     }
 
@@ -555,8 +561,9 @@ function admin_get_ban_data()
     $logon_array     = array();
     $nickname_array  = array();
     $email_array     = array();
+    $referer_array   = array();
 
-    $sql = "SELECT IPADDRESS, LOGON, NICKNAME, EMAIL ";
+    $sql = "SELECT IPADDRESS, LOGON, NICKNAME, EMAIL, REFERER ";
     $sql.= "FROM {$table_data['PREFIX']}BANNED";
 
     $result = db_query($sql, $db_admin_get_bandata);
@@ -582,12 +589,18 @@ function admin_get_ban_data()
 
             $email_array[] = $ban_data_array['EMAIL'];
         }
+
+        if (isset($ban_data_array['REFERER']) && strlen(trim($ban_data_array['REFERER'])) > 0) {
+
+            $referer_array[] = $ban_data_array['REFERER'];
+        }
     }
 
     return array('IPADDRESS' => $ipaddress_array,
                  'LOGON'     => $logon_array,
                  'NICKNAME'  => $nickname_array,
-                 'EMAIL'     => $email_array);
+                 'EMAIL'     => $email_array,
+                 'REFERER'   => $referer_array);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.329 2006-07-13 16:01:17 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.330 2006-07-14 21:46:14 decoyduck Exp $ */
 
 // International English language file
 
@@ -312,6 +312,8 @@ $lang['forgottenpassworddesc'] = "If this user has forgotten their password you 
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
 $lang['lastlogon'] = "Last Logon";
+$lang['sessionreferer'] = "Session Referer";
+$lang['signupreferer'] = "Sign-up Referer:";
 $lang['nouseraccounts'] = "No user accounts in database.";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['adminaccesslog'] = "Admin Access Log";
@@ -465,6 +467,7 @@ $lang['bannedipaddresses'] = "Banned IP Addresses";
 $lang['bannedlogons'] = "Banned Logons";
 $lang['bannednicknames'] = "Banned Nicknames";
 $lang['bannedemailaddresses'] = "Banned Email Addresses";
+$lang['bannedreferers'] = "Banned Referers";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
 $lang['ipaddressisalreadybanned'] = "That IP Address is already banned. Check your wildcards to see if they already match it.";
 $lang['logonisalreadybanned'] = "That Logon is already banned. Check your wildcards to see if they already match it.";
@@ -500,6 +503,9 @@ $lang['removednicknamefrombanlist'] = "Removed nickname '%s' from ban list";
 
 $lang['addedemailtobanlist'] = "Added email address '%s' to ban list";
 $lang['removedemailfrombanlist'] = "Removed email address '%s' from ban list";
+
+$lang['addedemailtobanlist'] = "Added referer '%s' to ban list";
+$lang['removedemailfrombanlist'] = "Removed referer '%s' from ban list";
 
 $lang['editedfolder'] = "Edited Folder '%s'";
 $lang['movedallthreadsfromto'] = "Moved all threads from '%s' to '%s'";

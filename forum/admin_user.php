@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.167 2006-07-13 16:01:14 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.168 2006-07-14 21:46:13 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -452,7 +452,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        <td>", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td width=\"150\">Sign-up Referer:</td>\n";
+        echo "                        <td width=\"150\">{$lang['signupreferer']}</td>\n";
         echo "                        <td>", (isset($user['REFERER']) && strlen($user['REFERER']) > 0) ? $user['REFERER'] : $lang['unknown'], "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";

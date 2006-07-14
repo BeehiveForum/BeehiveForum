@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.108 2006-07-08 11:17:01 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.109 2006-07-14 21:46:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -136,6 +136,7 @@ $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
 $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (ID)";
 $sql.= ") TYPE=MYISAM";
 
@@ -781,6 +782,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  REFERER VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (HASH)";
 $sql.= ") TYPE=MYISAM";
 
@@ -796,6 +798,8 @@ $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
 $sql.= "  PASSWD VARCHAR(32) DEFAULT NULL,";
 $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
+$sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
 

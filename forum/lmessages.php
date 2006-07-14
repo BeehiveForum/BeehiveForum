@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.63 2006-07-12 17:41:54 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.64 2006-07-14 22:01:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,7 +93,7 @@ if (!forum_check_access_level()) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $uid = bh_session_get_value('UID')    
+    $uid = bh_session_get_value('UID');
     $msg = $_GET['msg'];
 
 }else {

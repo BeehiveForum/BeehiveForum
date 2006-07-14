@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.11 2006-07-14 21:46:13 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.12 2006-07-14 22:01:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -84,19 +84,22 @@ function ban_check($user_sess, $user_is_guest = false)
 
     $ban_check_query = implode(" OR ", $ban_check_array);
 
-    $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
-    $sql.= "WHERE $ban_check_query LIMIT 0, 1";
+    if (strlen(trim($ban_check_query)) > 0) {
 
-    $result = db_query($sql, $db_ban_check);
-    
-    if (db_num_rows($result) > 0) {
+        $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
+        $sql.= "WHERE $ban_check_query LIMIT 0, 1";
 
-        if (!strstr(php_sapi_name(), 'cgi')) {
-            header("HTTP/1.0 500 Internal Server Error");
+        $result = db_query($sql, $db_ban_check);
+
+        if (db_num_rows($result) > 0) {
+
+            if (!strstr(php_sapi_name(), 'cgi')) {
+                header("HTTP/1.0 500 Internal Server Error");
+            }
+
+            echo "<h1>HTTP/1.0 500 Internal Server Error</h1>";
+            exit;
         }
-
-        echo "<h1>HTTP/1.0 500 Internal Server Error</h1>";
-        exit;
     }
 
     return true;

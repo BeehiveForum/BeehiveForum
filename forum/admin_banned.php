@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.21 2006-06-30 18:07:31 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.22 2006-07-14 21:46:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -282,6 +282,47 @@ if (isset($_POST['add_email'])) {
     }
 }
 
+if (isset($_POST['add_referer'])) {
+
+    if (isset($_POST['add_banned_referer']) && strlen(trim(_stripslashes($_POST['add_banned_referer'])))) {
+
+        $add_banned_referer = trim(_stripslashes($_POST['add_banned_referer']));
+
+        if (preg_match("/^%+$/", $add_banned_referer) > 0) {
+
+            $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+            $valid = false;
+
+        }else {
+
+            if (!referer_is_banned($add_banned_referer)) {
+
+                add_ban_data('REFERER', $add_banned_referer);
+                admin_add_log_entry(ADD_BANNED_REFERER, $add_banned_referer);
+
+            }else {
+
+                $error_html.= "<h2>{$lang['refererisalreadybanned']}</h2>\n";
+                $valid = false;
+            }
+        }
+    }
+
+}else if (isset($_POST['remove_banned_referer'])) {
+
+    if (isset($_POST['banned_referer']) && is_array($_POST['banned_referer'])) {
+
+        $banned_referer_array = $_POST['banned_referer'];
+
+        foreach($banned_referer_array as $banned_referer) {
+
+            $banned_referer = trim(_stripslashes($banned_referer));
+            remove_ban_data('REFERER', $banned_referer);
+            admin_add_log_entry(REMOVE_BANNED_REFERER, $banned_referer);
+        }
+    }
+}
+
 echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['bancontrols']}</h1>\n";
 
 if (!$valid && strlen($error_html) > 0) echo $error_html;
@@ -294,6 +335,7 @@ if (sizeof($ban_list_array['IPADDRESS']) < 1) $ban_list_array['IPADDRESS'] = arr
 if (sizeof($ban_list_array['LOGON'])     < 1) $ban_list_array['LOGON']     = array('' => '(no entries)');
 if (sizeof($ban_list_array['NICKNAME'])  < 1) $ban_list_array['NICKNAME']  = array('' => '(no entries)');
 if (sizeof($ban_list_array['EMAIL'])     < 1) $ban_list_array['EMAIL']     = array('' => '(no entries)');
+if (sizeof($ban_list_array['REFERER'])   < 1) $ban_list_array['REFERER']   = array('' => '(no entries)');
 
 // Submit handling here later, chaps.
 
@@ -526,6 +568,64 @@ echo "            <td>&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"670\">\n";
+echo "    <tr>\n";
+echo "      <td width=\"50%\" align=\"center\">\n";
+echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"320\">\n";
+echo "          <tr>\n";
+echo "            <td>\n";
+echo "              <table class=\"box\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"posthead\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
+echo "                      <tr>\n";
+echo "                        <td class=\"subhead\">{$lang['bannedreferers']}</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>Current banned referers:</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"center\">\n";
+echo "                          <table class=\"posthead\" width=\"95%\">\n";
+echo "                            <tr>\n";
+echo "                              <td colspan=\"2\">", form_dropdown_array('banned_referer[]', $ban_list_array['REFERER'], $ban_list_array['REFERER'], false, "multiple=\"multiple\"", "banned_dropdown"), "</td>\n";
+echo "                            </tr>\n";
+echo "                            <tr>\n";
+echo "                              <td align=\"right\" width=\"250\">", form_submit('remove_banned_referer', $lang['remove']), "</td>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td>Add banned referer:</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"center\">\n";
+echo "                          <table class=\"posthead\" width=\"95%\">\n";
+echo "                            <tr>\n";
+echo "                              <td>", form_input_text('add_banned_referer', '', 28, 32), "&nbsp;", form_submit("add_referer", $lang['add']), "</td>\n";
+echo "                            </tr>\n";
+echo "                            <tr>\n";
+echo "                              <td>&nbsp;</td>\n";
+echo "                            </tr>\n";
+echo "                          </table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "          <tr>\n";
+echo "            <td>&nbsp;</td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "      <td width=\"50%\" align=\"center\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
 if (isset($ret)) {

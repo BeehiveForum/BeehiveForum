@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.14 2006-07-02 20:38:25 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.15 2006-07-14 21:46:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -378,6 +378,38 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
+
+    $sql = "ALTER TABLE {$forum_webtag}_BANNED ADD REFERER VARCHAR(255)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE USER ADD REFERER VARCHAR(255)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 
     // Globalise the VISITOR_LOG table
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.112 2006-06-30 18:07:32 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.113 2006-07-14 21:46:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,9 +88,10 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 // Friendly display names for column sorting
 
-$sort_by_array = array('USER.UID'        => 'UID',
-                       'USER.LOGON'      => 'LOGON',
-                       'USER.LAST_LOGON' => 'LAST_LOGON');
+$sort_by_array = array('USER.UID'        => 'User ID',
+                       'USER.LOGON'      => 'Logon',
+                       'USER.LAST_LOGON' => 'Last Logon',
+                       'SESSION.REFERER' => 'Referer');
 
 // Column sorting stuff
 
@@ -100,7 +101,9 @@ if (isset($_GET['sort_by'])) {
     } elseif ($_GET['sort_by'] == "LOGON") {
         $sort_by = "USER.LOGON";
     } elseif ($_GET['sort_by'] == "LAST_LOGON") {
-        $sort_by = "USER.LAST_LOGON";
+        $sort_by = "VISITOR_LOG.LAST_LOGON";
+    } elseif ($_GET['sort_by'] == "REFERER") {
+        $sort_by = "SESSION.REFERER";
     } else {
         $sort_by = "USER.LAST_LOGON";
     }
@@ -196,6 +199,16 @@ if ($sort_by == 'USER.LAST_LOGON' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['lastlogon']}</a></td>\n";
 }
 
+if ($sort_by == 'SESSION.REFERER' && $sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['sessionreferer']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+}elseif ($sort_by == 'SESSION.REFERER' && $sort_dir == 'DESC') {
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['sessionreferer']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+}elseif ($sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['sessionreferer']}</a></td>\n";
+}else {
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['sessionreferer']}</a></td>\n";
+}
+
 echo "                   <td class=\"subhead\" align=\"left\">&nbsp;{$lang['active']}</td>\n";
 echo "                   <td class=\"subhead\" align=\"left\">&nbsp;{$lang['kick']}</td>\n";
 echo "                 </tr>\n";
@@ -223,7 +236,13 @@ if (sizeof($admin_user_array['user_array']) > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
         }
 
-        if (user_is_active($user['UID'])) {
+        if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
+            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$user['REFERER']}</td>\n";
+        }else {
+            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
+        }
+
+        if (isset($user['HASH']) && is_md5($user['HASH'])) {
 
             if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 

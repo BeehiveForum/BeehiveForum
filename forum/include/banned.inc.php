@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.10 2006-07-08 11:17:00 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.11 2006-07-14 21:46:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,37 +38,48 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "ip.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-function ban_check($user_sess)
+function ban_check($user_sess, $user_is_guest = false)
 {
     $db_ban_check = db_connect();
 
     if (!is_array($user_sess)) return false;
-    if (!isset($user_sess['LOGON'])) return false;
-    if (!isset($user_sess['NICKNAME'])) return false;
-    if (!isset($user_sess['EMAIL'])) return false;
+    if (!is_bool($user_is_guest)) $user_is_guest = false;
 
     if (!$table_data = get_table_prefix()) return false;
-
-    $logon = addslashes($user_sess['LOGON']);
-    $nickname = addslashes($user_sess['NICKNAME']);
-    $email = addslashes($user_sess['EMAIL']);
 
     $ban_check_array = array();
 
     if ($ipaddress = get_ip_address()) {
+
+        $ipaddress = addslashes($ipaddress);
         $ban_check_array[] = "'$ipaddress' LIKE IPADDRESS";
     }
 
-    if (isset($user_sess['LOGON']) && strlen(trim($user_sess['LOGON'])) > 0) {
-        $ban_check_array[] = "'$logon' LIKE LOGON";
+    if (isset($user_sess['REFERER']) && strlen(trim($user_sess['REFERER'])) > 0) {
+
+        $referer = addslashes($user_sess['REFERER']);
+        $ban_check_array[] = "'$referer' LIKE REFERER";
     }
 
-    if (isset($user_sess['NICKNAME']) && strlen(trim($user_sess['NICKNAME'])) > 0) {
-        $ban_check_array[] = "'$nickname' LIKE NICKNAME";
-    }
+    if ($user_is_guest === false) {
 
-    if (isset($user_sess['EMAIL']) && strlen(trim($user_sess['EMAIL'])) > 0) {
-        $ban_check_array[] = "'$email' LIKE EMAIL";
+        if (isset($user_sess['LOGON']) && strlen(trim($user_sess['LOGON'])) > 0) {
+            
+            $logon = addslashes($user_sess['LOGON']);
+            $ban_check_array[] = "'$logon' LIKE LOGON";
+        }
+
+        if (isset($user_sess['NICKNAME']) && strlen(trim($user_sess['NICKNAME'])) > 0) {
+            
+            $nickname = addslashes($user_sess['NICKNAME']);
+            $ban_check_array[] = "'$nickname' LIKE NICKNAME";
+        }
+
+        if (isset($user_sess['EMAIL']) && strlen(trim($user_sess['EMAIL'])) > 0) {
+            
+            $email = addslashes($user_sess['EMAIL']);
+            $ban_check_array[] = "'$email' LIKE EMAIL";
+        }
     }
 
     $ban_check_query = implode(" OR ", $ban_check_array);
@@ -155,11 +166,27 @@ function email_is_banned($email)
    return (db_num_rows($result) > 0);
 }
 
+function referer_is_banned($referer)
+{
+   $db_referer_is_banned = db_connect();
+
+   $referer = addslashes($referer);
+
+   if (!$table_data = get_table_prefix()) return false;
+
+   $sql = "SELECT ID FROM {$table_data['PREFIX']}BANNED ";
+   $sql.= "WHERE '$referer' LIKE REFERER LIMIT 0, 1";
+
+   $result = db_query($sql, $db_referer_is_banned);
+
+   return (db_num_rows($result) > 0);
+}
+
 function add_ban_data($type, $data)
 {
     $db_add_ban_data = db_connect();
 
-    $data_types_array = array('IPADDRESS', 'LOGON', 'NICKNAME', 'EMAIL');
+    $data_types_array = array('IPADDRESS', 'LOGON', 'NICKNAME', 'EMAIL', 'REFERER');
 
     if (!in_array($type, $data_types_array)) return false;
 
@@ -177,7 +204,7 @@ function remove_ban_data($type, $data)
 {
     $db_remove_ban_data = db_connect();
 
-    $data_types_array = array('IPADDRESS', 'LOGON', 'NICKNAME', 'EMAIL');
+    $data_types_array = array('IPADDRESS', 'LOGON', 'NICKNAME', 'EMAIL', 'REFERER');
 
     if (!in_array($type, $data_types_array)) return false;
 

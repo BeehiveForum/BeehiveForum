@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.90 2006-06-30 18:07:32 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.91 2006-07-14 21:46:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,6 +244,16 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
             case REMOVE_BANNED_EMAIL:
 
                 $action_text = sprintf($lang['removedemailfrombanlist'], $entry_array[0]);
+                break;
+
+            case ADD_BANNED_REFERER:
+
+                $action_text = sprintf($lang['addedreferertobanlist'], $entry_array[0]);
+                break;
+
+            case REMOVE_BANNED_REFERER:
+
+                $action_text = sprintf($lang['removedrefererfrombanlist'], $entry_array[0]);
                 break;
 
             case EDIT_THREAD_OPTIONS:

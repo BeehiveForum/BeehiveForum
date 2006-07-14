@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.330 2006-07-14 21:46:14 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.331 2006-07-14 22:01:43 decoyduck Exp $ */
 
 // International English language file
 
@@ -464,10 +464,20 @@ $lang['mustchooseaendyear'] = "Must choose a end year";
 $lang['startperiodisaheadofendperiod'] = "Start period is ahead of end period";
 $lang['bancontrols'] = "Ban Controls";
 $lang['bannedipaddresses'] = "Banned IP Addresses";
+$lang['currentbannedipaddresses'] = "Current banned IP Addresses";
+$lang['addbannedipaddress'] = "Add banned IP Address";
 $lang['bannedlogons'] = "Banned Logons";
+$lang['currentbannedlogons'] = "Current banned logons";
+$lang['addbannedlogon'] = "Add banned logon";
 $lang['bannednicknames'] = "Banned Nicknames";
+$lang['currentbannednicknames'] = "Current banned nicknames";
+$lang['addbannednickname'] = "Add banned nickname";
 $lang['bannedemailaddresses'] = "Banned Email Addresses";
+$lang['currentbannedemailaddress'] = "Current banned Email address";
+$lang['addbannedemailaddress'] = "Add banned Email Address";
 $lang['bannedreferers'] = "Banned Referers";
+$lang['currentbannedreferers'] = "Current banned referers";
+$lang['addbannedreferer'] = "Add banned referer";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
 $lang['ipaddressisalreadybanned'] = "That IP Address is already banned. Check your wildcards to see if they already match it.";
 $lang['logonisalreadybanned'] = "That Logon is already banned. Check your wildcards to see if they already match it.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.48 2006-06-30 18:07:31 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.49 2006-07-14 22:57:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,6 +99,16 @@ $text_captcha = new captcha(6, 15, 25, 9, 30);
 if (isset($_POST['submit'])) {
 
     $valid = true;
+
+    if (isset($_POST['messages_unread_cutoff']) && is_numeric($_POST['messages_unread_cutoff'])) {
+        $new_forum_settings['messages_unread_cutoff'] = $_POST['messages_unread_cutoff'];
+    }else {
+        $new_forum_settings['messages_unread_cutoff'] = 0;
+    }
+
+    if (isset($_POST['messages_unread_cutoff_custom']) && is_numeric($_POST['messages_unread_cutoff_custom'])) {
+        $new_forum_settings['messages_unread_cutoff_custom'] = $_POST['messages_unread_cutoff_custom'];
+    }
 
     if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {
         $new_forum_settings['search_min_frequency'] = $_POST['search_min_frequency'];
@@ -327,6 +337,45 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td>\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['postoptions']}:</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">{$lang['unreadmessagescutoff']}:</td>\n";
+echo "                        <td>", form_dropdown_array("messages_unread_cutoff", array(-1, 0, AVG_MONTH_IN_SECONDS, AVG_SIX_MONTHS_IN_SECONDS, YEAR_IN_SECONDS, -2), array($lang['disableunreadmessages'], $lang['nocutoffdefault'], $lang['1month'], $lang['6months'], $lang['1year'], $lang['customsetbelow']), (isset($default_forum_settings['messages_unread_cutoff'])) ? $default_forum_settings['messages_unread_cutoff'] : 0), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td width=\"270\">&nbsp;</td>\n";
+echo "                        <td>", form_input_text("messages_unread_cutoff_custom", (isset($default_forum_settings['messages_unread_cutoff_custom'])) ? $default_forum_settings['messages_unread_cutoff_custom'] : "", 15, 10), "&nbsp;{$lang['unreadcutoffseconds']}&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_48']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_49']}</p>\n";
+//echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td>\n";

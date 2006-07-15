@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.208 2006-07-12 17:41:55 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.209 2006-07-15 17:23:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,42 +108,67 @@ function threads_get_all($uid, $start = 0) // get "all" threads (i.e. most recen
 {
     $db_threads_get_all = db_connect();
 
-    if (!is_numeric($uid)) return array(0, 0);
+    // If there are any problems with the function arguments we bail out.
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($start)) return array(0, 0);
+
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
+    if (!$table_data = get_table_prefix()) return array(0, 0);
+
+    // Get the folders the user can see.
 
     $folders = folder_get_available();
+
+    // Constants for user relationships.
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
-    // for threads with unread messages, so the UID needs to be passed to the function
+    // Formulate query. We only join on the USER_FOLDER, USER_PEER and USER_THREAD tables
+    // if the user is NOT a guest.
 
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
-    $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
-    $sql.= "USER_FOLDER.INTEREST AS FOLDER_INTEREST, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
-    $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
-    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
-    $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
-    $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT $start, 50";
+    if (user_is_guest()) {
+
+        $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, ";
+        $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+        $sql.= "THREAD_STATS.VIEWCOUNT, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+        $sql.= "USER.LOGON, USER.NICKNAME FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql.= "WHERE THREAD.FID IN ($folders) AND THREAD.LENGTH > 0 ";
+        $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+        $sql.= "LIMIT $start, 50";
+
+    }else {
+        
+        $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+        $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
+        $sql.= "USER_FOLDER.INTEREST AS FOLDER_INTEREST, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+        $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
+        $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
+        $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
+        $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+        $sql.= "WHERE THREAD.FID IN ($folders) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+        $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+        $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+        $sql.= "AND THREAD.LENGTH > 0 ";
+        $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+        $sql.= "LIMIT $start, 50";
+    }
 
     $result = db_query($sql, $db_threads_get_all);
     return threads_process_list($result);
@@ -153,9 +178,20 @@ function threads_get_started_by_me($uid, $start = 0) // get threads started by u
 {
     $db_threads_get_started_by_me = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+
     if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($start)) return array(0, 0);
+
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
     if (!$table_data = get_table_prefix()) return array(0, 0);
+
+    // Guests can't view unread messages.
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
 
     $folders = folder_get_available();
 
@@ -191,14 +227,28 @@ function threads_get_unread($uid) // get unread messages for $uid
 {
     $db_threads_get_unread = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
+
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view unread messages.
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationship
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    // Check to see if unread messages have been disabled.
 
     if (!$unread_cutoff_stamp = forum_get_unread_cutoff()) return array(0, 0);
 
@@ -244,14 +294,28 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
 {
     $db_threads_get_unread_to_me = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
+
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view unread messages.
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    // Check to see if unread messages have been disabled.
 
     if (!$unread_cutoff_stamp = forum_get_unread_cutoff()) return array(0, 0);
 
@@ -296,44 +360,69 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
 {
     $db_threads_get_by_days = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($days)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships.
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
-    // for threads with unread messages, so the UID needs to be passed to the function
+    // Formulate query. We only join on the USER_FOLDER, USER_PEER and USER_THREAD tables
+    // if the user is NOT a guest.
 
-    $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
-    $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ,  USER_THREAD.INTEREST, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
-    $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
-    $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
-    $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-    $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
-    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
-    $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, 50";
+    if (user_is_guest()) {
+
+        $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, ";
+        $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+        $sql.= "THREAD_STATS.VIEWCOUNT, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+        $sql.= "USER.LOGON, USER.NICKNAME FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql.= "WHERE THREAD.FID IN ($folders) AND THREAD.LENGTH > 0 ";
+        $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
+        $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+        $sql.= "LIMIT 0, 50";
+
+    }else {
+
+        $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
+        $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ,  USER_THREAD.INTEREST, ";
+        $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+        $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
+        $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ON ";
+        $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ON ";
+        $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+        $sql.= "WHERE THREAD.FID IN ($folders) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+        $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
+        $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+        $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+        $sql.= "AND THREAD.LENGTH > 0 ";
+        $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+        $sql.= "LIMIT 0, 50";
+    }
 
     $result = db_query($sql, $db_threads_get_by_days);
     return threads_process_list($result);
@@ -343,12 +432,24 @@ function threads_get_by_interest($uid, $interest = 1) // get messages for $uid b
 {
     $db_threads_get_by_interest = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($interest)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
@@ -389,15 +490,29 @@ function threads_get_unread_by_interest($uid, $interest = 1) // get unread messa
 {
     $db_threads_get_unread_by_interest = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($interest)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
+
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
 
     $folders = folder_get_available();
 
+    // Constants for user relationships
+
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    // Check to see if unread messages have been disabled.
 
     if (!$unread_cutoff_stamp = forum_get_unread_cutoff()) return array(0, 0);
 
@@ -444,11 +559,23 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 {
     $db_threads_get_recently_viewed = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
+
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
@@ -488,15 +615,30 @@ function threads_get_recently_viewed($uid) // get messages recently seem by $uid
 
 function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start = 0) // get threads started by people of a particular relationship (default friend)
 {
-    $db_threads_get_all = db_connect();
+    $db_threads_get_by_relationship = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($relationship)) return array(0, 0);
     if (!is_numeric($start)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships
+
+    $user_ignored = USER_IGNORED;
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // Formulate query
 
@@ -522,7 +664,7 @@ function threads_get_by_relationship($uid, $relationship = USER_FRIEND, $start =
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $start, 50";
 
-    $result = db_query($sql, $db_threads_get_all);
+    $result = db_query($sql, $db_threads_get_by_relationship);
     return threads_process_list($result);
 }
 
@@ -530,12 +672,29 @@ function threads_get_unread_by_relationship($uid, $relationship = USER_FRIEND) /
 {
     $db_threads_get_unread = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($relationship)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships
+
+    $user_ignored = USER_IGNORED;
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    // Check to see if unread messages are disabled.
 
     if (!$unread_cutoff_stamp = forum_get_unread_cutoff()) return array(0, 0);
 
@@ -579,12 +738,24 @@ function threads_get_polls($uid, $start = 0)
 {
     $db_threads_get_polls = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($start)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
@@ -626,12 +797,24 @@ function threads_get_sticky($uid, $start = 0)
 {
     $db_threads_get_all = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($start)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
@@ -673,14 +856,29 @@ function threads_get_longest_unread($uid) // get unread messages for $uid
 {
     $db_threads_get_unread = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($start)) return array(0, 0);
+
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
     $folders = folder_get_available();
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    // Check to see if unread messages have been disabled.
 
     if (!$unread_cutoff_stamp = forum_get_unread_cutoff()) return array(0, 0);
 
@@ -728,17 +926,29 @@ function threads_get_folder($uid, $fid, $start = 0)
 {
     $db_threads_get_folder = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($fid)) return array(0, 0);
     if (!is_numeric($start)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
-    if ($folders = folder_get_available_array()) {
-        if (!in_array($fid, $folders)) $fid = 0;
-    }else {
-        $fid = 0;
-    }
+    // Guests can't view this thread type
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
+    if (!$folders = folder_get_available()) return array(0, 0);
+
+    // Check to make sure the specified folder is available to the user.
+
+    if (!in_array($fid, $folders)) return array(0, 0);
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
@@ -777,11 +987,24 @@ function threads_get_deleted($uid, $start = 0)
 {
     $db_threads_get_all = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
+    if (!is_numeric($start)) return array(0, 0);
+
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
-    $folders = folder_get_available();
+    // Only Admins can view deleted threads.
+
+    if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) return array(0, 0);
+
+    // Get the folders the user can see.
+
+    if (!$folders = folder_get_available()) return array(0, 0);
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
@@ -818,89 +1041,33 @@ function threads_get_deleted($uid, $start = 0)
     return threads_process_list($result);
 }
 
-function threads_get_most_recent($limit = 10, $titles_only = false)
-{
-    $db_threads_get_recent = db_connect();
-
-    if (!is_numeric($limit)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    $folders = folder_get_available();
-
-    if (($uid = bh_session_get_value('UID')) === false) return false;
-
-    $user_ignored = USER_IGNORED;
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
-
-    $sql = "SELECT THREAD.TID, THREAD.TITLE, THREAD.STICKY, ";
-    $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, USER_THREAD.LAST_READ, ";
-    $sql.= "THREAD_STATS.VIEWCOUNT, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-    $sql.= "USER_PEER.RELATIONSHIP, USER_THREAD.INTEREST, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER.LOGON ";
-    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
-    $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
-    $sql.= "WHERE THREAD.FID IN ($folders) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-    $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
-    $sql.= "AND THREAD.LENGTH > 0 ";
-    $sql.= "ORDER BY THREAD.MODIFIED DESC ";
-    $sql.= "LIMIT 0, $limit";
-
-    $result = db_query($sql, $db_threads_get_recent);
-
-    if (db_num_rows($result) > 0) {
-
-        $threads_get_array = array();
-        $tid_array = array();
-
-        while ($thread = db_fetch_array($result)) {
-
-            if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
-
-            if ($titles_only === true) {
-
-                $threads_get_array[$thread['TID']] = $thread['TITLE'];
-
-            }else {
-            
-                $threads_get_array[$thread['TID']] = $thread;
-                $tid_array[] = $thread['TID'];
-            }
-        }
-
-        threads_have_attachments($threads_get_array, $tid_array);
-        return $threads_get_array;
-    }
-        
-    return false;
-}
-
 function threads_get_unread_by_days($uid, $days = 0) // get unread messages for $uid
 {
     $db_threads_get_unread = db_connect();
 
+    // If there are any problems with the function arguments we bail out.
+    
     if (!is_numeric($uid)) return array(0, 0);
     if (!is_numeric($days)) return array(0, 0);
 
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
     if (!$table_data = get_table_prefix()) return array(0, 0);
 
-    $folders = folder_get_available();
+    // Guests can't view this thread type.
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
+    if (!$folders = folder_get_available()) return array(0, 0);
+
+    // Constants for user relationships
 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    // Check to see if unread messages have been disabled.
 
     if (!$unread_cutoff_stamp = forum_get_unread_cutoff()) return array(0, 0);
 
@@ -944,6 +1111,108 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     return threads_process_list($result);
 }
 
+function threads_get_most_recent($limit = 10, $titles_only = false)
+{
+    $db_threads_get_recent = db_connect();
+
+    // If there are any problems with the function arguments we bail out.
+    
+    if (!is_numeric($limit)) return array(0, 0);
+    if (!is_bool($titles_only)) return array(0, 0);
+
+    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+
+    if (!$table_data = get_table_prefix()) return array(0, 0);
+
+    // Guests can't view this thread type.
+
+    if (user_is_guest()) return array(0, 0);
+
+    // Get the folders the user can see.
+
+    if (!$folders = folder_get_available()) return array(0, 0);
+
+    // Constants for user relationships
+
+    $user_ignored = USER_IGNORED;
+    $user_ignored_completely = USER_IGNORED_COMPLETELY;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (user_is_guest()) {
+
+        $sql = "SELECT THREAD.TID, THREAD.TITLE, THREAD.STICKY, ";
+        $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD_STATS.VIEWCOUNT, ";
+        $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+        $sql.= "USER.NICKNAME, USER.LOGON ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql.= "WHERE THREAD.FID IN ($folders) AND THREAD.LENGTH > 0 ";
+        $sql.= "ORDER BY THREAD.MODIFIED DESC ";
+        $sql.= "LIMIT 0, $limit";
+
+    }else {
+
+        $sql = "SELECT THREAD.TID, THREAD.TITLE, THREAD.STICKY, ";
+        $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, USER_THREAD.LAST_READ, ";
+        $sql.= "THREAD_STATS.VIEWCOUNT, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
+        $sql.= "USER_PEER.RELATIONSHIP, USER_THREAD.INTEREST, ";
+        $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER.LOGON ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD_STATS THREAD_STATS ";
+        $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+        $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = $uid) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_FOLDER USER_FOLDER ";
+        $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
+        $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = $uid) ";
+        $sql.= "WHERE THREAD.FID IN ($folders) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+        $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
+        $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+        $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
+        $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+        $sql.= "AND THREAD.LENGTH > 0 ";
+        $sql.= "ORDER BY THREAD.MODIFIED DESC ";
+        $sql.= "LIMIT 0, $limit";
+    }
+
+    $result = db_query($sql, $db_threads_get_recent);
+
+    if (db_num_rows($result) > 0) {
+
+        $threads_get_array = array();
+        $tid_array = array();
+
+        while ($thread = db_fetch_array($result)) {
+
+            if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
+            if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
+            if (!isset($thread['LAST_READ'])) $thread['LAST_READ'] = $thread['LENGTH'];
+
+            if ($titles_only === true) {
+
+                $threads_get_array[$thread['TID']] = $thread['TITLE'];
+
+            }else {
+            
+                $threads_get_array[$thread['TID']] = $thread;
+                $tid_array[] = $thread['TID'];
+            }
+        }
+
+        threads_have_attachments($threads_get_array, $tid_array);
+        return $threads_get_array;
+    }
+        
+    return false;
+}
+
 // Arrange the results of a query into the right order for display
 
 function threads_process_list($result)
@@ -978,7 +1247,11 @@ function threads_process_list($result)
 
         while ($thread = db_fetch_array($result, DB_RESULT_ASSOC)) {
 
+            if (!isset($thread['FOLDER_INTEREST'])) $thread['FOLDER_INTEREST'] = 0;
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
+            if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
+            if (!isset($thread['STICKY'])) $thread['STICKY'] = 0;
+            if (!isset($thread['VIEWCOUNT'])) $thread['VIEWCOUNT'] = 0;
 
             // If this folder ID has not been encountered before,
             // make it the next folder in the order to be displayed
@@ -1006,15 +1279,6 @@ function threads_process_list($result)
                     $thread['LAST_READ'] = $thread['LENGTH'];
                 }
             }
-
-            // INTEREST, RELATIONSHIP and STICKY keys may be null.
-            // If they are we need to set them otherwise PHP will
-            // complain that the keys don't exist.
-
-            if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
-            if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
-            if (!isset($thread['STICKY'])) $thread['STICKY'] = 0;
-            if (!isset($thread['VIEWCOUNT'])) $thread['VIEWCOUNT'] = 0;
 
             if (isset($thread['PEER_NICKNAME'])) {
                 if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
@@ -1339,14 +1603,18 @@ function thread_list_draw_top($mode)
                                 $lang['startedbyme'], $lang['polls'], $lang['stickythreads'],
                                 $lang['mostunreadposts'], $lang['searchresults'], $lang['deletedthreads']);
 
+                                $keys = range(0, 20);
+
             }else {
 
-                $labels = array($lang['alldiscussions'], $lang['todaysdiscussions'], $lang['2daysback'],
-                                $lang['7daysback'], $lang['highinterest'], $lang['iverecentlyseen'], 
-                                $lang['iveignored'], $lang['byignoredusers'], $lang['ivesubscribedto'], 
-                                $lang['startedbyfriend'], $lang['startedbyme'], $lang['polls'], 
-                                $lang['stickythreads'], $lang['mostunreadposts'], $lang['searchresults'], 
+                $labels = array($lang['alldiscussions'], $lang['unreadtome'], $lang['todaysdiscussions'],
+                                $lang['2daysback'], $lang['7daysback'], $lang['highinterest'], 
+                                $lang['iverecentlyseen'],  $lang['iveignored'], $lang['byignoredusers'],
+                                $lang['ivesubscribedto'],  $lang['startedbyfriend'], $lang['startedbyme'], 
+                                $lang['polls'],  $lang['stickythreads'], $lang['searchresults'], 
                                 $lang['deletedthreads']);
+
+                                $keys = array(0, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 19, 20);
             }
 
         }else {
@@ -1360,6 +1628,8 @@ function thread_list_draw_top($mode)
                                 $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['unreadstartedbyfriend'],
                                 $lang['startedbyme'], $lang['polls'], $lang['stickythreads'],
                                 $lang['mostunreadposts'], $lang['searchresults']);
+
+                                $keys = range(0, 19);
             }else {
 
                 $labels = array($lang['alldiscussions'], $lang['unreadtome'], $lang['todaysdiscussions'], 
@@ -1367,11 +1637,13 @@ function thread_list_draw_top($mode)
                                 $lang['iverecentlyseen'], $lang['iveignored'], $lang['byignoredusers'],
                                 $lang['ivesubscribedto'], $lang['startedbyfriend'], $lang['startedbyme'], 
                                 $lang['polls'], $lang['stickythreads'], $lang['searchresults']);
+
+                                $keys = array(0, 2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 19);
             }
 
         }
 
-        echo form_dropdown_array("mode", range(0, sizeof($labels)  - 1), $labels, $mode, "onchange=\"submit()\"");
+        echo form_dropdown_array("mode", $keys, $labels, $mode, "onchange=\"submit()\"");
     }
 
     echo "        ", form_submit("go",$lang['goexcmark']), "\n";

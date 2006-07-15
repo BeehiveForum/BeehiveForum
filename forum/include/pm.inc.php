@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.143 2006-06-30 20:20:59 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.144 2006-07-15 11:57:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -38,6 +38,15 @@ include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
+/**
+* Check that the PM system is enabled.
+*
+* Checks the FORUM_SETTINGS to make sure the PM system is enabled.
+*
+* @return bool
+* @param void
+*/
+
 function pm_enabled()
 {
     $lang = load_language_file();
@@ -51,6 +60,15 @@ function pm_enabled()
     }
 }
 
+/**
+* Mark message mead
+*
+* Marks the specified message ID as read.
+*
+* @return void
+* @param integer $mid - Message ID
+*/
+
 function pm_markasread($mid)
 {
     $db_pm_markasread = db_connect();
@@ -59,17 +77,21 @@ function pm_markasread($mid)
 
     if (!is_numeric($mid)) return false;
 
-    // ------------------------------------------------------------
-    // Update the row so it appears as read to the receipient
-    // ------------------------------------------------------------
-
-    if (!$table_data = get_table_prefix()) return false;
-
     $sql = "UPDATE PM SET TYPE = ". PM_READ. ", NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
 
     $result = db_query($sql, $db_pm_markasread);
 }
+
+/**
+* Display edit refuse eroor
+*
+* Displays an error messages when the user attempts to edit a message
+* that has already received by the recipient.
+*
+* @return void
+* @param void
+*/
 
 function pm_edit_refuse()
 {
@@ -83,6 +105,16 @@ function pm_edit_refuse()
 
 }
 
+/**
+* Display view refuse error
+*
+* Displays and error message when the user attempts to view a message
+* that doesn't not below to them.
+*
+* @return void
+* @param void
+*/
+
 function pm_error_refuse()
 {
     $lang = load_language_file();
@@ -94,6 +126,15 @@ function pm_error_refuse()
     echo "</div>";
 }
 
+/**
+* Add Sent Item
+*
+* Duplicates the specified message and saves it in the user's sent items folder
+*
+* @return mixed
+* @param integer $mid - Message ID of the message to duplicate
+*/
+
 function pm_add_sentitem($mid)
 {
     $db_pm_add_sentitem = db_connect();
@@ -102,12 +143,7 @@ function pm_add_sentitem($mid)
 
     if (!is_numeric($mid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
-    // ------------------------------------------------------------
-    // Insert the original PM data as a new row to appear in the
-    // sender's sent items
-    // ------------------------------------------------------------
+    // Fetch the message from the database
 
     $sql = "SELECT PM.MID, PM.FROM_UID, PM.TO_UID, ";
     $sql.= "PM.SUBJECT, PM.CREATED, AT.AID FROM PM PM ";
@@ -117,18 +153,20 @@ function pm_add_sentitem($mid)
     $result = db_query($sql, $db_pm_add_sentitem);
     $db_pm_add_sentitem_row = db_fetch_array($result);
 
+    // Insert it as a new message
+
     $sql = "INSERT INTO PM (TYPE, FROM_UID, TO_UID, SUBJECT, CREATED, NOTIFIED) ";
     $sql.= "VALUES (". PM_SENT. ", {$db_pm_add_sentitem_row['FROM_UID']}, ";
     $sql.= "{$db_pm_add_sentitem_row['TO_UID']}, '". addslashes($db_pm_add_sentitem_row['SUBJECT']). "', ";
     $sql.= "'{$db_pm_add_sentitem_row['CREATED']}', 1)";
 
     $result  = db_query($sql, $db_pm_add_sentitem);
+
+    // Get the new message ID
+
     $new_mid = db_insert_id($db_pm_add_sentitem);
 
-    // ------------------------------------------------------------
-    // Insert the original PM content as a new row to appear in
-    // the sender's sent items
-    // ------------------------------------------------------------
+    // Fetch the content from the database
 
     $sql = "SELECT CONTENT FROM PM_CONTENT ";
     $sql.= "WHERE MID = '$mid'";
@@ -136,15 +174,14 @@ function pm_add_sentitem($mid)
     $result = db_query($sql, $db_pm_add_sentitem);
     $db_pm_add_sentitem_content_row = db_fetch_array($result);
 
+    // Insert the content with the new message ID
+
     $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
     $sql.= "VALUES ($new_mid, '". addslashes($db_pm_add_sentitem_content_row['CONTENT']). "')";
 
     $result = db_query($sql, $db_pm_add_sentitem);
 
-    // ------------------------------------------------------------
-    // Insert a duplicate attachment ID so that it appears in
-    // the sender's Sent Items
-    // ------------------------------------------------------------
+    // Check and process any attachments.
 
     if (isset($db_pm_add_sentitem_row['AID']) && get_num_attachments($db_pm_add_sentitem_row['AID'])) {
 
@@ -155,6 +192,15 @@ function pm_add_sentitem($mid)
     }
 }
 
+/**
+* Get Inbox
+*
+* Gets the contents of the user's inbox.
+*
+* @return mixed - false on failure, array on success
+* @param integer $offset - Optional offset for viewing pages of messages.
+*/
+
 function pm_get_inbox($offset = false)
 {
     $db_pm_get_inbox = db_connect();
@@ -163,8 +209,6 @@ function pm_get_inbox($offset = false)
 
     $pm_get_inbox_array = array();
     $mid_array = array();
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE TYPE = TYPE & ". PM_INBOX_ITEMS. " AND TO_UID = '$uid'";
@@ -223,6 +267,15 @@ function pm_get_inbox($offset = false)
                  'message_array' => $pm_get_inbox_array);
 }
 
+/**
+* Get Outbox
+*
+* Gets the contents of the user's outbox.
+*
+* @return mixed - false on failure, array on success
+* @param integer $offset - Optional offset for viewing pages of messages.
+*/
+
 function pm_get_outbox($offset = false)
 {
     $db_pm_get_outbox = db_connect();
@@ -231,8 +284,6 @@ function pm_get_outbox($offset = false)
 
     $pm_get_outbox_array = array();
     $mid_array = array();
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE TYPE = TYPE & ". PM_OUTBOX_ITEMS. " AND FROM_UID = '$uid' ";
@@ -291,6 +342,15 @@ function pm_get_outbox($offset = false)
                  'message_array' => $pm_get_outbox_array);
 }
 
+/**
+* Get Sent Items
+*
+* Gets the contents of the user's sent items.
+*
+* @return mixed - false on failure, array on success
+* @param integer $offset - Optional offset for viewing pages of messages.
+*/
+
 function pm_get_sent($offset = false)
 {
     $db_pm_get_outbox = db_connect();
@@ -299,8 +359,6 @@ function pm_get_sent($offset = false)
 
     $pm_get_sent_array = array();
     $mid_array = array();
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid' ";
@@ -359,6 +417,15 @@ function pm_get_sent($offset = false)
                  'message_array' => $pm_get_sent_array);
 }
 
+/**
+* Get Saved Items
+*
+* Gets the contents of the user's Saved Items.
+*
+* @return mixed - false on failure, array on success
+* @param integer $offset - Optional offset for viewing pages of messages.
+*/
+
 function pm_get_saveditems($offset = false)
 {
     if (!is_numeric($offset)) $offset = 0;
@@ -369,8 +436,6 @@ function pm_get_saveditems($offset = false)
 
     $pm_get_saveditems_array = array();
     $mid_array = array();
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT FROM PM PM ";
     $sql.= "WHERE (TYPE = ". PM_SAVED_OUT. " AND FROM_UID = '$uid') OR ";
@@ -431,6 +496,16 @@ function pm_get_saveditems($offset = false)
                  'message_array' => $pm_get_saveditems_array);
 }
 
+/**
+* Get Messages Free Space
+*
+* Calculates and returns the free space available to the user to
+* store messages.
+*
+* @return mixed - false on failure, integer on success
+* @param integer $uid - Optional user ID for finding space of another user.
+*/
+
 function pm_get_free_space($uid = false)
 {
     $db_pm_get_free_space = db_connect();
@@ -440,8 +515,6 @@ function pm_get_free_space($uid = false)
     }
 
     $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT COUNT(MID) AS PM_USER_MESSAGES_COUNT ";
     $sql.= "FROM PM ";
@@ -464,15 +537,22 @@ function pm_get_free_space($uid = false)
     return $pm_max_user_messages;
 }
 
+/**
+* Get User
+*
+* Gets the logon of the user who sent the message
+*
+* @return string - Logon of the sender
+* @param integer $mid - Message ID of the received message.
+*/
+
 function pm_get_user($mid)
 {
     $db_pm_get_user = db_connect();
 
     if (!is_numeric($mid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
-    $sql = "SELECT LOGON FROM PM PM ";
+    $sql = "SELECT USER.LOGON FROM PM PM ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = PM.FROM_UID) ";
     $sql.= "WHERE PM.MID = $mid";
 
@@ -488,11 +568,17 @@ function pm_get_user($mid)
     return $logon;
 }
 
+/**
+* Get's Friends
+*
+* Get's the users friends from their relationships
+*
+* @return mixed - false on failure, array of UIDs and Logons on success
+*/
+
 function pm_user_get_friends()
 {
     $db_pm_user_get_friends = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -533,14 +619,22 @@ function pm_user_get_friends()
     }
 }
 
+/**
+* Get Subject
+*
+* Gets the subject of the specified message ID.
+*
+* @return mixed - false on failure, message subject as string on success
+* @param integer $mid - Message ID.
+* @param integer $tuid - Recepient UID.
+*/
+
 function pm_get_subject($mid, $tuid)
 {
     $db_pm_get_subject = db_connect();
 
     if (!is_numeric($mid)) return false;
     if (!is_numeric($tuid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PM.SUBJECT FROM PM PM ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$tuid'";
@@ -556,6 +650,16 @@ function pm_get_subject($mid, $tuid)
     return false;
 }
 
+/**
+* Get a single PM
+*
+* Gets a single PM from the database
+*
+* @return mixed - false on failure, array on success
+* @param integer $mid - Message ID to fetch
+* @param integer $folder - Folder that the message resides in
+*/
+
 function pm_single_get($mid, $folder)
 {
     $db_pm_list_get = db_connect();
@@ -565,11 +669,7 @@ function pm_single_get($mid, $folder)
     if (!is_numeric($mid)) return false;
     if (!is_numeric($folder)) return false;
 
-    // ------------------------------------------------------------
     // Fetch the single message as specified by the MID
-    // ------------------------------------------------------------
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
     $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
@@ -615,9 +715,7 @@ function pm_single_get($mid, $folder)
             }
         }
 
-        // ------------------------------------------------------------
         // Check to see if we should add a sent item before delete
-        // ------------------------------------------------------------
 
         if (($db_pm_list_get_row['TO_UID'] == $uid) && ($db_pm_list_get_row['TYPE'] == PM_UNREAD) && ($folder == PM_FOLDER_INBOX)) {
 
@@ -641,17 +739,22 @@ function pm_single_get($mid, $folder)
     }
 }
 
+/**
+* Get Content
+*
+* Gets the content of the specified message
+*
+* @return mixed - false on failure, string containing message content on success
+* @param integer $mid - Message ID to fetch.
+*/
+
 function pm_get_content($mid)
 {
     $db_pm_get_content = db_connect();
 
     if (!is_numeric($mid)) return false;
 
-    // ------------------------------------------------------------
     // Fetch the message content as specified by the MID
-    // ------------------------------------------------------------
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT CONTENT FROM PM_CONTENT ";
     $sql.= "WHERE MID = '$mid'";
@@ -661,6 +764,15 @@ function pm_get_content($mid)
 
     return isset($pm_content['CONTENT']) ? $pm_content['CONTENT'] : "";
 }
+
+/**
+* Display or return PM HTML.
+*
+* Displays or returns the PM HTML formatted for display in the browser
+*
+* @return mixed - string or bool depending on $pm_export_html setting.
+* @param bool $pm_export_html - Optional settings allows return of HTML as string instead of sending to STDOUT.
+*/
 
 function pm_display($pm_elements_array, $pm_export_html = false)
 {
@@ -729,7 +841,7 @@ function pm_display($pm_elements_array, $pm_export_html = false)
         $html.= "</span></td>\n";
     }
 
-    // Check for words that should be filtered ---------------------------------
+    // Check for words that should be filtered
 
     $pm_export_wordfilter = bh_session_get_value('PM_EXPORT_WORDFILTER');
 
@@ -739,7 +851,7 @@ function pm_display($pm_elements_array, $pm_export_html = false)
         $pm_elements_array['SUBJECT'] = apply_wordfilter($pm_elements_array['SUBJECT']);
     }
 
-    // Add emoticons/wikilinks -------------------------------------------------
+    // Add emoticons/wikilinks
 
     $pm_elements_array['CONTENT'] = message_split_fiddle($pm_elements_array['CONTENT']);
 
@@ -841,6 +953,15 @@ function pm_display($pm_elements_array, $pm_export_html = false)
     echo $html;
 }
 
+/**
+* Draw header
+*
+* Draw Javascript header at top of PM send page
+*
+* @return void
+* @param void
+*/
+
 function draw_header_pm()
 {
     $lang = load_language_file();
@@ -860,6 +981,15 @@ function draw_header_pm()
     echo "//-->\n";
     echo "</script>\n";
 }
+
+/**
+* Get Inbox
+*
+* Gets the contents of the user's inbox.
+*
+* @return mixed - false on failure, array on success
+* @param integer $offset - Optional offset for viewing pages of messages.
+*/
 
 function pm_save_attachment_id($mid, $aid)
 {
@@ -885,6 +1015,18 @@ function pm_save_attachment_id($mid, $aid)
     return db_query($sql, $db_pm_save_attachment_id);
 }
 
+/**
+* Send Message
+*
+* Sends a message with specified sender, recipient, subject and content
+*
+* @return mixed - false on failure, integer Message ID on success
+* @param integer $tuid - Sender UID
+* @param integer $fuid - Recipient UID
+* @param string $subject - Subject string
+* @param string $content - Content string
+*/
+
 function pm_send_message($tuid, $fuid, $subject, $content)
 {
     $db_pm_send_message = db_connect();
@@ -892,14 +1034,10 @@ function pm_send_message($tuid, $fuid, $subject, $content)
     if (!is_numeric($tuid)) return false;
     if (!is_numeric($fuid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
     $subject = addslashes($subject);
     $content = addslashes($content);
 
-    // ------------------------------------------------------------
     // Insert the main PM Data into the database
-    // ------------------------------------------------------------
 
     $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, CREATED, NOTIFIED) ";
     $sql.= "VALUES (". PM_UNREAD. ", '$tuid', '$fuid', '$subject', NOW(), 0)";
@@ -910,9 +1048,7 @@ function pm_send_message($tuid, $fuid, $subject, $content)
 
         $new_mid = db_insert_id($db_pm_send_message);
 
-        // ------------------------------------------------------------
         // Insert the PM Content into the database
-        // ------------------------------------------------------------
 
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content')";
@@ -925,6 +1061,17 @@ function pm_send_message($tuid, $fuid, $subject, $content)
     return false;
 }
 
+/**
+* Edit Message
+*
+* Edit a message content and subject
+*
+* @return bool - true on success, false on failure.
+* @param integer $mid - Message ID to edit
+* @param string $subject - New subject for message
+* @param string $content - New content for message
+*/
+
 function pm_edit_message($mid, $subject, $content)
 {
     $db_pm_edit_messages = db_connect();
@@ -934,25 +1081,27 @@ function pm_edit_message($mid, $subject, $content)
     $subject = addslashes($subject);
     $content = addslashes($content);
 
-    if (!$table_data = get_table_prefix()) return false;
-
-    // ------------------------------------------------------------
     // Update the subject text
-    // ------------------------------------------------------------
 
     $sql = "UPDATE PM SET SUBJECT = '$subject' WHERE MID = '$mid'";
     $result_subject = db_query($sql, $db_pm_edit_messages);
 
-    // ------------------------------------------------------------
     // Update the content
-    // ------------------------------------------------------------
 
     $sql = "UPDATE PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
     $result_content = db_query($sql, $db_pm_edit_messages);
 
     return ($result_subject && $result_content);
-
 }
+
+/**
+* Delete a message
+*
+* Deletes the specified message
+*
+* @return bool - True on success, False on failure.
+* @param integer $mid - Message ID to delete
+*/
 
 function pm_delete_message($mid)
 {
@@ -962,12 +1111,8 @@ function pm_delete_message($mid)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
-    // ------------------------------------------------------------
     // Get the PM data incase the sendee hasn't got a copy of it
     // in his Sent Items folder.
-    // ------------------------------------------------------------
 
     $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, PAF.FILENAME, AT.AID ";
     $sql.= "FROM PM PM ";
@@ -978,9 +1123,7 @@ function pm_delete_message($mid)
     $result = db_query($sql, $db_delete_pm);
     $db_delete_pm_row = db_fetch_array($result);
 
-    // ------------------------------------------------------------
     // Add the Sent Item
-    // ------------------------------------------------------------
 
     if (($db_delete_pm_row['TO_UID'] == $uid) && ($db_delete_pm_row['TYPE'] == PM_UNREAD)) {
 
@@ -993,10 +1136,8 @@ function pm_delete_message($mid)
         }
     }
 
-    // ------------------------------------------------------------
     // If it is the author deleting his Sent Item then
     // delete the attachment as well.
-    // ------------------------------------------------------------
 
     if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID']) && get_num_attachments($db_delete_pm_row['AID']) > 0) {
         delete_attachment_by_aid($db_delete_pm_row['AID']);
@@ -1010,6 +1151,15 @@ function pm_delete_message($mid)
 
 }
 
+/**
+* Archive a messages
+*
+* Archives the specified message to the user's Saved Items folder
+*
+* @return bool - True on success, False on failure.
+* @param integer $mid - Message ID to delete
+*/
+
 function pm_archive_message($mid)
 {
     $db_pm_archive_message = db_connect();
@@ -1018,12 +1168,8 @@ function pm_archive_message($mid)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
-    // ------------------------------------------------------------
     // Check to see if the the sender need an item in
     // his Sent Items folder.
-    // ------------------------------------------------------------
 
     $sql = "SELECT * FROM PM WHERE MID = '$mid'";
     $result = db_query($sql, $db_pm_archive_message);
@@ -1041,9 +1187,7 @@ function pm_archive_message($mid)
         }
     }
 
-    // ------------------------------------------------------------
     // Archive any PM that are in the User's Inbox
-    // ------------------------------------------------------------
 
     $sql = "UPDATE PM SET TYPE = ". PM_SAVED_IN. " ";
     $sql.= "WHERE MID = '$mid' AND (TYPE = ". PM_READ. " OR TYPE = ". PM_UNREAD. ") ";
@@ -1051,9 +1195,7 @@ function pm_archive_message($mid)
 
     $result = db_query($sql, $db_pm_archive_message);
 
-    // ------------------------------------------------------------
     // Archive any PM that are in the User's Sent Items
-    // ------------------------------------------------------------
 
     $sql = "UPDATE PM SET TYPE = ". PM_SAVED_OUT. " ";
     $sql.= "WHERE MID = '$mid' AND TYPE = ". PM_SENT. " AND FROM_UID = '$uid'";
@@ -1061,37 +1203,41 @@ function pm_archive_message($mid)
     $result = db_query($sql, $db_pm_archive_message);
 }
 
+/**
+* Check for new messages
+*
+* Check's to see if the current user (uses BH Session data) has any new messages.
+*
+* @return integer - number of new messages.
+* @param void.
+*/
+
 function pm_new_check()
 {
     $db_pm_new_check = db_connect();
     
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    // We only want to notify the user once even if they've
+    // received more than 1 message so we do an UPDATE and
+    // check the affected rows.
 
-    // ------------------------------------------------------------
-    // Check to see if the user has any new PMs
-    // ------------------------------------------------------------
-
-    $sql = "SELECT COUNT(MID) FROM PM ";
-    $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
-
+    $sql = "UPDATE PM SET NOTIFIED = 1 WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
     $result = db_query($sql, $db_pm_new_check);
-    list($pm_new_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    // ------------------------------------------------------------
-    // We only want to notify the user once per every new
-    // messages that arrives and NOT every time they reload
-    // the page, so set all NEW messages to UNREAD.
-    // ------------------------------------------------------------
-
-    $sql = "UPDATE PM SET NOTIFIED = 1 ";
-    $sql.= "WHERE NOTIFIED = 0 AND TO_UID = '$uid'";
-
-    $result = db_query($sql, $db_pm_new_check);
+    $pm_new_count = db_affected_rows($db_pm_new_check);
 
     return ($pm_new_count > 0) ? $pm_new_count : false;
 }
+
+/**
+* Get unread message count
+*
+* Gets the number of messages the user has yet to read / view.
+*
+* @return integer - number of unread messages.
+* @param void
+*/
 
 function pm_get_unread_count()
 {
@@ -1099,15 +1245,11 @@ function pm_get_unread_count()
     
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
     // Guests don't do PMs.
 
     if ($uid == 0) return false;
 
-    // ------------------------------------------------------------
     // Check to see if the user has any new PMs
-    // ------------------------------------------------------------
 
     $sql = "SELECT COUNT(MID) FROM PM ";
     $sql.= "WHERE TYPE = ". PM_UNREAD. " AND TO_UID = '$uid'";
@@ -1118,15 +1260,19 @@ function pm_get_unread_count()
     return $pm_unread_count;
 }
 
-// Function to prune the current user's PM Folders
-// Takes an optional UID parameter. If not specified
-// it uses the current user's UID.
+/**
+* Prune user folders
+*
+* Function to prune the current user's PM Folders Takes an optional UID parameter.
+* If not specified it uses the current user's UID.
+*
+* @return bool - True on success, False on failure.
+* @param integer $uid - Optional UID of user who's folder we want to clear.
+*/
 
 function pm_user_prune_folders($uid = false)
 {
     $db_pm_prune_folders = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
 
     if ($uid === false) {
         if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -1144,18 +1290,24 @@ function pm_user_prune_folders($uid = false)
         $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid')) ";
         $sql.= "AND CREATED < FROM_UNIXTIME($pm_prune_length)";
 
-        $result = db_query($sql, $db_pm_prune_folders);
+        if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
     }
+
+    return true;
 }
 
-// Same as above, but this function prunes everyone's folders
-// based on the settings set by the forum admin.
+/**
+* Prune all user's folders
+*
+* Function to prune all user's PM Folders based on the FORUM_SETTINGS setting.
+*
+* @return bool - True on success, False on failure.
+* @param void
+*/
 
 function pm_system_prune_folders()
 {
     $db_pm_prune_folders = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
 
@@ -1168,15 +1320,21 @@ function pm_system_prune_folders()
         $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. ")) ";
         $sql.= "AND CREATED < FROM_UNIXTIME($pm_prune_length)";
 
-        $result = db_query($sql, $db_pm_prune_folders);
+        if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
     }
+
+    return true;
 }
 
-// This function is purely just for the display of the
-// warning icon on the PM folders pages. It should not
-// be used for anything else as it is not designed to
-// distinguish between the prune setting being set by
-// the user or the system.
+/**
+* Check auto-prune option
+*
+* Checks to see if the auto-prune option is enabled either at the user
+* level or by the admin globally.
+*
+* @return bool - True on success, False on failure.
+* @param void.
+*/
 
 function pm_auto_prune_enabled()
 {
@@ -1191,12 +1349,21 @@ function pm_auto_prune_enabled()
     return ($pm_prune_length > 0);
 }
 
+/**
+* Check for attachments to messages
+*
+* Check to see if any of the messages have attachments and adds 
+* the attachment ID (AID) if applicable.
+*
+* @return void
+* @param array $pm_array - By Reference array of messages.
+* @param array $mid_array - Array of messages IDs to check.
+*/
+
 function pms_have_attachments(&$pm_array, $mid_array)
 {
     if (!is_array($mid_array)) return false;
     if (sizeof($mid_array) < 1) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
@@ -1216,11 +1383,19 @@ function pms_have_attachments(&$pm_array, $mid_array)
     }
 }
 
+/**
+* Check for attachments to a message
+*
+* Check to see if a message has any attachments and applies 
+* the attachment ID (AID) if applicable.
+*
+* @return mixed - False on error, attachment ID on success
+* @param integer $mid - Message ID to check for attachments.
+*/
+
 function pm_has_attachments($mid)
 {
     if (!is_numeric($mid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
@@ -1240,6 +1415,15 @@ function pm_has_attachments($mid)
 
     return false;
 }
+
+/**
+* Export messages
+*
+* Fetches the correct folder for export.
+*
+* @return mixed - False on error, array of messages on success.
+* @param integer $folder - Folder to export.
+*/
 
 function pm_export_get_messages($folder)
 {
@@ -1262,6 +1446,15 @@ function pm_export_get_messages($folder)
 
     return false;
 }
+
+/**
+* Generate HTML header for export
+*
+* Generates the HTML header for export of messages.
+*
+* @return string - HTML header
+* @param integer $mid - Message ID
+*/
 
 function pm_export_html_top($mid)
 {
@@ -1288,6 +1481,15 @@ function pm_export_html_top($mid)
     return $html;
 }
 
+/**
+* Generate HTML footer for export
+*
+* Generates the HTML footer for export of messages.
+*
+* @return void
+* @param void
+*/
+
 function pm_export_html_bottom()
 {
     $lang = load_language_file();
@@ -1297,6 +1499,16 @@ function pm_export_html_bottom()
 
     return $html;
 }
+
+/**
+* Export messages to HTML
+*
+* Exports messages to HTML and add them to zip file.
+*
+* @return bool
+* @param integer $folder - Folder ID to export
+* @param object $zipfile - By Reference zip file object from zip.inc.php class.
+*/
 
 function pm_export_html($folder, &$zipfile)
 {
@@ -1326,7 +1538,7 @@ function pm_export_html($folder, &$zipfile)
                 $pm_display.= pm_export_html_bottom();
                 $filename = "message_{$pm_message['MID']}.html";
                 $zipfile->addFile($pm_display, $filename);
-        $pm_display = pm_export_html_top(false);
+                $pm_display = pm_export_html_top(false);
             }
 
             if (isset($pm_message['AID'])) {
@@ -1346,6 +1558,16 @@ function pm_export_html($folder, &$zipfile)
 
     return false;
 }
+
+/**
+* Export messages to XML
+*
+* Exports messages to XML and add them to zip file.
+*
+* @return bool
+* @param integer $folder - Folder ID to export
+* @param object $zipfile - By Reference zip file object from zip.inc.php class.
+*/
 
 function pm_export_xml($folder, &$zipfile)
 {
@@ -1408,6 +1630,16 @@ function pm_export_xml($folder, &$zipfile)
     return false;
 }
 
+/**
+* Export messages to plaintext
+*
+* Exports messages to plaintext and add them to zip file.
+*
+* @return bool
+* @param integer $folder - Folder ID to export
+* @param object $zipfile - By Reference zip file object from zip.inc.php class.
+*/
+
 function pm_export_plaintext($folder, &$zipfile)
 {
     if (!is_numeric($folder)) return false;
@@ -1453,6 +1685,17 @@ function pm_export_plaintext($folder, &$zipfile)
 
     return false;
 }
+
+/**
+* Export attachments
+*
+* Exports attachments and add them to zip file.
+*
+* @return bool
+* @param integer $aid - Attachment ID
+* @param integer $from_uid - Sender UID to check owner of attachmennt.
+* @param object $zipfile - By Reference zip file object from zip.inc.php class.
+*/
 
 function pm_export_attachments($aid, $from_uid, &$zipfile)
 {

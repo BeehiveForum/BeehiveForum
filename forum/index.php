@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.125 2006-07-03 22:17:23 decoyduck Exp $ */
+/* $Id: index.php,v 1.126 2006-07-15 23:20:30 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -66,7 +66,15 @@ $lang = load_language_file();
 
 $top_html = html_get_top_page();
 
-if (bh_session_active()) {
+// Check to see if we have an active session
+
+$session_active = bh_session_active();
+
+// Clear the logon cookie
+
+bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+
+if ($session_active) {
 
     // Fetch the forum settings
 
@@ -195,7 +203,7 @@ echo "<body>\n";
 
 define('BEEHIVE_LIGHT_INCLUDE', 1);
 
-if (bh_session_active()) {
+if ($session_active) {
 
     if ($webtag = get_webtag($webtag_search)) {
 

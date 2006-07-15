@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.229 2006-07-14 21:46:13 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.230 2006-07-15 23:20:30 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -307,13 +307,7 @@ function bh_guest_session_init($use_sess_hash = false)
 
     // HTTP referrer
 
-    if (!$http_referer = bh_session_get_value('REFERER')) {
-        if (isset($_SERVER['HTTP_REFERER']) && strlen(trim($_SERVER['HTTP_REFERER'])) > 0) {
-            $http_referer = addslashes(trim($_SERVER['HTTP_REFERER']));
-        }else {
-            $http_referer = "";
-        }
-    }
+    $http_referer = bh_session_get_referer();
     
     if (user_guest_enabled()) {
 
@@ -417,9 +411,8 @@ function bh_session_active()
     $guest_auto_logon = forum_get_setting('guest_auto_logon', 'Y');
 
     if (isset($_COOKIE['bh_logon'])) return false;
-    if (isset($user_sess['UID'])) return true;
-    if (user_cookies_set()) return false;
-    if (user_guest_enabled() && $guest_auto_logon) return true;
+    if (user_cookies_set() && user_is_guest()) return false;
+    if ((user_guest_enabled() && $guest_auto_logon) || user_is_guest()) return true;
 
     return false;
 }
@@ -662,13 +655,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
         $forum_fid = 0;
     }
 
-    if (!$http_referer = bh_session_get_value('REFERER')) {
-        if (isset($_SERVER['HTTP_REFERER']) && strlen(trim($_SERVER['HTTP_REFERER'])) > 0) {
-            $http_referer = addslashes(trim($_SERVER['HTTP_REFERER']));
-        }else {
-            $http_referer = "";
-        }
-    }
+    $http_referer = bh_session_get_referer();
 
     $sql = "SELECT HASH FROM SESSIONS WHERE UID = $uid ";
     $sql.= "AND IPADDRESS = '$ipaddress'";
@@ -1045,6 +1032,20 @@ function bh_session_is_search_engine()
     }
 
     return false;
+}
+
+function bh_session_get_referer()
+{
+    if (!$http_referer = bh_session_get_value('REFERER')) {
+        if (isset($_SERVER['HTTP_REFERER']) && strlen(trim($_SERVER['HTTP_REFERER'])) > 0) {
+            $http_referer = addslashes(trim($_SERVER['HTTP_REFERER']));
+            if (stristr($http_referer, get_request_uri())) $http_referer = "";
+        }else {
+            $http_referer = "";
+        }
+    }
+
+    return $http_referer;
 }
 
 ?>

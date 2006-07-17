@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.73 2006-07-14 21:46:13 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.74 2006-07-17 13:13:35 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -557,50 +557,17 @@ function admin_get_ban_data()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $ipaddress_array = array();
-    $logon_array     = array();
-    $nickname_array  = array();
-    $email_array     = array();
-    $referer_array   = array();
+    $ban_data_array = array();
 
-    $sql = "SELECT IPADDRESS, LOGON, NICKNAME, EMAIL, REFERER ";
-    $sql.= "FROM {$table_data['PREFIX']}BANNED";
-
+    $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT FROM {$table_data['PREFIX']}BANNED";
     $result = db_query($sql, $db_admin_get_bandata);
 
-    while ($ban_data_array = db_fetch_array($result)) {
+    while ($row = db_fetch_array($result)) {
 
-        if (isset($ban_data_array['IPADDRESS']) && strlen(trim($ban_data_array['IPADDRESS'])) > 0) {
-
-            $ipaddress_array[] = $ban_data_array['IPADDRESS'];
-        }
-
-        if (isset($ban_data_array['LOGON']) && strlen(trim($ban_data_array['LOGON'])) > 0) {
-
-            $logon_array[] = $ban_data_array['LOGON'];
-        }
-
-        if (isset($ban_data_array['NICKNAME']) && strlen(trim($ban_data_array['NICKNAME'])) > 0) {
-
-            $nickname_array[] = $ban_data_array['NICKNAME'];
-        }
-
-        if (isset($ban_data_array['EMAIL']) && strlen(trim($ban_data_array['EMAIL'])) > 0) {
-
-            $email_array[] = $ban_data_array['EMAIL'];
-        }
-
-        if (isset($ban_data_array['REFERER']) && strlen(trim($ban_data_array['REFERER'])) > 0) {
-
-            $referer_array[] = $ban_data_array['REFERER'];
-        }
+        $ban_data_array[$row['ID']] = $row;
     }
 
-    return array('IPADDRESS' => $ipaddress_array,
-                 'LOGON'     => $logon_array,
-                 'NICKNAME'  => $nickname_array,
-                 'EMAIL'     => $email_array,
-                 'REFERER'   => $referer_array);
+    return (sizeof($ban_data_array) > 0) ? $ban_data_array : false;
 }
 
 ?>

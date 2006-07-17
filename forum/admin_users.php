@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.113 2006-07-14 21:46:13 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.114 2006-07-17 13:13:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -237,8 +237,15 @@ if (sizeof($admin_user_array['user_array']) > 0) {
         }
 
         if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
-            echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$user['REFERER']}</td>\n";
+
+            if (referer_is_banned($user['REFERER'])) {
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER']), "&amp;ret=admin_users.php\">{$user['REFERER']}</a> ({$lang['banned']})</td>\n";
+            }else {
+                echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER']), "&amp;ret=admin_users.php\">{$user['REFERER']}</a></td>\n";
+            }
+
         }else {
+
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;{$lang['unknown']}</td>\n";
         }
 
@@ -279,9 +286,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
         echo "                 <tr>\n";
         echo "                   <td class=\"posthead\" colspan=\"5\" align=\"left\">{$lang['nouseraccounts']}</td>\n";
         echo "                 </tr>\n";
-
     }
-
 }
 
 echo "                 <tr>\n";

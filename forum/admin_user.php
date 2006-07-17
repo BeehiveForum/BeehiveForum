@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.168 2006-07-14 21:46:13 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.169 2006-07-17 13:13:35 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -460,11 +460,11 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         if (ip_is_banned($user['IPADDRESS'])) {
 
-            echo "                        <td><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
+            echo "                        <td><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
 
         }else {
 
-            echo "                        <td><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
+            echo "                        <td><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
         }
 
         echo "                        \n";

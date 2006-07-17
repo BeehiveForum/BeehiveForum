@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.28 2006-07-14 21:46:14 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.29 2006-07-17 13:25:39 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -157,6 +157,62 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
+    // New BANNED table format for new 0.6.4 admin_banned.php
+
+    $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+
+    while (install_get_table_conflicts(false, false, array($banned_new))) {
+        $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    }
+
+    $sql = "CREATE TABLE {forum_webtag}_{$banned_new} (";
+    $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0',";
+    $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  PRIMARY KEY  (ID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Populate the new banned table with any older ban data
+
+    $ban_types = array('1' => 'IPADDRESS', '2' => 'LOGON',
+                       '3' => 'NICKNAME',  '4' => 'EMAIL');
+
+    foreach($ban_types as $ban_type => $old_column_name) {
+
+        $sql = "INSERT INTO {forum_webtag}_{$banned_new} (BANTYPE, BANDATA) ";
+        $sql.= "SELECT $ban_type, $old_column_name FROM {forum_webtag}_BANNED ";
+        $sql.= "WHERE $old_column_name IS NOT NULL";
+
+        $result = @db_query($sql, $db_install);
+    }
+
+    // Removed the old BANNED table
+
+    $sql = "DROP TABLE {$forum_webtag}_BANNED";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Rename our new BANNED table
+    
+    $sql = "ALTER TABLE {$forum_webtag}_{$banned_new} RENAME {$forum_webtag}_BANNED";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
     // New table to track thread view counts. This is in a
     // seperate table so that messages.php can update it quicker
     // than it can by hitting THREAD which causes locks on the
@@ -254,14 +310,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
     
     $sql = "ALTER TABLE {$forum_webtag}_{$upv_new} RENAME {$forum_webtag}_USER_POLL_VOTES";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE {$forum_webtag}_BANNED ADD REFERER VARCHAR(255)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

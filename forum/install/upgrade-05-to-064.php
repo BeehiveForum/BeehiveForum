@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.15 2006-07-14 21:46:14 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.16 2006-07-17 13:25:39 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -379,14 +379,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
-    $sql = "ALTER TABLE {$forum_webtag}_BANNED ADD REFERER VARCHAR(255)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
     $sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15)";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -604,14 +596,13 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     // Improved ban controls allow banning of IP, LOGON
-    // NICKNAME and EMAIL seperatly or in combinations.
+    // NICKNAME, EMAIL and HTTP REFERER
 
-    $sql = "CREATE TABLE {$forum_webtag}_BANNED (";
+    $sql = "CREATE TABLE {forum_webtag}_BANNED (";
     $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-    $sql.= "  IPADDRESS CHAR(15) NOT NULL DEFAULT '',";
-    $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
-    $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
-    $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
+    $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0',";
+    $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '',";
+    $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '',";
     $sql.= "  PRIMARY KEY  (ID)";
     $sql.= ") TYPE=MYISAM";
 
@@ -623,8 +614,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Insert the old IP addresses from the BANNED_IP table if any
 
-    $sql = "INSERT INTO {$forum_webtag}_BANNED (IPADDRESS) ";
-    $sql.= "SELECT IP FROM {$forum_webtag}_BANNED_IP";
+    $sql = "INSERT INTO {$forum_webtag}_BANNED (BANTYPE, BANDATA) ";
+    $sql.= "SELECT 1, IP FROM {$forum_webtag}_BANNED_IP";
 
     if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.211 2006-07-15 23:20:30 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.212 2006-07-18 20:16:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -942,7 +942,7 @@ function threads_get_folder($uid, $fid, $start = 0)
 
     // Get the folders the user can see.
 
-    if (!$folders = folder_get_available()) return array(0, 0);
+    if (!$folders = folder_get_available_array()) return array(0, 0);
 
     // Check to make sure the specified folder is available to the user.
 

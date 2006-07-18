@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.115 2006-07-18 20:16:42 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.116 2006-07-18 22:06:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,10 +88,10 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 // Friendly display names for column sorting
 
-$sort_by_array = array('USER.UID'        => 'User ID',
-                       'USER.LOGON'      => 'Logon',
-                       'USER.LAST_LOGON' => 'Last Logon',
-                       'SESSION.REFERER' => 'Referer');
+$sort_by_array = array('USER.UID'               => 'User ID',
+                       'USER.LOGON'             => 'Logon',
+                       'VISITOR_LOG.LAST_LOGON' => 'Last Logon',
+                       'SESSIONS.REFERER'        => 'Referer');
 
 // Column sorting stuff
 
@@ -103,12 +103,12 @@ if (isset($_GET['sort_by'])) {
     } elseif ($_GET['sort_by'] == "LAST_LOGON") {
         $sort_by = "VISITOR_LOG.LAST_LOGON";
     } elseif ($_GET['sort_by'] == "REFERER") {
-        $sort_by = "SESSION.REFERER";
+        $sort_by = "SESSIONS.REFERER";
     } else {
-        $sort_by = "USER.LAST_LOGON";
+        $sort_by = "VISITOR_LOG.LAST_LOGON";
     }
 } else {
-    $sort_by = "USER.LAST_LOGON";
+    $sort_by = "VISITOR_LOG.LAST_LOGON";
 }
 
 if (isset($_GET['sort_dir'])) {
@@ -189,9 +189,9 @@ if ($sort_by == 'USER.LOGON' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }
 
-if ($sort_by == 'USER.LAST_LOGON' && $sort_dir == 'ASC') {
+if ($sort_by == 'VISITOR_LOG.LAST_LOGON' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['lastlogon']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
-}elseif ($sort_by == 'USER.LAST_LOGON' && $sort_dir == 'DESC') {
+}elseif ($sort_by == 'VISITOR_LOG.LAST_LOGON' && $sort_dir == 'DESC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['lastlogon']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['lastlogon']}</a></td>\n";
@@ -199,9 +199,9 @@ if ($sort_by == 'USER.LAST_LOGON' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['lastlogon']}</a></td>\n";
 }
 
-if ($sort_by == 'SESSION.REFERER' && $sort_dir == 'ASC') {
+if ($sort_by == 'SESSIONS.REFERER' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['sessionreferer']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
-}elseif ($sort_by == 'SESSION.REFERER' && $sort_dir == 'DESC') {
+}elseif ($sort_by == 'SESSIONS.REFERER' && $sort_dir == 'DESC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['sessionreferer']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;usersearch=$usersearch&amp;page=$page\">{$lang['sessionreferer']}</a></td>\n";

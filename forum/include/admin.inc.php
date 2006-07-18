@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.75 2006-07-18 20:30:34 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.76 2006-07-18 22:06:09 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -272,7 +272,7 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
 {
     $db_user_search = db_connect();
 
-    $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSION.REFERER');
+    $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
 
     $usersearch = addslashes($usersearch);
@@ -343,7 +343,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     $db_user_get_all = db_connect();
     $user_get_all_array = array();
 
-    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON');
+    $sort_by_array  = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';

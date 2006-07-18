@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogout.php,v 1.37 2006-06-30 18:07:33 decoyduck Exp $ */
+/* $Id: llogout.php,v 1.38 2006-07-18 16:29:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -75,7 +75,6 @@ $lang = load_language_file();
 
 if (bh_session_get_value('UID') == 0) {
 
-    bh_session_end();
     bh_setcookie("bh_logon", "1");
 
     $uri = "./llogon.php?webtag=$webtag";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.144 2006-07-15 11:57:57 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.145 2006-07-18 20:16:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -205,7 +205,11 @@ function pm_get_inbox($offset = false)
 {
     $db_pm_get_inbox = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!is_numeric($offset)) $offset = false;
 
     $pm_get_inbox_array = array();
     $mid_array = array();
@@ -280,7 +284,11 @@ function pm_get_outbox($offset = false)
 {
     $db_pm_get_outbox = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!is_numeric($offset)) $offset = false;
 
     $pm_get_outbox_array = array();
     $mid_array = array();
@@ -355,7 +363,11 @@ function pm_get_sent($offset = false)
 {
     $db_pm_get_outbox = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+    
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!is_numeric($offset)) $offset = false;
 
     $pm_get_sent_array = array();
     $mid_array = array();
@@ -428,11 +440,13 @@ function pm_get_sent($offset = false)
 
 function pm_get_saveditems($offset = false)
 {
-    if (!is_numeric($offset)) $offset = 0;
-
     $db_pm_get_saveditems = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!is_numeric($offset)) $offset = false;
 
     $pm_get_saveditems_array = array();
     $mid_array = array();
@@ -580,6 +594,8 @@ function pm_user_get_friends()
 {
     $db_pm_user_get_friends = db_connect();
 
+    if (!$table_data = get_table_prefix()) return false;
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $user_rel = USER_FRIEND;
@@ -663,6 +679,8 @@ function pm_get_subject($mid, $tuid)
 function pm_single_get($mid, $folder)
 {
     $db_pm_list_get = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -983,12 +1001,13 @@ function draw_header_pm()
 }
 
 /**
-* Get Inbox
+* Save Attachment ID
 *
-* Gets the contents of the user's inbox.
+* Save the assigned attachment ID to the PM
 *
-* @return mixed - false on failure, array on success
-* @param integer $offset - Optional offset for viewing pages of messages.
+* @return bool
+* @param integer $mid - Message ID
+* @param md5 $aid - Message attachment ID
 */
 
 function pm_save_attachment_id($mid, $aid)
@@ -998,21 +1017,20 @@ function pm_save_attachment_id($mid, $aid)
 
     $db_pm_save_attachment_id = db_connect();
 
-    $sql = "SELECT * FROM PM_ATTACHMENT_IDS WHERE MID = $mid";
-    $result = db_query($sql, $db_pm_save_attachment_id);
+    $sql = "UPDATE PM_ATTACHMENT_IDS SET AID = '$aid' ";
+    $sql.= "WHERE MID = $mid";
 
-    if (db_num_rows($result) > 0) {
+    if (!db_query($sql, $db_pm_save_attachment_id)) return false;
 
-        $sql = "UPDATE PM_ATTACHMENT_IDS SET AID = '$aid' ";
-        $sql.= "WHERE MID = $mid";
-
-    }else {
-
+    if (db_affected_rows($db_pm_save_attachment_id) < 1) {
+    
         $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
         $sql.= "VALUES ($mid, '$aid')";
+
+        if (!db_query($sql, $db_pm_save_attachment_id)) return false;
     }
 
-    return db_query($sql, $db_pm_save_attachment_id);
+    return true;
 }
 
 /**
@@ -1365,6 +1383,8 @@ function pms_have_attachments(&$pm_array, $mid_array)
     if (!is_array($mid_array)) return false;
     if (sizeof($mid_array) < 1) return false;
 
+    if (!$table_data = get_table_prefix()) return false;
+    
     $forum_fid = $table_data['FID'];
 
     $mid_list = implode(",", preg_grep("/^[0-9]+$/", $mid_array));
@@ -1397,6 +1417,8 @@ function pm_has_attachments($mid)
 {
     if (!is_numeric($mid)) return false;
 
+    if (!$table_data = get_table_prefix()) return false;
+    
     $forum_fid = $table_data['FID'];
 
     $db_thread_has_attachments = db_connect();

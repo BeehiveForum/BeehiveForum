@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.112 2006-06-13 21:03:22 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.113 2006-07-18 20:16:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -358,6 +358,25 @@ function format_birthday($date) // $date is a MySQL-type DATE field (YYYY-MM-DD)
     }
 
     return date("j M", mktime(0, 0, 0, $date_bits[1], $date_bits[2], $year));
+}
+
+function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = false)
+{
+    if ($url_parts = @parse_url($url)) {
+        
+        if (!isset($url_parts['scheme'])) return false;
+        if (!isset($url_parts['host'])) return false;
+
+        $url_split = "{$url_parts['scheme']}://{$url_parts['host']}/";
+
+        if ($inc_path === true) $url_split.= "{$url_parts['path']}";
+        if ($inc_query === true) $url_split.= "{$url_parts['query']}";
+        if ($inc_fragment === true) $url_split.= "{$url_parts['fragment']}";
+
+        return $url_split;
+    }
+
+    return false;
 }
 
 ?>

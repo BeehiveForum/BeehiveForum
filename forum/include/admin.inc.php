@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.74 2006-07-17 13:13:35 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.75 2006-07-18 20:30:34 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -551,15 +551,30 @@ function admin_get_forum_list()
 * @void
 */
 
-function admin_get_ban_data()
+function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 {
     $db_admin_get_bandata = db_connect();
+
+    $sort_by_array = array('ID', 'BANTYPE', 'BANDATA', 'COMMENT');
+    $sort_dir_array = array('ASC', 'DESC');
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'ID';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
+
+    if (!is_numeric($offset)) $offset = 0;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $ban_data_array = array();
 
-    $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT FROM {$table_data['PREFIX']}BANNED";
+    $sql = "SELECT COUNT(ID) AS BAN_COUNT FROM {$table_data['PREFIX']}BANNED";
+
+    $result = db_query($sql, $db_admin_get_bandata);
+    list($ban_data_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT FROM {$table_data['PREFIX']}BANNED ";
+    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+
     $result = db_query($sql, $db_admin_get_bandata);
 
     while ($row = db_fetch_array($result)) {
@@ -567,7 +582,8 @@ function admin_get_ban_data()
         $ban_data_array[$row['ID']] = $row;
     }
 
-    return (sizeof($ban_data_array) > 0) ? $ban_data_array : false;
+    return array('ban_count' => $ban_data_count,
+                 'ban_array' => $ban_data_array);
 }
 
 ?>

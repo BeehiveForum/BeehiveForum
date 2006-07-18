@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.24 2006-07-17 13:13:35 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.25 2006-07-18 20:30:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -116,6 +116,12 @@ if (isset($_GET['sort_dir'])) {
     }
 } else {
     $sort_dir = "DESC";
+}
+
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}else {
+    $page = 1;
 }
 
 $valid = true;
@@ -530,41 +536,46 @@ echo "                   <td class=\"subhead\" align=\"left\" width=\"50\">&nbsp
 
 
 if ($sort_by == 'BANTYPE' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
 }elseif ($sort_by == 'BANTYPE' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC\">Ban Type</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC\">Ban Type</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
 }
 
 if ($sort_by == 'BANDATA' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC\">Ban Data&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
 }elseif ($sort_by == 'BANDATA' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC\">Ban Data&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC\">Ban Data</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC\">Ban Data</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data</a></td>\n";
 }
 
 if ($sort_by == 'COMMENT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=DESC\">Comment&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=DESC&amp;page=$page\">Comment&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
 }elseif ($sort_by == 'COMMENT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=ASC\">Comment&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=ASC&amp;page=$page\">Comment&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
 }elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=ASC\">Comment</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=ASC&amp;page=$page\">Comment</a></td>\n";
 }else {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=DESC\">Comment</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=DESC&amp;page=$page\">Comment</a></td>\n";
 }
 
 echo "                   <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;{$lang['delete']}&nbsp;</td>\n";
 echo "                 </tr>\n";
 
-if ($ban_list_array = admin_get_ban_data()) {
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
 
-    foreach($ban_list_array as $ban_list_id => $ban_list_entry) {
+$ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
+
+if (sizeof($ban_list_array['ban_array']) > 0) {
+
+    foreach($ban_list_array['ban_array'] as $ban_list_id => $ban_list_entry) {
 
         echo "                 <tr>\n";
         echo "                   <td>&nbsp;</td>\n";
@@ -588,6 +599,12 @@ if ($ban_list_array = admin_get_ban_data()) {
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $ban_list_array['ban_count'], 10), "</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
     echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['update']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -606,6 +623,9 @@ if ($ban_list_array = admin_get_ban_data()) {
     echo "           </tr>\n";
     echo "         </table>\n";
     echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 }

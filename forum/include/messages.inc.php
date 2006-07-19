@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.407 2006-07-12 17:41:55 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.408 2006-07-19 09:18:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1405,13 +1405,13 @@ function messages_set_read($tid, $pid, $uid, $modified)
 
             $result = db_query($sql, $db_message_set_read);
 
-            if (db_affected_rows($db_message_update_read) < 1) {
+            if (db_affected_rows($db_message_set_read) < 1) {
 
                 $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD ";
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NOW())";
 
-                if (!$result = db_query($sql, $db_message_update_read)) return false;
+                if (!$result = db_query($sql, $db_message_set_read)) return false;
             }
         }
     }

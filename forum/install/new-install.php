@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.109 2006-07-14 21:46:14 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.110 2006-07-19 17:49:40 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -577,6 +577,7 @@ $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
 $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL,";
 $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL,";
+$sql.= "  USER_TIME_UPDATED DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
 

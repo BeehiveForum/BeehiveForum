@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.231 2006-07-18 16:29:28 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.232 2006-07-19 17:49:39 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -465,7 +465,10 @@ function bh_remove_stale_sessions()
 
             $session_stamp = time() - $session_cutoff;
 
-            $sql = "SELECT UID FROM SESSIONS WHERE TIME < FROM_UNIXTIME($session_stamp)";
+            $sql = "SELECT UID FROM SESSIONS WHERE ";
+            $sql.= "TIME < FROM_UNIXTIME($session_stamp) ";
+            $sql.= "AND UID > 0";
+
             $result = db_query($sql, $db_bh_remove_stale_sessions);
 
             while ($session_data = db_fetch_array($result)) {
@@ -564,7 +567,7 @@ function bh_update_user_time($uid)
     $db_bh_update_user_time = db_connect();
         
     $sql = "SELECT UNIX_TIMESTAMP(NOW()) AS TIME, UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON ";
-    $sql.= "FROM VISITOR_LOG WHERE UID = '$uid' AND FORUM = '$forum_fid'";
+    $sql.= "FROM VISITOR_LOG WHERE FORUM = '$forum_fid' AND UID = '$uid'";
 
     $result = db_query($sql, $db_bh_update_user_time);
 
@@ -580,9 +583,10 @@ function bh_update_user_time($uid)
                     $session_length = $user_track['TIME'] - $user_track['LAST_LOGON'];
                 }
 
-                $sql = "SELECT UNIX_TIMESTAMP(USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
-                $sql.= "UNIX_TIMESTAMP(USER_TIME_BEST) AS USER_TIME_BEST FROM ";
-                $sql.= "{$table_data['PREFIX']}USER_TRACK ";
+                $sql = "SELECT UNIX_TIMESTAMP(USER_TIME_BEST) AS USER_TIME_BEST, ";
+                $sql.= "UNIX_TIMESTAMP(USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
+                $sql.= "UNIX_TIMESTAMP(USER_TIME_UPDATED) AS USER_TIME_UPDATED ";
+                $sql.= "FROM {$table_data['PREFIX']}USER_TRACK ";
                 $sql.= "WHERE UID = '$uid'";
 
                 $result = db_query($sql, $db_bh_update_user_time);
@@ -593,34 +597,41 @@ function bh_update_user_time($uid)
 
                     $update_columns_array = array();
 
+                    // Longest Session
+
                     if (!isset($user_time['USER_TIME_BEST']) || is_null($user_time['USER_TIME_BEST'])) {
                         $user_time['USER_TIME'] = 0;
-                    }
-
-                    if (!isset($user_time['USER_TIME_TOTAL']) || is_null($user_time['USER_TIME_TOTAL'])) {
-                        $user_time['USER_TIME_TOTAL'] = 0;
                     }
 
                     if ($session_length > $user_time['USER_TIME_BEST']) {
                         $update_columns_array[] = "USER_TIME_BEST = FROM_UNIXTIME('$session_length')";
                     }
 
-                    $session_length += $user_time['USER_TIME_TOTAL'];
-                    $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_length')";
+                    // Total Session Length
+
+                    $session_total = 0;
+
+                    if ($user_track['TIME'] > $user_time['USER_TIME_UPDATED']) {
+                        $session_total = ($user_track['TIME'] - $user_time['USER_TIME_UPDATED']);
+                    }
+
+                    $session_total += $user_time['USER_TIME_TOTAL'];
+
+                    $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_total')";
 
                     $update_columns = implode(", ", $update_columns_array);
 
-                    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
-                    $sql.= "SET $update_columns WHERE UID = '$uid'";
+                    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
+                    $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
 
                     $result = db_query($sql, $db_bh_update_user_time);
 
                 }else {
 
                     $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
-                    $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL) ";
+                    $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
                     $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
-                    $sql.= "FROM_UNIXTIME('$session_length'))";
+                    $sql.= "FROM_UNIXTIME('$session_length'), NOW())";
 
                     $result = db_query($sql, $db_bh_update_user_time);
                 }

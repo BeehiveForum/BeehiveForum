@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.53 2006-06-30 18:07:34 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.54 2006-07-19 09:18:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -153,13 +153,13 @@ if (isset($_POST['back'])) {
 if (isset($_POST['markasread']) && is_numeric($_POST['markasread']) && $_POST['markasread'] != $threaddata['LAST_READ']) {
 
     $threaddata['LAST_READ'] = $_POST['markasread'];
-    messages_set_read($tid, $threaddata['LAST_READ'], $uid);
+    messages_set_read($tid, $threaddata['LAST_READ'], $uid, $threaddata['MODIFIED']);
     $update = true;
 
 }else if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
     $markasread = $_GET['markasread'];
-    messages_set_read($tid, $markasread, $uid);
+    messages_set_read($tid, $markasread, $uid, $threaddata['MODIFIED']);
 
     $uri = "./messages.php?webtag=$webtag&msg=$tid.$pid&markasread=1";
     header_redirect($uri);

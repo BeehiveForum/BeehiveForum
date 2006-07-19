@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.232 2006-07-19 17:49:39 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.233 2006-07-19 22:13:18 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -52,6 +52,7 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "stats.inc.php");
 include_once(BH_INCLUDE_PATH. "search.inc.php");
+include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Checks the session and returns it as an array.
@@ -192,6 +193,10 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
                 // Delete expired sessions
 
                 bh_remove_stale_sessions();
+
+                // Prune unread thread data
+
+                thread_auto_prune_unread_data();
             }
 
             return $user_sess;
@@ -363,6 +368,8 @@ function bh_guest_session_init($use_sess_hash = false)
                 $result = db_query($sql, $db_bh_guest_session_init);
 
                 bh_remove_stale_sessions();
+
+                thread_auto_prune_unread_data();
             }
 
         }else {
@@ -455,7 +462,10 @@ function bh_remove_stale_sessions()
 
     $forum_fid = $table_data['FID'];
     
-    $sess_rem_prob = intval(forum_get_setting('sess_rem_prob', false, 1));
+    $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1));
+
+    if ($sess_rem_prob < 1) $sess_rem_prob = 1;
+    if ($sess_rem_prob > 100) $sess_rem_prob = 100;
 
     if ((time() % (100 / $sess_rem_prob)) == 0) {
 
@@ -578,6 +588,7 @@ function bh_update_user_time($uid)
             if (isset($user_track['LAST_LOGON']) && !is_null($user_track['LAST_LOGON'])) {
 
                 $session_length = 0;
+                $session_difference = 0;
 
                 if ($user_track['TIME'] > $user_track['LAST_LOGON']) {
                     $session_length = $user_track['TIME'] - $user_track['LAST_LOGON'];
@@ -597,41 +608,72 @@ function bh_update_user_time($uid)
 
                     $update_columns_array = array();
 
-                    // Longest Session
+                    // if USER_TIME_BEST is not set or is null we need
+                    // to make sure it is set to 0 or weird things
+                    // can happen.
 
                     if (!isset($user_time['USER_TIME_BEST']) || is_null($user_time['USER_TIME_BEST'])) {
                         $user_time['USER_TIME'] = 0;
                     }
 
+                    // If the current session length is greater than
+                    // the last recorded longest user session we
+                    // need to update it.
+
                     if ($session_length > $user_time['USER_TIME_BEST']) {
                         $update_columns_array[] = "USER_TIME_BEST = FROM_UNIXTIME('$session_length')";
                     }
 
-                    // Total Session Length
+                    // If USER_TIME_UPDATED and USER_TIME_TOTAL columns
+                    // are not set or are null we need to make sure they
+                    // are set to the current time and 0 (respectively)
+                    // or weird things can happen.
 
-                    $session_total = 0;
-
-                    if ($user_track['TIME'] > $user_time['USER_TIME_UPDATED']) {
-                        $session_total = ($user_track['TIME'] - $user_time['USER_TIME_UPDATED']);
+                    if (!isset($user_time['USER_TIME_UPDATED']) || is_null($user_time['USER_TIME_UPDATED'])) {
+                        $user_time['USER_TIME_UPDATED'] = time();
                     }
 
-                    $session_total += $user_time['USER_TIME_TOTAL'];
+                    if (!isset($user_time['USER_TIME_TOTAL']) || is_null($user_time['USER_TIME_TOTAL'])) {
+                        $user_time['USER_TIME_TOTAL'] = 0;
+                    }
 
-                    $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_total')";
+                    // If the time from the MySQL server is greater than
+                    // the last time we updated the USER_TIME_TOTAL column
+                    // then we need to update it again.
 
-                    $update_columns = implode(", ", $update_columns_array);
+                    if ($user_track['TIME'] > $user_time['USER_TIME_UPDATED']) {
 
-                    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
-                    $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
+                        $session_difference = ($user_track['TIME'] - $user_time['USER_TIME_UPDATED']);
+                        $session_difference += $user_time['USER_TIME_TOTAL'];
+                    }
 
-                    $result = db_query($sql, $db_bh_update_user_time);
+                    // Add the USER_TIME_TOTAL column for updating even if
+                    // we have no update as it may be null and need setting
+                    // to zero.
+                    
+                    $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_difference')";
+
+                    // We should only update if we actually have some
+                    // columns that need changing.
+
+                    if (sizeof($update_columns_array) > 0) {
+
+                        $update_columns = implode(", ", $update_columns_array);
+
+                        $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
+                        $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
+
+                        $result = db_query($sql, $db_bh_update_user_time);
+                    }
 
                 }else {
 
+                    // No existing data for this user was found in the USER_TRACK
+                    // table so we need to insert a new row.
+
                     $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
                     $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
-                    $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
-                    $sql.= "FROM_UNIXTIME('$session_length'), NOW())";
+                    $sql.= "VALUES ('$uid', 0, 0, NOW())";
 
                     $result = db_query($sql, $db_bh_update_user_time);
                 }

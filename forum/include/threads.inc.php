@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.213 2006-07-19 19:37:52 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.214 2006-07-19 22:13:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1708,6 +1708,53 @@ function thread_has_attachments($tid)
     $result = db_query($sql, $db_thread_has_attachments);
 
     return (db_num_rows($result) > 0);
+}
+
+function thread_auto_prune_unread_data()
+{
+    $db_thread_prune_unread_data = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!$unread_cutoff_stamp = forum_get_unread_cutoff()) return false;
+
+    $unread_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 1));
+
+    if ($unread_rem_prob < 1) $unread_rem_prob = 1;
+    if ($unread_rem_prob > 100) $unread_rem_prob = 100;
+
+    if ((time() % (100 / $unread_rem_prob)) == 0) {
+
+        $tid_array = array();
+
+        $sql = "SELECT THREAD.TID FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+        $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
+        $sql.= "WHERE USER_THREAD.LAST_READ IS NOT NULL ";
+        $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME('$unread_cutoff_stamp') ";
+        $sql.= "GROUP BY THREAD.TID LIMIT 0, 10";
+
+        if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+
+        if (db_num_rows($result) > 0) {
+
+            while ($row = db_fetch_array($result)) {
+                $tid_array[] = $row['TID'];
+            }
+
+            if (sizeof($tid_array) > 0) {
+
+                $tid_list = implode(", ", $tid_array);
+
+                $sql = "DELETE LOW_PRIORITY FROM DEFAULT_USER_THREAD ";
+                $sql.= "WHERE TID IN ($tid_list) AND INTEREST = 0";
+
+                if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 ?>

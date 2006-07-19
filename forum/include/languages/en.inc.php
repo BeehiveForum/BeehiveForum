@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.332 2006-07-14 22:57:49 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.333 2006-07-19 19:37:52 decoyduck Exp $ */
 
 // International English language file
 
@@ -463,26 +463,20 @@ $lang['mustchooseaendmonth'] = "Must choose a end month";
 $lang['mustchooseaendyear'] = "Must choose a end year";
 $lang['startperiodisaheadofendperiod'] = "Start period is ahead of end period";
 $lang['bancontrols'] = "Ban Controls";
-$lang['bannedipaddresses'] = "Banned IP Addresses";
-$lang['currentbannedipaddresses'] = "Current banned IP Addresses";
-$lang['addbannedipaddress'] = "Add banned IP Address";
-$lang['bannedlogons'] = "Banned Logons";
-$lang['currentbannedlogons'] = "Current banned logons";
-$lang['addbannedlogon'] = "Add banned logon";
-$lang['bannednicknames'] = "Banned Nicknames";
-$lang['currentbannednicknames'] = "Current banned nicknames";
-$lang['addbannednickname'] = "Add banned nickname";
-$lang['bannedemailaddresses'] = "Banned Email Addresses";
-$lang['currentbannedemailaddress'] = "Current banned Email address";
-$lang['addbannedemailaddress'] = "Add banned Email Address";
-$lang['bannedreferers'] = "Banned Referers";
-$lang['currentbannedreferers'] = "Current banned referers";
-$lang['addbannedreferer'] = "Add banned referer";
+$lang['addbandata'] = "Add Ban Data";
+$lang['removebandata'] = "Remove Ban Data";
+$lang['confirmaddban'] = "Please confirm that you want to add the following ban data to the database";
+$lang['confirmremoveban'] = "Please confirm that you want to remove the following ban data from the database";
+$lang['ipaddress'] = "IP Address";
+$lang['httpreferrer'] = "HTTP Referrer";
+$lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
+$lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
+$lang['mustspecifybantype'] = "You must specify a ban type";
+$lang['mustspecifybandata'] = "You must specify some ban data";
+$lang['failedtoremoveban'] = "Failed to remove ban data with ID: %s";
+$lang['duplicatebandataentered'] = "Duplicate ban data entered. Please check your wildcards to see if they already match the data entered";
+$lang['noexistingbandata'] = "There is no existing ban data. To add some ban data please use the form below.";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
-$lang['ipaddressisalreadybanned'] = "That IP Address is already banned. Check your wildcards to see if they already match it.";
-$lang['logonisalreadybanned'] = "That Logon is already banned. Check your wildcards to see if they already match it.";
-$lang['nicknameisalreadybanned'] = "That Nickname is already banned. Check your wildcards to see if they already match it.";
-$lang['emailisalreadybanned'] = "That Email Address is already banned. Check your wildcards to see if they already match it.";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";

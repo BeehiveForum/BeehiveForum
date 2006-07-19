@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.212 2006-07-18 20:16:43 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.213 2006-07-19 19:37:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1135,6 +1135,10 @@ function threads_get_most_recent($limit = 10, $titles_only = false)
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
+    // Thread cut off period for unread type messages
+
+    $unread_cutoff_stamp = forum_get_unread_cutoff();
+
     if (user_is_guest()) {
 
         $sql = "SELECT THREAD.TID, THREAD.TITLE, THREAD.STICKY, ";
@@ -1189,7 +1193,17 @@ function threads_get_most_recent($limit = 10, $titles_only = false)
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
             if (!isset($thread['INTEREST'])) $thread['INTEREST'] = 0;
-            if (!isset($thread['LAST_READ'])) $thread['LAST_READ'] = $thread['LENGTH'];
+
+            if (!isset($thread['LAST_READ']) || is_null($thread['LAST_READ'])) {
+
+                $thread['LAST_READ'] = 0;
+                
+                if (isset($thread['MODIFIED']) && ($thread['MODIFIED'] > $unread_cutoff_stamp)) {
+                    $thread['LAST_READ'] = 0;
+                }else if (isset($thread['LENGTH'])) {
+                    $thread['LAST_READ'] = $thread['LENGTH'];
+                }
+            }
 
             if ($titles_only === true) {
 

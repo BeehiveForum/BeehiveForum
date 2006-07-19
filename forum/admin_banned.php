@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.25 2006-07-18 20:30:34 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.26 2006-07-19 19:37:52 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -209,13 +209,13 @@ if (isset($add_new_ban_type) && isset($add_new_ban_data)
     if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
 
         echo "                 <tr>\n";
-        echo "                   <td class=\"subhead\">Add Ban Data</td>\n";
+        echo "                   <td class=\"subhead\">{$lang['addbandata']}</td>\n";
         echo "                 </tr>\n";
 
     }else {
 
         echo "                 <tr>\n";
-        echo "                   <td class=\"subhead\">Remove Ban Data</td>\n";
+        echo "                   <td class=\"subhead\">{$lang['removebandata']}</td>\n";
         echo "                 </tr>\n";
     }
 
@@ -228,7 +228,7 @@ if (isset($add_new_ban_type) && isset($add_new_ban_data)
 
         echo "                     <table class=\"posthead\" width=\"95%\">\n";
         echo "                       <tr>\n";
-        echo "                         <td>Please confirm that you want to add the following ban data to the database:</td>\n";
+        echo "                         <td>{$lang['confirmaddban']}:</td>\n";
         echo "                       </tr>\n";
         echo "                       <tr>\n";
         echo "                         <td>&nbsp;</td>\n";
@@ -237,13 +237,13 @@ if (isset($add_new_ban_type) && isset($add_new_ban_data)
         if ($add_new_ban_type == BAN_TYPE_IP) {
 
             echo "                       <tr>\n";
-            echo "                         <td><b>IP Address: $add_new_ban_data</b></td>\n";
+            echo "                         <td><b>{$lang['ipaddress']}: $add_new_ban_data</b></td>\n";
             echo "                       </tr>\n";
 
         }elseif ($add_new_ban_type == BAN_TYPE_REF) {
 
             echo "                       <tr>\n";
-            echo "                         <td><b>HTTP Referer: $add_new_ban_data</b></td>\n";
+            echo "                         <td><b>{$lang['httpreferrer']}: $add_new_ban_data</b></td>\n";
             echo "                       </tr>\n";
         }
 
@@ -253,7 +253,7 @@ if (isset($add_new_ban_type) && isset($add_new_ban_data)
             echo "                         <td>&nbsp;</td>\n";
             echo "                       </tr>\n";
             echo "                       <tr>\n";
-            echo "                         <td>This ban may affect the following active user sessions:</td>\n";
+            echo "                         <td>{$lang['affectsessionwarnadd']}:</td>\n";
             echo "                       </tr>\n";
             echo "                       <tr>\n";
             echo "                         <td>\n";
@@ -277,7 +277,7 @@ if (isset($add_new_ban_type) && isset($add_new_ban_data)
 
         echo "                     <table class=\"posthead\" width=\"95%\">\n";
         echo "                       <tr>\n";
-        echo "                         <td>Please confirm that you want to remove the following ban data from the database:</td>\n";
+        echo "                         <td>{$lang['confirmremoveban']}:</td>\n";
         echo "                       </tr>\n";
         echo "                       <tr>\n";
         echo "                         <td>&nbsp;</td>\n";
@@ -286,13 +286,13 @@ if (isset($add_new_ban_type) && isset($add_new_ban_data)
         if ($remove_ban_type == BAN_TYPE_IP) {
 
             echo "                       <tr>\n";
-            echo "                         <td><b>IP Address: $remove_ban_data</b></td>\n";
+            echo "                         <td><b>{$lang['ipaddress']}: $remove_ban_data</b></td>\n";
             echo "                       </tr>\n";
 
         }elseif ($remove_ban_type == BAN_TYPE_REF) {
 
             echo "                       <tr>\n";
-            echo "                         <td><b>HTTP Referer: $remove_ban_data</b></td>\n";
+            echo "                         <td><b>{$lang['httpreferrer']}: $remove_ban_data</b></td>\n";
             echo "                       </tr>\n";
         }
 
@@ -302,7 +302,7 @@ if (isset($add_new_ban_type) && isset($add_new_ban_data)
             echo "                         <td>&nbsp;</td>\n";
             echo "                       </tr>\n";
             echo "                       <tr>\n";
-            echo "                         <td>This ban affects the following active user sessions:</td>\n";
+            echo "                         <td>{$lang['affectsessionwarnremove']}:</td>\n";
             echo "                       </tr>\n";
             echo "                       <tr>\n";
             echo "                         <td>\n";
@@ -419,18 +419,18 @@ if (isset($_POST['add'])) {
 
         }else {
 
-            $error_html.= "<h2>You must specify a ban type</h2>\n";
+            $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
             $valid = false;
         }
 
     }else if (!isset($new_ban_type) && isset($new_ban_data)) {
 
-        $error_html.= "<h2>You must specify a ban type</h2>\n";
+        $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
         $valid = false;
 
     }else if (!isset($new_ban_data) && isset($new_ban_type) && $new_ban_type > 0) {
 
-        $error_html.= "<h2>You must specify some ban data</h2>\n";
+        $error_html.= "<h2>{$lang['mustspecifybandata']}</h2>\n";
         $valid = false;
     }
 }
@@ -448,7 +448,7 @@ if (isset($_POST['update'])) {
                 if (!remove_ban_data_by_id($ban_id)) {
 
                     $valid = false;
-                    $error_html.= "<h2>Failed to remove ban data with ID: $ban_id</h2>\n";
+                    $error_html.= "<h2>". sprintf($lang['failedtoremoveban'], $ban_id). "</h2>\n";
                 }
             }
         }
@@ -481,7 +481,7 @@ if (isset($_POST['update'])) {
                         }else {
 
                             $valid = false;
-                            $error_html.= "<h2>{$lang['ipaddressisalreadybanned']}</h2>\n";
+                            $error_html.= "<h2>{$lang['duplicatebandataentered']}</h2>\n";
                         }
 
                     }else {
@@ -492,13 +492,13 @@ if (isset($_POST['update'])) {
                 
                 }else {
 
-                    $error_html.= "<h2>You must specify some ban data</h2>\n";
+                    $error_html.= "<h2>{$lang['mustspecifybandata']}</h2>\n";
                     $valid = false;
                 }
 
             }else {
 
-                $error_html.= "<h2>You must specify a ban type</h2>\n";
+                $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
                 $valid = false;
             }
         }
@@ -613,7 +613,7 @@ if (sizeof($ban_list_array['ban_array']) > 0) {
 
     echo "                 <tr>\n";
     echo "                   <td>&nbsp;</td>\n";
-    echo "                   <td colspan=\"4\">No ban data exists</td>\n";
+    echo "                   <td colspan=\"4\">{$lang['noexistingbandata']}</td>\n";
     echo "                 </tr>\n";
     echo "                 <tr>\n";
     echo "                   <td colspan=\"5\">&nbsp;</td>\n";

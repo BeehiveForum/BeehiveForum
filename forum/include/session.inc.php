@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.233 2006-07-19 22:13:18 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.234 2006-07-20 16:37:38 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -630,21 +630,20 @@ function bh_update_user_time($uid)
                     // or weird things can happen.
 
                     if (!isset($user_time['USER_TIME_UPDATED']) || is_null($user_time['USER_TIME_UPDATED'])) {
-                        $user_time['USER_TIME_UPDATED'] = time();
+
+                        $user_time['USER_TIME_UPDATED'] = $user_track['LAST_LOGON'];
+                        $session_difference = $session_length;
                     }
 
                     if (!isset($user_time['USER_TIME_TOTAL']) || is_null($user_time['USER_TIME_TOTAL'])) {
                         $user_time['USER_TIME_TOTAL'] = 0;
                     }
 
-                    // If the time from the MySQL server is greater than
-                    // the last time we updated the USER_TIME_TOTAL column
-                    // then we need to update it again.
+                    // If the last logon time is greater than the last time we 
+                    // updated the USER_TIME_TOTAL column then we need to update it again.
 
-                    if ($user_track['TIME'] > $user_time['USER_TIME_UPDATED']) {
-
-                        $session_difference = ($user_track['TIME'] - $user_time['USER_TIME_UPDATED']);
-                        $session_difference += $user_time['USER_TIME_TOTAL'];
+                    if ($user_track['LAST_LOGON'] > $user_time['USER_TIME_UPDATED']) {
+                        $session_difference = ($user_time['USER_TIME_TOTAL'] + $session_length);
                     }
 
                     // Add the USER_TIME_TOTAL column for updating even if
@@ -673,7 +672,8 @@ function bh_update_user_time($uid)
 
                     $sql = "INSERT INTO {$table_data['PREFIX']}USER_TRACK ";
                     $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
-                    $sql.= "VALUES ('$uid', 0, 0, NOW())";
+                    $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
+                    $sql.= "FROM_UNIXTIME('$session_length'), NOW())";
 
                     $result = db_query($sql, $db_bh_update_user_time);
                 }

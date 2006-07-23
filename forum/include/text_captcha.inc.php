@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.12 2006-05-15 22:46:42 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.13 2006-07-23 17:33:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -209,7 +209,11 @@ class captcha {
                     srand((double)microtime() * 1000000);
                     $noise_text = chr(intval(rand(45, 250)));
 
-                    imagettftext($image, $noise_size, $noise_angle, $noise_x, $noise_y, $noise_color, $this->random_font(), $noise_text);
+                    if (!@imagettftext($image, $noise_size, $noise_angle, $noise_x, $noise_y, $noise_color, $this->random_font(), $noise_text)) {
+
+                        $this->error = TEXT_CAPTCHA_FONT_ERROR;
+                        return false;
+                    }
                 }
 
                 for($i = 0; $i < $this->image_x; $i+= (int)($this->min_char_size / 1.5)) {
@@ -245,8 +249,17 @@ class captcha {
                     $this->random_color(0, 127);
                     $shadow = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
 
-                    imagettftext($image, $text_size, $text_angle, $text_x + (int)($text_size / 15), $text_y, $shadow, $this->random_font(), $text);
-                    imagettftext($image, $text_size, $text_angle, $text_x, $text_y - (int)($text_size / 15), $color, $this->get_current_font(), $text);
+                    if (!@imagettftext($image, $text_size, $text_angle, $text_x + (int)($text_size / 15), $text_y, $shadow, $this->random_font(), $text)) {
+
+                        $this->error = TEXT_CAPTCHA_FONT_ERROR;
+                        return false;
+                    }
+
+                    if (!@imagettftext($image, $text_size, $text_angle, $text_x, $text_y - (int)($text_size / 15), $color, $this->get_current_font(), $text)) {
+
+                        $this->error = TEXT_CAPTCHA_FONT_ERROR;
+                        return false;
+                    }
 
                     $text_x += (int)($text_size + ($this->min_char_size / 5));
                 }

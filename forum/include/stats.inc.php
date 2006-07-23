@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.59 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.60 2006-07-23 12:35:30 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,42 +40,50 @@ function update_stats()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $num_sessions = get_num_sessions();
-    $num_recent_posts = get_recent_post_count();
+    $stats_update_prob = intval(forum_get_setting('forum_self_clean_prob', false, 10));
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}STATS ";
-    $sql.= "ORDER BY ID DESC LIMIT 0, 1";
+    if ($stats_update_prob < 1) $stats_update_prob = 1;
+    if ($stats_update_prob > 100) $stats_update_prob = 100;
 
-    $result = db_query($sql, $db_update_stats);
+    if (forum_get_setting('show_stats', 'Y') && (time() % (100 / $stats_update_prob)) == 0) {
 
-    if (db_num_rows($result) > 0) {
+        $num_sessions = get_num_sessions();
+        $num_recent_posts = get_recent_post_count();
 
-        $stats_array = db_fetch_array($result);
-
-        if ($num_sessions > $stats_array['MOST_USERS_COUNT']) {
-
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
-            $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = $num_sessions";
-
-            $result = db_query($sql, $db_update_stats);
-        }
-
-        if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
-
-            $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
-            $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = $num_recent_posts";
-
-            $result = db_query($sql, $db_update_stats);
-        }
-
-    }else {
-
-        $sql = "INSERT LOW_PRIORITY INTO {$table_data['PREFIX']}STATS (MOST_USERS_DATE, ";
-        $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
-        $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
+        $sql = "SELECT * FROM {$table_data['PREFIX']}STATS ";
+        $sql.= "ORDER BY ID DESC LIMIT 0, 1";
 
         $result = db_query($sql, $db_update_stats);
 
+        if (db_num_rows($result) > 0) {
+
+            $stats_array = db_fetch_array($result);
+
+            if ($num_sessions > $stats_array['MOST_USERS_COUNT']) {
+
+                $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
+                $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = $num_sessions";
+
+                $result = db_query($sql, $db_update_stats);
+            }
+
+            if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
+
+                $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
+                $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = $num_recent_posts";
+
+                $result = db_query($sql, $db_update_stats);
+            }
+
+        }else {
+
+            $sql = "INSERT LOW_PRIORITY INTO {$table_data['PREFIX']}STATS (MOST_USERS_DATE, ";
+            $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
+            $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
+
+            $result = db_query($sql, $db_update_stats);
+
+        }
     }
 }
 

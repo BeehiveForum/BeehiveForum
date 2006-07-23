@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.235 2006-07-23 12:35:30 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.236 2006-07-23 17:26:07 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -486,20 +486,29 @@ function bh_remove_stale_sessions()
 
             $session_stamp = time() - $session_cutoff;
 
-            $sql = "SELECT UID FROM SESSIONS WHERE ";
+            $expired_sessions_array = array();
+
+            $sql = "SELECT HASH, UID FROM SESSIONS WHERE ";
             $sql.= "TIME < FROM_UNIXTIME($session_stamp) ";
-            $sql.= "AND UID > 0";
+            $sql.= "AND UID > 0 LIMIT 0, 10";
 
             $result = db_query($sql, $db_bh_remove_stale_sessions);
 
             while ($session_data = db_fetch_array($result)) {
+                
                 bh_update_user_time($session_data['UID']);
+                $expired_sessions_array[] = $session_data['HASH'];
             }            
-            
-            $sql = "DELETE FROM SESSIONS WHERE ";
-            $sql.= "TIME < FROM_UNIXTIME($session_stamp)";
 
-            $result = db_query($sql, $db_bh_remove_stale_sessions);
+            if (sizeof($expired_sessions_array) > 0) {
+            
+                $expired_sessions = implode(", ", $expired_sessions_array);
+                
+                $sql = "DELETE FROM SESSIONS WHERE HASH IN ($expired_sessions) ";
+                $sql.= "AND TIME < FROM_UNIXTIME($session_stamp)";
+
+                $result = db_query($sql, $db_bh_remove_stale_sessions);
+            }
         }
     }
 

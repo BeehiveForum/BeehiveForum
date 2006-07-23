@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.236 2006-07-23 17:26:07 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.237 2006-07-23 21:14:01 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -162,7 +162,7 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             // active user log and visitor log otherwise we
             // simply update the user's time and IP address.
 
-            if ($user_sess['FID'] != $forum_fid) {
+            if (isset($user_sess['FID']) && is_numeric($user_sess['FID']) && $user_sess['FID'] != $forum_fid) {
                 
                 $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
@@ -355,7 +355,7 @@ function bh_guest_session_init($use_sess_hash = false)
                 $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
-                $result = db_query($sql, $db_bh_session_check);
+                $result = db_query($sql, $db_bh_guest_session_init);
                 
                 bh_update_visitor_log($user_sess['UID'], $forum_fid);
 
@@ -364,7 +364,7 @@ function bh_guest_session_init($use_sess_hash = false)
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
 
-                $result = db_query($sql, $db_bh_session_check);
+                $result = db_query($sql, $db_bh_guest_session_init);
             }
 
             // Update the forum stats

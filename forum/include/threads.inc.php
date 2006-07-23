@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.215 2006-07-23 12:35:30 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.216 2006-07-23 21:14:01 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1213,6 +1213,12 @@ function threads_get_most_recent($limit = 10, $titles_only = false)
             
                 $threads_get_array[$thread['TID']] = $thread;
                 $tid_array[] = $thread['TID'];
+            }
+
+            if (isset($polldata['PEER_NICKNAME'])) {
+                if (!is_null($polldata['PEER_NICKNAME']) && strlen($polldata['PEER_NICKNAME']) > 0) {
+                    $polldata['NICKNAME'] = $polldata['PEER_NICKNAME'];
+                }
             }
         }
 

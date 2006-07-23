@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.17 2006-07-19 17:49:40 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.18 2006-07-23 12:43:11 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -253,8 +253,28 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
 $sql.= "  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  REFERER VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (HASH)";
 $sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SESSIONS TYPE = HEAP";
+$result = @db_query($sql, $db_install);
+
+$sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER ADD REFERER VARCHAR(255)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -378,30 +398,6 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
-
-    $sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE USER ADD REFERER VARCHAR(255)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
 
     // Globalise the VISITOR_LOG table
 

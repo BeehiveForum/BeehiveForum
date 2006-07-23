@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.30 2006-07-19 17:49:40 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.31 2006-07-23 12:43:11 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -318,30 +318,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE USER ADD REFERER VARCHAR(255)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
     // User's can now give each other nicknames without them knowing about it.
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD PEER_NICKNAME VARCHAR(32)";
@@ -394,6 +370,33 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX LENGTH (LENGTH)";
     $result = @db_query($sql, $db_install);
 }
+
+$sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER ADD REFERER VARCHAR(255)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SESSIONS TYPE = HEAP";
+$result = @db_query($sql, $db_install);
 
 // Table structure for POST_ATTACHMENT_FILES has changed.
 

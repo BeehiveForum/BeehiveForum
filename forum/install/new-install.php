@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.110 2006-07-19 17:49:40 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.111 2006-07-23 12:43:05 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -792,6 +792,9 @@ if (!$result = @db_query($sql, $db_install)) {
     $valid = false;
     return;
 }
+
+$sql = "ALTER TABLE SESSIONS TYPE = HEAP";
+$result = @db_query($sql, $db_install);
 
 $sql = "CREATE TABLE USER (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";

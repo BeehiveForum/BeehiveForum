@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.160 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: logon.php,v 1.161 2006-07-25 22:07:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -171,50 +171,31 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
     }else {
 
-        html_draw_top();
-
-        echo "<div align=\"center\">\n";
-        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-        echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
-
-        if (isset($final_uri)) {
-            echo form_quick_button("./index.php", $lang['back'], "final_uri", rawurlencode($final_uri), "_top");
-        }else {
-            echo form_quick_button("./index.php", $lang['back'], false, false, "_top");
-        }
-
-        echo "<hr width=\"350\" />\n";
-        echo "<h2>{$lang['problemsloggingon']}</h2>\n";
-
+        bh_setcookie("bh_logon_failed", "1");
+        
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);
-
-            if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-                echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
-            }else {
-                echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-            }
-
-            echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag&amp;final_uri=$final_uri\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+            header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri&logon=failed", $lang['usernameorpasswdnotvalid']);
 
         }else {
 
-            if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-                echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"$frame_top_target\">{$lang['deletecookies']}</a></p>\n";
-            }else {
-                echo "  <p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"_top\">{$lang['deletecookies']}</a></p>\n";
-            }
-
-            echo "  <p class=\"smalltext\"><a href=\"forgot_pw.php?webtag=$webtag\" target=\"_self\">{$lang['forgottenpasswd']}</a></p>\n";
+            header_redirect("./index.php?webtag=$webtag&logon=failed", $lang['usernameorpasswdnotvalid']);
         }
-
-        html_draw_bottom();
-        exit;
     }
 }
 
 html_draw_top('logon.js');
+
+echo "<div align=\"center\">\n";
+
+if (isset($_COOKIE['bh_logon_failed'])) {
+
+    bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
+
+    echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+    echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
+}
 
 draw_logon_form(true);
 

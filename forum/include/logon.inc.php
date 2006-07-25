@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.42 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.43 2006-07-25 22:07:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -95,9 +95,7 @@ function perform_logon($logon_main)
             }
         }
 
-        $luid = user_logon($logon, $passh);
-
-        if (isset($luid) && $luid > -1) {
+        if ($luid = user_logon($logon, $passh)) {
 
             bh_setcookie("bh_thread_mode", "1", time() - YEAR_IN_SECONDS);
             bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
@@ -161,15 +159,6 @@ function perform_logon($logon_main)
             }
 
             return true;
-
-        }else if (isset($luid) && $luid == -2) {
-
-            if (!strstr(php_sapi_name(), 'cgi')) {
-                header("HTTP/1.0 500 Internal Server Error");
-            }
-
-            echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
-            exit;
         }
     }
 
@@ -223,8 +212,6 @@ function draw_logon_form($logon_main)
     }else {
         $otherlogon = false;
     }
-
-    echo "<div align=\"center\">\n";
 
     if ($logon_main) {
 

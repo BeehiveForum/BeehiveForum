@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.278 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.279 2006-07-25 22:07:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -247,12 +247,12 @@ function user_logon($logon, $passhash)
         $user_data = db_fetch_array($result);
 
         $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$user_data['UID']}'";
-        $result = db_query($sql, $db_user_logon);
+        if (!$result = db_query($sql, $db_user_logon)) return false;
 
         return $user_data['UID'];
     }
 
-    return -1;
+    return false;
 }
 
 function user_get($uid)

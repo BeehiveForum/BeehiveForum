@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.89 2006-06-30 18:07:33 decoyduck Exp $ */
+/* $Id: nav.php,v 1.90 2006-07-25 21:43:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -57,7 +57,17 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "pm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
+// Don't want to redirect the nav.php - frame is too small!
+
 $user_sess = bh_session_check(false);
+
+// Check to see if the user is banned.
+
+if (bh_session_check_user_ban()) {
+    
+    html_user_banned();
+    exit;
+}
 
 // Load language file
 

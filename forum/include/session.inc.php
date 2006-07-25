@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.238 2006-07-24 16:31:53 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.239 2006-07-25 21:43:52 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -141,21 +141,6 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
             // Add user perms
 
             $user_sess['PERMS'] = bh_session_get_perm_array($user_sess['UID']);
-
-            // We need to check here to see if the user is
-            // banned from this forum as the login check
-            // may have failed because they weren't logging
-            // in to a specific forum.
-
-            if (bh_session_check_perm(USER_PERM_BANNED, 0)) {
-            
-                if (!strstr(php_sapi_name(), 'cgi')) {
-                    header("HTTP/1.0 500 Internal Server Error");
-                }
-
-                echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
-                exit;
-            }
 
             // If the user isn't currently in the same forum we
             // need to update the session so they appear on the
@@ -343,7 +328,7 @@ function bh_guest_session_init($use_sess_hash = false)
 
             // Add user perms
 
-            $user_sess['PERMS'] = bh_session_get_perm_array($user_sess['UID']);
+            $user_sess['PERMS'] = bh_session_get_perm_array(0);
 
             // If the user isn't currently in the same forum we
             // need to update the session so they appear on the
@@ -930,6 +915,30 @@ function bh_session_get_perm($folder_fid, $forum_fid = false)
 
     if (isset($user_sess['PERMS'][0][$uid][$folder_fid])) {
         return $user_sess['PERMS'][0][$uid][$folder_fid];
+    }
+
+    return false;
+}
+
+/**
+* Check user is banned.
+*
+* Checks the current user session perms to see if the is banned. Checks both
+* the global and per-forum bans (even though it's currently only possible to
+* ban at the per-forum level)
+*
+* @return bool - true if banned, false if not.
+* @param void
+*/
+
+function bh_session_check_user_ban()
+{
+    if (bh_session_check_perm(USER_PERM_BANNED, 0, 0)) {
+        return true;
+    }
+
+    if (bh_session_check_perm(USER_PERM_BANNED, 0)) {
+        return true;
     }
 
     return false;

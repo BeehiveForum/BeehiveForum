@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.15 2006-01-23 01:00:12 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.16 2006-07-25 21:43:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -59,6 +59,14 @@ if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
     header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+}
+
+// Check to see if the user is banned.
+
+if (bh_session_check_user_ban()) {
+    
+    html_user_banned();
+    exit;
 }
 
 // Check we have a webtag

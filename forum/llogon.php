@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.51 2006-06-30 18:07:33 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.52 2006-07-25 21:43:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -62,12 +62,13 @@ include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-if ($user_sess = bh_session_check(false) && bh_session_get_value('UID') != 0) {
+$user_sess = bh_session_check(false);
 
-    light_html_draw_top();
-    echo "<p>{$lang['user']} ", bh_session_get_value('LOGON'), " {$lang['alreadyloggedin']}.</p>\n";
-    echo form_quick_button("./lthread_list.php", $lang['continue'], false, false, "_top");
-    light_html_draw_bottom();
+// Check to see if the user is banned.
+
+if (bh_session_check_user_ban()) {
+    
+    html_user_banned();
     exit;
 }
 

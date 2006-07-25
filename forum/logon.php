@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.159 2006-06-30 18:07:33 decoyduck Exp $ */
+/* $Id: logon.php,v 1.160 2006-07-25 21:43:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,6 +87,14 @@ if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
 // Logon script doesn't redirect if the session isn't created
 
 $user_sess = bh_session_check(false);
+
+// Check to see if the user is banned.
+
+if (bh_session_check_user_ban()) {
+    
+    html_user_banned();
+    exit;
+}
 
 // Load language file
 

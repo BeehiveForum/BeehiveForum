@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_password.php,v 1.8 2006-06-30 18:07:33 decoyduck Exp $ */
+/* $Id: forum_password.php,v 1.9 2006-07-25 21:43:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -44,6 +44,23 @@ check_install();
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+
+// Check we're logged in correctly
+
+if (!$user_sess = bh_session_check()) {
+
+    $request_uri = rawurlencode(get_request_uri());
+    $webtag = get_webtag($webtag_search);
+    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+}
+
+// Check to see if the user is banned.
+
+if (bh_session_check_user_ban()) {
+    
+    html_user_banned();
+    exit;
+}
 
 // Load language file
 

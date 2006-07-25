@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.188 2006-07-03 22:17:23 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.189 2006-07-25 21:43:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -65,6 +65,18 @@ function html_guest_error ()
 
      html_draw_bottom();
 }
+
+function html_user_banned()
+{
+    if (!strstr(php_sapi_name(), 'cgi')) {
+
+        header("HTTP/1.0 500 Internal Server Error");
+        exit;
+    }
+
+    echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
+    exit;
+}   
 
 function html_email_confirmation_error()
 {

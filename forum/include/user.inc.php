@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.277 2006-07-13 16:01:18 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.278 2006-07-25 21:43:52 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -230,51 +230,26 @@ function user_logon($logon, $passhash)
 
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
-    if ($table_data = get_table_prefix()) {
+    if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
 
-        $forum_fid = $table_data['FID'];
-
-        $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS USER_PERMS, ";
-        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER ";
-        $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-        $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-        $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$passhash' ";
-        $sql.= "GROUP BY USER.UID";
-
-    }else {
-
-        $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS USER_PERMS, ";
-        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER ";
-        $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-        $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-        $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0)) ";
-        $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$passhash' ";
-        $sql.= "GROUP BY USER.UID";
-    }
+    $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS USER_PERMS, ";
+    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+    $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, {$table_data['FID']})) ";
+    $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$passhash' ";
+    $sql.= "GROUP BY USER.UID";
 
     $result = db_query($sql, $db_user_logon);
 
     if (db_num_rows($result) > 0) {
 
-        $row = db_fetch_array($result);
+        $user_data = db_fetch_array($result);
 
-        // Check to see if the user is banned.
-
-        if (isset($row['USER_PERM_COUNT']) && $row['USER_PERM_COUNT'] > 0) {
-
-            if (isset($row['USER_PERMS']) && $row['USER_PERMS'] & USER_PERM_BANNED) {
-
-                return -2;
-            }
-        }
-
-        // Log the user's IP address
-
-        $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$row['UID']}'";
+        $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$user_data['UID']}'";
         $result = db_query($sql, $db_user_logon);
 
-        return $row['UID'];
+        return $user_data['UID'];
     }
 
     return -1;

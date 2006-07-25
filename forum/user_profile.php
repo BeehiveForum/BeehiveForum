@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.96 2006-06-30 18:07:34 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.97 2006-07-25 21:43:52 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -72,6 +72,14 @@ if (!$user_sess = bh_session_check()) {
     $request_uri = rawurlencode(get_request_uri());
     $webtag = get_webtag($webtag_search);
     header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
+}
+
+// Check to see if the user is banned.
+
+if (bh_session_check_user_ban()) {
+    
+    html_user_banned();
+    exit;
 }
 
 // Check we have a webtag

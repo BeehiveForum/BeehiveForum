@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.92 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.93 2006-07-28 17:48:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -411,6 +411,12 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = sprintf($lang['deletedthread'], $thread_link);
                 break;
 
+            case UNDELETE_THREAD:
+
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['undeletedthread'], $thread_link);
+                break;
+
             case DELETE_ATTACHMENT:
 
                 $thread_link = sprintf("<a href=\"index.php?msg=%s.%s\" target=\"_blank\">%s.%s</a>", $entry_array[0], $entry_array[1], $entry_array[0], $entry_array[1]);
@@ -453,9 +459,24 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = sprintf($lang['updatedusergroup'], $entry_array[0]);
                 break;
 
+            case ADDED_RSS_FEED:
+
+                $action_text = sprintf($lang['addedrssfeed'], $entry_array[0]);
+                break;
+
+            case EDITED_RSS_FEED:
+
+                $action_text = sprintf($lang['editedrssfeed'], $entry_array[0]);
+                break;
+
+            case DELETED_RSS_FEED:
+
+                $action_text = sprintf($lang['deletedrssfeed'], $entry_array[0]);
+                break;
+
             default:
 
-                $action_text = "{$lang['unknown']}";
+                $action_text = "{$lang['unknown']} : {$admin_log_entry['ACTION']}";
                 break;
         }
 

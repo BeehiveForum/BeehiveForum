@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.408 2006-07-19 09:18:50 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.409 2006-07-28 17:48:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1598,11 +1598,11 @@ function messages_forum_stats($tid, $pid)
 
                             if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > 0) {
 
-                                $active_user.= "<span class=\"user_stats_curuser\" title=\"You (Invisible)\">";
+                                $active_user.= "<span class=\"user_stats_curuser\" title=\"{$lang['youinvisible']}\">";
 
                             }else {
 
-                                $active_user.= "<span class=\"user_stats_curuser\" title=\"You\">";
+                                $active_user.= "<span class=\"user_stats_curuser\" title=\"{$lang['younormal']}\">";
                             }
 
                         }elseif (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {

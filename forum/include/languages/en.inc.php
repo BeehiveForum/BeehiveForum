@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.333 2006-07-19 19:37:52 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.334 2006-07-28 17:48:40 decoyduck Exp $ */
 
 // International English language file
 
@@ -170,7 +170,6 @@ $lang['on'] = "on";
 $lang['unread'] = "unread";
 $lang['all'] = "All";
 $lang['allcaps'] = "ALL";
-$lang['me_caps'] = "ME";
 $lang['by'] = "by";
 $lang['permissions'] = "Permissions";
 $lang['position'] = "Position";
@@ -508,8 +507,8 @@ $lang['removednicknamefrombanlist'] = "Removed nickname '%s' from ban list";
 $lang['addedemailtobanlist'] = "Added email address '%s' to ban list";
 $lang['removedemailfrombanlist'] = "Removed email address '%s' from ban list";
 
-$lang['addedemailtobanlist'] = "Added referer '%s' to ban list";
-$lang['removedemailfrombanlist'] = "Removed referer '%s' from ban list";
+$lang['addedreferertobanlist'] = "Added referer '%s' to ban list";
+$lang['removedrefererfrombanlist'] = "Removed referer '%s' from ban list";
 
 $lang['editedfolder'] = "Edited Folder '%s'";
 $lang['movedallthreadsfromto'] = "Moved all threads from '%s' to '%s'";
@@ -532,6 +531,7 @@ $lang['closedthread'] = "Closed Thread '%s'";
 $lang['openedthread'] = "Opened Thread '%s'";
 $lang['renamedthread'] = "Renamed Thread '%s' to '%s'";
 $lang['deletedthread'] = "Deleted Thread '%s'";
+$lang['deletedthread'] = "Undeleted Thread '%s'";
 
 $lang['lockedthreadtitlefolder'] = "Locked thread options on '%s'";
 $lang['unlockedthreadtitlefolder'] = "Unlocked thread options on '%s'";
@@ -552,6 +552,10 @@ $lang['endedsessionforuser'] = "Ended session for user '%s'";
 $lang['approvedpost'] = "Approved post '%s'";
 
 $lang['editedwordfilter'] = "Edited Word Filter";
+
+$lang['addedrssfeed'] = "Added RSS Feed '%s'";
+$lang['editedrssfeed'] = "Edited RSS Feed '%s'";
+$lang['deletedrssfeed'] = "Deleted RSS Feed '%s'";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['clearlog'] = "Clear Log";
@@ -888,7 +892,6 @@ $lang['voterecorded'] = "Your vote has been recorded";
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
 $lang['userID'] = "User ID";
-$lang['alreadyloggedin'] = "already logged in";
 $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
@@ -1118,7 +1121,6 @@ $lang['dateofbirth'] = "Date of Birth";
 $lang['homepageURL'] = "Homepage URL";
 $lang['pictureURL'] = "Picture URL";
 $lang['forumoptions'] = "Forum Options";
-$lang['pmoptions'] = "PM Options";
 $lang['notifybyemail'] = "Notify by email of posts to me";
 $lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";
 $lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
@@ -1183,7 +1185,6 @@ $lang['mustprovidepollresultsdisplaytype'] = "You must provide results display t
 $lang['mustprovidepollvotetype'] = "You must provide a poll vote type";
 $lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
 $lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
-$lang['groupcountmustbelessthananswercount'] = "Number of answer groups must be less than total number of answers";
 $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";
 $lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two voting groups";
@@ -1568,19 +1569,35 @@ $lang['every6hours'] = "Every 6 hours";
 $lang['every12hours'] = "Every 12 hours";
 $lang['onceaday'] = "Once a day";
 $lang['rssfeeds'] = "RSS Feeds";
+$lang['feedname'] = "Feed Name";
+$lang['feedfoldername'] = "Feed Folder Name";
 $lang['feedlocation'] = "Feed Location";
+$lang['threadtitleprefix'] = "Thread Title Prefix";
+$lang['feednameandlocation'] = "Feed Name and Location";
+$lang['feedsettings'] = "Feed Settings";
+$lang['updatefrequency'] = "Update Frequency";
 $lang['rssclicktoreadarticle'] = "Click here to read this article";
-$lang['rssfeedhelp_1'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you wish to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work.";
+$lang['addnewfeed'] = "Add New Feed";
+$lang['editfeed'] = "Edit Feed";
+$lang['feeduseraccount'] = "Feed User Account";
+$lang['noexistingfeeds'] = "No existing RSS Feeds found. To add a feed please click the button below";
+$lang['deleteselectedfeeds'] = "Delete selected feeds";
+$lang['rssfeedhelp'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work.";
 $lang['mustspecifyrssfeedname'] = "Must specify RSS Feed Name";
 $lang['mustspecifyrssfeeduseraccount'] = "Must specify RSS Feed User Account";
 $lang['mustspecifyrssfeedfolder'] = "Must specify RSS Feed Folder";
 $lang['mustspecifyrssfeedurl'] = "Must specify RSS Feed URL";
-$lang['mustspecifyrssfeedprefix'] = "Must specify RSS Feed Prefix";
 $lang['mustspecifyrssfeedupdatefrequency'] = "Must specify RSS Feed Update Frequency";
 $lang['unknownrssuseraccount'] = "Unknown RSS User Account";
 $lang['rssfeedsupportshttpurlsonly'] = "RSS Feed supports HTTP URLs only. Secure feeds (https://) are not supported.";
 $lang['rssfeedurlformatinvalid'] = "RSS Feed URL format is invalid. URL must include scheme (e.g. http://) and a hostname (e.g. www.hostname.com).";
 $lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authentication";
+$lang['successfullyremovedselectedfeeds'] = "Successfully removed selected feeds";
+$lang['successfullyaddedfeed'] = "Successfully added new feed";
+$lang['successfullyeditedfeed'] = "Successfully edited feed";
+$lang['couldnotremovefeedwithid'] = "Could not remove feed with ID";
+$lang['rssstreamworkingcorrectly'] = "RSS stream appears to be working correctly";
+$lang['rssstreamnotworkingcorrectly'] = "RSS stream was empty or could not be found";
 
 // PM Export Options
 

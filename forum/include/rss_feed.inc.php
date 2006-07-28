@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.27 2005-11-25 20:49:50 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.28 2006-07-28 17:48:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -261,7 +261,10 @@ function rss_check_feeds()
                 if (!rss_thread_exist($rss_feed['RSSID'], $rss_item->link)) {
 
                     $rss_title = strip_tags($rss_item->title);
-                    $rss_title = "[{$rss_feed['PREFIX']}] {$rss_title}";
+
+                    if (isset($rss_feed['PREFIX']) && strlen(trim($rss_feed['PREFIX'])) > 0) {
+                        $rss_title = "{$rss_feed['PREFIX']} {$rss_title}";
+                    }
 
                     if (strlen($rss_title) > 64) {
 
@@ -340,7 +343,9 @@ function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)
     $sql = "INSERT INTO {$table_data['PREFIX']}RSS_FEEDS (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN) ";
     $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, FROM_UNIXTIME($last_run))";
 
-    return db_query($sql, $db_rss_add_feed);
+    if (!db_query($sql, $db_rss_add_feed)) return false;
+
+    return true;
 }
 
 function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
@@ -362,7 +367,34 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency)
     $sql.= "FID = $fid, URL = '$url', PREFIX = '$prefix', FREQUENCY = $frequency ";
     $sql.= "WHERE RSSID = $rssid";
 
-    return db_query($sql, $db_rss_feed_update);
+    if (!db_query($sql, $db_rss_feed_update)) return false;
+
+    return true;
+}
+
+function rss_get_feed($feed_id)
+{
+    $db_rss_get_feeds = db_connect();
+
+    if (!is_numeric($feed_id)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, ";
+    $sql.= "RSS_FEEDS.FID, RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
+    $sql.= "FROM {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
+    $sql.= "WHERE RSS_FEEDS.RSSID = '$feed_id'";
+
+    $result = db_query($sql, $db_rss_get_feeds);
+
+    if (db_num_rows($result) > 0) {
+
+        $rss_feed_array = db_fetch_array($result);
+        return $rss_feed_array;
+    }
+
+    return false;
 }
 
 function rss_remove_feed($rssid)
@@ -374,7 +406,9 @@ function rss_remove_feed($rssid)
     if (!$table_data = get_table_prefix()) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}RSS_FEEDS WHERE RSSID = $rssid";
-    return db_query($sql, $db_rss_remove_feed);
+    if (!$result = db_query($sql, $db_rss_remove_feed)) return false;
+
+    return (db_affected_rows($db_rss_remove_feed) > 0);
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.161 2006-07-25 22:07:16 decoyduck Exp $ */
+/* $Id: logon.php,v 1.162 2006-07-28 17:48:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -176,11 +176,11 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);
-            header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri&logon=failed", $lang['usernameorpasswdnotvalid']);
+            header_redirect("./index.php?webtag=$webtag&final_uri=$final_uri", $lang['usernameorpasswdnotvalid']);
 
         }else {
 
-            header_redirect("./index.php?webtag=$webtag&logon=failed", $lang['usernameorpasswdnotvalid']);
+            header_redirect("./index.php?webtag=$webtag", $lang['usernameorpasswdnotvalid']);
         }
     }
 }

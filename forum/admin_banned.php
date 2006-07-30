@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.29 2006-07-30 16:46:58 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.30 2006-07-30 21:46:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -377,6 +377,14 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
+
+    if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
+        $add_new_ban_type = $_POST['newbantype'];
+    }
+
+    if (isset($_POST['newbandata']) && strlen(trim(_stripslashes($_POST['newbandata']))) > 0) {
+        $add_new_ban_data = $_POST['newbandata'];
+    }
 
     if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
 

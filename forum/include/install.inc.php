@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.45 2006-07-08 11:17:00 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.46 2006-07-30 21:46:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -317,21 +317,23 @@ function install_get_table_conflicts($webtag = false, $forum_tables = false, $gl
 
 function install_remove_table_keys($table_name)
 {
-    $db_install_check_index = db_connect();
+    $db_install_remove_table_keys = db_connect();
 
     if ($table_name !== addslashes($table_name)) return false;
 
     $sql = "SHOW INDEX FROM $table_name";
-    $result = db_query($sql, $db_install_check_index);
+    $result = db_query($sql, $db_install_remove_table_keys);
 
     while ($row = db_fetch_array($result)) {
-        $table_index[$row['Key_name']] = $row['Column_name'];
+        if (preg_match("/^PRIMARY$/", strtoupper($row['Key_name'])) < 1) {
+            $table_index[$row['Key_name']] = $row['Column_name'];
+        }
     }
 
     foreach ($table_index as $key_name => $column_name) {
         
         $sql = "ALTER TABLE $table_name DROP INDEX $key_name";
-        if (!$result_remove = @db_query($sql, $db_install_check_index)) return false;
+        $result = @db_query($sql, $db_install_remove_table_keys);
     }
 
     return true;

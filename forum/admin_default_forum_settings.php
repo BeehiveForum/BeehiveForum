@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.50 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.51 2006-07-30 16:19:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -268,12 +268,6 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['guest_show_recent'] = "Y";
     }else {
         $new_forum_settings['guest_show_recent'] = "N";
-    }
-
-    if (isset($_POST['guest_auto_logon']) && $_POST['guest_auto_logon'] == "Y") {
-        $new_forum_settings['guest_auto_logon'] = "Y";
-    }else {
-        $new_forum_settings['guest_auto_logon'] = "N";
     }
 
     if (isset($_POST['attachments_enabled']) && $_POST['attachments_enabled'] == "Y") {
@@ -708,10 +702,6 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td width=\"270\">{$lang['listguestsinvisitorlog']}:</td>\n";
 echo "                        <td>", form_radio("guest_show_recent", "Y", $lang['yes'], (isset($default_forum_settings['guest_show_recent']) && $default_forum_settings['guest_show_recent'] == 'Y') || !isset($default_forum_settings['guest_show_recent'])), "&nbsp;", form_radio("guest_show_recent", "N", $lang['no'], (isset($default_forum_settings['guest_show_recent']) && $default_forum_settings['guest_show_recent'] == 'N')), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td width=\"270\">{$lang['autologinguests']}:</td>\n";
-echo "                        <td>", form_radio("guest_auto_logon", "Y", $lang['yes'], (isset($default_forum_settings['guest_auto_logon']) && $default_forum_settings['guest_auto_logon'] == 'Y') || !isset($default_forum_settings['guest_auto_logon'])), "&nbsp;", form_radio("guest_auto_logon", "N", $lang['no'], (isset($default_forum_settings['guest_auto_logon']) && $default_forum_settings['guest_auto_logon'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";

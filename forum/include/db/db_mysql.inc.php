@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.18 2006-05-14 12:12:15 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.19 2006-07-30 16:19:27 decoyduck Exp $ */
 
-function db_connect()
+function db_connect($trigger_error = true)
 {
     global $db_server, $db_username, $db_password, $db_database;
 
@@ -40,7 +40,9 @@ function db_connect()
             }
         }
 
-        trigger_error(mysql_error(), E_USER_ERROR);
+        if ($trigger_error === true) trigger_error(db_error(), E_USER_ERROR);
+
+        return false;
     }
 
     return $connection_id;
@@ -131,19 +133,37 @@ function db_trigger_error($sql, $connection_id)
     }
 }
 
-function db_error($connection_id)
+function db_error($connection_id = false)
 {
-    if ($errstr = @mysql_error($connection_id)) {
-        return $errstr;
+    if ($connection_id !== false) {
+    
+        if ($errstr = @mysql_error($connection_id)) {
+            return $errstr;
+        }
+
+    }else {
+
+        if ($errstr = @mysql_error()) {
+            return $errstr;
+        }
     }
 
-    return "Unknown error";
+    return "Unknown Error";
 }
 
-function db_errno($connection_id)
+function db_errno($connection_id = false)
 {
-    if ($errno = @mysql_errno($connection_id)) {
-        return $errno;
+    if ($connection_id !== false) {
+
+        if ($errno = @mysql_errno($connection_id)) {
+            return $errno;
+        }
+
+    }else {
+
+        if ($errno = @mysql_errno()) {
+            return $errno;
+        }
     }
 
     return 0;
@@ -151,34 +171,41 @@ function db_errno($connection_id)
 
 function db_fetch_mysql_version()
 {
-    $db_fetch_mysql_version = db_connect();
+    static $mysql_version = false;
 
-    $sql = "SELECT VERSION() AS version";
-    $result = db_query($sql, $db_fetch_mysql_version);
+    if (!$mysql_version) {
 
-    if (!$row = db_fetch_array($result)) {
+        if ($db_fetch_mysql_version = db_connect(false)) {
 
-        $sql = "SHOW VARIABLES LIKE 'version'";
-        $result = db_query($sql, $db_fetch_mysql_version);
+            $sql = "SELECT VERSION() AS version";
+            $result = db_query($sql, $db_fetch_mysql_version);
 
-        $row = db_fetch_array($result);
+            if (!$row = db_fetch_array($result)) {
+
+                $sql = "SHOW VARIABLES LIKE 'version'";
+                $result = db_query($sql, $db_fetch_mysql_version);
+
+                $row = db_fetch_array($result);
+            }
+
+            $version_array = explode(".", $row['version']);
+
+            if (!isset($version_array) || !isset($version_array[0])) {
+                $version_array[0] = 3;
+            }
+
+            if (!isset($version_array[1])) {
+                $version_array[1] = 21;
+            }
+
+            if (!isset($version_array[2])) {
+                $version_array[2] = 0;
+            }
+
+            $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
+        }
     }
 
-    $version_array = explode(".", $row['version']);
-
-    if (!isset($version_array) || !isset($version_array[0])) {
-        $version_array[0] = 3;
-    }
-
-    if (!isset($version_array[1])) {
-        $version_array[1] = 21;
-    }
-
-    if (!isset($version_array[2])) {
-        $version_array[2] = 0;
-    }
-
-    $mysql_version = (int)sprintf('%d%02d%02d', $version_array[0], $version_array[1], intval($version_array[2]));
     return $mysql_version;
 }
 

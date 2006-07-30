@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.26 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.27 2006-07-30 16:19:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,7 +87,7 @@ if (isset($_COOKIE['bh_remember_username'][0]) && isset($_COOKIE['bh_remember_pa
 }else {
 
     $user_hash = bh_session_init(0, false, true);
-    $user_sess = bh_session_check(false, $user_hash);
+    $user_sess = bh_session_check(false, $user_hash, true);
 }
 
 // Check to see if the user is banned.

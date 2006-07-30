@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.57 2006-04-18 17:28:21 decoyduck Exp $ */
+/* $Id: install.php,v 1.58 2006-07-30 16:19:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,7 +175,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
     if ($valid) {
 
-        if ($db_install = @db_connect()) {
+        if ($db_install = db_connect(false)) {
 
             if (($install_method == 5) && (@file_exists('./install/upgrade-06x-to-064.php'))) {
 
@@ -184,10 +184,6 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
             }elseif (($install_method == 4) && (@file_exists('./install/upgrade-05-to-064.php'))) {
 
                 include_once("./install/upgrade-05-to-064.php");
-
-            }elseif (($install_method == 3) && (@file_exists('./install/upgrade-04-to-05.php'))) {
-
-                include_once("./install/upgrade-04-to-05.php");
 
             }elseif (($install_method == 1) && (@file_exists('./install/new-install.php'))) {
 
@@ -363,7 +359,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
 
         }elseif ($valid) {
 
-            $error_array[] = "Database connection to '$db_server' could not be established or permission is denied.\n";
+            $error_array[] = "<p>Database connection to '$db_server' could not be established. Please check your MySQL Database Configuration settings are correct and that you have permisison to access the database you've entered.</p>\n<p><b>Note:</b> The database must be created manually prior to the installation of the Beehive Forum software!</p>\n";
             $valid = false;
         }
     }
@@ -582,7 +578,6 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
     echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
     echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
-    echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 0.4 to 0.5</option>\n";
     echo "                            <option value=\"4\" ", (isset($install_method) && $install_method == 4) ? "selected=\"selected\"" : "", ">Upgrade 0.5 to 0.6.4</option>\n";
     echo "                            <option value=\"5\" ", (isset($install_method) && $install_method == 5) ? "selected=\"selected\"" : "", ">Upgrade 0.6RCx or 0.6.x to 0.6.4</option>\n";
     echo "                          </select>\n";

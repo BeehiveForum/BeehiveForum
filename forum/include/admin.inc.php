@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.76 2006-07-18 22:06:09 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.77 2006-07-30 16:19:27 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -584,6 +584,28 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
     return array('ban_count' => $ban_data_count,
                  'ban_array' => $ban_data_array);
+}
+
+function admin_get_ban($ban_id)
+{
+    $db_admin_get_bandata = db_connect();
+
+    if (!is_numeric($ban_id)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT FROM ";
+    $sql.= "{$table_data['PREFIX']}BANNED WHERE ID = '$ban_id'";
+
+    $result = db_query($sql, $db_admin_get_bandata);
+
+    if (db_num_rows($result) > 0) {
+    
+        $ban_data_array = db_fetch_array($result);
+        return $ban_data_array;
+    }
+
+    return false;
 }
 
 ?>

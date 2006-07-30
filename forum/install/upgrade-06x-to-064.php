@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.31 2006-07-23 12:43:11 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.32 2006-07-30 16:19:27 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -165,7 +165,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
     }
 
-    $sql = "CREATE TABLE {forum_webtag}_{$banned_new} (";
+    $sql = "CREATE TABLE {$forum_webtag}_{$banned_new} (";
     $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
     $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0',";
     $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '',";
@@ -186,8 +186,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     foreach($ban_types as $ban_type => $old_column_name) {
 
-        $sql = "INSERT INTO {forum_webtag}_{$banned_new} (BANTYPE, BANDATA) ";
-        $sql.= "SELECT $ban_type, $old_column_name FROM {forum_webtag}_BANNED ";
+        $sql = "INSERT INTO {$forum_webtag}_{$banned_new} (BANTYPE, BANDATA) ";
+        $sql.= "SELECT $ban_type, $old_column_name FROM {$forum_webtag}_BANNED ";
         $sql.= "WHERE $old_column_name IS NOT NULL";
 
         $result = @db_query($sql, $db_install);

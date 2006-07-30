@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.111 2006-07-23 12:43:05 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.112 2006-07-30 16:19:27 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -53,16 +53,16 @@ if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
-    $forum_tables = array('ADMIN_LOG',     'BANNED',          'FILTER_LIST',
-                          'FOLDER',        'FORUM_LINKS',     'LINKS',
-                          'LINKS_COMMENT', 'LINKS_FOLDERS',   'LINKS_VOTE',
-                          'POLL',          'POLL_VOTES',      'POST',
-                          'POST_CONTENT',  'PROFILE_ITEM',    'PROFILE_SECTION',
-                          'RSS_FEEDS',     'RSS_HISTORY',     'STATS',
-                          'THREAD',        'THREAD_TRACK',    'USER_FOLDER',
-                          'USER_PEER',     'USER_POLL_VOTES', 'USER_PREFS',
-                          'USER_PROFILE',  'USER_SIG',        'USER_THREAD',
-                          'USER_TRACK');
+    $forum_tables = array('ADMIN_LOG',     'BANNED',        'FILTER_LIST',
+                          'FOLDER',        'FORUM_LINKS',   'LINKS',
+                          'LINKS_COMMENT', 'LINKS_FOLDERS', 'LINKS_VOTE',
+                          'POLL',          'POLL_VOTES',    'POST',
+                          'POST_CONTENT',  'PROFILE_ITEM',  'PROFILE_SECTION',
+                          'RSS_FEEDS',     'RSS_HISTORY',   'STATS',
+                          'THREAD',        'THREAD_TRACK',  'THREAD_STATS',
+                          'USER_FOLDER',   'USER_PEER',     'USER_POLL_VOTES',
+                          'USER_PREFS',    'USER_PROFILE',  'USER_SIG',
+                          'USER_THREAD',   'USER_TRACK');
 
     $global_tables = array('DICTIONARY',            'FORUM_SETTINGS',      'FORUMS',
                            'GROUP_PERMS',           'GROUP_USERS',         'GROUPS',
@@ -95,6 +95,8 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
 }else if ($conflicting_tables = install_get_table_conflicts($forum_webtag)) {
 
+    $conflicting_tables = addslashes(implode(", ", $conflicting_tables));
+    
     $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum.";
     $error_str.= "If this database contains an existing BeehiveForum installation please ";
     $error_str.= "check that you have selected the correct install / upgrade method.<h2>\n";
@@ -106,8 +108,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
     $error_array[] = $error_str;
 
-    $error_str = "<h2>Conflicting tables:</h2>\n";
-    $error_str.= "<ul><li>". implode("</li><li>", $conflicting_tables). "</li></ul>\n";
+    $error_str = "<h2>Conflicting tables: <a href=\"Javascript:void(0)\" onclick=\"alert('$conflicting_tables');\">View</a></h2>\n";
 
     $error_array[] = $error_str;
 
@@ -132,11 +133,9 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "CREATE TABLE {$forum_webtag}_BANNED (";
 $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
-$sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
-$sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
-$sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
-$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
+$sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0',";
+$sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (ID)";
 $sql.= ") TYPE=MYISAM";
 
@@ -433,7 +432,7 @@ $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
 
-    forum_delete_tables($webtag);
+    $valid = false;
     return;
 }
 

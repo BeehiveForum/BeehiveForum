@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.217 2006-07-24 16:31:53 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.218 2006-07-30 16:19:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1752,7 +1752,7 @@ function thread_auto_prune_unread_data()
 
                 $tid_list = implode(", ", $tid_array);
 
-                $sql = "DELETE LOW_PRIORITY FROM DEFAULT_USER_THREAD ";
+                $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}USER_THREAD ";
                 $sql.= "WHERE TID IN ($tid_list) AND INTEREST = 0";
 
                 if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;

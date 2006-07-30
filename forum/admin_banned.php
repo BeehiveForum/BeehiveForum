@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.28 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.29 2006-07-30 16:46:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -155,11 +155,9 @@ if (isset($_GET['ban_ipaddress']) && strlen(trim(_stripslashes($_GET['ban_ipaddr
 
     $unban_ipaddress = trim(_stripslashes($_GET['unban_ipaddress']));
     
-    if ($remove_ban_id = check_ban_data(BAN_TYPE_IP, $unban_ipaddress)) {
-        
-        $remove_ban_type = BAN_TYPE_IP;
-        $remove_ban_data = $unban_ipaddress;
-    }    
+    if (!$remove_ban_id = check_ban_data(BAN_TYPE_IP, $unban_ipaddress)) {
+        unset($remove_ban_id);
+    }
 }
 
 if (isset($_GET['ban_referer']) && strlen(trim(_stripslashes($_GET['ban_referer'])))) {
@@ -172,9 +170,7 @@ if (isset($_GET['ban_referer']) && strlen(trim(_stripslashes($_GET['ban_referer'
     $unban_referer = trim(_stripslashes($_GET['unban_referer']));
 
     if ($remove_ban_id = check_ban_data(BAN_TYPE_REF, $unban_referer)) {
-
-        $remove_ban_type = BAN_TYPE_REF;
-        $remove_ban_data = $unban_referer;
+        unset($remove_ban_id);
     }
 }
 
@@ -333,9 +329,9 @@ if (isset($_POST['cancel']) || isset($_POST['delete'])) {
     unset($_POST['addban'], $_POST['ban_id'], $_GET['ban_id'], $ban_id);
 }
 
-html_draw_top();
+html_draw_top('openprofile.js');
 
-if (isset($_POST['addban'])) {
+if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_data))) {
 
     echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['bancontrols']}</h1>\n";
 
@@ -363,11 +359,11 @@ if (isset($_POST['addban'])) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"120\" class=\"posthead\">&nbsp;{$lang['bantype']}:</td>\n";
-    echo "                  <td>", form_dropdown_array('newbantype', range(0, 5), array('', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : '')), "</td>\n";
+    echo "                  <td>", form_dropdown_array('newbantype', range(0, 5), array('', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : (isset($add_new_ban_type) ? _htmlentities($add_new_ban_type) : ''))), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"100\" class=\"posthead\">&nbsp;{$lang['bandata']}:</td>\n";
-    echo "                  <td>", form_input_text('newbandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['newbandata'])) : ''), 40, 255), "</td>\n";
+    echo "                  <td>", form_input_text('newbandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['newbandata'])) : (isset($add_new_ban_data) ? _htmlentities($add_new_ban_data) : '')), 40, 255), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"100\" class=\"posthead\" valign=\"top\">&nbsp;{$lang['bancomment']}:</td>\n";
@@ -381,6 +377,42 @@ if (isset($_POST['addban'])) {
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
+
+    if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
+
+        if ($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data)) {
+
+            echo "        <br />\n";
+            echo "        <table width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"center\">\n";
+            echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td>{$lang['affectsessionwarnadd']}:</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>\n";
+            echo "                    <ul>\n";
+
+            foreach($affected_sessions_array as $affected_session) {
+
+                if ($affected_session['UID'] > 0) {
+                    echo "                    <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</a></li>\n";
+                }else {
+                    echo "                    <li>", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</li>\n";
+                }
+            }
+
+            echo "                    </ul>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+        }
+    }
+
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
@@ -401,6 +433,7 @@ if (isset($_POST['addban'])) {
     }
 
     echo "  </table>\n";
+
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
     echo "    <tr>\n";
     echo "      <td><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
@@ -409,7 +442,7 @@ if (isset($_POST['addban'])) {
     echo "  </table>\n";
     echo "</form>\n";
 
-}elseif (isset($_POST['ban_id']) || isset($_GET['ban_id'])) {
+}elseif (isset($_POST['ban_id']) || isset($_GET['ban_id']) || isset($remove_ban_id)) {
 
     if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
 
@@ -419,6 +452,10 @@ if (isset($_POST['addban'])) {
 
         $ban_id = $_GET['ban_id'];
 
+    }elseif (isset($remove_ban_id) && is_numeric($remove_ban_id)) {
+
+        $ban_id = $remove_ban_id;
+    
     }else {
 
         echo "<h2>{$lang['invalidbanid']}</h2>\n";
@@ -478,6 +515,39 @@ if (isset($_POST['addban'])) {
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
+
+    if ($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'])) {
+
+        echo "        <br />\n";
+        echo "        <table width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"center\">\n";
+        echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td>{$lang['affectsessionwarnremove']}:</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>\n";
+        echo "                    <ul>\n";
+
+        foreach($affected_sessions_array as $affected_session) {
+
+            if ($affected_session['UID'] > 0) {
+                echo "                    <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</a></li>\n";
+            }else {
+                echo "                    <li>", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</li>\n";
+            }
+        }
+
+        echo "                    </ul>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+    }
+
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";

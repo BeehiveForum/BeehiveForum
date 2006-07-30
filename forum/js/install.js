@@ -53,13 +53,13 @@ function confirm_install(button) {
 
     if (install_type.selectedIndex == 2) {
         confirm_text = 'Are you sure you want to perform a reinstall? Any existing BeehiveForum tables and their data will be permenantly lost!\n\n';
-	confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+        confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
     }else if (install_type.selectedIndex == 3) {
         confirm_text = 'Are you sure you want to perform a reconnect? Any customised values in your config.inc.php file will be lost!\n\n';
-	confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+        confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
     }else if (install_type.selectedIndex > 3) {
         confirm_text = 'Are you sure you want to perform an upgrade? If you have selected the wrong upgrade method your forum may become unusable!\n\n';
-	confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
+        confirm_text+= 'If you haven\'t performed a backup of your database and files now would be a good time to do it! Don\'t say we didn\'t warn you!';
     }
 
     if (install_type.selectedIndex > 0) {
@@ -80,7 +80,7 @@ function show_install_help(topic) {
     if (topic == 0) {
 
       topic_text = 'For new installations please select \'New Install\' from the drop down and enter a webtag.\n\n';
-      topic_text+= 'Your webtag can be anything you want as long as it only contains the characters A-Z, 0-9, underscore and hyphen. If you enter any other characters an error will occur.\n\n';
+      topic_text+= 'Your webtag can be anything you want as long as it only contains the characters A-Z, 0-9 and underscore. If you enter any other characters an error will occur.\n\n';
       topic_text+= 'For reinstalls enter a webtag as above. Any existing BeehiveForum tables will be automatically removed and all data within them will be permenantly lost.\n\n';
       topic_text+= 'For reconnects the database setup is skipped and the installation simply rewrites your config.inc.php file. Use this if for example you\'re moving hosts. The webtag field is ignored.\n\n';
       topic_text+= 'For upgrades please select the correct upgrade process. The webtag field is ignored.';
@@ -100,7 +100,7 @@ function show_install_help(topic) {
 
     } else if (topic == 3) {
 
-      topic_text = 'USE THESE OPTIONS WITH EXTREME CAUTION!';
+      topic_text = 'USE THESE OPTIONS WITH EXTREME CAUTION!\n\n';
       topic_text+= 'These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your BeehiveForum AND other software you may have installed.\n\n';
       topic_text+= '\'Automatically remove tables\' permenantly removes tables would have conflicted with those used by BeehiveForum. If other tables exist which conflict with those used by the BeehiveForum software then enabling this option may cause any other scripts or software which rely on them to fail.\n\n';
       topic_text+= '\Skip dictionary setup\' will force the installation to skip the process which populates the dictionary table. If you have problems with the installation not completeling for example blank pages after clicking submit or PHP error messages try enabling this option.\n\n';

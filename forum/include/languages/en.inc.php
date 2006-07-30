@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.334 2006-07-28 17:48:40 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.335 2006-07-30 16:19:27 decoyduck Exp $ */
 
 // International English language file
 
@@ -462,19 +462,28 @@ $lang['mustchooseaendmonth'] = "Must choose a end month";
 $lang['mustchooseaendyear'] = "Must choose a end year";
 $lang['startperiodisaheadofendperiod'] = "Start period is ahead of end period";
 $lang['bancontrols'] = "Ban Controls";
+$lang['addban'] = "Add Ban";
+$lang['editban'] = "Edit Ban";
+$lang['bantype'] = "Ban Type";
+$lang['bandata'] = "Ban Data";
+$lang['bancomment'] = "Comment";
+$lang['deleteselectbans'] = "Delete selected bans";
 $lang['addbandata'] = "Add Ban Data";
 $lang['removebandata'] = "Remove Ban Data";
 $lang['confirmaddban'] = "Please confirm that you want to add the following ban data to the database";
 $lang['confirmremoveban'] = "Please confirm that you want to remove the following ban data from the database";
 $lang['ipaddress'] = "IP Address";
 $lang['httpreferrer'] = "HTTP Referrer";
+$lang['invalidbanid'] = "Invalid Ban ID";
 $lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
 $lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
 $lang['mustspecifybantype'] = "You must specify a ban type";
 $lang['mustspecifybandata'] = "You must specify some ban data";
+$lang['successfullyremovedselectedbans'] = "Successfully removed selected bans";
 $lang['failedtoremoveban'] = "Failed to remove ban data with ID: %s";
 $lang['duplicatebandataentered'] = "Duplicate ban data entered. Please check your wildcards to see if they already match the data entered";
-$lang['noexistingbandata'] = "There is no existing ban data. To add some ban data please use the form below.";
+$lang['successfullyaddedban'] = "Successfully added ban";
+$lang['noexistingbandata'] = "There is no existing ban data. To add some ban data please click the button below.";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";

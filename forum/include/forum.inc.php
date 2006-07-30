@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.185 2006-07-12 17:41:55 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.186 2006-07-30 16:19:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1500,7 +1500,7 @@ function forum_update_default($fid)
 
         $db_forum_get_permissions = db_connect();
 
-        $sql = "UPDATE FORUMS SET DEFAULT_FORUM = 0 WHERE DEFAULT_FORUM = 1";
+        $sql = "UPDATE FORUMS SET DEFAULT_FORUM = 0";
         $result = db_query($sql, $db_forum_get_permissions);
 
         if ($fid > 0) {

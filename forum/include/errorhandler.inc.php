@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.76 2006-07-06 20:01:49 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.77 2006-07-30 16:19:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -212,7 +212,51 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
                 break;
         }
 
-        echo "            <p>Beehive Forum ", BEEHIVE_VERSION, " on PHP/", phpversion(), " ", PHP_OS, " ", strtoupper(php_sapi_name()), " MySQL/", db_fetch_mysql_version(), "</p>\n";
+        $version_strings = array();
+
+        // Beehive Forum Version
+        
+        if (defined('BEEHIVE_VERSION')) {
+           $beehive_version = BEEHIVE_VERSION;
+           $version_strings[] = "Beehive Forum $beehive_version";
+        }
+
+        // PHP Version
+
+        if ($php_version = phpversion()) {
+            $version_strings[] = "on PHP/$php_version";
+        }
+
+        // PHP OS (WINNT, Linux, etc)
+
+        if (defined('PHP_OS')) {
+            $version_strings[] = PHP_OS;
+        }
+
+        // PHP interface (CGI, APACHE, IIS, etc)
+
+        if ($php_sapi = php_sapi_name()) {
+            $version_strings[] = strtoupper($php_sapi);
+        }
+
+        // Join together the above strings into a single array index.
+
+        if (isset($version_strings) && sizeof($version_strings) > 0) {
+            $version_strings = array(implode(" ", $version_strings));
+        }
+
+        // Add the MySQL version if it's available.
+
+        if ($mysql_version = db_fetch_mysql_version()) {
+            $version_strings[] = "MySQL/$mysql_version";
+        }
+
+        // Display the entire version string to the user.
+
+        if (isset($version_strings) && sizeof($version_strings) > 0) {
+            echo "            <p>", implode(", ", $version_strings), "</p>\n";
+        }
+
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "      </table>\n";

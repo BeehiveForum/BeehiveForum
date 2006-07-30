@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.27 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.28 2006-07-30 16:19:27 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,9 +93,8 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
-html_draw_top();
-
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -179,223 +178,40 @@ if (isset($_GET['ban_referer']) && strlen(trim(_stripslashes($_GET['ban_referer'
     }
 }
 
-if (isset($add_new_ban_type) && isset($add_new_ban_data)
-   || isset($remove_ban_type) && isset($remove_ban_data) && isset($remove_ban_id)) {
-
-    html_draw_top("openprofile.js");
-
-    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['bancontrols']}</h1>\n";
-
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-
-    if (isset($ret)) {
-        echo "  ", form_input_hidden("ret", $ret), "\n";
-        echo "  ", form_input_hidden("back", "back"), "\n";
-    }
-
-    if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
-
-        echo "  ", form_input_hidden("newbantype", $add_new_ban_type), "\n";
-        echo "  ", form_input_hidden("newbandata", $add_new_ban_data), "\n";
-
-    }elseif (isset($remove_ban_type) && isset($remove_ban_data)) {
-
-        echo "  ", form_input_hidden("delete_ban[$remove_ban_id]", "Y"), "\n";
-    }
-
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td>\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-
-    if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
-
-        echo "                 <tr>\n";
-        echo "                   <td class=\"subhead\">{$lang['addbandata']}</td>\n";
-        echo "                 </tr>\n";
-
-    }else {
-
-        echo "                 <tr>\n";
-        echo "                   <td class=\"subhead\">{$lang['removebandata']}</td>\n";
-        echo "                 </tr>\n";
-    }
-
-    echo "              </table>\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                 <tr>\n";
-    echo "                   <td align=\"center\">\n";
-
-    if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
-
-        echo "                     <table class=\"posthead\" width=\"95%\">\n";
-        echo "                       <tr>\n";
-        echo "                         <td>{$lang['confirmaddban']}:</td>\n";
-        echo "                       </tr>\n";
-        echo "                       <tr>\n";
-        echo "                         <td>&nbsp;</td>\n";
-        echo "                       </tr>\n";
-
-        if ($add_new_ban_type == BAN_TYPE_IP) {
-
-            echo "                       <tr>\n";
-            echo "                         <td><b>{$lang['ipaddress']}: $add_new_ban_data</b></td>\n";
-            echo "                       </tr>\n";
-
-        }elseif ($add_new_ban_type == BAN_TYPE_REF) {
-
-            echo "                       <tr>\n";
-            echo "                         <td><b>{$lang['httpreferrer']}: $add_new_ban_data</b></td>\n";
-            echo "                       </tr>\n";
-        }
-
-        if ($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data)) {
-
-            echo "                       <tr>\n";
-            echo "                         <td>&nbsp;</td>\n";
-            echo "                       </tr>\n";
-            echo "                       <tr>\n";
-            echo "                         <td>{$lang['affectsessionwarnadd']}:</td>\n";
-            echo "                       </tr>\n";
-            echo "                       <tr>\n";
-            echo "                         <td>\n";
-            echo "                           <ul>\n";
-
-            foreach($affected_sessions_array as $affected_session) {
-
-                if ($affected_session['UID'] > 0) {
-                    echo "      <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</a></li>\n";
-                }else {
-                    echo "      <li>", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</li>\n";
-                }
-            }
-
-            echo "                           </ul>\n";
-            echo "                         </td>\n";
-            echo "                       </tr>\n";
-        }
-
-    }else {
-
-        echo "                     <table class=\"posthead\" width=\"95%\">\n";
-        echo "                       <tr>\n";
-        echo "                         <td>{$lang['confirmremoveban']}:</td>\n";
-        echo "                       </tr>\n";
-        echo "                       <tr>\n";
-        echo "                         <td>&nbsp;</td>\n";
-        echo "                       </tr>\n";
-
-        if ($remove_ban_type == BAN_TYPE_IP) {
-
-            echo "                       <tr>\n";
-            echo "                         <td><b>{$lang['ipaddress']}: $remove_ban_data</b></td>\n";
-            echo "                       </tr>\n";
-
-        }elseif ($remove_ban_type == BAN_TYPE_REF) {
-
-            echo "                       <tr>\n";
-            echo "                         <td><b>{$lang['httpreferrer']}: $remove_ban_data</b></td>\n";
-            echo "                       </tr>\n";
-        }
-
-        if ($affected_sessions_array = check_affected_sessions($remove_ban_type, $remove_ban_data)) {
-
-            echo "                       <tr>\n";
-            echo "                         <td>&nbsp;</td>\n";
-            echo "                       </tr>\n";
-            echo "                       <tr>\n";
-            echo "                         <td>{$lang['affectsessionwarnremove']}:</td>\n";
-            echo "                       </tr>\n";
-            echo "                       <tr>\n";
-            echo "                         <td>\n";
-            echo "                           <ul>\n";
-
-            foreach($affected_sessions_array as $affected_session) {
-
-                if ($affected_session['UID'] > 0) {
-                    echo "      <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</a></li>\n";
-                }else {
-                    echo "      <li>", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</li>\n";
-                }
-            }
-
-            echo "                           </ul>\n";
-            echo "                         </td>\n";
-            echo "                       </tr>\n";
-        }
-    }
-
-    echo "                       <tr>\n";
-    echo "                         <td>&nbsp;</td>\n";
-    echo "                       </tr>\n";
-    echo "                     </table>\n";
-    echo "                   </td>\n";
-    echo "                 </tr>\n";
-    echo "               </table>\n";
-    echo "             </td>\n";
-    echo "           </tr>\n";
-    echo "         </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
-    echo "    </tr>\n";
-
-    if (isset($ret)) {
-
-        if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
-
-            echo "    <tr>\n";
-            echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("back", $lang['cancel']), "</td>\n";
-            echo "    </tr>\n";
-
-        }else {
-
-            echo "    <tr>\n";
-            echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['remove']), "&nbsp;", form_submit("back", $lang['cancel']), "</td>\n";
-            echo "    </tr>\n";
-        }
-
-    }else {
-
-        if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
-
-            echo "    <tr>\n";
-            echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "</td>\n";
-            echo "    </tr>\n";
-
-        }else {
-
-            echo "    <tr>\n";
-            echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['remove']), "</td>\n";
-            echo "    </tr>\n";
-        }
-    }
-
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
 if (isset($_POST['add'])) {
 
-    // New Ban entry
+    $valid = true;
 
     if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
+
         $new_ban_type = $_POST['newbantype'];
+
+        if ($new_ban_type < 1 || $new_ban_type > 5) {
+
+            $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
+            $valid = false;
+        }
+
+    }else {
+
+        $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
+        $valid = false;
     }
 
     if (isset($_POST['newbandata']) && strlen(trim(_stripslashes($_POST['newbandata']))) > 0) {
+
         $new_ban_data = trim(_stripslashes($_POST['newbandata']));
+
+        if (preg_match("/^%+$/", $new_ban_data) > 0) {
+        
+            $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+            $valid = false;
+        }
+
+    }else {
+
+        $error_html.= "<h2>{$lang['mustspecifybandata']}</h2>\n";
+        $valid = false;
     }
 
     if (isset($_POST['newbancomment']) && strlen(trim(_stripslashes($_POST['newbancomment']))) > 0) {
@@ -404,24 +220,39 @@ if (isset($_POST['add'])) {
         $comment = "";
     }
 
-    if (isset($new_ban_data) && isset($new_ban_type)) {
+    if ($valid) {
 
-        if ($new_ban_type > 0) {
+        if (!check_ban_data($new_ban_type, $new_ban_data)) {
 
-            if (preg_match("/^%+$/", $new_ban_data) < 1) {
+            add_ban_data($new_ban_type, $new_ban_data, $comment);
+            $error_html.= "<h2>{$lang['successfullyaddedban']}</h2>\n";
+            unset($_POST['addban'], $_GET['ban_id'], $ban_id);
 
-                if (!check_ban_data($new_ban_type, $new_ban_data)) {
-        
-                    add_ban_data($new_ban_type, $new_ban_data, $comment);
+        }else {
 
-                }else {
+            $error_html.= "<h2>{$lang['duplicatebandataentered']}</h2>\n";
+            $valid = false;
+        }
+    }
+}
 
-                    $error_html.= "<h2>{$lang['ipaddressisalreadybanned']}</h2>\n";
-                }
+if (isset($_POST['update'])) {
 
-            }else {
+    // Modified ban entry
 
-                $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+    $valid = true;
+
+    if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
+
+        $ban_id = $_POST['ban_id'];
+
+        if (isset($_POST['bantype']) && is_numeric($_POST['bantype'])) {
+
+            $ban_type = $_POST['bantype'];
+
+            if ($ban_type < 1 || $ban_type > 5) {
+
+                $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
                 $valid = false;
             }
 
@@ -431,24 +262,53 @@ if (isset($_POST['add'])) {
             $valid = false;
         }
 
-    }else if (!isset($new_ban_type) && isset($new_ban_data)) {
+        if (isset($_POST['bandata']) && strlen(trim(_stripslashes($_POST['bandata']))) > 0) {
 
-        $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
-        $valid = false;
+            $ban_data = trim(_stripslashes($_POST['bandata']));
 
-    }else if (!isset($new_ban_data) && isset($new_ban_type) && $new_ban_type > 0) {
+            if (preg_match("/^%+$/", $ban_data) > 0) {
 
-        $error_html.= "<h2>{$lang['mustspecifybandata']}</h2>\n";
-        $valid = false;
+                $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
+                $valid = false;
+            }
+
+        }else {
+
+            $error_html.= "<h2>{$lang['mustspecifybandata']}</h2>\n";
+            $valid = false;
+        }
+
+        if (isset($_POST['bancomment']) && strlen(trim(_stripslashes($_POST['bancomment']))) > 0) {
+            $comment = trim(_stripslashes($_POST['bancomment']));
+        }else {
+            $comment = "";
+        }
+
+        if ($valid) {
+
+            if (!check_ban_data($ban_type, $ban_data)) {
+
+                update_ban_data($ban_id, $ban_type, $ban_data, $comment);
+                $error_html.= "<h2>{$lang['successfullyaddedban']}</h2>\n";
+                unset($_POST['ban_id'], $_GET['ban_id'], $ban_id);
+
+            }else {
+
+                $error_html.= "<h2>{$lang['duplicatebandataentered']}</h2>\n";
+                $valid = false;
+            }
+        }
     }
 }
 
-if (isset($_POST['update'])) {
+// Delete existing ban entry
 
-    // Delete existing ban entry
+if (isset($_POST['delete'])) {
 
     if (isset($_POST['delete_ban']) && is_array($_POST['delete_ban'])) {
 
+        $error_html.= "<h2>{$lang['successfullyremovedselectedbans']}</h2>\n";
+        
         foreach($_POST['delete_ban'] as $ban_id => $delete_ban) {
 
             if ($delete_ban == "Y") {
@@ -461,56 +321,6 @@ if (isset($_POST['update'])) {
             }
         }
     }
-
-    // Modified ban entry
-
-    if (isset($_POST['bantype']) && is_array($_POST['bantype'])) {
-
-        foreach($_POST['bantype'] as $ban_id => $ban_type) {
-
-            if (is_numeric($ban_type) && $ban_type > 0) {
-
-                if (isset($_POST['bancomment'][$ban_id]) && strlen(trim(_stripslashes($_POST['bancomment'][$ban_id]))) > 0) {
-                    $comment = trim(_stripslashes($_POST['bancomment'][$ban_id]));
-                }else {
-                    $comment = "";
-                }
-                
-                if (isset($_POST['bandata'][$ban_id]) && strlen(trim(_stripslashes($_POST['bandata'][$ban_id]))) > 0) {
-
-                    $ban_data = trim(_stripslashes($_POST['bandata'][$ban_id]));
-
-                    if (preg_match("/^%+$/", $ban_data) < 1) {
-                        
-                        if (!check_ban_data($ban_type, $ban_data, $ban_id)) {
-
-                            update_ban_data($ban_id, $ban_type, $ban_data, $comment);
-
-                        }else {
-
-                            $valid = false;
-                            $error_html.= "<h2>{$lang['duplicatebandataentered']}</h2>\n";
-                        }
-
-                    }else {
-
-                        $error_html.= "<h2>{$lang['cannotusewildcardonown']}</h2>\n";
-                        $valid = false;
-                    }
-                
-                }else {
-
-                    $error_html.= "<h2>{$lang['mustspecifybandata']}</h2>\n";
-                    $valid = false;
-                }
-
-            }else {
-
-                $error_html.= "<h2>{$lang['mustspecifybantype']}</h2>\n";
-                $valid = false;
-            }
-        }
-    }
 }
 
 // Return to the page we came from.
@@ -519,184 +329,313 @@ if (isset($_POST['back']) && isset($ret)) {
     header_redirect($ret);
 }
 
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['bancontrols']}</h1>\n";
-
-if (!$valid && strlen($error_html) > 0) echo $error_html;
-
-echo "<br />\n";
-echo "<div align=\"center\">\n";
-echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-
-if (isset($ret)) {
-    echo "  ", form_input_hidden("ret", $ret), "\n";
+if (isset($_POST['cancel']) || isset($_POST['delete'])) {
+    unset($_POST['addban'], $_POST['ban_id'], $_GET['ban_id'], $ban_id);
 }
 
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                 <tr>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"50\">&nbsp;</td>\n";
+html_draw_top();
 
+if (isset($_POST['addban'])) {
 
-if ($sort_by == 'BANTYPE' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
-}elseif ($sort_by == 'BANTYPE' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
-}elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
-}else {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
-}
+    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['bancontrols']}</h1>\n";
 
-if ($sort_by == 'BANDATA' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
-}elseif ($sort_by == 'BANDATA' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
-}elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
-}else {
-    echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data</a></td>\n";
-}
+    if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
 
-if ($sort_by == 'COMMENT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=DESC&amp;page=$page\">Comment&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
-}elseif ($sort_by == 'COMMENT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=ASC&amp;page=$page\">Comment&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
-}elseif ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=ASC&amp;page=$page\">Comment</a></td>\n";
-}else {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"40%\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=COMMENT&amp;sort_dir=DESC&amp;page=$page\">Comment</a></td>\n";
-}
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('addban', ''), "\n";
 
-echo "                   <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;{$lang['delete']}&nbsp;</td>\n";
-echo "                 </tr>\n";
-
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
-
-$ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
-
-if (sizeof($ban_list_array['ban_array']) > 0) {
-
-    foreach($ban_list_array['ban_array'] as $ban_list_id => $ban_list_entry) {
-
-        echo "                 <tr>\n";
-        echo "                   <td>&nbsp;</td>\n";
-        echo "                   <td>", form_dropdown_array("bantype[$ban_list_id]", range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), $ban_list_entry['BANTYPE']), "</td>\n";
-        echo "                   <td>", form_input_text("bandata[$ban_list_id]", $ban_list_entry['BANDATA'], 30, 255), "</td>\n";
-        echo "                   <td>", form_input_text("bancomment[$ban_list_id]", $ban_list_entry['COMMENT'], 50, 255), "</td>\n";
-        echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y", false), "</td>\n";
-        echo "                 </tr>\n";
+    if (isset($ret)) {
+        echo "  ", form_input_hidden("ret", $ret), "\n";
     }
 
-    echo "                 <tr>\n";
-    echo "                   <td colspan=\"5\">&nbsp;</td>\n";
-    echo "                 </tr>\n";
-    echo "               </table>\n";
-    echo "             </td>\n";
-    echo "           </tr>\n";
-    echo "         </table>\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">&nbsp;{$lang['addban']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"120\" class=\"posthead\">&nbsp;{$lang['bantype']}:</td>\n";
+    echo "                  <td>", form_dropdown_array('newbantype', range(0, 5), array('', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : '')), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"100\" class=\"posthead\">&nbsp;{$lang['bandata']}:</td>\n";
+    echo "                  <td>", form_input_text('newbandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['newbandata'])) : ''), 40, 255), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"100\" class=\"posthead\" valign=\"top\">&nbsp;{$lang['bancomment']}:</td>\n";
+    echo "                  <td>", form_textarea('newbancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['newbancomment'])) : ''), 5, 37), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $ban_list_array['ban_count'], 10), "</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['update']), "</td>\n";
-    echo "    </tr>\n";
+
+    if (isset($ret)) {
+
+        echo "    <tr>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+        echo "    </tr>\n";
+
+    }else {
+
+        echo "    <tr>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "    </tr>\n";
+    }
+
     echo "  </table>\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
+    echo "    <tr>\n";
+    echo "      <td><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
 
-}else {
+}elseif (isset($_POST['ban_id']) || isset($_GET['ban_id'])) {
 
-    echo "                 <tr>\n";
-    echo "                   <td>&nbsp;</td>\n";
-    echo "                   <td colspan=\"4\">{$lang['noexistingbandata']}</td>\n";
-    echo "                 </tr>\n";
-    echo "                 <tr>\n";
-    echo "                   <td colspan=\"5\">&nbsp;</td>\n";
-    echo "                 </tr>\n";
-    echo "               </table>\n";
-    echo "             </td>\n";
-    echo "           </tr>\n";
-    echo "         </table>\n";
+    if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
+
+        $ban_id = $_POST['ban_id'];
+
+    }elseif (isset($_GET['ban_id']) && is_numeric($_GET['ban_id'])) {
+
+        $ban_id = $_GET['ban_id'];
+
+    }else {
+
+        echo "<h2>{$lang['invalidbanid']}</h2>\n";
+        html_draw_bottom();
+        exit;
+    }
+
+    if (!$ban_data_array = admin_get_ban($ban_id)) {
+
+        echo "<h2>{$lang['invalidbanid']}</h2>\n";
+        html_draw_bottom();
+        exit;
+    }
+
+    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['bancontrols']}</h1>\n";
+
+    if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
+
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('ban_id', $ban_id), "\n";
+    echo "  ", form_input_hidden("delete_ban[$ban_id]", "Y"), "\n";
+
+    if (isset($ret)) {
+        echo "  ", form_input_hidden("ret", $ret), "\n";
+    }
+
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" colspan=\"2\">&nbsp;{$lang['editban']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"120\" class=\"posthead\">&nbsp;{$lang['bantype']}:</td>\n";
+    echo "                  <td>", form_dropdown_array('bantype', range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['bantype'])) : $ban_data_array['BANTYPE'])), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"100\" class=\"posthead\">&nbsp;{$lang['bandata']}:</td>\n";
+    echo "                  <td>", form_input_text('bandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['bandata'])) : $ban_data_array['BANDATA']), 40, 255), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td width=\"100\" class=\"posthead\" valign=\"top\">&nbsp;{$lang['bancomment']}:</td>\n";
+    echo "                  <td>", form_textarea('bancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['bancomment'])) : $ban_data_array['COMMENT']), 5, 37), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td>&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td>&nbsp;</td>\n";
     echo "    </tr>\n";
+
+    if (isset($ret)) {
+
+        echo "    <tr>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+        echo "    </tr>\n";
+
+    }else {
+
+        echo "    <tr>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "    </tr>\n";
+    }
+
     echo "  </table>\n";
-}
-
-echo "  <br />\n";
-echo "</form>\n";
-echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
-echo "    <tr>\n";
-echo "      <td>\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                 <tr>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"50\">&nbsp;</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"50\">Ban Type</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"50\">Ban Data</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"50\">Comment</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;</td>\n";
-echo "                 </tr>\n";
-echo "                 <tr>\n";
-echo "                   <td>{$lang['newcaps']}</td>\n";
-echo "                   <td>", form_dropdown_array('newbantype', range(0, 5), array('', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer')), "</td>\n";
-echo "                   <td>", form_input_text('newbandata', '', 30, 255), "</td>\n";
-echo "                   <td>", form_input_text('newbancomment', '', 50, 255), "</td>\n";
-echo "                   <td>&nbsp;</td>\n";
-echo "                 </tr>\n";
-echo "                 <tr>\n";
-echo "                   <td colspan=\"5\">&nbsp;</td>\n";
-echo "                 </tr>\n";
-echo "               </table>\n";
-echo "             </td>\n";
-echo "           </tr>\n";
-echo "         </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
-echo "    </tr>\n";
-
-if (isset($ret)) {
-
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
     echo "    <tr>\n";
-    echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+    echo "      <td><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
     echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
 
 }else {
 
-    echo "    <tr>\n";
-    echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "</td>\n";
-    echo "    </tr>\n";
-}
+    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['bancontrols']}</h1>\n";
 
-echo "  </table>\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
-echo "    <tr>\n";
-echo "      <td><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "  </table>\n";
-echo "</form>\n";
-echo "</div>\n";
+    if (!$valid && strlen($error_html) > 0) echo $error_html;
+
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+
+    if (isset($ret)) {
+        echo "  ", form_input_hidden("ret", $ret), "\n";
+    }
+
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td>\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                 <tr>\n";
+
+
+    if ($sort_by == 'BANTYPE' && $sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    }elseif ($sort_by == 'BANTYPE' && $sort_dir == 'DESC') {
+        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    }elseif ($sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
+    }else {
+        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
+    }
+
+    if ($sort_by == 'BANDATA' && $sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    }elseif ($sort_by == 'BANDATA' && $sort_dir == 'DESC') {
+        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    }elseif ($sort_dir == 'ASC') {
+        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
+    }else {
+        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data</a></td>\n";
+    }
+
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;&nbsp;</td>\n";
+    echo "                 </tr>\n";
+
+    $start = floor($page - 1) * 10;
+    if ($start < 0) $start = 0;
+
+    $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $start);
+
+    $ban_types_array = array('1' => 'IP Address', '2' => 'Logon', 
+                             '3' => 'Nickname',   '4' => 'Email',
+                             '5' => 'HTTP Referer'); 
+
+    if (sizeof($ban_list_array['ban_array']) > 0) {
+
+        foreach($ban_list_array['ban_array'] as $ban_list_id => $ban_list_entry) {
+
+            echo "                 <tr>\n";
+            echo "                   <td>&nbsp;<a href=\"admin_banned.php?ban_id=$ban_list_id\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_array)) ? $ban_types_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
+            echo "                   <td>&nbsp;{$ban_list_entry['BANDATA']}</td>\n";
+            echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y", false), "</td>\n";
+            echo "                 </tr>\n";
+        }
+
+        echo "                 <tr>\n";
+        echo "                   <td colspan=\"5\">&nbsp;</td>\n";
+        echo "                 </tr>\n";
+        echo "               </table>\n";
+        echo "             </td>\n";
+        echo "           </tr>\n";
+        echo "         </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $ban_list_array['ban_count'], 10), "</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addban']), "&nbsp;", form_submit("delete", $lang['deleteselectbans']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+
+    }else {
+
+        echo "                 <tr>\n";
+        echo "                   <td colspan=\"5\">&nbsp;{$lang['noexistingbandata']}</td>\n";
+        echo "                 </tr>\n";
+        echo "                 <tr>\n";
+        echo "                   <td colspan=\"5\">&nbsp;</td>\n";
+        echo "                 </tr>\n";
+        echo "               </table>\n";
+        echo "             </td>\n";
+        echo "           </tr>\n";
+        echo "         </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td>&nbsp;</td>\n";
+        echo "    </tr>\n";
+
+        if (isset($ret)) {
+
+            echo "    <tr>\n";
+            echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addban']), "&nbsp;", form_submit("delete", $lang['deleteselectbans']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+            echo "    </tr>\n";
+
+        }else {
+
+            echo "    <tr>\n";
+            echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addban']), "&nbsp;", form_submit("delete", $lang['deleteselectbans']), "</td>\n";
+            echo "    </tr>\n";
+        }
+
+        echo "  </table>\n";
+    }
+
+    echo "  <br />\n";
+    echo "</form>\n";
+    echo "</div>\n";
+
+}
 
 html_draw_bottom();
 

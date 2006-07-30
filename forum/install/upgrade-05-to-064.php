@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.18 2006-07-23 12:43:11 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.19 2006-07-30 16:19:27 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -594,7 +594,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Improved ban controls allow banning of IP, LOGON
     // NICKNAME, EMAIL and HTTP REFERER
 
-    $sql = "CREATE TABLE {forum_webtag}_BANNED (";
+    $sql = "CREATE TABLE {$forum_webtag}_BANNED (";
     $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
     $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0',";
     $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '',";
@@ -669,7 +669,19 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "CREATE TABLE DEFAULT_THREAD_TRACK (";
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_STATS (";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  PRIMARY KEY  (TID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "CREATE TABLE {$forum_webtag}_THREAD_TRACK (";
     $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
     $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
     $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";

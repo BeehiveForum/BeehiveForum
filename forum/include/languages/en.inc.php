@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.335 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.336 2006-07-31 11:03:45 decoyduck Exp $ */
 
 // International English language file
 
@@ -463,6 +463,7 @@ $lang['mustchooseaendyear'] = "Must choose a end year";
 $lang['startperiodisaheadofendperiod'] = "Start period is ahead of end period";
 $lang['bancontrols'] = "Ban Controls";
 $lang['addban'] = "Add Ban";
+$lang['checkban'] = "Check Ban";
 $lang['editban'] = "Edit Ban";
 $lang['bantype'] = "Ban Type";
 $lang['bandata'] = "Ban Data";
@@ -1604,7 +1605,7 @@ $lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authen
 $lang['successfullyremovedselectedfeeds'] = "Successfully removed selected feeds";
 $lang['successfullyaddedfeed'] = "Successfully added new feed";
 $lang['successfullyeditedfeed'] = "Successfully edited feed";
-$lang['couldnotremovefeedwithid'] = "Could not remove feed with ID";
+$lang['couldnotremovefeedwithid'] = "Could not remove feed with ID: %s";
 $lang['rssstreamworkingcorrectly'] = "RSS stream appears to be working correctly";
 $lang['rssstreamnotworkingcorrectly'] = "RSS stream was empty or could not be found";
 

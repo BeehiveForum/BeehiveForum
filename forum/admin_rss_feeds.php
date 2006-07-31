@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.15 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.16 2006-07-31 11:03:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -318,7 +318,8 @@ if (isset($_POST['delete'])) {
 
                 if (!rss_remove_feed($feed_id)) {
 
-                    $del_success = "<h2>{$lang['couldnotremovefeedwithid']}: $feed_id</h2>\n";
+                    $del_success = sprintf($lang['couldnotremovefeedwithid'], $feed_id);
+                    $del_success = "<h2>$del_success</h2>\n";
                 }               
             }
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.18 2006-07-13 16:01:17 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.19 2006-07-31 11:03:45 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -170,7 +170,6 @@ $lang['on'] = "on";
 $lang['unread'] = "unread";
 $lang['all'] = "All";
 $lang['allcaps'] = "ALL";
-$lang['me_caps'] = "ME";
 $lang['by'] = "by";
 $lang['permissions'] = "Permissions";
 $lang['position'] = "Position";
@@ -312,6 +311,8 @@ $lang['forgottenpassworddesc'] = "If this user has forgotten their password you 
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
 $lang['lastlogon'] = "Last Logon";
+$lang['sessionreferer'] = "Session Referer";
+$lang['signupreferer'] = "Sign-up Referer:";
 $lang['nouseraccounts'] = "No user accounts in database.";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['adminaccesslog'] = "Admin Access Log";
@@ -461,15 +462,30 @@ $lang['mustchooseaendmonth'] = "Must choose a end month";
 $lang['mustchooseaendyear'] = "Must choose a end year";
 $lang['startperiodisaheadofendperiod'] = "Start period is ahead of end period";
 $lang['bancontrols'] = "Ban Controls";
-$lang['bannedipaddresses'] = "Banned IP Addresses";
-$lang['bannedlogons'] = "Banned Logons";
-$lang['bannednicknames'] = "Banned Nicknames";
-$lang['bannedemailaddresses'] = "Banned Email Addresses";
+$lang['addban'] = "Add Ban";
+$lang['checkban'] = "Check Ban";
+$lang['editban'] = "Edit Ban";
+$lang['bantype'] = "Ban Type";
+$lang['bandata'] = "Ban Data";
+$lang['bancomment'] = "Comment";
+$lang['deleteselectbans'] = "Delete selected bans";
+$lang['addbandata'] = "Add Ban Data";
+$lang['removebandata'] = "Remove Ban Data";
+$lang['confirmaddban'] = "Please confirm that you want to add the following ban data to the database";
+$lang['confirmremoveban'] = "Please confirm that you want to remove the following ban data from the database";
+$lang['ipaddress'] = "IP Address";
+$lang['httpreferrer'] = "HTTP Referrer";
+$lang['invalidbanid'] = "Invalid Ban ID";
+$lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
+$lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
+$lang['mustspecifybantype'] = "You must specify a ban type";
+$lang['mustspecifybandata'] = "You must specify some ban data";
+$lang['successfullyremovedselectedbans'] = "Successfully removed selected bans";
+$lang['failedtoremoveban'] = "Failed to remove ban data with ID: %s";
+$lang['duplicatebandataentered'] = "Duplicate ban data entered. Please check your wildcards to see if they already match the data entered";
+$lang['successfullyaddedban'] = "Successfully added ban";
+$lang['noexistingbandata'] = "There is no existing ban data. To add some ban data please click the button below.";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
-$lang['ipaddressisalreadybanned'] = "That IP Address is already banned. Check your wildcards to see if they already match it.";
-$lang['logonisalreadybanned'] = "That Logon is already banned. Check your wildcards to see if they already match it.";
-$lang['nicknameisalreadybanned'] = "That Nickname is already banned. Check your wildcards to see if they already match it.";
-$lang['emailisalreadybanned'] = "That Email Address is already banned. Check your wildcards to see if they already match it.";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
@@ -500,6 +516,9 @@ $lang['removednicknamefrombanlist'] = "Removed nickname '%s' from ban list";
 
 $lang['addedemailtobanlist'] = "Added email address '%s' to ban list";
 $lang['removedemailfrombanlist'] = "Removed email address '%s' from ban list";
+
+$lang['addedreferertobanlist'] = "Added referer '%s' to ban list";
+$lang['removedrefererfrombanlist'] = "Removed referer '%s' from ban list";
 
 $lang['editedfolder'] = "Edited Folder '%s'";
 $lang['movedallthreadsfromto'] = "Moved all threads from '%s' to '%s'";
@@ -542,6 +561,10 @@ $lang['endedsessionforuser'] = "Ended session for user '%s'";
 $lang['approvedpost'] = "Approved post '%s'";
 
 $lang['editedwordfilter'] = "Edited Word Filter";
+
+$lang['addedrssfeed'] = "Added RSS Feed '%s'";
+$lang['editedrssfeed'] = "Edited RSS Feed '%s'";
+$lang['deletedrssfeed'] = "Deleted RSS Feed '%s'";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['clearlog'] = "Clear Log";
@@ -590,6 +613,14 @@ $lang['maximumpostlength'] = "Maximum Post Length";
 $lang['postfrequency'] = "Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
+$lang['unreadmessagescutoff'] = "Unread messages cutoff";
+$lang['unreadcutoffseconds'] = "seconds";
+$lang['disableunreadmessages'] = "Disable unread messages";
+$lang['nocutoffdefault'] = "No cutoff (default)";
+$lang['1month'] = "1 month";
+$lang['6months'] = "6 months";
+$lang['1year'] = "1 year";
+$lang['customsetbelow'] = "Custom value (set below)";
 $lang['searchoptions'] = "Search Options";
 $lang['searchfrequency'] = "Search Frequency";
 $lang['sessions'] = "Sessions";
@@ -655,6 +686,11 @@ $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enable
 $lang['forum_settings_help_44'] = "<b>Use Text Captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
 $lang['forum_settings_help_45'] = "<b>Text Captcha directory</b> specifies the location that Beehive will store it's text captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text captcha you must upload some true type fonts into the fonts sub-directory of your main text captcha directory otherwise Beehive will skip the text captcha during user registration.";
 $lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\" the code.";
+$lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
+$lang['forum_settings_help_48'] = "<b>Unread messages cutoff</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cutoff period will automatically appear as read.";
+$lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
+$lang['forum_settings_help_50'] = "Your Beehive Forum will not automatically prune the unread messages data from your database. You must choose to do this by using the prune options below.";
+
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -866,7 +902,6 @@ $lang['voterecorded'] = "Your vote has been recorded";
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
 $lang['userID'] = "User ID";
-$lang['alreadyloggedin'] = "already logged in";
 $lang['loggedinsuccessfully'] = "You logged in successfully.";
 $lang['presscontinuetoresend'] = "Press Continue to resend form data or cancel to reload page.";
 $lang['usernameorpasswdnotvalid'] = "The username or password you supplied is not valid.";
@@ -894,6 +929,8 @@ $lang['recentlyvisitedforums'] = "Recently Visited Forums";
 $lang['availableforums'] = "Available Forums";
 $lang['favouriteforums'] = "Favorite Forums";
 $lang['lastvisited'] = "Last Visited";
+$lang['totaltimeinforum'] = "Total time";
+$lang['longesttimeinforum'] = "Longest session";
 $lang['unreadmessages'] = "Unread Messages";
 $lang['removefromfavourites'] = "Remove From Favorites";
 $lang['addtofavourites'] = "Add To Favorites";
@@ -1096,7 +1133,6 @@ $lang['dateofbirth'] = "Date of Birth";
 $lang['homepageURL'] = "Homepage URL";
 $lang['pictureURL'] = "Picture URL";
 $lang['forumoptions'] = "Forum Options";
-$lang['pmoptions'] = "PM Options";
 $lang['notifybyemail'] = "Notify by email of posts to me";
 $lang['notifyofnewpm'] = "Notify by popup of new PM messages to me";
 $lang['notifyofnewpmemail'] = "Notify by email of new PM messages to me";
@@ -1161,7 +1197,6 @@ $lang['mustprovidepollresultsdisplaytype'] = "You must provide results display t
 $lang['mustprovidepollvotetype'] = "You must provide a poll vote type";
 $lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
 $lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
-$lang['groupcountmustbelessthananswercount'] = "Number of answer groups must be less than total number of answers";
 $lang['pleaseselectfolder'] = "Please select a folder";
 $lang['mustspecifyvalues1and2'] = "You must specify values for answers 1 and 2";
 $lang['tablepollmusthave2groups'] = "Tabular format polls must have precisely two voting groups";
@@ -1298,6 +1333,7 @@ $lang['userrelationships'] = "User Relationships";
 $lang['friends'] = "Friends";
 $lang['ignoredcompletely'] = "Ignored Completely";
 $lang['relationship'] = "Relationship";
+$lang['restorenickname'] = "Restore User's Nickname";
 $lang['friend_exp'] = "User's posts marked with a &quot;Friend&quot; icon.";
 $lang['normal_exp'] = "User's posts appear as normal.";
 $lang['ignore_exp'] = "User's posts are hidden.";
@@ -1542,19 +1578,36 @@ $lang['every6hours'] = "Every 6 hours";
 $lang['every12hours'] = "Every 12 hours";
 $lang['onceaday'] = "Once a day";
 $lang['rssfeeds'] = "RSS Feeds";
+$lang['feedname'] = "Feed Name";
+$lang['feedfoldername'] = "Feed Folder Name";
 $lang['feedlocation'] = "Feed Location";
+$lang['threadtitleprefix'] = "Thread Title Prefix";
+$lang['feednameandlocation'] = "Feed Name and Location";
+$lang['feedsettings'] = "Feed Settings";
+$lang['updatefrequency'] = "Update Frequency";
+$lang['addnewfeed'] = "Add New Feed";
+$lang['editfeed'] = "Edit Feed";
+$lang['feeduseraccount'] = "Feed User Account";
+$lang['noexistingfeeds'] = "No existing RSS Feeds found. To add a feed please click the button below";
+$lang['deleteselectedfeeds'] = "Delete selected feeds";
+$lang['rssfeedhelp'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work.";
 $lang['rssclicktoreadarticle'] = "Click here to read this article";
-$lang['rssfeedhelp_1'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you which to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work.";
+$lang['rssfeedhelp'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you which to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work.";
 $lang['mustspecifyrssfeedname'] = "Must specify RSS Feed Name";
 $lang['mustspecifyrssfeeduseraccount'] = "Must specify RSS Feed User Account";
 $lang['mustspecifyrssfeedfolder'] = "Must specify RSS Feed Folder";
 $lang['mustspecifyrssfeedurl'] = "Must specify RSS Feed URL";
-$lang['mustspecifyrssfeedprefix'] = "Must specify RSS Feed Prefix";
 $lang['mustspecifyrssfeedupdatefrequency'] = "Must specify RSS Feed Update Frequency";
 $lang['unknownrssuseraccount'] = "Unknown RSS User Account";
 $lang['rssfeedsupportshttpurlsonly'] = "RSS Feed supports HTTP URLs only. Secure feeds (https://) are not supported.";
 $lang['rssfeedurlformatinvalid'] = "RSS Feed URL format is invalid. URL must include scheme (e.g. http://) and a hostname (e.g. www.hostname.com).";
 $lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authentication";
+$lang['successfullyremovedselectedfeeds'] = "Successfully removed selected feeds";
+$lang['successfullyaddedfeed'] = "Successfully added new feed";
+$lang['successfullyeditedfeed'] = "Successfully edited feed";
+$lang['couldnotremovefeedwithid'] = "Could not remove feed with ID: %s";
+$lang['rssstreamworkingcorrectly'] = "RSS stream appears to be working correctly";
+$lang['rssstreamnotworkingcorrectly'] = "RSS stream was empty or could not be found";
 
 // PM Export Options
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.30 2006-07-30 21:46:34 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.31 2006-07-31 11:03:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -174,7 +174,7 @@ if (isset($_GET['ban_referer']) && strlen(trim(_stripslashes($_GET['ban_referer'
     }
 }
 
-if (isset($_POST['add'])) {
+if (isset($_POST['add']) || isset($_POST['check'])) {
 
     $valid = true;
 
@@ -220,9 +220,12 @@ if (isset($_POST['add'])) {
 
         if (!check_ban_data($new_ban_type, $new_ban_data)) {
 
-            add_ban_data($new_ban_type, $new_ban_data, $comment);
-            $error_html.= "<h2>{$lang['successfullyaddedban']}</h2>\n";
-            unset($_POST['addban'], $_GET['ban_id'], $ban_id);
+            if (isset($_POST['add'])) {
+            
+                add_ban_data($new_ban_type, $new_ban_data, $comment);
+                $error_html.= "<h2>{$lang['successfullyaddedban']}</h2>\n";
+                unset($_POST['addban'], $_GET['ban_id'], $ban_id);
+            }
 
         }else {
 
@@ -311,8 +314,8 @@ if (isset($_POST['delete'])) {
             
                 if (!remove_ban_data_by_id($ban_id)) {
 
-                    $valid = false;
-                    $error_html.= "<h2>". sprintf($lang['failedtoremoveban'], $ban_id). "</h2>\n";
+                    $failedtoremoveban = sprintf($lang['failedtoremoveban'], $ban_id);
+                    $error_html.= "<h2>$failedtoremoveban</h2>\n";
                 }
             }
         }
@@ -430,13 +433,13 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     if (isset($ret)) {
 
         echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("check", $lang['checkban']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
         echo "    </tr>\n";
 
     }else {
 
         echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("add", $lang['add']), "&nbsp;", form_submit("check", $lang['checkban']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
         echo "    </tr>\n";
     }
 

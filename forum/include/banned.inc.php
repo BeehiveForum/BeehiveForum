@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.14 2006-07-17 13:15:51 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.15 2006-08-01 21:14:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -248,7 +248,7 @@ function update_ban_data($ban_id, $type, $data, $comment)
 
     if (!$result = db_query($sql, $db_remove_ban_data)) return false;
 
-    return (db_affected_rows($db_remove_ban_data) > 0);
+    return true;
 }
 
 function check_ban_data($ban_type, $ban_data, $check_ban_id = false)

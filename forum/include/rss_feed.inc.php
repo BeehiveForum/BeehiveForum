@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.28 2006-07-28 17:48:40 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.29 2006-08-01 21:14:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -240,7 +240,7 @@ function rss_create_history($rss_id, $link)
 
     $link = addslashes($link);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}RSS_HISTORY (RSSID, LINK) ";
+    $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}RSS_HISTORY (RSSID, LINK) ";
     $sql.= "VALUES ($rss_id, '$link')";
 
     return db_query($sql, $db_rss_create_history);

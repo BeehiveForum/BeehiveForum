@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.336 2006-07-31 11:03:45 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.337 2006-08-01 21:14:14 decoyduck Exp $ */
 
 // International English language file
 
@@ -473,6 +473,11 @@ $lang['addbandata'] = "Add Ban Data";
 $lang['removebandata'] = "Remove Ban Data";
 $lang['confirmaddban'] = "Please confirm that you want to add the following ban data to the database";
 $lang['confirmremoveban'] = "Please confirm that you want to remove the following ban data from the database";
+$lang['ipban'] = "IP ban";
+$lang['logonban'] = "Logon ban";
+$lang['nicknameban'] = "Nickname ban";
+$lang['emailban'] = "Email ban";
+$lang['refererban'] = "Referer ban";
 $lang['ipaddress'] = "IP Address";
 $lang['httpreferrer'] = "HTTP Referrer";
 $lang['invalidbanid'] = "Invalid Ban ID";
@@ -481,9 +486,11 @@ $lang['affectsessionwarnremove'] = "This ban affects the following active user s
 $lang['mustspecifybantype'] = "You must specify a ban type";
 $lang['mustspecifybandata'] = "You must specify some ban data";
 $lang['successfullyremovedselectedbans'] = "Successfully removed selected bans";
-$lang['failedtoremoveban'] = "Failed to remove ban data with ID: %s";
+$lang['failedtoaddnewban'] = "Failed to add new ban";
+$lang['failedtoremovebans'] = "Failed to remove some or all of the selected bans";
 $lang['duplicatebandataentered'] = "Duplicate ban data entered. Please check your wildcards to see if they already match the data entered";
 $lang['successfullyaddedban'] = "Successfully added ban";
+$lang['successfullyupdatedban'] = "Successfully updated ban";
 $lang['noexistingbandata'] = "There is no existing ban data. To add some ban data please click the button below.";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
@@ -566,6 +573,8 @@ $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['addedrssfeed'] = "Added RSS Feed '%s'";
 $lang['editedrssfeed'] = "Edited RSS Feed '%s'";
 $lang['deletedrssfeed'] = "Deleted RSS Feed '%s'";
+
+$lang['updatedban'] = "Updated ban '%s'. Changed ban type from '%s' to '%s' and data from '%s' to '%s'.";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['clearlog'] = "Clear Log";
@@ -1605,7 +1614,9 @@ $lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authen
 $lang['successfullyremovedselectedfeeds'] = "Successfully removed selected feeds";
 $lang['successfullyaddedfeed'] = "Successfully added new feed";
 $lang['successfullyeditedfeed'] = "Successfully edited feed";
-$lang['couldnotremovefeedwithid'] = "Could not remove feed with ID: %s";
+$lang['failedtoremovefeeds'] = "Failed to remove some or all of the selected feeds";
+$lang['failedtoaddnewrssfeed'] = "Failed to add new RSS Feed";
+$lang['failedtoupdaterssfeed'] = "Failed to update RSS Feed";
 $lang['rssstreamworkingcorrectly'] = "RSS stream appears to be working correctly";
 $lang['rssstreamnotworkingcorrectly'] = "RSS stream was empty or could not be found";
 

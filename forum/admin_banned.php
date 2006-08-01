@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.31 2006-07-31 11:03:45 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.32 2006-08-01 21:14:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -134,6 +134,24 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 $valid = true;
 $error_html = "";
 
+$add_success = "";
+$del_success = "";
+$edit_success = "";
+
+// Constant translation of adding and removing bans to log entries.
+
+$admin_log_add_types = array(BAN_TYPE_IP    => ADD_BANNED_IP,
+                             BAN_TYPE_LOGON => ADD_BANNED_LOGON,
+                             BAN_TYPE_NICK  => ADD_BANNED_NICKNAME,
+                             BAN_TYPE_EMAIL => ADD_BANNED_EMAIL,
+                             BAN_TYPE_REF   => ADD_BANNED_REFERER);
+
+$admin_log_rem_types = array(BAN_TYPE_IP    => REMOVE_BANNED_IP,
+                             BAN_TYPE_LOGON => REMOVE_BANNED_LOGON,
+                             BAN_TYPE_NICK  => REMOVE_BANNED_NICKNAME,
+                             BAN_TYPE_EMAIL => REMOVE_BANNED_EMAIL,
+                             BAN_TYPE_REF   => REMOVE_BANNED_REFERER);
+
 // Are we returning somewhere?
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -175,8 +193,6 @@ if (isset($_GET['ban_referer']) && strlen(trim(_stripslashes($_GET['ban_referer'
 }
 
 if (isset($_POST['add']) || isset($_POST['check'])) {
-
-    $valid = true;
 
     if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
 
@@ -222,9 +238,16 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
             if (isset($_POST['add'])) {
             
-                add_ban_data($new_ban_type, $new_ban_data, $comment);
-                $error_html.= "<h2>{$lang['successfullyaddedban']}</h2>\n";
-                unset($_POST['addban'], $_GET['ban_id'], $ban_id);
+                if (add_ban_data($new_ban_type, $new_ban_data, $comment)) {
+
+                    admin_add_log_entry($admin_log_add_types[$new_ban_type], array($new_ban_data, $comment));
+                    $add_success = "<h2>{$lang['successfullyaddedban']}</h2>\n";
+                    unset($_POST['addban'], $_GET['ban_id'], $ban_id);
+
+                }else {
+
+                    $error_html.= "<h2>{$lang['failedtoaddnewban']}</h2>\n";
+                }
             }
 
         }else {
@@ -236,10 +259,6 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 }
 
 if (isset($_POST['update'])) {
-
-    // Modified ban entry
-
-    $valid = true;
 
     if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
 
@@ -283,13 +302,44 @@ if (isset($_POST['update'])) {
             $comment = "";
         }
 
+        if (isset($_POST['old_bantype']) && strlen(trim(_stripslashes($_POST['old_bantype']))) > 0) {
+            $old_ban_type = trim(_stripslashes($_POST['old_bantype']));
+        }else {
+            $old_ban_type = "";
+        }
+
+        if (isset($_POST['old_bandata']) && strlen(trim(_stripslashes($_POST['old_bandata']))) > 0) {
+            $old_ban_data = trim(_stripslashes($_POST['old_bandata']));
+        }else {
+            $old_ban_data = "";
+        }
+
+        if (isset($_POST['old_bancomment']) && strlen(trim(_stripslashes($_POST['old_bancomment']))) > 0) {
+            $old_comment = trim(_stripslashes($_POST['old_bancomment']));
+        }else {
+            $old_comment = "";
+        }
+
         if ($valid) {
 
-            if (!check_ban_data($ban_type, $ban_data)) {
+            $dup_ban_id = check_ban_data($ban_type, $ban_data);
+            
+            if ((!$dup_ban_id) || ($dup_ban_id == $ban_id)) {
 
-                update_ban_data($ban_id, $ban_type, $ban_data, $comment);
-                $error_html.= "<h2>{$lang['successfullyaddedban']}</h2>\n";
-                unset($_POST['ban_id'], $_GET['ban_id'], $ban_id);
+                if (($ban_type != $old_ban_type) || ($ban_data != $old_ban_data) || ($comment != $old_comment)) {
+
+                    if (update_ban_data($ban_id, $ban_type, $ban_data, $comment)) {
+
+                        if (($ban_type != $old_ban_type) || ($ban_data != $old_ban_data)) {
+                        
+                            $log_data = array($ban_id, $ban_type, $ban_data, $old_ban_type, $old_ban_data);
+                            admin_add_log_entry(UPDATED_BAN, $log_data);
+                        }
+
+                        $edit_success = "<h2>{$lang['successfullyupdatedban']}</h2>\n";
+                        unset($_POST['ban_id'], $_GET['ban_id'], $ban_id, $ban_type, $ban_data, $comment, $old_ban_type, $old_ban_data, $old_comment);
+                    }
+                }
 
             }else {
 
@@ -306,16 +356,18 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['delete_ban']) && is_array($_POST['delete_ban'])) {
 
-        $error_html.= "<h2>{$lang['successfullyremovedselectedbans']}</h2>\n";
-        
         foreach($_POST['delete_ban'] as $ban_id => $delete_ban) {
 
-            if ($delete_ban == "Y") {
+            if (($delete_ban == "Y") && $ban_data_array = admin_get_ban($ban_id)) {
             
-                if (!remove_ban_data_by_id($ban_id)) {
+                if (remove_ban_data_by_id($ban_id)) {
 
-                    $failedtoremoveban = sprintf($lang['failedtoremoveban'], $ban_id);
-                    $error_html.= "<h2>$failedtoremoveban</h2>\n";
+                    admin_add_log_entry($admin_log_rem_types[$ban_data_array['BANTYPE']], $ban_data_array['BANDATA']);
+                    $del_success = "<h2>{$lang['successfullyremovedselectedbans']}</h2>\n";
+
+                }else {
+                    
+                    $error_html.= "<h2>{$lang['failedtoremovebans']}</h2>\n";
                 }
             }
         }
@@ -508,15 +560,15 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"120\" class=\"posthead\">&nbsp;{$lang['bantype']}:</td>\n";
-    echo "                  <td>", form_dropdown_array('bantype', range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['bantype'])) : $ban_data_array['BANTYPE'])), "</td>\n";
+    echo "                  <td>", form_dropdown_array('bantype', range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['bantype'])) : $ban_data_array['BANTYPE'])), form_input_hidden('old_bantype', $ban_data_array['BANTYPE']), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"100\" class=\"posthead\">&nbsp;{$lang['bandata']}:</td>\n";
-    echo "                  <td>", form_input_text('bandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['bandata'])) : $ban_data_array['BANDATA']), 40, 255), "</td>\n";
+    echo "                  <td>", form_input_text('bandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['bandata'])) : $ban_data_array['BANDATA']), 40, 255), form_input_hidden('old_bandata', $ban_data_array['BANDATA']), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td width=\"100\" class=\"posthead\" valign=\"top\">&nbsp;{$lang['bancomment']}:</td>\n";
-    echo "                  <td>", form_textarea('bancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['bancomment'])) : $ban_data_array['COMMENT']), 5, 37), "</td>\n";
+    echo "                  <td>", form_textarea('bancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['bancomment'])) : $ban_data_array['COMMENT']), 5, 37), form_input_hidden('old_bancomment', $ban_data_array['COMMENT']), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
@@ -591,7 +643,13 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
 
     echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['bancontrols']}</h1>\n";
 
-    if (!$valid && strlen($error_html) > 0) echo $error_html;
+    if (isset($error_html) && strlen(trim($error_html)) > 0) {
+        echo $error_html;
+    }
+
+    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
+    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
+    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";

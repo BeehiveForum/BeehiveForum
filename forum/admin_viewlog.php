@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.93 2006-07-28 17:48:40 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.94 2006-08-01 21:14:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -474,9 +474,22 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $action_text = sprintf($lang['deletedrssfeed'], $entry_array[0]);
                 break;
 
+            case UPDATED_BAN:
+
+                $admin_log_ban_types = array(BAN_TYPE_IP    => $lang['ipban'],
+                                             BAN_TYPE_LOGON => $lang['logonban'],
+                                             BAN_TYPE_NICK  => $lang['nicknameban'],
+                                             BAN_TYPE_EMAIL => $lang['emailban'],
+                                             BAN_TYPE_REF   => $lang['refererban']);
+
+                $ban_link = sprintf("<a href=\"admin_banned.php?ban_id=%s\" target=\"_blank\">#%s</a>", $entry_array[0], $entry_array[0]);
+                $action_text = sprintf($lang['updatedban'], $ban_link, $admin_log_ban_types[$entry_array[1]], $admin_log_ban_types[$entry_array[3]], $entry_array[2], $entry_array[4]);
+                break;
+
             default:
 
                 $action_text = "{$lang['unknown']} : {$admin_log_entry['ACTION']}";
+                $action_text.= implode(", ", $entry_array);
                 break;
         }
 

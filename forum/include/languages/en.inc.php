@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.337 2006-08-01 21:14:14 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.338 2006-08-03 20:27:03 decoyduck Exp $ */
 
 // International English language file
 
@@ -574,7 +574,7 @@ $lang['addedrssfeed'] = "Added RSS Feed '%s'";
 $lang['editedrssfeed'] = "Edited RSS Feed '%s'";
 $lang['deletedrssfeed'] = "Deleted RSS Feed '%s'";
 
-$lang['updatedban'] = "Updated ban '%s'. Changed ban type from '%s' to '%s' and data from '%s' to '%s'.";
+$lang['updatedban'] = "Updated ban '%s'. '%s' to '%s', '%s' to '%s'.";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['clearlog'] = "Clear Log";

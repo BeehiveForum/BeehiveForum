@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.241 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.242 2006-08-03 20:27:03 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -582,6 +582,8 @@ function bh_update_user_time($uid)
     $forum_fid = $table_data['FID'];
 
     $db_bh_update_user_time = db_connect();
+
+    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
         
     $sql = "SELECT UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
@@ -616,17 +618,18 @@ function bh_update_user_time($uid)
         // set it to 0 for the rest of the function to work as expected.
 
         if (!isset($user_track['USER_TIME_BEST']) || is_null($user_track['USER_TIME_BEST'])) {
-            $user_track['USER_TIME'] = 0;
+            $user_track['USER_TIME_BEST'] = 0;
         }
 
         if (!isset($user_track['USER_TIME_TOTAL']) || is_null($user_track['USER_TIME_TOTAL'])) {
             $user_track['USER_TIME_TOTAL'] = 0;
         }
 
-        // Default values for $session_length and $session_difference.
+        // Default values for a few variables just incase.
 
         $session_length = 0;
         $session_difference = 0;
+        $session_total_time = 0;
 
         // If the current MySQL server time is newer than the last logon
         // we should calculate the session length.
@@ -642,49 +645,58 @@ function bh_update_user_time($uid)
             $update_columns_array[] = "USER_TIME_BEST = FROM_UNIXTIME('$session_length')";
         }
 
-        // If the user doesn't have a USER_TIME_UPDATED we need to
-        // set it to the user's LAST_LOGON and set $session_difference
-        // to be equal to $session_length.
-        //
-        // If the user DOES have a USER_TIME_UPDATED we need to check
-        // to see when it was updated. If it is older than the user's
-        // LAST_LOGON it hasn't yet been updated and we need to do so.
+        // If the user doesn't have a USER_TIME_UPDATED then the 
+        // USER_TIME_TOTAL is worked out the same way as the session
+        // length. 
+        
+        // If the user DOES have a USER_TIME_UPDATED then we need
+        // to work out the difference between when it was last
+        // updated and the current server time and then add that
+        // to the existing USER_TIME_TOTAL.
 
         if (!isset($user_track['USER_TIME_UPDATED']) || is_null($user_track['USER_TIME_UPDATED'])) {
 
-            $user_track['USER_TIME_UPDATED'] = $user_track['LAST_LOGON'];
-            $session_difference = $session_length;
+            $session_total_time = $user_track['TIME'] - $user_track['LAST_LOGON'];
 
-        }else if ($user_track['LAST_LOGON'] > $user_track['USER_TIME_UPDATED']) {
+        }elseif ($user_track['TIME'] > $user_track['USER_TIME_UPDATED']) {
 
-            $session_difference = ($user_track['USER_TIME_TOTAL'] + $session_length);
+            $session_difference = ($user_track['TIME'] - $user_track['USER_TIME_UPDATED']);
+            $session_total_time = ($user_track['USER_TIME_TOTAL'] + $session_difference);
         }
 
-        // Update the USER_TIME_TOTAL column with the value from $session_difference.
+        // We don't update all the time otherwise that would create
+        // too much load on the server.
 
-        $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_difference')";
+        if ($user_track['TIME'] > ($user_track['USER_TIME_UPDATED'] + $active_sess_cutoff)) {
 
-        if (sizeof($update_columns_array) > 0) {
+            // We need to have something to update otherwise
+            // the query won't work and MySQL will generate
+            // an error which we don't want.
 
-            $update_columns = implode(", ", $update_columns_array);
+            $update_columns_array[] = "USER_TIME_TOTAL = FROM_UNIXTIME('$session_total_time')";
 
-            // Try and update first. If it works the number of rows
-            // updated will be 1 otherwise we need to try and save
-            // the data.
+            if (sizeof($update_columns_array) > 0) {
 
-            $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
-            $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
+                $update_columns = implode(", ", $update_columns_array);
 
-            $result = db_query($sql, $db_bh_update_user_time);
+                // Try and update first. If it works the number of rows
+                // updated will be 1 otherwise we need to try and save
+                // the data.
 
-            if (db_affected_rows($db_bh_update_user_time) < 1) {
-
-                $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
-                $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
-                $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
-                $sql.= "FROM_UNIXTIME('$session_length'), NOW())";
+                $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
+                $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
 
                 $result = db_query($sql, $db_bh_update_user_time);
+
+                if (db_affected_rows($db_bh_update_user_time) < 1) {
+
+                    $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_TRACK ";
+                    $sql.= "(UID, USER_TIME_BEST, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
+                    $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
+                    $sql.= "FROM_UNIXTIME('$session_total_time'), NOW())";
+
+                    $result = db_query($sql, $db_bh_update_user_time);
+                }
             }
         }
     }

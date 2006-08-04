@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.186 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.187 2006-08-04 20:40:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -515,8 +515,17 @@ function forum_get_unread_cutoff()
 {
     $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff', false, 31536000);
 
+    // If $messages_unread_cutoff lower than 0 then unread
+    // functionality is disabled and we return false.
+
     if ($messages_unread_cutoff < 0) return false;
+
+    // If $messages_unread_cutoff equal 0 then we return 0
+
     if ($messages_unread_cutoff == 0) return 0;
+
+    // Failing the above we subtract $messages_unread_cutoff
+    // from the current server time.
 
     return time() - $messages_unread_cutoff;
 }

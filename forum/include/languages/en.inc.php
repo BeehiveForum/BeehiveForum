@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.338 2006-08-03 20:27:03 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.339 2006-08-05 13:40:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -194,7 +194,6 @@ $lang['sortasc'] = "Sort Ascending";
 $lang['sortdesc'] = "Sort Descending";
 $lang['usage'] = "Usage";
 $lang['show'] = "Show";
-$lang['prefix'] = "Prefix";
 $lang['hint'] = "Hint";
 $lang['new'] = "New";
 $lang['reset'] = "Reset";
@@ -469,17 +468,11 @@ $lang['bantype'] = "Ban Type";
 $lang['bandata'] = "Ban Data";
 $lang['bancomment'] = "Comment";
 $lang['deleteselectbans'] = "Delete selected bans";
-$lang['addbandata'] = "Add Ban Data";
-$lang['removebandata'] = "Remove Ban Data";
-$lang['confirmaddban'] = "Please confirm that you want to add the following ban data to the database";
-$lang['confirmremoveban'] = "Please confirm that you want to remove the following ban data from the database";
 $lang['ipban'] = "IP ban";
 $lang['logonban'] = "Logon ban";
 $lang['nicknameban'] = "Nickname ban";
 $lang['emailban'] = "Email ban";
 $lang['refererban'] = "Referer ban";
-$lang['ipaddress'] = "IP Address";
-$lang['httpreferrer'] = "HTTP Referrer";
 $lang['invalidbanid'] = "Invalid Ban ID";
 $lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
 $lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
@@ -547,8 +540,9 @@ $lang['movedthread'] = "Moved Thread '%s' from '%s' to '%s'";
 $lang['closedthread'] = "Closed Thread '%s'";
 $lang['openedthread'] = "Opened Thread '%s'";
 $lang['renamedthread'] = "Renamed Thread '%s' to '%s'";
+
 $lang['deletedthread'] = "Deleted Thread '%s'";
-$lang['deletedthread'] = "Undeleted Thread '%s'";
+$lang['undeletedthread'] = "Undeleted Thread '%s'";
 
 $lang['lockedthreadtitlefolder'] = "Locked thread options on '%s'";
 $lang['unlockedthreadtitlefolder'] = "Unlocked thread options on '%s'";
@@ -648,7 +642,6 @@ $lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['listguestsinvisitorlog'] = "List Guests in Visitor Log";
-$lang['autologinguests'] = "Automatically Login Guests";
 $lang['guestaccess'] = "Guest Access";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['enableattachments'] = "Enable Attachments";
@@ -1619,6 +1612,7 @@ $lang['failedtoaddnewrssfeed'] = "Failed to add new RSS Feed";
 $lang['failedtoupdaterssfeed'] = "Failed to update RSS Feed";
 $lang['rssstreamworkingcorrectly'] = "RSS stream appears to be working correctly";
 $lang['rssstreamnotworkingcorrectly'] = "RSS stream was empty or could not be found";
+$lang['invalidfeedidorfeednotfound'] = "Invalid feed id or feed not found";
 
 // PM Export Options
 

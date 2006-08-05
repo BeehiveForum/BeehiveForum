@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.19 2006-07-31 11:03:45 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.20 2006-08-05 13:40:36 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -194,7 +194,6 @@ $lang['sortasc'] = "Sort Ascending";
 $lang['sortdesc'] = "Sort Descending";
 $lang['usage'] = "Usage";
 $lang['show'] = "Show";
-$lang['prefix'] = "Prefix";
 $lang['hint'] = "Hint";
 $lang['new'] = "New";
 $lang['reset'] = "Reset";
@@ -469,21 +468,22 @@ $lang['bantype'] = "Ban Type";
 $lang['bandata'] = "Ban Data";
 $lang['bancomment'] = "Comment";
 $lang['deleteselectbans'] = "Delete selected bans";
-$lang['addbandata'] = "Add Ban Data";
-$lang['removebandata'] = "Remove Ban Data";
-$lang['confirmaddban'] = "Please confirm that you want to add the following ban data to the database";
-$lang['confirmremoveban'] = "Please confirm that you want to remove the following ban data from the database";
-$lang['ipaddress'] = "IP Address";
-$lang['httpreferrer'] = "HTTP Referrer";
+$lang['ipban'] = "IP ban";
+$lang['logonban'] = "Logon ban";
+$lang['nicknameban'] = "Nickname ban";
+$lang['emailban'] = "Email ban";
+$lang['refererban'] = "Referer ban";
 $lang['invalidbanid'] = "Invalid Ban ID";
 $lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
 $lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
 $lang['mustspecifybantype'] = "You must specify a ban type";
 $lang['mustspecifybandata'] = "You must specify some ban data";
 $lang['successfullyremovedselectedbans'] = "Successfully removed selected bans";
-$lang['failedtoremoveban'] = "Failed to remove ban data with ID: %s";
+$lang['failedtoaddnewban'] = "Failed to add new ban";
+$lang['failedtoremovebans'] = "Failed to remove some or all of the selected bans";
 $lang['duplicatebandataentered'] = "Duplicate ban data entered. Please check your wildcards to see if they already match the data entered";
 $lang['successfullyaddedban'] = "Successfully added ban";
+$lang['successfullyupdatedban'] = "Successfully updated ban";
 $lang['noexistingbandata'] = "There is no existing ban data. To add some ban data please click the button below.";
 $lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
@@ -540,7 +540,9 @@ $lang['movedthread'] = "Moved Thread '%s' from '%s' to '%s'";
 $lang['closedthread'] = "Closed Thread '%s'";
 $lang['openedthread'] = "Opened Thread '%s'";
 $lang['renamedthread'] = "Renamed Thread '%s' to '%s'";
+
 $lang['deletedthread'] = "Deleted Thread '%s'";
+$lang['undeletedthread'] = "Undeleted Thread '%s'";
 
 $lang['lockedthreadtitlefolder'] = "Locked thread options on '%s'";
 $lang['unlockedthreadtitlefolder'] = "Unlocked thread options on '%s'";
@@ -565,6 +567,8 @@ $lang['editedwordfilter'] = "Edited Word Filter";
 $lang['addedrssfeed'] = "Added RSS Feed '%s'";
 $lang['editedrssfeed'] = "Edited RSS Feed '%s'";
 $lang['deletedrssfeed'] = "Deleted RSS Feed '%s'";
+
+$lang['updatedban'] = "Updated ban '%s'. '%s' to '%s', '%s' to '%s'.";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['clearlog'] = "Clear Log";
@@ -638,7 +642,6 @@ $lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['listguestsinvisitorlog'] = "List Guests in Visitor Log";
-$lang['autologinguests'] = "Automatically Login Guests";
 $lang['guestaccess'] = "Guest Access";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['enableattachments'] = "Enable Attachments";
@@ -1585,14 +1588,13 @@ $lang['threadtitleprefix'] = "Thread Title Prefix";
 $lang['feednameandlocation'] = "Feed Name and Location";
 $lang['feedsettings'] = "Feed Settings";
 $lang['updatefrequency'] = "Update Frequency";
+$lang['rssclicktoreadarticle'] = "Click here to read this article";
 $lang['addnewfeed'] = "Add New Feed";
 $lang['editfeed'] = "Edit Feed";
 $lang['feeduseraccount'] = "Feed User Account";
 $lang['noexistingfeeds'] = "No existing RSS Feeds found. To add a feed please click the button below";
 $lang['deleteselectedfeeds'] = "Delete selected feeds";
 $lang['rssfeedhelp'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work.";
-$lang['rssclicktoreadarticle'] = "Click here to read this article";
-$lang['rssfeedhelp'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. When adding an RSS feed you must specify the user logon you which to be used to start the threads, the folder you wish them to be created in and the location of the feed. The feed location itself must be accessible via HTTP, if it is not then the feed will not work.";
 $lang['mustspecifyrssfeedname'] = "Must specify RSS Feed Name";
 $lang['mustspecifyrssfeeduseraccount'] = "Must specify RSS Feed User Account";
 $lang['mustspecifyrssfeedfolder'] = "Must specify RSS Feed Folder";
@@ -1605,9 +1607,12 @@ $lang['rssfeeduserauthentication'] = "RSS Feed does not support HTTP user authen
 $lang['successfullyremovedselectedfeeds'] = "Successfully removed selected feeds";
 $lang['successfullyaddedfeed'] = "Successfully added new feed";
 $lang['successfullyeditedfeed'] = "Successfully edited feed";
-$lang['couldnotremovefeedwithid'] = "Could not remove feed with ID: %s";
+$lang['failedtoremovefeeds'] = "Failed to remove some or all of the selected feeds";
+$lang['failedtoaddnewrssfeed'] = "Failed to add new RSS Feed";
+$lang['failedtoupdaterssfeed'] = "Failed to update RSS Feed";
 $lang['rssstreamworkingcorrectly'] = "RSS stream appears to be working correctly";
 $lang['rssstreamnotworkingcorrectly'] = "RSS stream was empty or could not be found";
+$lang['invalidfeedidorfeednotfound'] = "Invalid feed id or feed not found";
 
 // PM Export Options
 

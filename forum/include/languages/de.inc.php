@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.9 2006-07-13 16:01:15 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.10 2006-08-05 13:40:36 decoyduck Exp $ */
 
 // International English language file
 
@@ -170,7 +170,6 @@ $lang['on'] = "an";
 $lang['unread'] = "ungelesene";
 $lang['all'] = "Alle";
 $lang['allcaps'] = "ALLE";
-$lang['me_caps'] = "MIR";
 $lang['by'] = "durch";
 $lang['permissions'] = "Erlaubnis";
 $lang['position'] = "Position";
@@ -195,7 +194,6 @@ $lang['sortasc'] = "Aufsteigend sortieren";
 $lang['sortdesc'] = "Absteigend sortieren";
 $lang['usage'] = "In Benutzung";
 $lang['show'] = "Anzeigen";
-$lang['prefix'] = "Praefix";
 $lang['hint'] = "Tipp";
 $lang['new'] = "Neu";
 $lang['reset'] = "Zurücksetzen";
@@ -459,15 +457,7 @@ $lang['mustchooseaendmonth'] = "Waehle Ende Monat";
 $lang['mustchooseaendyear'] = "Waehle Ende Jahr";
 $lang['startperiodisaheadofendperiod'] = "Start-Zeitraum ist hoeher als Ende-Zeitraum";
 $lang['bancontrols'] = "Bann-Kontrolle";
-$lang['bannedipaddresses'] = "Gebannte IP-Addressen";
-$lang['bannedlogons'] = "Gebannte Logons";
-$lang['bannednicknames'] = "Gebannte Nicknamen";
-$lang['bannedemailaddresses'] = "Gebannte Email-Addressen";
 $lang['youcanusethepercentwildcard'] = "Du kannst das Prozent-Zeichen (%) benutzen als wildcard-Symbol in jedem Eintrag deiner Bannliste um komplette Bereiche zu definieren, z.B. '192.168.0.%' bannt alle IP-Addressen in dem Bereich 192.168.0.1 bis 192.168.0.254</p>";
-$lang['ipaddressisalreadybanned'] = "Diese IP-Addresse ist bereits gebannt. Ueberpruefe Deine Wildcards auf bereits vorhandene Treffer.";
-$lang['logonisalreadybanned'] = "Dieser Logon ist bereits banned. Ueberpruefe Deine Wildcards auf bereits vorhandene Treffer.";
-$lang['nicknameisalreadybanned'] = "Dieser Nickname ist bereits gebanned. Ueberpruefe Deine Wildcards auf bereits vorhandene Treffer.";
-$lang['emailisalreadybanned'] = "Diese Email-Addresse ist bereits gebanned. Ueberpruefe Deine Wildcards auf bereits vorhandene Treffer.";
 $lang['cannotusewildcardonown'] = "Du kannst kein % als alleinigen Wert eintragen!";
 $lang['requirepostapproval'] = "Erfordert Post-Zustimmung";
 $lang['adminforumtoolsusercounterror'] = "Es muss mindestens 1 Benutzer mit Admin-Tools und Forum-Tools Berechtigung in allen Foren vorhanden sein!";
@@ -601,7 +591,6 @@ $lang['allowpmstohaveattachments'] = "Erlaube Anhaenge an PMs";
 $lang['autopruneuserspmfoldersevery'] = "Automatische Ueberpruefung der PM-Ordner der Benutzer alle";
 $lang['guestaccount'] = "Gast Zugang";
 $lang['enableguestaccount'] = "Aktiviere Gastzugang";
-$lang['autologinguests'] = "Automatische Gastanmeldung";
 $lang['guestaccess'] = "Gastzugang";
 $lang['allowguestaccess'] = "Erlaube Gastzugang";
 $lang['enableattachments'] = "Erlaube Anhaenge";
@@ -860,7 +849,6 @@ $lang['voterecorded'] = "Deine Stimme wurde gespeichert";
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
 $lang['userID'] = "Benutzer-ID";
-$lang['alreadyloggedin'] = "bereits angemeldet";
 $lang['loggedinsuccessfully'] = "Erfolgreich angemeldet.";
 $lang['presscontinuetoresend'] = "Klick auf Weiter um Formulardaten nochmal zu senden oder Abbrechen um diese Seite nochmal zu starten.";
 $lang['usernameorpasswdnotvalid'] = "Benutzername oder Passwort nicht gueltig.";
@@ -1090,7 +1078,6 @@ $lang['dateofbirth'] = "Geburtstag";
 $lang['homepageURL'] = "Homepage URL";
 $lang['pictureURL'] = "Eigenes Bild URL";
 $lang['forumoptions'] = "Forum-Optionen";
-$lang['pmoptions'] = "PM Optionen";
 $lang['notifybyemail'] = "Benachrichtige mich via eMail bei Antworten auf Eintraege von mir";
 $lang['notifyofnewpm'] = "Benachrichtigung via Popup bei neuen PM (Persoenliche Nachrichten) fuer mich";
 $lang['notifyofnewpmemail'] = "Benachrichtigung via eMail bei neuen PM (Persoenliche Nachrichten) fuer mich";
@@ -1155,7 +1142,6 @@ $lang['mustprovidepollresultsdisplaytype'] = "Du musst einen Ergebnisanzeigentyp
 $lang['mustprovidepollvotetype'] = "Du musst einen Abstimmungstyp auswaehlen";
 $lang['mustprovidepolloptiontype'] = "Du musst einen Abstimmungsoptionstyp auswaehlen";
 $lang['mustprovidepollchangevotetype'] = "Du musst einen Abstimmungsaenderungstyp auswaehlen";
-$lang['groupcountmustbelessthananswercount'] = "Die Menge der Antwortgruppen muss kleiner als die Anzahl der Antworten sein";
 $lang['pleaseselectfolder'] = "Bitte waehle einen Ordner";
 $lang['mustspecifyvalues1and2'] = "Du musst einen Wert fuer die Antworten 1 und 2 definieren";
 $lang['tablepollmusthave2groups'] = "Tabellenabstimmungen muessen genau 2 Stimmgruppen haben.";
@@ -1538,12 +1524,11 @@ $lang['onceaday'] = "Einmal am Tag";
 $lang['rssfeeds'] = "RSS Feeds";
 $lang['feedlocation'] = "Feed Lokation";
 $lang['rssclicktoreadarticle'] = "Hier klicken um den Artikel zu lesen";
-$lang['rssfeedhelp_1'] = "Hier kannst Du RSS-Feeds installieren fuer automatische Verbreitung in Deinem Forum. Die Eintraege der RSS-Feeds die Du anfuegst werden in Threads erstellt mit denen Benutzer antworten koennen als waeren es normale Posts. Beim Hinzufuegen eines RSS-Feeds musst Du den Benutzerlogon definieren der benutzt werden soll um Threads zu starten, Der Ordner in dem er erstellt werden soll und die Lokation des Feeds. Die Feed-Lokation muss via HTTP erreichbar sein, ansonsten wird es nicht funktionieren.";
+$lang['rssfeedhelp'] = "Hier kannst Du RSS-Feeds installieren fuer automatische Verbreitung in Deinem Forum. Die Eintraege der RSS-Feeds die Du anfuegst werden in Threads erstellt mit denen Benutzer antworten koennen als waeren es normale Posts. Beim Hinzufuegen eines RSS-Feeds musst Du den Benutzerlogon definieren der benutzt werden soll um Threads zu starten, Der Ordner in dem er erstellt werden soll und die Lokation des Feeds. Die Feed-Lokation muss via HTTP erreichbar sein, ansonsten wird es nicht funktionieren.";
 $lang['mustspecifyrssfeedname'] = "RSS Feed Name muss definiert sein";
 $lang['mustspecifyrssfeeduseraccount'] = "RSS Feed Benutzerkonto muss definiert sein";
 $lang['mustspecifyrssfeedfolder'] = "RSS Feed Ordner muss definiert sein";
 $lang['mustspecifyrssfeedurl'] = "RSS Feed URL muss definiert sein";
-$lang['mustspecifyrssfeedprefix'] = "RSS Feed Prefix muss definiert sein";
 $lang['mustspecifyrssfeedupdatefrequency'] = "RSS Feed Update-Haeufigkeit muss definiert sein";
 $lang['unknownrssuseraccount'] = "Unbekanntes RSS Benutzerkonto";
 $lang['rssfeedsupportshttpurlsonly'] = "RSS Feed unterstuetzt nur HTTP URLs. Sichere Feeds (https://) werden nicht unterstuetzt.";

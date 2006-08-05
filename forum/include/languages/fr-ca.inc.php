@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.32 2006-07-13 16:01:18 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.33 2006-08-05 13:40:36 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -170,7 +170,6 @@ $lang['on'] = "sur";
 $lang['unread'] = "non-lu";
 $lang['all'] = "Tous";
 $lang['allcaps'] = "TOUS";
-$lang['me_caps'] = "MOI";
 $lang['by'] = "par";
 $lang['permissions'] = "Droits d'accès";
 $lang['position'] = "Position";
@@ -195,7 +194,6 @@ $lang['sortasc'] = "Tri croissant";
 $lang['sortdesc'] = "Tri décroissant";
 $lang['usage'] = "Utilisation";
 $lang['show'] = "Montrer";
-$lang['prefix'] = "Préfixe";
 $lang['hint'] = "Indice";
 $lang['new'] = "Nouveau";
 $lang['reset'] = "Réinitialiser";
@@ -320,7 +318,6 @@ $lang['datetime'] = "Date/Heure";
 $lang['unknownuser'] = "Utilisateur inconnu";
 $lang['unknownfolder'] = "Dossier inconnu";
 $lang['ip'] = "IP";
-$lang['ipaddress'] = "Last IP Address";
 $lang['logged'] = "Journalisé";
 $lang['notlogged'] = "Non journalisé";
 $lang['wordfilterupdated'] = "Mise à jour du filtre de mots";
@@ -479,15 +476,7 @@ $lang['mustchooseaendyear'] = "Doit choisir une année de fin";
 $lang['startperiodisaheadofendperiod'] = "Période de début devance la période de fin";
 
 $lang['bancontrols'] = "Contrôles de bannissement";
-$lang['bannedipaddresses'] = "Adresses IP bannies";
-$lang['bannedlogons'] = "Noms d'utilisateur bannis";
-$lang['bannednicknames'] = "Pseudonymes bannis";
-$lang['bannedemailaddresses'] = "Adresses courriel bannies";
 $lang['youcanusethepercentwildcard'] = "Vous pouvez utiliser le caractère de remplacement pourcentage (%) dans n'importe quelle liste de bannissement afin d'obtenir des correspondances partielles, ex. '192.168.0.%' bannirait toutes les adresses IP dans la gamme de 192.168.0.1 à travers 192.168.0.254</p>\n ";
-$lang['ipaddressisalreadybanned'] = "Cette adresse IP est déjà bannie. Vérifier vos caractères de remplacement pour voir s'ils l'assortissent déjà.";
-$lang['logonisalreadybanned'] = "Ce nom d'utilisateur est déjà banni. Vérifier vos caractères de remplacement pour voir s'ils l'assortissent déjà.";
-$lang['nicknameisalreadybanned'] = "Ce pseudonyme est déjà banni. Vérifier vos caractères de remplacement pour voir s'ils l'assortissent déjà.";
-$lang['emailisalreadybanned'] = "Cette adresse courriel est déjà bannie. Vérifier vos caractères de remplacement pour voir s'ils l'assortissent déjà.";
 $lang['cannotusewildcardonown'] = "Vous ne pouvez pas ajouter % comme concordance de caractère de remplacement seul!";
 
 $lang['requirepostapproval'] = "Exiger approbation du message";
@@ -622,7 +611,6 @@ $lang['allowpmstohaveattachments'] = "Permettre fichiers joints dans les message
 $lang['autopruneuserspmfoldersevery'] = "Élaguer automatiquement les dossiers MP de l'utilisateur chaque";
 $lang['guestaccount'] = "Compte de visiteur";
 $lang['enableguestaccount'] = "Activer compte de visiteur";
-$lang['autologinguests'] = "Ouvrir automatiquement une session pour visiteurs";
 $lang['guestaccess'] = "Accès aux visiteurs";
 $lang['allowguestaccess'] = "Permettre accès aux visiteurs";
 $lang['enableattachments'] = "Activer fichiers joints";
@@ -882,7 +870,6 @@ $lang['voterecorded'] = "Votre vote a été enregistré";
 // Login / logout (llogon.php, logon.php, logout.php) -----------------------------------------
 
 $lang['userID'] = "Identification d'utilisateur";
-$lang['alreadyloggedin'] = "a déjà ouvert une session";
 $lang['loggedinsuccessfully'] = "Ouverture de session réussie.";
 $lang['presscontinuetoresend'] = "Appuyer Continuer pour renvoyer les données du formulaire ou annuler pour renvoyer la page.";
 $lang['usernameorpasswdnotvalid'] = "Le nom d'utilisateur ou le mot de passe que vous avez entré n'est pas valide.";
@@ -1112,7 +1099,6 @@ $lang['dateofbirth'] = "Date de naissance";
 $lang['homepageURL'] = "Adresse URL de votre page d'accueil";
 $lang['pictureURL'] = "Adresse URL de l'image";
 $lang['forumoptions'] = "Options de forum";
-$lang['pmoptions'] = "Options MP";
 $lang['notifybyemail'] = "M'aviser par courriel de messages à moi";
 $lang['notifyofnewpm'] = "M'aviser par fenêtre contextuelle de nouveaux messages MP";
 $lang['notifyofnewpmemail'] = "M'aviser par courriel de nouveaux messages MP";
@@ -1177,7 +1163,6 @@ $lang['mustprovidepollresultsdisplaytype'] = "Vous devez fournir un type d'affic
 $lang['mustprovidepollvotetype'] = "Vous devez fournir un type de vote de scrutin";
 $lang['mustprovidepolloptiontype'] = "Vous devez fournir un type d'option de scrutin";
 $lang['mustprovidepollchangevotetype'] = "Vous devez fournir un type de changer vote du scrutin";
-$lang['groupcountmustbelessthananswercount'] = "Le nombre de groupes de réponse doit être inférieur au nombre total de réponses";
 $lang['pleaseselectfolder'] = "SVP choisir un dossier";
 $lang['mustspecifyvalues1and2'] = "Vous devez spécifier des valeurs pour les réponses 1 et 2";
 $lang['tablepollmusthave2groups'] = "Les scrutins de format tabulaire doivent avoir exactement deux groupes de mise aux voix";
@@ -1560,12 +1545,11 @@ $lang['onceaday'] = "Une fois par jour";
 $lang['rssfeeds'] = "Sources de données RSS";
 $lang['feedlocation'] = "Repérage de source de données";
 $lang['rssclicktoreadarticle'] = "Cliquer ici pour lire cette article";
-$lang['rssfeedhelp_1'] = "Vous pouvez ici régler des sources de données RSS pour propagation automatique dans votre forum. Les items des sources de données RSS que vous ajoutez seront créés comme fils de discussion auquels vos utilisateurs pourront répondre comme si c'étaient des messages normales. Lorsque vous ajouter une source de données RSS, vous devez indiquer le nom d'utilisateur à utiliser pour commencer les fils de discussion, le dossier dans lequel ils seront créés et le repérage des sources de données. Le repérage des sources de données lui-même doit être accessible via HTTP, sinon les sources de données ne fonctionneront pas.";
+$lang['rssfeedhelp'] = "Vous pouvez ici régler des sources de données RSS pour propagation automatique dans votre forum. Les items des sources de données RSS que vous ajoutez seront créés comme fils de discussion auquels vos utilisateurs pourront répondre comme si c'étaient des messages normales. Lorsque vous ajouter une source de données RSS, vous devez indiquer le nom d'utilisateur à utiliser pour commencer les fils de discussion, le dossier dans lequel ils seront créés et le repérage des sources de données. Le repérage des sources de données lui-même doit être accessible via HTTP, sinon les sources de données ne fonctionneront pas.";
 $lang['mustspecifyrssfeedname'] = "Vous devez spécifier le nom de l'alimentation RSS";
 $lang['mustspecifyrssfeeduseraccount'] = "Vous devez spécifier le compte d'utilisateur de l'alimentation RSS";
 $lang['mustspecifyrssfeedfolder'] = "Vous devez spécifier le dossier d'alimentation RSS";
 $lang['mustspecifyrssfeedurl'] = "Vous devez spécifier l'adresse URL de l'alimentation RSS";
-$lang['mustspecifyrssfeedprefix'] = "Vous devez spécifier le préfixe de l'alimentation RSS";
 $lang['mustspecifyrssfeedupdatefrequency'] = "Vous devez spécifier la fréquence de mise à jour de l'alimentation RSS";
 $lang['unknownrssuseraccount'] = "Compte d'utilisateur RSS inconnu";
 $lang['rssfeedsupportshttpurlsonly'] = "L'alimentation RSS supporte uniquement les adresses URL HTTP. Les alimentations protégées (https://) ne sont pas supportées.";

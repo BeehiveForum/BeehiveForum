@@ -1,12 +1,12 @@
-BODY		{
-		background-color:#EAEFF4;
-		margin-top: 10px;
-		margin-bottom: 10px;
-		margin-left: 05px;
-		margin-right: 05px;
-		font-family: Verdana, Arial, Helvetica, sans-serif;
+BODY            {
+                background-color:#EAEFF4;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                margin-left: 05px;
+                margin-right: 05px;
+                font-family: Verdana, Arial, Helvetica, sans-serif;
                 font-size: 10pt;
-		}
+                }
 
 img             {
                 vertical-align: text-top;
@@ -14,13 +14,13 @@ img             {
 
 frameset        {
                 border-style: none;
-		border-width: 0px;
+                border-width: 0px;
                 }
 
 frame           {
                 border-style: none;
-		border-width: 0px;
-		border-color: #000000;
+                border-width: 0px;
+                border-color: #000000;
                 margin: 0px 0px 0px 0px;
                 padding: 0px 0px 0px 0px;
                 }
@@ -32,102 +32,102 @@ frame           {
                 text-decoration: none;
                 }
 
-.navpage A	{
-		color: #000000;
-		text-decoration: none;
-		}
+.navpage A      {
+                color: #000000;
+                text-decoration: none;
+                }
 
 .navleft {
-		float: left;
-		margin: 4px;
+                float: left;
+                margin: 4px;
 }
 .navright {
-		float: right;
+                float: right;
 }
 
-P, H1, H2,  .form	{
-		background-color: transparent;
-		font-family: Verdana, Arial, Helvetica, sans-serif;
-		text-decoration: none;
-		}
+P, H1, H2,  .form       {
+                background-color: transparent;
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                text-decoration: none;
+                }
 
-P		{
-		color: #000000;
-		font-size: 10pt;
-		}
+P               {
+                color: #000000;
+                font-size: 10pt;
+                }
 
-H1		{
-		background-color: #C8D7E6;
-		font-family: Verdana, Arial, Helvetica, sans-serif;
-		text-decoration: none;
-		color: #000000;
-		font-size: 10pt;
-		font-weight:bold;
-		margin: 0px;
-		padding: 2px;
-		width: 100%
-		}
+H1              {
+                background-color: #C8D7E6;
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                text-decoration: none;
+                color: #000000;
+                font-size: 10pt;
+                font-weight:bold;
+                margin: 0px;
+                padding: 2px;
+                width: 100%
+                }
 
-H2		{
-		background-color: transparent;
-		font-family: Verdana, Arial, Helvetica, sans-serif;
-		text-decoration: none;
-		color: #000000;
-		font-size: 10pt;
-		font-weight:bold;
-		margin-top: 05px;
-		margin-bottom: 05px;
-		margin-left: 0px;
-		margin-right: 05px;
-		}
+H2              {
+                background-color: transparent;
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                text-decoration: none;
+                color: #000000;
+                font-size: 10pt;
+                font-weight:bold;
+                margin-top: 05px;
+                margin-bottom: 05px;
+                margin-left: 0px;
+                margin-right: 05px;
+                }
 
-A		{
-		background-color: transparent;
-		color: #000000;
-		text-decoration: underline;
-		}
+A               {
+                background-color: transparent;
+                color: #000000;
+                text-decoration: underline;
+                }
 
 .smalltext{
         font-size: 9pt;
         }
 
 .box{
-		background-color: #FFFFFF;
-		border-style: solid;
-		border-width: 1px;
-		border-color: #000000;
-		padding: 0px;
+                background-color: #FFFFFF;
+                border-style: solid;
+                border-width: 1px;
+                border-color: #000000;
+                padding: 0px;
         }
 
 .thread_list_folder{
-		background-color:#CCCCCC;
-		border-style:solid;
-		border-top-width:00px;
-		border-bottom-width:01px;
-		border-left-width:00px;
-		border-right-width:00px;
-		border-color:#FFFFFF;
-		height:20px;
-		vertical-align:middle;
-		}
+                background-color:#CCCCCC;
+                border-style:solid;
+                border-top-width:00px;
+                border-bottom-width:01px;
+                border-left-width:00px;
+                border-right-width:00px;
+                border-color:#FFFFFF;
+                height:20px;
+                vertical-align:middle;
+                }
 
 .thread_list_mode {
-		background-color:#EEEEEE;
-		border-style:solid;
-		border-top-width:01px;
-		border-bottom-width:01px;
-		border-left-width:01px;
-		border-right-width:01px;
-		border-color:#999999;
-		font-size:10pt;
-		margin-left:05px;
-		margin-right:05px;
+                background-color:#EEEEEE;
+                border-style:solid;
+                border-top-width:01px;
+                border-bottom-width:01px;
+                border-left-width:01px;
+                border-right-width:01px;
+                border-color:#999999;
+                font-size:10pt;
+                margin-left:05px;
+                margin-right:05px;
 }
 
 .thread_list_thread{
-		border-style:none;
-		vertical-align:middle;
-		}
+                border-style:none;
+                vertical-align:middle;
+                }
 
 .threads {
           font-style: normal;
@@ -259,29 +259,6 @@ A		{
           border-width: 0px;
 }
 
-.notifier {
-          background-color: #E2E2E2;
-          border: #000000;
-          border-style: double;
-          border-top-width: 1px;
-          border-right-width: 1px;
-          border-bottom-width: 1px;
-          border-left-width: 1px;
-          width: 200px;
-          font-family: Verdana, Arial, Helvetica, sans-serif;
-          font-size: 10pt;
-          font-weight: bold;
-          color: #009900;
-          float: right;
-          text-align: right;
-          vertical-align: middle;
-          padding-top: 3px;
-          padding-right: 3px;
-          padding-bottom: 3px;
-          padding-left: 3px; top: 20px;
-          clip:   rect(   )
-}
-
 .button {
           font-family: Verdana, Arial, Helvetica, sans-serif;
           font-size: 9pt;
@@ -365,82 +342,82 @@ A		{
 }
 
 .quotetext {
-		font-family: Verdana, Arial, Helvetica, sans-serif;
-		font-size: 8pt;
-		margin-top: 5px;
-		margin-left: 40px;
-		margin-right: 10px;
-		padding: 3px;
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                font-size: 8pt;
+                margin-top: 5px;
+                margin-left: 40px;
+                margin-right: 10px;
+                padding: 3px;
 }
 .code {
-		font-family: monospace;
-		border: 1px solid #CCCCCC;
-		background-color: #EEEEEE;
-		margin-top: 0px;
-		margin-bottom: 10px;
-		margin-left: 40px;
-		margin-right: 10px;
-		padding: 3px;
-		overflow: auto;
+                font-family: monospace;
+                border: 1px solid #CCCCCC;
+                background-color: #EEEEEE;
+                margin-top: 0px;
+                margin-bottom: 10px;
+                margin-left: 40px;
+                margin-right: 10px;
+                padding: 3px;
+                overflow: auto;
 }
 .quote {
-		font-family: Verdana, Arial, Helvetica, sans-serif;
-		border: 1px solid #CCCCCC;
-		background-color: #EEEEEE;
-		margin-top: 0px;
-		margin-bottom: 10px;
-		margin-left: 40px;
-		margin-right: 10px;
-		padding: 3px;
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                border: 1px solid #CCCCCC;
+                background-color: #EEEEEE;
+                margin-top: 0px;
+                margin-bottom: 10px;
+                margin-left: 40px;
+                margin-right: 10px;
+                padding: 3px;
 }
 .spoiler {
-		font-family: Verdana, Arial, Helvetica, sans-serif;
-		border: 1px solid #CCCCCC;
-		color: #EEEEEE;
-		background-color: #EEEEEE;
-		margin-top: 0px;
-		margin-bottom: 10px;
-		margin-left: 40px;
-		margin-right: 10px;
-		padding: 3px;
+                font-family: Verdana, Arial, Helvetica, sans-serif;
+                border: 1px solid #CCCCCC;
+                color: #EEEEEE;
+                background-color: #EEEEEE;
+                margin-top: 0px;
+                margin-bottom: 10px;
+                margin-left: 40px;
+                margin-right: 10px;
+                padding: 3px;
 }
 
 .tools {
-		margin: 0;
-		margin-bottom: 3px;
-		text-align:left;
-		display: none;
-	    background-repeat: no-repeat;
+                margin: 0;
+                margin-bottom: 3px;
+                text-align:left;
+                display: none;
+            background-repeat: no-repeat;
 }
 
 .tools_up {
-		border: 1px solid #C8D7E6;
-		margin-left: 1px;
-		margin-right: 1px;
-		width: 18px;
-		height: 18px;
+                border: 1px solid #C8D7E6;
+                margin-left: 1px;
+                margin-right: 1px;
+                width: 18px;
+                height: 18px;
 }
 
 .tools_over {
-		border-top: 1px solid buttonhighlight;
-		border-left: 1px solid buttonhighlight;
-		border-bottom: 1px solid buttonshadow;
-		border-right: 1px solid buttonshadow;
-		margin-left: 1px;
-		margin-right: 1px;
-		width: 18px;
-		height: 18px;
+                border-top: 1px solid buttonhighlight;
+                border-left: 1px solid buttonhighlight;
+                border-bottom: 1px solid buttonshadow;
+                border-right: 1px solid buttonshadow;
+                margin-left: 1px;
+                margin-right: 1px;
+                width: 18px;
+                height: 18px;
 }
 
 .tools_down {
-		border-top: 1px solid buttonshadow;
-		border-left: 1px solid buttonshadow;
-		border-bottom: 1px solid buttonhighlight;
-		border-right: 1px solid buttonhighlight;
-		margin-left: 1px;
-		margin-right: 1px;
-		width: 18px;
-		height: 18px;
+                border-top: 1px solid buttonshadow;
+                border-left: 1px solid buttonshadow;
+                border-bottom: 1px solid buttonhighlight;
+                border-right: 1px solid buttonhighlight;
+                margin-left: 1px;
+                margin-right: 1px;
+                width: 18px;
+                height: 18px;
 }
 
 .activeusers {
@@ -452,25 +429,25 @@ A		{
 }
 
 .emoticon_preview {
-		overflow: auto;
-		padding: 2px;
-		background-color: #FFFFFF;
+                overflow: auto;
+                padding: 2px;
+                background-color: #FFFFFF;
 }
 .emoticon_preview img {
-		cursor: pointer;
+                cursor: pointer;
 }
 
 .pmbar_text {
-		font-size: 8pt;
+                font-size: 8pt;
 }
 
 .pmbar_container {
-		height: 18px;
-		width: 100%;
-		border: 1px solid #000000;
+                height: 18px;
+                width: 100%;
+                border: 1px solid #000000;
 }
 
 .pmbar {
-		height: 16px;
-		background-color: #C8D7E6;
+                height: 16px;
+                background-color: #C8D7E6;
 }

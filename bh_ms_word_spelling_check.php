@@ -21,76 +21,85 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_ms_word_spelling_check.php,v 1.1 2006-06-12 23:01:21 decoyduck Exp $ */
+/* $Id: bh_ms_word_spelling_check.php,v 1.2 2006-08-06 16:44:53 decoyduck Exp $ */
 
-function load_language_file($filename)
+function word_spell_check($matches)
 {
-    include("./forum/include/languages/$filename");
-    return $lang;
+    // Our Word COM Object
+    
+    global $word_obj; 
+
+    // Our string to check
+
+    $string_check = trim($matches[1]);
+
+    echo "Checking: $string_check...\n";
+    
+    // Create new document and paste in string.
+    
+    $word_obj->Visible = 0;
+    $word_obj->Documents->Add();
+    $word_obj->Selection->TypeText($string_check);
+
+    // Check spelling and grammar.
+    $word_obj->ActiveDocument->CheckSpelling();
+
+    // Select the whole document.
+    $word_obj->Selection->WholeStory();
+
+    // Get the corrected string        
+    $string_corrected = $word_obj->Selection->Text;
+
+    // Close the document and do not save changes.
+    $word_obj->ActiveDocument->Close(false);
+
+    // Trim the new string
+    $string_corrected = trim($string_corrected);
+
+    // Wrap it in quotes and return it.
+    return "\"$string_corrected\";";
 }
 
-class check_spelling
-{
-    var $word; // Microsoft Word COM object
+// Prevent time out
 
-    function check_spelling() {
-        
-        // Initialise new Word COM object
-        $this->word = new COM("word.application");
+set_time_limit(0);
 
-        // Make it invisible.
-        $this->word->Visible = 0;
-    }
+// Initialise new Word COM object
 
-    private function word_spell_check($string) {
-        
-        echo "Checking: $string\n";
+$word_obj = new COM("word.application");
+
+// Load the language file.
+
+if ($langfile = file('./forum/include/languages/en.inc.php')) {
     
-        // Create new document and paste in string.
-        $this->word->Visible = 0;
-        $this->word->Documents->Add();
-        $this->word->Selection->TypeText($string);
+    if ($fp = fopen('./forum/include/languages/en-new.inc.php', 'w')) {
 
-        // Check spelling and grammar.
-        $this->word->ActiveDocument->CheckSpelling();
+        foreach($langfile as $line) {
 
-        // Select the whole document.
-        $this->word->Selection->WholeStory();
+            if (!preg_match('/^\$lang\[\'_/', $line)) {
 
-        // Get the corrected string        
-        $corrected = $this->word->Selection->Text;
+                $corrected_line = preg_replace_callback('/"([^"]+)";/', 'word_spell_check', $line);
 
-        // Close the document and do not save changes.
-        $this->word->ActiveDocument->Close(false);
+                fwrite($fp, $corrected_line);
 
-        return $corrected;
-    }
-
-    function parse_lang_array($lang)
-    {
-        if (is_array($lang)) {
-            foreach($lang as $key => $string) {
-                if (is_array($string)) {
-                    $lang[$key] = $this->parse_lang_array($string);
-                }else {
-                    $lang[$key] = $this->word_spell_check($string);
-                }
+                continue;
             }
-        }else {
-            $lang = $this->word_spell_check($lang);
+
+            fwrite($fp, $line);
         }
 
-        return $lang;
+        fclose($fp);
+
+        echo "Spell checking has completed successfully.\n";
+
+    }else {
+
+        echo "Could not open en.inc.php for writing.\n";
     }
+
+}else {
+
+    echo "Could not open en.inc.php for reading.\n";
 }
-
-// Load language file
-$lang = load_language_file("en.inc.php");
-
-// Initialise our class
-$check_spelling = new check_spelling();
-
-// Do the work
-$lang = $check_spelling->parse_lang_array($lang);
 
 ?>

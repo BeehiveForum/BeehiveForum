@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.339 2006-08-05 13:40:36 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.340 2006-08-06 16:44:53 decoyduck Exp $ */
 
 // International English language file
 
@@ -264,7 +264,7 @@ $lang['settingsaffectallforumswarning'] = "<b>Note:</b> These settings affect al
 $lang['startpage'] = "Start Page";
 $lang['startpageerror_1'] = "Your start page could not be saved locally to the server because permission was denied. To change your start page please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
 $lang['startpageerror_2'] = "folder, if necessary creating the folder structure in the process. Please note that some browsers may change the name of the file upon download.  When uploading the file please make sure that it is named start_main.php otherwise your start page will appear unchanged.";
-$lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your BeehiveForum installation.";
+$lang['failedtoopenmasterstylesheet'] = "Your forum style could not be saved because the master style sheet could not be loaded. To save your style the master style sheet (make_style.css) must be located in the styles directory of your Beehive Forum installation.";
 $lang['makestyleerror_1'] = "Your forum style could not be saved locally to the server because permission was denied. To save your forum style please click the download button below which will prompt you to save the file to your hard drive. You can then upload this file to your server into";
 $lang['makestyleerror_2'] = "folder, if necessary creating the folder structure in the process. You should note that some browsers may change the name of the file upon download. When uploading the file please make sure that it is named style.css otherwise the forum style will be unusable.";
 $lang['uploadfailed'] = "Your new start page could not be uploaded to the server because permission was denied. Please check that the web server / PHP process is able to write to the %s folder on your server.";
@@ -310,8 +310,8 @@ $lang['forgottenpassworddesc'] = "If this user has forgotten their password you 
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
 $lang['lastlogon'] = "Last Logon";
-$lang['sessionreferer'] = "Session Referer";
-$lang['signupreferer'] = "Sign-up Referer:";
+$lang['sessionreferer'] = "Session Referrer";
+$lang['signupreferer'] = "Sign-up Referrer:";
 $lang['nouseraccounts'] = "No user accounts in database.";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['adminaccesslog'] = "Admin Access Log";
@@ -430,19 +430,19 @@ $lang['youmustenteratitleforalllinks'] = "You must enter a title for all links";
 $lang['youmustprovideapositionforalllinks'] = "You must provide a link position for all links";
 $lang['alllinkurismuststartwithaschema'] = "All link URIs must start with a schema (i.e. http://, ftp://, irc://)";
 $lang['allowguestaccess'] = "Allow Guest Access";
-$lang['searchenginespidering'] = "Search Engine Spider-ing";
-$lang['allowsearchenginespidering'] = "Allow Search Engine Spider-ing";
+$lang['searchenginespidering'] = "Search Engine Spidering";
+$lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";
 $lang['newuserregistrations'] = "New User Registrations";
 $lang['preventduplicateemailaddresses'] = "Prevent duplicate email addresses";
 $lang['allownewuserregistrations'] = "Allow new user registrations";
 $lang['requireemailconfirmation'] = "Require email confirmation";
-$lang['usetextcaptcha'] = "Use Text Captcha";
-$lang['textcaptchadir'] = "Text captcha directory";
-$lang['textcaptchakey'] = "Text captcha key";
-$lang['textcaptchafonterror'] = "Text Captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to <b>%s</b> on your server.";
-$lang['textcaptchadirerror'] = "Text Captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the web server / PHP process.";
-$lang['textcaptchagderror'] = "Text Captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text captcha support.";
-$lang['textcaptchadirblank'] = "Text captcha directory is blank!";
+$lang['usetextcaptcha'] = "Use text-captcha";
+$lang['textcaptchadir'] = "Text-captcha directory";
+$lang['textcaptchakey'] = "Text-captcha key";
+$lang['textcaptchafonterror'] = "Text-captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to <b>%s</b> on your server.";
+$lang['textcaptchadirerror'] = "Text-captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the web server / PHP process.";
+$lang['textcaptchagderror'] = "Text-captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text-captcha support.";
+$lang['textcaptchadirblank'] = "Text-captcha directory is blank!";
 $lang['newuserpreferences'] = "New User Preferences";
 $lang['sendemailnotificationonreply'] = "Email notification on reply to user";
 $lang['sendemailnotificationonpm'] = "Email notification on PM to user";
@@ -472,7 +472,7 @@ $lang['ipban'] = "IP ban";
 $lang['logonban'] = "Logon ban";
 $lang['nicknameban'] = "Nickname ban";
 $lang['emailban'] = "Email ban";
-$lang['refererban'] = "Referer ban";
+$lang['refererban'] = "Referrer ban";
 $lang['invalidbanid'] = "Invalid Ban ID";
 $lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
 $lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
@@ -517,8 +517,8 @@ $lang['removednicknamefrombanlist'] = "Removed nickname '%s' from ban list";
 $lang['addedemailtobanlist'] = "Added email address '%s' to ban list";
 $lang['removedemailfrombanlist'] = "Removed email address '%s' from ban list";
 
-$lang['addedreferertobanlist'] = "Added referer '%s' to ban list";
-$lang['removedrefererfrombanlist'] = "Removed referer '%s' from ban list";
+$lang['addedreferertobanlist'] = "Added referrer '%s' to ban list";
+$lang['removedrefererfrombanlist'] = "Removed referrer '%s' from ban list";
 
 $lang['editedfolder'] = "Edited Folder '%s'";
 $lang['movedallthreadsfromto'] = "Moved all threads from '%s' to '%s'";
@@ -575,7 +575,7 @@ $lang['clearlog'] = "Clear Log";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 
-$lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9, _ - characters";
+$lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
 
 // Admin Global User Permissions
 
@@ -617,10 +617,10 @@ $lang['maximumpostlength'] = "Maximum Post Length";
 $lang['postfrequency'] = "Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
-$lang['unreadmessagescutoff'] = "Unread messages cutoff";
+$lang['unreadmessagescutoff'] = "Unread messages cut-off";
 $lang['unreadcutoffseconds'] = "seconds";
 $lang['disableunreadmessages'] = "Disable unread messages";
-$lang['nocutoffdefault'] = "No cutoff (default)";
+$lang['nocutoffdefault'] = "No cut-off (default)";
 $lang['1month'] = "1 month";
 $lang['6months'] = "6 months";
 $lang['1year'] = "1 year";
@@ -670,7 +670,7 @@ $lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive
 $lang['forum_settings_help_25'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
 $lang['forum_settings_help_26'] = "<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option.";
 $lang['forum_settings_help_27'] = "<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option.";
-$lang['forum_settings_help_28'] = "This setting allows your forum to be spider-ed by search engines like Google, AltaVista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
+$lang['forum_settings_help_28'] = "This setting allows your forum to be spidered by search engines like Google, AltaVista and Yahoo. If you switch this option off your forum will not be included in these search engines results.";
 $lang['forum_settings_help_29'] = "<b>Allow new user registrations</b> allows or disallows the creation of new user accounts. Setting the option to no completely disables the registration form.";
 $lang['forum_settings_help_30'] = "<b>Enable WikiWiki Integration</b> provides WikiWord support in your Forum posts. A WikiWord is made up of two or more concatenated words with uppercase letters (often referred to as CamelCase). If you write a word this way it will automatically be changed into a hyperlink pointing to your chosen WikiWiki.";
 $lang['forum_settings_help_31'] = "<b>Enable WikiWiki Quick Links</b> enables the use of msg:1.1 and User:Logon style extended WikiLinks which create hyperlinks to the specified message / user profile of the specified user.";
@@ -681,16 +681,16 @@ $lang['forum_settings_help_35'] = "<b>Closed</b> prevents access for all users, 
 $lang['forum_settings_help_36'] = "<b>Restricted</b> allows to set a list of users who are allowed access to your forum.";
 $lang['forum_settings_help_37'] = "<b>Password Protected</b> allows you to set a password to give out to users so they can access your forum.";
 $lang['forum_settings_help_38'] = "When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password.";
-$lang['forum_settings_help_39'] = "<b>Search Frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server.";
+$lang['forum_settings_help_39'] = "<b>Search Frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\"from killing the server.";
 $lang['forum_settings_help_40'] = "<b>Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction.";
 $lang['forum_settings_help_41'] = "The above options change the default values for the user registration form. Where applicable other settings will use the forum's own default settings.";
 $lang['forum_settings_help_42'] = "<b>Prevent use of duplicate email addresses</b> forces Beehive to check the user accounts against the email address the user is registering with and prompts them to use another if it is already in use.";
 $lang['forum_settings_help_43'] = "<b>Require email confirmation</b> when enabled will send an email to each new user with a link that can be used to confirm their email address. Until they confirm their email address they will not be able to post unless their user permissions are changed manually by an admin.";
-$lang['forum_settings_help_44'] = "<b>Use Text Captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
-$lang['forum_settings_help_45'] = "<b>Text Captcha directory</b> specifies the location that Beehive will store it's text captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text captcha you must upload some true type fonts into the fonts sub-directory of your main text captcha directory otherwise Beehive will skip the text captcha during user registration.";
-$lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\" the code.";
+$lang['forum_settings_help_44'] = "<b>Use text-captcha</b> presents the new user with a mangled image which they must copy a number from into a text field on the registration form. Use this option to prevent automated sign-up via scripts.";
+$lang['forum_settings_help_45'] = "<b>Text-captcha directory</b> specifies the location that Beehive will store it's text-captcha images and fonts in. This directory must be writable by the web server / PHP process and must be accessible via HTTP. After you have enabled text-captcha you must upload some true type fonts into the fonts sub-directory of your main text-captcha directory otherwise Beehive will skip the text-captcha during user registration.";
+$lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change the key used by Beehive for generating the text captcha code that appears in the image. The more unique you make the key the harder it will be for automated processes to \"guess\"the code.";
 $lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
-$lang['forum_settings_help_48'] = "<b>Unread messages cutoff</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cutoff period will automatically appear as read.";
+$lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cut-off period will automatically appear as read.";
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
 $lang['forum_settings_help_50'] = "Your Beehive Forum will not automatically prune the unread messages data from your database. You must choose to do this by using the prune options below.";
 
@@ -1320,7 +1320,7 @@ $lang['textcaptchaconfirmation'] = "Confirmation";
 $lang['textcaptchaexplain'] = "To the right is a text-captcha image. Please type the code you can see in the image into the input field below it.";
 $lang['textcaptchaimgtip'] = "This is a captcha-picture. It is used to prevent automatic registration";
 $lang['textcaptchamissingkey'] = "A confirmation code is required.";
-$lang['textcaptchaverificationfailed'] = "Text captcha verification code was incorrect. Please re-enter it.";
+$lang['textcaptchaverificationfailed'] = "Text-captcha verification code was incorrect. Please re-enter it.";
 
 // Recent visitors list  (visitor_log.php) -----------------------------
 
@@ -1531,7 +1531,7 @@ $lang['deletepostsinthreadbyuser'] = "Delete posts in thread by user";
 $lang['deletethread'] = "Delete Posts";
 $lang['deletethread'] = "Delete Thread";
 $lang['undeletethread'] = "Undelete Thread";
-$lang['threaddeletedpermenantly'] = "Thread deleted permenantly. Cannot undelete.";
+$lang['threaddeletedpermenantly'] = "Thread deleted permanently. Cannot undelete.";
 $lang['markasunread'] = "Mark as unread";
 $lang['makethreadsticky'] = "Make Thread Sticky";
 $lang['threareadstatusupdated'] = "Thread Read Status Updated Successfully";
@@ -1624,7 +1624,7 @@ $lang['pmexportmessagesas'] = "Export messages as";
 $lang['pmexportonefileforallmessages'] = "One file for all messages";
 $lang['pmexportonefilepermessage'] = "One file per message";
 $lang['pmexportattachments'] = "Export attachments";
-$lang['pmexportincludestyle'] = "Include forum stylesheet";
+$lang['pmexportincludestyle'] = "Include forum style sheet";
 $lang['pmexportwordfilter'] = "Apply word filter to messages";
 
 // Thread merge / split options

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.269 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.270 2006-08-06 15:47:58 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -298,25 +298,22 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-        if ($thread['TID'] == $tid) {
-
-            if (in_array($thread['FID'], $folder_order)) {
-                array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
-            }
-
-            array_unshift($folder_order, $thread['FID']);
-
-            if (!is_array($thread_info)) $thread_info = array();
-
-            foreach ($thread_info as $key => $thread_data) {
-                if ($thread_data['TID'] == $tid) {
-                    unset($thread_info[$key]);
-                    break;
-                }
-            }
-
-            array_unshift($thread_info, $thread);
+        if (in_array($thread['FID'], $folder_order)) {
+            array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
         }
+
+        array_unshift($folder_order, $thread['FID']);
+
+        if (!is_array($thread_info)) $thread_info = array();
+
+        foreach ($thread_info as $key => $thread_data) {
+            if ($thread_data['TID'] == $tid) {
+                unset($thread_info[$key]);
+                break;
+            }
+        }
+
+        array_unshift($thread_info, $thread);
     }
 }
 

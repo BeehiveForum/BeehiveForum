@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.61 2006-07-24 16:31:53 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.62 2006-08-07 19:56:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -53,7 +53,7 @@ function update_stats()
         $sql = "SELECT * FROM {$table_data['PREFIX']}STATS ";
         $sql.= "ORDER BY ID DESC LIMIT 0, 1";
 
-        $result = db_query($sql, $db_update_stats);
+        if (!$result = db_query($sql, $db_update_stats)) return false;
 
         if (db_num_rows($result) > 0) {
 
@@ -64,7 +64,7 @@ function update_stats()
                 $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
                 $sql.= "MOST_USERS_DATE = NOW(), MOST_USERS_COUNT = $num_sessions";
 
-                $result = db_query($sql, $db_update_stats);
+                if (!$result = db_query($sql, $db_update_stats)) return false;
             }
 
             if ($num_recent_posts > $stats_array['MOST_POSTS_COUNT']) {
@@ -72,8 +72,10 @@ function update_stats()
                 $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}STATS SET ";
                 $sql.= "MOST_POSTS_DATE = NOW(), MOST_POSTS_COUNT = $num_recent_posts";
 
-                $result = db_query($sql, $db_update_stats);
+                if (!$result = db_query($sql, $db_update_stats)) return false;
             }
+
+            return true;
 
         }else {
 
@@ -81,10 +83,13 @@ function update_stats()
             $sql.= "MOST_USERS_COUNT, MOST_POSTS_DATE, MOST_POSTS_COUNT) ";
             $sql.= "VALUES (NOW(), '$num_sessions', NOW(), '$num_recent_posts')";
 
-            $result = db_query($sql, $db_update_stats);
+            if (!$result = db_query($sql, $db_update_stats)) return false;
 
+            return true;
         }
     }
+
+    return false;
 }
 
 function get_num_sessions()

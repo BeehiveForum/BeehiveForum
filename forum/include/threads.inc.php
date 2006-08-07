@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.218 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.219 2006-08-07 19:56:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -315,14 +315,10 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-    // Check to see if unread messages have been disabled.
-
-    if (!$unread_cutoff_stamp = forum_get_unread_cutoff()) return array(0, 0);
-
     // Formulate query
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.TITLE, THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, ";
-    $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ,  USER_THREAD.INTEREST, ";
+    $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
@@ -339,17 +335,10 @@ function threads_get_unread_to_me($uid) // get unread messages to $uid (ignores 
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-
-    if ($unread_cutoff_stamp !== false) {
-
-        $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
-        $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
-    }
-
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND POST.TID = THREAD.TID AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
+    $sql.= "AND POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
     $sql.= "AND THREAD.LENGTH > 0 ";
-    $sql.= "GROUP BY THREAD.TID ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+    $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT 0, 50";
 
     $result = db_query($sql, $db_threads_get_unread_to_me);
@@ -1738,7 +1727,7 @@ function thread_auto_prune_unread_data()
         $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
         $sql.= "WHERE USER_THREAD.LAST_READ IS NOT NULL ";
         $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME('$unread_cutoff_stamp') ";
-        $sql.= "GROUP BY THREAD.TID LIMIT 0, 10";
+        $sql.= "GROUP BY THREAD.TID LIMIT 0, 5";
 
         if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 
@@ -1756,11 +1745,13 @@ function thread_auto_prune_unread_data()
                 $sql.= "WHERE TID IN ($tid_list) AND INTEREST = 0";
 
                 if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+
+                return true;
             }
         }
     }
 
-    return true;
+    return false;
 }
 
 ?>

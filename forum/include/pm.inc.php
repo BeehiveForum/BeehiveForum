@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.148 2006-08-05 13:40:37 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.149 2006-08-07 19:56:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1347,10 +1347,12 @@ function pm_system_prune_folders()
             $sql.= "AND CREATED < FROM_UNIXTIME($pm_prune_length)";
 
             if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
+
+            return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 /**

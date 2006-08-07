@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.187 2006-08-04 20:40:32 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.188 2006-08-07 19:56:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -812,7 +812,8 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY TO_UID (TO_UID),";
         $sql.= "  KEY FROM_UID (FROM_UID),";
         $sql.= "  KEY IPADDRESS (IPADDRESS),";
-        $sql.= "  KEY CREATED (CREATED)";
+        $sql.= "  KEY CREATED (CREATED),";
+        $sql.= "  KEY CREATED (VIEWED)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {

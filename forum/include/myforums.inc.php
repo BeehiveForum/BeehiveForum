@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.55 2006-07-03 18:09:47 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.56 2006-08-07 19:56:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -133,57 +133,64 @@ function get_my_forums()
                 $forum_data['FORUM_DESC'] = "";
             }
 
-            // Get any unread messages
+            // Get available folders for queries below
 
             $folders = folder_get_available_by_forum($forum_fid);
+
+            // User relationship constants
 
             $user_ignored = USER_IGNORED;
             $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-            $sql = "SELECT SUM(THREAD.LENGTH) - SUM(USER_THREAD.LAST_READ) ";
-            $sql.= "AS UNREAD_MESSAGES, SUM(THREAD.LENGTH) AS NUM_MESSAGES ";
-            $sql.= "FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ";
-            $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_FOLDER USER_FOLDER ON ";
-            $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = $uid) ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_PEER USER_PEER ON ";
-            $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-            $sql.= "WHERE THREAD.FID IN ($folders) ";
-            $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-            $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-            $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-            $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-            $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-            $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1)";
+            // Get any unread messages
 
-            $result_post_count = db_query($sql, $db_get_my_forums);
+            if ($unread_cutoff_stamp = forum_get_unread_cutoff()) {
 
-            $row = db_fetch_array($result_post_count);
+                $sql = "SELECT SUM(THREAD.LENGTH) - SUM(USER_THREAD.LAST_READ) ";
+                $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
+                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ";
+                $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+                $sql.= "WHERE THREAD.FID IN ($folders) ";
+                $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp')";
 
-            if (!isset($row['NUM_MESSAGES']) || is_null($row['NUM_MESSAGES'])) {
-                $forum_data['NUM_MESSAGES'] = 0;
+                $result_unread_count = db_query($sql, $db_get_my_forums);
+
+                $unread_data = db_fetch_array($result_unread_count);
+
+                if (!isset($unread_data['UNREAD_MESSAGES']) || is_null($unread_data['UNREAD_MESSAGES'])) {
+                    $forum_data['UNREAD_MESSAGES'] = 0;
+                }else {
+                    $forum_data['UNREAD_MESSAGES'] = $unread_data['UNREAD_MESSAGES'];
+                }
+
             }else {
-                $forum_data['NUM_MESSAGES'] = $row['NUM_MESSAGES'];
+
+                $forum_data['UNREAD_MESSAGES'] = 0;
             }
 
-            if (!isset($row['UNREAD_MESSAGES']) || is_null($row['UNREAD_MESSAGES'])) {
-                $forum_data['UNREAD_MESSAGES'] = 0;
+            // Total number of messages
+
+            $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES ";
+            $sql.= "FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
+            $sql.= "WHERE THREAD.FID IN ($folders) ";
+
+            $result_messages_count = db_query($sql, $db_get_my_forums);
+            
+            $num_messages_data = db_fetch_array($result_messages_count);
+
+            if (!isset($num_messages_data['NUM_MESSAGES']) || is_null($num_messages_data['NUM_MESSAGES'])) {
+                $forum_data['NUM_MESSAGES'] = 0;
             }else {
-                $forum_data['UNREAD_MESSAGES'] = $row['UNREAD_MESSAGES'];
+                $forum_data['NUM_MESSAGES'] = $num_messages_data['NUM_MESSAGES'];
             }
 
             // Get unread to me message count
 
-            $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM ";
-            $sql.= "{$forum_data['WEBTAG']}_POST POST ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_PEER USER_PEER ON ";
-            $sql.= "(USER_PEER.UID = $uid AND USER_PEER.PEER_UID = POST.FROM_UID) ";
-            $sql.= "WHERE POST.TO_UID = $uid AND POST.VIEWED IS NULL ";
-            $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
-            $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
-            $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-            $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+            $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
+            $sql.= "FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
+            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_POST POST ";
+            $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
+            $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 
             $result_unread_to_me = db_query($sql, $db_get_my_forums);
 

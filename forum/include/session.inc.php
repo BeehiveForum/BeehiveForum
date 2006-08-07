@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.244 2006-08-05 13:40:37 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.245 2006-08-07 19:56:54 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -478,9 +478,9 @@ function bh_remove_stale_sessions()
 
             $sql = "SELECT HASH, UID FROM SESSIONS WHERE ";
             $sql.= "TIME < FROM_UNIXTIME($session_stamp) ";
-            $sql.= "AND UID > 0 LIMIT 0, 10";
+            $sql.= "AND UID > 0 LIMIT 0, 5";
 
-            $result = db_query($sql, $db_bh_remove_stale_sessions);
+            if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
             while ($session_data = db_fetch_array($result)) {
                 
@@ -495,12 +495,14 @@ function bh_remove_stale_sessions()
                 $sql = "DELETE FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
                 $sql.= "AND TIME < FROM_UNIXTIME($session_stamp)";
 
-                $result = db_query($sql, $db_bh_remove_stale_sessions);
+                if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
+
+                return true;
             }
         }
     }
 
-    return true;
+    return false;
 }
 
 // Updates the visitor log for the current user

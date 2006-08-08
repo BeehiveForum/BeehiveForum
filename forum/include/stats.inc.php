@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.62 2006-08-07 19:56:54 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.63 2006-08-08 20:42:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,12 +40,12 @@ function update_stats()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $stats_update_prob = intval(forum_get_setting('forum_self_clean_prob', false, 50));
+    $stats_update_prob = intval(forum_get_setting('forum_self_clean_prob', false, 20));
 
     if ($stats_update_prob < 1) $stats_update_prob = 1;
     if ($stats_update_prob > 100) $stats_update_prob = 100;
 
-    if (forum_get_setting('show_stats', 'Y') && (mt_rand(1, $stats_update_prob) == 1)) {
+    if (forum_get_setting('show_stats', 'Y') && (($mt_result = mt_rand(1, $stats_update_prob)) == 1)) {
 
         $num_sessions = get_num_sessions();
         $num_recent_posts = get_recent_post_count();
@@ -75,6 +75,8 @@ function update_stats()
                 if (!$result = db_query($sql, $db_update_stats)) return false;
             }
 
+            admin_add_log_entry(UPDATED_STATS);
+            
             return true;
 
         }else {

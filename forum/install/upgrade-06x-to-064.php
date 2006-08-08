@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.34 2006-08-07 19:56:54 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.35 2006-08-08 20:42:18 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -345,25 +345,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_POST ADD MOVED_TID MEDIUMINT(8) UNSIGNED, ";
     $sql.= "ADD MOVED_PID MEDIUMINT(8) UNSIGNED";
 
-    $result = db_query($sql, $db_install);
-
-    // Reindex the POST table. This will quite literally take forever (almost)
-
-    install_remove_table_keys("{$forum_webtag}_POST");
-
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (TO_UID)";
-    $result = db_query($sql, $db_install);
-
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (FROM_UID)";
-    $result = db_query($sql, $db_install);
-
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (IPADDRESS)";
-    $result = db_query($sql, $db_install);
-
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (CREATED)";
-    $result = db_query($sql, $db_install);
-    
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (VIEWED)";
     $result = db_query($sql, $db_install);
 
     // Relationships have changed somewhat. Older Beehive versions kept the old

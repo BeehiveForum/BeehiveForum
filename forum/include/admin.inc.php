@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.77 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.78 2006-08-08 20:42:18 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -56,7 +56,7 @@ include_once(BH_INCLUDE_PATH. "perm.inc.php");
 * @param mixed $data - Data to insert into the log. Can be an array or string.
 */
 
-function admin_add_log_entry($action, $data = 0)
+function admin_add_log_entry($action, $data = "")
 {
     $db_admin_add_log_entry = db_connect();
 

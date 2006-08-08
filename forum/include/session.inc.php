@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.245 2006-08-07 19:56:54 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.246 2006-08-08 20:42:18 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -165,25 +165,25 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
                 $result = db_query($sql, $db_bh_session_check);
             }
 
-            // Update the forum stats
+            // Forum self-preservation functions. Each page load
+            // we only do one of these. The functions themselves
+            // return false if the random probability meant they
+            // ended up doing nothing so we can then try the next
+            // one and so forth.
 
-            update_stats();
+            if (!update_stats()) {
 
-            // Update the user's session stats.
+                if (!bh_update_user_time($user_sess['UID'])) {
 
-            bh_update_user_time($user_sess['UID']);
+                    if (!pm_system_prune_folders()) {
 
-            // Perform system-wide PM Prune
+                        if (!bh_remove_stale_sessions()) {
 
-            pm_system_prune_folders();
-
-            // Delete expired sessions
-
-            bh_remove_stale_sessions();
-
-            // Prune unread thread data
-
-            thread_auto_prune_unread_data();
+                            thread_auto_prune_unread_data();
+                        }
+                    }
+                }
+            }
 
             // Return session data
 
@@ -359,22 +359,6 @@ function bh_guest_session_init($use_sess_hash = false)
                 $result = db_query($sql, $db_bh_guest_session_init);
             }
 
-            // Update the forum stats
-
-            update_stats();
-
-            // Perform system-wide PM Prune
-
-            pm_system_prune_folders();
-
-            // Delete expired sessions
-
-            bh_remove_stale_sessions();
-
-            // Prune unread thread data
-
-            thread_auto_prune_unread_data();
-
         }else {
 
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
@@ -398,6 +382,23 @@ function bh_guest_session_init($use_sess_hash = false)
         // ban data set up on this forum.
 
         ban_check($user_sess, true);
+
+        // Forum self-preservation functions. Each page load
+        // we only do one of these. The functions themselves
+        // return false if the random probability meant they
+        // ended up doing nothing so we can then try the next
+        // one and so forth.
+
+        if (!update_stats()) {
+
+            if (!pm_system_prune_folders()) {
+
+                if (!bh_remove_stale_sessions()) {
+
+                    thread_auto_prune_unread_data();
+                }
+            }
+        }
 
         return $user_sess;        
     }
@@ -461,12 +462,12 @@ function bh_remove_stale_sessions()
 
     $forum_fid = $table_data['FID'];
     
-    $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 50));
+    $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 20));
 
     if ($sess_rem_prob < 1) $sess_rem_prob = 1;
     if ($sess_rem_prob > 100) $sess_rem_prob = 100;
 
-    if (mt_rand(1, $sess_rem_prob) == 1) {
+    if (($mt_result = mt_rand(1, $sess_rem_prob)) == 1) {
 
         $db_bh_remove_stale_sessions = db_connect();
 
@@ -497,6 +498,8 @@ function bh_remove_stale_sessions()
 
                 if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
+                admin_add_log_entry(PRUNED_SESSION);
+                
                 return true;
             }
         }
@@ -598,7 +601,7 @@ function bh_update_user_time($uid)
     $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' ";
     $sql.= "AND VISITOR_LOG.UID = '$uid'";
 
-    $result = db_query($sql, $db_bh_update_user_time);
+    if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
 
     if (db_num_rows($result) > 0) {
 
@@ -710,7 +713,7 @@ function bh_update_user_time($uid)
                 $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK SET $update_columns, ";
                 $sql.= "USER_TIME_UPDATED = NOW() WHERE UID = '$uid'";
 
-                $result = db_query($sql, $db_bh_update_user_time);
+                if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
 
                 if (db_affected_rows($db_bh_update_user_time) < 1) {
 
@@ -719,11 +722,15 @@ function bh_update_user_time($uid)
                     $sql.= "VALUES ('$uid', FROM_UNIXTIME('$session_length'), ";
                     $sql.= "FROM_UNIXTIME('$session_total_time'), NOW())";
 
-                    $result = db_query($sql, $db_bh_update_user_time);
+                    if (!$result = db_query($sql, $db_bh_update_user_time)) return false;
                 }
+
+                return true;
             }
         }
     }
+
+    return false;
 }
 
 /**

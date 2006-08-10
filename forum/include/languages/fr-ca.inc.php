@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.33 2006-08-05 13:40:36 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.34 2006-08-10 20:25:22 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -310,6 +310,8 @@ $lang['forgottenpassworddesc'] = "Si cet utilisateur a oublié leur mot de passe
 $lang['manageusersexp_1'] = "Cette liste démontre une sélection d'utilisateurs qui ont ouvert une session sur votre forum, triée par";
 $lang['manageusersexp_2'] = "Pour modifier les droits d'accès d'un utilisateur, cliquer sur leur nom.";
 $lang['lastlogon'] = "Dernière ouverture de session";
+$lang['sessionreferer'] = "Orienteur de session";
+$lang['signupreferer'] = "Orienteur d'enregistrement:";
 $lang['nouseraccounts'] = "Aucun compte d'utilisateur dans la base de données.";
 $lang['searchforusernotinlist'] = "Chercher pour un utilisateur qui n'est pas sur la liste";
 $lang['adminaccesslog'] = "Fichier journal d'accès admin";
@@ -318,6 +320,7 @@ $lang['datetime'] = "Date/Heure";
 $lang['unknownuser'] = "Utilisateur inconnu";
 $lang['unknownfolder'] = "Dossier inconnu";
 $lang['ip'] = "IP";
+$lang['lastipaddress'] = "Dernière adresse IP";
 $lang['logged'] = "Journalisé";
 $lang['notlogged'] = "Non journalisé";
 $lang['wordfilterupdated'] = "Mise à jour du filtre de mots";
@@ -363,6 +366,8 @@ $lang['nameanddesc'] = "Nom et Description";
 $lang['movethreads'] = "Déplacer fils de discussion";
 $lang['threadsmovedsuccessfully'] = "Déplacement de fils de discussion réussie";
 $lang['movethreadstofolder'] = "Déplacer fils de discussion au dossier";
+$lang['resetuserpermissions'] = "Réinitialiser les permissions d'utilisateur";
+$lang['userpermissionsresetsuccessfully'] = "Réinitialisation des permissions d'utilisateur réussie";
 $lang['allowfoldertocontain'] = "Permettre au dossier de contenir";
 $lang['addnewfolder'] = "Ajouter nouveau dossier";
 $lang['mustenterfoldername'] = "Vous devez inscrire un nom de dossier";
@@ -449,38 +454,55 @@ $lang['textcaptchakey'] = "Clé de captcha de texte";
 $lang['textcaptchafonterror'] = "Le Captcha de texte a été désactivé automatiquement parce qu'il n'y a pas de polices truetype de disponible pour son usage. SVP téléverser des polices truetype à <b>%s</b> sur votre serveur.";
 $lang['textcaptchadirerror'] = "Le Captcha de texte a été désactivé parce que le répertoire text_captcha and ses sous-répertoires ne sont pas inscriptibles part le serveur web / processus PHP.";
 $lang['textcaptchagderror'] = "Le Captcha de texte a été désactivé parce que le réglage PHP de votre serveur ne fournit pas de support pour la manipulation d'image GD et / ou de support pour les polices TTF. Les deux sont requis pour supporter le captcha de texte.";
-
 $lang['textcaptchadirblank'] = "Le répertoire de captcha de texte est vierge!";
-
 $lang['newuserpreferences'] = "Préférences du nouveau utilisateur";
-
 $lang['sendemailnotificationonreply'] = "Avertissement par courriel sur réponse à l'utilisateur";
 $lang['sendemailnotificationonpm'] = "Avertissement par courriel sur MP à l'utilisateur";
 $lang['showpopuponnewpm'] = "Afficher fenêtre contextuelle sur réception de nouveau MP";
 $lang['setautomatichighinterestonpost'] = "Établir intérêt élevé automatique sur postage";
-
 $lang['top20postersforperiod'] = "Les 20 posteurs les plus prolifiques pour la période %s à %s";
 $lang['postingstats'] = "Statistiques de postage";
 $lang['nodata'] = "Aucune donnée";
 $lang['totalposts'] = "Contributions totales";
-
 $lang['totalpostsforthisperiod'] = "Contributions totales pour cette période";
-
 $lang['mustchooseastartday'] = "Doit choisir un jour de début";
 $lang['mustchooseastartmonth'] = "Doit choisir un mois de début";
 $lang['mustchooseastartyear'] = "DOit choisir une année de début";
 $lang['mustchooseaendday'] = "Doit choisir un jour de fin";
 $lang['mustchooseaendmonth'] = "Doit choisir un mois de fin";
 $lang['mustchooseaendyear'] = "Doit choisir une année de fin";
-
 $lang['startperiodisaheadofendperiod'] = "Période de début devance la période de fin";
-
 $lang['bancontrols'] = "Contrôles de bannissement";
+$lang['addban'] = "Ajouter bannissement";
+$lang['checkban'] = "Vérifier bannissement";
+$lang['editban'] = "Modifier bannissement";
+$lang['bantype'] = "Type de bannissement";
+$lang['bandata'] = "Données de bannissement";
+$lang['bancomment'] = "Commentaire";
+$lang['deleteselectbans'] = "Supprimer bannissements sélectionnés";
+$lang['ipban'] = "Bannissement par IP";
+$lang['logonban'] = "Bannissement par ouverture de session";
+$lang['nicknameban'] = "Bannissement par pseudonyme";
+$lang['emailban'] = "Bannissement par adresse de courriel";
+$lang['refererban'] = "Bannissement par site orienteur";
+$lang['invalidbanid'] = "Bannissement d'identité invalide";
+$lang['affectsessionwarnadd'] = "Ce bannissment pourrait affecter les sessions d'utilisateurs actives suivantes";
+$lang['affectsessionwarnremove'] = "Ce bannissement affecte les sessions d'utilisateurs actives suivantes";
+$lang['mustspecifybantype'] = "Vous devez indiquer un type de bannissement";
+$lang['mustspecifybandata'] = "Vous devez indiquer des données de bannissement";
+$lang['successfullyremovedselectedbans'] = "Lever de bannissements sélectionnés réussi";
+$lang['failedtoaddnewban'] = "Ajout de nouveau bannissement échoué";
+$lang['failedtoremovebans'] = "Lever de certains ou de tous les bannissment sélectionnés échoué";
+$lang['duplicatebandataentered'] = "Données de bannissement entrer en double. Vérifiez vos caractères de remplacement pour voir s'ils s'accordent avec les données entrées";
+$lang['successfullyaddedban'] = "Ajout de bannissement réussi";
+$lang['successfullyupdatedban'] = "Mise à jour du bannissement réussi";
+$lang['noexistingbandata'] = "Il n'y a pas de données de bannissement existantes. Pour ajouter des données de bannissement, veuillez cliquer le bouton ci-dessous.";
 $lang['youcanusethepercentwildcard'] = "Vous pouvez utiliser le caractère de remplacement pourcentage (%) dans n'importe quelle liste de bannissement afin d'obtenir des correspondances partielles, ex. '192.168.0.%' bannirait toutes les adresses IP dans la gamme de 192.168.0.1 à travers 192.168.0.254</p>\n ";
 $lang['cannotusewildcardonown'] = "Vous ne pouvez pas ajouter % comme concordance de caractère de remplacement seul!";
-
 $lang['requirepostapproval'] = "Exiger approbation du message";
 $lang['adminforumtoolsusercounterror'] = "Il doit y avoir au moins un utilisateur avec accès aux outils admin et aux outils de forum sur tous les forums!";
+$lang['postcount'] = "Compte de postes:";
+$lang['resetpostcount'] = "Réinitialisation du compte de postes";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -507,6 +529,9 @@ $lang['removednicknamefrombanlist'] = "A enlevé le pseudonyme '%s' de la liste 
 $lang['addedemailtobanlist'] = "A ajouté l'adresse courriel '%s' à la liste de bannissement";
 $lang['removedemailfrombanlist'] = "A enlevé l'adresse courriel '%s' de la liste de bannissement";
 
+$lang['addedreferertobanlist'] = "Ajouter le site orienteur '%s' à la liste de bannissement";
+$lang['removedrefererfrombanlist'] = "Enlevé le site orienteur '%s' de la liste de bannissement";
+
 $lang['editedfolder'] = "A modifié dossier '%s'";
 $lang['movedallthreadsfromto'] = "A déplacé tous les fils de discussion de '%s' à '%s'";
 $lang['creatednewfolder'] = "A créé nouveau dossier '%s'";
@@ -528,6 +553,7 @@ $lang['closedthread'] = "A fermé le fil de discussion '%s'";
 $lang['openedthread'] = "A ouvert le fil de discussion '%s'";
 $lang['renamedthread'] = "A renommé le fil de discussion '%s' de '%s'";
 $lang['deletedthread'] = "A supprimé le fil de discussion '%s'";
+$lang['undeletedthread'] = "Fils de discussion non-supprimé '%s'";
 
 $lang['lockedthreadtitlefolder'] = "A verrouillé les options de fil de discussion sur '%s'";
 $lang['unlockedthreadtitlefolder'] = "A déverrouillé les options de fil de discussion sur '%s'";
@@ -548,6 +574,12 @@ $lang['endedsessionforuser'] = "A terminé la session pour l'utilisateur '%s'";
 $lang['approvedpost'] = "A approuvé le message '%s'";
 
 $lang['editedwordfilter'] = "A modifié le filtre de mots";
+
+$lang['addedrssfeed'] = "Ajouté source de données RSS '%s'";
+$lang['editedrssfeed'] = "Modifié source de données RSS '%s'";
+$lang['deletedrssfeed'] = "Supprimé source de données RSS '%s'";
+
+$lang['updatedban'] = "Mise-à-jour du bannissement '%s'. '%s' à '%s', '%s' à '%s'.";
 
 $lang['adminlogempty'] = "Fiche journalier admin est vide";
 $lang['clearlog'] = "Vider fiche journalier";
@@ -587,6 +619,7 @@ $lang['passwordprotected'] = "Protéger par mot de passe";
 $lang['postoptions'] = "Options de message";
 $lang['allowpostoptions'] = "Permettre la révision de message";
 $lang['postedittimeout'] = "Temporisation de révision de message";
+$lang['posteditgraceperiod'] = "Période de délai de grâce pour modification de poste";
 $lang['wikiintegration'] = "Intégration Wiki";
 $lang['enablewikiintegration'] = "Activer intégration WikiWiki";
 $lang['enablewikiquicklinks'] = "Activer Quick Links WikiWiki";
@@ -595,6 +628,14 @@ $lang['maximumpostlength'] = "Longueure de message maximale";
 $lang['postfrequency'] = "Fréquence de postage";
 $lang['enablelinkssection'] = "Activer section des Liens";
 $lang['allowcreationofpolls'] = "Permettre création de scrutins";
+$lang['unreadmessagescutoff'] = "Période limite pour messages non-lus";
+$lang['unreadcutoffseconds'] = "secondes";
+$lang['disableunreadmessages'] = "Désactiver messages non-lus";
+$lang['nocutoffdefault'] = "Aucune période limite (défault)";
+$lang['1month'] = "1 mois";
+$lang['6months'] = "6 mois";
+$lang['1year'] = "1 ans";
+$lang['customsetbelow'] = "Valeur personnalisée (régler ci-dessous)";
 $lang['searchoptions'] = "Options de recherche";
 $lang['searchfrequency'] = "Fréquence de recherche";
 $lang['sessions'] = "Sessions";
@@ -611,6 +652,7 @@ $lang['allowpmstohaveattachments'] = "Permettre fichiers joints dans les message
 $lang['autopruneuserspmfoldersevery'] = "Élaguer automatiquement les dossiers MP de l'utilisateur chaque";
 $lang['guestaccount'] = "Compte de visiteur";
 $lang['enableguestaccount'] = "Activer compte de visiteur";
+$lang['listguestsinvisitorlog'] = "Lister les visiteurs dans la liste des dernières visites";
 $lang['guestaccess'] = "Accès aux visiteurs";
 $lang['allowguestaccess'] = "Permettre accès aux visiteurs";
 $lang['enableattachments'] = "Activer fichiers joints";
@@ -658,6 +700,10 @@ $lang['forum_settings_help_43'] = "<b>Exiger confirmation par courriel</b> si ac
 $lang['forum_settings_help_44'] = "<b>Utiliser le Captcha de texte</b> presente le nouveau utilisateur avec une image floue duquel il doit copier un numéro dans le champ de texte dans le formulaire d'enregistrement. Utiliser cette option afin d'empécher les enregistrements via scripts.";
 $lang['forum_settings_help_45'] = "<b>Répertoire de Captcha de texte</b> spécifie l'endroit où Beehive conservera ses images et polices captcha. Ce répertoire doit être inscriptible par le serveur web / processus PHP et doit être accessible via HTTP. Après que vous avez activé le captcha de texte, vous devez téléverser les polices truetype au sous-répertoire de votre répertoire principale de captcha de texte sinon Beehive sautera le captcha de texte durant l'enregistrement d'utilisateur.";
 $lang['forum_settings_help_46'] = "<b>Clé de Captcha de texte</b> vous permet de changer la clé utilisée par Beehive pour générer le code captcha de texte qui apparait dans l'image. Le plus unique la clé, le plus difficile que ça devient pour les processus automatisés de \"deviner\" le code.";
+$lang['forum_settings_help_47'] = "<b>Période de délai de grâce pour modification de poste</b> vous permet de définir une période en minutes durant laquelle les utilisateurs peuvent modifier leurs messages sans que le texte 'MODIFIÉ PAR' apparait dans le message. Si régler à 0 le texte 'MODIFIÉ PAR' va toujours paraître.";
+$lang['forum_settings_help_48'] = "<b>Période limite pour messages non-lus</b> spécifie pour quelle durée de temps les messages non-lus seront conservés. Vous pouvez choisir entre des valeurs pré-établies ou choisir votre propre période limite en secondes. Les fils de discussion modifiés antérieurement à la période limite définie apparaîtront automatiquement comme lues.";
+$lang['forum_settings_help_49'] = "La sélection de <b>Désactiver messages non-lus</b> enlèvera complètement tout support pour messages non-lus et enlèvera aussi les options reliées du menu déroulant vertical de types de discussions sur la liste des fils de discussions.";
+$lang['forum_settings_help_50'] = "Votre forum Beehive n'élaguera pas automatiquement les messages non-lus de votre base de données. Vous devez choisir de faire ceci par moyens des options d'élagage ci-dessous.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1233,6 +1279,8 @@ $lang['profilesnotsetup'] = "Le propriétaire du forum n'a pas établit les prof
 $lang['nouserspecified'] = "Aucun utilisateur de spécifié";
 $lang['ignoreduser'] = "Utilisateur ignoré";
 $lang['lastvisit'] = "Dernière visite";
+$lang['totaltimeinforum'] = "Durée totale";
+$lang['longesttimeinforum'] = "Session la plus longue";
 $lang['sendemail'] = "Envoyer courriel";
 $lang['sendpm'] = "Envoyer MP";
 $lang['removefromfriends'] = "Enlever de la liste d'ami(e)s";
@@ -1299,6 +1347,7 @@ $lang['userrelationships'] = "Relations d'utilisateur";
 $lang['friends'] = "Ami(e)s";
 $lang['ignoredcompletely'] = "Ignoré complètement";
 $lang['relationship'] = "Relation";
+$lang['restorenickname'] = "Restaurer le pseudonyme de l'utilisateur";
 $lang['friend_exp'] = "Les messages de cet utilisateur seront marqué avec un icône &quot;Ami(e)&quot;";
 $lang['normal_exp'] = "Les messages de cet utilisateur apparaîitront normallement.";
 $lang['ignore_exp'] = "Les messages de cet utilisateur sont masqués.";
@@ -1543,8 +1592,19 @@ $lang['every6hours'] = "Toutes les 6 heures";
 $lang['every12hours'] = "Toutes les 12 heures";
 $lang['onceaday'] = "Une fois par jour";
 $lang['rssfeeds'] = "Sources de données RSS";
+$lang['feedname'] = "Nom de la source de donnée";
+$lang['feedfoldername'] = "Nom du fichier pour les souces de données";
 $lang['feedlocation'] = "Repérage de source de données";
+$lang['threadtitleprefix'] = "Préfix pour titre des fils de discussion";
+$lang['feednameandlocation'] = "Nom de la source de données et emplacement";
+$lang['feedsettings'] = "Options de la source de données";
+$lang['updatefrequency'] = "Fréquence de mise à jour";
 $lang['rssclicktoreadarticle'] = "Cliquer ici pour lire cette article";
+$lang['addnewfeed'] = "Ajouter nouvelle source de données";
+$lang['editfeed'] = "Modifier source de données";
+$lang['feeduseraccount'] = "Nom d'utilisateur de la souce de données";
+$lang['noexistingfeeds'] = "Aucune source de données RSS existante trouvé. Pour ajouter une souce de données, veuillez cliquer le bouton ci-dessous";
+$lang['deleteselectedfeeds'] = "Supprimez sources de données sélectionnées";
 $lang['rssfeedhelp'] = "Vous pouvez ici régler des sources de données RSS pour propagation automatique dans votre forum. Les items des sources de données RSS que vous ajoutez seront créés comme fils de discussion auquels vos utilisateurs pourront répondre comme si c'étaient des messages normales. Lorsque vous ajouter une source de données RSS, vous devez indiquer le nom d'utilisateur à utiliser pour commencer les fils de discussion, le dossier dans lequel ils seront créés et le repérage des sources de données. Le repérage des sources de données lui-même doit être accessible via HTTP, sinon les sources de données ne fonctionneront pas.";
 $lang['mustspecifyrssfeedname'] = "Vous devez spécifier le nom de l'alimentation RSS";
 $lang['mustspecifyrssfeeduseraccount'] = "Vous devez spécifier le compte d'utilisateur de l'alimentation RSS";
@@ -1555,6 +1615,15 @@ $lang['unknownrssuseraccount'] = "Compte d'utilisateur RSS inconnu";
 $lang['rssfeedsupportshttpurlsonly'] = "L'alimentation RSS supporte uniquement les adresses URL HTTP. Les alimentations protégées (https://) ne sont pas supportées.";
 $lang['rssfeedurlformatinvalid'] = "L'adresse URL doit inclure la spécification du protocole d'application (ex. http://) et une adresse internet (ex. www.adresseinternet.com).";
 $lang['rssfeeduserauthentication'] = "L'alimentation RSS ne supporte pas l'authentication d'utilisateur HTTP";
+$lang['successfullyremovedselectedfeeds'] = "Supression des sources de données sélectionnées réussie";
+$lang['successfullyaddedfeed'] = "Ajout de nouvelle souce de données réussi";
+$lang['successfullyeditedfeed'] = "Modification de la source de donnée réussie";
+$lang['failedtoremovefeeds'] = "La suppression de certaines ou de toutes les sources de données sélectionnées a échoué";
+$lang['failedtoaddnewrssfeed'] = "L'ajout d'une nouvelle source de données RSS a échoué";
+$lang['failedtoupdaterssfeed'] = "Mise à jour de la source de données RSS a échoué";
+$lang['rssstreamworkingcorrectly'] = "Flux de données RSS semble fonctionner correctement";
+$lang['rssstreamnotworkingcorrectly'] = "Flux de données RSS était vide ou introuvable";
+$lang['invalidfeedidorfeednotfound'] = "Source de données invalide ou source introuvable";
 
 // PM Export Options
 

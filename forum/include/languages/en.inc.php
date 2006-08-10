@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.340 2006-08-06 16:44:53 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.341 2006-08-10 20:25:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -310,8 +310,8 @@ $lang['forgottenpassworddesc'] = "If this user has forgotten their password you 
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
 $lang['lastlogon'] = "Last Logon";
-$lang['sessionreferer'] = "Session Referrer";
-$lang['signupreferer'] = "Sign-up Referrer:";
+$lang['sessionreferer'] = "Session Referer";
+$lang['signupreferer'] = "Sign-up Referer:";
 $lang['nouseraccounts'] = "No user accounts in database.";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['adminaccesslog'] = "Admin Access Log";
@@ -472,7 +472,7 @@ $lang['ipban'] = "IP ban";
 $lang['logonban'] = "Logon ban";
 $lang['nicknameban'] = "Nickname ban";
 $lang['emailban'] = "Email ban";
-$lang['refererban'] = "Referrer ban";
+$lang['refererban'] = "Referer ban";
 $lang['invalidbanid'] = "Invalid Ban ID";
 $lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
 $lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
@@ -517,8 +517,8 @@ $lang['removednicknamefrombanlist'] = "Removed nickname '%s' from ban list";
 $lang['addedemailtobanlist'] = "Added email address '%s' to ban list";
 $lang['removedemailfrombanlist'] = "Removed email address '%s' from ban list";
 
-$lang['addedreferertobanlist'] = "Added referrer '%s' to ban list";
-$lang['removedrefererfrombanlist'] = "Removed referrer '%s' from ban list";
+$lang['addedreferertobanlist'] = "Added referer '%s' to ban list";
+$lang['removedrefererfrombanlist'] = "Removed referer '%s' from ban list";
 
 $lang['editedfolder'] = "Edited Folder '%s'";
 $lang['movedallthreadsfromto'] = "Moved all threads from '%s' to '%s'";

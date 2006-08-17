@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.10 2006-08-05 13:40:36 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.11 2006-08-17 22:08:21 decoyduck Exp $ */
 
 // International English language file
 
@@ -111,7 +111,7 @@ $lang['submit'] = "Absenden";
 $lang['download'] = "Download";
 $lang['save'] = "Speichern";
 $lang['savechanges'] = "Aenderungen speichern";
-$lang['update'] = "Update";
+$lang['update'] = "Aktualisierung";
 $lang['cancel'] = "Abbrechen";
 $lang['continue'] = "Fortfahren";
 $lang['with'] = "mit";
@@ -124,7 +124,7 @@ $lang['downloadedxtimes'] = "Heruntergeladen: %d mal";
 $lang['downloadedonetime'] = "Heruntergeladen: 1 mal";
 $lang['size'] = "Groesse";
 $lang['viewmessage'] = "Nachricht anzeigen";
-$lang['logon'] = "Logon";
+$lang['logon'] = "Anmeldung";
 $lang['more'] = "Mehr";
 $lang['recentvisitors'] = "Neue Besucher";
 $lang['username'] = "Benutzername";
@@ -200,7 +200,7 @@ $lang['reset'] = "Zurücksetzen";
 
 // Admin interface (admin*.php) ----------------------------------------
 
-$lang['admintools'] = "Admin Tools";
+$lang['admintools'] = "Admin Werkzeuge";
 $lang['forummanagement'] = "Forum Management";
 $lang['accessdenied'] = "Zugriff verweigert";
 $lang['accessdeniedexp'] = "Sie haben keine Rechte diesen Bereich zu nutzen.";
@@ -310,6 +310,8 @@ $lang['forgottenpassworddesc'] = "Falls der Benutzer sein Passwort vergessen hat
 $lang['manageusersexp_1'] = "Diese Liste zeigt eine Benutzerauswahl, die in diesem Forum angemeldet sind, sortiert nach";
 $lang['manageusersexp_2'] = "Um Benutzerrechte zu aendern auf den Namen klicken.";
 $lang['lastlogon'] = "Letzte Anmeldung";
+$lang['sessionreferer'] = "Abschnittsverweis";
+$lang['signupreferer'] = "Ueberschriftsverweis:";
 $lang['nouseraccounts'] = "Keine Benutzeraccounts in der Datenbank.";
 $lang['searchforusernotinlist'] = "Suche nach einem nicht aufgelisteten Benutzer";
 $lang['adminaccesslog'] = "Admin Zugriffslog";
@@ -364,6 +366,8 @@ $lang['nameanddesc'] = "Name und Beschreibung";
 $lang['movethreads'] = "Verschiebe Eintraege";
 $lang['threadsmovedsuccessfully'] = "Eintraege erfolgreich verschoben";
 $lang['movethreadstofolder'] = "Verschiebe Eintraege in Ordner";
+$lang['resetuserpermissions'] = "Benutzerrechte zuruecksetzen";
+$lang['userpermissionsresetsuccessfully'] = "Benutzerrechte erfolgreich zurueckgesetzt";
 $lang['allowfoldertocontain'] = "Erlaubter Ordnerinhalt";
 $lang['addnewfolder'] = "Neuen Ordner hinzufuegen";
 $lang['mustenterfoldername'] = "Du musst einen Ordnernamen eingeben";
@@ -457,10 +461,36 @@ $lang['mustchooseaendmonth'] = "Waehle Ende Monat";
 $lang['mustchooseaendyear'] = "Waehle Ende Jahr";
 $lang['startperiodisaheadofendperiod'] = "Start-Zeitraum ist hoeher als Ende-Zeitraum";
 $lang['bancontrols'] = "Bann-Kontrolle";
+$lang['addban'] = "Sperre hinzufuegen";
+$lang['checkban'] = "Sperre pruefen";
+$lang['editban'] = "Sperre bearbeiten";
+$lang['bantype'] = "Sperrtyp";
+$lang['bandata'] = "Sperrdaten";
+$lang['bancomment'] = "Bemerkung";
+$lang['deleteselectbans'] = "Ausgewaehlte Sperren loeschen";
+$lang['ipban'] = "IP sperren";
+$lang['logonban'] = "Anmeldung sperren";
+$lang['nicknameban'] = "Nickname sperren";
+$lang['emailban'] = "Email sperren";
+$lang['refererban'] = "Verweis sperren";
+$lang['invalidbanid'] = "Unzulaessige Sperr-ID";
+$lang['affectsessionwarnadd'] = "Diese Sperren beeinflusst folgende aktiven Benutzersitzungen";
+$lang['affectsessionwarnremove'] = "Diese Sperre beeinflusst folgende aktiven Benutzersitzungen";
+$lang['mustspecifybantype'] = "Sperrtyp muss ausgewaehlt sein";
+$lang['mustspecifybandata'] = "Einige Sperrdaten muessen ausgewaehlt werden";
+$lang['successfullyremovedselectedbans'] = "Ausgewaehlte Sperren erfolgreich entfernt";
+$lang['failedtoaddnewban'] = "neue Sperre nicht angefuegt";
+$lang['failedtoremovebans'] = "einige oder alle ausgewaehlten Sperren konnten nicht entfernt werden";
+$lang['duplicatebandataentered'] = "Doppelte Sperrdaten eingegeben. Bitte Wildcards pruefen ob diese den eingegebenen Daten entsprechen.";
+$lang['successfullyaddedban'] = "Sperre erfolgreich hinzugefuegt";
+$lang['successfullyupdatedban'] = "Sperre erfolgreich geaendert";
+$lang['noexistingbandata'] = "Keine Sperrdaten vorhanden. Um Sperrdaten hinzuzufuegen folgende Schaltflaeche klicken.";
 $lang['youcanusethepercentwildcard'] = "Du kannst das Prozent-Zeichen (%) benutzen als wildcard-Symbol in jedem Eintrag deiner Bannliste um komplette Bereiche zu definieren, z.B. '192.168.0.%' bannt alle IP-Addressen in dem Bereich 192.168.0.1 bis 192.168.0.254</p>";
 $lang['cannotusewildcardonown'] = "Du kannst kein % als alleinigen Wert eintragen!";
 $lang['requirepostapproval'] = "Erfordert Post-Zustimmung";
 $lang['adminforumtoolsusercounterror'] = "Es muss mindestens 1 Benutzer mit Admin-Tools und Forum-Tools Berechtigung in allen Foren vorhanden sein!";
+$lang['postcount'] = "Postzaehler:";
+$lang['resetpostcount'] = "Postzaehler zuruecksetzen";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -487,6 +517,9 @@ $lang['removednicknamefrombanlist'] = "Nickname '%s' aus Bannliste geloescht";
 $lang['addedemailtobanlist'] = "Emailaddresse '%s' an Bannliste angefuegt";
 $lang['removedemailfrombanlist'] = "Emailaddresse '%s' von Bannliste geloescht";
 
+$lang['addedreferertobanlist'] = "Verweis '%s' an Bannliste angefuegt";
+$lang['removedrefererfrombanlist'] = "Verweis '%s' von Bannliste geloescht";
+
 $lang['editedfolder'] = "Editierte Ordner '%s'";
 $lang['movedallthreadsfromto'] = "Alle Eintraege verschoben von '%s' nach '%s'";
 $lang['creatednewfolder'] = "Neuer Ordner '%s' erstellt";
@@ -508,6 +541,7 @@ $lang['closedthread'] = "Eintrag geschlossen '%s'";
 $lang['openedthread'] = "Eintrag geoeffnet '%s'";
 $lang['renamedthread'] = "Umbenannter Eintrag '%s' to '%s'";
 $lang['deletedthread'] = "Geloeschter Eintrag '%s'";
+$lang['undeletedthread'] = "Ungeloeschter Eintrag '%s'";
 
 $lang['lockedthreadtitlefolder'] = "Gesperrte Eintragsoptionen auf '%s'";
 $lang['unlockedthreadtitlefolder'] = "Geoeffnete Eintragsoptionen auf '%s'";
@@ -528,6 +562,12 @@ $lang['endedsessionforuser'] = "Beendete Sitzung fuer Benutzer '%s'";
 $lang['approvedpost'] = "Akzeptierter Post '%s'";
 
 $lang['editedwordfilter'] = "Editierter Wortfilter";
+
+$lang['addedrssfeed'] = "RSS Feed '%s' hinzugefuegt";
+$lang['editedrssfeed'] = "RSS Feed '%s' bearbeitet";
+$lang['deletedrssfeed'] = "RSS Feed '%s' geloescht";
+
+$lang['updatedban'] = "Sperre '%s'. '%s' an '%s', '%s' an '%s' aktualisiert.";
 
 $lang['adminlogempty'] = "Admin Log ist leer";
 $lang['clearlog'] = "Log leeren";
@@ -567,6 +607,7 @@ $lang['passwordprotected'] = "Passwort geschuetzt";
 $lang['postoptions'] = "Post Optionen";
 $lang['allowpostoptions'] = "Erlaube Post Editierung";
 $lang['postedittimeout'] = "Post Editierungs-Timeout";
+$lang['posteditgraceperiod'] = "Post Bearbeitung Grace Periode";
 $lang['wikiintegration'] = "WikiWiki Integration";
 $lang['enablewikiintegration'] = "WikiWiki Integration einschalten";
 $lang['enablewikiquicklinks'] = "WikiWiki Quick Links einschalten";
@@ -575,6 +616,14 @@ $lang['maximumpostlength'] = "Max Post-Laenge";
 $lang['postfrequency'] = "Post Haeufigkeit";
 $lang['enablelinkssection'] = "Linksbereich aktivieren";
 $lang['allowcreationofpolls'] = "Abstimmungserstellung erlauben";
+$lang['unreadmessagescutoff'] = "Ungelesene Nachrichten abgeschnitten";
+$lang['unreadcutoffseconds'] = "Sekunden";
+$lang['disableunreadmessages'] = "Ungelesene Nachrichten deaktiviert";
+$lang['nocutoffdefault'] = "Kein Abschneiden (Standard)";
+$lang['1month'] = "1 Monat";
+$lang['6months'] = "6 Monate";
+$lang['1year'] = "1 Jahr";
+$lang['customsetbelow'] = "Eigene Einstellungen (einzustellen nachfolgend)";
 $lang['searchoptions'] = "Optionen suchen";
 $lang['searchfrequency'] = "Haeufigkeit suchen";
 $lang['sessions'] = "Sitzungen";
@@ -591,6 +640,7 @@ $lang['allowpmstohaveattachments'] = "Erlaube Anhaenge an PMs";
 $lang['autopruneuserspmfoldersevery'] = "Automatische Ueberpruefung der PM-Ordner der Benutzer alle";
 $lang['guestaccount'] = "Gast Zugang";
 $lang['enableguestaccount'] = "Aktiviere Gastzugang";
+$lang['listguestsinvisitorlog'] = "Gaesteliste in Besucher-Log";
 $lang['guestaccess'] = "Gastzugang";
 $lang['allowguestaccess'] = "Erlaube Gastzugang";
 $lang['enableattachments'] = "Erlaube Anhaenge";
@@ -638,6 +688,10 @@ $lang['forum_settings_help_43'] = "<b>Benoetigt eMail-Bestaetigung</b> wenn akti
 $lang['forum_settings_help_44'] = "<b>Benutze Text Captcha</b> zeigt dem neuen Benutzer ein Bild von dem die Nummer in ein Textfeld der Registrierung eingetragen werden muss. Benutz diese Option um automatisierte Registrierungen durchzufuehren.";
 $lang['forum_settings_help_45'] = "<b>Text Captcha Verzeichnis</b> Definiert den Ordner in dem die Bilder und Schriften für Text-Captcha abgelegt werden. Dieser Ordner muss Schreibrechte haben. Nachdem Text-Captcha angeschaltet wurde muessen einige True-Type-Fonts in das fonts-Unterverzeichnis des Text-Captcha-Ordners kopiert werden sonst uebergeht die Registrierung Text-Captcha.";
 $lang['forum_settings_help_46'] = "<b>Text Captcha Schluessel</b> Erlaubt Aenderungen des Schluessel der zur Generierung des Text-Captcha-Codes im Bild verwendet wird. Je einzigartiger der schluessel desto schwerer wird es eine Automatisierung zur Entschluesselung zu entwickeln \"guess\"  ";
+$lang['forum_settings_help_47'] = "<b>Post Bearbeitung Grace Periode</b> zur Definition einer Zeitspanne in Minuten in denen Benutzer ihre Posts bearbeiten ohne dass ein 'EDITED BY' Text erscheint in deren Posts. 0 heisst der 'EDITED BY' Text erscheint immer.";
+$lang['forum_settings_help_48'] = "<b>Ungelesene Nachrichten abschneiden</b> definiert wie lange ungelesene Nachrichten gehalten werden. Man kann von verschiedenen voreingestellten Werten auswaehlen oder eigene Schnittzeiten in Sekunden eingeben. Eintraege die frueher geaendert wurden als die definierte Zeitspanne werden dann abgeschnitten und automatisch als gelesen gekennzeichnet.";
+$lang['forum_settings_help_49'] = "Auswahl von <b>Ungelesene Nachrichten deaktivieren</b> wird der Ungelesene-Nachrichten-Support vollstaendig und alle relevanten Optionen des Diskussionstyps aus der Drop-Down-Liste der Eintraege entfernt.";
+$lang['forum_settings_help_50'] = "Ihr Beehive Forum wird nicht automatisch die ungelesenen Nachrichten Ihrer Datenbank abschneiden. Sie muessen dies in den Abschneide-Optionen explizit auswaehlen.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1212,6 +1266,8 @@ $lang['profilesnotsetup'] = "Der Forenadmin hat Profile nicht aktiviert";
 $lang['nouserspecified'] = "Kein Benutzer definiert";
 $lang['ignoreduser'] = "Ignorierter Benutzer";
 $lang['lastvisit'] = "zuletzt besucht";
+$lang['totaltimeinforum'] = "Gesamtzeit";
+$lang['longesttimeinforum'] = "Laengste Sitzung";
 $lang['sendemail'] = "eMail senden";
 $lang['sendpm'] = "PM senden";
 $lang['removefromfriends'] = "Entfernen aus der Freunde-Liste";
@@ -1278,6 +1334,7 @@ $lang['userrelationships'] = "Benutzerverhaeltnisse";
 $lang['friends'] = "Freunde";
 $lang['ignoredcompletely'] = "Komplett Ignoriert";
 $lang['relationship'] = "Verhaeltnis";
+$lang['restorenickname'] = "Nickname des Benutzers wiederherstellen";
 $lang['friend_exp'] = "Benutzerposts werden mit &quot;Freund&quot; icon markiert.";
 $lang['normal_exp'] = "Benutzerposts erscheinen normal.";
 $lang['ignore_exp'] = "Benutzerposts werden versteckt.";
@@ -1522,8 +1579,19 @@ $lang['every6hours'] = "Alle 6 Stunden";
 $lang['every12hours'] = "Alle 12 Stunden";
 $lang['onceaday'] = "Einmal am Tag";
 $lang['rssfeeds'] = "RSS Feeds";
+$lang['feedname'] = "Feed Name";
+$lang['feedfoldername'] = "Feed Ordner Name";
 $lang['feedlocation'] = "Feed Lokation";
+$lang['threadtitleprefix'] = "Eintragstitel Praefix";
+$lang['feednameandlocation'] = "Feed Name und Position";
+$lang['feedsettings'] = "Feed Einstellungen";
+$lang['updatefrequency'] = "Aktualisierungshaeufigkeit";
 $lang['rssclicktoreadarticle'] = "Hier klicken um den Artikel zu lesen";
+$lang['addnewfeed'] = "Neuen Feed hinzufuegen";
+$lang['editfeed'] = "Feed bearbeiten";
+$lang['feeduseraccount'] = "Feed Benutzerkonto";
+$lang['noexistingfeeds'] = "Keinen bestehenden RSS Feed gefunden. Um einen Feed hinzuzufuegen folgende Schaltflaeche klicken";
+$lang['deleteselectedfeeds'] = "Loesche ausgewaehlte Feeds";
 $lang['rssfeedhelp'] = "Hier kannst Du RSS-Feeds installieren fuer automatische Verbreitung in Deinem Forum. Die Eintraege der RSS-Feeds die Du anfuegst werden in Threads erstellt mit denen Benutzer antworten koennen als waeren es normale Posts. Beim Hinzufuegen eines RSS-Feeds musst Du den Benutzerlogon definieren der benutzt werden soll um Threads zu starten, Der Ordner in dem er erstellt werden soll und die Lokation des Feeds. Die Feed-Lokation muss via HTTP erreichbar sein, ansonsten wird es nicht funktionieren.";
 $lang['mustspecifyrssfeedname'] = "RSS Feed Name muss definiert sein";
 $lang['mustspecifyrssfeeduseraccount'] = "RSS Feed Benutzerkonto muss definiert sein";
@@ -1534,6 +1602,15 @@ $lang['unknownrssuseraccount'] = "Unbekanntes RSS Benutzerkonto";
 $lang['rssfeedsupportshttpurlsonly'] = "RSS Feed unterstuetzt nur HTTP URLs. Sichere Feeds (https://) werden nicht unterstuetzt.";
 $lang['rssfeedurlformatinvalid'] = "RSS Feed URL format ist ungueltig. URL muss Schema beinhalten (e.g. http://) und einen Hostnamen (z.B. www.hostname.com).";
 $lang['rssfeeduserauthentication'] = "RSS Feed unterstuetzt keine HTTP user-authentication";
+$lang['successfullyremovedselectedfeeds'] = "Ausgewaehlte Feeds erfolgreich geloescht";
+$lang['successfullyaddedfeed'] = "Ausgewaehlte Feeds erfolgreich hinzugefuegt";
+$lang['successfullyeditedfeed'] = "Feed erfolgreich bearbeitet";
+$lang['failedtoremovefeeds'] = "Fehler beim Loeschen einiger oder aller ausgewaehlter Feeds";
+$lang['failedtoaddnewrssfeed'] = "Fehler beim Hinzufuegen des neuen RSS Feeds";
+$lang['failedtoupdaterssfeed'] = "Fehler beim Aktualisieren des RSS Feeds";
+$lang['rssstreamworkingcorrectly'] = "RSS Stream scheint korrekt zu funktionieren";
+$lang['rssstreamnotworkingcorrectly'] = "RSS Stream war leer oder konnte nicht gefunden werden";
+$lang['invalidfeedidorfeednotfound'] = "Falsche Feed-ID oder Feed nicht gefunden";
 
 // PM Export Options
 

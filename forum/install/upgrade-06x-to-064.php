@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.36 2006-08-14 20:43:25 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.37 2006-08-18 14:58:24 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -247,6 +247,8 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "CREATE TABLE {$forum_webtag}_THREAD_STATS (";
     $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
     $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+    $sql.= "  UNREAD_CREATED DATETIME DEFAULT NULL,";
     $sql.= "  PRIMARY KEY  (TID)";
     $sql.= ") TYPE=MYISAM";
 

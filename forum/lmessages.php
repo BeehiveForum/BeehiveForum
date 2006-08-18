@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.65 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.66 2006-08-18 14:58:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -188,31 +188,41 @@ if ($msg_count > 0) {
                 $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
             }
 
-            } else {
+        }else {
 
-                $message['CONTENT'] = message_get_content($tid, $message['PID']);
-
-            }
+            $message['CONTENT'] = message_get_content($tid, $message['PID']);
+        }
 
         if ($threaddata['POLL_FLAG'] == 'Y') {
 
-          if ($message['PID'] == 1) {
+            if ($message['PID'] == 1) {
 
-            light_poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true);
-            $last_pid = $message['PID'];
+                light_poll_display($tid, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true);
+                $last_pid = $message['PID'];
 
-          }else {
+            }else {
 
-            light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, true, false, false);
-            $last_pid = $message['PID'];
-
-          }
+                light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, true, false, false);
+                $last_pid = $message['PID'];
+            }
 
         }else {
 
-          light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, false, false, false);
-          $last_pid = $message['PID'];
+            light_message_display($tid, $message, $threaddata['LENGTH'], $first_msg, $threaddata['FID'], true, $threaddata['CLOSED'], true, false, false, false);
+            $last_pid = $message['PID'];
 
+        }
+
+        if (($unread_cutoff_stamp = forum_get_unread_cutoff()) !== false) {
+
+            if (!isset($unread_pid) || !isset($unread_created)) {
+
+                if ($message['CREATED'] > $unread_cutoff_stamp) {
+
+                    $unread_pid = $message['PID'];
+                    $unread_created = $message['CREATED'];
+                }
+            }
         }
     }
 }
@@ -239,7 +249,12 @@ echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target
 light_html_draw_bottom();
 
 if ($msg_count > 0 && $uid > 0) {
+
     messages_update_read($tid, $last_pid, $uid, $threaddata['MODIFIED']);
+
+    if (isset($unread_pid) && isset($unread_created)) {
+        thread_update_unread_cutoff($tid, $unread_pid, $unread_created);
+    }
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.223 2006-08-18 14:58:24 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.224 2006-08-19 08:25:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1161,7 +1161,9 @@ function threads_get_most_recent($limit = 10, $titles_only = false)
 
                 $thread['LAST_READ'] = 0;
                 
-                if (isset($thread['UNREAD_PID']) && !is_null($thread['UNREAD_PID']) && $thread['UNREAD_PID'] > 0) {
+                if (isset($thread['MODIFIED']) && $thread['MODIFIED'] < $unread_cutoff_stamp) {
+                    $thread['LAST_READ'] = $thread['LENGTH'];
+                }elseif (isset($thread['UNREAD_PID']) && !is_null($thread['UNREAD_PID']) && $thread['UNREAD_PID'] > 0) {
                     $thread['LAST_READ'] = $thread['UNREAD_PID'];
                 }
             }
@@ -1252,8 +1254,10 @@ function threads_process_list($result)
 
                 $thread['LAST_READ'] = 0;
                 
-                if (isset($thread['UNREAD_PID']) && !is_null($thread['UNREAD_PID']) && $thread['UNREAD_PID'] > 0) {
-                    $thread['LAST_READ'] = $thread['UNREAD_PID'] - 1;
+                if (isset($thread['MODIFIED']) && $thread['MODIFIED'] < $unread_cutoff_stamp) {
+                    $thread['LAST_READ'] = $thread['LENGTH'];
+                }elseif (isset($thread['UNREAD_PID']) && !is_null($thread['UNREAD_PID']) && $thread['UNREAD_PID'] > 0) {
+                    $thread['LAST_READ'] = $thread['UNREAD_PID'];
                 }
             }
 

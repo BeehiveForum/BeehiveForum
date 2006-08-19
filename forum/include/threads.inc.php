@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.224 2006-08-19 08:25:10 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.225 2006-08-19 13:05:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1514,42 +1514,33 @@ function threads_mark_read($tid_array)
     }
 }
 
-function thread_update_unread_cutoff($tid, $pid = false, $created = false)
+function thread_update_unread_cutoff($tid, $unread_pid, $unread_created)
 {
     $db_thread_update_unread_cutoff = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
     
     if (!is_numeric($tid)) return false;
+    if (!is_numeric($unread_pid)) return false;
+    if (!is_numeric($unread_created)) return false;
 
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
-    if (($pid === false) || ($created === false)) {
-
-        $sql = "SELECT PID, CREATED FROM {$table_data['PREFIX']}POST ";
-        $sql.= "WHERE CREATED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
-        $sql.= "ORDER BY PID LIMIT 0, 1";
-
-        $result = db_query($sql, $db_thread_update_unread_cutoff);
-        
-        if (db_num_rows($result) > 0) {
-
-            $post_data_array = db_fetch_array($result);
-
-            if (!isset($post_data_array['PID'])) return false;
-            if (!isset($post_data_array['CREATED'])) return false;
-
-            $pid = $post_data_array['PID'];
-            $created = $post_data_array['CREATED'];
-        }
-    }    
-
-    $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS SET UNREAD_PID = '$pid', ";
-    $sql.= "UNREAD_CREATED = FROM_UNIXTIME('$created') WHERE TID = '$tid' ";
+    $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS SET UNREAD_PID = '$unread_pid', ";
+    $sql.= "UNREAD_CREATED = FROM_UNIXTIME('$unread_created') WHERE TID = '$tid' ";
     $sql.= "AND (UNREAD_CREATED < FROM_UNIXTIME('$unread_cutoff_stamp') ";
     $sql.= "OR UNREAD_CREATED IS NULL OR UNREAD_PID IS NULL)";
 
     if (!$result = db_query($sql, $db_thread_update_unread_cutoff)) return false;
+
+    if (db_affected_rows($result) < 1) {
+
+        $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}THREAD_STATS ";
+        $sql.= "(TID, UNREAD_PID, UNREAD_CREATED) VALUES ('$tid', ";
+        $sql.= "'$unread_pid', FROM_UNIXTIME('$unread_created'))";
+
+        if (!$result = db_query($sql, $db_thread_update_unread_cutoff)) return false;
+    }
 
     return true;
 }
@@ -1735,7 +1726,9 @@ function thread_auto_prune_unread_data()
 
         $tid_array = array();
 
-        $sql = "SELECT THREAD.TID FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql = "SELECT THREAD.TID, THREAD.LENGTH, ";
+        $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
+        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
         $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
         $sql.= "WHERE USER_THREAD.LAST_READ IS NOT NULL ";
@@ -1747,8 +1740,8 @@ function thread_auto_prune_unread_data()
         if (db_num_rows($result) > 0) {
 
             while ($row = db_fetch_array($result)) {
-
-                thread_update_unread_cutoff($row['TID']);
+                
+                thread_update_unread_cutoff($row['TID'], $row['LENGTH'], $row['MODIFIED']);
                 $tid_array[] = $row['TID'];
             }
 

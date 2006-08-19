@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.225 2006-08-19 13:05:19 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.226 2006-08-19 16:16:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1527,9 +1527,7 @@ function thread_update_unread_cutoff($tid, $unread_pid, $unread_created)
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
     $sql = "UPDATE {$table_data['PREFIX']}THREAD_STATS SET UNREAD_PID = '$unread_pid', ";
-    $sql.= "UNREAD_CREATED = FROM_UNIXTIME('$unread_created') WHERE TID = '$tid' ";
-    $sql.= "AND (UNREAD_CREATED < FROM_UNIXTIME('$unread_cutoff_stamp') ";
-    $sql.= "OR UNREAD_CREATED IS NULL OR UNREAD_PID IS NULL)";
+    $sql.= "UNREAD_CREATED = FROM_UNIXTIME('$unread_created') WHERE TID = '$tid'";
 
     if (!$result = db_query($sql, $db_thread_update_unread_cutoff)) return false;
 

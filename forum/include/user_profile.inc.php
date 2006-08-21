@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.50 2006-06-13 21:03:22 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.51 2006-08-21 18:07:06 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -70,6 +70,8 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
 function user_get_profile($uid)
 {
+    $lang = load_language_file();
+    
     $db_user_get_profile = db_connect();
 
     if (!is_numeric($uid)) return false;
@@ -84,6 +86,7 @@ function user_get_profile($uid)
 
     $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "USER_PREFS_FORUM.ANON_LOGON AS FORUM_ANON_LOGON, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
@@ -118,19 +121,25 @@ function user_get_profile($uid)
         if ($anon_logon == 0 && isset($user_profile['LAST_LOGON']) && $user_profile['LAST_LOGON'] > 0) {
             $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_LOGON']);
         }else {
-            $user_profile['LAST_LOGON'] = "Unknown";
+            $user_profile['LAST_LOGON'] = $lang['unknown'];
+        }
+
+        if (isset($user_profile['REGISTERED']) && $user_profile['REGISTERED'] > 0) {
+            $user_profile['REGISTERED'] = format_date($user_profile['REGISTERED']);
+        }else {
+            $user_profile['REGISTERED'] = $lang['unknown'];
         }
 
         if (isset($user_profile['USER_TIME_BEST']) && $user_profile['USER_TIME_BEST'] > 0) {
             $user_profile['USER_TIME_BEST'] = format_time_display($user_profile['USER_TIME_BEST']);
         }else {
-            $user_profile['USER_TIME_BEST'] = "Unknown";
+            $user_profile['USER_TIME_BEST'] = $lang['unknown'];
         }
 
         if (isset($user_profile['USER_TIME_TOTAL']) && $user_profile['USER_TIME_TOTAL'] > 0) {
             $user_profile['USER_TIME_TOTAL'] = format_time_display($user_profile['USER_TIME_TOTAL']);
         }else {
-            $user_profile['USER_TIME_TOTAL'] = "Unknown";
+            $user_profile['USER_TIME_TOTAL'] = $lang['unknown'];
         }
 
         if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 2 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {

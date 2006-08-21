@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.280 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.281 2006-08-21 18:07:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -81,8 +81,8 @@ function user_create($logon, $password, $nickname, $email)
         $http_referer = "";
     }
 
-    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REFERER) ";
-    $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email', '$http_referer')";
+    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED, REFERER) ";
+    $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$http_referer')";
 
     if ($result = db_query($sql, $db_user_create)) {
         return db_insert_id($db_user_create);
@@ -232,14 +232,7 @@ function user_logon($logon, $passhash)
 
     if (!$table_data = get_table_prefix()) $table_data['FID'] = 0;
 
-    $sql = "SELECT USER.UID, BIT_OR(GROUP_PERMS.PERM) AS USER_PERMS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM USER ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
-    $sql.= "AND GROUP_PERMS.FID = 0 AND GROUP_PERMS.FORUM IN (0, {$table_data['FID']})) ";
-    $sql.= "WHERE USER.LOGON = '$logon' AND USER.PASSWD = '$passhash' ";
-    $sql.= "GROUP BY USER.UID";
-
+    $sql = "SELECT UID FROM USER WHERE LOGON = '$logon' AND PASSWD = '$passhash' ";
     $result = db_query($sql, $db_user_logon);
 
     if (db_num_rows($result) > 0) {

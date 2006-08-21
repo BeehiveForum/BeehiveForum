@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.115 2006-08-18 14:58:24 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.116 2006-08-21 18:07:08 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -803,6 +803,7 @@ $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
 $sql.= "  PASSWD VARCHAR(32) DEFAULT NULL,";
 $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
+$sql.= "  REGISTERED DATETIME DEFAULT NULL,";
 $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID)";
@@ -1204,8 +1205,9 @@ foreach ($bots_array as $agent => $details) {
     }
 }
 
-$sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL) ";
-$sql.= "VALUES (UPPER('$admin_username'), MD5('$admin_password'), '$admin_username', '$admin_email')";
+$sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED) ";
+$sql.= "VALUES (UPPER('$admin_username'), MD5('$admin_password'), ";
+$sql.= "'$admin_username', '$admin_email', NOW())";
 
 if (!$result = @db_query($sql, $db_install)) {
 

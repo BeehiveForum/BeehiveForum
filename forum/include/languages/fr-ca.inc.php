@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.34 2006-08-10 20:25:22 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.35 2006-08-21 18:07:06 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1291,6 +1291,7 @@ $lang['age'] = "Âge";
 $lang['aged'] = "âgé";
 $lang['birthday'] = "Anniversaire";
 $lang['editmyattachments'] = "Modifier mes fichiers joints";
+$lang['registered'] = "Enregistré";
 
 // Registration (register.php) -----------------------------------------
 

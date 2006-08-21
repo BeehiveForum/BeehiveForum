@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.97 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.98 2006-08-21 18:07:09 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -160,15 +160,27 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"550\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\"><h2>&nbsp;", format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
 
 if (bh_session_get_value('UID') > 0) {
 
-    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) echo "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />";
-    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) echo "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" />";
+    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
+
+        echo "                  <td class=\"subhead\"><h2>&nbsp;", format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
+
+    }else if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
+    
+        echo "                  <td class=\"subhead\"><h2>&nbsp;", format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
+
+    }else {
+
+        echo "                  <td class=\"subhead\"><h2>&nbsp;", format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']), "</h2></td>\n";
+    }
 }
 
-echo "</h2></td>\n";
+echo "                  <td  class=\"subhead\" align=\"right\" class=\"smalltext\">{$lang['registered']}: {$user_profile['REGISTERED']}&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\">&nbsp;</td>\n";
 echo "                  <td align=\"right\" class=\"subhead\"><span class=\"smalltext\">{$lang['lastvisit']}: {$user_profile['LAST_LOGON']}&nbsp;</span></td>\n";
 echo "                </tr>\n";
 

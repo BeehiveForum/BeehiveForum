@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.37 2006-08-18 14:58:24 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.38 2006-08-21 17:21:08 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -99,7 +99,7 @@ foreach ($remove_tables as $remove_table) {
 // Check that we have no global tables which conflict
 // with those we're about to create or remove.
 
-$global_tables = array('SEARCH_ENGINE_BOTS', );
+$global_tables = array('SEARCH_ENGINE_BOTS');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -251,6 +251,22 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  UNREAD_CREATED DATETIME DEFAULT NULL,";
     $sql.= "  PRIMARY KEY  (TID)";
     $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Thread view count calculation. Not precise but the best we
+    // can manage.
+
+    $sql = "INSERT INTO {$forum_webtag}_THREAD_STATS (TID, VIEWCOUNT) ";
+    $sql.= "SELECT THREAD.TID, COUNT(USER_THREAD.UID) ";
+    $sql.= "FROM {$forum_webtag}_THREAD THREAD ";
+    $sql.= "LEFT JOIN {$forum_webtag}_USER_THREAD USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
+    $sql.= "GROUP BY THREAD.TID";
 
     if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.113 2006-07-18 20:16:43 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.114 2006-08-21 18:07:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -70,6 +70,20 @@ function format_file_size($size)
 
     return $resized;
 }
+
+/**
+* Format time display
+*
+* Formats time display from a UNIX timestamp to one of:
+*
+* j M Y, M Y, j M Y H:i, j M H:i, j M, or H:i
+*
+* Output depends on current server time but can be overideen using $verbose function argument.
+*
+* @return string
+* @param integer $timestamp - UNIX timestamp
+* @param boolean $verbose - Force display of year / month even if the same as current server time.
+*/
 
 function format_time($time, $verbose = false)
 {
@@ -133,6 +147,53 @@ function format_time($time, $verbose = false)
     }else {
 
         $fmt = sprintf($lang['hourminute'], $hour, $min); // H:i
+    }
+
+    return $fmt;
+}
+
+/**
+* Format date display
+*
+* Formats date display from a UNIX timestamp to either d/m or d/m/y if not current year.
+*
+* @return string
+* @param integer $timestamp - UNIX timestamp
+*/
+
+function format_date($time)
+{
+    $lang = load_language_file();
+
+    if (!$timezone = bh_session_get_value('TIMEZONE')) {
+        $timezone = forum_get_setting('forum_timezone', false, 0);
+    }
+
+    if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
+        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
+    }
+
+    // Calculate $time in local timezone and current local time
+
+    $local_time = $time + ($timezone * HOUR_IN_SECONDS);
+    $local_time_now = time() + ($timezone * HOUR_IN_SECONDS);
+
+    // Get the numerical for the dates to convert
+
+    $date_string = gmdate("s i G j n Y", $local_time);
+    list($sec, $min, $hour, $day, $month, $year) = explode(" ", $date_string);
+
+    // We only ever use the month as a string
+
+    $month_str = $lang['month_short'][$month];
+
+    if ($year != gmdate("Y", $local_time_now)) {
+
+        $fmt = sprintf($lang['daymonthyear'], $day, $month_str, $year); // j M Y
+
+    }else {
+
+        $fmt = sprintf($lang['daymonth'], $day, $month_str); // j M
     }
 
     return $fmt;

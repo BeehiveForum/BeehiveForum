@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.38 2006-08-21 17:21:08 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-064.php,v 1.39 2006-08-21 18:07:09 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
 
@@ -415,13 +415,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $result = @db_query($sql, $db_install);
 }
 
-$sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15)";
+$sql = "ALTER TABLE USER ADD REGISTERED DATETIME DEFAULT NULL";
 $result = @db_query($sql, $db_install);
 
-$sql = "ALTER TABLE USER ADD REFERER VARCHAR(255)";
+$sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15) DEFAULT NULL";
 $result = @db_query($sql, $db_install);
 
-$sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255)";
+$sql = "ALTER TABLE USER ADD REFERER VARCHAR(255) DEFAULT NULL";
+$result = @db_query($sql, $db_install);
+
+$sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255) DEFAULT NULL";
 $result = @db_query($sql, $db_install);
 
 $sql = "ALTER TABLE SESSIONS TYPE = HEAP";

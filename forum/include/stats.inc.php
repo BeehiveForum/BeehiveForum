@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.64 2006-08-08 20:45:31 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.65 2006-08-25 14:42:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,7 +40,7 @@ function update_stats()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $stats_update_prob = intval(forum_get_setting('forum_self_clean_prob', false, 20));
+    $stats_update_prob = intval(forum_get_setting('forum_self_clean_prob', false, 50));
 
     if ($stats_update_prob < 1) $stats_update_prob = 1;
     if ($stats_update_prob > 100) $stats_update_prob = 100;

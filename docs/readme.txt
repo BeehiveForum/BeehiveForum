@@ -82,8 +82,7 @@ You need web hosting which provides:
   database and tables it runs from:
 
   SELECT, CREATE, CREATE TEMPORARY TABLES, 
-  GRANT, INSERT, ALTER, UPDATE,
-  INDEX, DELETE and DROP.
+  INSERT, ALTER, UPDATE, INDEX, DELETE and DROP.
 
 - You may optionally grant the FILE permission to speed up the creation
   of the dictionary during installation but Beehive Forum doesn't require

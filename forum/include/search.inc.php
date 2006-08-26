@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.161 2006-07-06 19:12:17 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.162 2006-08-26 16:39:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -162,12 +162,14 @@ function search_execute($argarray, &$error)
 
             $search_string = addslashes(implode(' ', $search_keywords_array['keywords']));
 
+            search_save_keywords($search_keywords_array['keywords']);
+
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE, KEYWORDS) SELECT $uid, ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE) SELECT $uid, ";
             $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
             $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
             $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string";
-            $select_sql.= "'$bool_mode) AS RELEVANCE, '$search_string'";
+            $select_sql.= "'$bool_mode) AS RELEVANCE";
 
             $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
 
@@ -211,7 +213,7 @@ function search_execute($argarray, &$error)
     // Execute the query
 
     if ($result = db_query($sql, $db_search_execute)) {
-
+        
         return true;
     }
 
@@ -311,9 +313,32 @@ function search_get_word_lengths(&$min_length, &$max_length)
     }
 }
 
+function search_save_keywords($keywords_array)
+{
+    $db_search_save_keywords = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!is_array($keywords_array)) return false;
+
+    $keywords = addslashes(implode(' ', $keywords_array));
+
+    $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords' ";
+    $sql.= "WHERE UID = '$uid'";
+
+    if (!$result = db_query($sql, $db_search_save_keywords)) return false;
+
+    return true;
+}
+
 function search_fetch_results($offset, $order_by)
 {
     $db_search_fetch_results = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -326,15 +351,21 @@ function search_fetch_results($offset, $order_by)
 
         if ($order_by == 1) {
 
-            $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, KEYWORDS, ";
-            $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
-            $sql.= "WHERE UID = $uid ORDER BY CREATED DESC LIMIT $offset, 20";
+            $sql = "SELECT SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
+            $sql.= "SEARCH_RESULTS.BY_UID,SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
+            $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED ";
+            $sql.= "FROM SEARCH_RESULTS LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+            $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) WHERE SEARCH_RESULTS.UID = '$uid' ";
+            $sql.= "ORDER BY SEARCH_RESULTS.CREATED DESC LIMIT $offset, 20";
 
         }else {
 
-            $sql = "SELECT FID, TID, PID, BY_UID, FROM_UID, TO_UID, KEYWORDS, ";
-            $sql.= "UNIX_TIMESTAMP(CREATED) AS CREATED FROM SEARCH_RESULTS ";
-            $sql.= "WHERE UID = $uid ORDER BY CREATED ASC LIMIT $offset, 20";
+            $sql = "SELECT SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
+            $sql.= "SEARCH_RESULTS.BY_UID,SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
+            $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED ";
+            $sql.= "FROM SEARCH_RESULTS LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+            $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) WHERE SEARCH_RESULTS.UID = '$uid' ";
+            $sql.= "ORDER BY SEARCH_RESULTS.CREATED ASC LIMIT $offset, 20";
         }
 
         $result = db_query($sql, $db_search_fetch_results);

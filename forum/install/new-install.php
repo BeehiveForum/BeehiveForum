@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.116 2006-08-21 18:07:08 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.117 2006-08-26 16:39:23 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -575,6 +575,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  DDKEY DATETIME DEFAULT NULL,";
 $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
 $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
+$sql.= "  LAST_SEARCH_KEYWORDS TEXT DEFAULT NULL,";
 $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL,";
 $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL,";
@@ -768,7 +769,6 @@ $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  KEYWORDS TEXT NOT NULL,";
 $sql.= "  PRIMARY KEY  (UID,FORUM,TID,PID)";
 $sql.= ") TYPE=MYISAM";
 

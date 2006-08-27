@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.117 2006-08-26 16:39:23 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.118 2006-08-27 22:55:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -303,7 +303,7 @@ $sql.= "  PRIMARY KEY  (TID,PID),";
 $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY FROM_UID (FROM_UID),";
 $sql.= "  KEY IPADDRESS (IPADDRESS),";
-$sql.= "  KEY CREATED (CREATED),";
+$sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

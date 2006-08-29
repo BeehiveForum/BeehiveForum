@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.227 2006-08-25 14:42:13 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.228 2006-08-29 18:17:00 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -904,10 +904,6 @@ function threads_get_folder($uid, $fid, $start = 0)
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
     if (!$table_data = get_table_prefix()) return array(0, 0);
-
-    // Guests can't view this thread type
-
-    if (user_is_guest()) return array(0, 0);
 
     // Get the folders the user can see.
 

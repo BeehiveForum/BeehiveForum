@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.56 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.57 2006-08-30 18:16:59 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -236,29 +236,17 @@ if ($profile_items_array = profile_get_user_values($uid)) {
             if ($last_psid !== false) {
 
                 echo "                <tr>\n";
-                echo "                  <td colspan=\"3\">&nbsp;</td>\n";
+                echo "                  <td>&nbsp;</td>\n";
                 echo "                </tr>\n";
-                echo "              </table>\n";
-                echo "              <table class=\"posthead\" width=\"100%\">\n";
                 echo "                <tr>\n";
-                echo "                  <td class=\"subhead\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                  <td class=\"subhead\" colspan=\"4\">{$profile_item['SECTION_NAME']}</td>\n";
                 echo "                </tr>\n";
-                echo "              </table>\n";
-                echo "              <table class=\"posthead\" width=\"100%\">\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"center\">\n";
-                echo "                    <table class=\"posthead\" width=\"90%\">\n";
 
             }else {
-
+                
                 echo "                <tr>\n";
-                echo "                  <td class=\"subhead\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                  <td class=\"subhead\" colspan=\"4\">{$profile_item['SECTION_NAME']}</td>\n";
                 echo "                </tr>\n";
-                echo "              </table>\n";
-                echo "              <table class=\"posthead\" width=\"100%\">\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"center\">\n";
-                echo "                    <table class=\"posthead\" width=\"90%\">\n";
             }
         }
 
@@ -272,61 +260,59 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
                 $field_values = explode(';', $field_values);
 
-                echo "                            <tr>\n";
-                echo "                              <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">$field_name:</td>\n";
+                echo "                <tr>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                  <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">$field_name</td>\n";
 
                 if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
-                    echo "                              <td align=\"right\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
+                    echo "                  <td align=\"right\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
                 }else {
-                    echo "                              <td align=\"right\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
+                    echo "                  <td align=\"right\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
                 }
 
                 if ($admin_edit === false) {
-                    echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+                    echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;&nbsp;</td>\n";
                 }else {               
                     echo "                  <td align=\"right\" nowrap=\"nowrap\">&nbsp;</td>\n";
                 }
 
-                echo "                      </tr>\n";
+                echo "                </tr>\n";
             }
 
         }elseif ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
-            echo "                      <tr>\n";
-            echo "                        <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
-            echo "                        <td align=\"right\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], 4, 42), "</td>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}</td>\n";
+            echo "                  <td align=\"right\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], 4, 42), "</td>\n";
 
             if ($admin_edit === false) {
-                echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+                echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;&nbsp;</td>\n";
             }else {
-                echo "                        <td align=\"right\" nowrap=\"nowrap\">&nbsp;</td>\n";
+                echo "                  <td align=\"right\" nowrap=\"nowrap\">&nbsp;</td>\n";
             }
 
-            echo "                      </tr>\n";
+            echo "                </tr>\n";
 
         }else {
 
             $text_width = array(45, 30, 10);
 
-            echo "                      <tr>\n";
-            echo "                        <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}:</td>\n";
-            echo "                        <td align=\"right\" valign=\"top\">", form_field("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], $text_width[$profile_item['TYPE']], 255), "</td>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}</td>\n";
+            echo "                  <td align=\"right\" valign=\"top\">", form_field("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], $text_width[$profile_item['TYPE']], 255), "</td>\n";
 
             if ($admin_edit === false) {
-                echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;</td>\n";
+                echo "                  <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", $lang['friendsonly'], (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == 1)), "&nbsp;&nbsp;</td>\n";
             }else {   
-                echo "                        <td align=\"right\" nowrap=\"nowrap\">&nbsp;</td>\n";
+                echo "                  <td align=\"right\" nowrap=\"nowrap\">&nbsp;</td>\n";
             }
 
-            echo "                      </tr>\n";
-
+            echo "                </tr>\n";
         }
     }
 
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
     echo "                </tr>\n";

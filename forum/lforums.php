@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lforums.php,v 1.22 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: lforums.php,v 1.23 2006-09-01 12:05:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -59,6 +59,15 @@ include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "myforums.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+
+// Light mode check to see if we should bounce to the logon screen.
+
+if (!bh_session_active()) {
+
+    $request_uri = rawurlencode(get_request_uri());
+    $webtag = get_webtag($webtag_search);
+    header_redirect("./llogon.php?webtag=$webtag&final_uri=$request_uri");
+}
 
 // Check we're logged in correctly
 

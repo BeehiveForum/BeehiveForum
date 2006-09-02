@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.90 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.91 2006-09-02 17:22:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,14 +99,40 @@ if (bh_session_get_value('UID') == 0) {
 
 // Timezones
 
-$timezones = array("UTC -12h", "UTC -11h", "UTC -10h", "UTC -9h30m", "UTC -9h", "UTC -8h30m", "UTC -8h",
-                   "UTC -7h", "UTC -6h", "UTC -5h", "UTC -4h", "UTC -3h30m", "UTC -3h", "UTC -2h", "UTC -1h",
-                   "UTC", "UTC +1h", "UTC +2h", "UTC +3h",  "UTC +3h30m", "UTC +4h", "UTC +4h30m", "UTC +5h",
-                   "UTC +5h30m", "UTC +6h", "UTC +6h30m", "UTC +7h", "UTC +8h", "UTC +9h", "UTC +9h30m",
-                   "UTC +10h", "UTC +10h30m", "UTC +11h", "UTC +11h30m", "UTC +12h", "UTC +13h", "UTC +14h");
+$timezones = array("(GMT -12:00) Enitwetok, Kwajalein",
+                   "(GMT -11:00) Midway Island, Samoa",
+                   "(GMT -10:00) Hawaii",
+                   "(GMT -09:30) Isle Marquises",
+                   "(GMT -09:00) Alaska",
+                   "(GMT -08:00) Pacific Time (US & Canada)",
+                   "(GMT -07:00) Mountain Time (US & Canada)",
+                   "(GMT -06:00) Central Time (US & Canada)",
+                   "(GMT -05:00) Eastern Time (US & Canada)",
+                   "(GMT -04:00) Atlantic Time (Canada)",
+                   "(GMT -03:30) Newfoundland",
+                   "(GMT -03:00) Brazil, Buenos Aires",
+                   "(GMT -02:00) Mid-Atlantic",
+                   "(GMT -01:00) Azores, Cape Verde Islands",
+                   "(GMT) Casablanca, Dublin, London, Lisbon, Monrovia",
+                   "(GMT +01:00) CET (Central Europe Time)",
+                   "(GMT +02:00) EET (Eastern Europe Time)",
+                   "(GMT +03:00) Baghdad, Kuwait, Riyadh",
+                   "(GMT +03:30) Tehran",
+                   "(GMT +04:00) Abu Dhabi, Muscat",
+                   "(GMT +04:30) Kabul",
+                   "(GMT +05:00) Ekaterinburg, Islamabad",
+                   "(GMT +05:30) Bombay, Calcutta",
+                   "(GMT +06:00) Almaty, Dhaka, Colombo",
+                   "(GMT +07:00) Bangkok, Hanoi",
+                   "(GMT +08:00) Beijing, Perth",
+                   "(GMT +09:00) Tokyo, Seoul, Osaka",
+                   "(GMT +09:30) Adelaide, Darwin",
+                   "(GMT +10:00) East Australian Standard Time",
+                   "(GMT +11:00) Magadan, Solomon Islands",
+                   "(GMT +12:00) Auckland, Wellington");
 
-$timezones_data = array(-12, -11, -10, -9.5, -9, -8.5, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0, 1, 2, 3, 3.5, 4, 4.5, 5, 5.5,
-                        6, 6.5, 7, 8, 9, 9.5, 10, 10.5, 11, 11.5, 12, 13, 14);
+$timezones_data = array(-12, -11, -10, -9.5, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
+                        1, 2, 3, 3.5, 4, 4.5, 5, 5.5, 6, 7, 8, 9, 9.5, 10, 11, 12);
 
 // Languages
 

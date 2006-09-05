@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.53 2006-09-01 14:18:41 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.54 2006-09-05 18:11:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -80,36 +80,11 @@ $lang = load_language_file();
 
 $webtag = get_webtag($webtag_search);
 
-// Get the final_uri from the URL
-
-if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
-
-    $final_uri = rawurldecode($_GET['final_uri']);
-
-}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-    $final_uri = "./lmessages.php.php?webtag=$webtag&msg={$_GET['msg']}";
-
-}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
-
-    $final_uri = "./lthread_list.php?webtag=$webtag&folder={$_GET['folder']}";
-}
-
-// If the final_uri contains logout.php then unset it.
-
-if (isset($final_uri) && strstr($final_uri, 'logout.php')) {
-    unset($final_uri);
-}
-
 if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
     if (perform_logon(true)) {
 
-        if (isset($final_uri)) {
-            header_redirect($final_uri, $lang['loggedinsuccessfully']);
-        }else {
-            header_redirect("./lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
-        }
+        header_redirect("./lthread_list.php?webtag=$webtag", $lang['loggedinsuccessfully']);
 
     }else {
 

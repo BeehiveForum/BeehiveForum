@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.105 2006-09-05 18:05:51 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.106 2006-09-05 18:11:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1147,16 +1147,14 @@ function light_html_guest_error ()
 
      $webtag = get_webtag($webtag_search);
 
-     $final_uri = rawurlencode(get_request_uri());
-
      light_html_draw_top();
 
      if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-         echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag";
-         echo "&amp;final_uri=$final_uri\" target=\"$frame_top_target\">{$lang['guesterror_2']}</a></h1>";
+         echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag\" ";
+         echo "target=\"$frame_top_target\">{$lang['guesterror_2']}</a></h1>";
      }else {
-         echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag";
-         echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
+         echo "<h1>{$lang['guesterror_1']} <a href=\"llogout.php?webtag=$webtag\" ";
+         echo "target=\"_top\">{$lang['guesterror_2']}</a></h1>";
      }
 
      light_html_draw_bottom();

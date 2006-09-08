@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.78 2006-08-08 20:42:18 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.79 2006-09-08 16:16:17 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -171,7 +171,8 @@ function admin_get_word_filter()
 
     if (!$table_data = get_table_prefix()) return array();
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = 0";
+    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE UID = 0 ORDER BY ID";
 
     if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
 
@@ -252,6 +253,38 @@ function admin_add_word_filter($match, $replace, $filter_option)
 
     $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
     $sql.= "VALUES ('$match', '$replace', '$filter_option')";
+
+    $result = db_query($sql, $db_admin_add_word_filter);
+}
+
+/**
+* Update entry in admin word filter
+*
+* Updates an entry in the admin defined word filter
+*
+* @return bool
+* @param string $match - String to match. May be all, word or PCRE
+* @param string $replace - String to replace with. May be all, word or PCRE
+* @param integer $filter_option - Type of filtering to perform (0: all, 1: word, 2: PCRE)
+*/
+
+function admin_update_word_filter($filter_id, $match, $replace, $filter_option)
+{
+    if (!is_numeric($filter_id)) return false;
+    if (!is_numeric($filter_option)) $filter_option = 0;
+
+    $match = addslashes($match);
+    $replace = addslashes($replace);
+
+    $db_admin_add_word_filter = db_connect();
+    
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "UPDATE {$table_data['PREFIX']}FILTER_LIST SET MATCH_TEXT = '$match', ";
+    $sql.= "REPLACE_TEXT = '$replace', FILTER_OPTION = '$filter_option' ";
+    $sql.= "WHERE ID = '$filter_id'";
 
     $result = db_query($sql, $db_admin_add_word_filter);
 }

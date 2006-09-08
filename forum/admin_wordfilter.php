@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.75 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.76 2006-09-08 16:16:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -97,8 +97,6 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
 if (isset($_POST['submit'])) {
 
-    admin_clear_word_filter();
-
     $new_forum_settings = forum_get_settings();
 
     if (isset($_POST['match']) && is_array($_POST['match'])) {
@@ -115,7 +113,7 @@ if (isset($_POST['submit'])) {
                 $match_text = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $match_text);
             }
 
-            admin_add_word_filter($match_text, $replace_text, $filter_option);
+            admin_update_word_filter($key, $match_text, $replace_text, $filter_option);
         }
     }
 
@@ -190,10 +188,11 @@ echo "                  <td class=\"subhead\" width=\"75\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
 foreach ($word_filter_array as $key => $word_filter) {
+
     echo "                <tr>\n";
     echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_input_text("match[$key]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
-    echo "                  <td>", form_input_text("replace[$key]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
+    echo "                  <td>", form_input_text("match[$key]", _htmlentities($word_filter['MATCH_TEXT']), 30), "</td>\n";
+    echo "                  <td>", form_input_text("replace[$key]", _htmlentities($word_filter['REPLACE_TEXT']), 30), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "0", "", $word_filter['FILTER_OPTION'] == 0), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "1", "", $word_filter['FILTER_OPTION'] == 1), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "2", "", $word_filter['FILTER_OPTION'] == 2), "</td>\n";

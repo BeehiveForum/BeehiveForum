@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.54 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.55 2006-09-08 17:13:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,13 +93,16 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
+}
+
 html_draw_top();
 
 $uid = bh_session_get_value('UID');
 
 if (isset($_POST['submit'])) {
-
-    user_clear_word_filter();
 
     $filter_count = 0;
 
@@ -119,7 +122,7 @@ if (isset($_POST['submit'])) {
                     $match_text = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $match_text);
                 }
 
-                user_add_word_filter($match_text, $replace_text, $filter_option);
+                user_update_word_filter($key, $match_text, $replace_text, $filter_option);
             }
 
             $filter_count++;
@@ -167,13 +170,11 @@ if (isset($_POST['submit'])) {
     user_delete_word_filter($id);
 }
 
+// User's UID
+$uid = bh_session_get_value('UID');
+
 // Get User Prefs
-
-if (!isset($user_prefs) || !is_array($user_prefs)) $user_prefs = array();
-$user_prefs = array_merge(user_get(bh_session_get_value('UID')), $user_prefs);
-$user_prefs = array_merge(user_get_prefs(bh_session_get_value('UID')), $user_prefs);
-
-if (!isset($user_prefs['USE_ADMIN_FILTER'])) $user_prefs['USE_ADMIN_FILTER'] = 'N';
+$user_prefs = user_get_prefs($uid);
 
 // Get Word Filter
 
@@ -222,8 +223,8 @@ foreach ($word_filter_array as $key => $word_filter) {
     }else {
 
         echo "                  <td>&nbsp;</td>\n";
-        echo "                  <td>", form_input_text("match[$key]", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), 30), "</td>\n";
-        echo "                  <td>", form_input_text("replace[$key]", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), 30), "</td>\n";
+        echo "                  <td>", form_input_text("match[$key]", _htmlentities($word_filter['MATCH_TEXT']), 30), "</td>\n";
+        echo "                  <td>", form_input_text("replace[$key]", _htmlentities($word_filter['REPLACE_TEXT']), 30), "</td>\n";
         echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "0", "", $word_filter['FILTER_OPTION'] == 0), "</td>\n";
         echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "1", "", $word_filter['FILTER_OPTION'] == 1), "</td>\n";
         echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "2", "", $word_filter['FILTER_OPTION'] == 2), "</td>\n";

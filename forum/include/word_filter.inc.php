@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.26 2006-09-08 16:16:17 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.27 2006-09-08 17:13:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -140,7 +140,7 @@ function apply_wordfilter($content)
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];
 
-        if ($new_content = preg_replace($pattern_array, $replace_array, $content)) {
+        if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
             return $new_content;
         }
     }

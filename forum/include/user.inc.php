@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.281 2006-08-21 18:07:05 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.282 2006-09-08 17:13:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1369,6 +1369,27 @@ function user_add_word_filter($match, $replace, $filter_option)
 
     $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (UID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
     $sql.= "VALUES ('$uid', '$match', '$replace', '$filter_option')";
+
+    $result = db_query($sql, $db_user_save_word_filter);
+}
+
+function user_update_word_filter($filter_id, $match, $replace, $filter_option)
+{
+    $db_user_save_word_filter = db_connect();
+
+    if (!is_numeric($filter_id)) return false;
+    if (!is_numeric($filter_option)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $match = addslashes($match);
+    $replace = addslashes($replace);
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "UPDATE {$table_data['PREFIX']}FILTER_LIST SET MATCH_TEXT = '$match', ";
+    $sql.= "REPLACE_TEXT = '$replace', FILTER_OPTION = '$filter_option' ";
+    $sql.= "WHERE ID = '$filter_id' AND UID = '$uid'";
 
     $result = db_query($sql, $db_user_save_word_filter);
 }

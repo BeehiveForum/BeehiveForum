@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.139 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: search.php,v 1.140 2006-09-10 12:07:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -311,11 +311,11 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
                     if (($pos = strrpos($message['TITLE'], ' ')) !== false) {
 
-                        $message['TITLE'] = substr($message['TITLE'], 0, $pos);
+                        $message['TITLE'] = trim(substr($message['TITLE'], 0, $pos));
 
                     }else {
 
-                        $message['TITLE'] = substr($message['TITLE'], 0, 17). "&hellip;";
+                        $message['TITLE'] = trim(substr($message['TITLE'], 0, 17). "&hellip;");
                     }
                 }
 
@@ -325,11 +325,11 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
                     if (($pos = strrpos($message['CONTENT'], ' ')) !== false) {
 
-                        $message['CONTENT'] = substr($message['CONTENT'], 0, $pos);
+                        $message['CONTENT'] = trim(substr($message['CONTENT'], 0, $pos));
 
                     }else {
 
-                        $message['CONTENT'] = substr($message['CONTENT'], 0, 32). "&hellip;";
+                        $message['CONTENT'] = trim(substr($message['CONTENT'], 0, 32). "&hellip;");
                     }
                 }
 

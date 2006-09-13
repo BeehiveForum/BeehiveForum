@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.144 2006-06-12 22:55:33 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.145 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -237,7 +237,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                     }
                 }
             
-                $fmt_username = format_user_name($top_user['LOGON'], $top_user['NICKNAME']);
+                $fmt_username = add_wordfilter_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
         }
@@ -268,7 +268,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
                 }
             }
         
-            $fmt_username = format_user_name($row['LOGON'], $row['NICKNAME']);
+            $fmt_username = add_wordfilter_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
             $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
         }
     }
@@ -310,7 +310,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
                     }
                 }
             
-                $fmt_username = format_user_name($top_user['LOGON'], $top_user['NICKNAME']);
+                $fmt_username = add_wordfilter_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
         }
@@ -341,7 +341,7 @@ function post_draw_to_dropdown_recent($default_uid, $show_all = true)
                 }
             }
         
-            $fmt_username = format_user_name($row['LOGON'], $row['NICKNAME']);
+            $fmt_username = add_wordfilter_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
             $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
         }
     }
@@ -383,7 +383,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                     }
                 }
             
-                $fmt_username = format_user_name($top_user['LOGON'], $top_user['NICKNAME']);
+                $fmt_username = add_wordfilter_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']));
                 $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>\n";
             }
         }
@@ -422,7 +422,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
                 }
             }
         
-            $fmt_username = format_user_name($row['LOGON'], $row['NICKNAME']);
+            $fmt_username = add_wordfilter_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
             $html .= "<option value=\"{$row['UID']}\">$fmt_username</option>\n";
         }
     }

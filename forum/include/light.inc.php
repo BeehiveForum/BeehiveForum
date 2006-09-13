@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.108 2006-09-13 19:52:41 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.109 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -346,7 +346,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                             // work out how long ago the thread was posted and format the time to display
                             $thread_time = format_time($thread['MODIFIED']);
 
-                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" title=\"#{$thread['TID']} {$lang['startedby']} ". format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">".add_wordfilter_tags($thread['TITLE'])."</a> ";
+                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" title=\"#{$thread['TID']} {$lang['startedby']} ". add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])) . "\">".add_wordfilter_tags($thread['TITLE'])."</a> ";
                             if ($thread['INTEREST'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
                             if ($thread['INTEREST'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
                             if ($thread['POLL_FLAG'] == 'Y') echo "(P) ";
@@ -926,11 +926,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (isset($message['PID'])) {
 
-        echo "<p><b>{$lang['from']}: ", format_user_name($message['FLOGON'], $message['FNICK']), "</b> [#{$message['PID']}]<br />";
+        echo "<p><b>{$lang['from']}: ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b> [#{$message['PID']}]<br />";
 
     }else {
 
-        echo "<p><b>{$lang['from']}: ", format_user_name($message['FLOGON'], $message['FNICK']), "</b><br />";;
+        echo "<p><b>{$lang['from']}: ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</b><br />";;
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
@@ -964,7 +964,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "<b>{$lang['to']}: " . format_user_name($message['TLOGON'], $message['TNICK'])."</b>";
+        echo "<b>{$lang['to']}: " . add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK']))."</b>";
 
         if (isset($message['REPLY_TO_PID']) && $message['REPLY_TO_PID'] > 0) echo " [#{$message['REPLY_TO_PID']}]";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.99 2006-08-28 16:26:22 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.100 2006-09-13 22:47:15 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -139,7 +139,7 @@ if (!$user_profile = user_get_profile($uid)) {
     exit;
 }
 
-$title = format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
+$title = add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']));
 
 html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
 
@@ -165,15 +165,15 @@ if (bh_session_get_value('UID') > 0) {
 
     if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
 
-        echo "                  <td class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
+        echo "                  <td class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
 
     }else if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
     
-        echo "                  <td class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
+        echo "                  <td class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
 
     }else {
 
-        echo "                  <td class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']), "</h2></td>\n";
+        echo "                  <td class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "</h2></td>\n";
     }
 }
 

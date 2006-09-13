@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.412 2006-09-13 21:09:15 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.413 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -745,11 +745,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ($message['FROM_UID'] > -1) {
 
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
-        echo format_user_name($message['FLOGON'], $message['FNICK']), "</a></span>";
+        echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</a></span>";
 
     }else {
 
-        echo format_user_name($message['FLOGON'], $message['FNICK']), "</span>";
+        echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</span>";
     }
 
     $temp_ignore = false;
@@ -799,7 +799,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
         echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
-        echo format_user_name($message['TLOGON'], $message['TNICK']), "</a></span>";
+        echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])), "</a></span>";
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
 
@@ -1614,7 +1614,7 @@ function messages_forum_stats($tid, $pid)
                             $active_user.= "<span class=\"user_stats_normal\">";
                         }
 
-                        $active_user.= str_replace(" ", "&nbsp;", format_user_name($user['LOGON'], $user['NICKNAME']));
+                        $active_user.= str_replace(" ", "&nbsp;", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])));
                         $active_user.= "</span></a>";
 
                         $active_users_array[] = $active_user;
@@ -1704,7 +1704,7 @@ function messages_forum_stats($tid, $pid)
 
             if ($newest_member = get_newest_user()) {
 
-                echo "              {$lang['thenewestmemberis']} <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']}, '$webtag')\" target=\"_self\">", format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), "</a>.\n";
+                echo "              {$lang['thenewestmemberis']} <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME'])), "</a>.\n";
             }
 
             echo "            </td>\n";

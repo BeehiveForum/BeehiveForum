@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.97 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: pm.php,v 1.98 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -365,26 +365,26 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
             echo "      <td class=\"postbody\">";
             echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a>";
+            echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
             echo "</td>\n";
 
         }elseif ($folder == PM_FOLDER_SAVED) {
 
             echo "      <td class=\"postbody\">";
             echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($message['TLOGON'], $message['TNICK']) . "</a>";
+            echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
             echo "</td>\n";
 
             echo "      <td class=\"postbody\">";
             echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a>";
+            echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
             echo "</td>\n";
 
         }else {
 
             echo "      <td class=\"postbody\">";
             echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
-            echo format_user_name($message['FLOGON'], $message['FNICK']) . "</a>";
+            echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
             echo "</td>\n";
 
         }

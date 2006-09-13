@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.11 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.12 2006-09-13 22:47:15 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -137,7 +137,7 @@ if ($forum_mods_array = mods_list_get_mods(0)) {
     foreach ($forum_mods_array as $forum_mod) {
 
         echo "                            <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$forum_mod['UID']}, '$webtag')\" target=\"_self\">";
-        echo format_user_name($forum_mod['LOGON'], $forum_mod['NICKNAME']), "</a></li>\n";
+        echo add_wordfilter_tags(format_user_name($forum_mod['LOGON'], $forum_mod['NICKNAME'])), "</a></li>\n";
     }
 
 }else {
@@ -154,7 +154,7 @@ if ($folder_mods_array = mods_list_get_mods($fid)) {
     foreach ($folder_mods_array as $folder_mod) {
 
         echo "                            <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$folder_mod['UID']}, '$webtag')\" target=\"_self\">";
-        echo format_user_name($folder_mod['LOGON'], $folder_mod['NICKNAME']), "</a></li>\n";
+        echo add_wordfilter_tags(format_user_name($folder_mod['LOGON'], $folder_mod['NICKNAME'])), "</a></li>\n";
     }
 
 }else {

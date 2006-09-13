@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.36 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.37 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -201,7 +201,7 @@ if ($forum_array = forum_get($fid)) {
 
         foreach ($user_array as $user_permission) {
             echo "                <tr>\n";
-            echo "                  <td align=\"left\">", form_checkbox("user_remove[]", $user_permission['UID'], ''), "&nbsp;", format_user_name($user_permission['LOGON'], $user_permission['NICKNAME']), "</td>\n";
+            echo "                  <td align=\"left\">", form_checkbox("user_remove[]", $user_permission['UID'], ''), "&nbsp;", add_wordfilter_tags(format_user_name($user_permission['LOGON'], $user_permission['NICKNAME'])), "</td>\n";
             echo "                </tr>\n";
         }
 
@@ -261,7 +261,7 @@ if ($forum_array = forum_get($fid)) {
             foreach ($user_search_array['user_array'] as $user_search) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", format_user_name($user_search['LOGON'], $user_search['NICKNAME']), "</td>\n";
+                echo "                  <td align=\"left\">", form_checkbox("user_add[]", $user_search['UID'], ''), "&nbsp;", add_wordfilter_tags(format_user_name($user_search['LOGON'], $user_search['NICKNAME'])), "</td>\n";
                 echo "                </tr>\n";
             }
 

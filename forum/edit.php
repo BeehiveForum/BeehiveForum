@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.194 2006-09-13 19:52:40 decoyduck Exp $ */
+/* $Id: edit.php,v 1.195 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -770,12 +770,12 @@ echo "<h2>{$lang['to']}:</h2>\n";
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
     echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\" target=\"_self\">";
-    echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
+    echo _stripslashes(add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])));
     echo "</a><br /><br />\n";
 
 }else {
 
-    echo _stripslashes(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']));
+    echo _stripslashes(add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])));
 }
 
 echo "<h2>{$lang['messageoptions']}:</h2>\n";

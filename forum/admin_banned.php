@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.32 2006-08-01 21:14:14 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.33 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -460,9 +460,9 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
             foreach($affected_sessions_array as $affected_session) {
 
                 if ($affected_session['UID'] > 0) {
-                    echo "                    <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</a></li>\n";
+                    echo "                    <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</a></li>\n";
                 }else {
-                    echo "                    <li>", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</li>\n";
+                    echo "                    <li>", add_wordfilter_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</li>\n";
                 }
             }
 
@@ -596,9 +596,9 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
         foreach($affected_sessions_array as $affected_session) {
 
             if ($affected_session['UID'] > 0) {
-                echo "                    <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</a></li>\n";
+                echo "                    <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</a></li>\n";
             }else {
-                echo "                    <li>", format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), "</li>\n";
+                echo "                    <li>", add_wordfilter_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</li>\n";
             }
         }
 

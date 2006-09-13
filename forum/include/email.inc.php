@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.98 2006-07-03 18:09:47 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.99 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -76,7 +76,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
             $subject = "{$lang['msgnotification_subject']} $forum_name";
 
-            $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
+            $message = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
             $message.= " {$lang['msgnotificationemail_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
             $message.= "{$lang['msgnotificationemail_2']} ". _htmlentities_decode($thread['TITLE']). "\n\n";
             $message.= "{$lang['msgnotificationemail_3']}\n";
@@ -160,7 +160,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
 
             $subject = "{$lang['subnotification_subject']} $forum_name";
 
-            $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
+            $message = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
             $message.= " {$lang['subnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
             $message.= "{$lang['subnotification_2']} ". _htmlentities_decode($thread['TITLE']). "\n\n";
             $message.= "{$lang['subnotification_3']}\n";
@@ -233,7 +233,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
             $subject = "{$lang['pmnotification_subject']} $forum_name";
 
-            $message = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
+            $message = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
             $message.= " {$lang['pmnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
             $message.= "{$lang['pmnotification_2']} ". _htmlentities_decode($pm_subject). "\n\n";
             $message.= "{$lang['pmnotification_3']}\n";
@@ -465,7 +465,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message)
         $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
         $forum_email = forum_get_setting('forum_email', false, 'admin@abeehiveforum.net');
 
-        $sent_from = format_user_name($from_user['LOGON'], $from_user['NICKNAME']);
+        $sent_from = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
         $message.= sprintf("\n\n{$lang['msgsentfromby']}", $forum_name, $sent_from);
 
         $header = "Return-path: $forum_email\n";

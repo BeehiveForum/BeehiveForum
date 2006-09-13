@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.76 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.77 2006-09-13 22:47:15 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -241,7 +241,7 @@ $user_prefs = user_get_prefs($uid);
 $user_perms = perm_get_user_permissions($uid);
 $user_peer_perms = perm_get_user_permissions($peer_uid);
 
-echo "<h1>{$lang['userrelationship']}: <a href=\"javascript:void(0);\" onclick=\"openProfile($peer_uid, '$webtag')\" target=\"_self\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></h1>\n";
+echo "<h1>{$lang['userrelationship']}: <a href=\"javascript:void(0);\" onclick=\"openProfile($peer_uid, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></h1>\n";
 echo "<br />\n";
 echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";

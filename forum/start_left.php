@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.111 2006-09-13 19:52:41 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.112 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -128,7 +128,7 @@ if ($thread_array = threads_get_most_recent()) {
         }
 
         echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
-        echo "title=\"#$tid Started by ", format_user_name($thread['LOGON'], $thread['NICKNAME']), ". ";
+        echo "title=\"#$tid Started by ", add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ". ";
         echo ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT']), "\">";
         echo add_wordfilter_tags($thread['TITLE']), "</a>&nbsp;";
 
@@ -214,11 +214,11 @@ if ($users_array['user_count'] > 0) {
 
         }elseif ($recent_user['UID'] > 0) {
 
-            echo "                   <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME'])), "</a></td>\n";
+            echo "                   <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</a></td>\n";
 
         }else {
 
-            echo "                   <td>", add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME'])), "</td>\n";
+            echo "                   <td>", add_wordfilter_tags(add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</td>\n";
         }
 
         if (isset($recent_user['LAST_LOGON']) && $recent_user['LAST_LOGON'] > 0) {

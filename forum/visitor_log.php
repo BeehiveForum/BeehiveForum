@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.70 2006-09-13 19:52:41 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.71 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -141,11 +141,11 @@ if (sizeof($user_search_array['user_array']) > 0) {
 
         }elseif ($user_search['UID'] > 0) {
 
-            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$user_search['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($user_search['LOGON'], $user_search['NICKNAME'])), "</a></td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\"><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$user_search['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($user_search['LOGON'], $user_search['NICKNAME']))), "</a></td>\n";
 
         }else {
 
-            echo "                   <td class=\"postbody\" align=\"left\">", add_wordfilter_tags(format_user_name($user_search['LOGON'], $user_search['NICKNAME'])), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($user_search['LOGON'], $user_search['NICKNAME']))), "</td>\n";
         }
 
         if (isset($user_search['LAST_LOGON']) && $user_search['LAST_LOGON'] > 0) {

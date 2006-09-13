@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.94 2006-08-01 21:14:14 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.95 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -188,7 +188,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
         echo "                  <tr>\n";
         echo "                    <td class=\"posthead\" align=\"left\" valign=\"top\">", format_time($admin_log_entry['CREATED']), "</td>\n";
-        echo "                    <td class=\"posthead\" align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']), "</a></td>\n";
+        echo "                    <td class=\"posthead\" align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", add_wordfilter_tags(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME'])), "</a></td>\n";
 
         $entry_array = explode("\x00", $admin_log_entry['ENTRY']);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.73 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.74 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -265,7 +265,7 @@ echo "                <td><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;ac
 echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
-echo "                <td>", (isset($link['LOGON']) ? format_user_name($link['LOGON'], $link['NICKNAME']) : "Unknown User"), "</td>\n";
+echo "                <td>", (isset($link['LOGON']) ? add_wordfilter_tags(format_user_name($link['LOGON'], $link['NICKNAME'])) : "Unknown User"), "</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
@@ -376,9 +376,9 @@ if ($comments_array = links_get_comments($lid)) {
         if (isset($comment['LOGON']) && isset($comment['NICKNAME'])) {
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
-                echo "                  <td class=\"subhead\">{$lang['commentby']} ", format_user_name($comment['LOGON'], $comment['NICKNAME']), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
+                echo "                  <td class=\"subhead\">{$lang['commentby']} ", add_wordfilter_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
-                echo "                  <td class=\"subhead\">{$lang['commentby']} ", format_user_name($comment['LOGON'], $comment['NICKNAME']), "</td>\n";
+                echo "                  <td class=\"subhead\">{$lang['commentby']} ", add_wordfilter_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])), "</td>\n";
             }
 
         }else {

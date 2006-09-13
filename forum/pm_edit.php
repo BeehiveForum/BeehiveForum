@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.79 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.80 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -427,7 +427,7 @@ echo "        <tr>\n";
 echo "          <td><h2>{$lang['to']}:</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td><a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK'])), "</a></td>\n";
+echo "          <td><a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']))), "</a></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td>&nbsp;</td>\n";

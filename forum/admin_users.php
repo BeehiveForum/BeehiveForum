@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.117 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.118 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -236,7 +236,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
         echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", $user['UID'], "</td>\n";
-        echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", format_user_name($user['LOGON'], $user['NICKNAME']), "</a></td>\n";
+        echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<a href=\"admin_user.php?webtag=$webtag&amp;uid=", $user['UID'], "\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
 
         if (isset($user['LAST_LOGON']) && $user['LAST_LOGON'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_LOGON'], 1), "</td>\n";

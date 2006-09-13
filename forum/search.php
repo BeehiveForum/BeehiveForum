@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.141 2006-09-13 19:52:41 decoyduck Exp $ */
+/* $Id: search.php,v 1.142 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -337,12 +337,12 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b><br />";
                     echo wordwrap($message['CONTENT'], 25, '<br />', 1), "</a><br />";
-                    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
 
                 }else {
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-                    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", format_user_name($message['FLOGON'], $message['FNICK']), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                 }
             }
         }

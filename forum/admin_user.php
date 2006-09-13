@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.170 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.171 2006-09-13 22:47:15 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -144,7 +144,7 @@ $user['POST_COUNT'] = user_get_post_count($uid);
 $user_perms = perm_get_forum_user_permissions($uid);
 
 // Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
 
 // Do updates
 

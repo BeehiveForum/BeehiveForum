@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.153 2006-09-13 19:52:41 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.154 2006-09-13 22:47:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -625,7 +625,7 @@ function pm_user_get_friends()
             }
 
             $user_get_peers_array['uid_array'][] = $row['UID'];
-            $user_get_peers_array['logon_array'][] = format_user_name($row['LOGON'], $row['NICKNAME']);
+            $user_get_peers_array['logon_array'][] = add_wordfilter_tags(format_user_name($row['LOGON'], $row['NICKNAME']));
         }
 
         return $user_get_peers_array;
@@ -815,12 +815,12 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
         if ($pm_export_html === true) {
 
-            $html.= format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']);
+            $html.= add_wordfilter_tags(format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']));
 
         }else {
 
             $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
-            $html.= format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK']). "</a>";
+            $html.= add_wordfilter_tags(format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK'])). "</a>";
             $html.= "</span></td>\n";
         }
 
@@ -835,12 +835,12 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
                 if ($pm_export_html === true) {
 
-                    $html.= format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]);
+                    $html.= add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]));
 
                 }else {
                 
                     $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
-                    $html.= format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i]). "</a>&nbsp;";
+                    $html.= add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i])). "</a>&nbsp;";
                 }
             }
 
@@ -848,12 +848,12 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
             if ($pm_export_html === true) {
 
-                $html.= format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']);
+                $html.= add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']));
             
             }else {
 
                 $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
-                $html.= format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']). "</a>";
+                $html.= add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK'])). "</a>";
             }
         }
 

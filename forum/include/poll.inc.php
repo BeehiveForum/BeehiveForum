@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.170 2006-09-13 18:58:46 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.171 2006-09-13 19:07:32 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -387,7 +387,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "        <table width=\"450\">\n";
     $polldata['CONTENT'].= "          <tr>\n";
-    $polldata['CONTENT'].= "            <td><h2>". $question. "</h2></td>\n";
+    $polldata['CONTENT'].= "            <td><h2>". apply_wordfilter($question). "</h2></td>\n";
     $polldata['CONTENT'].= "          </tr>\n";
 
     $poll_group_count = 1;

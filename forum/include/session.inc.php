@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.249 2006-08-25 14:42:13 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.250 2006-09-13 21:09:15 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -164,6 +164,10 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
 
                 $result = db_query($sql, $db_bh_session_check);
             }
+
+            // A unique MD5 has for some purposes (word filter, etc)
+            
+            $user_sess['RAND_HASH'] = md5(uniqid(rand()));
 
             // Forum self-preservation functions. Each page load
             // we only do one of these. The functions themselves

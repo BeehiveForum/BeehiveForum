@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.411 2006-09-13 19:52:41 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.412 2006-09-13 21:09:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -611,7 +611,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // Check for words that should be filtered ---------------------------------
 
-    if ($is_poll === false) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
+    $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
 

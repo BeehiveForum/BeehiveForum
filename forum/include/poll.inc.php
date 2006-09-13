@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.171 2006-09-13 19:07:32 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.172 2006-09-13 19:52:41 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -387,7 +387,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $polldata['CONTENT'].= "        ". form_input_hidden('tid', $tid). "\n";
     $polldata['CONTENT'].= "        <table width=\"450\">\n";
     $polldata['CONTENT'].= "          <tr>\n";
-    $polldata['CONTENT'].= "            <td><h2>". apply_wordfilter($question). "</h2></td>\n";
+    $polldata['CONTENT'].= "            <td><h2>". add_wordfilter_tags($question). "</h2></td>\n";
     $polldata['CONTENT'].= "          </tr>\n";
 
     $poll_group_count = 1;
@@ -445,13 +445,13 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                         if ($polldata['OPTIONTYPE'] == 1) {
 
                             $dropdown['value'][] = $pollresults['OPTION_ID'][$i];
-                            $dropdown['label'][] = apply_wordfilter($pollresults['OPTION_NAME'][$i]);
+                            $dropdown['label'][] = add_wordfilter_tags($pollresults['OPTION_NAME'][$i]);
 
                         }else {
 
                             $polldata['CONTENT'].= "                <tr>\n";
                             $polldata['CONTENT'].= "                  <td class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-                            $polldata['CONTENT'].= "                  <td class=\"postbody\">". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                            $polldata['CONTENT'].= "                  <td class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                             $polldata['CONTENT'].= "                </tr>\n";
                         }
 
@@ -459,7 +459,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                         $polldata['CONTENT'].= "                <tr>\n";
                         $polldata['CONTENT'].= "                  <td class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-                        $polldata['CONTENT'].= "                  <td class=\"postbody\">". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                        $polldata['CONTENT'].= "                  <td class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                         $polldata['CONTENT'].= "                </tr>\n";
                     }
 
@@ -538,7 +538,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                         }
 
                         $polldata['CONTENT'].= "                <tr>\n";
-                        $polldata['CONTENT'].= "                  <td colspan=\"2\" class=\"postbody\">". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                        $polldata['CONTENT'].= "                  <td colspan=\"2\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                         $polldata['CONTENT'].= "                </tr>\n";
 
                         $poll_previous_group = $pollresults['GROUP_ID'][$i];
@@ -557,7 +557,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
             if (strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
-                $polldata['CONTENT'].= "                <li>". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "</li>\n";
+                $polldata['CONTENT'].= "                <li>". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</li>\n";
             }
         }
 
@@ -659,7 +659,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                             if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
 
-                                $user_poll_votes_array[] = "'". apply_wordfilter($pollresults['OPTION_NAME'][$j]). "'";
+                                $user_poll_votes_array[] = "'". add_wordfilter_tags($pollresults['OPTION_NAME'][$j]). "'";
 
                             }else {
 
@@ -692,7 +692,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                             if ($pollresults['OPTION_NAME'][$j] == strip_tags($pollresults['OPTION_NAME'][$j])) {
 
-                                $user_poll_votes_array[] = "'". apply_wordfilter($pollresults['OPTION_NAME'][$j]). "'";
+                                $user_poll_votes_array[] = "'". add_wordfilter_tags($pollresults['OPTION_NAME'][$j]). "'";
 
                             }else {
 
@@ -867,13 +867,13 @@ function poll_preview_form($pollresults, $polldata)
                 if ($polldata['OPTIONTYPE'] == 1) {
 
                     $dropdown['value'][] = $pollresults['OPTION_ID'][$i];
-                    $dropdown['label'][] = apply_wordfilter($pollresults['OPTION_NAME'][$i]);
+                    $dropdown['label'][] = add_wordfilter_tags($pollresults['OPTION_NAME'][$i]);
 
                 }else {
 
                     $polldisplay.= "                <tr>\n";
                     $polldisplay.= "                  <td class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-                    $polldisplay.= "                  <td class=\"postbody\">". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                    $polldisplay.= "                  <td class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                     $polldisplay.= "                </tr>\n";
                 }
 
@@ -881,7 +881,7 @@ function poll_preview_form($pollresults, $polldata)
 
                 $polldisplay.= "                <tr>\n";
                 $polldisplay.= "                  <td class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-                $polldisplay.= "                  <td class=\"postbody\">". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                $polldisplay.= "                  <td class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                 $polldisplay.= "                </tr>\n";
             }
 
@@ -943,7 +943,7 @@ function poll_preview_graph_horz($pollresults)
         if (isset($pollresults['OPTION_NAME'][$i]) && strlen($pollresults['OPTION_NAME'][$i]) > 0) {
 
             $polldisplay.= "                            <tr>\n";
-            $polldisplay.= "                                <td width=\"150\" class=\"postbody\">". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "</td>\n";
+            $polldisplay.= "                                <td width=\"150\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
 
             if ($pollresults['VOTES'][$i] > 0) {
 
@@ -1072,7 +1072,7 @@ function poll_preview_graph_vert($pollresults)
                 $polldisplay.= "                                <td style=\"width: 2px; border - left: 1px solid #000000\"></td>\n";
             }
 
-            $polldisplay.= "                                <td class=\"postbody\" align=\"center\" valign=\"top\">". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "<br />". $pollresults['VOTES'][$i]. " {$lang['votes']}<br />(". $vote_percent. "%)</td>\n";
+            $polldisplay.= "                                <td class=\"postbody\" align=\"center\" valign=\"top\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "<br />". $pollresults['VOTES'][$i]. " {$lang['votes']}<br />(". $vote_percent. "%)</td>\n";
             $poll_previous_group = $pollresults['GROUP_ID'][$i];
         }
     }
@@ -1134,7 +1134,7 @@ function poll_horizontal_graph($tid)
                 }
 
                 $polldisplay.= "                            <tr>\n";
-                $polldisplay.= "                                <td width=\"150\" class=\"postbody\">". apply_wordfilter($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                $polldisplay.= "                                <td width=\"150\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
 
                 if ($pollresults['VOTES'][$i] > 0) {
 
@@ -1278,7 +1278,7 @@ function poll_preview_graph_table($pollresults)
 
                 }else {
 
-                    $polldisplay.= "                                <th class=\"posthead\" align=\"right\">". apply_wordfilter($pollresults['OPTION_NAME'][$group1_keys[$rows - 1]]). "</th>\n";
+                    $polldisplay.= "                                <th class=\"posthead\" align=\"right\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$group1_keys[$rows - 1]]). "</th>\n";
                 }
 
             }else if ($cols == sizeof($group2) + 1) {
@@ -1303,7 +1303,7 @@ function poll_preview_graph_table($pollresults)
 
                 if ($rows == 0) {
 
-                    $polldisplay.= "                                <th class=\"posthead\" align=\"center\">". apply_wordfilter($pollresults['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
+                    $polldisplay.= "                                <th class=\"posthead\" align=\"center\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
 
                 }else if ($rows == sizeof($group1) + 1) {
 
@@ -1632,7 +1632,7 @@ function poll_table_graph($tid)
 
                 if ($rows == 0) {
 
-                    $polldisplay.= "                                <th class=\"posthead\"    align=\"center\">". apply_wordfilter($pollresults['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
+                    $polldisplay.= "                                <th class=\"posthead\"    align=\"center\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$group2_keys[$cols - 1]]). "</th>\n";
 
                 }else if ($rows == sizeof($group1) + 1) {
 

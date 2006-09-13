@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.270 2006-08-06 15:47:58 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.271 2006-09-13 19:52:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -391,7 +391,7 @@ foreach ($folder_order as $key1 => $folder_number) {
             echo "            <img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
         }
 
-        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", apply_wordfilter(_htmlentities($folder_info[$folder_number]['DESCRIPTION'])), "\">", apply_wordfilter(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
+        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", add_wordfilter_tags(_htmlentities($folder_info[$folder_number]['DESCRIPTION'])), "\">", add_wordfilter_tags(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
         echo "          </td>\n";
 
         if (bh_session_get_value('UID') > 0) {
@@ -556,7 +556,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                             echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\"";
                             echo "title=\"#{$thread['TID']} {$lang['startedby']} ", format_user_name($thread['LOGON'], $thread['NICKNAME']), ". ";
                             echo ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT']), "\">";
-                            echo apply_wordfilter($thread['TITLE']), "</a> ";
+                            echo add_wordfilter_tags($thread['TITLE']), "</a> ";
 
                             if ($thread['INTEREST'] == 1) echo "<img src=\"".style_image('high_interest.png')."\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
                             if ($thread['INTEREST'] == 2) echo "<img src=\"".style_image('subscribe.png')."\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";

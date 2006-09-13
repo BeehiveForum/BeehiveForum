@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.27 2006-09-08 17:13:11 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.28 2006-09-13 19:52:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -37,7 +37,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 // Loads the user's word filter into an array.
 // Saves having to query the database every time
-// the apply_wordfilter() function is called.
+// the add_wordfilter_tags() function is called.
 
 function load_wordfilter()
 {
@@ -88,19 +88,19 @@ function load_wordfilter()
 
             if ($filter['FILTER_OPTION'] == 1) {
 
-                $pattern_array[] = "/\b(". preg_quote($filter['MATCH_TEXT'], "/"). ")\b/i";
+                $pattern_array[] = "/\<filter\>\b(". preg_quote($filter['MATCH_TEXT'], "/"). ")\b\<\/filter\>/i";
 
             }elseif ($filter['FILTER_OPTION'] == 2) {
 
                 if (!preg_match("/^\/(.*)[^\\]\/[imsxeADSUXu]*$/i", $filter['MATCH_TEXT'])) {
-                    $filter['MATCH_TEXT'] = "/{$filter['MATCH_TEXT']}/i";
+                    $filter['MATCH_TEXT'] = "/\<filter\>{$filter['MATCH_TEXT']}\<\/filter\>/i";
                 }
 
                 $pattern_array[] = $filter['MATCH_TEXT'];
 
             }else {
 
-                $pattern_array[] = "/". preg_quote($filter['MATCH_TEXT'], "/"). "/i";
+                $pattern_array[] = "/\<filter\>". preg_quote($filter['MATCH_TEXT'], "/"). "\<\/filter\>/i";
             }
 
             if (strlen(trim($filter['REPLACE_TEXT'])) > 0) {
@@ -124,7 +124,20 @@ function load_wordfilter()
                                  "replace_array" => $replace_array);
     }
 
+    // Generic filters to remove unused <filter> tags.
+
+    $user_wordfilter['pattern_array'][] = "/\<filter\>/i";
+    $user_wordfilter['pattern_array'][] = "/\<\/filter\>/i";
+
+    $user_wordfilter['replace_array'][] = "";
+    $user_wordfilter['replace_array'][] = "";
+
     return $user_wordfilter;
+}
+
+function add_wordfilter_tags($content)
+{
+    return "<filter>$content</filter>";
 }
 
 // Applys the loaded word filter to the given content
@@ -133,15 +146,14 @@ function apply_wordfilter($content)
 {
     if ($user_wordfilter = load_wordfilter()) {
 
-        if (!is_array($user_wordfilter)) return $content;
-        if (!isset($user_wordfilter['pattern_array'])) return $content;
-        if (!isset($user_wordfilter['replace_array'])) return $content;
+        if (is_array($user_wordfilter)) {
 
-        $pattern_array = $user_wordfilter['pattern_array'];
-        $replace_array = $user_wordfilter['replace_array'];
+            $pattern_array = $user_wordfilter['pattern_array'];
+            $replace_array = $user_wordfilter['replace_array'];
 
-        if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
-            return $new_content;
+            if (@$new_content = preg_replace($pattern_array, $replace_array, $content)) {
+                return $new_content;
+            }
         }
     }
 

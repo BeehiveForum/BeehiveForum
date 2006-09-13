@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.110 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.111 2006-09-13 19:52:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -130,7 +130,7 @@ if ($thread_array = threads_get_most_recent()) {
         echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
         echo "title=\"#$tid Started by ", format_user_name($thread['LOGON'], $thread['NICKNAME']), ". ";
         echo ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT']), "\">";
-        echo apply_wordfilter($thread['TITLE']), "</a>&nbsp;";
+        echo add_wordfilter_tags($thread['TITLE']), "</a>&nbsp;";
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
@@ -214,11 +214,11 @@ if ($users_array['user_count'] > 0) {
 
         }elseif ($recent_user['UID'] > 0) {
 
-            echo "                   <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", apply_wordfilter(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME'])), "</a></td>\n";
+            echo "                   <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME'])), "</a></td>\n";
 
         }else {
 
-            echo "                   <td>", apply_wordfilter(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME'])), "</td>\n";
+            echo "                   <td>", add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME'])), "</td>\n";
         }
 
         if (isset($recent_user['LAST_LOGON']) && $recent_user['LAST_LOGON'] > 0) {
@@ -258,7 +258,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", apply_wordfilter($row['NICKNAME']), "</a></td>\n";
+        echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", add_wordfilter_tags($row['NICKNAME']), "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }

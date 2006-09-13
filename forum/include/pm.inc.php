@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.152 2006-08-25 14:42:13 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.153 2006-09-13 19:52:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -866,8 +866,8 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
     if ($pm_export_wordfilter == 'Y' || $pm_export_html === false) {
 
-        $pm_elements_array['CONTENT'] = apply_wordfilter($pm_elements_array['CONTENT']);
-        $pm_elements_array['SUBJECT'] = apply_wordfilter($pm_elements_array['SUBJECT']);
+        $pm_elements_array['CONTENT'] = add_wordfilter_tags($pm_elements_array['CONTENT']);
+        $pm_elements_array['SUBJECT'] = add_wordfilter_tags($pm_elements_array['SUBJECT']);
     }
 
     // Add emoticons/wikilinks

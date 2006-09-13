@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.410 2006-09-13 18:58:46 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.411 2006-09-13 19:52:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -542,7 +542,7 @@ function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky =
 {
     $lang = load_language_file();
 
-    echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;", apply_wordfilter("$foldertitle: $threadtitle");
+    echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;", add_wordfilter_tags("$foldertitle: $threadtitle");
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
     if ($interest_level == 1) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
@@ -611,7 +611,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // Check for words that should be filtered ---------------------------------
 
-    if ($is_poll === false) $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
+    if ($is_poll === false) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
 

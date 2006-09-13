@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.22 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.23 2006-09-13 19:52:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -261,7 +261,7 @@ if ($valid) {
     }
 
     echo "<h1>{$lang['approvepost']}</h1>";
-    echo "<h2>", apply_wordfilter($threaddata['TITLE']), "</h2>";
+    echo "<h2>", add_wordfilter_tags($threaddata['TITLE']), "</h2>";
 
     if ($to_uid == 0) {
 

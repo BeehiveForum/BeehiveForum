@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldisplay.php,v 1.15 2006-09-05 18:11:38 decoyduck Exp $ */
+/* $Id: ldisplay.php,v 1.16 2006-09-13 19:52:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -138,7 +138,7 @@ $foldertitle = folder_get_title($threaddata['FID']);
 
 light_html_draw_top();
 
-light_messages_top($msg, apply_wordfilter(_stripslashes($threaddata['TITLE'])), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
+light_messages_top($msg, add_wordfilter_tags(_stripslashes($threaddata['TITLE'])), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
 
 $first_msg = $message['PID'];
 $message['CONTENT'] = message_get_content($tid, $message['PID']);

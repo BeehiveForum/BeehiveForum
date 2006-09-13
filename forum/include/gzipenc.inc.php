@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: gzipenc.inc.php,v 1.49 2006-06-26 11:04:48 decoyduck Exp $ */
+/* $Id: gzipenc.inc.php,v 1.50 2006-09-13 19:52:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,6 +35,8 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
     include_once(BH_INCLUDE_PATH. "config.inc.php");
 }
+
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function bh_check_gzip()
 {
@@ -158,5 +160,6 @@ function bh_gzhandler($contents)
 ob_implicit_flush(0);
 
 ob_start("bh_gzhandler");
+ob_start("apply_wordfilter");
 
 ?>

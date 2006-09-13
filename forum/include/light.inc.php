@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.107 2006-09-13 18:58:46 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.108 2006-09-13 19:52:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -282,7 +282,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
-            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">". apply_wordfilter($folder_info[$folder_number]['TITLE']) . "</a></h3>";
+            echo "<h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\">". add_wordfilter_tags($folder_info[$folder_number]['TITLE']) . "</a></h3>";
 
             if ((!$folder_info[$folder_number]['INTEREST']) || ($mode == 2) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
@@ -346,7 +346,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                             // work out how long ago the thread was posted and format the time to display
                             $thread_time = format_time($thread['MODIFIED']);
 
-                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" title=\"#{$thread['TID']} {$lang['startedby']} ". format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">".apply_wordfilter($thread['TITLE'])."</a> ";
+                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" title=\"#{$thread['TID']} {$lang['startedby']} ". format_user_name($thread['LOGON'], $thread['NICKNAME']) . "\">".add_wordfilter_tags($thread['TITLE'])."</a> ";
                             if ($thread['INTEREST'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
                             if ($thread['INTEREST'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
                             if ($thread['POLL_FLAG'] == 'Y') echo "(P) ";
@@ -898,7 +898,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     // Check for words that should be filtered ---------------------------------
 
-    $message['CONTENT'] = apply_wordfilter($message['CONTENT']);
+    $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
 
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 

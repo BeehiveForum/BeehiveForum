@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.106 2006-09-05 18:11:38 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.107 2006-09-13 18:58:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -307,7 +307,8 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
                     if ($start_from != 0 && isset($folder) && $folder_number == $folder) echo "<p><i><a href=\"lthread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></i></p>\n";
 
-                    echo "<ul>\n";
+                    $folder_list_start = false;
+                    $folder_list_end   = false;
 
                     foreach($thread_info as $key2 => $thread) {
 
@@ -316,6 +317,12 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
                         if ($thread['FID'] == $folder_number) {
 
+                            if ($folder_list_start === false) {
+
+                                echo "<ul>\n";
+                                $folder_list_start = true;
+                            }
+                           
                             echo "<li>\n";
 
                             if ($thread['LAST_READ'] == 0) {
@@ -351,7 +358,11 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                         }
                     }
 
-                    echo "</ul>\n";
+                    if ($folder_list_end === false && $folder_list_start === true) {
+
+                        echo "</ul>\n";
+                        $folder_list_end = true;
+                    }
 
                     if (isset($folder) && $folder_number == $folder) {
 

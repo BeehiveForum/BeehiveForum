@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.189 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.190 2006-09-13 18:58:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -402,14 +402,14 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (preg_match("/^refresh=([^:]*):([^$]*)$/i", $func_args, $func_matches) > 0) {
+        if (preg_match("/^refresh=([^:]+):([^$]+)$/i", $func_args, $func_matches) > 0) {
 
             if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
 
                 if (isset($func_matches[2])) {
 
                      $meta_refresh_delay = $func_matches[1];
-                     $meta_refresh_url = $func_matches[2];
+                     $meta_refresh_url = basename($func_matches[2]);
                 }
             }
 
@@ -435,10 +435,10 @@ function html_draw_top()
     $forum_description = html_get_forum_description();
     $forum_email = html_get_forum_email();
 
-    $dtdpath = html_get_forum_uri();
+    $forum_path = html_get_forum_uri();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    echo "<!DOCTYPE html SYSTEM \"$dtdpath/dtd/beehiveforum.dtd\">\n";
+    echo "<!DOCTYPE html SYSTEM \"$forum_path/dtd/beehiveforum.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
@@ -462,7 +462,7 @@ function html_draw_top()
     }
 
     if (basename($_SERVER['PHP_SELF']) == "index.php") {
-        echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"threads_rss.php?webtag=$webtag\" />\n";
+        echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"$forum_path/threads_rss.php?webtag=$webtag\" />\n";
     }
 
     echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
@@ -835,14 +835,14 @@ function html_get_forum_uri($path_only = false)
         }
     }
 
-    $uri_array['path'] = dirname($uri_array['path']);
+    $uri_array['path'] = dirname("{$uri_array['path']}beehive");
     $uri_array['path'] = preg_replace("/\\\/", "/", $uri_array['path']);
     $uri_array['path'] = preg_replace("/\/$/", "", $uri_array['path']);
 
-    $server_uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
-    $server_uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
-    $server_uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
-    $server_uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
+    $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
+    $server_uri.= (isset($uri_array['host']))   ? "{$uri_array['host']}"      : '';
+    $server_uri.= (isset($uri_array['port']))   ? ":{$uri_array['port']}"     : '';
+    $server_uri.= (isset($uri_array['path']))   ? "{$uri_array['path']}"      : '';
 
     return $server_uri;
 }

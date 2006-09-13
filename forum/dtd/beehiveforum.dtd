@@ -22,11 +22,11 @@ USA
 
 BeehiveForums Extensible HTML version 1.0 Frameset DTD
 
-$Revision: 1.1 $
+$Revision: 1.2 $
 
 -->
 
-<!-- $Id: beehiveforum.dtd,v 1.1 2005-09-28 17:11:05 decoyduck Exp $ -->
+<!-- $Id: beehiveforum.dtd,v 1.2 2006-09-13 18:58:46 decoyduck Exp $ -->
 
 <!--================ Character mnemonic entities =========================-->
 
@@ -206,9 +206,9 @@ $Revision: 1.1 $
 
 <!ENTITY % special.extra
    "object | applet | img | map | iframe">
-	
+        
 <!ENTITY % special.basic
-	"br | wbr | span | bdo">
+        "br | wbr | span | bdo">
 
 <!ENTITY % special
    "%special.basic; | %special.extra;">
@@ -264,7 +264,7 @@ $Revision: 1.1 $
 
 <!ENTITY % pre.content
    "(#PCDATA | a | %special.basic; | %fontstyle.basic; | %phrase.basic; |
-	   %inline.forms; | %misc.inline;)*">
+           %inline.forms; | %misc.inline;)*">
 
 
 <!-- form uses %Flow; excluding form -->

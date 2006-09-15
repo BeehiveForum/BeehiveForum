@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.188 2006-08-07 19:56:54 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.189 2006-09-15 11:03:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1154,7 +1154,7 @@ function forum_create($webtag, $forum_name, $access)
         }
 
         $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
-        $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
+        $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
 
         if (!$result = db_query($sql, $db_forum_create)) {
 

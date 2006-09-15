@@ -21,10 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.15 2006-03-16 16:29:23 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.16 2006-09-15 11:03:44 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
-// As used on: http://www.tehforum.net/forum/
+// As used on: http://www.tehforum.co.uk/forum/
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");

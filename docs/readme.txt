@@ -269,7 +269,7 @@ all explained in there.
 1.2.10 What to do if it doesn't work
 ====================================
 
-Don't panic. Pop over to http://www.tehforum.net/forum/ and ask us
+Don't panic. Pop over to http://www.tehforum.co.uk/forum/ and ask us
 for help, but remember, we don't get paid for this, so be nice.
 
 It's helpful if you can tell us your setup when you've got a problem, such as
@@ -582,7 +582,7 @@ All this can be done through the Project page provided by SourceForge.
 Simply browse to http://sourceforge.net/projects/Beehive Forum and submit
 requests or bug reports there.
 
-Alternatively you can visit http://www.tehforum.net/forum/ where you'll
+Alternatively you can visit http://www.tehforum.co.uk/forum/ where you'll
 find most of the developers of Beehive Forum hanging out. Feel free to post
 any questions or queries you have and we'll do our best to answer them.
 
@@ -590,7 +590,7 @@ any questions or queries you have and we'll do our best to answer them.
 3.2 General questions and help
 ==============================
 
-As above, you can try dropping in to http://www.tehforum.net/forum/, 
+As above, you can try dropping in to http://www.tehforum.co.uk/forum/, 
 where you can ask for help or check on the progress of the next version and
 see and test previews of the new features. If you need help don't think twice
 about posting, although please keep Beehive-related enquires to the 'Beehive 

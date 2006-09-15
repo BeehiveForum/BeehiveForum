@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.45 2006-07-23 12:43:08 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.46 2006-09-15 11:03:44 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -1113,7 +1113,7 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
         }
 
         $sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
-        $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.net/forum/')";
+        $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
 
         if(!$result = @db_query($sql, $db_install)) {
 

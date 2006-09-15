@@ -53,7 +53,7 @@ Beehive is an online forum/message board system with several powerful features:
 =================
 
 Beehive has been written by several members of what is now called "Teh Forum", 
-which can be found at http://www.tehforum.net/forum/. A full list of credits 
+which can be found at http://www.tehforum.co.uk/forum/. A full list of credits 
 appears in readme.txt.
 
 1.3 Why did you write it?
@@ -105,7 +105,7 @@ though it could be made simpler, and doubtless will be in later releases.
 3.1 How scalable is Beehive?
 ============================
 
-We've found that Beehive can easily handle our forum (http://www.tehforum.net/),
+We've found that Beehive can easily handle our forum (http://www.tehforum.co.uk/),
 which is pretty high-traffic. The database layout is designed with efficiency in 
 mind, and we leave it up to MySQL to do all the big data-crunching. In short, 
 don't worry (provided you have enough disk space to store the database, you'll 

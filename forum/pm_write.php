@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.134 2006-09-18 16:18:37 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.135 2006-09-18 20:51:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -191,16 +191,14 @@ if (isset($t_rmid) && $t_rmid > 0) {
 
                 $t_content = "<div class=\"quotetext\" id=\"quote\">";
                 $t_content.= "<b>quote: </b><a href=\"pm.php?mid={$pm_data['MID']}\">";
-                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                $t_content.= "</a></div><div class=\"quote\">";
+                $t_content.= "{$pm_data['FLOGON']}</a></div><div class=\"quote\">";
                 $t_content.= trim($pm_data['CONTENT']);
                 $t_content.= "</div><p>&nbsp;</p>";
 
             }else {
 
-                $t_content = "<quote source=\"";
-                $t_content.= format_user_name($pm_data['FLOGON'], $pm_data['FNICK']);
-                $t_content.= "\" url=\"pm.php?mid={$pm_data['MID']}\">";
+                $t_content = "<quote source=\"{$pm_data['FLOGON']}\" ";
+                $t_content.= "url=\"pm.php?mid={$pm_data['MID']}\">";
                 $t_content.= trim($pm_data['CONTENT']);
                 $t_content.= "</quote>\n\n";
 

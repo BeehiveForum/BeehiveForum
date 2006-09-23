@@ -20,88 +20,127 @@ USA
 ======================================================================*/
 
 function closeAttachWin () {
-	if (typeof attachwin == 'object' && !attachwin.closed) {
-		attachwin.close();
-	}
+        if (typeof attachwin == 'object' && !attachwin.closed) {
+                attachwin.close();
+        }
 }
 
 function launchAttachWin (aid, webtag) {
-	attachwin = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+        attachwin = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
 }
 
 function checkToRadio(num) {
-	document.f_post.to_radio[num].checked=true;
+        document.f_post.to_radio[num].checked=true;
 }
 
 function addOverflow() {
 
-	var body_tag = document.getElementsByTagName('body');
-	var body_tag = body_tag[0];
+        var IE = (document.all ? true : false);
+        
+        var body_tag = document.getElementsByTagName('body');
+        var body_tag = body_tag[0];
 
-	var td_tags = document.getElementsByTagName('td');
-	var td_count = td_tags.length;
+        var td_tags = document.getElementsByTagName('td');
+        var td_count = td_tags.length;
 
-	for (var i = 0; i < td_count; i++)  {
+        for (var i = 0; i < td_count; i++)  {
 
-		if (td_tags[i].className == 'postbody') {
-			
-			if (td_tags[i].clientWidth > body_tag.clientWidth) {
+                if (td_tags[i].className == 'postbody') {
+                        
+                        if (td_tags[i].clientWidth > (body_tag.clientWidth * 0.95)) {
 
-				var new_div = document.createElement('div');
+                                var new_div = document.createElement('div');
 
-				new_div.style.overflowX = 'scroll';
-				new_div.style.overflowY = 'visible';
+                                new_div.style.overflowX = 'scroll';
+                                new_div.style.overflowY = 'visible';
+                                new_div.className = 'bhoverflowfix';
 
-				new_div.style.overflow = 'auto';
-			
-				new_div.style.width = (body_tag.clientWidth * 0.94) + 'px';
+                                new_div.style.overflow = 'auto';
+                        
+                                new_div.style.width = (body_tag.clientWidth * 0.94) + 'px';
 
-				while (td_tags[i].hasChildNodes()) {
-					new_div.appendChild(td_tags[i].firstChild);
-				}
+                                while (td_tags[i].hasChildNodes()) {
+                                        new_div.appendChild(td_tags[i].firstChild);
+                                }
 
-				td_tags[i].style.width = body_tag.clientWidth + 'px';
-				td_tags[i].appendChild(new_div);
-			}
-		}
-	}
+                                td_tags[i].style.width = (body_tag.clientWidth * 0.98) + 'px';
+                                td_tags[i].appendChild(new_div);
+                        }
+                }
+        }
+
+        if (IE) {
+        
+                window.attachEvent("onresize", redoOverFlow);
+        }else {
+        
+                window.addEventListener("resize", redoOverFlow, true);
+        }
+}
+
+function redoOverFlow() {
+
+        var body_tag = document.getElementsByTagName('body');
+        var body_tag = body_tag[0];
+
+        var td_tags = document.getElementsByTagName('td');
+        var td_count = td_tags.length;
+
+        for (var i = 0; i < td_count; i++)  {
+
+                if (td_tags[i].className == 'postbody') {
+                        
+                        td_tags[i].style.width = (body_tag.clientWidth * 0.98) + 'px';
+                        
+                        var div_tags = td_tags[i].getElementsByTagName('div');
+                        var div_count = div_tags.length;
+
+                        for (var j = 0; j < div_count; j++)  {
+
+                                if (div_tags[j].className == 'bhoverflowfix') {
+
+                                        div_tags[j].style.width = (body_tag.clientWidth * 0.94) + 'px';
+                                }
+                        }
+                }
+        }
 }
 
 function resizeImages() {
-	
-	var body_tag = document.getElementsByTagName('body');
-	var body_tag = body_tag[0];
+        
+        var body_tag = document.getElementsByTagName('body');
+        var body_tag = body_tag[0];
 
-	var img_tags = document.getElementsByTagName('img');
-	var img_count = img_tags.length;
+        var img_tags = document.getElementsByTagName('img');
+        var img_count = img_tags.length;
 
-	for (var i = 0; i < img_count; i++)  {
+        for (var i = 0; i < img_count; i++)  {
 
-		if (img_tags[i].width > body_tag.clientWidth) {
-			
-			img_tags[i].style.width = Math.round(body_tag.clientWidth * 0.9) + 'px';
-			img_tags[i].style.cursor = 'pointer';
+                if (img_tags[i].width > (body_tag.clientWidth * 0.94)) {
+                        
+                        img_tags[i].style.width = Math.round(body_tag.clientWidth * 0.9) + 'px';
+                        img_tags[i].style.cursor = 'pointer';
 
-			if (img_tags[i].attachEvent) {
+                        if (img_tags[i].attachEvent) {
 
-				img_tags[i].attachEvent("onclick", showFullImage);
+                                img_tags[i].attachEvent("onclick", showFullImage);
 
-			}else if (img_tags[i].addEventListener) {
+                        }else if (img_tags[i].addEventListener) {
 
-				img_tags[i].addEventListener("click", showFullImage, false);
-			}			
-		}
-	}
+                                img_tags[i].addEventListener("click", showFullImage, false);
+                        }                       
+                }
+        }
 }
 
 function showFullImage(evt) {
 
-	if (window.event) {
+        if (window.event) {
 
-		window.open(window.event.srcElement.src);
+                window.open(window.event.srcElement.src);
 
-	}else if (evt.target) {
-		
-		window.open(evt.target.src);
-	}
+        }else if (evt.target) {
+                
+                window.open(evt.target.src);
+        }
 }

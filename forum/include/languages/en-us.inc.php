@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.21 2006-08-21 18:07:06 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.22 2006-09-27 21:31:43 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -1272,6 +1272,7 @@ $lang['ignoreduser'] = "Ignored user";
 $lang['lastvisit'] = "Last Visit";
 $lang['sendemail'] = "Send email";
 $lang['sendpm'] = "Send PM";
+$lang['visithomepage'] = "Visit Homepage";
 $lang['removefromfriends'] = "Remove from friends";
 $lang['addtofriends'] = "Add to friends";
 $lang['stopignoringuser'] = "Stop ignoring user";

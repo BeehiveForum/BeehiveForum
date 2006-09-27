@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.100 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.101 2006-09-27 21:31:43 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -293,6 +293,13 @@ if (isset($user_profile['PIC_URL'])) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" alt=\"$title\" title=\"$title\" /></td>\n";
+    echo "                      </tr>\n";
+}
+
+if (isset($user_profile['HOMEPAGE_URL'])) {
+
+    echo "                      <tr>\n";
+    echo "                        <td><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\">{$lang['visithomepage']}</a></td>\n";
     echo "                      </tr>\n";
 }
 

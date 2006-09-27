@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.51 2006-08-21 18:07:06 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.52 2006-09-27 21:31:44 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -152,6 +152,10 @@ function user_get_profile($uid)
 
         if (isset($user_prefs['PIC_URL']) && strlen($user_prefs['PIC_URL']) > 0) {
             $user_profile['PIC_URL'] = $user_prefs['PIC_URL'];
+        }
+
+        if (isset($user_prefs['HOMEPAGE_URL']) && strlen($user_prefs['HOMEPAGE_URL']) > 0) {
+            $user_profile['HOMEPAGE_URL'] = $user_prefs['HOMEPAGE_URL'];
         }
 
         if (!isset($user_profile['RELATIONSHIP'])) {

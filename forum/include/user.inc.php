@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.282 2006-09-08 17:13:11 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.283 2006-09-27 21:31:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -684,10 +684,12 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 function user_check_pref($name, $value)
 {
         // Checks to ensure that a preference setting contains valid data
+
+        if (strlen(trim($value)) == 0) return true;
+
         if ($name == "FIRSTNAME" || $name == "LASTNAME") {
             return preg_match("/^[a-z0-9 ]*$/i", $value);
         } elseif ($name == "STYLE" || $name == "EMOTICONS" || $name == "LANGUAGE") {
-            // NB: this does not check that the files/folders for STYLE, EMOTICONS, and LANGUAGE actually exist
             return preg_match("/^[a-z0-9_-]*$/i", $value);
         } elseif ($name ==  "DOB") {
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);

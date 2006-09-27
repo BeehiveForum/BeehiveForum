@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.55 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.56 2006-09-27 21:31:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -189,7 +189,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if (isset($_POST['homepage_url']) && strlen(trim(_stripslashes($_POST['homepage_url']))) > 0) {
+    if (isset($_POST['homepage_url'])) {
 
         $user_prefs['HOMEPAGE_URL'] = trim(_stripslashes($_POST['homepage_url']));
         $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global']) && $_POST['homepage_url_global'] == "Y") ? true : false;
@@ -201,7 +201,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
-    if (isset($_POST['pic_url']) && strlen(trim(_stripslashes($_POST['pic_url']))) > 0) {
+    if (isset($_POST['pic_url'])) {
 
         $user_prefs['PIC_URL'] = trim(_stripslashes($_POST['pic_url']));
         $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global']) && $_POST['pic_url_global'] == "Y") ? true : false;

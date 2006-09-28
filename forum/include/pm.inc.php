@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.154 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.155 2006-09-28 21:28:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1018,15 +1018,20 @@ function pm_save_attachment_id($mid, $aid)
 
     $db_pm_save_attachment_id = db_connect();
 
-    $sql = "UPDATE PM_ATTACHMENT_IDS SET AID = '$aid' ";
-    $sql.= "WHERE MID = $mid";
+    $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
+    $result = db_query($sql, $db_pm_save_attachment_id);
 
-    if (!db_query($sql, $db_pm_save_attachment_id)) return false;
-
-    if (db_affected_rows($db_pm_save_attachment_id) < 1) {
+    if (db_num_rows($result) < 1) {
     
         $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
-        $sql.= "VALUES ($mid, '$aid')";
+        $sql.= "VALUES ('$mid', '$aid')";
+
+        if (!db_query($sql, $db_pm_save_attachment_id)) return false;
+
+    }else {
+
+        $sql = "UPDATE PM_ATTACHMENT_IDS SET AID = '$aid' ";
+        $sql.= "WHERE MID = '$mid'";
 
         if (!db_query($sql, $db_pm_save_attachment_id)) return false;
     }

@@ -374,8 +374,6 @@ What's new in 0.7 (Released 1st October 2006)
                  creating POST table.
         - Fixed: Errors installer and upgrader when upgrading
                  multiple forums.
-        - Fixed: upgrade-06x-to-064.php was stumbling over tables
-                 which were not in conflict.
         - Fixed: Missing remove conflict for SEARCH_ENGINE_BOTS
                  table.
         - Fixed: Unknown table type error caused by not resetting

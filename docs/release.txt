@@ -1,13 +1,813 @@
 Beehive Forum Release Notes
 
-What's new in 0.6.3 (Release TBA)
+What's new in 0.7 (Released 1st October 2006)
+=================
+
+- Notes
+
+        - BeehiveForum 0.7 introduces a new thread unread cut-off
+          that helps to increase performance by storing unread
+          thread data for a limited time rather than in previous
+          builds where it was stored indefinitely. You can set up
+          the thread unread cut-off in the Global Forum Settings
+          portion of your Beehive Forum installation but pruning
+          of the USER_THREAD tables must be performed by hand.
+
+- Changes from 0.6.3
+
+        - Fixed: My Forums showing lots of unread messages because
+                 it wasn't using the cut-off code.
+        - Fixed: Light mode logon form wasn't redirecting correctly
+                 if you had a msg= or folder= url query.
+        - Fixed: Extra unneeded ban check in admin.php
+        - Fixed: Homepage URL and Pic URL were not optional and you
+                 couldn't delete the data in them if you wanted to.
+        - Fixed: Homepage URL never showing up on user profile
+                 popup.
+        - Fixed: USER_PERM_BANNED wasn't always working correctly.
+                 Moved check into main files and out of bh_session_init().
+        - Fixed: Installer and upgrade scripts now attempt to
+                 recreate all the indexes that Beehive has ever had.
+        - Fixed: Erranous word filter tags on email notifications
+                 caused by format_user_name using add_wordfilter_tags
+                 rather than straight apply_wordfilter.
+        - Fixed: Added missing log entries for deleting RSS Feeds
+                 and updating Bans to admin_viewlog.php
+        - Fixed: Potential conflict with RSS feed updates containing
+                 the same full story URL.
+        - Fixed: Text stuck to border on admin_folders.php and
+                 admin_folder_add.php
+        - Fixed: sprintf() error in admin_rss_feeds.php
+        - Fixed: install_remove_table_keys() wasn't working
+                 correctly. It would bail out when it encountered a primary
+                 key and not remove any keys after that in the list
+        - Fixed: upgrade-06x-to-07.php now works on all 0.6.x
+                 builds including release candidates without complaining
+                 about conflicts.
+        - Fixed: Broken links to ban and unban IP and HTTP referer
+                 from other pages.
+        - Fixed: Errors in installer when upgrading from 0.5 or
+                 doing a new fresh install.
+        - Fixed: Error regarding valid characters in installer help
+                 popup (says you can use hyphens when you can't)
+        - Fixed: Error handler not always able to get the MySQL
+                 version number so now we don't try to display what we
+                 can't get.
+        - Fixed: Error in installer when target database doesn't
+                 exist.
+        - Fixed: Always getting logged in as a guest even when you
+                 had saved logon.
+        - Fixed: Reloading the frameset with the logon form visible
+                 will show it in it's first state.
+        - Fixed: Unread threads showing with read icon on
+                 start_left.php
+        - Fixed: Parse errors in edit.php, delete.php and
+                 lmessages.php.
+        - Fixed: Movied english language strings in admin_banned.php
+                 into en.inc.php
+        - Fixed: Ban check wasn't being applied to guests
+        - Fixed: Ban check wasn't being performed if the session
+                 didn't contain some of the data to check.
+        - Fixed: Exploit with $uid possible resulting in lots of
+                 failed queries and possibility for code injection.
+        - Fixed: Admin Log was showing 'Unknown' for some recent log
+                 entry additions.
+        - Fixed: Stats display wasn't using You and You (Invisible)
+                 language strings (from previous rollback maybe?)
+        - Fixed: Layout issues in thread_options.php when viewing a
+                 poll.
+        - Fixed: admin_forum_access.php change password button went
+                 to default / current instead of selected forum.
+        - Fixed: admin_forum_access.php loaded without a FID in url
+                 query resulted in a blank page with no error.
+        - Fixed: admin_forum_set_passwd.php loaded details for
+                 default / current forum (from webtag) if no ?fid= in url
+                 query or where fid was invalid.
+        - Fixed: incorrect password could be used to enter a
+                 password protected forum!
+        - Fixed: admin_forums.php layout issue caused confusion if
+                 forum webtag or description were exceptionally long.
+        - Fixed: user became locked out of forum if using a saved
+                 forum password and password was changed by owner.
+        - Fixed: missing call to html_draw_top() in
+                 admin_forum_access.php
+        - Fixed: Wrong description for forum settings.
+        - Fixed: admin_startpage.php wasn't showing all the correct
+                 extensions for upload.
+        - Fixed: Attachments not working in PM correctly.
+        - Fixed: Attachments field being too wide for IE and causing
+                 wrapping of text next to it.
+        - Fixed: Function threads_any_unread was finding messages in
+                 folders the user didn't have access to.
+        - Fixed: Clicking the "eye" in messages to mark a thread as
+                 unread wasn't working, Had been broken with previous
+                 update to message_update_read / message_set_read functions
+        - Fixed: Removed if (IE) checks from post.js and made better
+                 checks against available JS functions.
+        - Fixed: Made addOverflow function in post.js set the
+                 overflowX and overflowY separately for IE so as to not add
+                 a vertical scrollbar.
+        - Fixed: Possible to edit someone elses signature without
+                 being an Admin by saving the form locally and editing.
+        - Fixed: bh_check_styles.php works correctly to find classes
+                 with child tag definitions (e.g. spoiler a:hover)
+        - Fixed: admin_user_groups display looked messed up when no
+                 groups created.
+        - Fixed: Reply To All link no longer appears if the user
+                 doesn't have permission to reply.
+        - Fixed: bug that allowed users to edit a reply to link to
+                 allow them to post in a folder they don't have access to.
+        - Fixed: Sorting on "Referrer" column wasn't possible in
+                 admin_users.php
+        - Fixed: Incorrect datatype error when clicking a folder
+                 name
+        - Fixed: Errors when viewing PM folders.
+        - Fixed: Word Filter stripslashes issue and filter order
+                 kept switching around on save.
+        - Fixed: Attachments add upload field link no longer clears
+                 the field if you've already selected a file.
+        - Fixed: Attachments add upload field link only appears if
+                 the browser supports document.getElementById.
+        - Fixed: forum_create() wasn't creating all the tables
+                 required for a 0.7 forum
+        - Fixed: Installer and upgrade scripts were not working
+                 correctly.
+        - Fixed: Installer wasn't loading the 0.7 upgrade scripts
+                 correctly.
+        - Fixed: Poll Question was broken.
+        - Fixed: Polls weren't fetching the correct approval or
+                 edited data from the database.
+        - Fixed: Inconsistency in display.php, ldisplay.php,
+                 messages.php with not showing <h1> header and wrong error
+                 message.
+        - Fixed: Editing a post and clicking the hide / show
+                 signature box resulted in the text being urlencoded
+                 incorrectly.
+        - Fixed: Undefined variable $uid in edit.php
+        - Fixed: Answer count drop down not working.
+        - Fixed: Messages still not marking as read. Restored old
+                 code from CVS.
+        - Fixed: Layout changed for edit_profile.php so all the text
+                 fields line up.
+        - Fixed: Squiffy layout on edit_profile.php
+        - Fixed: Nicknames were showing as blank on edit_relations.php
+                 on first visit (with existing pre 0.7 relationships)
+        - Fixed: Better clean up of global data when deleting forum.
+        - Fixed: Undefined variables $mids_array in pm.inc.php when
+                 folders were empty.
+        - Fixed: Missing argument 4 in user_rel.php.
+        - Fixed: Problem with edit_signature stripping out URL where
+                 the href is exactly the same as the text to be linked
+                 (i.e. a URL)
+        - Fixed: Removed SQL debugging code from admin.inc.php
+                 (displays in admin_users.php)
+        - Fixed: Added back the error trapping for invalid regular
+                 expressions on word filter.
+        - Fixed: Same issues in edit_wordfilter.php as Admin word
+                 filter (stripslashes, filter order)
+        - Fixed: Link in install.php could cause 404 because it sent
+                 you to ../index.php
+        - Fixed: Prevent logon.php and other page reloads from being
+                 logged as the referer.
+        - Fixed: Recent Messages broken by previous guest user
+                 performance boosts.
+        - Fixed: Error when parsing invalid url with parse_url()
+        - Fixed: Upgrade script was completely broken (got stuck in
+                 a loop indefinitely)
+        - Fixed: Undefined variable $uid in myforums.inc.php caused
+                 by the user session not being initialized in lforums.php
+        - Fixed: Guest users weren't being assigned their perm array
+                 so couldn't browse any of the messages.
+        - Fixed: Stray guest session left behind when user finally
+                 logged in.
+        - Fixed: Added thread title to page title.
+        - Fixed: Messages not always marking as read under some
+                 MySQL versions
+        - Fixed: Error in bh_session_get_folders_by_perm() not
+                 checking default folder perms correctly.
+        - Fixed: Missing webatg when logging out meant you wouldn't
+                 log back into the same forum if you logged out and
+                 straight back in.
+        - Fixed: Adding up the wrong data for USER_TIME_TOTAL (duh
+                 brain moment)
+        - Fixed: Bug in MySQL 4 prior to 4.1.16 results in error
+                 about ambiguous column names so we now perform a test to
+                 check the MySQL version before performing the newer and
+                 quicker queries otherwise we fall back to the old
+                 much-much slower code.
+        - Fixed: Sort column in Admin -> Users was ambiguous
+        - Fixed: Undefined variable $db_ip_is_banned in
+                 banned.inc.php
+        - Fixed: Function forum_create() bought up to date with
+                 indexes.
+        - Fixed: Function forum_delete() wasn't removing the new
+                 THREAD_STATS table.
+        - Fixed: Undefined variable $spid when marking a thread as
+                 unread.
+        - Fixed: Session was tracking user accorss forum changes
+                 correctly.
+        - Fixed: Automatic high interest was not working due to
+                 changes in query in previous update.
+        - Fixed: Missing missing THREAD_STATS table for conflicting
+                 removal on upgrade.
+        - Fixed: Patch to thumbnails in PM export was incorrectly
+                 using ?thumb=1
+        - Fixed: USER_TRACK table turned into a per-forum table to
+                 fiux post count and post and search frequency restrictions
+                 across multiple forums.
+        - Fixed: Possible for user's to discover nicknames assigned
+                 to them by another user by means of a PM with a quoted
+                 reply.
+        - Fixed: Stray wordfilter tags on pm_write.php when replying
+                 to PM with auto quote enabled.
+        - Fixed: Stary space on end of search results.
+        - Fixed: Emoticons not working in IE7 Beta2. Same fix as
+                 used for Safari / KHTML based browsers (added &nbsp;)
+        - Fixed: User was logged in when updating RSS feed forcing
+                 user to appear as logged in when they hadn't visited a BH
+                 forum using  the current browser session.
+        - Fixed:: Undefined variable $result_count in searh.inc.php
+        - Fixed: Missing argument 4 for user_rel_update() when
+                 unignoring a user using the link in the message display.
+        - Fixed: Not being able to log on when you don't have
+                 credentials saved and not being able to logon as a
+                 different user to those credentials you have saved.
+                 Hopefully this won't break the fix I put in place for Jon
+                 at tehforum.
+        - Fixed: Undefined variable in messages_set_read() when
+                 marking thread unread.
+        - Fixed: Missing argument 4 in messages_set_read() when
+                 marking thread unread.
+        - Fixed: Double encoded HTML entities in RSS feed.
+        - Fixed: RSS feed not working correctly in Internet
+                 Explorer.
+        - Fixed: Threads RSS feed was broken if viewing as a guest.
+        - Fixed: User Profile layout was squiffy.
+        - Fixed: html_get_forum_uri() was stripping the path from
+                 the URL returned.
+        - Fixed: Layout issue with empty <ul></ul> tags and stray
+                 </ul>
+        - Fixed: Poll being affected by word filter which could
+                 break the display of the page. Word filter is applied to
+                 the polls option names instead.
+        - Fixed: bh_check_dependencies.php changed output to use
+                 BH_INCLUDE_PATH
+        - Fixed: Image attachments which are alpha blended PNG
+                 images should now create alpha blended thumbnails (GD >=
+                 2.0)
+        - Fixed: Undefined variable $interest when posting with high
+                 interest option set.
+        - Fixed: Removed debugging code from ban_check() function
+                 and added check for BEEHIVE_INSTALL_NOWARN
+        - Fixed: Error trapping for text captcha for missing glyphs
+                 in selected font.
+        - Fixed: PM XML export was broken.
+        - Fixed: Hyphenated words matched correctly by dictionary.
+        - Fixed: Parse error in errorhandler (the irony is too much)
+        - Fixed: Extra check for $nickname to see if it's an empty
+                 string in user_rel.inc.php
+        - Fixed: Guests were able to see folders and posts they
+                 didn't have access to.
+        - Fixed: Couldn't log in as a guest if you had a saved user
+                 logon.
+        - Fixed: Attachments had a funny layout issue in personal
+                 messages.
+        - Fixed: Yet more bh_update_user_time fixes that account for
+                 the user not logging out correctly.
+        - Fixed: Dictionary wasn't importing correctly when MySQL
+                 FILE permission error encountered.
+        - Fixed: forum_delete() function wasn't removing all
+                 references to old forum (missed USER_TRACK and
+                 THREAD_TRACK tables and data in global tables.
+        - Fixed: Permissions were being applied incorrectly to new
+                 forums when created.
+        - Fixed: USER_TIME column changed to DATETIME type to allow
+                 storing session lengths greater than 6 months.
+        - Fixed: bh_cvs_log_parse.php was timing out if the CVS
+                 server was slow at responding.
+        - Fixed: Undefined variable $result_fetch in
+                 session.inc.php.
+        - Fixed: PM notification popup not firing due to frameset
+                 calling html_draw_top and not using a body tag.
+        - Fixed: Potential exploit in install_check_tables.
+        - Fixed: Problem with looping index.php when using light
+                 mode.
+        - Fixed: issue with user_passhash check failing and user not
+                 being able to login despite BH saving the MD5 hash of
+                 their password.
+        - Fixed: 2 or more attachments in message and PM display had
+                 an extra line break between them.
+        - Fixed: IP Address comparision was returning empty strings
+                 and therefore returning non-matches.
+        - Fixed: Word filter messing up ignored signatures.
+        - Fixed: Prevent hi-jinks by using <filter> tag to prevent
+                 word filtering.
+        - Fixed: db_affected_rows using wrong variable to check for
+                 success.
+        - Fixed: Messages not always marking as read under some
+                 MySQL versions STILL
+        - Fixed: Unread to me marker not working correctly.
+        - Fixed: Undefined index MOVED_TID and MOVED_PID when
+                 viewing a poll in messages.inc.php caused by error in
+                 poll.inc.php.
+        - Fixed: Unknown table name THREAD_TRACKED in thread.inc.php
+        - Fixed: Viewing an old thread marked un-read all the posts
+                 on subsequent pages.
+        - Fixed: unread messages on forums.php showing as a negative
+                 number
+        - Fixed: Changed permissions check to strict comparision to
+                 prevent potential problems.
+        - Fixed: SQL error when editing a PM in Outbox.
+        - Fixed: SQL error when calculating user's post count could
+                 occur.
+        - Fixed: Prevent user from being prompted about a PM more
+                 than once. Still affected by page reloads.
+        - Fixed: Undefined variable $mid in pm.inc.php
+        - Fixed: Poll question not being affected by word filter.
+        - Fixed: Peer Nickname not working on threads_get_recent()
+                 or on polls.
+        - Fixed: Undefined variable in session.inc.php
+        - Fixed: Undefined index ['FID'] in poll.inc.php
+        - Fixed: Call to old perm_is_moderator in poll.inc.php
+        - Fixed: bh_user_time_update() wasn't working properly after
+                 the first update. It would subsequently set the time as 0
+                 after successfully working it out the first time.
+        - Fixed: USER_TIME_TOTAL still wasn't working properly if
+                 the USER_TIME_TOTAL column was null.
+        - Fixed: User time total was adding the session time up
+                 incorrectly and increasing the value artifically.
+        - Fixed: Last Visit on My Forums showing Never Visited if
+                 you had browse anonymously switched on.
+        - Fixed: Anonymous users USER_TIME setting was being set
+                 incorrectly.
+        - Fixed: USER_TRACK data for USER_TIME wasn't being added if
+                 the user didn't already have some data available in the
+                 table.
+        - Fixed: USER_TIME not updating when value was NULL.
+        - Fixed: Guests and some users were receiving an error when
+                 entering the forum due to having no permissions.
+        - Fixed: Undefined variable $user_sess in session.inc.php
+                 when entering the forum as a guest.
+        - Fixed: Function thread_get() wasn't correctly setting the
+                 LAST_READ for a thread outside the cut-off which meant
+                 that the whole thread appeared unread.
+        - Fixed: Guests weren't able to browse folders in the thread
+                 list.
+        - Fixed: Threads not modified since the cut-off were
+                 sometimes showing as unread in All Discussions.
+        - Fixed: Thread with no LAST_READ data now automatically
+                 mark as read posts older than the cut-off so you don't end
+                 up re-reading old posts.
+        - Fixed: If statement error in threads_process_list()
+        - Fixed: Thread list mode drop down wasn't returning the
+                 right thread types.
+        - Fixed: Removed debugging code from user_get_aliases()
+        - Fixed: Missing utf8.inc.php from CVS.
+        - Fixed: You and You (Invisible) was hard coded into
+                 messages.inc.php. Added to translation files/
+        - Fixed: Parse error in en-us.inc.php
+        - Fixed: bh_x-hacker_translate.php wasn't always translating
+                 all the strings in the english file.
+        - Fixed: bh_check_languages will now find strings which
+                 haven't been translated (identical to en.inc.php)
+        - Fixed: Stray comma in new-install.php causes error when
+                 creating POST table.
+        - Fixed: Errors installer and upgrader when upgrading
+                 multiple forums.
+        - Fixed: upgrade-06x-to-064.php was stumbling over tables
+                 which were not in conflict.
+        - Fixed: Missing remove conflict for SEARCH_ENGINE_BOTS
+                 table.
+        - Fixed: Unknown table type error caused by not resetting
+                 the $sql variable in upgrade scripts.
+        - Fixed: Updated install / upgrade scripts with schema for
+                 new BANNED table.
+        - Fixed: Wrong table format for USER_POLL_VOTES when
+                 upgrading from 0.5
+        - Fixed: Adding indexes to wrong tables.
+        - Fixed: Missing query to add SID column to VISITOR_LOG
+                 table when upgrading to 0.6
+        - Fixed: addOverFlow(): Calculation was off for clientWidth.
+        - Fixed: addOverFlow():Table cells are now set to 98% in
+                 pixels (was 100%)
+        - Fixed: addOverFlow(): Added redoOverFlow function to
+                 reflow page when window is resized.
+        - Fixed: Type error for .width decleration in post.js in
+                 FireFox Javascript console fixed.
+        - Fixed: Better check for attachEvent / addEventListener so
+                 they are only called if the browser supports them.
+        - Fixed: Overflow text works for both Gecko browsers and IE
+                 browsers now. Not tested on Opera. Opera sucks.
+
+
+        - Added: Tehforum style (variation of BH default) so it's
+                 easier to maintain and it's somewhere safe to keep it.
+        - Added: Missing image for edit_relations.php
+        - Added: bh_ms_word_spelling_check.php that can spell check
+                 the English language translation
+        - Added: .cvsignore files to prevent adding of Attachments
+                 and Text Captcha folders and other files.
+        - Added: UTF-8 encoded output via mb_string functions if
+                 applicable.
+        - Added: Check button on admin_banned.php when adding a ban.
+        - Added: Column sorting and pages to admin_banned.php (10
+                 items per page).
+        - Added: Ban controls for HTTP referer.
+        - Added: Ban data changes for HTTP referer to admin log.
+        - Added: Options to manage the unread messages cutoff in
+                 admin_default_forum_settings.php
+        - Added: Option to hide Guests from Visitor Log both at
+                 Global and per-forum level.
+        - Added: Textcaptcha class has new destroy_image function to
+                 clean up image after use.
+        - Added: Register.php removes Textcaptcha image after use.
+        - Added: New bh_find_deprecated_consts_and_langs.php that
+                 replaced bh_find_deprecated_language_strings.php. Now
+                 finds constants and lang strings.
+        - Added: Option to reset all user permissions for the
+                 selected folder to match those of the current folder.
+        - Added: Grace period for editing posts where the EDITED BY
+                 text doesn't appear.
+        - Added: User's can now alter the nicknames of other user's
+                 they've added to the relationships list. (WIP, probably
+                 missed loads)
+        - Added: HTTP Referer code for session initialisation and
+                 user registration.
+        - Added: Option for Admin to edit a user's profile.
+        - Added: Option to artificially change the user's post count
+                 and reset it back to normal.
+        - Added: Mouseover spoiler highlight to lite mode. Not in
+                 full mode at the moment. Will change this to user
+                 configurable option.
+        - Added: Check for Windows CE powered Smartphones that shows
+                 the spoiler so it's readable in Pocket IE.
+        - Added: Functionality to restrict CSS attributes by units
+                 (width, height, etc)
+        - Added: 0.6.x to 0.7 upgrade updates thread viewcount
+                 with the number of registered users who have read each
+                 thread.
+        - Added: Option added to config.inc.php allows you to
+                 specify target frame in replace of _top for embedding
+                 Beehive in frameset.
+        - Added: Functionality to restrict the USER_THREAD table. No
+                 inteface to change the options yet.
+        - Added: By popular request a way to preview the voting form
+                 when creating a poll.
+        - Added: By popular request a proper thread delete function
+                 that actually removes all trace of a thread. Already
+                 deleted threads remain as they were.
+        - Added: Ability to move a thread to a "Deleted Threads"
+                 list and recover it back.
+        - Added: Tooltip text to reset button so people know what it
+                 actually does. Duh.
+        - Added: Nickname editing to user_rel.php (hand icon on
+                 posts)
+        - Added: Export options for each file type added for PM
+                 Exporting.
+        - Added: Backend code to forum_options.php and user.inc.php
+                 to handle the saving of PM exporting options
+        - Added: PM Export Options interface. Doesn't work yet.
+        - Added: Optional argument to bh_update_visitor_log() so you
+                 can specify the forum.
+        - Added: Function install_remove_table_keys() allows
+                 installer to remove keys from tables.
+        - Added: Javascript code to resize images larger than the
+                 message pane width and add overflow to posts.
+        - Added: USER_TRACK.USER_TIME tracks the length of the
+                 user's session. Rather inaccurate at the moment.
+        - Added: Export option to pm.php which creates a zip file of
+                 html files (1 for each message) and includes your
+                 attachments and your user style. No emoticons because it
+                 wouldn't make sense to include all the files! Coming soon
+                 some options in My Controls to specify what gets exported.
+        - Added: Thread type drop down list added to top of
+                 search.php for display when no results found.
+        - Added: Tooltip for start_left.php and thread_list.php now
+                 include the VIEWCOUNT for the thread.
+        - Added: bh_session_check() function now allows a second
+                 optional parameter that overrides the cookie MD5 hash.
+        - Added: bh_session_init() now returns the MD5 hash
+                 generated / retrieved upon success.
+        - Added: MySQL error code for missing / invalid column name
+                 added to prevent error handler from showing some SQL
+                 errors.
+        - Added: Search engine bots now show in the visitor log with
+                 clickable links to their home pages.
+        - Added: New attachment test code added to start_left.php
+                 and threads_get_most_recent() function.
+        - Added: Registered display in user profile. About time we
+                 had that somewhere.
+        - Added: Output for user time tracking to profile popup.
+        - Added: Filename to end of get_attachment.php links to try
+                 and spoof browsers who ignore the filename= header.
+        - Added: Logging to the DB functions. ooh and eak at the
+                 number of queries at messages.php runs!!
+        - Added: Error message when mysql/mysqli extension couldn't
+                 be loaded.
+        - Added: Function to iterate through the session perms and
+                 return all matches against a perm for a specific forum.
+        - Added: Code to prevent browsers caching style sheets
+                 (appends ?[modifiedtime] to end of URL)
+        - Added: Backend code for post view counter. No idea where
+                 to display it at the moment. Bottom left of each post?
+        - Added: Function to automatically prune the unread thread
+                 data based on the settings picked in Default Forum
+                 settings.
+        - Added: bh_update_user_time() function which handles the
+                 USER_TIME updates.
+        - Added: USER_TIME update it performed once for each user
+                 every time their session needs renewing.
+        - Added: FULLTEXT index added to SEARCH_ENGINE_BOTS to speed
+                 up matching.
+        - Added: Query to attempt conversion of SESSIONS table to
+                 HEAP if available.
+        - Added: Upgrade scripts now calculate and insert the thread
+                 view counts. It's only 1 thread view per registered user
+                 and doesn't count guests or multiple views but it's a
+                 start at least :)
+
+
+        - Changed: Tehforum address changed to co.uk as the .net
+                   domain has expired and is being held to ransom.
+                   Bastards.
+        - Changed: Probability of forum clean up functions changed
+                   to 1 in 50 by default.
+        - Changed: Removed GRANT permission from requirements for
+                   MySQL
+        - Changed: Made forum_create() add an index to VIEWED on
+                   POST table.
+        - Changed: Installer and upgrade script add index to
+                   VIEWED on POST table.
+        - Changed: Updated readme.txt. Removed references to CLI
+                   installer and changed some other things.
+        - Changed: Forum clean up functions now return FALSE if
+                   they didn't run.
+        - Changed: Readme.txt updated for requirements (now PHP
+                   4.2.0)
+        - Changed: clean_styles was being too conservative at
+                   preventing margins and such like.
+        - Changed: Got rid of the index creating loops in the
+                   installers because they're too slow.
+        - Changed: Removed a lot of indexes that were causing slow
+                   downs just to conflicts (?) with primary keys.
+        - Changed: Moved the current user perm checks into the
+                   session array so that there are fewer hits on the
+                   database.
+        - Changed: Error message and success messages on
+                   admin_banned and admin_rss_feeds now appear for more
+                   events.
+        - Changed: Admin Ban controls changed to work like the new
+                   Admin RSS controls
+        - Changed: Language-ised admin_banned.php completely.
+        - Changed: New admin_banned.php with more intuitive (well,
+                   mostly) layout.
+        - Changed: Updated x-hacker language file.
+        - Changed: Logon and logout forms tidied up a bit.
+        - Changed: Wording in admin_default_forum_settings for
+                   textcaptcha waning includes full path now.
+        - Changed: Seperated bh_session_init() into two functions
+                   with the second new one handling the guest session
+                   creation.
+        - Changed: New RSS Feed Admin panel with easier to
+                   understand form and options.
+        - Changed: RSS Feed Prefix is now optional and if used
+                   doesn't include square brackets around it.
+        - Changed: Layout of admin_folder_edit.php so it looks a
+                   bit better now.
+        - Changed: Search stop words popup changed to 3 column
+                   layout to better fit on screen.
+        - Changed: Moved all hyperlinks out of the language files
+                   and into the main scripts.
+        - Changed: install_check_tables now allows you to specify
+                   an array of tables to check.
+        - Changed: Clicking reset nickname button in
+                   edit_relations saves that relationship but not others.
+        - Changed: admin_forums,php width added to main table to
+                   prevent it looking bunched up.
+        - Changed: Shrunk logon form slightly to make it look less
+                   gash.
+        - Changed: Word filter is now done in output buffering
+                   rather than load list and call mutiple times everytime
+                   apply_wordfilter is called.
+        - Changed: Removed function
+                   messages_get_most_recent_unread function and updated 
+                   messages_get_most_recent function to find both read and
+                   unread messages.
+        - Changed: admin_post_approve.php, delete.php and edit.php
+                   to use newer  messages_get_most_recent function if the
+                   thread that was being modified no longer exists.
+        - Changed: Function thread_get() now checks to see which
+                   folders the user can view.
+        - Changed: All calls to thread_get placed within if
+                   statements to check the return value for above change.
+        - Changed: Removed useless calls to thread_get_title,
+                   thread_get_folder, etc which were being duplicated by
+                   calls to thread_get.
+        - Changed: Removed join with THREAD table for
+                   message_display. Instead we use the data we alread
+                   fetched from thread_get.
+        - Changed: My Controls pages layouts changed to move text
+                   away from the table border.
+        - Changed: USER_TIME_LAST now USER_TIME_BEST and stores
+                   the user's longest session rather than last session.
+        - Changed: URL truncating in admin_users.php now uses
+                   parse_url if possible to shorten URL to scheme and host
+                   only.
+        - Changed: Attachments layout changed.
+        - Changed: Poll groups are now seperated by a <hr> again.
+        - Changed: New create_poll.php that is more in fitting
+                   with post.php and other scripts.
+        - Changed: Removed db.log debugging from DB functions.
+        - Changed: Removed extra call to
+                   messages_get_most_recent() and changed
+                   messages_get_most_recent_unread() to also look for read
+                   messages as well.
+        - Changed: Removed joins on USER table for approved and
+                   edited logon. We now fetch that data seperatly if we
+                   need to.
+        - Changed: user_get_prefs() changed query from COUNT to
+                   basic SELECT ... LIMIT 0, 1 style query.
+        - Changed: Added Preview Voting Form button to
+                   edit_poll.php
+        - Changed: new edit_poll.php that looks like
+                   create_poll.php. No change in functionality otherwise.
+        - Changed: Updated fr-ca language.
+        - Changed: The individual light mode scripts now check to
+                   see if you have a saved logon cookie and redirect you if
+                   you're not logged in.
+        - Changed: Replaced UTC time zones with GMT + country
+                   names
+        - Changed: Updated Installer to add the relevant new PM
+                   exporting columns to USER_PREFS (global) table.
+        - Changed: Removed redudant final_uri code from light mode
+                   as it doesn't do anything at the moment. Will work out a
+                   better way to handle it some time, but for now the frame
+                   set and the <noframes> tags and the whole redirecting
+                   causes too many headaches.
+        - Changed: Removed lforums.php from robots.txt so that
+                   Google and co can index multiple forums under a single
+                   BH install.
+        - Changed: Less Resource Intensive way of updating
+                   THREAD_STATS table UNREAD_PID, UNREAD_CREATED columns.
+        - Changed: Lack of LAST_READ data is now calculated as
+                   threads are viewed and as the USER_THREAD data is pruned
+                   rather than working it out on the fly with a join
+                   against the POST table.
+        - Changed: Updated en-us and x-hacker language files.
+        - Changed: Moved the invalid username / password prompt in
+                   logon.php to be within the frameset (uses a cookie to
+                   check if the logon was a failure)
+        - Changed: Gave the Light mode the same functionality as
+                   the full thread list with the ability to mark a single
+                   folder as read.
+        - Changed: Fixed spelling error "Where moved to" in
+                   en.inc.php
+        - Changed: New CSS class for thread_tracking_notice rather
+                   than reusing text_captcha_error
+        - Changed: Deleted threads can now be browsed by
+                   Moderators. Edit Thread Options link at bottom of page
+                   links to thread_options.php to allow undelete.
+        - Changed: Installer updated to reflect changes to
+                   USER_PREFS table and USER_TRACK table.
+        - Changed: Removed Reply To links from PM Inbox export.
+        - Changed: UTF-8 encoded files.
+        - Changed: Removed redundant check from thread_list.php
+                   which is now handled by thread_get()
+        - Changed: Funky queries for mark as read which literally
+                   take 2 to 3 seconds on default MySQl installation with
+                   no tuning! Not sure if these will work with MySQL 3.x.
+                   They should do because the manual mentions the method is
+                   available. Anyone want to test?
+        - Changed: Reduced number of queries required to find
+                   threads with attachments for display of paperclip in
+                   thread list.
+        - Changed: X-Hacker language doesn't show matching strings
+                   anymore like en-us.
+        - Changed: Removed useless joins against GROUP_USER and
+                   GROUP_PERM tables from query in user_logon function.
+        - Changed: Probability of forum clean up functions running
+                   has been increased by default from 1 in 50 to 1 in 20
+        - Changed: Only one forum clean up function is run per
+                   page load per user if they run at all. Prevents them
+                   running all at once and causing long page loads.
+        - Changed: Removed POST table reindexes from upgrade and
+                   installer after running tests on Teh Forum.
+        - Changed: All the wasteful SELECT COUNT queries have been
+                   changed to basic queries that fetch 1 row (LIMIT 0, 1)
+                   and 1 column (primary key)
+        - Changed: PM export HTML now uses verbose date format to
+                   include day month and year.
+        - Changed: Mucho faster emoticon class. Shaved over 400ms
+                   off the execution time (woo!)
+        - Changed: new-install.php small change to prevent
+                   unneccesary processing after removal of conflicts.
+        - Changed: bh_session_get_perms_by_folder() is more
+                   efficient.
+        - Changed: Moved test for USER_PERM_GUEST_ACCESS into
+                   folder.inc.php.
+        - Changed: folder_get_all() and folder_get_all_by_forum()
+                   now use the session data rather than requery the
+                   database.
+        - Changed: Converted all BIT_OR SQL calls for selecting or
+                   retrieving folders to the new bh_session_check_perm()
+                   function.
+        - Changed: Moved VIEWED column from THREAD table into a
+                   seperate THREAD_STATS table.
+        - Changed: USER_TRACK table now records both the user's
+                   longest single session and their total session time.
+        - Changed: Javascript threaded 'hack' to make the PM
+                   notification appear without disrupting the page loading.
+        - Changed: Pluralisation of 'You have %d new PM" so we
+                   correctly get "You have 1 new PM" and "You have 2 new
+                   PMs"
+        - Changed: Post count now is Thread count. Makes more
+                   sense. Duh.
+        - Changed: bh_session_end() now uses current time rather
+                   than the session time.
+        - Changed: Option to reset user permissions doesn't affect
+                   the user's moderation permission anymore.
+        - Changed: USER_POLL_VOTES table structure changed to work
+                   on the primary key to make queries faster.
+        - Changed: Probability code for update_stats(),
+                   thread_auto_prune_unread_data(),
+                   bh_remove_stale_sessions() and pm_system_prune_folders()
+                   now used mt_rand() rather than time() which means the
+                   functions are less likely to fire when two users load a
+                   page within milliseconds of each other.
+        - Changed: PM Pruning, Stats Updating and Session Expiring
+                   code now all use the same probability before processing
+                   rather than every 15 minutes.
+        - Changed: Thread pruning now uses a slightly higher
+                   probability as it wasn't ever firing on Teh Forum.
+        - Changed: bh_user_update_time() function to use less
+                   queries.
+        - Changed: POST_ATTACHMENT_FILES table format changed
+        - Changed: Switched join on thread and pm has_attachment
+                   functions to make better use of the primary keys on
+                   PM_ATTACHMENT_IDS and POST_ATTACHMENT_IDS.
+        - Changed: Removed join on THREAD table from poll display.
+        - Changed: Removed KEYWORDS column from SEARCH_RESULTS
+                   table and moved data to LAST_SEARCH_KEYWORDS in
+                   USER_TRACK.
+        - Changed: Call me nuts if you want but I've changed
+                   referrer back to referer. Spelt wrongly but correctly
+                   according to HTTP specification.
+        - Changed: Limited bh_delete_expired_sessions to 10 at a
+                   time to prevent the user who gets lumbered with the
+                   delete from waiting for the page to load.
+        - Changed: User session length tracking now works for
+                   users who have browse anonymously switched on.
+        - Changed: Removed WHERE from query that updates
+                   UNREAD_PID and UNREAD_CREATED columns so they always get
+                   updated!
+        - Changed: Prevented guests from spoofing the thread list
+                   to get it to load thread types they can't view.
+        - Changed: Added checks for guests and use shorter less
+                   complex queries with no relationships, interest or
+                   unread data.
+        - Changed: Unread thread views limited to a maximum cut
+                   off period allows USER_THREAD table to be pruned.
+        - Changed: Updated English and German languages.
+        - Changed: Updated en-us and x-hacker language files.
+                   fr-ca and de to come soon.
+        - Changed: bh_check_languages now orders the problems it
+                   finds so it groups together missing strings,
+                   untranslated, unneeded, etc.
+        - Changed: More comprehensive bh_check_languages.php
+                   script which can selectively turn on or off checking for
+                   untranslated strings.
+        - Changed: bh_ms_word_spelling_check.php now writes the
+                   changes to en-new.inc.php rather than requiring you to
+                   do the changes manually.
+        - Changed: Updated fr-ca translation.
+        - Changed: Format of table key arrays changed so we can
+                   create named indexes so we don't create duplicate
+                   indexes on tables.
+        - Removed: UTF-8 Page encoding. No idea how to fix the RSS
+                   output. Might just give in and flag it as a known issue.
+        - Removed: Guest Auto logon optionas it doesn't work with
+                   the new session code where everybody is a guest even if
+                   they have a saved logon.
+        - Removed: Unused logon error URL query when invalid
+                   username and password.
+        - Removed: Useless call to thread_can_view which was
+                   pretty much duplicating the query in thread_get.
+        - Removed: thread_can_view function removed from
+                   thread.inc.php.
+        - Removed: Undone the changes in the previous commit to
+                   the PM and thread have_attachments functions.
+        - Removed: CGI installer because it didn't work and was
+                   never maintained and was unsupported. Sorry peeps.
+
+
+What's new in 0.6.3 (Released 12th February 2006)
 ===================
 
 - Notes
 
         - BeehiveForum 0.6.3 fixed a few issues highlighted within
-	  the release of 0.6.2. For more detailed
-	  features of 0.6.2 please see the 0.6 release notes.
+          the release of 0.6.2. For more detailed
+          features of 0.6.2 please see the 0.6 release notes.
 
 - Changes from 0.6.2
 
@@ -179,8 +979,8 @@ What's new in 0.6.2 (Released 30th Nov 2005)
 - Notes
 
         - BeehiveForum 0.6.2 fixes a few issues highlighted within
-	  the release of 0.6 and 0.6.1. For more detailed
-	  features of 0.6.2 please see the 0.6 release notes.
+          the release of 0.6 and 0.6.1. For more detailed
+          features of 0.6.2 please see the 0.6 release notes.
 
 - Changes from 0.6.1
 
@@ -409,9 +1209,9 @@ What's new in 0.6.1 (Released 22nd Aug 2005)
 - Notes
 
         - BeehiveForum 0.6.1 fixes a few issues highlighted within
-	  the final release of 0.6. There are no functional changes
-	  to the software at this time. For more detailed features
-	  of 0.6.1 please see the 0.6 release notes.
+          the final release of 0.6. There are no functional changes
+          to the software at this time. For more detailed features
+          of 0.6.1 please see the 0.6 release notes.
 
 - Changes from 0.6
 
@@ -419,26 +1219,26 @@ What's new in 0.6.1 (Released 22nd Aug 2005)
                  privilleges of another user without having global 
                  forum privilleges themselves.
 
-	- Fixed: Upgrading from 0.5 to 0.6 sometimes results in an
-	         error with primary keys on SEARCH_POST table.
+        - Fixed: Upgrading from 0.5 to 0.6 sometimes results in an
+                 error with primary keys on SEARCH_POST table.
 
         - Fixed: Buffer error occured when using MSIE browser and
-	         being forced to download the config.inc.php when
-		 installing Beehive.
+                 being forced to download the config.inc.php when
+                 installing Beehive.
 
         - Fixed: Forum shown was always the default forum even if the
                  webtag was valid.
 
         - Fixed: My Forums page would not display the message count on
-	         the forum if the forum had no messages or the user
-		 had not previously visited the forum.
+                 the forum if the forum had no messages or the user
+                 had not previously visited the forum.
 
-	- Fixed: Missing SEARCH_RESULTS table when performing a new
-	         installation of BeehiveForum 0.6 or upgrading from
-		 a 0.5 installation.
-	
-	- Fixed: Missing FORUM column in SEARCH_RESULTS table when
-	         upgrading from 0.6RC1 / RC2 to 0.6 final.
+        - Fixed: Missing SEARCH_RESULTS table when performing a new
+                 installation of BeehiveForum 0.6 or upgrading from
+                 a 0.5 installation.
+        
+        - Fixed: Missing FORUM column in SEARCH_RESULTS table when
+                 upgrading from 0.6RC1 / RC2 to 0.6 final.
 
 
 What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
@@ -447,75 +1247,75 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
 - Notes
 
         - BeehiveForum 0.6 introduces a new search indexing procedure
-	  which will unfortunately skew the search results of your forum
-	  while it catches up and performs the indexing. If you have a 
-	  lot of posts this will take a long time to complete. To help
-	  reduce the time required in the indexing your old posts, 
-	  included is search_index.php which is suitable for running
-	  from a cron or schedule job. Posts created after upgrading
-	  to 0.6 will be indexed as they are created.
+          which will unfortunately skew the search results of your forum
+          while it catches up and performs the indexing. If you have a 
+          lot of posts this will take a long time to complete. To help
+          reduce the time required in the indexing your old posts, 
+          included is search_index.php which is suitable for running
+          from a cron or schedule job. Posts created after upgrading
+          to 0.6 will be indexed as they are created.
 
-	- New Admin logging options require 0.6 to clear your current
-	  Admin Log before upgrading. This is at the expense of
-	  improved logging. If you want to keep your old logs please
-	  view and save the HTML output or export the ADMIN_LOG table
-	  for each forum.
+        - New Admin logging options require 0.6 to clear your current
+          Admin Log before upgrading. This is at the expense of
+          improved logging. If you want to keep your old logs please
+          view and save the HTML output or export the ADMIN_LOG table
+          for each forum.
 
 - Brand new features
 
         - Installation can now be completed via CLI over telnet / SSH.
         - RSS Feed propagation allows the replication of an RSS feed
-	  into threads on your forum. Useful for news headlines from
-	  other sites to promote discussion.
-	- Added constant for the include files path so that developers
-	  can reuse the Beehive include files while placing their own
-	  scripts outside of the main forum folder.
+          into threads on your forum. Useful for news headlines from
+          other sites to promote discussion.
+        - Added constant for the include files path so that developers
+          can reuse the Beehive include files while placing their own
+          scripts outside of the main forum folder.
         - Post Approval options allows moderators to optionally approve
           posts before they are displayed to other users.
-	- Email address confirmation for new user registrations.
-	- Text Captcha options for new user registrations to help
-	  prevent scripts and bots from creating user accounts.
+        - Email address confirmation for new user registrations.
+        - Text Captcha options for new user registrations to help
+          prevent scripts and bots from creating user accounts.
         - TinyMCE WYSIWYG integration with BeehiveForum's compose
           pages.
-	- French Canadian (fr-ca) language file. Thanks to Jo from
-	  Canadian Politics Forums (http://www.canadian-politics.com/)
-	- Forums can be opened, closed, restricted or password protected
-	  without requiring access to the 'Manage Forums' section. A new
-	  option allows a user with access to the 'Manage Forums' section
-	  to disable a forum which will hide it from the My Forums list
-	  as per 0.5's behaviour.
-	- WikiWiki integration allows Beehive to automatically hyperlink
-	  CamalCase words as used by most popular Wiki sites.
-	- Wiki-esq quick links for linking to a specific post using 
-	  msg:1.1 or to user's profile using user:Logon.
-	- Attachments allow for the creation of thumbnails in posts for
-	  supported file types (*.png, *.jpg, *.gif). Requires GD library
-	  to be compiled in with PHP.
-	- New option allows all other users to edit a PILLORIED users
-	  posts without having to be given moderator privileges.
-	- Added user tracking and limitations to restrict how often users
-	  can post and perform searches.
-	- New User Registrations can now be disabled.
-	- Added option to prevent spidering of forums by adding the
-	  appropriate noindex,nofollow meta tags to the HTML generated
-	  by Beehive.
-	- Added options to enable or disable the links and Personal
-	  Messages sections and correctly prevent access to the related
-	  pages.
-	- Added option to specify the forum time zone and day light saving
-	  mode independently of the server clock and user time zone.
-	- Added option to prevent users from ignoring admin.
-	- Default New User registration settings including email notification
-	  PM notification, etc. can be defined in Global Forum Settings.
-	- Added <label for=""> to checkboxes and radio buttons which allow
-	  for clickable text to toggle form elements.
-	- Added post stats page to Admin tools which can be used to find
-	  the Top 20 posters during specified period.
+        - French Canadian (fr-ca) language file. Thanks to Jo from
+          Canadian Politics Forums (http://www.canadian-politics.com/)
+        - Forums can be opened, closed, restricted or password protected
+          without requiring access to the 'Manage Forums' section. A new
+          option allows a user with access to the 'Manage Forums' section
+          to disable a forum which will hide it from the My Forums list
+          as per 0.5's behaviour.
+        - WikiWiki integration allows Beehive to automatically hyperlink
+          CamalCase words as used by most popular Wiki sites.
+        - Wiki-esq quick links for linking to a specific post using 
+          msg:1.1 or to user's profile using user:Logon.
+        - Attachments allow for the creation of thumbnails in posts for
+          supported file types (*.png, *.jpg, *.gif). Requires GD library
+          to be compiled in with PHP.
+        - New option allows all other users to edit a PILLORIED users
+          posts without having to be given moderator privileges.
+        - Added user tracking and limitations to restrict how often users
+          can post and perform searches.
+        - New User Registrations can now be disabled.
+        - Added option to prevent spidering of forums by adding the
+          appropriate noindex,nofollow meta tags to the HTML generated
+          by Beehive.
+        - Added options to enable or disable the links and Personal
+          Messages sections and correctly prevent access to the related
+          pages.
+        - Added option to specify the forum time zone and day light saving
+          mode independently of the server clock and user time zone.
+        - Added option to prevent users from ignoring admin.
+        - Default New User registration settings including email notification
+          PM notification, etc. can be defined in Global Forum Settings.
+        - Added <label for=""> to checkboxes and radio buttons which allow
+          for clickable text to toggle form elements.
+        - Added post stats page to Admin tools which can be used to find
+          the Top 20 posters during specified period.
 
 - Enhanced old features
 
         - Greatly improved Unicode UTF-8 support which should make it
-	  possible to type in different alphabets in the same post.
+          possible to type in different alphabets in the same post.
         - Improved user permissions handling to be more consistent and
           less prone to problems. A lot of the niggles you've all
           encountered with 0.5's permissions should be fixed in 0.6.
@@ -523,71 +1323,71 @@ What's new in 0.6 ("Honey Lingers", released 18th Aug 2005)
           Nicknames and email addresses, all by wildcard matching.
         - Better search indexing added which generates less load on
           MySQL
-	  server when a user performs a search.
-	- Better Admin log with less possibility for display of Unknown
-	  User, Unknown Thread / Post, etc.
-	- Added ability for Admin to change user's password.
-	- Re-added User Alias list on User page, but removed IP banning
-	  option as this is now handled by the new Ban Controls section.
-	- Dictionary now skips HTML tags and entities and is otherwise
-	  more precise in matching whole words.
+          server when a user performs a search.
+        - Better Admin log with less possibility for display of Unknown
+          User, Unknown Thread / Post, etc.
+        - Added ability for Admin to change user's password.
+        - Re-added User Alias list on User page, but removed IP banning
+          option as this is now handled by the new Ban Controls section.
+        - Dictionary now skips HTML tags and entities and is otherwise
+          more precise in matching whole words.
         - Links and Link folders are now sorted alphabetically by
           default.
-	- Replaced Beautifier with Geshi - Generic Syntax Highlighter.
-	- Improved user permissions allow for separate Links section
-	  and Post moderators as well as better global Admin who
-	  can optionally moderate over all forums.
-	- Improved emoticons support makes it easier to create and 
-	  distribute emoticon packs that are easy to install.
-	- Attachments now always open in a new window / tab.
-	- New improved attachments popup with G-mail-a-like multiple
-	  file uploads.
-	- Light mode now uses the Forum Name in the logon page to indicate
-	  the name of the forum you are visiting.
-	- Images to links option will now convert embedded files including
-	  Shockwave and Flash files.
-	- Added Logon and User UID to top of Edit Preferences page.
+        - Replaced Beautifier with Geshi - Generic Syntax Highlighter.
+        - Improved user permissions allow for separate Links section
+          and Post moderators as well as better global Admin who
+          can optionally moderate over all forums.
+        - Improved emoticons support makes it easier to create and 
+          distribute emoticon packs that are easy to install.
+        - Attachments now always open in a new window / tab.
+        - New improved attachments popup with G-mail-a-like multiple
+          file uploads.
+        - Light mode now uses the Forum Name in the logon page to indicate
+          the name of the forum you are visiting.
+        - Images to links option will now convert embedded files including
+          Shockwave and Flash files.
+        - Added Logon and User UID to top of Edit Preferences page.
         - Removed all inline CSS and replaced it with class names which
-	  can be more easily modified in your style sheets.
-	- Greatly improved the start page editor and style sheet editor
-	  with more useful error messages and help for write protected
-	  files and folders.
-	- Added Deleted by text and time / date stamp on deleted messages.
-	- Prevented users from blocking moderators and stopping them
-	  from sending them PMs.
-	- Fixed sending an email to a user via their profile always
-	  said "Sent by X from a Beehive Forum"
-	- Better session handling code allows users to logout correctly
-	  and appear logged out on the Recent Users display.
-	- Better detection for when a user's session expires, giving them
-	  more control over logging back in with minimal fuss.
-	- Fixed all user preference updates so they don't affect all
-	  forums. Changing things like post page settings, font size, 
-	  toggling stats display now only affects the forum a user is
-	  currently visiting rather than all of them.
-	- Re-added display of Guests to Recent Visitors list.
+          can be more easily modified in your style sheets.
+        - Greatly improved the start page editor and style sheet editor
+          with more useful error messages and help for write protected
+          files and folders.
+        - Added Deleted by text and time / date stamp on deleted messages.
+        - Prevented users from blocking moderators and stopping them
+          from sending them PMs.
+        - Fixed sending an email to a user via their profile always
+          said "Sent by X from a Beehive Forum"
+        - Better session handling code allows users to logout correctly
+          and appear logged out on the Recent Users display.
+        - Better detection for when a user's session expires, giving them
+          more control over logging back in with minimal fuss.
+        - Fixed all user preference updates so they don't affect all
+          forums. Changing things like post page settings, font size, 
+          toggling stats display now only affects the forum a user is
+          currently visiting rather than all of them.
+        - Re-added display of Guests to Recent Visitors list.
 
 - General Bug fixes
 
         - Fixed call to undefined function user_change_pw() fixed. A
           patch is also available to fix separately this problem in 0.5
-	- Fixed call to undefined function gzcompress() when GZIP
-	  compression was enabled on a PHP installation that was compiled
-	  without ZLIB.
-	- Lots of IIS server fixes.
-	- Lots and lots more!
+        - Fixed call to undefined function gzcompress() when GZIP
+          compression was enabled on a PHP installation that was compiled
+          without ZLIB.
+        - Lots of IIS server fixes.
+        - Lots and lots more!
 
 - Known issues
 
-	- Threads created from RSS Feeds are known to have problems
-	  with some characters displaying incorrectly where the
-	  character encoding of the feed is different to that of
-	  the output generated by the BeehiveForum software.
+        - Threads created from RSS Feeds are known to have problems
+          with some characters displaying incorrectly where the
+          character encoding of the feed is different to that of
+          the output generated by the BeehiveForum software.
 
-	- Incorrect HTML contained within RSS Feeds will be rendered
-	  correctly (shown as HTML entities) due to aggressive checking
-	  used by BeehiveForum to make sure broken HTML doesn't break
-	  the display of the messages.
+        - Incorrect HTML contained within RSS Feeds will be rendered
+          correctly (shown as HTML entities) due to aggressive checking
+          used by BeehiveForum to make sure broken HTML doesn't break
+          the display of the messages.
 
 - Changes from 0.6RC2
 
@@ -844,31 +1644,31 @@ What's new in 0.5 ("What You Have Is Enough", released 10th Dec 2004)
 
 - Notes
         - Beehive Forum 0.5 corrected a very large scale problem with
-	  stripslashes which means that content created with prior
-	  versions may be subject to erroneous display once you
-	  upgrade to 0.5.
+          stripslashes which means that content created with prior
+          versions may be subject to erroneous display once you
+          upgrade to 0.5.
 
 - Brand new features
 
         - Multiple Forum support. Yes, finally you can run more than
           one forum on your web space using a single Beehive
           installation, under a 'My Forums' linking system.
-	- Forums can be open/closed/restricted/passworded.
-	- Install/upgrade script simplifies installation process.
-	- Comprehensive user permissions - users can be given/denied access
-	  to post/read/moderate etc. in specific folders, as well as having 
-	  HTML/sig privileges given/denied.
-	- As well as per-folder moderators, a user can be assigned as a 
-	  'Global moderator', who can moderate in all folders.
-	- User groups can be created to help moderation of large forums.
-	- New 'Forum Links' drop-down in the top frame allows for linking
-	  other Beehive forums and sites easily.
+        - Forums can be open/closed/restricted/passworded.
+        - Install/upgrade script simplifies installation process.
+        - Comprehensive user permissions - users can be given/denied access
+          to post/read/moderate etc. in specific folders, as well as having 
+          HTML/sig privileges given/denied.
+        - As well as per-folder moderators, a user can be assigned as a 
+          'Global moderator', who can moderate in all folders.
+        - User groups can be created to help moderation of large forums.
+        - New 'Forum Links' drop-down in the top frame allows for linking
+          other Beehive forums and sites easily.
         - New 'My Controls' replaces the old preferences and profile
           sections, incorporating them into a single location.
         - Emoticons. Really fancy emoticons. With per-user options to
           display
-	  any of several graphical sets, or plain-text, or nothing at all.
-	- Emoticon preview pane on post page for quick reference.
+          any of several graphical sets, or plain-text, or nothing at all.
+        - Emoticon preview pane on post page for quick reference.
         - Users can now perform basic moderation duties on their own
           posts on the new 'Thread Options' page, including changing
           the thread title and moving the thread to different folders.
@@ -876,30 +1676,30 @@ What's new in 0.5 ("What You Have Is Enough", released 10th Dec 2004)
           thread to prevent it from being changed.
           - Users can access 'Thread Options' by clicking the icon to
 the left
-	  of every thread title in the thread list frame. From here a thread
+          of every thread title in the thread list frame. From here a thread
           can
-	  be ignored without ever reading it.
-	- Posts can now be marked as unread, for later reading.
-	- New 'Reply as PM' link on every post will quickly create a new PM
-	  addressed to the post author, with the thread title as the subject.
-	- Number of PMs per user can be restricted by the admin.
-	- PM auto-pruning - messages not in the 'saved' folder can be 
-	  automatically deleted after a certain time has passed.
-	- Option to reply a PM with the in-reply-to PM's text quoted.
+          be ignored without ever reading it.
+        - Posts can now be marked as unread, for later reading.
+        - New 'Reply as PM' link on every post will quickly create a new PM
+          addressed to the post author, with the thread title as the subject.
+        - Number of PMs per user can be restricted by the admin.
+        - PM auto-pruning - messages not in the 'saved' folder can be 
+          automatically deleted after a certain time has passed.
+        - Option to reply a PM with the in-reply-to PM's text quoted.
         - New user option to change all images embedded into a post by
           users (inc. signature images) into clickable links.
-	- 'Reply to all' allows a user to reply to an entire thread instead of
-	  a specific post.
-	- New tabular polls to compare votes from different poll groups.
-	- Quick search.
-	- Per-user word filter.
-	- Beautifier (www.beautifier.org) integration with BH <code> tag.
-	- <spoiler> tag to hide text which may otherwise spoil that movie
-	  you're planning on seeing tonight's killer plot twist. <spoiler>He
-	  was dead all along!!</spoiler>
-	- <noemots> tag to prevent anything within it from being converted to
-	  an emoticon.
-	- New post page preferences which allow you to toggle the HTML
+        - 'Reply to all' allows a user to reply to an entire thread instead of
+          a specific post.
+        - New tabular polls to compare votes from different poll groups.
+        - Quick search.
+        - Per-user word filter.
+        - Beautifier (www.beautifier.org) integration with BH <code> tag.
+        - <spoiler> tag to hide text which may otherwise spoil that movie
+          you're planning on seeing tonight's killer plot twist. <spoiler>He
+          was dead all along!!</spoiler>
+        - <noemots> tag to prevent anything within it from being converted to
+          an emoticon.
+        - New post page preferences which allow you to toggle the HTML
           toolbar, the emoticons preview pane and the signature text
           field. You can also choose an HTML mode by default; you can
           choose to enable/disable emoticons in your messages by
@@ -907,19 +1707,19 @@ the left
         - English Language Dictionary available from the HTML Toolbar
           which can be configured to auto-check spelling each time you
           post.
-	- Guest account no longer requires cookies, so that search engines can
-	  spider Beehive forums. A robots.txt file is also included to help
-	  search engines spider the right content.
-	- A user can now set their default start page to be the thread list in
-	  the left frame, and the forum start page in the right frame.
-	- New thread_rss.php allows recent Beehive threads to be loaded into
+        - Guest account no longer requires cookies, so that search engines can
+          spider Beehive forums. A robots.txt file is also included to help
+          search engines spider the right content.
+        - A user can now set their default start page to be the thread list in
+          the left frame, and the forum start page in the right frame.
+        - New thread_rss.php allows recent Beehive threads to be loaded into
           an RSS reader.
-	- Previous/next post navigation arrows.
-	- 'Unread Today' threadlist filter option.
-	- Admin tools to delete all a user's posts in a thread, or throughout
+        - Previous/next post navigation arrows.
+        - 'Unread Today' threadlist filter option.
+        - Admin tools to delete all a user's posts in a thread, or throughout
           the whole forum.
-	- Admin option to delete an entire thread.
-	- 'Ignore Completely' option allows you to ignore all posts to/from a
+        - Admin option to delete an entire thread.
+        - 'Ignore Completely' option allows you to ignore all posts to/from a
           user as well as any threads they create.
 
 - Enhanced old features
@@ -927,16 +1727,16 @@ the left
         - HTML toolbar is now present for post creation; post editing;
           poll creation; signature editing; PM creation; PM editing;
           start page editing. Can't get enough of that HTML toolbar.
-	- Slicker HTML integration - <quote>/<code>/<spoiler> tags won't show
-	  their innards, for example.
-	- Better editing page. No longer will you have to toggle between a 
-	  plain-text/HTML version of your post - BH will automatically 
-	  approximoguesstimate what settings you originally posted your
+        - Slicker HTML integration - <quote>/<code>/<spoiler> tags won't show
+          their innards, for example.
+        - Better editing page. No longer will you have to toggle between a 
+          plain-text/HTML version of your post - BH will automatically 
+          approximoguesstimate what settings you originally posted your
           message with.
-	- Polls can now be 'soft-edited' - minor edits which won't reset the
-	  votes.
-	- Poll options can either be displayed as radio buttons (as before) or
-	  as a drop-down list.
+        - Polls can now be 'soft-edited' - minor edits which won't reset the
+          votes.
+        - Poll options can either be displayed as radio buttons (as before) or
+          as a drop-down list.
         - Improved word filter that allows you to find and replace
           rather than obscure the filtered words with asterix.
         - Word filter can now be disable without having to clear the
@@ -954,7 +1754,7 @@ the left
           servers that can't handle the newer method.
         - The search page has been remade with a better design and
           better functionality.
-	- 'Page [1] 2 3 ...' on various pages rewritten a bit posher.
+        - 'Page [1] 2 3 ...' on various pages rewritten a bit posher.
 
 - Fixes
         - Lots and lots!
@@ -975,63 +1775,63 @@ What's new in 0.4 ("In The Flesh", released 10th December 2003)
 - Brand new features
         - Personal Messages allow users to keep more private matters
           out of view from the rest of the forum members.
-	- I18N multiple language support is now included with Beehive which
-	  allows Beehive to be viewed in a variety of languages. See
+        - I18N multiple language support is now included with Beehive which
+          allows Beehive to be viewed in a variety of languages. See
           readme.txt for more information.
-	- New word filter allows forum admins to censor words using Perl
-	  Compatible Regular Expressions.
-	- A style creator is now included to help you generate a random
-	  coloured style sheet for your forum.
-	- All admin activities are now logged to a table in the database.
-	  The log is viewable from the admin options.
-	- Stats display shows some basic stats such as the active users, the
-	  maximum number of users ever active, number of total posts and
-	  threads made and other such delights.
+        - New word filter allows forum admins to censor words using Perl
+          Compatible Regular Expressions.
+        - A style creator is now included to help you generate a random
+          coloured style sheet for your forum.
+        - All admin activities are now logged to a table in the database.
+          The log is viewable from the admin options.
+        - Stats display shows some basic stats such as the active users, the
+          maximum number of users ever active, number of total posts and
+          threads made and other such delights.
 
 - Enhanced old features
-	- New Post and Edit pages including intelligent HTML toolbar which
-	  allows for quick and easy creation of HTML posts without having
+        - New Post and Edit pages including intelligent HTML toolbar which
+          allows for quick and easy creation of HTML posts without having
           to worry about paragraphs and other such things.
-	- New Register page includes some basic options that people can
-	  set when they sign up.
-	- Preferences page now remembers a users chosen settings if an
-	  error occurred on submit.
-	- Preferences page has been restyled to fit in with the profile
-	  page better.
-	- Sticky threads can now be created by forum admins.
+        - New Register page includes some basic options that people can
+          set when they sign up.
+        - Preferences page now remembers a users chosen settings if an
+          error occurred on submit.
+        - Preferences page has been restyled to fit in with the profile
+          page better.
+        - Sticky threads can now be created by forum admins.
         - Search page allows the results to be grouped by thread.
-	- A minimum word length can now be applied to the search dialog.
-	- New navigatable list style view added to the links page.
-	- Attachments can no longer be embedded in posts, making them more
-	  narrowband friendly, more secure and less bandwidth hungry.
-	- New cookie domain setting allows Beehive to set it's cookies so
-	  that they will work across all sub-domains of a web site.
-	- Users can now choose to display their age and/or birthday in both 
-	  their profile pop-up and also on the Start page.
-	- Folders can now have a restriction placed upon them which prevents
-	  users from posting polls / posts in them.
-	- Folders can now be re-sorted after creation.
-	- Profile items and sections can be re-sorted.
-	- Configurable Profile options allow you to specify some basic options
-	  for the profile page including the type of input field.
-	- Groupable poll options allow users to create polls with different
-	  groups of answers.
-	- Public Ballot polls allow the creation of a poll which can be used
-	  to display the username of each user under the option name they
-	  voted for.
+        - A minimum word length can now be applied to the search dialog.
+        - New navigatable list style view added to the links page.
+        - Attachments can no longer be embedded in posts, making them more
+          narrowband friendly, more secure and less bandwidth hungry.
+        - New cookie domain setting allows Beehive to set it's cookies so
+          that they will work across all sub-domains of a web site.
+        - Users can now choose to display their age and/or birthday in both 
+          their profile pop-up and also on the Start page.
+        - Folders can now have a restriction placed upon them which prevents
+          users from posting polls / posts in them.
+        - Folders can now be re-sorted after creation.
+        - Profile items and sections can be re-sorted.
+        - Configurable Profile options allow you to specify some basic options
+          for the profile page including the type of input field.
+        - Groupable poll options allow users to create polls with different
+          groups of answers.
+        - Public Ballot polls allow the creation of a poll which can be used
+          to display the username of each user under the option name they
+          voted for.
 
 - Fixes
         - High Interest, Unread High Interest, most recent discussion
           and other things which were not working under MySQL 4.0.13
           and later are fixed.
-	- Some fixes to make Beehive more palatable with Microsoft IIS.
-	- Folders were showing a thread count of 0 on threads which did
-	  actually contain some posts.
-	- User custom selected font size now applies to all on-screen
-	  fonts. Smaller fonts are automatically scaled to the main
-	  font size used.
-	- Some layout changes make Beehive look better on non MSIE
-	  based web browsers.
+        - Some fixes to make Beehive more palatable with Microsoft IIS.
+        - Folders were showing a thread count of 0 on threads which did
+          actually contain some posts.
+        - User custom selected font size now applies to all on-screen
+          fonts. Smaller fonts are automatically scaled to the main
+          font size used.
+        - Some layout changes make Beehive look better on non MSIE
+          based web browsers.
 
 - Known Issues
 

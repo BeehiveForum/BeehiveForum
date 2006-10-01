@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.414 2006-09-14 16:25:36 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.415 2006-10-01 16:17:58 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -613,16 +613,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     $message['CONTENT'] = message_split_fiddle($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
 
-    // Check for words that should be filtered ---------------------------------
-
-    if ($is_poll !== true) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
-
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
+
+    // Check length of post to see if we should truncate it for display --------
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 
@@ -632,6 +630,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
+
+    // Check for words that should be filtered ---------------------------------
+
+    if ($is_poll !== true) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
 
     if ($in_list && isset($message['PID'])){
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_cvs_log_parse.php,v 1.4 2006-06-15 21:42:38 decoyduck Exp $ */
+/* $Id: bh_cvs_log_parse.php,v 1.5 2006-10-01 16:17:58 decoyduck Exp $ */
 
 /**
 * bh_cvs_log_parse.php
@@ -155,16 +155,20 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
     // be a way log the entire repository while ignoring specific
     // folders like the TinyMCE and Geshi folders.
 
-    foreach ($cvs_log_folders as $cvs_log_folder) {
+    if ($fp = fopen('changelog.txt.tmp', 'w')) {
 
-        if (!isset($cvs_log)) $cvs_log = "";
-        $cvs_log.= get_cvs_log_data($cvs_log_folder, $date_from);
-        echo ".";
+        foreach ($cvs_log_folders as $cvs_log_folder) {
+
+            fwrite($fp, get_cvs_log_data($cvs_log_folder, $date_from));
+            echo ".";
+        }
+
+        fclose($fp);        
     }
 
     // Got the log data, split it into an array by lines.
 
-    $log_array = explode("\n", $cvs_log);
+    $log_array = explode("\n", file_get_contents('changelog.txt.tmp'));
 
     // Optionally load the old log otherwise create an
     // empty array.
@@ -237,6 +241,7 @@ if (isset($_SERVER['argv'][1]) && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $
     ob_end_clean();
 
     if (@$fp = fopen('changelog.txt', 'w')) {
+
          fwrite($fp, $log_data);
          fclose($fp);
     }

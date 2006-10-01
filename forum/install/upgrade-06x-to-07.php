@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-064.php,v 1.40 2006-08-26 16:39:24 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-07.php,v 1.1 2006-10-01 16:17:20 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-064.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
@@ -172,7 +172,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
 foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
-    // New BANNED table format for new 0.6.4 admin_banned.php
+    // New BANNED table format for new 0.7 admin_banned.php
 
     $banned_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
 

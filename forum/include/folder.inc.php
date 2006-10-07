@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.110 2006-07-03 18:09:47 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.111 2006-10-07 12:16:57 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -524,6 +524,76 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
         return false;
     }
+}
+
+function folder_move_up($fid)
+{
+    $db_folder_move_up = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
+    $sql.= "ORDER BY POSITION";
+
+    $result = db_query($sql, $db_folder_move_up);
+
+    while ($row = db_fetch_array($result)) {
+        $folder_data[] = $row['FID'];
+    }
+
+    if (($folder_position = array_search($fid, $folder_data)) !== false) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION + 1 ";
+        $sql.= "WHERE POSITION = $folder_position - 1";
+
+        if (!$result = db_query($sql, $db_folder_move_up)) return false;
+
+        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION - 1 ";
+        $sql.= "WHERE FID = '$fid'";
+
+        if (!$result = db_query($sql, $db_folder_move_up)) return false;
+
+        return true;
+    }
+
+    return false;
+}
+
+function folder_move_down($fid)
+{
+    $db_folder_move_down = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
+    $sql.= "ORDER BY POSITION";
+
+    $result = db_query($sql, $db_folder_move_down);
+
+    while ($row = db_fetch_array($result)) {
+        $folder_data[] = $row['FID'];
+    }
+
+    if (($folder_position = array_search($fid, $folder_data)) !== false) {
+
+        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION - 1 ";
+        $sql.= "WHERE POSITION = $folder_position + 1";
+
+        if (!$result = db_query($sql, $db_folder_move_down)) return false;
+
+        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION + 1 ";
+        $sql.= "WHERE FID = '$fid'";
+
+        if (!$result = db_query($sql, $db_folder_move_down)) return false;
+
+        return true;
+    }
+
+    return false;
 }
 
 ?>

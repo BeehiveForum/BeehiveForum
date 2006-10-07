@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.105 2006-07-31 11:03:45 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.106 2006-10-07 12:16:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -105,27 +105,16 @@ if (isset($_POST['addnew'])) {
     header_redirect("./admin_folder_add.php?webtag=$webtag");
 }
 
-// Do updates
-if (isset($_POST['submit'])) {
+if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
 
-    if (isset($_POST['t_fid'])) {
+    list($fid) = array_keys($_POST['move_up']);
+    folder_move_up($fid);
+}
 
-        foreach($_POST['t_fid'] as $fid => $value) {
+if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
-            $folder_data = folder_get($fid);
-
-            if (isset($_POST['t_position'][$fid]) && is_numeric($_POST['t_position'][$fid])) {
-                $folder_data['POSITION'] = $_POST['t_position'][$fid];
-            }
-
-            if (isset($_POST['t_old_position'][$fid]) && is_numeric($_POST['t_old_position'][$fid])) {
-                $folder_data['OLD_POSITION'] = $_POST['t_old_position'][$fid];
-            }
-
-            folder_update($fid, $folder_data);
-            admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data);
-        }
-    }
+    list($fid) = array_keys($_POST['move_down']);
+    folder_move_down($fid);
 }
 
 html_draw_top();
@@ -153,7 +142,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['position']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['foldername']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['threadcount']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;{$lang['permissions']}</td>\n";
@@ -169,13 +158,26 @@ if ($folder_array = folder_get_all()) {
 
         echo "                <tr>\n";
 
-        if (sizeof($folder_array) > 1) {
-            echo "                  <td align=\"left\">", form_dropdown_array("t_position[{$folder['FID']}]", range(1, sizeof($folder_array) + 1), range(1, sizeof($folder_array) + 1), $folder_index), form_input_hidden("t_old_position[{$folder['FID']}]", $folder_index), form_input_hidden("t_fid[{$folder['FID']}]", $folder['FID']), "</td>\n";
-        }else {
-            echo "                  <td align=\"left\">{$folder_index}</td>\n";
-        }
+        if (sizeof($folder_array) == 1) {
 
-        echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", "</td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+
+        }elseif ($folder_index == sizeof($folder_array)) {
+
+            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\" style=\"margin-left: 1px\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", "</td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+
+        }elseif ($folder_index > 1) {
+
+            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\""), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+
+        }else {
+
+            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+        }
 
         if ($thread_count = folder_get_thread_count($folder['FID'])) {
             echo "                  <td align=\"left\">{$thread_count}</td>\n";
@@ -206,7 +208,7 @@ echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("addnew", $lang['addnewfolder']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("addnew", $lang['addnewfolder']), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td>&nbsp;</td>\n";

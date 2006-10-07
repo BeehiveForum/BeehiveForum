@@ -52,10 +52,11 @@ function addOverflow() {
                                 var new_div = document.createElement('div');
 
                                 new_div.style.overflowX = 'scroll';
-                                new_div.style.overflowY = 'visible';
-                                new_div.className = 'bhoverflowfix';
+                                new_div.style.overflowY = 'auto';
 
                                 new_div.style.overflow = 'auto';
+
+                                new_div.className = 'bhoverflowfix';
                         
                                 new_div.style.width = (body_tag.clientWidth * 0.94) + 'px';
 

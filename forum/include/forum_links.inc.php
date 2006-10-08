@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.14 2005-07-23 22:53:32 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.15 2006-10-08 17:22:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,8 +43,6 @@ function forum_links_get_links($include_top_link)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $forum_fid = $table_data['FID'];
-
     $sql = "SELECT LID, POS, URI, TITLE FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS ASC, LID ASC";
 
@@ -54,17 +52,17 @@ function forum_links_get_links($include_top_link)
 
     if (db_num_rows($result) > $num_links) {
 
-        $links = array();
+        $links_array = array();
 
         while ($row = db_fetch_array($result)) {
 
             if (!isset($row['URI'])) $row['URI'] = "";
             if (!isset($row['TITLE'])) $row['TITLE'] = "-";
 
-            $links[] = array("LID" => $row['LID'], "POS" => $row['POS'], "URI" => $row['URI'], "TITLE" => $row['TITLE']);
+            $links_array[] = $row;
         }
 
-        return $links;
+        return $links_array;
     }
 
     return false;
@@ -96,43 +94,197 @@ function forum_links_delete($lid)
 
     if (!is_numeric($lid)) return false;
 
-    $sql = "DELETE FROM {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
-    return db_query($sql, $db_forum_links_delete);
+    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "ORDER BY POS LIMIT 0, 1";
+
+    $result = db_query($sql, $db_forum_links_delete);
+
+    if (db_num_rows($result) > 0) {
+
+        list($top_lid) = db_fetch_array($result, DB_RESULT_NUM);
+
+        if ($top_lid != $lid) {
+
+            $sql = "DELETE FROM {$table_data['PREFIX']}FORUM_LINKS WHERE LID = '$lid'";
+            if (!$result = db_query($sql, $db_forum_links_delete)) return false;
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
-function forum_links_update($lid, $pos, $title, $uri = "")
+function forum_links_update($lid, $title, $uri = "")
 {
     $db_forum_links_update = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($lid)) return false;
-    if (!is_numeric($pos)) return false;
 
     $title = addslashes($title);
     $uri = addslashes($uri);
 
-    $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$pos', ";
-    $sql.= "TITLE = '$title', URI = '$uri' WHERE LID = '$lid'";
+    $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET TITLE = '$title', ";
+    $sql.= "URI = '$uri' WHERE LID = '$lid'";
 
-    return db_query($sql, $db_forum_links_update);
+    if (!$result = db_query($sql, $db_forum_links_update)) return false;
+
+    return true;
 }
 
-function forum_links_add($pos, $title, $uri = "")
+function forum_links_add($title, $uri = "")
 {
-    $table_data = get_table_prefix();
-
     $db_forum_links_add = db_connect();
 
-    if (!is_numeric($pos)) return false;
+    if (!$table_data = get_table_prefix()) return false;
 
     $title = addslashes($title);
     $uri = addslashes($uri);
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}FORUM_LINKS (POS, TITLE, URI) ";
-    $sql.= "VALUES ('$pos', '$title', '$uri')";
+    $sql = "SELECT MAX(POS) + 1 FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "LIMIT 0, 1";
 
-    return db_query($sql, $db_forum_links_add);
+    if (!$result = db_query($sql, $db_forum_links_add)) return false;
+
+    list($new_position) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "INSERT INTO {$table_data['PREFIX']}FORUM_LINKS (POS, TITLE, URI) ";
+    $sql.= "VALUES ('$new_position', '$title', '$uri')";
+
+    if (!$result = db_query($sql, $db_forum_links_add)) return false;
+
+    return true;
+}
+
+function forum_links_update_top_link($title)
+{
+    $db_forum_links_add = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $title = addslashes($title);
+
+    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "ORDER BY POS LIMIT 0, 1";
+
+    if (!$result = db_query($sql, $db_forum_links_add)) return false;
+
+    list($top_link_lid) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "SET TITLE = '$title' WHERE LID = '$top_link_lid'";
+
+    if (!$result = db_query($sql, $db_forum_links_add)) return false;
+
+    return true;
+}
+
+function forum_links_add_top_link($title)
+{
+    $db_forum_links_add = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $title = addslashes($title);
+
+    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS";
+    $result = db_query($sql, $db_forum_links_add);
+
+    if (db_num_rows($result) < 1) {
+
+        $sql = "INSERT INTO {$table_data['PREFIX']}FORUM_LINKS (POS, TITLE) ";
+        $sql.= "VALUES (0, '$title')";
+
+        if (!$result = db_query($sql, $db_forum_links_add)) return false;
+
+        return true;
+    }
+
+    return false;
+}
+
+function forum_links_move_up($lid)
+{
+    $db_forum_links_move_up = db_connect();
+
+    if (!is_numeric($lid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "ORDER BY POS";
+
+    $result = db_query($sql, $db_forum_links_move_up);
+
+    while ($row = db_fetch_array($result)) {
+        $forum_links_data[] = $row['LID'];
+    }
+
+    if (($forum_links_position_key = array_search($lid, $forum_links_data)) !== false) {
+
+        $forum_links_position_key--;
+
+        if ($forum_links_position_key < 0) {
+            $forum_links_position_key = 0;
+        }
+
+        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = POS + 1 ";
+        $sql.= "WHERE LID = '{$forum_links_data[$forum_links_position_key]}'";
+
+        if (!$result = db_query($sql, $db_forum_links_move_up)) return false;
+
+        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = POS - 1 ";
+        $sql.= "WHERE LID = '$lid'";
+
+        if (!$result = db_query($sql, $db_forum_links_move_up)) return false;
+
+        return true;
+    }
+
+    return false;
+}
+
+function forum_links_move_down($lid)
+{
+    $db_forum_links_move_down = db_connect();
+
+    if (!is_numeric($lid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "ORDER BY POS";
+
+    $result = db_query($sql, $db_forum_links_move_down);
+
+    while ($row = db_fetch_array($result)) {
+        $forum_links_data[] = $row['LID'];
+    }
+
+    if (($forum_links_position_key = array_search($lid, $forum_links_data)) !== false) {
+
+        $forum_links_position_key++;
+
+        if ($forum_links_position_key > sizeof($forum_links_data)) {
+            $forum_links_position_key = sizeof($forum_links_data);
+        }        
+        
+        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = POS - 1 ";
+        $sql.= "WHERE LID = '{$forum_links_data[$forum_links_position_key]}'";
+
+        if (!$result = db_query($sql, $db_forum_links_move_down)) return false;
+
+        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = POS + 1 ";
+        $sql.= "WHERE LID = '$lid'";
+
+        if (!$result = db_query($sql, $db_forum_links_move_down)) return false;
+
+        return true;
+    }
+
+    return false;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.111 2006-10-07 12:16:57 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.112 2006-10-08 17:22:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -534,7 +534,7 @@ function folder_move_up($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
+    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
     $result = db_query($sql, $db_folder_move_up);
@@ -543,10 +543,16 @@ function folder_move_up($fid)
         $folder_data[] = $row['FID'];
     }
 
-    if (($folder_position = array_search($fid, $folder_data)) !== false) {
+    if (($folder_position_key = array_search($fid, $folder_data)) !== false) {
+
+        $folder_position_key--;
+
+        if ($folder_position_key < 0) {
+            $folder_position_key = 0;
+        }
 
         $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION + 1 ";
-        $sql.= "WHERE POSITION = $folder_position - 1";
+        $sql.= "WHERE FID = '{$folder_data[$folder_position_key]}'";
 
         if (!$result = db_query($sql, $db_folder_move_up)) return false;
 
@@ -569,7 +575,7 @@ function folder_move_down($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
+    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
     $result = db_query($sql, $db_folder_move_down);
@@ -578,10 +584,16 @@ function folder_move_down($fid)
         $folder_data[] = $row['FID'];
     }
 
-    if (($folder_position = array_search($fid, $folder_data)) !== false) {
+    if (($folder_position_key = array_search($fid, $folder_data)) !== false) {
 
+        $folder_position_key++;
+
+        if ($folder_position_key > sizeof($folder_data)) {
+            $folder_position_key = sizeof($folder_data);
+        }        
+        
         $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION - 1 ";
-        $sql.= "WHERE POSITION = $folder_position + 1";
+        $sql.= "WHERE FID = '{$folder_data[$folder_position_key]}'";
 
         if (!$result = db_query($sql, $db_folder_move_down)) return false;
 

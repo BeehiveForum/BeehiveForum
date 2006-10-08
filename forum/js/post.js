@@ -47,7 +47,7 @@ function addOverflow() {
 
                 if (td_tags[i].className == 'postbody') {
                         
-                        if (td_tags[i].clientWidth > (body_tag.clientWidth * 0.95)) {
+                        if (td_tags[i].clientWidth >= body_tag.clientWidth) {
 
                                 var new_div = document.createElement('div');
 
@@ -117,7 +117,7 @@ function resizeImages() {
 
         for (var i = 0; i < img_count; i++)  {
 
-                if (img_tags[i].width > (body_tag.clientWidth * 0.94)) {
+                if (img_tags[i].width >= body_tag.clientWidth) {
                         
                         img_tags[i].style.width = Math.round(body_tag.clientWidth * 0.9) + 'px';
                         img_tags[i].style.cursor = 'pointer';

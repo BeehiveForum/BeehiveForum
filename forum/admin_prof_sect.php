@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.78 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.79 2006-10-08 17:22:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -117,23 +117,11 @@ if (isset($_POST['submit'])) {
                 $valid = false;
             }
 
-            if (isset($_POST['t_old_position'][$psid]) && is_numeric($_POST['t_old_position'][$psid])) {
-                $t_old_position = $_POST['t_old_position'][$psid];
-            }else {
-                $valid = false;
-            }
+            if ($valid && ($t_new_name != $t_old_name)) {
 
-            if (isset($_POST['t_position'][$psid]) && is_numeric($_POST['t_position'][$psid])) {
-                $t_new_position = $_POST['t_position'][$psid];
-            }else {
-                $valid = false;
-            }
+                profile_section_update($psid, $t_new_name);
 
-            if ($valid && (($t_new_name != $t_old_name) || ($t_new_position != $t_old_position))) {
-
-                profile_section_update($psid, $t_new_position, $t_new_name);
-
-                $log_data = array($t_old_name, $t_old_position, $t_new_name, $t_new_position);
+                $log_data = array($t_old_name, $t_new_name);
 
                 admin_add_log_entry(CHANGE_PROFILE_SECT, $log_data);
             }
@@ -157,20 +145,16 @@ if (isset($_POST['submit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_psid']) && is_array($_POST['t_psid'])) {
-        $t_position_new = sizeof($_POST['t_psid']);
-    }else {
-        $t_position_new = 1;
-    }
-
     if ($valid) {
 
-        $new_psid = profile_section_create($t_name_new, $t_position_new);
+        $new_psid = profile_section_create($t_name_new);
         admin_add_log_entry(ADDED_PROFILE_SECT, $t_name_new);
 
     }
 
-}elseif (isset($_POST['t_delete'])) {
+}
+
+if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 
     list($psid) = array_keys($_POST['t_delete']);
 
@@ -179,6 +163,18 @@ if (isset($_POST['submit'])) {
     profile_section_delete($psid);
 
     admin_add_log_entry(DELETE_PROFILE_SECT, $profile_name);
+}
+
+if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
+
+    list($psid) = array_keys($_POST['move_up']);
+    profile_section_move_up($psid);
+}
+
+if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
+
+    list($psid) = array_keys($_POST['move_down']);
+    profile_section_move_down($psid);
 }
 
 // Draw the form
@@ -195,7 +191,7 @@ echo "          <tr>\n";
 echo "            <td class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['position']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['items']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deletesection']}</td>\n";
@@ -203,10 +199,31 @@ echo "                </tr>\n";
 
 if ($profile_sections = profile_sections_get()) {
 
+    $profile_index = 0;
+    
     foreach ($profile_sections as $profile_section) {
 
+        $profile_index++;
+        
         echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_position[{$profile_section['PSID']}]", range(1, sizeof($profile_sections) + 1), range(1, sizeof($profile_sections) + 1), $profile_section['POSITION']), form_input_hidden("t_old_position[{$profile_section['PSID']}]", $profile_section['POSITION']), form_input_hidden("t_psid[{$profile_section['PSID']}]", $profile_section['PSID']), "</td>\n";
+
+        if (sizeof($profile_sections) == 1) {
+
+            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", "</td>\n";
+
+        }elseif ($profile_index == sizeof($profile_sections)) {
+
+            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\" style=\"margin-left: 1px\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", "</td>\n";
+
+        }elseif ($profile_index > 1) {
+
+            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\""), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+
+        }else {
+
+            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+        }
+
         echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_section['PSID']}]", $profile_section['NAME'], 40, 64), form_input_hidden("t_old_name[{$profile_section['PSID']}]", $profile_section['NAME']), "</td>\n";
         echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}'\""), "</td>\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.119 2006-09-15 11:03:44 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.120 2006-10-10 19:05:39 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -618,7 +618,7 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "CREATE TABLE FORUMS (";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  WEBTAG VARCHAR(255) NOT NULL DEFAULT '',";
-$sql.= "  {$forum_webtag}_FORUM TINYINT(4) NOT NULL DEFAULT '0',";
+$sql.= "  DEFAULT_FORUM TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  ACCESS_LEVEL TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL DEFAULT '',";
 $sql.= "  PRIMARY KEY  (FID)";

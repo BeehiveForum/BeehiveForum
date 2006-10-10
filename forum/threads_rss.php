@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.28 2006-09-10 11:59:35 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.29 2006-10-10 19:05:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -139,8 +139,8 @@ if ($threads_array = threads_get_most_recent($limit)) {
         $t_content = message_get_content($thread['TID'], $thread['LENGTH']);
         $t_content = strip_tags(trim($t_content));
 
-        $t_content = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $t_content);
-        $t_title = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $thread['TITLE']);
+        $t_content = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", htmlentities($t_content));
+        $t_title = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", htmlentities($thread['TITLE']));
 
         echo "<item>\n";
         echo "<guid isPermaLink=\"true\">{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";

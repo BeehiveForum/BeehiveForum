@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.189 2006-09-15 11:03:44 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.190 2006-10-11 17:17:34 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -641,10 +641,9 @@ function forum_create($webtag, $forum_name, $access)
 
         $sql = "CREATE TABLE {$webtag}_BANNED (";
         $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  IPADDRESS VARCHAR(15) NOT NULL DEFAULT '',";
-        $sql.= "  LOGON VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  NICKNAME VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  EMAIL VARCHAR(80) DEFAULT NULL,";
+        $sql.= "  BANTYPE TINYINT(4) NOT NULL DEFAULT '0',";
+        $sql.= "  BANDATA VARCHAR(255) NOT NULL DEFAULT '',";
+        $sql.= "  COMMENT VARCHAR(255) NOT NULL DEFAULT '',";
         $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") TYPE=MYISAM";
 
@@ -813,7 +812,6 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY FROM_UID (FROM_UID),";
         $sql.= "  KEY IPADDRESS (IPADDRESS),";
         $sql.= "  KEY CREATED (CREATED),";
-        $sql.= "  KEY CREATED (VIEWED)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -935,9 +933,11 @@ function forum_create($webtag, $forum_name, $access)
         }
 
         $sql = "CREATE TABLE {$webtag}_THREAD_STATS (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (TID)";
+        $sql = "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql = "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql = "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql = "  UNREAD_CREATED DATETIME DEFAULT NULL,";
+        $sql = "  PRIMARY KEY  (TID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -1083,9 +1083,11 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  DDKEY DATETIME DEFAULT NULL,";
         $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
         $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
+        $sql.= "  LAST_SEARCH_KEYWORDS text,";
         $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL,";
         $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL,";
+        $sql.= "  USER_TIME_UPDATED DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") TYPE=MYISAM";
 
@@ -1156,7 +1158,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
 
-        if (!$result = db_query($sql, $db_forum_create)) {
+        if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete($forum_fid);
             return false;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.112 2006-10-08 17:22:47 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.113 2006-10-11 17:47:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -63,22 +63,22 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     if (db_num_rows($result) > 0) {
 
-        while($folder_data = db_fetch_array($result)) {
+        while($folder_order = db_fetch_array($result)) {
 
             if (user_is_guest()) {
 
-                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+                if (bh_session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
 
-                    $folders['FIDS'][]   = $folder_data['FID'];
-                    $folders['TITLES'][] = $folder_data['TITLE'];
+                    $folders['FIDS'][]   = $folder_order['FID'];
+                    $folders['TITLES'][] = $folder_order['TITLE'];
                 }
 
             }else {
             
-                if (bh_session_check_perm($access_allowed, $folder_data['FID'])) {
+                if (bh_session_check_perm($access_allowed, $folder_order['FID'])) {
 
-                    $folders['FIDS'][]   = $folder_data['FID'];
-                    $folders['TITLES'][] = $folder_data['TITLE'];
+                    $folders['FIDS'][]   = $folder_order['FID'];
+                    $folders['TITLES'][] = $folder_order['TITLE'];
                 }
             }
         }
@@ -201,34 +201,34 @@ function folder_delete($fid)
     return $result;
 }
 
-function folder_update($fid, $folder_data)
+function folder_update($fid, $folder_order)
 {
     $db_folder_update = db_connect();
 
     if (!is_numeric($fid)) return false;
-    if (!is_array($folder_data)) return false;
+    if (!is_array($folder_order)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
-    $folder_data = array_merge(folder_get($fid), $folder_data);
+    $folder_order = array_merge(folder_get($fid), $folder_order);
 
-    foreach($folder_data as $key => $value) {
+    foreach($folder_order as $key => $value) {
         if (!is_numeric($value)) {
-            $folder_data[$key] = addslashes($value);
+            $folder_order[$key] = addslashes($value);
         }
     }
 
-    if (!isset($folder_data['TITLE'])) return false;
-    if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = '';
+    if (!isset($folder_order['TITLE'])) return false;
+    if (!isset($folder_order['DESCRIPTION'])) $folder_order['DESCRIPTION'] = '';
 
-    if (!isset($folder_data['POSITION']) || !is_numeric($folder_data['POSITION'])) $folder_data['POSITION'] = 0;
-    if (!isset($folder_data['ALLOWED_TYPES']) || !is_numeric($folder_data['ALLOWED_TYPES'])) $folder_data['ALLOWED_TYPES'] = 3;
+    if (!isset($folder_order['POSITION']) || !is_numeric($folder_order['POSITION'])) $folder_order['POSITION'] = 0;
+    if (!isset($folder_order['ALLOWED_TYPES']) || !is_numeric($folder_order['ALLOWED_TYPES'])) $folder_order['ALLOWED_TYPES'] = 3;
 
-    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '{$folder_data['TITLE']}', ";
-    $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
-    $sql.= "POSITION = '{$folder_data['POSITION']}' WHERE FID = $fid";
+    $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}FOLDER SET TITLE = '{$folder_order['TITLE']}', ";
+    $sql.= "DESCRIPTION = '{$folder_order['DESCRIPTION']}', ALLOWED_TYPES = '{$folder_order['ALLOWED_TYPES']}', ";
+    $sql.= "POSITION = '{$folder_order['POSITION']}' WHERE FID = $fid";
 
     $result = db_query($sql, $db_folder_update);
 
@@ -238,7 +238,7 @@ function folder_update($fid, $folder_data)
     $result = db_query($sql, $db_folder_update);
 
     $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
-    $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_data['PERM']}')";
+    $sql.= "VALUES ('0', '$forum_fid', '$fid', '{$folder_order['PERM']}')";
 
     $result = db_query($sql, $db_folder_update);
 
@@ -534,29 +534,38 @@ function folder_move_up($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ";
+    $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
     $result = db_query($sql, $db_folder_move_up);
 
     while ($row = db_fetch_array($result)) {
-        $folder_data[] = $row['FID'];
+
+        $folder_order[] = $row['FID'];
+        $folder_position[$row['FID']] = $row['POSITION'];
     }
 
-    if (($folder_position_key = array_search($fid, $folder_data)) !== false) {
+    // Search for our folder in the list of know folders.
 
-        $folder_position_key--;
+    if (($folder_order_key = array_search($fid, $folder_order)) !== false) {
 
-        if ($folder_position_key < 0) {
-            $folder_position_key = 0;
-        }
+        // Move the folder above to the same location as our selected folder.
+        
+        $folder_order_key--;
+        if ($folder_order_key < 0) $folder_order_key = 0;
 
-        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION + 1 ";
-        $sql.= "WHERE FID = '{$folder_data[$folder_position_key]}'";
+        $new_position = $folder_position[$fid];
+
+        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
+        $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
         if (!$result = db_query($sql, $db_folder_move_up)) return false;
 
-        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION - 1 ";
+        // Move the selected folder to the old location of the other folder.
+
+        $new_position = $folder_position[$folder_order[$folder_order_key]];
+
+        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
         $sql.= "WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_folder_move_up)) return false;
@@ -575,29 +584,35 @@ function folder_move_down($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ";
+    $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
     $result = db_query($sql, $db_folder_move_down);
 
     while ($row = db_fetch_array($result)) {
-        $folder_data[] = $row['FID'];
+
+        $folder_order[] = $row['FID'];
+        $folder_position[$row['FID']] = $row['POSITION'];
     }
 
-    if (($folder_position_key = array_search($fid, $folder_data)) !== false) {
+    if (($folder_order_key = array_search($fid, $folder_order)) !== false) {
 
-        $folder_position_key++;
+        $folder_order_key++;
 
-        if ($folder_position_key > sizeof($folder_data)) {
-            $folder_position_key = sizeof($folder_data);
+        if ($folder_order_key > sizeof($folder_order)) {
+            $folder_order_key = sizeof($folder_order);
         }        
+
+        $new_position = $folder_position[$fid];
         
-        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION - 1 ";
-        $sql.= "WHERE FID = '{$folder_data[$folder_position_key]}'";
+        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
+        $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
         if (!$result = db_query($sql, $db_folder_move_down)) return false;
 
-        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = POSITION + 1 ";
+        $new_position = $folder_position[$folder_order[$folder_order_key]];
+
+        $sql = "UPDATE {$table_data['PREFIX']}FOLDER SET POSITION = '$new_position' ";
         $sql.= "WHERE FID = '$fid'";
 
         if (!$result = db_query($sql, $db_folder_move_down)) return false;

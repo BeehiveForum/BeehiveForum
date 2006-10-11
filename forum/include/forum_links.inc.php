@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.15 2006-10-08 17:22:47 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.16 2006-10-11 17:47:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -213,29 +213,35 @@ function forum_links_move_up($lid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql = "SELECT LID, POS FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS";
 
     $result = db_query($sql, $db_forum_links_move_up);
 
     while ($row = db_fetch_array($result)) {
-        $forum_links_data[] = $row['LID'];
+
+        $forum_links_order[] = $row['LID'];
+        $forum_links_position[$row['LID']] = $row['POS'];
     }
 
-    if (($forum_links_position_key = array_search($lid, $forum_links_data)) !== false) {
+    if (($forum_links_order_key = array_search($lid, $forum_links_order)) !== false) {
 
-        $forum_links_position_key--;
+        $forum_links_order_key--;
 
-        if ($forum_links_position_key < 0) {
-            $forum_links_position_key = 0;
+        if ($forum_links_order_key < 0) {
+            $forum_links_order_key = 0;
         }
 
-        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = POS + 1 ";
-        $sql.= "WHERE LID = '{$forum_links_data[$forum_links_position_key]}'";
+        $new_position = $forum_links_position[$lid];
+
+        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
+        $sql.= "WHERE LID = '{$forum_links_order[$forum_links_order_key]}'";
 
         if (!$result = db_query($sql, $db_forum_links_move_up)) return false;
 
-        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = POS - 1 ";
+        $new_position = $forum_links_position[$forum_links_order[$forum_links_order_key]];
+
+        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
         $sql.= "WHERE LID = '$lid'";
 
         if (!$result = db_query($sql, $db_forum_links_move_up)) return false;
@@ -254,29 +260,35 @@ function forum_links_move_down($lid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql = "SELECT LID, POS FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS";
 
     $result = db_query($sql, $db_forum_links_move_down);
 
     while ($row = db_fetch_array($result)) {
-        $forum_links_data[] = $row['LID'];
+
+        $forum_links_order[] = $row['LID'];
+        $forum_links_position[$row['LID']] = $row['POS'];
     }
 
-    if (($forum_links_position_key = array_search($lid, $forum_links_data)) !== false) {
+    if (($forum_links_order_key = array_search($lid, $forum_links_order)) !== false) {
 
-        $forum_links_position_key++;
+        $forum_links_order_key++;
 
-        if ($forum_links_position_key > sizeof($forum_links_data)) {
-            $forum_links_position_key = sizeof($forum_links_data);
+        if ($forum_links_order_key > sizeof($forum_links_order)) {
+            $forum_links_order_key = sizeof($forum_links_order);
         }        
         
-        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = POS - 1 ";
-        $sql.= "WHERE LID = '{$forum_links_data[$forum_links_position_key]}'";
+        $new_position = $forum_links_position[$lid];
+
+        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
+        $sql.= "WHERE LID = '{$forum_links_order[$forum_links_order_key]}'";
 
         if (!$result = db_query($sql, $db_forum_links_move_down)) return false;
 
-        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = POS + 1 ";
+        $new_position = $forum_links_position[$forum_links_order[$forum_links_order_key]];
+
+        $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS SET POS = '$new_position' ";
         $sql.= "WHERE LID = '$lid'";
 
         if (!$result = db_query($sql, $db_forum_links_move_down)) return false;

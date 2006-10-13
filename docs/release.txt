@@ -1,5 +1,50 @@
 Beehive Forum Release Notes
 
+What's new in 0.7.1 (Released 13th October 2006)
+===================
+
+- Notes
+
+        - 0.7.1 replaces the original 0.7 release of 1st October.
+          The database schema for 0.7.1 is identical to 0.7. To
+          upgrade from 0.7 to 0.7.1 simply extract the archive 
+          over your existing installation and delete the installer
+          files. Upgrades from 0.6.x to 0.7.1 will still require
+          running the installer as normal.
+
+        - BeehiveForum 0.7 introduces a new thread unread cut-off
+          that helps to increase performance by storing unread
+          thread data for a limited time rather than in previous
+          builds where it was stored indefinitely. You can set up
+          the thread unread cut-off in the Global Forum Settings
+          portion of your Beehive Forum installation but pruning
+          of the USER_THREAD tables must be performed by hand.
+
+
+- Changes from 0.7
+
+        - Fixed: Broken links to confirm email script in edit.php,
+                 delete.php, create_poll.php and admin_post_approve.php
+        - Fixed: Incorrect error message displayed when accessing
+                 pages using user account with un-confirmed email
+                 address.
+        - Fixed: Error message "Failed to create forum" appearing
+                 when attemping to create additional forums.
+        - Fixed: "Unknown column 'DEFAULT_FORUM' in 'field list'"
+                 error when performing new installation.
+        - Fixed: "Unknown error [8] Undefined variable: table_index"
+                 error message when performing upgrade from 0.6.x.
+        - Fixed: Errors in English UK and English US language files.
+        - Fixed: Search was sometimes showing no thread titles in
+                 results.
+        - Fixed: Extra query in thread_delete which was cleaning the
+                 USER_THREAD table twice.
+        - Fixed: Fixed special characters not being encoded
+                 correctly in RSS feed.
+        - Added: More intuitive controls for moving folders, forum
+                 links and profile sections and items.
+                
+
 What's new in 0.7 (Released 1st October 2006)
 =================
 

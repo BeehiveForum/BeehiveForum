@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.21 2006-10-08 17:22:47 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.22 2006-10-13 17:55:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -263,11 +263,11 @@ if ($forum_links_array = forum_links_get_links(true)) {
 
         if (sizeof($forum_links_array) == 1) {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
 
         }elseif ($link_index == sizeof($forum_links_array)) {
 
-            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\" style=\"margin-left: 1px\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\" class=\"move_ctrl\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
 
         }elseif ($link_index > 1) {
 
@@ -275,7 +275,7 @@ if ($forum_links_array = forum_links_get_links(true)) {
 
         }else {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
         }
 
         echo "                  <td>", form_field("l_title[{$forum_link['LID']}]", $forum_link['TITLE'], 32, 64), "</td>\n";

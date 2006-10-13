@@ -797,10 +797,6 @@ a {
     width: 480px;
 }
 
-.install_dropdown {
-    width: 234px;
-}
-
 .to_uid_dropdown {
     width: 190px;
 }
@@ -881,4 +877,13 @@ a {
     border-bottom-width: 1px;
     border-left-width: 1px;
     border-style: dashed;
+}
+
+.move_ctrl {
+    margin-left: 1px;
+}
+
+.move_ctrl_disabled {
+    vertical-align: top;
+    margin-top: -1px;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.22 2006-09-27 21:31:43 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.23 2006-10-13 17:55:48 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -248,7 +248,7 @@ $lang['randstyle'] = "Random Style";
 $lang['thiscolour'] = "This Colour";
 $lang['enterhexcolour'] = "or enter a hex color to base a new style sheet on";
 $lang['savestyle'] = "Save this style";
-$lang['styledesc'] = "Style Descending";
+$lang['styledesc'] = "Style Description";
 $lang['fileallowedchars'] = "(lowercase letters (a-z), numbers (0-9) and underscores (_) only)";
 $lang['stylepreview'] = "Style Preview";
 $lang['welcome'] = "Welcome";
@@ -662,7 +662,7 @@ $lang['forum_settings_help_16'] = "<b>Active session cut off</b> is the maximum 
 $lang['forum_settings_help_17'] = "Enabling this option allows Beehive to include a stats display at the bottom of the messages pane similar to the one used by many forum software titles. Once enabled the display of the stats page can be toggled individually by each user. If they don't want to see it they can hide it from view.";
 $lang['forum_settings_help_18'] = "Personal Messages are invaluable as a way of taking more private matters out of view of the other members. However if you don't want your users to be able to send each other personal messages you can disable this option.";
 $lang['forum_settings_help_19'] = "Personal Messages can also contain attachments which can be useful for exchanging files between users.";
-$lang['forum_settings_help_20'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users' main attachment allocation and it not in addition to.";
+$lang['forum_settings_help_20'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users' main attachment allocation and is not in addition to.";
 $lang['forum_settings_help_21'] = "The guest account allows visitors to your forum to read posts without having to sign up for an account.";
 $lang['forum_settings_help_22'] = "If you prefer you can also setup your Beehive Forum so that guests are automatically logged in. Once a user registers they will always be shown the login screen as long as their cookies remain intact.";
 $lang['forum_settings_help_23'] = "Beehive allows attachments to be uploaded to messages when posted. If you have limited web space you may which to disable attachments by clearing the box above.";
@@ -984,7 +984,7 @@ $lang['cannotcreatepostinfolder'] = "You cannot reply to posts in this folder";
 $lang['cannotattachfilesinfolder'] = "You cannot post attachments in this folder. Remove attachments to continue.";
 $lang['postfrequencytoogreat_1'] = "You can only post once every";
 $lang['postfrequencytoogreat_2'] = "seconds. Please try again later.";
-$lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details";
+$lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details";
 $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Please contact the forum owner to rectify this.";
 $lang['emailconfirmationsent'] = "Confirmation email has been resent.";
 $lang['resendconfirmation'] = "Resend Confirmation";

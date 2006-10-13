@@ -2,7 +2,7 @@ Beehive Forum Readme
 
 http://www.beehiveforum.net/
 
-Version 0.7 / 1st October 2006
+Version 0.7.1 / 13th October 2006
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.

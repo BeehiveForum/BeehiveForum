@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.112 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.113 2006-10-13 17:30:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -159,13 +159,7 @@ post_save_attachment_id($tid, $pid, $aid);
 
 if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-    html_draw_top();
-
-    echo "<h1>{$lang['error']}</h1>\n";
-    echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-    echo "<h2><a href=\"\">{$lang['resendconfirmation']}</a></h2>\n";
-
-    html_draw_bottom();
+    html_email_confirmation_error();
     exit;
 }
 

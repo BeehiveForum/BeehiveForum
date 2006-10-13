@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.91 2006-09-05 18:11:38 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.92 2006-10-13 17:30:57 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -280,13 +280,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-        html_draw_top();
-
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-        echo "<h2><a href=\"\">{$lang['resendconfirmation']}</a></h2>\n";
-
-        html_draw_bottom();
+        html_email_confirmation_error();
         exit;
     }
 
@@ -316,13 +310,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-        html_draw_top();
-
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-        echo "<h2><a href=\"\">{$lang['resendconfirmation']}</a></h2>\n";
-
-        html_draw_bottom();
+        html_email_confirmation_error();
         exit;
     }
 
@@ -360,13 +348,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-        html_draw_top();
-
-        echo "<h1>{$lang['error']}</h1>\n";
-        echo "<h2>{$lang['emailconfirmationrequiredbeforepost']}</h2>\n";
-        echo "<h2><a href=\"\">{$lang['resendconfirmation']}</a></h2>\n";
-
-        html_draw_bottom();
+        html_email_confirmation_error();
         exit;
     }
 

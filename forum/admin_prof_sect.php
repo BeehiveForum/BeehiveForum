@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.79 2006-10-08 17:22:47 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.80 2006-10-13 17:55:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -209,11 +209,11 @@ if ($profile_sections = profile_sections_get()) {
 
         if (sizeof($profile_sections) == 1) {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
 
         }elseif ($profile_index == sizeof($profile_sections)) {
 
-            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\" style=\"margin-left: 1px\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\" class=\"move_ctrl\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
 
         }elseif ($profile_index > 1) {
 
@@ -221,7 +221,7 @@ if ($profile_sections = profile_sections_get()) {
 
         }else {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" style=\"vertical-align: top; margin-top: -1px\" />", form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
         }
 
         echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_section['PSID']}]", $profile_section['NAME'], 40, 64), form_input_hidden("t_old_name[{$profile_section['PSID']}]", $profile_section['NAME']), "</td>\n";

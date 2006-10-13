@@ -879,3 +879,13 @@ a {
     border-left-width: 1px;
     border-style: dashed;
 }
+
+
+.move_ctrl {
+    margin-left: 1px;
+}
+
+.move_ctrl_disabled {
+    vertical-align: top;
+    margin-top: -1px;
+}

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.inc.php,v 1.53 2006-09-28 21:28:10 decoyduck Exp $ */
+/* $Id: user_profile.inc.php,v 1.54 2006-10-14 19:11:35 decoyduck Exp $ */
 
 /**
 * Functions relating to users interacting with profiles
@@ -146,7 +146,11 @@ function user_get_profile($uid)
             $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
         }
 
-        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] > 0 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
+        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 3 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
+            $user_profile['DOB'] = format_birthday($user_prefs['DOB']);
+        }
+
+        if (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] > 0 && $user_prefs['DOB_DISPLAY'] < 3 && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
             $user_profile['AGE'] = format_age($user_prefs['DOB']);
         }
 

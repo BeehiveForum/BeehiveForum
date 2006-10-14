@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.101 2006-09-27 21:31:43 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.102 2006-10-14 19:11:35 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -197,6 +197,12 @@ if (isset($user_profile['AGE'])) {
         echo "{$lang['age']}: {$user_profile['AGE']}&nbsp;</td>\n";
     }
 
+    echo "                </tr>\n";
+
+}else if (isset($user_profile['DOB'])) {
+
+    echo "                <tr>\n";
+    echo "                  <td  class=\"subhead\" align=\"right\" class=\"smalltext\">{$lang['birthday']}: {$user_profile['DOB']}&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 

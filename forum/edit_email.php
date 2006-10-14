@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_email.php,v 1.57 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: edit_email.php,v 1.58 2006-10-14 19:11:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -264,6 +264,10 @@ echo "                        <td align=\"right\">", form_checkbox("dob_display_
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">", form_radio("dob_display", 1, $lang['showonlymyagetoothers'], (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 1) ? true : false), "</td>\n";
+echo "                        <td>&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td colspan=\"2\">", form_radio("dob_display", 3, "Show only my day and month of birth to others", (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == 3) ? true : false), "</td>\n";
 echo "                        <td>&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

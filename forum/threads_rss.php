@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.29 2006-10-10 19:05:39 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.30 2006-10-15 11:50:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -130,17 +130,33 @@ if ($threads_array = threads_get_most_recent($limit)) {
 
     foreach ($threads_array as $thread) {
 
+        $t_title = $thread['TITLE'];
+        
         // Make the date human readable and fetch the content of the last
         // post in the thread. Can easily change this if it isn't right
         // by making it fetch post 1.
 
         $modified_date = gmdate("D, d M Y H:i:s", $thread['MODIFIED']);
 
+        // Get the post content and remove the HTML tags.
+
         $t_content = message_get_content($thread['TID'], $thread['LENGTH']);
         $t_content = strip_tags(trim($t_content));
 
-        $t_content = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", htmlentities($t_content));
-        $t_title = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", htmlentities($thread['TITLE']));
+        // Convert HTML special chars (& -> &amp;, etc);
+
+        $t_content = htmlspecialchars($t_content);
+        $t_title   = htmlspecialchars($t_title);
+
+        // Check for double-encoded HTML chars (&amp;amp;, etc.)
+
+        $t_content = preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&\\1;", $t_content);
+        $t_title   = preg_replace("/&amp;(#[0-9]+|[a-z]+);/i", "&\\1;", $t_title);
+
+        // Convert HTML entities to XML literals.
+        
+        $t_content = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $t_content);
+        $t_title   = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $t_title);
 
         echo "<item>\n";
         echo "<guid isPermaLink=\"true\">{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";

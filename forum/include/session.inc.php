@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.250 2006-09-13 21:09:15 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.251 2006-10-18 22:01:23 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -77,14 +77,6 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
     $forum_settings = forum_get_settings();
-
-    // Current server time.
-
-    $current_time = time();
-
-    // Session cut off timestamp
-
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     // Check to see if we've been given a MD5 hash to use instead of the cookie.
 
@@ -289,14 +281,6 @@ function bh_guest_session_init($use_sess_hash = false)
 
     $forum_settings = forum_get_settings();
 
-    // Current server time.
-
-    $current_time = time();
-
-    // Session cut off timestamp
-
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
-
     // Check to see if we've been given a MD5 hash to use instead of the cookie.
 
     if (!is_bool($use_sess_hash) && is_md5($use_sess_hash)) {
@@ -477,12 +461,10 @@ function bh_remove_stale_sessions()
 
         if ($session_cutoff = forum_get_setting('session_cutoff', false, 86400)) {
 
-            $session_stamp = time() - $session_cutoff;
-
             $expired_sessions_array = array();
 
             $sql = "SELECT HASH, UID FROM SESSIONS WHERE ";
-            $sql.= "TIME < FROM_UNIXTIME($session_stamp) ";
+            $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
             $sql.= "AND UID > 0 LIMIT 0, 5";
 
             if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
@@ -498,7 +480,7 @@ function bh_remove_stale_sessions()
                 $expired_sessions = implode("', '", $expired_sessions_array);
                 
                 $sql = "DELETE FROM SESSIONS WHERE HASH IN ('$expired_sessions') ";
-                $sql.= "AND TIME < FROM_UNIXTIME($session_stamp)";
+                $sql.= "AND TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
 
                 if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
@@ -760,8 +742,6 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     }else {
         $forum_fid = 0;
     }
-
-    bh_session_end();
 
     $http_referer = bh_session_get_referer();
 

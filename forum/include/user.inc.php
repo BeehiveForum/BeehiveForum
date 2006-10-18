@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.283 2006-09-27 21:31:44 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.284 2006-10-18 22:01:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -81,8 +81,12 @@ function user_create($logon, $password, $nickname, $email)
         $http_referer = "";
     }
 
-    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED, REFERER) ";
-    $sql.= "VALUES ('$logon', '$md5pass', '$nickname', '$email', NOW(), '$http_referer')";
+    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+
+    $sql = "INSERT INTO USER (LOGON, PASSWD, NICKNAME, EMAIL, ";
+    $sql.= "REGISTERED, REFERER, IPADDRESS) VALUES ('$logon', ";
+    $sql.= "'$md5pass', '$nickname', '$email', NOW(), ";
+    $sql.= "'$http_referer', '$ipaddress')";
 
     if ($result = db_query($sql, $db_user_create)) {
         return db_insert_id($db_user_create);
@@ -242,7 +246,10 @@ function user_logon($logon, $passhash)
         $sql = "UPDATE USER SET IPADDRESS = '$ipaddress' WHERE UID = '{$user_data['UID']}'";
         if (!$result = db_query($sql, $db_user_logon)) return false;
 
-        return $user_data['UID'];
+        if (isset($user_data['UID']) && is_numeric($user_data['UID'])) {
+        
+            return $user_data['UID'];
+        }
     }
 
     return false;

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.277 2006-09-13 19:52:41 decoyduck Exp $ */
+/* $Id: post.php,v 1.278 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -620,8 +620,8 @@ if ($valid && isset($_POST['submit'])) {
 
                     echo "<form name=\"f_post\" action=\"" . get_request_uri() . "\" method=\"post\" target=\"_self\">\n";
                     echo "<table class=\"posthead\" width=\"720\">\n";
-                    echo "<tr><td class=\"subhead\">{$lang['threadclosed']}</td></tr>\n";
-                    echo "<tr><td>\n";
+                    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['threadclosed']}</td></tr>\n";
+                    echo "<tr><td align=\"left\">\n";
                     echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
                     echo "</td></tr>\n";
 
@@ -751,8 +751,8 @@ if (!$newthread) {
     if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
 
         echo "<table class=\"posthead\" width=\"720\">\n";
-        echo "<tr><td class=\"subhead\">{$lang['threadclosed']}</td></tr>\n";
-        echo "<tr><td>\n";
+        echo "<tr><td align=\"left\" class=\"subhead\">{$lang['threadclosed']}</td></tr>\n";
+        echo "<tr><td align=\"left\">\n";
 
         if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
@@ -781,7 +781,7 @@ echo $tools->preload();
 if ($valid && isset($_POST['preview'])) {
 
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">{$lang['messagepreview']}</td></tr>";
+    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td></tr>";
 
     if ($_POST['t_to_uid'] == 0) {
 
@@ -811,11 +811,11 @@ if ($valid && isset($_POST['preview'])) {
     $preview_message['CREATED'] = mktime();
     $preview_message['AID'] = $aid;
 
-    echo "<tr><td>\n";
+    echo "<tr><td align=\"left\">\n";
     message_display(0, $preview_message, 0, 0, 0, true, false, false, false, $show_sigs, true);
     echo "</td></tr>\n";
 
-    echo "<tr><td>&nbsp;</td></tr>\n";
+    echo "<tr><td align=\"left\">&nbsp;</td></tr>\n";
     echo "</table>\n";
 }
 
@@ -830,8 +830,8 @@ if (!$newthread) {
 
 if (isset($error_html)) {
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>";
-    echo "<tr><td>\n";
+    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>";
+    echo "<tr><td align=\"left\">\n";
     echo $error_html . "\n";
     echo "</td></tr>\n";
     echo "</table>\n";
@@ -842,7 +842,7 @@ if (!isset($t_threadtitle)) {
 }
 
 echo "<table class=\"posthead\" width=\"720\">\n";
-echo "<tr><td class=\"subhead\" colspan=\"2\">";
+echo "<tr><td align=\"left\" class=\"subhead\" colspan=\"2\">";
 
 if ($newthread) {
     echo $lang['createnewthread'];
@@ -852,9 +852,9 @@ if ($newthread) {
 
 echo "</td></tr>\n";
 echo "<tr>\n";
-echo "<td valign=\"top\" width=\"210\">\n";
+echo "<td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "<table class=\"posthead\" width=\"210\">\n";
-echo "<tr><td>\n";
+echo "<tr><td align=\"left\">\n";
 
 if ($newthread) {
 
@@ -916,14 +916,14 @@ if ($emot_prev != "") {
     echo "<br />\n";
     echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
         echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td colspan=\"2\">{$emot_prev}</td>\n";
+        echo "    <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
 
     }else {
 
@@ -937,9 +937,9 @@ if ($emot_prev != "") {
 echo "</td></tr>\n";
 echo "</table>\n";
 echo "</td>\n";
-echo "<td valign=\"top\" width=\"500\">\n";
+echo "<td align=\"left\" valign=\"top\" width=\"500\">\n";
 echo "<table class=\"posthead\" width=\"500\">\n";
-echo "<tr><td>\n";
+echo "<tr><td align=\"left\">\n";
 
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
@@ -1021,7 +1021,7 @@ if ($allow_sig == true) {
 
     echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
 
     $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
@@ -1030,7 +1030,7 @@ if ($allow_sig == true) {
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
+        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
         echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 
         if ($sig->isDiff() && $fix_html && !$fetched_sig) {
@@ -1051,7 +1051,7 @@ echo "</td></tr>\n";
 echo "</table>";
 echo "</td>\n";
 echo "</tr>\n";
-echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
+echo "<tr><td align=\"left\" colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";
 
 
@@ -1068,10 +1068,10 @@ if (!$newthread && $reply_to_pid > 0) {
 
     echo "<table class=\"posthead\" width=\"720\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">{$lang['inreplyto']}:</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\">{$lang['inreplyto']}:</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td>\n";
+    echo "    <td align=\"left\">\n";
 
     if (($threaddata['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 

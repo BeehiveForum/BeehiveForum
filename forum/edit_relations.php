@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.53 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.54 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,16 +244,16 @@ echo "  ", form_input_hidden("search_page", $search_page), "\n";
 echo "  ", form_input_hidden("usersearch", $usersearch), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" width=\"200\">&nbsp;{$lang['user']}</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['nickname']}</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">&nbsp;{$lang['user']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['nickname']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
 echo "                </tr>\n";
 
 $user_peers = user_get_relationships($uid, $start_main);
@@ -283,15 +283,15 @@ if (sizeof($user_peers['user_array']) > 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">{$user_peer['LOGON']}</a></td>\n";
-        echo "                  <td>&nbsp;", form_input_text("nickname[{$user_peer['UID']}]", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
-        echo "                  <td nowrap=\"nowrap\">\n";
+        echo "                  <td align=\"left\">&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">{$user_peer['LOGON']}</a></td>\n";
+        echo "                  <td align=\"left\">&nbsp;", form_input_text("nickname[{$user_peer['UID']}]", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\">\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", $peer_relationship & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($peer_relationship & USER_FRIEND) && !($peer_relationship & USER_IGNORED)), "{$lang['normal']}\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED, "", ($peer_relationship & USER_IGNORED)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" />\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_IGNORED_COMPLETELY, "", ($peer_relationship & USER_IGNORED_COMPLETELY)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" />\n";
         echo "                  </td>\n";
-        echo "                  <td nowrap=\"nowrap\">\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\">\n";
         echo "                    &nbsp;", form_radio("signature[{$user_peer['UID']}]", 0, "", !($peer_signature & USER_IGNORED_SIG)), "{$lang['display']}\n";
         echo "                    &nbsp;", form_radio("signature[{$user_peer['UID']}]", USER_IGNORED_SIG, "", ($peer_signature & USER_IGNORED_SIG)), "{$lang['ignore']}\n";
         echo "                  </td>\n";
@@ -301,12 +301,12 @@ if (sizeof($user_peers['user_array']) > 0) {
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td colspan=\"3\">&nbsp;{$lang['norelationships']}</td>\n";
+    echo "                  <td align=\"left\" colspan=\"3\">&nbsp;{$lang['norelationships']}</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -318,13 +318,13 @@ echo "    </tr>\n";
 if (sizeof($user_peers['user_array']) > 0) {
 
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&search_page=$search_page", $start_main, $user_peers['user_count'], 20, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
@@ -344,16 +344,16 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "  ", form_input_hidden("search_page", $search_page), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "    <tr>\n";
-    echo "      <td class=\"posthead\">\n";
+    echo "      <td align=\"left\" class=\"posthead\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
-    echo "                  <td class=\"subhead\">&nbsp;{$lang['nickname']}</td>\n";
-    echo "                  <td class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
-    echo "                  <td class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['user']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['nickname']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['relationship']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['signature']}</td>\n";
     echo "                </tr>\n";
 
     $user_search_array = user_search($usersearch, $start_search, $uid);
@@ -363,15 +363,15 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         foreach ($user_search_array['user_array'] as $user) {
 
             echo "                <tr>\n";
-            echo "                  <td width=\"200\">&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">{$user['LOGON']}</a></td>\n";
-            echo "                  <td>&nbsp;", form_input_text("add_nickname[{$user['UID']}]", $user['NICKNAME'], 30), "</td>\n";
-            echo "                  <td>\n";
+            echo "                  <td align=\"left\" width=\"200\">&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">{$user['LOGON']}</a></td>\n";
+            echo "                  <td align=\"left\">&nbsp;", form_input_text("add_nickname[{$user['UID']}]", $user['NICKNAME'], 30), "</td>\n";
+            echo "                  <td align=\"left\">\n";
             echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", $user['RELATIONSHIP'] & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
             echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", 0, "", !($user['RELATIONSHIP'] & USER_FRIEND) && !($user['RELATIONSHIP'] & USER_IGNORED)), "{$lang['normal']}\n";
             echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED, "", ($user['RELATIONSHIP'] & USER_IGNORED)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignored']}\" title=\"{$lang['ignored']}\" />\n";
             echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_IGNORED_COMPLETELY, "", ($user['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)), "<img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" /><img src=\"", style_image("enemy.png"), "\" alt=\"{$lang['ignoredcompletely']}\" title=\"{$lang['ignoredcompletely']}\" />\n";
             echo "                  </td>\n";
-            echo "                  <td>\n";
+            echo "                  <td align=\"left\">\n";
             echo "                    &nbsp;", form_radio("add_signature[{$user['UID']}]", 0, "", !($user['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['display']}\n";
             echo "                    &nbsp;", form_radio("add_signature[{$user['UID']}]", USER_IGNORED_SIG, "", ($user['RELATIONSHIP'] & USER_IGNORED_SIG)), "{$lang['ignore']}\n";
             echo "                  </td>\n";
@@ -386,7 +386,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     }
 
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -398,13 +398,13 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     if (sizeof($user_search_array['user_array']) > 0) {
 
         echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit("add", $lang['add']), "</td>\n";
@@ -423,10 +423,10 @@ echo "  ", form_input_hidden("search_page", $search_page), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
-echo "      <td class=\"posthead\">\n";
+echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['search']}:</td>\n";
@@ -442,7 +442,7 @@ echo "                          {$lang['username']}: ", form_input_text("usersea
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>&nbsp;</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

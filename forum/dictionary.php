@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.php,v 1.30 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: dictionary.php,v 1.31 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -307,25 +307,25 @@ echo "  ", form_input_hidden('current_word', _htmlentities($dictionary->get_curr
 echo "  ", form_input_hidden('offset_match', _htmlentities($dictionary->get_offset_match())), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"400\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">{$lang['bodytext']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['bodytext']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>\n";
+echo "                  <td align=\"left\">\n";
 echo "                    <table border=\"0\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"spellcheckbodytext\" valign=\"top\"><div id=\"pretty_content\" class=\"dictionary_pretty_content\">", $dictionary->pretty_print_content(), "</div></td>\n";
+echo "                        <td align=\"left\" class=\"spellcheckbodytext\" valign=\"top\"><div id=\"pretty_content\" class=\"dictionary_pretty_content\">", $dictionary->pretty_print_content(), "</div></td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -337,27 +337,27 @@ echo "  </table>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"400\">\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\" class=\"subhead\">{$lang['spellcheck']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['spellcheck']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">{$lang['notindictionary']}</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\">{$lang['notindictionary']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"2\">", form_input_text("word_display", $dictionary->get_current_word(), 32, false, "disabled=\"disabled\"", "dictionary_word_display"), form_input_hidden("word", $dictionary->get_current_word()), "</td>\n";
+echo "                  <td align=\"left\" colspan=\"2\">", form_input_text("word_display", $dictionary->get_current_word(), 32, false, "disabled=\"disabled\"", "dictionary_word_display"), form_input_hidden("word", $dictionary->get_current_word()), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>{$lang['changeto']}:</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">{$lang['changeto']}:</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"270\">", form_input_text("change_to", $dictionary->get_best_suggestion(), 32, false, false, "dictionary_change_to"), "</td>\n";
-echo "                  <td rowspan=\"2\" width=\"130\" valign=\"top\">\n";
+echo "                  <td align=\"left\" width=\"270\">", form_input_text("change_to", $dictionary->get_best_suggestion(), 32, false, false, "dictionary_change_to"), "</td>\n";
+echo "                  <td align=\"left\" rowspan=\"2\" width=\"130\" valign=\"top\">\n";
 echo "                    <table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"120\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"right\">", form_submit("ignore", $lang['ignore'], false, "dictionary_button"), "</td>\n";
@@ -392,7 +392,7 @@ echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td width=\"270\">\n";
+echo "                  <td align=\"left\" width=\"270\">\n";
 
 if ($suggestions_array = $dictionary->get_suggestions_array()) {
 
@@ -410,7 +410,7 @@ if ($suggestions_array = $dictionary->get_suggestions_array()) {
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -419,7 +419,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("ok", $lang['ok']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";

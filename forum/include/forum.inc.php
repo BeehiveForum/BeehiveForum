@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.190 2006-10-11 17:17:34 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.191 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -258,20 +258,20 @@ function forum_check_password($forum_fid)
             echo "            <td class=\"posthead\" align=\"center\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
             echo "                </tr>\n";
             echo "              </table>\n";
             echo "              <table class=\"posthead\" width=\"90%\">\n";
             echo "                <tr>\n";
-            echo "                  <td>{$lang['passwd']}:</td>\n";
-            echo "                  <td>", form_input_password('forum_password', '', 32), "</td>\n";
+            echo "                  <td align=\"left\">{$lang['passwd']}:</td>\n";
+            echo "                  <td align=\"left\">", form_input_password('forum_password', '', 32), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;</td>\n";
-            echo "                  <td>", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], false), "</td>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                  <td align=\"left\">", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], false), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+            echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
             echo "                </tr>\n";
             echo "              </table>\n";
             echo "            </td>\n";
@@ -280,7 +280,7 @@ function forum_check_password($forum_fid)
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "    <tr>\n";
-            echo "      <td>&nbsp;</td>\n";
+            echo "      <td align=\"left\">&nbsp;</td>\n";
             echo "    </tr>\n";
             echo "    <tr>\n";
             echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";

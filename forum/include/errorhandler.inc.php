@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.77 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.78 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -124,13 +124,13 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
         echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "  <tr>\n";
-        echo "    <td>\n";
+        echo "    <td align=\"left\">\n";
         echo "      <table border=\"0\" width=\"100%\">\n";
         echo "        <tr>\n";
-        echo "          <td class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
+        echo "          <td align=\"left\" class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
-        echo "          <td>&nbsp;\n";
+        echo "          <td align=\"left\">&nbsp;\n";
 
         if (form_input_hidden_array($_POST, $result_str)) echo $result_str;
 
@@ -143,47 +143,47 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         if (isset($_GET['retryerror']) && isset($_POST['t_content']) && strlen(trim(_stripslashes($_POST['t_content']))) > 0) {
 
             echo "        <tr>\n";
-            echo "          <td>&nbsp;</td>\n";
+            echo "          <td align=\"left\">&nbsp;</td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td><hr /></td>\n";
+            echo "          <td align=\"left\"><hr /></td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td class=\"postbody\">This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
+            echo "          <td align=\"left\" class=\"postbody\">This error has occured more than once while attempting to post/preview your message. For your convienience we have included your message text and if applicable the thread and message number you were replying to below. You may wish to save a copy of the text elsewhere until the forum is available again.</td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td>&nbsp;</td>\n";
+            echo "          <td align=\"left\">&nbsp;</td>\n";
             echo "        </tr>\n";
             echo "        <tr>\n";
-            echo "          <td><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea></td>\n";
+            echo "          <td align=\"left\"><textarea class=\"bhtextarea\" rows=\"15\" name=\"t_content\" cols=\"85\">", _htmlentities(_stripslashes($_POST['t_content'])), "</textarea></td>\n";
             echo "        </tr>\n";
 
             if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
                 echo "        <tr>\n";
-                echo "          <td>&nbsp;</td>\n";
+                echo "          <td align=\"left\">&nbsp;</td>\n";
                 echo "        </tr>\n";
                 echo "        <tr>\n";
-                echo "          <td class=\"postbody\">Reply Message Number:</td>\n";
+                echo "          <td align=\"left\" class=\"postbody\">Reply Message Number:</td>\n";
                 echo "        </tr>\n";
                 echo "        <tr>\n";
-                echo "          <td><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\"></td>\n";
+                echo "          <td align=\"left\"><input class=\"bhinputtext\" type=\"text\" name=\"t_request_url\" value=\"{$_GET['replyto']}\"></td>\n";
                 echo "        </tr>\n";
 
             }
         }
 
         echo "        <tr>\n";
-        echo "          <td>&nbsp;</td>\n";
+        echo "          <td align=\"left\">&nbsp;</td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
-        echo "          <td><hr /></td>\n";
+        echo "          <td align=\"left\"><hr /></td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
-        echo "          <td><h2>Error Message for server admins and developers:</h2></td>\n";
+        echo "          <td align=\"left\"><h2>Error Message for server admins and developers:</h2></td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
-        echo "          <td class=\"postbody\">\n";
+        echo "          <td align=\"left\" class=\"postbody\">\n";
 
         switch ($errno) {
 

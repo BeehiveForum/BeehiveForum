@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.23 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.24 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -195,17 +195,17 @@ echo "  <h2>", sprintf($lang['top20postersforperiod'], date("d/m/Y", $stats_star
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">{$lang['user']}</td>\n";
-echo "                  <td class=\"subhead\">{$lang['totalposts']}</td>\n";
-echo "                  <td class=\"subhead\">{$lang['posts']}</td>\n";
-echo "                  <td class=\"subhead\">{$lang['percent']}</td>\n";
-echo "                  <td class=\"subhead\">{$lang['average']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['user']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['totalposts']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['posts']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['percent']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['average']}</td>\n";
 echo "                </tr>\n";
 
 if (sizeof($user_stats_array['user_stats']) > 0) {
@@ -213,23 +213,23 @@ if (sizeof($user_stats_array['user_stats']) > 0) {
     foreach ($user_stats_array['user_stats'] as $user_stats) {
 
         echo "                <tr>\n";
-        echo "                  <td>", add_wordfilter_tags(format_user_name($user_stats['LOGON'], $user_stats['NICKNAME'])), "</td>\n";
-        echo "                  <td>", user_get_post_count($user_stats['UID']), "</td>\n";
-        echo "                  <td>{$user_stats['POST_COUNT']}</td>\n";
-        echo "                  <td>", number_format(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2, '.', ','), "%</td>\n";
-        echo "                  <td>", number_format(round($user_stats['POST_COUNT'] / ($num_days), 2), 2, '.', ','), "</td>\n";
+        echo "                  <td align=\"left\">", add_wordfilter_tags(format_user_name($user_stats['LOGON'], $user_stats['NICKNAME'])), "</td>\n";
+        echo "                  <td align=\"left\">", user_get_post_count($user_stats['UID']), "</td>\n";
+        echo "                  <td align=\"left\">{$user_stats['POST_COUNT']}</td>\n";
+        echo "                  <td align=\"left\">", number_format(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2, '.', ','), "%</td>\n";
+        echo "                  <td align=\"left\">", number_format(round($user_stats['POST_COUNT'] / ($num_days), 2), 2, '.', ','), "</td>\n";
         echo "                </tr>\n";
     }
 
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td colspan=\"5\">{$lang['nodata']}</td>\n";
+    echo "                  <td align=\"left\" colspan=\"5\">{$lang['nodata']}</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
-echo "                  <td colspan=\"5\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td colspan=\"5\" align=\"center\">{$lang['totalpostsforthisperiod']}: {$user_stats_array['post_count']}</td>\n";
@@ -249,14 +249,14 @@ echo "    <tr>\n";
 echo "      <td align=\"center\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
 echo "          <tr>\n";
-echo "            <td>Date from:</td>\n";
-echo "            <td>", form_date_dropdowns($from_year, $from_month, $from_day, "from_", 2002), "</td>\n";
+echo "            <td align=\"left\">Date from:</td>\n";
+echo "            <td align=\"left\">", form_date_dropdowns($from_year, $from_month, $from_day, "from_", 2002), "</td>\n";
 echo "          </tr>\n";
-echo "            <td>Date to:</td>\n";
-echo "            <td>", form_date_dropdowns($to_year, $to_month, $to_day, "to_", 2002), "</td>\n";
+echo "            <td align=\"left\">Date to:</td>\n";
+echo "            <td align=\"left\">", form_date_dropdowns($to_year, $to_month, $to_day, "to_", 2002), "</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
+echo "            <td align=\"left\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['update']), "</td>\n";

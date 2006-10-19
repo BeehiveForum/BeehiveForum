@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.43 2006-07-25 22:07:16 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.44 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -250,13 +250,13 @@ function draw_logon_form($logon_main)
     echo "    ", form_input_hidden('webtag', $webtag), "\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"275\">\n";
     echo "      <tr>\n";
-    echo "        <td>\n";
+    echo "        <td align=\"left\">\n";
     echo "          <table class=\"box\" width=\"100%\">\n";
     echo "            <tr>\n";
-    echo "              <td class=\"posthead\">\n";
+    echo "              <td align=\"left\" class=\"posthead\">\n";
     echo "                <table class=\"posthead\" width=\"100%\">\n";
     echo "                  <tr>\n";
-    echo "                    <td class=\"subhead\">{$lang['logon']}</td>\n";
+    echo "                    <td align=\"left\" class=\"subhead\">{$lang['logon']}</td>\n";
     echo "                  </tr>\n";
     echo "                </table>\n";
     echo "                <table class=\"posthead\" width=\"100%\">\n";
@@ -268,7 +268,7 @@ function draw_logon_form($logon_main)
 
         echo "                        <tr>\n";
         echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
-        echo "                          <td nowrap=\"nowrap\">";
+        echo "                          <td align=\"left\" nowrap=\"nowrap\">";
 
         foreach ($username_array as $key => $value) {
             $usernames[$key] = _stripslashes($value);
@@ -323,16 +323,16 @@ function draw_logon_form($logon_main)
 
             if (isset($passhash_array[$current_logon]) && is_md5($passhash_array[$current_logon])) {
 
-                echo "                          <td>", form_input_password("user_password", $password_array[$current_logon], 25), form_input_hidden("user_passhash", $passhash_array[$current_logon]), "</td>\n";
+                echo "                          <td align=\"left\">", form_input_password("user_password", $password_array[$current_logon], 25), form_input_hidden("user_passhash", $passhash_array[$current_logon]), "</td>\n";
 
             }else {
 
-                echo "                          <td>", form_input_password("user_password", "", 25), form_input_hidden("user_passhash", ""), "</td>\n";
+                echo "                          <td align=\"left\">", form_input_password("user_password", "", 25), form_input_hidden("user_passhash", ""), "</td>\n";
             }
 
         }else {
 
-            echo "                          <td>", form_input_password("user_password", "", 25), form_input_hidden("user_passhash", ""), "</td>\n";
+            echo "                          <td align=\"left\">", form_input_password("user_password", "", 25), form_input_hidden("user_passhash", ""), "</td>\n";
         }
 
         echo "                        </tr>\n";
@@ -343,29 +343,29 @@ function draw_logon_form($logon_main)
 
             echo "                        <tr>\n";
             echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                          <td>", form_input_text("user_logon", "", 25), "</td>\n";
+            echo "                          <td align=\"left\">", form_input_text("user_logon", "", 25), "</td>\n";
             echo "                        </tr>\n";
             echo "                        <tr>\n";
             echo "                          <td align=\"right\">{$lang['passwd']}:</td>\n";
-            echo "                          <td>", form_input_password("user_password", "", 25), "</td>\n";
+            echo "                          <td align=\"left\">", form_input_password("user_password", "", 25), "</td>\n";
             echo "                        </tr>\n";
 
         }else {
 
             echo "                        <tr>\n";
             echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
-            echo "                          <td>", form_input_text("user_logon", (isset($username_array[0]) ? $username_array[0] : ""), 25), "</td>\n";
+            echo "                          <td align=\"left\">", form_input_text("user_logon", (isset($username_array[0]) ? $username_array[0] : ""), 25), "</td>\n";
             echo "                        </tr>\n";
             echo "                        <tr>\n";
             echo "                          <td align=\"right\">{$lang['passwd']}:</td>\n";
-            echo "                          <td>", form_input_password("user_password", (isset($password_array[0]) ? $password_array[0] : ""), 25), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? $passhash_array[0] : "")), "</td>\n";
+            echo "                          <td align=\"left\">", form_input_password("user_password", (isset($password_array[0]) ? $password_array[0] : ""), 25), form_input_hidden("user_passhash", (isset($passhash_array[0]) ? $passhash_array[0] : "")), "</td>\n";
             echo "                        </tr>\n";
         }
     }
 
     echo "                        <tr>\n";
-    echo "                          <td>&nbsp;</td>\n";
-    echo "                          <td>", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false)), "</td>\n";
+    echo "                          <td align=\"left\">&nbsp;</td>\n";
+    echo "                          <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false)), "</td>\n";
     echo "                        </tr>\n";
     echo "                        <tr>\n";
     echo "                          <td align=\"center\" colspan=\"2\">", form_submit(uniqid('bh'), $lang['logonbutton'], 'onclick="has_clicked = true"'), "</td>\n";

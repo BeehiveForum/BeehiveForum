@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.87 2006-10-13 17:55:48 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.88 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -240,10 +240,10 @@ echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("t_psid", $psid), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
@@ -298,7 +298,7 @@ echo "                  <td align=\"center\">&nbsp;</td>\n";
 echo "                  <td align=\"center\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -307,19 +307,19 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td><p>{$lang['fieldtypeexample1']}</p></td>\n";
+echo "      <td align=\"left\"><p>{$lang['fieldtypeexample1']}</p></td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td><p>{$lang['fieldtypeexample2']}</p></td>\n";
+echo "      <td align=\"left\"><p>{$lang['fieldtypeexample2']}</p></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

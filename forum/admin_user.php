@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.171 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.172 2006-10-19 19:34:43 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -360,25 +360,25 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['warning_caps']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['warning_caps']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td>{$lang['userdeleteallpostswarning']}</td>\n";
+    echo "                        <td align=\"left\">{$lang['userdeleteallpostswarning']}</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -387,7 +387,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("t_confirm_delete_posts", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
@@ -399,25 +399,25 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['userstatus']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['userstatus']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td>{$lang['postssuccessfullydeleted']}</td>\n";
+    echo "                        <td align=\"left\">{$lang['postssuccessfullydeleted']}</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -426,7 +426,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
@@ -440,56 +440,56 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
-        echo "      <td>\n";
+        echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
         echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['userdetails']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['userdetails']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td width=\"150\">{$lang['nicknameheader']}</td>\n";
-        echo "                        <td>", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? $_POST['t_nickname'] : $user['NICKNAME'], 32), "</td>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['nicknameheader']}</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? $_POST['t_nickname'] : $user['NICKNAME'], 32), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td width=\"150\">{$lang['postcount']}</td>\n";
-        echo "                        <td>", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td width=\"150\">{$lang['signupreferer']}</td>\n";
-        echo "                        <td>", (isset($user['REFERER']) && strlen($user['REFERER']) > 0) ? $user['REFERER'] : $lang['unknown'], "</td>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
+        echo "                        <td align=\"left\">", (isset($user['REFERER']) && strlen($user['REFERER']) > 0) ? $user['REFERER'] : $lang['unknown'], "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td width=\"150\">{$lang['lastipaddress']}:</td>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['lastipaddress']}:</td>\n";
 
         if (ip_is_banned($user['IPADDRESS'])) {
 
-            echo "                        <td><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
 
         }else {
 
-            echo "                        <td><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
         }
 
         echo "                        \n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>&nbsp;</td>\n";
-        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>&nbsp;</td>\n";
-        echo "                        <td>", form_button("editsignature", $lang['editsignature'], "onclick=\"document.location.href='edit_signature.php?webtag=$webtag&amp;siguid=$uid'\""), "&nbsp;", form_button("editprofile", $lang['editprofile'], "onclick=\"document.location.href='edit_profile.php?webtag=$webtag&amp;profileuid=$uid'\""), "</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                        <td align=\"left\">", form_button("editsignature", $lang['editsignature'], "onclick=\"document.location.href='edit_signature.php?webtag=$webtag&amp;siguid=$uid'\""), "&nbsp;", form_button("editprofile", $lang['editprofile'], "onclick=\"document.location.href='edit_profile.php?webtag=$webtag&amp;profileuid=$uid'\""), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -503,13 +503,13 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['userstatus']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['userstatus']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -518,30 +518,30 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         echo "                      <tr>\n";
-        echo "                        <td>", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintools'], $user_perms & USER_PERM_ADMIN_TOOLS), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintools'], $user_perms & USER_PERM_ADMIN_TOOLS), "</td>\n";
         echo "                      </tr>\n";
     }
 
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['usercanmoderateallfolders'], $user_perms & USER_PERM_FOLDER_MODERATE), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['usercanmoderateallfolders'], $user_perms & USER_PERM_FOLDER_MODERATE), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, $lang['usercanmoderatelinkssection'], $user_perms & USER_PERM_LINKS_MODERATE), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, $lang['usercanmoderatelinkssection'], $user_perms & USER_PERM_LINKS_MODERATE), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_banned", USER_PERM_BANNED, $lang['userisbanned'], $user_perms & USER_PERM_BANNED), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_banned", USER_PERM_BANNED, $lang['userisbanned'], $user_perms & USER_PERM_BANNED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms & USER_PERM_WORMED), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms & USER_PERM_WORMED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_pilloried", USER_PERM_PILLORIED, $lang['userispilloried'], $user_perms & USER_PERM_PILLORIED), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_pilloried", USER_PERM_PILLORIED, $lang['userispilloried'], $user_perms & USER_PERM_PILLORIED), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>", form_checkbox("t_ignoreadmin", USER_PERM_CAN_IGNORE_ADMIN, $lang['usercanignoreadmin'], $user_perms & USER_PERM_CAN_IGNORE_ADMIN), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_ignoreadmin", USER_PERM_CAN_IGNORE_ADMIN, $lang['usercanignoreadmin'], $user_perms & USER_PERM_CAN_IGNORE_ADMIN), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td>&nbsp;</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -561,34 +561,34 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
-        echo "      <td>\n";
+        echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
         echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['globaluserpermissions']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['globaluserpermissions']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>", form_checkbox("t_all_admin_tools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintoolsonallforums'], $global_user_perm & USER_PERM_ADMIN_TOOLS), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_all_admin_tools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintoolsonallforums'], $global_user_perm & USER_PERM_ADMIN_TOOLS), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>", form_checkbox("t_all_forum_tools", USER_PERM_FORUM_TOOLS, $lang['usercanaccessforumtools'], $global_user_perm & USER_PERM_FORUM_TOOLS), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_all_forum_tools", USER_PERM_FORUM_TOOLS, $lang['usercanaccessforumtools'], $global_user_perm & USER_PERM_FORUM_TOOLS), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>", form_checkbox("t_all_folder_mod", USER_PERM_FOLDER_MODERATE, $lang['usercanmodallfoldersonallforums'], $global_user_perm & USER_PERM_FOLDER_MODERATE), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_all_folder_mod", USER_PERM_FOLDER_MODERATE, $lang['usercanmodallfoldersonallforums'], $global_user_perm & USER_PERM_FOLDER_MODERATE), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>", form_checkbox("t_all_links_mod", USER_PERM_LINKS_MODERATE, $lang['usercanmodlinkssectiononallforums'], $global_user_perm & USER_PERM_LINKS_MODERATE), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_all_links_mod", USER_PERM_LINKS_MODERATE, $lang['usercanmodlinkssectiononallforums'], $global_user_perm & USER_PERM_LINKS_MODERATE), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -603,31 +603,31 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
             echo "    <tr>\n";
-            echo "      <td>\n";
+            echo "      <td align=\"left\">\n";
             echo "        <table class=\"box\" width=\"100%\">\n";
             echo "          <tr>\n";
-            echo "            <td class=\"posthead\">\n";
+            echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['emailconfirmationrequired']}</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['emailconfirmationrequired']}</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
             echo "                    <table width=\"90%\" class=\"posthead\">\n";
             echo "                      <tr>\n";
-            echo "                        <td>", form_radio("t_confirm_email", "cancel", $lang['cancelemailconfirmation'], false), "</td>\n";
+            echo "                        <td align=\"left\">", form_radio("t_confirm_email", "cancel", $lang['cancelemailconfirmation'], false), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td>", form_radio("t_confirm_email", "resend", $lang['resendconfirmationemail'], false), "</td>\n";
+            echo "                        <td align=\"left\">", form_radio("t_confirm_email", "resend", $lang['resendconfirmationemail'], false), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td>", form_radio("t_confirm_email", "nothing", $lang['donothing'], true), "</td>\n";
+            echo "                        <td align=\"left\">", form_radio("t_confirm_email", "nothing", $lang['donothing'], true), "</td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
             echo "                </tr>\n";
             echo "              </table>\n";
             echo "            </td>\n";
@@ -644,29 +644,29 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
-        echo "      <td>\n";
+        echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
         echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"box\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td class=\"posthead\">\n";
+        echo "                        <td align=\"left\" class=\"posthead\">\n";
         echo "                          <table class=\"posthead\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td class=\"subhead\" width=\"100\">&nbsp;{$lang['folders']}</td>\n";
-        echo "                              <td class=\"subhead\">&nbsp;{$lang['permissions']}</td>\n";
+        echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">&nbsp;{$lang['folders']}</td>\n";
+        echo "                              <td align=\"left\" class=\"subhead\">&nbsp;{$lang['permissions']}</td>\n";
         echo "                            </tr>\n";
         echo "                            <tr>\n";
-        echo "                              <td colspan=\"2\">\n";
+        echo "                              <td align=\"left\" colspan=\"2\">\n";
         echo "                                <div class=\"admin_folder_perms\">\n";
 
         foreach($folder_array as $fid => $folder) {
@@ -676,28 +676,28 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
                 echo "                                  <table class=\"posthead\" width=\"100%\">\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
+                echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], $folder['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], $folder['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], $folder['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], $folder['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $folder['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $folder['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $folder['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $folder['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $folder['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $folder['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $folder['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], $folder['STATUS'] & USER_PERM_POST_APPROVAL), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $folder['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], $folder['STATUS'] & USER_PERM_POST_APPROVAL), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td colspan=\"4\">&nbsp;</td>\n";
+                echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                  </table>\n";
 
@@ -706,28 +706,28 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
                 echo "                                  <table class=\"posthead\" width=\"100%\">\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], false), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], false), "</td>\n";
+                echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], false), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], false), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], false), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], false), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], false), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], false), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], false), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], false), "</td>\n";
-                echo "                                      <td nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], false), "</td>\n";
+                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], false), "</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                    <tr>\n";
-                echo "                                      <td colspan=\"4\">&nbsp;</td>\n";
+                echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
                 echo "                                    </tr>\n";
                 echo "                                  </table>\n";
             }
@@ -746,13 +746,13 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"95%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>{$lang['usergroupwarning']}</td>\n";
+        echo "                        <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -769,13 +769,13 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['usergroups']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['usergroups']}</td>\n";
     echo "                </tr>\n";
 
     if ($user_groups_array = perm_user_get_groups($uid)) {
@@ -784,36 +784,36 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>{$lang['useringroups']}:</td>\n";
+        echo "                        <td align=\"left\">{$lang['useringroups']}:</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>\n";
+        echo "                        <td align=\"left\">\n";
         echo "                          <table class=\"box\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td class=\"posthead\">\n";
+        echo "                              <td align=\"left\" class=\"posthead\">\n";
         echo "                                <table class=\"posthead\" width=\"100%\">\n";
         echo "                                  <tr>\n";
-        echo "                                    <td class=\"subhead\">&nbsp;{$lang['groups']}</td>\n";
-        echo "                                    <td class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
-        echo "                                    <td class=\"subhead\">&nbsp;</td>\n";
+        echo "                                    <td align=\"left\" class=\"subhead\">&nbsp;{$lang['groups']}</td>\n";
+        echo "                                    <td align=\"left\" class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
+        echo "                                    <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
         echo "                                  </tr>\n";
 
         foreach ($user_groups_array as $user_group) {
 
             echo "                                  <tr>\n";
-            echo "                                    <td valign=\"top\"><a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+            echo "                                    <td align=\"left\" valign=\"top\"><a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
             echo "                                    <td valign=\"top\" align=\"center\">{$user_group['USER_COUNT']}</td>\n";
             echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
             echo "                                  </tr>\n";
         }
 
         echo "                                  <tr>\n";
-        echo "                                    <td>&nbsp;</td>\n";
-        echo "                                    <td>&nbsp;</td>\n";
-        echo "                                    <td>&nbsp;</td>\n";
+        echo "                                    <td align=\"left\">&nbsp;</td>\n";
+        echo "                                    <td align=\"left\">&nbsp;</td>\n";
+        echo "                                    <td align=\"left\">&nbsp;</td>\n";
         echo "                                  </tr>\n";
         echo "                                </table>\n";
         echo "                              </td>\n";
@@ -822,7 +822,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        </td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -834,10 +834,10 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>&nbsp;{$lang['usernotinanygroups']}</td>\n";
+        echo "                        <td align=\"left\">&nbsp;{$lang['usernotinanygroups']}</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td>&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -854,10 +854,10 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}</td>\n";
@@ -871,13 +871,13 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
             echo "                  <td align=\"center\">\n";
             echo "                    <table width=\"90%\" class=\"posthead\">\n";
             echo "                      <tr>\n";
-            echo "                        <td>&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td>{$lang['aliasdesc']}</td>\n";
+            echo "                        <td align=\"left\">{$lang['aliasdesc']}</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td>&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
@@ -886,12 +886,12 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"box\" width=\"90%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td>\n";
+            echo "                        <td align=\"left\">\n";
             echo "                          <table class=\"posthead\" width=\"100%\">\n";
             echo "                            <tr>\n";
-            echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['logon']}</td>\n";
-            echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['nickname']}</td>\n";
-            echo "                              <td class=\"subhead\" width=\"150\">&nbsp;{$lang['ip']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">&nbsp;{$lang['logon']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">&nbsp;{$lang['nickname']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">&nbsp;{$lang['ip']}</td>\n";
             echo "                            </tr>\n";
 
             foreach ($user_alias_array as $user_alias) {
@@ -927,7 +927,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>{$lang['nomatches']}</td>\n";
+        echo "                        <td align=\"left\">{$lang['nomatches']}</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -935,7 +935,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     }
 
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -947,10 +947,10 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}</td>\n";
@@ -959,14 +959,14 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td width=\"250\">{$lang['deleteallusersposts']}:</td>\n";
-    echo "                        <td>", form_radio("t_delete_posts", "Y", $lang['yes'], false), "&nbsp;", form_radio("t_delete_posts", "N", $lang['no'], true), "</td>\n";
+    echo "                        <td align=\"left\" width=\"250\">{$lang['deleteallusersposts']}:</td>\n";
+    echo "                        <td align=\"left\">", form_radio("t_delete_posts", "Y", $lang['yes'], false), "&nbsp;", form_radio("t_delete_posts", "N", $lang['no'], true), "</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -981,10 +981,10 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
-        echo "      <td>\n";
+        echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
         echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" align=\"left\">{$lang['resetpassword']}</td>\n";
@@ -993,7 +993,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>{$lang['forgottenpassworddesc']}</td>\n";
+        echo "                        <td align=\"left\">{$lang['forgottenpassworddesc']}</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -1002,18 +1002,18 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td width=\"150\">{$lang['resetpassword']}:</td>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['resetpassword']}:</td>\n";
         echo "                        <td align=\"left\">", form_radio("t_reset_password", "Y", $lang['yes'], false), "&nbsp;", form_radio("t_reset_password", "N", $lang['no'], true), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td width=\"150\">{$lang['resetpasswordto']}:</td>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['resetpasswordto']}:</td>\n";
         echo "                        <td align=\"left\">", form_input_password("t_new_password", "", 32), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -1027,10 +1027,10 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['attachments']}</td>\n";
@@ -1039,17 +1039,17 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     if ($attachments_array = admin_get_users_attachments($uid, true)) {
 
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"box\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>\n";
+        echo "                        <td align=\"left\">\n";
         echo "                          <table class=\"posthead\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td class=\"subhead\">{$lang['filename']}</td>\n";
-        echo "                              <td class=\"subhead\">{$lang['message']}</td>\n";
+        echo "                              <td align=\"left\" class=\"subhead\">{$lang['filename']}</td>\n";
+        echo "                              <td align=\"left\" class=\"subhead\">{$lang['message']}</td>\n";
         echo "                              <td class=\"subhead\" align=\"right\">{$lang['size']}&nbsp;</td>\n";
         echo "                              <td class=\"subhead\" align=\"right\">{$lang['delete']}&nbsp;</td>\n";
         echo "                            </tr>\n";
@@ -1059,15 +1059,15 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
             if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
                 echo "                            <tr>\n";
-                echo "                              <td valign=\"top\" width=\"300\" class=\"postbody\">$attachment_link</td>\n";
+                echo "                              <td align=\"left\" valign=\"top\" width=\"300\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'], false)) {
 
-                    echo "                              <td valign=\"top\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\"><a href=\"", $message_link, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                              <td align=\"left\" valign=\"top\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\"><a href=\"", $message_link, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
                 }else {
 
-                    echo "                              <td valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+                    echo "                              <td align=\"left\" valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
                 }
 
                 echo "                              <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachment['filesize']). "</td>\n";
@@ -1092,7 +1092,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td valign=\"top\" width=\"300\" class=\"postbody\" colspan=\"3\">{$lang['noattachmentsforuser']}</td>\n";
+        echo "                        <td align=\"left\" valign=\"top\" width=\"300\" class=\"postbody\" colspan=\"3\">{$lang['noattachmentsforuser']}</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -1100,7 +1100,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     }
 
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -1109,7 +1109,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";

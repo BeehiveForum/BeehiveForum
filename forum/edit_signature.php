@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.70 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.71 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -271,10 +271,10 @@ if ($admin_edit === true) echo "  ", form_input_hidden('siguid', $uid), "\n";
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if (isset($_POST['preview'])) {
 
@@ -301,7 +301,7 @@ if (isset($_POST['preview'])) {
 
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\">{$lang['preview']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['preview']}</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -309,10 +309,10 @@ if (isset($_POST['preview'])) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td>\n";
+        echo "                        <td align=\"left\">\n";
         echo "                          <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "                            <tr>\n";
-        echo "                              <td>\n";
+        echo "                              <td align=\"left\">\n";
 
         message_display(0, $preview_message, 0, 0, 0, true, false, false, false, true, true);
         echo "<br />\n";
@@ -331,7 +331,7 @@ if (isset($_POST['preview'])) {
 
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">{$lang['signature']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['signature']}</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -339,7 +339,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"90%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>\n";
+echo "                        <td align=\"left\">\n";
 
 $page_prefs = bh_session_get_post_page_prefs();
 
@@ -363,7 +363,7 @@ echo $tools->js();
 
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>\n";
+echo "                        <td align=\"left\">\n";
 
 if ($tools->getTinyMCE()) {
 
@@ -388,7 +388,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
 if ($admin_edit === true) {

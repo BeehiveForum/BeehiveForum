@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.76 2006-09-08 16:16:17 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.77 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -164,7 +164,7 @@ echo "<form name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <p>{$lang['wordfilterexp_1']}</p>\n";
 echo "        <p>{$lang['wordfilterexp_2']}</p>\n";
 echo "      </td>\n";
@@ -172,27 +172,27 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['matchedtext']}&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['replacementtext']}&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['all']}&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['wholeword']}&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['preg']}&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" width=\"75\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['matchedtext']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['replacementtext']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['all']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['wholeword']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['preg']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"75\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
 foreach ($word_filter_array as $key => $word_filter) {
 
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_input_text("match[$key]", _htmlentities($word_filter['MATCH_TEXT']), 30), "</td>\n";
-    echo "                  <td>", form_input_text("replace[$key]", _htmlentities($word_filter['REPLACE_TEXT']), 30), "</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("match[$key]", _htmlentities($word_filter['MATCH_TEXT']), 30), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("replace[$key]", _htmlentities($word_filter['REPLACE_TEXT']), 30), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "0", "", $word_filter['FILTER_OPTION'] == 0), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "1", "", $word_filter['FILTER_OPTION'] == 1), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("filter_option[$key]", "2", "", $word_filter['FILTER_OPTION'] == 2), "</td>\n";
@@ -201,15 +201,15 @@ foreach ($word_filter_array as $key => $word_filter) {
 }
 
 echo "                <tr>\n";
-echo "                  <td>{$lang['newcaps']}</td>\n";
-echo "                  <td>", form_input_text("new_match", "", 30), "</td>\n";
-echo "                  <td>", form_input_text("new_replace", "", 30), "</td>\n";
+echo "                  <td align=\"left\">{$lang['newcaps']}</td>\n";
+echo "                  <td align=\"left\">", form_input_text("new_match", "", 30), "</td>\n";
+echo "                  <td align=\"left\">", form_input_text("new_replace", "", 30), "</td>\n";
 echo "                  <td align=\"center\">", form_radio("new_filter_option", "0", "", true), "</td>\n";
 echo "                  <td align=\"center\">", form_radio("new_filter_option", "1", "", false), "</td>\n";
 echo "                  <td align=\"center\">", form_radio("new_filter_option", "2", "", false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -221,19 +221,19 @@ echo "  </table>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">{$lang['options']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>", form_checkbox("admin_force_word_filter", "Y", $lang['forceadminwordfilter'], forum_get_setting("admin_force_word_filter", "Y")), "</td>\n";
+echo "                  <td align=\"left\">", form_checkbox("admin_force_word_filter", "Y", $lang['forceadminwordfilter'], forum_get_setting("admin_force_word_filter", "Y")), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -242,18 +242,18 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <p>{$lang['word_filter_help_1']}</p>\n";
 echo "        <p>{$lang['word_filter_help_2']}</p>\n";
 echo "        <p>{$lang['word_filter_help_3']}</p>\n";

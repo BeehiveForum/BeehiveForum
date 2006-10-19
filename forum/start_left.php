@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.112 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.113 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,10 +99,10 @@ html_draw_top("openprofile.js", "robots=noindex,follow");
 
 echo "<table class=\"posthead\" border=\"0\" width=\"200\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\">{$lang['recentthreads']}</td>\n";
+echo "    <td align=\"left\" class=\"subhead\">{$lang['recentthreads']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>\n";
+echo "    <td align=\"left\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
 if ($thread_array = threads_get_most_recent()) {
@@ -127,7 +127,7 @@ if ($thread_array = threads_get_most_recent()) {
             echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />&nbsp;</td>\n";
         }
 
-        echo "          <td><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
+        echo "          <td align=\"left\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
         echo "title=\"#$tid Started by ", add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ". ";
         echo ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT']), "\">";
         echo add_wordfilter_tags($thread['TITLE']), "</a>&nbsp;";
@@ -155,7 +155,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 
 // Display "Start Reading" button
@@ -169,28 +169,28 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\">{$lang['threadoptions']}</td>\n";
+echo "    <td align=\"left\" class=\"subhead\">{$lang['threadoptions']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td class=\"postbody\" colspan=\"2\" align=\"center\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
+echo "          <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['newdiscussion']}\" title=\"{$lang['newdiscussion']}\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"main\">{$lang['newdiscussion']}</a></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
+echo "          <td align=\"left\" valign=\"top\" nowrap=\"nowrap\"><img src=\"", style_image('poll.png'), "\" alt=\"{$lang['createpoll']}\" title=\"{$lang['createpoll']}\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"main\">{$lang['createpoll']}</a></td>\n";
 echo "        </tr>\n";
 echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\">{$lang['recentvisitors']}</td>\n";
+echo "    <td align=\"left\" class=\"subhead\">{$lang['recentvisitors']}</td>\n";
 echo "  </tr>\n";
 
 // Get recent visitors
@@ -210,15 +210,15 @@ if ($users_array['user_count'] > 0) {
 
         if (isset($recent_user['SID']) && !is_null($recent_user['SID'])) {
 
-            echo "                   <td><a href=\"{$recent_user['URL']}\" target=\"_blank\">{$recent_user['NAME']}</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"{$recent_user['URL']}\" target=\"_blank\">{$recent_user['NAME']}</a></td>\n";
 
         }elseif ($recent_user['UID'] > 0) {
 
-            echo "                   <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$recent_user['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</a></td>\n";
 
         }else {
 
-            echo "                   <td>", add_wordfilter_tags(add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</td>\n";
+            echo "                   <td align=\"left\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</td>\n";
         }
 
         if (isset($recent_user['LAST_LOGON']) && $recent_user['LAST_LOGON'] > 0) {
@@ -236,19 +236,19 @@ if ($users_array['user_count'] > 0) {
 }
 
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\"><img src=\"", style_image('post.png'), "\" alt=\"{$lang['showmorevisitors']}\" title=\"{$lang['showmorevisitors']}\" />&nbsp;<a href=\"visitor_log.php?webtag=$webtag\" target=\"right\">{$lang['showmorevisitors']}</a>&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 
 if ($birthdays = user_get_forthcoming_birthdays()) {
 
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\" colspan=\"2\">{$lang['forthcomingbirthdays']}</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['forthcomingbirthdays']}</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"center\">\n";
@@ -258,7 +258,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
 
         echo "        <tr>\n";
         echo "          <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        echo "          <td><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", add_wordfilter_tags($row['NICKNAME']), "</a></td>\n";
+        echo "          <td align=\"left\"><a href=\"javascript:void(0)\" target=\"_self\" onclick=\"openProfile({$row['UID']}, '$webtag')\">", add_wordfilter_tags($row['NICKNAME']), "</a></td>\n";
         echo "          <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "        </tr>\n";
     }
@@ -267,21 +267,21 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td>&nbsp;</td>\n";
+    echo "    <td align=\"left\">&nbsp;</td>\n";
     echo "  </tr>\n";
 }
 
 echo "  <tr>\n";
-echo "    <td class=\"subhead\" colspan=\"2\">{$lang['navigate']}</td>\n";
+echo "    <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['navigate']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <table class=\"posthead\" border=\"0\" width=\"80%\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "        <tr>\n";
-echo "          <td>\n";
+echo "          <td align=\"left\">\n";
 echo "            <form name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"main\">\n";
 echo "              ", form_input_hidden("webtag", $webtag), "\n";
 echo "              ", form_input_text('msg', '1.1', 10), "\n";
@@ -293,7 +293,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

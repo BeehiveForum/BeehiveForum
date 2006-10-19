@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.37 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.38 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -188,13 +188,13 @@ if ($forum_array = forum_get($fid)) {
     echo "  ", form_input_hidden('ret', $ret), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['existingpermissions']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['existingpermissions']}</td>\n";
     echo "                </tr>\n";
 
     if ($user_array = forum_get_permissions($fid)) {
@@ -214,7 +214,7 @@ if ($forum_array = forum_get($fid)) {
         echo "        </table>\n";
         echo "      </tr>\n";
         echo "      <tr>\n";
-        echo "        <td>&nbsp;</td>\n";
+        echo "        <td align=\"left\">&nbsp;</td>\n";
         echo "      </tr>\n";
         echo "      <tr>\n";
         echo "        <td align=\"center\">", form_submit('remove_user', $lang['remove']), "</td>\n";
@@ -245,10 +245,10 @@ if ($forum_array = forum_get($fid)) {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";
-        echo "      <td>\n";
+        echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
         echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
         echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchresults']}</td>\n";
@@ -274,7 +274,7 @@ if ($forum_array = forum_get($fid)) {
             echo "        </table>\n";
             echo "      </tr>\n";
             echo "      <tr>\n";
-            echo "        <td>&nbsp;</td>\n";
+            echo "        <td align=\"left\">&nbsp;</td>\n";
             echo "      </tr>\n";
             echo "      <tr>\n";
             echo "        <td align=\"center\">", form_submit('add_searched_user', $lang['add']), "</td>\n";
@@ -301,10 +301,10 @@ if ($forum_array = forum_get($fid)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforuser']}</td>\n";
@@ -321,7 +321,7 @@ if ($forum_array = forum_get($fid)) {
     echo "        </table>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
-    echo "        <td>&nbsp;</td>\n";
+    echo "        <td align=\"left\">&nbsp;</td>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
     echo "        <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";

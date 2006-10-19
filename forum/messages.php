@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.202 2006-08-19 13:05:19 decoyduck Exp $ */
+/* $Id: messages.php,v 1.203 2006-10-19 19:34:44 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -290,14 +290,14 @@ echo "  </tr>\n";
 if (isset($_GET['markasread'])) {
 
     echo "  <tr>\n";
-    echo "    <td><h2>{$lang['threareadstatusupdated']}</h2></td>\n";
+    echo "    <td align=\"left\"><h2>{$lang['threareadstatusupdated']}</h2></td>\n";
     echo "  </tr>\n";
 }
 
 if (isset($_GET['setinterest'])) {
 
     echo "  <tr>\n";
-    echo "    <td><h2>{$lang['interestupdated']}</h2></td>\n";
+    echo "    <td align=\"left\"><h2>{$lang['interestupdated']}</h2></td>\n";
     echo "  </tr>\n";
 }
 
@@ -317,7 +317,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
                 $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadhere']);
                 
                 echo "  <tr>\n";
-                echo "    <td>", sprintf($lang['thisthreadhasmoved'], $thread_link), "</td>\n";
+                echo "    <td align=\"left\">", sprintf($lang['thisthreadhasmoved'], $thread_link), "</td>\n";
                 echo "  </tr>\n";
             }
 
@@ -327,7 +327,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
                 $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadhere']);
 
                 echo "  <tr>\n";
-                echo "    <td>", sprintf($lang['thisthreadwasmergedfrom'], $thread_link), "</td>\n";
+                echo "    <td align=\"left\">", sprintf($lang['thisthreadwasmergedfrom'], $thread_link), "</td>\n";
                 echo "  </tr>\n";
             }
 
@@ -339,7 +339,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
                 $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadhere']);
 
                 echo "  <tr>\n";
-                echo "    <td>", sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link), "</td>\n";
+                echo "    <td align=\"left\">", sprintf($lang['somepostsinthisthreadhavebeenmoved'], $thread_link), "</td>\n";
                 echo "  </tr>\n";
             }
 
@@ -349,7 +349,7 @@ if ($tracking_data_array = thread_get_tracking_data($tid)) {
                 $thread_link = sprintf($thread_link, $tracking_data['NEW_TID'], $lang['threadhere']);
 
                 echo "  <tr>\n";
-                echo "    <td>", sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link), "</td>\n";
+                echo "    <td align=\"left\">", sprintf($lang['somepostsinthisthreadweremovedfrom'], $thread_link), "</td>\n";
                 echo "  </tr>\n";
             }
         }
@@ -412,7 +412,7 @@ if ($msg_count > 0 && $uid > 0 && !isset($_GET['markasread'])) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td colspan=\"3\">&nbsp;</td>\n";
+echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr valign=\"top\">\n";
 
@@ -450,7 +450,7 @@ echo "    </td>\n";
 
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td colspan=\"3\">&nbsp;</td>\n";
+echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";

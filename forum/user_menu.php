@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_menu.php,v 1.40 2006-10-14 19:11:35 decoyduck Exp $ */
+/* $Id: user_menu.php,v 1.41 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,37 +98,37 @@ html_draw_top();
 
 echo "<table border=\"0\" width=\"100%\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"subhead\">{$lang['menu']}</td>\n";
+echo "    <td align=\"left\" class=\"subhead\">{$lang['menu']}</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_prefs.php?webtag=$webtag\" target=\"right\">{$lang['userdetails']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_prefs.php?webtag=$webtag\" target=\"right\">{$lang['userdetails']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_profile.php?webtag=$webtag\" target=\"right\">{$lang['userprofile']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_profile.php?webtag=$webtag\" target=\"right\">{$lang['userprofile']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_password.php?webtag=$webtag\" target=\"right\">{$lang['changepassword']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_password.php?webtag=$webtag\" target=\"right\">{$lang['changepassword']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><hr /></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><hr /></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_email.php?webtag=$webtag\" target=\"right\">{$lang['emailandprivacy']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_email.php?webtag=$webtag\" target=\"right\">{$lang['emailandprivacy']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"forum_options.php?webtag=$webtag\" target=\"right\">{$lang['forumoptions']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"forum_options.php?webtag=$webtag\" target=\"right\">{$lang['forumoptions']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_attachments.php?webtag=$webtag\" target=\"right\">{$lang['editattachments']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_attachments.php?webtag=$webtag\" target=\"right\">{$lang['editattachments']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_signature.php?webtag=$webtag\" target=\"right\">{$lang['editsignature']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_signature.php?webtag=$webtag\" target=\"right\">{$lang['editsignature']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag\" target=\"right\">{$lang['editrelationships']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_relations.php?webtag=$webtag\" target=\"right\">{$lang['editrelationships']}</a></td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_wordfilter.php?webtag=$webtag\" target=\"right\">{$lang['editwordfilter']}</a></td>\n";
+echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"edit_wordfilter.php?webtag=$webtag\" target=\"right\">{$lang['editwordfilter']}</a></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 

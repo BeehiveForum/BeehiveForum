@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.12 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.13 2006-10-19 19:34:44 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -116,19 +116,19 @@ echo "<div align=\"center\">\n";
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"1\">{$lang['modsforfolder']} '{$folder_title}'</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['modsforfolder']} '{$folder_title}'</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table width=\"90%\" class=\"posthead\">\n";
 echo "                      <tr>\n";
-echo "                        <td>\n";
+echo "                        <td align=\"left\">\n";
 echo "                          <h2>{$lang['forumleaders']}</h2>\n";
 echo "                          <ul>\n";
 
@@ -169,7 +169,7 @@ echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

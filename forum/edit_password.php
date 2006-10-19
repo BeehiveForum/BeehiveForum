@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.47 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.48 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -220,13 +220,13 @@ echo "<form name=\"prefs\" action=\"edit_password.php\" method=\"post\" target=\
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['changepassword']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['changepassword']}</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -234,19 +234,19 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td>{$lang['currentpasswd']}:</td>\n";
-echo "                        <td>", form_field("opw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">{$lang['currentpasswd']}:</td>\n";
+echo "                        <td align=\"left\">", form_field("opw", "", 37, 0, "password"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>{$lang['newpasswd']}:</td>\n";
-echo "                        <td>", form_field("npw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">{$lang['newpasswd']}:</td>\n";
+echo "                        <td align=\"left\">", form_field("npw", "", 37, 0, "password"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>{$lang['confirmpasswd']}:</td>\n";
-echo "                        <td>", form_field("cpw", "", 37, 0, "password"), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">{$lang['confirmpasswd']}:</td>\n";
+echo "                        <td align=\"left\">", form_field("cpw", "", 37, 0, "password"), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>&nbsp;</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -258,7 +258,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";

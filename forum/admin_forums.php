@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.47 2006-07-25 21:43:50 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.48 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -161,25 +161,25 @@ if (isset($_POST['changepermissions']) && is_array($_POST['changepermissions']))
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['warning_caps']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['warning_caps']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td>{$lang['forumdeletewarning']}</td>\n";
+    echo "                        <td align=\"left\">{$lang['forumdeletewarning']}</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -188,7 +188,7 @@ if (isset($_POST['changepermissions']) && is_array($_POST['changepermissions']))
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("t_confirm_delete[$fid]", $lang['delete']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
@@ -224,7 +224,7 @@ $forums_array = admin_get_forum_list();
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 
 if (sizeof($forums_array) > 0) {
 
@@ -232,10 +232,10 @@ if (sizeof($forums_array) > 0) {
     echo "        ", form_input_hidden('webtag', $webtag), "\n";
     echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td>\n";
+    echo "            <td align=\"left\">\n";
     echo "              <table class=\"box\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"posthead\">\n";
+    echo "                  <td align=\"left\" class=\"posthead\">\n";
     echo "                    <table class=\"posthead\" width=\"100%\">\n";
     echo "                      <tr>\n";
     echo "                        <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" width=\"150\">&nbsp;{$lang['webtag']}</td>\n";
@@ -274,7 +274,7 @@ if (sizeof($forums_array) > 0) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td colspan=\"5\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -283,7 +283,7 @@ if (sizeof($forums_array) > 0) {
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td>&nbsp;</td>\n";
+    echo "            <td align=\"left\">&nbsp;</td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
     echo "            <td align=\"center\">", form_submit("submit", $lang['savechanges']), "</td>\n";
@@ -297,27 +297,27 @@ echo "        <form name=\"f_folders\" action=\"admin_forums.php\" method=\"post
 echo "        ", form_input_hidden('webtag', $webtag), "\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td>\n";
+echo "            <td align=\"left\">\n";
 echo "              <table class=\"box\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\">\n";
+echo "                  <td align=\"left\" class=\"posthead\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
-echo "                        <td class=\"subhead\">&nbsp;</td>\n";
-echo "                        <td class=\"subhead\">&nbsp;{$lang['webtag']}</td>\n";
-echo "                        <td class=\"subhead\">&nbsp;{$lang['name']}</td>\n";
-echo "                        <td class=\"subhead\">&nbsp;{$lang['allow']}</td>\n";
-echo "                        <td class=\"subhead\" width=\"50%\">&nbsp;</td>\n";
+echo "                        <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
+echo "                        <td align=\"left\" class=\"subhead\">&nbsp;{$lang['webtag']}</td>\n";
+echo "                        <td align=\"left\" class=\"subhead\">&nbsp;{$lang['name']}</td>\n";
+echo "                        <td align=\"left\" class=\"subhead\">&nbsp;{$lang['allow']}</td>\n";
+echo "                        <td align=\"left\" class=\"subhead\" width=\"50%\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>{$lang['newcaps']}</td>\n";
-echo "                        <td>", form_input_text("t_webtag_new", "", 20, 32), "</td>\n";
-echo "                        <td>", form_input_text("t_name_new", "", 45, 255), "</td>\n";
-echo "                        <td>", form_dropdown_array("t_access_new", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), 0), "</td>\n";
-echo "                        <td>&nbsp;</td>\n";
+echo "                        <td align=\"left\">{$lang['newcaps']}</td>\n";
+echo "                        <td align=\"left\">", form_input_text("t_webtag_new", "", 20, 32), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("t_name_new", "", 45, 255), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("t_access_new", array(-1, 0, 1), array($lang['closed'], $lang['open'], $lang['restricted']), 0), "</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td colspan=\"5\">&nbsp;</td>\n";
+echo "                        <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -326,7 +326,7 @@ echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
-echo "            <td>&nbsp;</td>\n";
+echo "            <td align=\"left\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
 echo "            <td align=\"center\">", form_submit("submit", $lang['add']), "</td>\n";

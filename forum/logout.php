@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.79 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: logout.php,v 1.80 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,10 +108,10 @@ if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"300\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"subhead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">{$lang['logout']}:</td>\n";
@@ -125,7 +125,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"center\" nowrap=\"nowrap\">&nbsp;{$lang['currentlyloggedinas']} ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td>&nbsp;</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"center\">", form_submit("submit", $lang['logout']), "</td>\n";

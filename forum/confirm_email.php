@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.7 2006-06-30 18:07:32 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.8 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -121,19 +121,19 @@ if ($user = user_get_password($uid, $key)) {
         echo "  ", form_input_hidden('webtag', $webtag), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";
-        echo "      <td>\n";
+        echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\">\n";
         echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"500\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\">{$lang['emailconfirmation']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['emailconfirmation']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>{$lang['emailconfirmationcomplete']}</td>\n";
+        echo "                  <td align=\"left\">{$lang['emailconfirmationcomplete']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -142,7 +142,7 @@ if ($user = user_get_password($uid, $key)) {
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit("submit", $lang['continue']), "</td>\n";
@@ -166,19 +166,19 @@ if ($user = user_get_password($uid, $key)) {
         echo "  ", form_input_hidden('webtag', $webtag), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
         echo "    <tr>\n";
-        echo "      <td>\n";
+        echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\">\n";
         echo "          <tr>\n";
-        echo "            <td class=\"posthead\">\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"500\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\">{$lang['emailconfirmation']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['emailconfirmation']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>{$lang['emailconfirmationfailed']}</td>\n";
+        echo "                  <td align=\"left\">{$lang['emailconfirmationfailed']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -187,7 +187,7 @@ if ($user = user_get_password($uid, $key)) {
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit("submit", $lang['continue']), "</td>\n";

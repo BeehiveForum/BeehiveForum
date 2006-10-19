@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.11 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.12 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -163,7 +163,7 @@ echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <table width=\"95%\">\n";
 echo "        <tr>\n";
-echo "          <td><h2>". thread_get_title($tid). "</h2></td>\n";
+echo "          <td align=\"left\"><h2>". thread_get_title($tid). "</h2></td>\n";
 echo "        </tr>\n";
 
 if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < mktime())) {
@@ -171,7 +171,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
   if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
     echo "        <tr>\n";
-    echo "          <td colspan=\"2\">\n";
+    echo "          <td align=\"left\" colspan=\"2\">\n";
     echo poll_public_ballot($tid, $viewstyle);
     echo "          </td>\n";
     echo "        </tr>\n";
@@ -181,7 +181,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
     if ($polldata['POLLTYPE'] == 0) {
 
       echo "        <tr>\n";
-      echo "          <td>\n";
+      echo "          <td align=\"left\">\n";
       echo poll_horizontal_graph($tid);
       echo "          </td>\n";
       echo "        </tr>\n";
@@ -189,7 +189,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
     }elseif ($polldata['POLLTYPE'] == 2) {
 
       echo "        <tr>\n";
-      echo "          <td>\n";
+      echo "          <td align=\"left\">\n";
       echo poll_table_graph($tid);
       echo "          </td>\n";
       echo "        </tr>\n";
@@ -197,7 +197,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
     }else {
 
       echo "        <tr>\n";
-      echo "          <td>\n";
+      echo "          <td align=\"left\">\n";
       echo poll_vertical_graph($tid);
       echo "          </td>\n";
       echo "        </tr>\n";
@@ -214,7 +214,7 @@ if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['F
     if (!empty($pollresults['OPTION_NAME'][$i])) {
 
       echo "        <tr>\n";
-      echo "          <td class=\"postbody\">{$pollresults['OPTION_NAME'][$i]}</td>\n";
+      echo "          <td align=\"left\" class=\"postbody\">{$pollresults['OPTION_NAME'][$i]}</td>\n";
       echo "        </tr>\n";
 
     }

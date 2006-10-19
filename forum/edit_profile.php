@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_profile.php,v 1.59 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: edit_profile.php,v 1.60 2006-10-19 19:34:44 decoyduck Exp $ */
 
 /**
 * Displays the edit profile page, and processes sumbissions
@@ -220,10 +220,10 @@ if ($profile_items_array = profile_get_user_values($uid)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
 
     $last_psid = false;
@@ -238,16 +238,16 @@ if ($profile_items_array = profile_get_user_values($uid)) {
             if ($last_psid !== false) {
 
                 echo "                <tr>\n";
-                echo "                  <td>&nbsp;</td>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
-                echo "                  <td class=\"subhead\" colspan=\"4\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$profile_item['SECTION_NAME']}</td>\n";
                 echo "                </tr>\n";
 
             }else {
                 
                 echo "                <tr>\n";
-                echo "                  <td class=\"subhead\" colspan=\"4\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">{$profile_item['SECTION_NAME']}</td>\n";
                 echo "                </tr>\n";
             }
         }
@@ -263,8 +263,8 @@ if ($profile_items_array = profile_get_user_values($uid)) {
                 $field_values = explode(';', $field_values);
 
                 echo "                <tr>\n";
-                echo "                  <td>&nbsp;</td>\n";
-                echo "                  <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">$field_name</td>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" valign=\"top\" width=\"150\" nowrap=\"nowrap\">$field_name</td>\n";
 
                 if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
                     echo "                  <td align=\"right\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", array_keys($field_values), $field_values, $profile_item['ENTRY']), "</td>\n";
@@ -284,8 +284,8 @@ if ($profile_items_array = profile_get_user_values($uid)) {
         }elseif ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;</td>\n";
-            echo "                  <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}</td>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                  <td align=\"left\" valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}</td>\n";
             echo "                  <td align=\"right\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], 4, 42), "</td>\n";
 
             if ($admin_edit === false) {
@@ -301,8 +301,8 @@ if ($profile_items_array = profile_get_user_values($uid)) {
             $text_width = array(45, 30, 10);
 
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;</td>\n";
-            echo "                  <td valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}</td>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                  <td align=\"left\" valign=\"top\" width=\"150\" nowrap=\"nowrap\">{$profile_item['ITEM_NAME']}</td>\n";
             echo "                  <td align=\"right\" valign=\"top\">", form_field("t_entry[{$profile_item['PIID']}]", $profile_item['ENTRY'], $text_width[$profile_item['TYPE']], 255), "</td>\n";
 
             if ($admin_edit === false) {
@@ -316,7 +316,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
     }
 
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -325,7 +325,7 @@ if ($profile_items_array = profile_get_user_values($uid)) {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
 
     if ($admin_edit === true) {

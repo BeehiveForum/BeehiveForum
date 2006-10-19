@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.22 2006-10-13 17:55:48 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.23 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -213,22 +213,22 @@ echo "<form method=\"post\" action=\"admin_forum_links.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
-echo "      <td>{$lang['editforumlinks_exp']}</td>\n";
+echo "      <td align=\"left\">{$lang['editforumlinks_exp']}</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\">{$lang['name']}</td>\n";
-echo "                  <td class=\"subhead\">{$lang['address']}</td>\n";
-echo "                  <td class=\"subhead\">{$lang['delete']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['name']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['address']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['delete']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 
@@ -238,18 +238,18 @@ if ($forum_links_array = forum_links_get_links(true)) {
 
     if (is_array($forum_top_link)) {
 
-        echo "                  <td>&nbsp;</td>\n";
-        echo "                  <td>", form_field("l_top_title", $forum_top_link['TITLE'], 32, 64), "</td>\n";
-        echo "                  <td>&nbsp;</td>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", form_field("l_top_title", $forum_top_link['TITLE'], 32, 64), "</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
 
     }else {
 
-        echo "                  <td>&nbsp;</td>\n";
-        echo "                  <td>", form_field("l_top_title", $lang['forumlinks'], 32, 64), "</td>\n";
-        echo "                  <td>&nbsp;</td>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", form_field("l_top_title", $lang['forumlinks'], 32, 64), "</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
     }
 
@@ -278,9 +278,9 @@ if ($forum_links_array = forum_links_get_links(true)) {
             echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
         }
 
-        echo "                  <td>", form_field("l_title[{$forum_link['LID']}]", $forum_link['TITLE'], 32, 64), "</td>\n";
-        echo "                  <td>", form_field("l_uri[{$forum_link['LID']}]", $forum_link['URI'], 32, 255), "</td>\n";
-        echo "                  <td>", form_submit("l_delete[{$forum_link['LID']}]", $lang['delete']), "</td>\n";
+        echo "                  <td align=\"left\">", form_field("l_title[{$forum_link['LID']}]", $forum_link['TITLE'], 32, 64), "</td>\n";
+        echo "                  <td align=\"left\">", form_field("l_uri[{$forum_link['LID']}]", $forum_link['URI'], 32, 255), "</td>\n";
+        echo "                  <td align=\"left\">", form_submit("l_delete[{$forum_link['LID']}]", $lang['delete']), "</td>\n";
         echo "                </tr>\n";
     }
 
@@ -288,24 +288,24 @@ if ($forum_links_array = forum_links_get_links(true)) {
 
     forum_links_add_top_link($lang['forumlinks']);
     
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_field("l_top_title", $lang['forumlinks'], 32, 64), "</td>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", form_field("l_top_title", $lang['forumlinks'], 32, 64), "</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
-echo "                  <td>{$lang['newcaps']}</td>\n";
-echo "                  <td>", form_field("l_title_new", "", 32, 64), "</td>\n";
-echo "                  <td>", form_field("l_uri_new", "", 32, 255), "</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">{$lang['newcaps']}</td>\n";
+echo "                  <td align=\"left\">", form_field("l_title_new", "", 32, 64), "</td>\n";
+echo "                  <td align=\"left\">", form_field("l_uri_new", "", 32, 255), "</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -314,7 +314,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_reset("reset", $lang['reset']), "</td>\n";

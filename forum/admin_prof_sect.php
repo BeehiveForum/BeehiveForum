@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.80 2006-10-13 17:55:48 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.81 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -185,10 +185,10 @@ echo "<form name=\"f_sections\" action=\"admin_prof_sect.php\" method=\"post\">\
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
@@ -228,9 +228,9 @@ if ($profile_sections = profile_sections_get()) {
         echo "                  <td valign=\"top\" align=\"left\">", form_button("items", $lang['items'], "onclick=\"document.location.href='admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}'\""), "</td>\n";
 
         if (!profile_items_get($profile_section['PSID'])) {
-            echo "                  <td>", form_submit("t_delete[{$profile_section['PSID']}]", $lang['delete']), "</td>\n";
+            echo "                  <td align=\"left\">", form_submit("t_delete[{$profile_section['PSID']}]", $lang['delete']), "</td>\n";
         }else{
-            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
         }
 
         echo "                </tr>\n";
@@ -244,7 +244,7 @@ echo "                  <td align=\"left\">", form_field("t_name_new", $lang['ne
 echo "                  <td align=\"center\" colspan=\"2\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td colspan=\"4\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -253,7 +253,7 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.156 2006-10-18 22:01:23 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.157 2006-10-19 19:34:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -804,7 +804,7 @@ function pm_display($pm_elements_array, $pm_export_html = false)
     $html = "<div align=\"center\">\n";
     $html.= "  <table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
     $html.= "    <tr>\n";
-    $html.= "      <td>\n";
+    $html.= "      <td align=\"left\">\n";
     $html.= "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
     $html.= "          <tr>\n";
 
@@ -891,10 +891,10 @@ function pm_display($pm_elements_array, $pm_export_html = false)
     $html.= "      </td>\n";
     $html.= "    </tr>\n";
     $html.= "    <tr>\n";
-    $html.= "      <td>\n";
+    $html.= "      <td align=\"left\">\n";
     $html.= "        <table width=\"100%\">\n";
     $html.= "          <tr align=\"right\">\n";
-    $html.= "            <td colspan=\"3\">&nbsp;</td>\n";
+    $html.= "            <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
     $html.= "          </tr>\n";
     $html.= "          <tr>\n";
     $html.= "            <td class=\"postbody\" align=\"left\">{$pm_elements_array['CONTENT']}</td>\n";

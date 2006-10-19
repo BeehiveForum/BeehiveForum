@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.272 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.273 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -371,7 +371,7 @@ if (!$thread_info) {
 
 echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
-if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prev50threads']}\" title=\"{$lang['prev50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></td></tr><tr><td>&nbsp;</td></tr>\n";
+if ($start_from != 0 && $mode == 0 && !isset($folder)) echo "<tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prev50threads']}\" title=\"{$lang['prev50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from - 50)."\">{$lang['prev50threads']}</a></td></tr><tr><td align=\"left\">&nbsp;</td></tr>\n";
 
 // Iterate through the information we've just got and display it in the right order
 
@@ -380,10 +380,10 @@ foreach ($folder_order as $key1 => $folder_number) {
     if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
         echo "  <tr>\n";
-        echo "    <td colspan=\"2\">\n";
+        echo "    <td align=\"left\" colspan=\"2\">\n";
         echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "        <tr>\n";
-        echo "          <td class=\"foldername\">\n";
+        echo "          <td align=\"left\" class=\"foldername\">\n";
 
         if ($folder_info[$folder_number]['INTEREST'] == 0) {
             echo "            <img src=\"".style_image('folder.png')."\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />\n";
@@ -396,7 +396,7 @@ foreach ($folder_order as $key1 => $folder_number) {
 
         if (bh_session_get_value('UID') > 0) {
 
-            echo "          <td class=\"folderpostnew\" nowrap=\"nowrap\"><a href=\"javascript:void(0);\" onclick=\"openModsList({$folder_number}, '$webtag')\"><img src=\"". style_image('mods_list.png'). "\" border=\"0\" alt=\"View moderators\" title=\"View moderators\" /></a>";
+            echo "          <td align=\"left\" class=\"folderpostnew\" nowrap=\"nowrap\"><a href=\"javascript:void(0);\" onclick=\"openModsList({$folder_number}, '$webtag')\"><img src=\"". style_image('mods_list.png'). "\" border=\"0\" alt=\"View moderators\" title=\"View moderators\" /></a>";
 
             if ($folder_info[$folder_number]['INTEREST'] == 0) {
                 echo "<a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\" onclick=\"return confirmFolderIgnore();\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
@@ -419,7 +419,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                 if ($visible_threads) {
 
                     echo "  <tr>\n";
-                    echo "    <td class=\"threads_top_left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder={$folder_number}\" class=\"folderinfo\">";
+                    echo "    <td align=\"left\" class=\"threads_top_left\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder={$folder_number}\" class=\"folderinfo\">";
 
                     if (isset($folder_msgs[$folder_number]) && $folder_msgs[$folder_number] > 0) {
                         echo $folder_msgs[$folder_number];
@@ -428,7 +428,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                     }
 
                     echo "&nbsp;{$lang['threads']}</a></td>\n";
-                    echo "    <td class=\"threads_top_right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
+                    echo "    <td align=\"left\" class=\"threads_top_right\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
 
                     if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
 
@@ -446,12 +446,12 @@ foreach ($folder_order as $key1 => $folder_number) {
                     if ($start_from != 0 && isset($folder) && $folder_number == $folder) {
 
                         echo "  <tr>\n";
-                        echo "    <td class=\"threads_left_right\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\" class=\"folderinfo\">{$lang['prev50threads']}</a></td>\n";
+                        echo "    <td align=\"left\" class=\"threads_left_right\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\" class=\"folderinfo\">{$lang['prev50threads']}</a></td>\n";
                         echo "  </tr>\n";
                     }
 
                     echo "  <tr>\n";
-                    echo "    <td class=\"threads_left_right_bottom\" colspan=\"2\">\n";
+                    echo "    <td align=\"left\" class=\"threads_left_right_bottom\" colspan=\"2\">\n";
                     echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 
                     foreach($thread_info as $key2 => $thread) {
@@ -552,7 +552,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                             $thread_time = format_time($thread['MODIFIED']);
 
                             echo "&nbsp;</td>\n";
-                            echo "          <td valign=\"top\">";
+                            echo "          <td align=\"left\" valign=\"top\">";
                             echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"right\" class=\"threadname\" onclick=\"change_current_thread('{$thread['TID']}');\"";
                             echo "title=\"#{$thread['TID']} {$lang['startedby']} ", add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ". ";
                             echo ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT']), "\">";
@@ -579,13 +579,13 @@ foreach ($folder_order as $key1 => $folder_number) {
 
                         if ($more_threads > 0 && $more_threads <= 50) {
                             echo "        <tr>\n";
-                            echo "          <td colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next']} $more_threads {$lang['threads']}</a></td>\n";
+                            echo "          <td align=\"left\" colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next']} $more_threads {$lang['threads']}</a></td>\n";
                             echo "        </tr>\n";
                         }
 
                         if ($more_threads > 50) {
                             echo "        <tr>\n";
-                            echo "          <td colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next50threads']}</a></td>\n";
+                            echo "          <td align=\"left\" colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder&amp;start_from=".($start_from + 50)."\" class=\"folderinfo\">{$lang['next50threads']}</a></td>\n";
                             echo "        </tr>\n";
                         }
 
@@ -598,7 +598,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                 }else {
 
                     echo "  <tr>\n";
-                    echo "    <td class=\"threads_top_left_bottom\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder={$folder_number}\" class=\"folderinfo\">";
+                    echo "    <td align=\"left\" class=\"threads_top_left_bottom\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder={$folder_number}\" class=\"folderinfo\">";
 
                     if (isset($folder_msgs[$folder_number]) && $folder_msgs[$folder_number] > 0) {
                         echo $folder_msgs[$folder_number];
@@ -607,7 +607,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                     }
 
                     echo "&nbsp;{$lang['threads']}</a></td>\n";
-                    echo "    <td class=\"threads_top_right_bottom\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
+                    echo "    <td align=\"left\" class=\"threads_top_right_bottom\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
 
                     if (is_null($folder_info[$folder_number]['STATUS']) || $folder_info[$folder_number]['STATUS'] & USER_PERM_THREAD_CREATE) {
 
@@ -637,7 +637,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                 }
 
                 echo "&nbsp;{$lang['threads']}</a></td>\n";
-                echo "    <td class=\"threads_top_right_bottom\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
+                echo "    <td align=\"left\" class=\"threads_top_right_bottom\" valign=\"top\" width=\"50%\" nowrap=\"nowrap\">";
 
                 if (bh_session_check_perm(USER_PERM_THREAD_CREATE, $folder_number)) {
 
@@ -672,14 +672,14 @@ if ($mode == 0 && !isset($folder)) {
       }
 
       $more_threads = $total_threads - $start_from - 50;
-      if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['next']} $more_threads {$lang['threads']}\" title=\"{$lang['next']} $more_threads {$lang['threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</td></tr>\n";
-      if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['next50threads']}\" title=\"{$lang['next50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></td></tr>\n";
+      if ($more_threads > 0 && $more_threads <= 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td align=\"left\" class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['next']} $more_threads {$lang['threads']}\" title=\"{$lang['next']} $more_threads {$lang['threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next']} $more_threads {$lang['threads']}</td></tr>\n";
+      if ($more_threads > 50) echo "<tr><td colspan=\"2\">&nbsp;</td></tr><tr><td align=\"left\" class=\"smalltext\" colspan=\"2\"><img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['next50threads']}\" title=\"{$lang['next50threads']}\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;start_from=".($start_from + 50)."\">{$lang['next50threads']}</a></td></tr>\n";
 
     }
 }
 
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
@@ -687,12 +687,12 @@ if (bh_session_get_value('UID') != 0) {
 
     echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['markasread']}:</td>\n";
+    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['markasread']}:</td>\n";
     echo "  </tr>\n";
 
     echo "  <tr>\n";
-    echo "    <td>&nbsp;</td>\n";
-    echo "    <td class=\"smalltext\">\n";
+    echo "    <td align=\"left\">&nbsp;</td>\n";
+    echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form name=\"f_mark\" method=\"get\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', $webtag), "\n";
 
@@ -727,11 +727,11 @@ if (bh_session_get_value('UID') != 0) {
 
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
+echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
-echo "    <td class=\"smalltext\">\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
+echo "    <td align=\"left\" class=\"smalltext\">\n";
 echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
 echo "        ", form_input_hidden('webtag', $webtag), "\n";
 
@@ -747,11 +747,11 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "  <tr>\n";
-echo "    <td class=\"smalltext\" colspan=\"2\">{$lang['search']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['search']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
-echo "    <td class=\"smalltext\">\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
+echo "    <td align=\"left\" class=\"smalltext\">\n";
 echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
 echo "        ", form_input_hidden('webtag', $webtag), "\n";
 

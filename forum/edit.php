@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.196 2006-10-13 17:30:57 decoyduck Exp $ */
+/* $Id: edit.php,v 1.197 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -144,8 +144,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     echo "<br />\n";
 
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>\n";
-    echo "<tr><td>\n";
+    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>\n";
+    echo "<tr><td align=\"left\">\n";
 
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
     echo "</td></tr>\n";
@@ -167,8 +167,8 @@ if (!is_numeric($tid) || !is_numeric($pid)) {
     echo "<br />\n";
 
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>\n";
-    echo "<tr><td>\n";
+    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>\n";
+    echo "<tr><td align=\"left\">\n";
 
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
     echo "</td></tr>\n";
@@ -497,8 +497,8 @@ if (isset($_POST['preview'])) {
         echo "<br />\n";
 
         echo "<table class=\"posthead\" width=\"720\">\n";
-        echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>\n";
-        echo "<tr><td>\n";
+        echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>\n";
+        echo "<tr><td align=\"left\">\n";
 
         echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
         echo "</td></tr>\n";
@@ -549,8 +549,8 @@ if (isset($_POST['preview'])) {
             echo "<br />\n";
 
             echo "<table class=\"posthead\" width=\"720\">\n";
-            echo "<tr><td class=\"subhead\">{$lang['editmessage']}</td></tr>\n";
-            echo "<tr><td>\n";
+            echo "<tr><td align=\"left\" class=\"subhead\">{$lang['editmessage']}</td></tr>\n";
+            echo "<tr><td align=\"left\">\n";
 
             echo "<h2>{$lang['editappliedtomessage']}</h2>\n";
             echo "</td></tr>\n";
@@ -618,8 +618,8 @@ if (isset($_POST['preview'])) {
                 echo "<br />\n";
 
                 echo "<table class=\"posthead\" width=\"720\">\n";
-                echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>\n";
-                echo "<tr><td>\n";
+                echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>\n";
+                echo "<tr><td align=\"left\">\n";
 
                 echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
                 echo "</td></tr>\n";
@@ -659,10 +659,10 @@ if (isset($_POST['preview'])) {
 
             echo "<table class=\"posthead\" width=\"720\">\n";
             echo "  <tr>\n";
-            echo "    <td class=\"subhead\">{$lang['error']}</td>\n";
+            echo "    <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
             echo "  </tr>";
             echo "  <tr>\n";
-            echo "    <td><h2>{$lang['message']} {$_GET['msg']} {$lang['wasnotfound']}</h2></td>\n";
+            echo "    <td align=\"left\"><h2>{$lang['message']} {$_GET['msg']} {$lang['wasnotfound']}</h2></td>\n";
             echo "  </tr>\n";
             echo "  <tr>\n";
             echo "    <td align=\"center\">\n";
@@ -685,10 +685,10 @@ if (isset($_POST['preview'])) {
 
        echo "<table class=\"posthead\" width=\"720\">\n";
        echo "  <tr>\n";
-       echo "    <td class=\"subhead\">{$lang['error']}</td>\n";
+       echo "    <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
        echo "  </tr>";
        echo "  <tr>\n";
-       echo "    <td><h2>{$lang['message']} {$_GET['msg']} {$lang['wasnotfound']}</h2></td>\n";
+       echo "    <td align=\"left\"><h2>{$lang['message']} {$_GET['msg']} {$lang['wasnotfound']}</h2></td>\n";
        echo "  </tr>\n";
        echo "  <tr>\n";
        echo "    <td align=\"center\">\n";
@@ -717,8 +717,8 @@ echo $tools->preload();
 
 if (isset($error_html)) {
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">{$lang['error']}</td></tr>";
-    echo "<tr><td>\n";
+    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>";
+    echo "<tr><td align=\"left\">\n";
     echo $error_html . "\n";
     echo "</td></tr>\n";
     echo "</table>\n";
@@ -727,18 +727,18 @@ if (isset($error_html)) {
 if ($valid && isset($_POST['preview'])) {
 
     echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td class=\"subhead\">{$lang['messagepreview']}</td></tr>";
+    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td></tr>";
 
-    echo "<tr><td>\n";
+    echo "<tr><td align=\"left\">\n";
     message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
     echo "</td></tr>\n";
 
-    echo "<tr><td>&nbsp;</td></tr>\n";
+    echo "<tr><td align=\"left\">&nbsp;</td></tr>\n";
     echo "</table>\n";
 }
 
 echo "<table class=\"posthead\" width=\"720\">\n";
-echo "<tr><td class=\"subhead\" colspan=\"2\">";
+echo "<tr><td align=\"left\" class=\"subhead\" colspan=\"2\">";
 echo $lang['editmessage'];
 echo "</td></tr>\n";
 echo "<tr>\n";
@@ -746,9 +746,9 @@ echo "<tr>\n";
 
 // ======================================
 // =========== OPTIONS COLUMN ===========
-echo "<td valign=\"top\" width=\"210\">\n";
+echo "<td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "<table class=\"posthead\" width=\"210\">\n";
-echo "<tr><td>\n";
+echo "<tr><td align=\"left\">\n";
 
 echo "<h2>{$lang['folder']}:</h2>\n";
 echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
@@ -785,14 +785,14 @@ if ($emot_prev != "") {
 
     echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td colspan=\"2\">{$emot_prev}</td>\n";
+        echo "    <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
 
     }else {
 
@@ -806,9 +806,9 @@ if ($emot_prev != "") {
 echo "</td></tr>\n";
 echo "</table>\n";
 echo "</td>\n";
-echo "<td valign=\"top\" width=\"500\">\n";
+echo "<td align=\"left\" valign=\"top\" width=\"500\">\n";
 echo "<table class=\"posthead\" width=\"500\">\n";
-echo "<tr><td>\n";
+echo "<tr><td align=\"left\">\n";
 
 echo "<h2>{$lang['message']}:</h2>\n";
 
@@ -886,7 +886,7 @@ if ($allow_sig == true) {
 
     echo "<br /><br /><table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
 
     $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 
@@ -895,7 +895,7 @@ if ($allow_sig == true) {
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'), "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
+        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
 
         echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N")."\n";
 
@@ -920,7 +920,7 @@ echo "</td></tr>\n";
 echo "</table>";
 echo "</td>\n";
 echo "</tr>\n";
-echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
+echo "<tr><td align=\"left\" colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";
 echo "</form>";
 

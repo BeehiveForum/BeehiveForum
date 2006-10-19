@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.190 2006-09-13 18:58:46 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.191 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -99,19 +99,19 @@ function html_email_confirmation_error()
     echo "  ", form_input_hidden('resend', 'Y'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"550\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['emailconfirmationrequired']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['emailconfirmationrequired']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>{$lang['emailconfirmationrequiredbeforepost']}</td>\n";
+    echo "                  <td align=\"left\">{$lang['emailconfirmationrequiredbeforepost']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -120,7 +120,7 @@ function html_email_confirmation_error()
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("resend", $lang['resendconfirmation']), "</td>\n";

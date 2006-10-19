@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.47 2006-10-08 09:38:12 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.48 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -75,19 +75,19 @@ function check_install()
             echo "<div align=\"center\">\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
             echo "    <tr>\n";
-            echo "      <td>\n";
+            echo "      <td align=\"left\">\n";
             echo "        <table class=\"box\">\n";
             echo "          <tr>\n";
-            echo "            <td class=\"posthead\">\n";
+            echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"500\">\n";
             echo "                <tr>\n";
-            echo "                  <td colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
+            echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td>Your BeehiveForum would appear to be already installed, but you have not removed the installation files. You must delete both the 'install' directory and install.php before your Beehive Forum can be used.</td>\n";
+            echo "                  <td align=\"left\">Your BeehiveForum would appear to be already installed, but you have not removed the installation files. You must delete both the 'install' directory and install.php before your Beehive Forum can be used.</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
             echo "                </tr>\n";
             echo "              </table>\n";
             echo "            </td>\n";
@@ -99,7 +99,7 @@ function check_install()
             echo "  <form method=\"get\" action=\"./index.php\">\n";
             echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
             echo "      <tr>\n";
-            echo "        <td width=\"500\">&nbsp;</td>\n";
+            echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
             echo "      </tr>\n";
             echo "      <tr>\n";
             echo "        <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Retry\" class=\"button\" /></td>\n";
@@ -167,19 +167,19 @@ function install_incomplete()
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"500\">\n";
     echo "                <tr>\n";
-    echo "                  <td colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
+    echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>Your BeehiveForum is not installed correctly. Click the install button below to start the installation.</td>\n";
+    echo "                  <td align=\"left\">Your BeehiveForum is not installed correctly. Click the install button below to start the installation.</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -198,7 +198,7 @@ function install_incomplete()
     echo "    <input type=\"hidden\" name=\"force_install\" value=\"yes\" />\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "      <tr>\n";
-    echo "        <td width=\"500\">&nbsp;</td>\n";
+    echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
     echo "      </tr>\n";
     echo "      <tr>\n";
     echo "        <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Install\" class=\"button\" /></td>\n";

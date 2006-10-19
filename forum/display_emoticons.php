@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display_emoticons.php,v 1.44 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: display_emoticons.php,v 1.45 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -115,10 +115,10 @@ echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "  <tr>\n";
-echo "    <td>\n";
+echo "    <td align=\"left\">\n";
 echo "      <table class=\"box\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td valign=\"top\">\n";
+echo "          <td align=\"left\" valign=\"top\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
 
@@ -133,7 +133,7 @@ if ($pack != "user" && !in_array($pack, $emot_sets_keys)) {
 
 if ($pack != "user") {
 
-    echo "                <td valign=\"top\" width=\"200\">\n";
+    echo "                <td align=\"left\" valign=\"top\" width=\"200\">\n";
 
     foreach ($emot_sets as $pack_name => $display_name) {
 
@@ -178,7 +178,7 @@ if (isset($emoticon) && count($emoticon) > 0) {
     }
 }
 
-echo "                <td>\n";
+echo "                <td align=\"left\">\n";
 echo "                  <table class=\"posthead\" width=\"300\">\n";
 
 if (@$fp = fopen("$path/style.css", "r")) {
@@ -207,8 +207,8 @@ if (@$fp = fopen("$path/style.css", "r")) {
     foreach($emots_array as $emot) {
 
             echo "                    <tr onclick=\"insertEmoticon(' ", rawurlencode(str_replace("'", "\\'", $emot['matches'][0])), " ');\">\n";
-            echo "                      <td width=\"100\"><img src=\"$path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" /></td>\n";
-            echo "                      <td>";
+            echo "                      <td align=\"left\" width=\"100\"><img src=\"$path/{$emot['img']}\" alt=\"{$emot['text']}\" title=\"{$emot['text']}\" /></td>\n";
+            echo "                      <td align=\"left\">";
 
             foreach ($emot['matches'] as $emot_match) {
 
@@ -230,7 +230,7 @@ echo "      </table>\n";
 echo "    </td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td>&nbsp;</td>\n";
+echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">", form_submit('close', $lang['close'], "onclick='window.close()'"), "</td>\n";

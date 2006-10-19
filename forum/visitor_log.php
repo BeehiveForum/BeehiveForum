@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.71 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.72 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -118,10 +118,10 @@ if (isset($usersearch) && strlen($usersearch) > 0) {
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "               <table width=\"100%\">\n";
 
 if (sizeof($user_search_array['user_array']) > 0) {
@@ -158,7 +158,7 @@ if (sizeof($user_search_array['user_array']) > 0) {
     }
 
     echo "                 <tr>\n";
-    echo "                   <td class=\"postbody\">&nbsp;</td>\n";
+    echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
     echo "                 </tr>\n";
 
 }else {
@@ -181,7 +181,7 @@ if (sizeof($user_search_array['user_array']) > 0) {
     }
 
     echo "                 <tr>\n";
-    echo "                   <td class=\"postbody\">&nbsp;</td>\n";
+    echo "                   <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
     echo "                 </tr>\n";
 }
 
@@ -192,23 +192,23 @@ echo "         </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", page_links(get_request_uri(false), $start, $user_search_array['user_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td>&nbsp;</td>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <form action=\"visitor_log.php\" method=\"get\">\n";
 echo "    ", form_input_hidden("webtag", $webtag), "\n";
 echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
 echo "      <tr>\n";
-echo "        <td>\n";
+echo "        <td align=\"left\">\n";
 echo "          <table class=\"box\" width=\"100%\">\n";
 echo "            <tr>\n";
-echo "              <td class=\"posthead\">\n";
+echo "              <td align=\"left\" class=\"posthead\">\n";
 echo "                <table width=\"100%\">\n";
 echo "                  <tr>\n";
 echo "                    <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
@@ -219,7 +219,7 @@ echo "                      {$lang['username']}: ", form_input_text('usersearch'
 echo "                    </td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
-echo "                    <td colspan=\"6\">&nbsp;</td>\n";
+echo "                    <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
 echo "                  </tr>\n";
 echo "                </table>\n";
 echo "              </td>\n";

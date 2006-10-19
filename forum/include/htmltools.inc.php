@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.51 2005-07-23 22:53:32 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.52 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -126,7 +126,7 @@ function TinyMCE() {
           the Beehive plugin styles.
 
        I'm thinking #1 must be possible because the table plugin works
-       fine being able to have <tr> and <td> within <table> So maybe
+       fine being able to have <tr> and <td align=\"left\"> within <table> So maybe
        it just doesn't like duplicate tags?
 
        Possible work around for #2 is to have a PHP script to read the

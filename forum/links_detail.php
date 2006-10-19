@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.74 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.75 2006-10-19 19:34:44 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -251,33 +251,33 @@ if (isset($error_html) && strlen(trim($error_html)) > 0) {
 echo "<div align=\"center\">\n";
 echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "  <tr>\n";
-echo "    <td>\n";
+echo "    <td align=\"left\">\n";
 echo "      <table class=\"box\" width=\"100%\">\n";
 echo "        <tr>\n";
-echo "          <td class=\"posthead\">\n";
+echo "          <td align=\"left\" class=\"posthead\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
-echo "                <td class=\"subhead\" colspan=\"2\">{$lang['linkdetails']}</td>\n";
+echo "                <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['linkdetails']}</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
-echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['address']}:</td>\n";
-echo "                <td><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['URI']}</a></td>\n";
+echo "                <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['address']}:</td>\n";
+echo "                <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['URI']}</a></td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
-echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
-echo "                <td>", (isset($link['LOGON']) ? add_wordfilter_tags(format_user_name($link['LOGON'], $link['NICKNAME'])) : "Unknown User"), "</td>\n";
+echo "                <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['submittedby']}:</td>\n";
+echo "                <td align=\"left\">", (isset($link['LOGON']) ? add_wordfilter_tags(format_user_name($link['LOGON'], $link['NICKNAME'])) : "Unknown User"), "</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
-echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
-echo "                <td>" . _stripslashes($link['DESCRIPTION']) . "</td>\n";
+echo "                <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['description']}:</td>\n";
+echo "                <td align=\"left\">" . _stripslashes($link['DESCRIPTION']) . "</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
-echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
-echo "                <td>" . format_time($link['CREATED']) . "</td>\n";
+echo "                <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['date']}:</td>\n";
+echo "                <td align=\"left\">" . format_time($link['CREATED']) . "</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
-echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['clicks']}:</td>\n";
-echo "                <td>{$link['CLICKS']}</td>\n";
+echo "                <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['clicks']}:</td>\n";
+echo "                <td align=\"left\">{$link['CLICKS']}</td>\n";
 echo "              </tr>\n";
 
 if (isset($link['RATING']) && is_numeric($link['RATING'])) {
@@ -285,23 +285,23 @@ if (isset($link['RATING']) && is_numeric($link['RATING'])) {
     if ($link['VOTES'] == 1) {
 
         echo "              <tr>\n";
-        echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
-        echo "                <td>(1 {$lang['vote']})</td>\n";
+        echo "                <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
+        echo "                <td align=\"left\">(1 {$lang['vote']})</td>\n";
         echo "              </tr>\n";
 
     }else {
 
         echo "              <tr>\n";
-        echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
-        echo "                <td>({$link['VOTES']} {$lang['votes']})</td>\n";
+        echo "                <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
+        echo "                <td align=\"left\">({$link['VOTES']} {$lang['votes']})</td>\n";
         echo "              </tr>\n";
     }
 
 }else {
 
     echo "              <tr>\n";
-    echo "                <td nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
-    echo "                <td>{$lang['notratedyet']}</td>\n";
+    echo "                <td align=\"left\" nowrap=\"nowrap\" valign=\"top\">{$lang['rating']}:</td>\n";
+    echo "                <td align=\"left\">{$lang['notratedyet']}</td>\n";
     echo "              </tr>\n";
 }
 
@@ -326,21 +326,21 @@ if ($uid != 0) {
     echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"3\">{$lang['rate']} {$link['TITLE']}: </td>";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['rate']} {$link['TITLE']}: </td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td><b>{$lang['bad']} (0)</b>&nbsp;</td>\n";
+    echo "                  <td align=\"left\"><b>{$lang['bad']} (0)</b>&nbsp;</td>\n";
     echo "                  <td align=\"center\">" . form_radio_array("vote", range(0, 10), array(0 => "&nbsp;", 1 => "&nbsp;", 2 => "&nbsp;", 3 => "&nbsp;", 4 => "&nbsp;", 5 => "&nbsp;", 6 => "&nbsp;", 7 => "&nbsp;", 8 => "&nbsp;", 9 => "&nbsp;", 10 => "&nbsp;"), $vote) . "&nbsp;</td>\n";
-    echo "                  <td><b>(10) {$lang['good']}</b>&nbsp;</td>\n";
+    echo "                  <td align=\"left\"><b>(10) {$lang['good']}</b>&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td colspan=\"3\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -349,7 +349,7 @@ if ($uid != 0) {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['voteexcmark']), "</td>\n";
@@ -363,10 +363,10 @@ if ($comments_array = links_get_comments($lid)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
 
     foreach($comments_array as $comment_id => $comment) {
@@ -376,26 +376,26 @@ if ($comments_array = links_get_comments($lid)) {
         if (isset($comment['LOGON']) && isset($comment['NICKNAME'])) {
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $comment['UID'] == $uid) {
-                echo "                  <td class=\"subhead\">{$lang['commentby']} ", add_wordfilter_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['commentby']} ", add_wordfilter_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])), " <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
-                echo "                  <td class=\"subhead\">{$lang['commentby']} ", add_wordfilter_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])), "</td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['commentby']} ", add_wordfilter_tags(format_user_name($comment['LOGON'], $comment['NICKNAME'])), "</td>\n";
             }
 
         }else {
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
-                echo "                  <td class=\"subhead\">{$lang['commentby']} {$lang['unknownuser']} <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['commentby']} {$lang['unknownuser']} <a href=\"links_detail.php?webtag=$webtag&amp;action=delete_comment&amp;cid={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[{$lang['delete']}]</a></td>\n";
             }else {
-                echo "                  <td class=\"subhead\">{$lang['commentby']} {$lang['unknownuser']}</td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['commentby']} {$lang['unknownuser']}</td>\n";
             }
         }
 
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>" . _stripslashes($comment['COMMENT']) . "</td>\n";
+        echo "                  <td align=\"left\">" . _stripslashes($comment['COMMENT']) . "</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
     }
 
@@ -418,19 +418,19 @@ if ($uid != 0) {
     echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\">{$lang['addacommentabout']} {$link['TITLE']}: </td>";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['addacommentabout']} {$link['TITLE']}: </td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>", form_textarea("comment", "", 6, 76), "</td>\n";
+    echo "                  <td align=\"left\">", form_textarea("comment", "", 6, 76), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -439,7 +439,7 @@ if ($uid != 0) {
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['addcomment']), "</td>\n";
@@ -458,36 +458,36 @@ if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) 
     echo "  ", form_input_hidden("parent_fid", $parent_fid), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
-    echo "      <td>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" colspan=\"2\">{$lang['modtools']}</td>";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['modtools']}</td>";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td nowrap=\"nowrap\">{$lang['moveto']}:</td>\n";
-    echo "                  <td>", links_folder_dropdown($link['FID'], $folders), "</td>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['moveto']}:</td>\n";
+    echo "                  <td align=\"left\">", links_folder_dropdown($link['FID'], $folders), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td nowrap=\"nowrap\">{$lang['editname']}:</td>\n";
-    echo "                  <td>", form_input_text("title", $link['TITLE'], 45, 64), "</td>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['editname']}:</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("title", $link['TITLE'], 45, 64), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td nowrap=\"nowrap\">{$lang['editaddress']}:</td>\n";
-    echo "                  <td>", form_input_text("uri", $link['URI'], 45, 255), "</td>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['editaddress']}:</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("uri", $link['URI'], 45, 255), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td nowrap=\"nowrap\">{$lang['editdescription']}:</td>\n";
-    echo "                  <td>", form_input_text("description", _stripslashes($link['DESCRIPTION']), 45), "</td>\n";
+    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['editdescription']}:</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("description", _stripslashes($link['DESCRIPTION']), 45), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
-    echo "                  <td>", form_checkbox("delete", "confirm", $lang['delete']), "&nbsp;", form_checkbox("hide", "confirm", $lang['hide'], (isset($link['VISIBLE']) && $link['VISIBLE'] == 'N')), "</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", form_checkbox("delete", "confirm", $lang['delete']), "&nbsp;", form_checkbox("hide", "confirm", $lang['hide'], (isset($link['VISIBLE']) && $link['VISIBLE'] == 'N')), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td colspan=\"2\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -496,7 +496,7 @@ if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) || $link['UID'] == $uid) 
     echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";

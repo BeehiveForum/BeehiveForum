@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.27 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.28 2006-10-19 19:34:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -197,13 +197,13 @@ echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
-echo "      <td>\n";
+echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
 echo "                </tr>\n";
 
 $group_users_array = perm_group_get_users($gid, $start_main);
@@ -213,19 +213,19 @@ if (sizeof($group_users_array['user_array']) > 0) {
     foreach($group_users_array['user_array'] as $user) {
 
         echo "                <tr>\n";
-        echo "                  <td>", form_checkbox("remove_user[]", $user['UID'], "", false), "&nbsp;", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</td>\n";
+        echo "                  <td align=\"left\">", form_checkbox("remove_user[]", $user['UID'], "", false), "&nbsp;", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</td>\n";
         echo "                </tr>\n";
     }
 
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td>{$lang['nousersingroup']}</td>\n";
+    echo "                  <td align=\"left\">{$lang['nousersingroup']}</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                 <tr>\n";
-echo "                   <td>&nbsp;</td>\n";
+echo "                   <td align=\"left\">&nbsp;</td>\n";
 echo "                 </tr>\n";
 echo "               </table>\n";
 echo "             </td>\n";
@@ -237,13 +237,13 @@ echo "    </tr>\n";
 if (sizeof($group_users_array['user_array']) > 0) {
 
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid&usersearch=$usersearch&search_page=$search_page", $start_main, $group_users_array['user_count'], 20, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td>&nbsp;</td>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("remove", $lang['remove']), "</td>\n";
@@ -264,13 +264,13 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "  ", form_input_hidden("search_page", $search_page), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
     echo "    <tr>\n";
-    echo "      <td class=\"posthead\">\n";
+    echo "      <td align=\"left\" class=\"posthead\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td width=\"50%\" class=\"subhead\">&nbsp;{$lang['searchresults']}</td>\n";
+    echo "                  <td align=\"left\" width=\"50%\" class=\"subhead\">&nbsp;{$lang['searchresults']}</td>\n";
     echo "                </tr>\n";
 
     $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', $start_search);
@@ -280,7 +280,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         foreach ($user_search_array['user_array'] as $user) {
 
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;", form_checkbox("add_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
+            echo "                  <td align=\"left\">&nbsp;", form_checkbox("add_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
             echo "                </tr>\n";
         }
 
@@ -292,7 +292,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     }
 
     echo "                <tr>\n";
-    echo "                  <td>&nbsp;</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -304,13 +304,13 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     if (sizeof($user_search_array['user_array']) > 0) {
 
         echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit("add", $lang['add']), "</td>\n";
@@ -329,10 +329,10 @@ echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
-echo "      <td class=\"posthead\">\n";
+echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td class=\"posthead\">\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['search']}:</td>\n";
@@ -343,7 +343,7 @@ echo "                    {$lang['username']}: ", form_input_text("usersearch", 
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td>&nbsp;</td>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.82 2006-10-07 12:16:57 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.83 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -41,7 +41,9 @@ function form_field($name, $value = false, $width = false, $maxchars = false, $t
 {
     $lang = load_language_file();
 
-    $html = "<input type=\"$type\" name=\"$name\" id=\"$name\" class=\"$class\" value=\"$value\" ";
+    $id = form_unique_id();
+
+    $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" class=\"$class\" value=\"$value\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -115,7 +117,9 @@ function form_textarea($name, $value, $rows, $cols, $wrap = "virtual", $custom_h
 {
     $lang = load_language_file();
 
-    $html = "<textarea name=\"$name\" id=\"$name\" class=\"$class\" ";
+    $id = form_unique_id();
+
+    $html = "<textarea name=\"$name\" id=\"$id\" class=\"$class\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -142,7 +146,9 @@ function form_dropdown_array($name, $value, $label, $default = false, $custom_ht
 {
     $lang = load_language_file();
 
-    $html = "<select name=\"$name\" id=\"$name\" class=\"$class\" ";
+    $id = form_unique_id();
+
+    $html = "<select name=\"$name\" id=\"$id\" class=\"$class\" ";
 
     if ($custom_html) {
 
@@ -189,9 +195,11 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
         $html.= " $custom_html ";
     }
 
-    $html.= "/><label for=\"$id\">";
+    $html.= "/>";
 
-    if (is_array($text)) {
+    if (is_array($text) && sizeof($text) > 0) {
+
+        $html.= "<label for=\"$id\">";
 
         foreach($text as $text_part) {
 
@@ -205,12 +213,14 @@ function form_checkbox($name, $value, $text, $checked = false, $custom_html = fa
             }
         }
 
-    }else {
+        $html.= "</label>";
 
-        $html.= $text;
+    }elseif (strlen(trim($text)) > 0) {
+
+        $html.= "<label for=\"$id\">$text</label>";
     }
 
-    $html.= "</label></span>";
+    $html.= "</span>";
 
     return $html;
 }
@@ -231,9 +241,11 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
         $html.= " $custom_html ";
     }
 
-    $html.= "/><label for=\"$id\">";
+    $html.= "/>";
 
-    if (is_array($text)) {
+    if (is_array($text) && sizeof($text) > 0) {
+
+        $html.= "<label for=\"$id\">";
 
         foreach($text as $text_part) {
 
@@ -247,12 +259,15 @@ function form_radio($name, $value, $text, $checked = false, $custom_html = false
             }
         }
 
-    }else {
+        $html.= "</label>";
 
-        $html.= $text;
+    }elseif (strlen(trim($text)) > 0) {
+
+        $html.= "<label for=\"$id\">$text</label>";
     }
 
-    $html.= "</label></span>";
+    $html.= "</span>";
+
     return $html;
 }
 
@@ -275,7 +290,9 @@ function form_radio_array($name, $value, $text, $checked = false, $custom_html =
 
 function form_submit($name = "submit", $value = "Submit", $custom_html = false, $class = "button")
 {
-    $html = "<input type=\"submit\" name=\"$name\" id=\"$name\" value=\"$value\" class=\"$class\" ";
+    $id = form_unique_id();
+    
+    $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -290,7 +307,9 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 
 function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false, $class = "button")
 {
-    $html = "<input name=\"$name\" value=\"$value\" id=\"$name\" class=\"$class\" ";
+    $id = form_unique_id();
+    
+    $html = "<input name=\"$name\" value=\"$value\" id=\"$id\" class=\"$class\" ";
     $html.= "type=\"image\" src=\"". style_image($image). "\" ";
 
     if ($custom_html) {
@@ -306,7 +325,9 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
 
 function form_reset($name = "reset", $value = "Reset", $custom_html = false, $class = "button")
 {
-    $html = "<input type=\"reset\" name=\"$name\" id=\"$name\" value=\"$value\" class=\"$class\" ";
+    $id = form_unique_id();
+
+    $html = "<input type=\"reset\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -321,7 +342,9 @@ function form_reset($name = "reset", $value = "Reset", $custom_html = false, $cl
 
 function form_button($name, $value, $custom_html, $class="button")
 {
-    $html = "<input type=\"button\" name=\"$name\" id=\"$name\" value=\"$value\" class=\"$class\" ";
+    $id = form_unique_id();
+
+    $html = "<input type=\"button\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$class\" ";
 
     if ($custom_html) {
         $custom_html = trim($custom_html);
@@ -362,7 +385,7 @@ function form_quick_button($href, $label, $var_name = false, $value = false, $ta
         }
     }
 
-    $html.= form_submit(md5(uniqid(rand())), $label);
+    $html.= form_submit(form_unique_id(), $label);
     $html.= "</form>";
 
     return $html;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.130 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: register.php,v 1.131 2006-10-20 23:38:51 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -124,10 +124,10 @@ $timezones = array("(GMT -12:00) Enitwetok, Kwajalein",
                    "(GMT -10:00) Hawaii",
                    "(GMT -09:30) Isle Marquises",
                    "(GMT -09:00) Alaska",
-                   "(GMT -08:00) Pacific Time (US & Canada)",
-                   "(GMT -07:00) Mountain Time (US & Canada)",
-                   "(GMT -06:00) Central Time (US & Canada)",
-                   "(GMT -05:00) Eastern Time (US & Canada)",
+                   "(GMT -08:00) Pacific Time (US &amp; Canada)",
+                   "(GMT -07:00) Mountain Time (US &amp; Canada)",
+                   "(GMT -06:00) Central Time (US &amp; Canada)",
+                   "(GMT -05:00) Eastern Time (US &amp; Canada)",
                    "(GMT -04:00) Atlantic Time (Canada)",
                    "(GMT -03:30) Newfoundland",
                    "(GMT -03:00) Brazil, Buenos Aires",

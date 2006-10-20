@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.114 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.115 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -136,6 +136,19 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
     html_draw_bottom();
     exit;
+}
+
+if (!thread_is_poll($tid) && $pid == 1) {
+
+    $uri = "./edit.php?webtag=$webtag";
+
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+        $uri.= "&msg=". $_GET['msg'];
+    }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
+        $uri.= "&msg=". $_POST['t_msg'];
+    }
+
+    header_redirect($uri);
 }
 
 $polldata    = poll_get($tid);

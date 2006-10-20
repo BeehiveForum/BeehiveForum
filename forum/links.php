@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.84 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: links.php,v 1.85 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -360,7 +360,7 @@ if (sizeof($links['links_array']) > 0 ) {
             echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;</td>\n";
         }
 
-        echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&fid=$fid\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
+        echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
         echo "                </tr>\n";
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.71 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.72 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -357,10 +357,10 @@ if ($tool_type != 0) {
     $tools->setTinyMCE(false);
 }
 
-echo $tools->textarea("sig_content", $sig_code, 10, 60, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
-
+echo $tools->textarea("sig_content", $sig_code, 10, 60, "virtual", "tabindex=\"7\"", "signature_content");
 echo $tools->js();
 
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";

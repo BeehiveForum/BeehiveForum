@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.127 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: index.php,v 1.128 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,7 +93,7 @@ if ($session_active) {
     $navsize = bh_session_get_value('FONT_SIZE');
     $navsize = max(($navsize ? $navsize * 2 : 22), 22);
 
-    html_draw_top('body_tag=false', 'robots=index,follow');
+    html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 
     echo "<frameset rows=\"60,$navsize,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"$top_html\" name=\"ftop\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
@@ -177,7 +177,7 @@ if ($session_active) {
 
     $webtag = get_webtag($webtag_search);
 
-    html_draw_top('body_tag=false', 'robots=index,follow');
+    html_draw_top('body_tag=false', 'frames=true', 'robots=index,follow');
 
     echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"$top_html\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";

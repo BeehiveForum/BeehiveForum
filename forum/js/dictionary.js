@@ -65,7 +65,7 @@ function changeword(obj) {
 function readContent(obj_id) {
 
     if (self.tinyMCE) {
-	return tinyMCE.getContent(obj_id);
+        return tinyMCE.getContent(obj_id);
     }
 
     var form_obj = getFormObj(obj_id);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.191 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.192 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -369,6 +369,7 @@ function html_draw_top()
     $webtag = get_webtag($webtag_search);
 
     $include_body_tag = true;
+    $frameset_dtd = false;
 
     foreach($arg_array as $key => $func_args) {
 
@@ -425,6 +426,11 @@ function html_draw_top()
             $include_body_tag = substr($func_args, 9);
             unset($arg_array[$key]);
         }
+
+        if (preg_match("/^frames=/i", $func_args) > 0) {
+            $frameset_dtd = substr($func_args, 7);
+            unset($arg_array[$key]);
+        }
     }
 
     if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
@@ -438,7 +444,13 @@ function html_draw_top()
     $forum_path = html_get_forum_uri();
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    echo "<!DOCTYPE html SYSTEM \"$forum_path/dtd/beehiveforum.dtd\">\n";
+
+    if ($frameset_dtd === false) {
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+    }else {
+        echo "<!DOCTYPE html SYSTEM \"$forum_path/dtd/xhtml1-framespacing.dtd\">\n";
+    }
+
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"{$lang['_isocode']}\" lang=\"{$lang['_isocode']}\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";

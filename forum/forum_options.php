@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.92 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.93 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -104,10 +104,10 @@ $timezones = array("(GMT -12:00) Enitwetok, Kwajalein",
                    "(GMT -10:00) Hawaii",
                    "(GMT -09:30) Isle Marquises",
                    "(GMT -09:00) Alaska",
-                   "(GMT -08:00) Pacific Time (US & Canada)",
-                   "(GMT -07:00) Mountain Time (US & Canada)",
-                   "(GMT -06:00) Central Time (US & Canada)",
-                   "(GMT -05:00) Eastern Time (US & Canada)",
+                   "(GMT -08:00) Pacific Time (US &amp; Canada)",
+                   "(GMT -07:00) Mountain Time (US &amp; Canada)",
+                   "(GMT -06:00) Central Time (US &amp; Canada)",
+                   "(GMT -05:00) Eastern Time (US &amp; Canada)",
                    "(GMT -04:00) Atlantic Time (Canada)",
                    "(GMT -03:30) Newfoundland",
                    "(GMT -03:00) Brazil, Buenos Aires",
@@ -623,7 +623,7 @@ echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_chec
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("images_to_links", "Y", $lang['convertimagestolinks'], (isset($user_prefs['IMAGES_TO_LINKS']) && $user_prefs['IMAGES_TO_LINKS'] == "Y") ? true : false), "</td>\n";
-echo "                        <td align=\"right\"  nowrap=\"nowrap\"", form_checkbox("images_to_links_global", "Y", $lang['setforallforums'], (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\"  nowrap=\"nowrap\">", form_checkbox("images_to_links_global", "Y", $lang['setforallforums'], (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_enabled", "Y", array("{$lang['show']} ", form_dropdown_array("show_thumbs", array(1 => 1, 2 => 2, 3 => 3), array(1 => $lang['smallsized'], 2 => $lang['mediumsized'], 3 => $lang['largesized']), (isset($user_prefs['SHOW_THUMBS']) ? ($user_prefs['SHOW_THUMBS'] > 0 ? $user_prefs['SHOW_THUMBS'] : $user_prefs['SHOW_THUMBS'] * -1) : 2)), " {$lang['thumbnailsforimageattachments']}"), (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] > 0) ? true : false, false), "</td>\n";

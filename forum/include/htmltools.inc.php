@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.52 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.53 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -267,31 +267,31 @@ class TextAreaHTML {
 
         $this->tbs++;
 
-        $str = "<div id=\"_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar.png');\">\n";
+        $str = "<div id=\"bh_tb{$this->tbs}\" class=\"tools\" style=\"background-image: url('images/html_toolbar.png');\">\n";
 
-        $str.= $this->_tb_img($lang['bold'], "add_tag('b');");
-        $str.= $this->_tb_img($lang['italic'], "add_tag('i');");
-        $str.= $this->_tb_img($lang['underline'], "add_tag('u');");
-        $str.= $this->_tb_img($lang['strikethrough'], "add_tag('s');");
-        $str.= $this->_tb_img($lang['superscript'], "add_tag('sup');");
-        $str.= $this->_tb_img($lang['subscript'], "add_tag('sub');");
-        $str.= $this->_tb_img($lang['leftalign'], "add_tag('div', 'align', 'left');");
-        $str.= $this->_tb_img($lang['center'], "add_tag('div', 'align', 'center');");
-        $str.= $this->_tb_img($lang['rightalign'], "add_tag('div', 'align', 'right');");
-        $str.= $this->_tb_img($lang['numberedlist'], "add_tag('list', true, null, true);");
-        $str.= $this->_tb_img($lang['list'], "add_tag('list', null, null, true);");
-        $str.= $this->_tb_img($lang['indenttext'], "add_tag('blockquote', null, null, true);");
-        $str.= $this->_tb_img($lang['code'], "add_tag('code', 'language', '', true);");
-        $str.= $this->_tb_img($lang['quote'], "add_tag('quote', 'source', '', true);");
-        $str.= $this->_tb_img($lang['spoiler'], "add_tag('spoiler', null, null, true);");
-        $str.= $this->_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);");
-        $str.= $this->_tb_img($lang['image'], "add_image();");
-        $str.= $this->_tb_img($lang['hyperlink'], "add_link();");
-        $str.= $this->_tb_img($lang['spellcheck'], "openSpellCheck('$webtag');");
-        $str.= $this->_tb_img($lang['noemoticons'], "add_tag('noemots', null, null, true);");
+        $str.= $this->bh_tb_img($lang['bold'], "add_tag('b');");
+        $str.= $this->bh_tb_img($lang['italic'], "add_tag('i');");
+        $str.= $this->bh_tb_img($lang['underline'], "add_tag('u');");
+        $str.= $this->bh_tb_img($lang['strikethrough'], "add_tag('s');");
+        $str.= $this->bh_tb_img($lang['superscript'], "add_tag('sup');");
+        $str.= $this->bh_tb_img($lang['subscript'], "add_tag('sub');");
+        $str.= $this->bh_tb_img($lang['leftalign'], "add_tag('div', 'align', 'left');");
+        $str.= $this->bh_tb_img($lang['center'], "add_tag('div', 'align', 'center');");
+        $str.= $this->bh_tb_img($lang['rightalign'], "add_tag('div', 'align', 'right');");
+        $str.= $this->bh_tb_img($lang['numberedlist'], "add_tag('list', true, null, true);");
+        $str.= $this->bh_tb_img($lang['list'], "add_tag('list', null, null, true);");
+        $str.= $this->bh_tb_img($lang['indenttext'], "add_tag('blockquote', null, null, true);");
+        $str.= $this->bh_tb_img($lang['code'], "add_tag('code', 'language', '', true);");
+        $str.= $this->bh_tb_img($lang['quote'], "add_tag('quote', 'source', '', true);");
+        $str.= $this->bh_tb_img($lang['spoiler'], "add_tag('spoiler', null, null, true);");
+        $str.= $this->bh_tb_img($lang['horizontalrule'], "add_tag('hr', null, null, true);");
+        $str.= $this->bh_tb_img($lang['image'], "add_image();");
+        $str.= $this->bh_tb_img($lang['hyperlink'], "add_link();");
+        $str.= $this->bh_tb_img($lang['spellcheck'], "openSpellCheck('$webtag');");
+        $str.= $this->bh_tb_img($lang['noemoticons'], "add_tag('noemots', null, null, true);");
 
         if ($emoticons == true) {
-            $str.= $this->_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
+            $str.= $this->bh_tb_img($lang['emoticons'], "openEmoticons('user','$webtag');", "emoticons_button.png");
         }
 
         $str.= "    <br />\n";
@@ -392,10 +392,10 @@ class TextAreaHTML {
 
         $str = "<script language=\"javascript\" type=\"text/javascript\">\n";
         $str.= "  <!--\n";
-        $str.= "    _tb_image_main = new Image();\n";
-        $str.= "    _tb_image_main.src = \"". style_image('html_toolbar.png'). "\";\n";
-        $str.= "    _tb_image_blank = new Image();\n";
-        $str.= "    _tb_image_blank.src = \"". style_image('blank.png'). "\";\n";
+        $str.= "    bh_tb_image_main = new Image();\n";
+        $str.= "    bh_tb_image_main.src = \"". style_image('html_toolbar.png'). "\";\n";
+        $str.= "    bh_tb_image_blank = new Image();\n";
+        $str.= "    bh_tb_image_blank.src = \"". style_image('blank.png'). "\";\n";
         $str.= "  //-->\n";
         $str.= "</script>\n";
 
@@ -435,7 +435,7 @@ class TextAreaHTML {
             $str.= "    }\n";
             $str.= "    function activate_tools() {\n";
             $str.= "      for (var i=1; i<={$this->tbs}; i++) {\n";
-            $str.= "          show_hide('_tb' + i, 'block');\n";
+            $str.= "          show_hide('bh_tb' + i, 'block');\n";
             $str.= "      }\n";
 
             if ($focus != false) {
@@ -545,7 +545,7 @@ class TextAreaHTML {
     // Internal function - returns HTML for toolbar image
     // ----------------------------------------------------
 
-    function _tb_img ($title, $on_click, $image_name = "blank.png") {
+    function bh_tb_img ($title, $on_click, $image_name = "blank.png") {
         return "<img src=\"". style_image($image_name). "\" alt=\"{$title}\" onclick=\"{$on_click}\" title=\"{$title}\" class=\"tools_up\" onmouseover=\"m_ov(this);\" onmouseout=\"m_ou(this);\" onmousedown=\"m_d(this);\" onmouseup=\"m_u(this);\" />";
     }
 

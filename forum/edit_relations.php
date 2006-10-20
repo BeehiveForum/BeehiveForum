@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.54 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.55 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -284,7 +284,7 @@ if (sizeof($user_peers['user_array']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;<a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">{$user_peer['LOGON']}</a></td>\n";
-        echo "                  <td align=\"left\">&nbsp;", form_input_text("nickname[{$user_peer['UID']}]", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\""), "</td>\n";
+        echo "                  <td align=\"left\">&nbsp;", form_input_text("nickname[{$user_peer['UID']}]", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\"", "relationship_reset"), "</td>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\">\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", $peer_relationship & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", 0, "", !($peer_relationship & USER_FRIEND) && !($peer_relationship & USER_IGNORED)), "{$lang['normal']}\n";

@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.278 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: post.php,v 1.279 2006-10-20 23:38:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -1030,8 +1030,8 @@ if ($allow_sig == true) {
         echo "    <td class=\"subhead\" align=\"right\">", form_submit_image('sig_hide.png', 'sig_toggle', 'hide'). "&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), "</td>\n";
-        echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
+        echo "    <td align=\"left\" colspan=\"2\">", $tools->textarea("t_sig", $t_sig, 5, 75, "virtual", "tabindex=\"7\"", "signature_content"), form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "</td>\n";
+        
 
         if ($sig->isDiff() && $fix_html && !$fetched_sig) {
             echo $tools->compare_original("t_sig", $sig->getOriginalContent());

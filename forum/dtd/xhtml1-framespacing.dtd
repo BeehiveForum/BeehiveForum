@@ -1,34 +1,70 @@
 <!--
+   Extensible HTML version 1.0 Frameset DTD
 
-Copyright Project BeehiveForum 2002
+   This is the same as HTML 4.0 Frameset except for
+   changes due to the differences between XML and SGML.
 
-This file is part of BeehiveForum.
+   Namespace = http://www.w3.org/1999/xhtml
 
-BeehiveForum is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+   For further information, see: http://www.w3.org/TR/xhtml1
 
-BeehiveForum is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+   Copyright (c) 1998-2000 W3C (MIT, INRIA, Keio),
+   All Rights Reserved. 
 
-You should have received a copy of the GNU General Public License
-along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-USA
-======================================================================*/
+   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-BeehiveForums Extensible HTML version 1.0 Frameset DTD
+   PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
+   SYSTEM "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"
 
-$Revision: 1.2 $
+   $Revision: 1.1 $
+   $Date: 2006-10-20 23:38:51 $
 
 -->
 
-<!-- $Id: beehiveforum.dtd,v 1.2 2006-09-13 18:58:46 decoyduck Exp $ -->
 
-<!--================ Character mnemonic entities =========================-->
+<!-- ********** WARNING: CUSTOM DTD ********** -->
+<!--
+  This is a MODIFIED DTD made from W3C's xhtml1-frameset.dtd.
+  
+  Purpose:
+  ********
+  To allow usage of non-standard attributes in element frameset, namely framespacing, 
+  frameborder and border. As these are required for most existing browsers to get rid
+  of the gap eventually showing between frames.
+  
+  Example of organization which offers validation service with custom dtds: 
+  <http://www.htmlhelp.com/tools/validator/>
+  
+  To check modifications done within W3C's original document, 
+  just search for the string "ADDITION" throughout the present document.
+  
+  Typical usage:
+  **************
+  PLACE document xhtml1-framespacing.dtd on your site.
+  
+  REPLACE the string "YOUR_DOMAIN_PATH_TO" which follows with the path to this modified DTD 
+  placed on your site.
+  
+  USE the DOCTYPE defined as such at begining of your XHTML page.
+  
+  <!DOCTYPE html SYSTEM "http://YOUR_DOMAIN_PATH_TO/xhtml1-framespacing.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head><title></title></head>
+  <frameset>
+  <frame />
+  <frame />...
+  <noframes></noframes>
+  </frameset>
+  </html>
+  
+  Culprit:
+  **********
+  J.J.SOLARI at jjsolari@pobox.com - date: 2001-07-03
+
+  **********
+-->
+
+<!-- ========== Character mnemonic entities ========== -->
 
 <!ENTITY % HTMLlat1 PUBLIC
    "-//W3C//ENTITIES Latin 1 for XHTML//EN"
@@ -45,7 +81,7 @@ $Revision: 1.2 $
    "xhtml-special.ent">
 %HTMLspecial;
 
-<!--================== Imported Names ====================================-->
+<!-- ========== Imported Names ========== -->
 
 <!ENTITY % ContentType "CDATA">
     <!-- media type, as per [RFC2045] -->
@@ -60,10 +96,10 @@ $Revision: 1.2 $
     <!-- a space separated list of character encodings, as per [RFC2045] -->
 
 <!ENTITY % LanguageCode "NMTOKEN">
-    <!-- a language code, as per [RFC3066] -->
+    <!-- a language code, as per [RFC1766] -->
 
 <!ENTITY % Character "CDATA">
-    <!-- a single character, as per section 2.2 of [XML] -->
+    <!-- a single character from [ISO10646] -->
 
 <!ENTITY % Number "CDATA">
     <!-- one or more digits -->
@@ -132,7 +168,7 @@ $Revision: 1.2 $
     Fuchsia= #FF00FF    Aqua   = #00FFFF
 -->
 
-<!--=================== Generic Attributes ===============================-->
+<!-- ========== Generic Attributes ========== -->
 
 <!-- core attributes common to most elements
   id       document-wide unique id
@@ -200,47 +236,30 @@ $Revision: 1.2 $
 <!-- text alignment for p, div, h1-h6. The default is
      align="left" for ltr headings, "right" for rtl -->
 
-<!ENTITY % TextAlign "align (left|center|right|justify) #IMPLIED">
+<!ENTITY % TextAlign "align (left|center|right) #IMPLIED">
 
-<!--=================== Text Elements ====================================-->
-
-<!ENTITY % special.extra
-   "object | applet | img | map | iframe">
-        
-<!ENTITY % special.basic
-        "br | wbr | span | bdo">
+<!-- ========== Text Elements ========== -->
 
 <!ENTITY % special
-   "%special.basic; | %special.extra;">
+   "br | span | bdo |object | applet | img | map | iframe">
 
-<!ENTITY % fontstyle.extra "big | small | font | basefont">
+<!ENTITY % fontstyle "tt | i | b | big | small | u
+                      | s | strike |font | basefont">
 
-<!ENTITY % fontstyle.basic "tt | i | b | u
-                      | s | strike ">
-
-<!ENTITY % fontstyle "%fontstyle.basic; | %fontstyle.extra;">
-
-<!ENTITY % phrase.extra "sub | sup">
-<!ENTITY % phrase.basic "em | strong | dfn | code | q |
+<!ENTITY % phrase "em | strong | dfn | code | q | sub | sup |
                    samp | kbd | var | cite | abbr | acronym">
-
-<!ENTITY % phrase "%phrase.basic; | %phrase.extra;">
 
 <!ENTITY % inline.forms "input | select | textarea | label | button">
 
 <!-- these can occur at block or inline level -->
-<!ENTITY % misc.inline "ins | del | script">
-
-<!-- these can only occur at block level -->
-<!ENTITY % misc "noscript | %misc.inline;">
-
+<!ENTITY % misc "ins | del | script | noscript">
 
 <!ENTITY % inline "a | %special; | %fontstyle; | %phrase; | %inline.forms;">
 
 <!-- %Inline; covers inline or "text-level" elements -->
-<!ENTITY % Inline "(#PCDATA | %inline; | %misc.inline;)*">
+<!ENTITY % Inline "(#PCDATA | %inline; | %misc;)*">
 
-<!--================== Block level elements ==============================-->
+<!-- ========== Block level elements ========== -->
 
 <!ENTITY % heading "h1|h2|h3|h4|h5|h6">
 <!ENTITY % lists "ul | ol | dl | menu | dir">
@@ -249,23 +268,24 @@ $Revision: 1.2 $
 <!ENTITY % block
     "p | %heading; | div | %lists; | %blocktext; | isindex | fieldset | table">
 
-<!-- %Flow; mixes block and inline and is used for list items etc. -->
+<!ENTITY % Block "(%block; | form | %misc;)*">
+
+<!-- %Flow; mixes Block and Inline and is used for list items etc. -->
 <!ENTITY % Flow "(#PCDATA | %block; | form | %inline; | %misc;)*">
 
-<!--================== Content models for exclusions =====================-->
+<!-- ========== Content models for exclusions ========== -->
 
 <!-- a elements use %Inline; excluding a -->
 
 <!ENTITY % a.content
-   "(#PCDATA | %special; | %fontstyle; | %phrase; | %inline.forms; | %misc.inline;)*">
+   "(#PCDATA | %special; | %fontstyle; | %phrase; | %inline.forms; | %misc;)*">
 
 <!-- pre uses %Inline excluding img, object, applet, big, small,
      sub, sup, font, or basefont -->
 
 <!ENTITY % pre.content
-   "(#PCDATA | a | %special.basic; | %fontstyle.basic; | %phrase.basic; |
-           %inline.forms; | %misc.inline;)*">
-
+   "(#PCDATA | a | br | span | bdo | map | tt | i | b | u | s |
+      %phrase; | %inline.forms;)*">
 
 <!-- form uses %Flow; excluding form -->
 
@@ -278,18 +298,17 @@ $Revision: 1.2 $
       table | br | span | bdo | object | applet | img | map |
       %fontstyle; | %phrase; | %misc;)*">
 
-<!--================ Document Structure ==================================-->
+<!-- ========== Document Structure ========== -->
 
 <!-- the namespace URI designates the document profile -->
 
 <!ELEMENT html (head, frameset)>
 <!ATTLIST html
   %i18n;
-  id          ID             #IMPLIED
   xmlns       %URI;          #FIXED 'http://www.w3.org/1999/xhtml'
   >
 
-<!--================ Document Head =======================================-->
+<!-- ========== Document Head ========== -->
 
 <!ENTITY % head.misc "(script|style|meta|link|object|isindex)*">
 
@@ -302,7 +321,6 @@ $Revision: 1.2 $
 
 <!ATTLIST head
   %i18n;
-  id          ID             #IMPLIED
   profile     %URI;          #IMPLIED
   >
 
@@ -311,16 +329,12 @@ $Revision: 1.2 $
        window title. Exactly one title is required per document.
     -->
 <!ELEMENT title (#PCDATA)>
-<!ATTLIST title 
-  %i18n;
-  id          ID             #IMPLIED
-  >
+<!ATTLIST title %i18n;>
 
 <!-- document base URI -->
 
 <!ELEMENT base EMPTY>
 <!ATTLIST base
-  id          ID             #IMPLIED
   href        %URI;          #IMPLIED
   target      %FrameTarget;  #IMPLIED
   >
@@ -329,7 +343,6 @@ $Revision: 1.2 $
 <!ELEMENT meta EMPTY>
 <!ATTLIST meta
   %i18n;
-  id          ID             #IMPLIED
   http-equiv  CDATA          #IMPLIED
   name        CDATA          #IMPLIED
   content     CDATA          #REQUIRED
@@ -367,7 +380,6 @@ $Revision: 1.2 $
 <!ELEMENT style (#PCDATA)>
 <!ATTLIST style
   %i18n;
-  id          ID             #IMPLIED
   type        %ContentType;  #REQUIRED
   media       %MediaDesc;    #IMPLIED
   title       %Text;         #IMPLIED
@@ -377,7 +389,6 @@ $Revision: 1.2 $
 <!-- script statements, which may include CDATA sections -->
 <!ELEMENT script (#PCDATA)>
 <!ATTLIST script
-  id          ID             #IMPLIED
   charset     %Charset;      #IMPLIED
   type        %ContentType;  #REQUIRED
   language    CDATA          #IMPLIED
@@ -393,20 +404,21 @@ $Revision: 1.2 $
   %attrs;
   >
 
-<!--======================= Frames =======================================-->
-
+<!-- ========== Frames ========== -->
 <!-- only one noframes element permitted per document -->
+
+<!-- *** ADDITION *** -->
 
 <!ELEMENT frameset (frameset|frame|noframes)*>
 <!ATTLIST frameset
   %coreattrs;
-  rows         %MultiLengths; #IMPLIED
-  cols         %MultiLengths; #IMPLIED
-  border       %Pixels;       #IMPLIED
-  frameborder  (1|0)          "1"
-  framespacing (1|0)          "1"
-  onload       %Script;       #IMPLIED
-  onunload     %Script;       #IMPLIED
+  rows        %MultiLengths; #IMPLIED
+  cols        %MultiLengths; #IMPLIED
+  onload      %Script;       #IMPLIED
+  onunload    %Script;       #IMPLIED
+  frameborder (1|0)          "1"
+  framespacing  %Pixels;      #IMPLIED
+  border      %Pixels;       #IMPLIED
   >
 
 <!-- reserved frame names start with "_" otherwise starts with letter -->
@@ -416,16 +428,14 @@ $Revision: 1.2 $
 <!ELEMENT frame EMPTY>
 <!ATTLIST frame
   %coreattrs;
-  longdesc     %URI;         #IMPLIED
-  name         NMTOKEN       #IMPLIED
-  src          %URI;         #IMPLIED
-  border       %Pixels;       #IMPLIED
-  frameborder  (1|0)         "1"
-  framespacing (1|0)         "1"
-  marginwidth  %Pixels;      #IMPLIED
+  longdesc    %URI;          #IMPLIED
+  name        NMTOKEN        #IMPLIED
+  src         %URI;          #IMPLIED
+  frameborder (1|0)          "1"
+  marginwidth %Pixels;       #IMPLIED
   marginheight %Pixels;      #IMPLIED
-  noresize     (noresize)    #IMPLIED
-  scrolling    (yes|no|auto) "auto"
+  noresize    (noresize)     #IMPLIED
+  scrolling   (yes|no|auto)  "auto"
   >
 
 <!-- inline subwindow -->
@@ -452,7 +462,7 @@ $Revision: 1.2 $
   %attrs;
   >
 
-<!--=================== Document Body ====================================-->
+<!-- ========== Document Body ========== -->
 
 <!ELEMENT body %Flow;>
 <!ATTLIST body
@@ -473,7 +483,7 @@ $Revision: 1.2 $
   %TextAlign;
   >
 
-<!--=================== Paragraphs =======================================-->
+<!-- ========== Paragraphs ========== -->
 
 <!ELEMENT p %Inline;>
 <!ATTLIST p
@@ -481,14 +491,14 @@ $Revision: 1.2 $
   %TextAlign;
   >
 
-<!--=================== Headings =========================================-->
+<!-- ========== Headings ========== -->
 
 <!--
   There are six levels of headings from h1 (the most important)
   to h6 (the least important).
 -->
 
-<!ELEMENT h1  %Inline;>
+<!ELEMENT h1 %Inline;>
 <!ATTLIST h1
   %attrs;
   %TextAlign;
@@ -524,7 +534,7 @@ $Revision: 1.2 $
   %TextAlign;
   >
 
-<!--=================== Lists ============================================-->
+<!-- ========== Lists ========== -->
 
 <!-- Unordered list bullet styles -->
 
@@ -606,16 +616,16 @@ $Revision: 1.2 $
   %attrs;
   >
 
-<!--=================== Address ==========================================-->
+<!-- ========== Address ========== -->
 
 <!-- information on author -->
 
-<!ELEMENT address (#PCDATA | %inline; | %misc.inline; | p)*>
+<!ELEMENT address %Inline;>
 <!ATTLIST address
   %attrs;
   >
 
-<!--=================== Horizontal Rule ==================================-->
+<!-- ========== Horizontal Rule ========== -->
 
 <!ELEMENT hr EMPTY>
 <!ATTLIST hr
@@ -626,7 +636,7 @@ $Revision: 1.2 $
   width       %Length;       #IMPLIED
   >
 
-<!--=================== Preformatted Text ================================-->
+<!-- ========== Preformatted Text ========== -->
 
 <!-- content is %Inline; excluding 
         "img|object|applet|big|small|sub|sup|font|basefont" -->
@@ -638,7 +648,7 @@ $Revision: 1.2 $
   xml:space   (preserve)    #FIXED 'preserve'
   >
 
-<!--=================== Block-like Quotes ================================-->
+<!-- ========== Block-like Quotes ========== -->
 
 <!ELEMENT blockquote %Flow;>
 <!ATTLIST blockquote
@@ -646,7 +656,7 @@ $Revision: 1.2 $
   cite        %URI;          #IMPLIED
   >
 
-<!--=================== Text alignment ===================================-->
+<!-- ========== Text alignment ========== -->
 
 <!-- center content -->
 <!ELEMENT center %Flow;>
@@ -654,7 +664,7 @@ $Revision: 1.2 $
   %attrs;
   >
 
-<!--=================== Inserted/Deleted Text ============================-->
+<!-- ========== Inserted/Deleted Text ========== -->
 
 
 <!--
@@ -676,14 +686,13 @@ $Revision: 1.2 $
   datetime    %Datetime;     #IMPLIED
   >
 
-<!--================== The Anchor Element ================================-->
+<!-- ========== The Anchor Element ========== -->
 
 <!-- content is %Inline; except that anchors shouldn't be nested -->
 
 <!ELEMENT a %a.content;>
 <!ATTLIST a
   %attrs;
-  %focus;
   charset     %Charset;      #IMPLIED
   type        %ContentType;  #IMPLIED
   name        NMTOKEN        #IMPLIED
@@ -691,12 +700,16 @@ $Revision: 1.2 $
   hreflang    %LanguageCode; #IMPLIED
   rel         %LinkTypes;    #IMPLIED
   rev         %LinkTypes;    #IMPLIED
+  accesskey   %Character;    #IMPLIED
   shape       %Shape;        "rect"
   coords      %Coords;       #IMPLIED
+  tabindex    %Number;       #IMPLIED
+  onfocus     %Script;       #IMPLIED
+  onblur      %Script;       #IMPLIED
   target      %FrameTarget;  #IMPLIED
   >
 
-<!--===================== Inline Elements ================================-->
+<!-- ========== Inline Elements ========== -->
 
 <!ELEMENT span %Inline;> <!-- generic language/style container -->
 <!ATTLIST span
@@ -717,8 +730,6 @@ $Revision: 1.2 $
   %coreattrs;
   clear       (left|all|right|none) "none"
   >
-
-<!ELEMENT wbr EMPTY>   <!-- line break opportunity -->
 
 <!ELEMENT em %Inline;>   <!-- emphasis -->
 <!ATTLIST em %attrs;>
@@ -752,9 +763,9 @@ $Revision: 1.2 $
 
 <!ELEMENT q %Inline;>   <!-- inlined quote -->
 <!ATTLIST q
-  %attrs;
+   %attrs;
   cite        %URI;          #IMPLIED
-  >
+   >
 
 <!ELEMENT sub %Inline;> <!-- subscript -->
 <!ATTLIST sub %attrs;>
@@ -803,7 +814,7 @@ $Revision: 1.2 $
   face        CDATA          #IMPLIED
   >
 
-<!--==================== Object ======================================-->
+<!-- ========== Object ========== -->
 <!--
   object is used to embed objects as part of HTML pages.
   param elements should precede other content. Parameters
@@ -848,7 +859,7 @@ $Revision: 1.2 $
   type        %ContentType;  #IMPLIED
   >
 
-<!--=================== Java applet ==================================-->
+<!-- ========== Java applet ========== -->
 <!--
   One of code or object attributes must be present.
   Place param elements before other content.
@@ -869,7 +880,7 @@ $Revision: 1.2 $
   vspace      %Pixels;       #IMPLIED
   >
 
-<!--=================== Images ===========================================-->
+<!-- ========== Images ========== -->
 
 <!--
    To avoid accessibility problems for people who aren't
@@ -898,7 +909,7 @@ $Revision: 1.2 $
 <!-- usemap points to a map element which may be in this document
   or an external document, although the latter is not widely supported -->
 
-<!--================== Client-side image maps ============================-->
+<!-- ========== Client-side image maps ========== -->
 
 <!-- These can be placed in the same document or grouped in a
      separate document although this isn't yet widely supported -->
@@ -917,16 +928,19 @@ $Revision: 1.2 $
 <!ELEMENT area EMPTY>
 <!ATTLIST area
   %attrs;
-  %focus;
   shape       %Shape;        "rect"
   coords      %Coords;       #IMPLIED
   href        %URI;          #IMPLIED
   nohref      (nohref)       #IMPLIED
   alt         %Text;         #REQUIRED
+  tabindex    %Number;       #IMPLIED
+  accesskey   %Character;    #IMPLIED
+  onfocus     %Script;       #IMPLIED
+  onblur      %Script;       #IMPLIED
   target      %FrameTarget;  #IMPLIED
   >
 
-<!--================ Forms ===============================================-->
+<!-- ========== Forms ========== -->
 
 <!ELEMENT form %form.content;>   <!-- forms shouldn't be nested -->
 
@@ -967,7 +981,6 @@ $Revision: 1.2 $
 <!ELEMENT input EMPTY>     <!-- form control -->
 <!ATTLIST input
   %attrs;
-  %focus;
   type        %InputType;    "text"
   name        CDATA          #IMPLIED
   value       CDATA          #IMPLIED
@@ -979,6 +992,10 @@ $Revision: 1.2 $
   src         %URI;          #IMPLIED
   alt         CDATA          #IMPLIED
   usemap      %URI;          #IMPLIED
+  tabindex    %Number;       #IMPLIED
+  accesskey   %Character;    #IMPLIED
+  onfocus     %Script;       #IMPLIED
+  onblur      %Script;       #IMPLIED
   onselect    %Script;       #IMPLIED
   onchange    %Script;       #IMPLIED
   accept      %ContentTypes; #IMPLIED
@@ -1017,12 +1034,15 @@ $Revision: 1.2 $
 <!ELEMENT textarea (#PCDATA)>     <!-- multi-line text field -->
 <!ATTLIST textarea
   %attrs;
-  %focus;
   name        CDATA          #IMPLIED
   rows        %Number;       #REQUIRED
   cols        %Number;       #REQUIRED
   disabled    (disabled)     #IMPLIED
   readonly    (readonly)     #IMPLIED
+  tabindex    %Number;       #IMPLIED
+  accesskey   %Character;    #IMPLIED
+  onfocus     %Script;       #IMPLIED
+  onblur      %Script;       #IMPLIED
   onselect    %Script;       #IMPLIED
   onchange    %Script;       #IMPLIED
   >
@@ -1052,11 +1072,14 @@ $Revision: 1.2 $
 <!ELEMENT button %button.content;>  <!-- push button -->
 <!ATTLIST button
   %attrs;
-  %focus;
   name        CDATA          #IMPLIED
   value       CDATA          #IMPLIED
   type        (button|submit|reset) "submit"
   disabled    (disabled)     #IMPLIED
+  tabindex    %Number;       #IMPLIED
+  accesskey   %Character;    #IMPLIED
+  onfocus     %Script;       #IMPLIED
+  onblur      %Script;       #IMPLIED
   >
 
 <!-- single-line text input control (DEPRECATED) -->
@@ -1067,7 +1090,7 @@ $Revision: 1.2 $
   prompt      %Text;         #IMPLIED
   >
 
-<!--======================= Tables =======================================-->
+<!-- ========== Tables ========== -->
 
 <!-- Derived from IETF HTML table standard, see [RFC1942] -->
 
@@ -1109,17 +1132,16 @@ $Revision: 1.2 $
   "valign     (top|middle|bottom|baseline) #IMPLIED"
   >
 
-<!ELEMENT table
-     (caption?, (col*|colgroup*), thead?, tfoot?, (tbody+|tr+))>
-<!ELEMENT caption  %Inline;>
-<!ELEMENT thead    (tr)+>
-<!ELEMENT tfoot    (tr)+>
-<!ELEMENT tbody    (tr)+>
+<!ELEMENT table (caption?, (col*|colgroup*), thead?, tfoot?, (tbody+|tr+))>
+<!ELEMENT caption %Inline;>
+<!ELEMENT thead   (tr)+>
+<!ELEMENT tfoot   (tr)+>
+<!ELEMENT tbody   (tr)+>
 <!ELEMENT colgroup (col)*>
-<!ELEMENT col      EMPTY>
-<!ELEMENT tr       (th|td)+>
-<!ELEMENT th       %Flow;>
-<!ELEMENT td       %Flow;>
+<!ELEMENT col     EMPTY>
+<!ELEMENT tr      (th|td)+>
+<!ELEMENT th      %Flow;>
+<!ELEMENT td      %Flow;>
 
 <!ATTLIST table
   %attrs;
@@ -1246,4 +1268,3 @@ several semantically related columns together.
   width       %Pixels;       #IMPLIED
   height      %Pixels;       #IMPLIED
   >
-

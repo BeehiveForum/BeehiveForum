@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.92 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.93 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -507,7 +507,7 @@ echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
 echo "      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\">\n";
 echo "        <tr>\n";
-echo "          <td align=\"left\" colspan=\"3\" height=\"20\" style=\"background-color: #{$elements['navpage']}; color: #", contrastFont($elements['navpage']), "; font-size: 10px; font-weight: bold; text-decoration: none\">&nbsp;&nbsp;\n";
+echo "          <td align=\"left\" colspan=\"3\" height=\"20\" style=\"background-color: #{$elements['navpage']}; color: #", contrastFont($elements['navpage']), "; font-size: 10px; font-weight: bold; text-decoration: none\">&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";
 echo "            <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['navpage']), "\">{$lang['links']}</a>&nbsp;|&nbsp;\n";
@@ -642,7 +642,7 @@ echo "                </td>\n";
 echo "              </tr>\n";
 echo "            </table>\n";
 echo "          </td>\n";
-echo "          <td align=\"left\" bgcolor=\"#FFFFFF\" width=\"2\"></td>\n";
+echo "          <td align=\"left\" bgcolor=\"#FFFFFF\" width=\"2\">&nbsp;</td>\n";
 echo "          <td align=\"left\" valign=\"top\">\n";
 echo "            <div align=\"center\">\n";
 echo "              <table width=\"96%\" border=\"0\">\n";
@@ -681,7 +681,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                    <table width=\"100%\" class=\"postresponse\" style=\"background-color: #{$elements['body']}; color: #", contrastFont($elements['body']), "\" cellspacing=\"1\" cellpadding=\"0\">\n";

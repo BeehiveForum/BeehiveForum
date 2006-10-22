@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.78 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.79 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -130,7 +130,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         echo "          <td align=\"left\" class=\"postbody\">An error has occured. Please wait a few minutes and then click the Retry button below.</td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
-        echo "          <td align=\"left\">&nbsp;\n";
+        echo "          <td align=\"left\">\n";
 
         if (form_input_hidden_array($_POST, $result_str)) echo $result_str;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.30 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.31 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -190,14 +190,14 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['nameanddesc']}:</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['nameanddesc']}:</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">&nbsp;{$lang['name']}:</td>\n";
+echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
 echo "                  <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? $t_name : ""), 30, 64)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">&nbsp;{$lang['description']}:</td>\n";
+echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
 echo "                  <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? $t_description : ""), 30, 64)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -214,7 +214,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">&nbsp;{$lang['groupstatus']}:</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['groupstatus']}:</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
@@ -258,7 +258,7 @@ if ($folder_array = folder_get_all()) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['folderaccess']}:</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['folderaccess']}:</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -270,8 +270,8 @@ if ($folder_array = folder_get_all()) {
     echo "                        <td align=\"left\" class=\"posthead\">\n";
     echo "                          <table class=\"posthead\" width=\"100%\">\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">&nbsp;{$lang['folders']}</td>\n";
-    echo "                              <td align=\"left\" class=\"subhead\">&nbsp;{$lang['permissions']}</td>\n";
+    echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">{$lang['folders']}</td>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">{$lang['permissions']}</td>\n";
     echo "                            </tr>\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";

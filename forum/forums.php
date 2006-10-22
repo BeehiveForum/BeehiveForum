@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.57 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: forums.php,v 1.58 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -130,8 +130,8 @@ if (bh_session_get_value('UID') != 0) {
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">&nbsp;{$lang['favouriteforums']}:</td>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
+            echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['favouriteforums']}:</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
             echo "                </tr>\n";
 
             foreach ($forums_array['FAV_FORUMS'] as $forum) {
@@ -212,8 +212,8 @@ if (bh_session_get_value('UID') != 0) {
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">&nbsp;{$lang['recentlyvisitedforums']}:</td>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
+            echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['recentlyvisitedforums']}:</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
             echo "                </tr>\n";
 
             foreach ($forums_array['RECENT_FORUMS'] as $forum) {
@@ -294,8 +294,8 @@ if (bh_session_get_value('UID') != 0) {
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">&nbsp;{$lang['availableforums']}:</td>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
+            echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['availableforums']}:</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
             echo "                </tr>\n";
 
             foreach ($forums_array['OTHER_FORUMS'] as $forum) {
@@ -392,7 +392,7 @@ if (bh_session_get_value('UID') != 0) {
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">&nbsp;{$lang['availableforums']}:</td>\n";
+        echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['availableforums']}:</td>\n";
         echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
         echo "                </tr>\n";
 
@@ -457,8 +457,8 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">&nbsp;{$lang['searchresults']}:</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['lastvisited']}</td>\n";
+    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['searchresults']}:</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['lastvisited']}</td>\n";
     echo "                </tr>\n";
 
     if ($forum_array = forum_search($webtag_search)) {

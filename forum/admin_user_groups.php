@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.29 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.30 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -149,9 +149,9 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['groups']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['description']}</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['users']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['groups']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['description']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['users']}&nbsp;</td>\n";
 echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
@@ -160,9 +160,9 @@ if ($user_groups_array = perm_get_user_groups()) {
     foreach ($user_groups_array as $user_group) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\">&nbsp;", form_checkbox("delete_group[]", $user_group['GID'], "", false), "&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
-        echo "                  <td align=\"left\" nowrap=\"nowrap\">&nbsp;{$user_group['GROUP_DESC']}</td>\n";
-        echo "                  <td align=\"left\" width=\"60\">&nbsp;{$user_group['USER_COUNT']}</td>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("delete_group[]", $user_group['GID'], "", false), "&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+        echo "                  <td align=\"left\" nowrap=\"nowrap\">{$user_group['GROUP_DESC']}</td>\n";
+        echo "                  <td align=\"left\" width=\"60\">{$user_group['USER_COUNT']}</td>\n";
         echo "                  <td width=\"180\" align=\"center\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
         echo "                </tr>\n";
     }
@@ -170,7 +170,7 @@ if ($user_groups_array = perm_get_user_groups()) {
 }else {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"4\">&nbsp;{$lang['nousergroups']}</td>\n";
+    echo "                  <td align=\"left\" colspan=\"4\">{$lang['nousergroups']}</td>\n";
     echo "                </tr>\n";
 }
 

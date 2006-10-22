@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.33 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.34 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -174,14 +174,14 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['nameanddesc']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['nameanddesc']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">&nbsp;{$lang['name']}:</td>\n";
+echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
 echo "                  <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? $t_name : ""), 30, 32)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">&nbsp;{$lang['description']}:</td>\n";
+echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
 echo "                  <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? $t_description : ""), 30, 255)."</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -198,7 +198,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['permissions']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">\n";
@@ -239,10 +239,10 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['allow']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['allow']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">&nbsp;{$lang['allowfoldertocontain']}:</td>\n";
+echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("t_allowed_types", $allow_values, $allow_labels, (isset($t_allowed_types) ? $t_allowed_types : FOLDER_ALLOW_ALL_THREAD)), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

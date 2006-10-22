@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.36 2006-09-27 21:31:43 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.37 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -1407,7 +1407,7 @@ $lang['recentthreads'] = "Fils de discussion récents";
 $lang['startreading'] = "Commencer lecture";
 $lang['threadoptions'] = "Options de fil de discussion";
 $lang['editthreadoptions'] = "Modifier options de fil de discussion";
-$lang['showmorevisitors'] = "Montrer d'autres visiteurs";
+$lang['showmorevisitors'] = "d'autres visiteurs";
 $lang['forthcomingbirthdays'] = "Anniversaires à venir";
 
 // Start page (start_main.php) -----------------------------------------

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.81 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.82 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -193,8 +193,8 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['sectionname']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['items']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deletesection']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['items']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['deletesection']}</td>\n";
 echo "                </tr>\n";
 
 if ($profile_sections = profile_sections_get()) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_wordfilter.php,v 1.56 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: edit_wordfilter.php,v 1.57 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -197,12 +197,12 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">&nbsp;&nbsp;</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['matchedtext']}&nbsp;</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['replacementtext']}&nbsp;</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['all']}&nbsp;</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['wholeword']}&nbsp;</td>\n";
-echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">&nbsp;{$lang['preg']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['matchedtext']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['replacementtext']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['all']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['wholeword']}&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['preg']}&nbsp;</td>\n";
 echo "                  <td align=\"left\" class=\"subhead\" width=\"75\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
@@ -214,7 +214,7 @@ foreach ($word_filter_array as $key => $word_filter) {
 
         if (!forum_get_setting('admin_force_word_filter', 'Y')) {
 
-            echo "                  <td align=\"center\">&nbsp;<sup>[A]</sup></td>\n";
+            echo "                  <td align=\"center\"><sup>[A]</sup></td>\n";
             echo "                  <td align=\"left\">", _htmlentities(_stripslashes($word_filter['MATCH_TEXT'])), "</td>\n";
             echo "                  <td align=\"left\">", _htmlentities(_stripslashes($word_filter['REPLACE_TEXT'])), "</td>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -237,7 +237,7 @@ foreach ($word_filter_array as $key => $word_filter) {
 if (sizeof($word_filter_array) < 20) {
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;{$lang['newcaps']}</td>\n";
+    echo "                  <td align=\"left\">{$lang['newcaps']}</td>\n";
     echo "                  <td align=\"left\">", form_input_text("new_match", "", 30), "</td>\n";
     echo "                  <td align=\"left\">", form_input_text("new_replace", "", 30), "</td>\n";
     echo "                  <td align=\"center\">", form_radio("new_filter_option", "0", "", true), "</td>\n";

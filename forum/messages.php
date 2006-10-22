@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.203 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: messages.php,v 1.204 2006-10-22 16:24:32 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -442,7 +442,7 @@ echo "</p></td>\n";
 echo "    <td width=\"33%\" align=\"right\">";
 if ($last_pid < $threaddata['LENGTH']) {
     $npid = $last_pid + 1;
-    echo form_quick_button("./messages.php", "{$lang['keepreading']} &gt;&gt;", "msg", "$tid.$npid");
+    echo form_quick_button("./messages.php", "{$lang['keepreading']}  &raquo;", "msg", "$tid.$npid");
 } else {
         echo "&nbsp;";
 }

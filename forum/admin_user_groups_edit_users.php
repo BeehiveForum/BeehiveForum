@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.28 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.29 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -203,7 +203,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">&nbsp;{$lang['users']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['users']}</td>\n";
 echo "                </tr>\n";
 
 $group_users_array = perm_group_get_users($gid, $start_main);
@@ -270,7 +270,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"50%\" class=\"subhead\">&nbsp;{$lang['searchresults']}</td>\n";
+    echo "                  <td align=\"left\" width=\"50%\" class=\"subhead\">{$lang['searchresults']}</td>\n";
     echo "                </tr>\n";
 
     $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', $start_search);
@@ -280,14 +280,14 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         foreach ($user_search_array['user_array'] as $user) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\">&nbsp;", form_checkbox("add_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
+            echo "                  <td align=\"left\">", form_checkbox("add_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
             echo "                </tr>\n";
         }
 
     }else {
 
         echo "                <tr>\n";
-        echo "                  <td class=\"posthead\" align=\"left\">&nbsp;{$lang['nomatches']}</td>\n";
+        echo "                  <td class=\"posthead\" align=\"left\">{$lang['nomatches']}</td>\n";
         echo "                </tr>\n";
     }
 

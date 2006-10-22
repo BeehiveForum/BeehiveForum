@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.34 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.35 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -410,18 +410,18 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['addban']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['addban']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"120\" class=\"posthead\">&nbsp;{$lang['bantype']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"120\" class=\"posthead\">{$lang['bantype']}:</td>\n";
     echo "                  <td align=\"left\">", form_dropdown_array('newbantype', range(0, 5), array('', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : (isset($add_new_ban_type) ? _htmlentities($add_new_ban_type) : ''))), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\">&nbsp;{$lang['bandata']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text('newbandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['newbandata'])) : (isset($add_new_ban_data) ? _htmlentities($add_new_ban_data) : '')), 40, 255), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">&nbsp;{$lang['bancomment']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
     echo "                  <td align=\"left\">", form_textarea('newbancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['newbancomment'])) : ''), 5, 37), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -556,18 +556,18 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['editban']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['editban']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"120\" class=\"posthead\">&nbsp;{$lang['bantype']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"120\" class=\"posthead\">{$lang['bantype']}:</td>\n";
     echo "                  <td align=\"left\">", form_dropdown_array('bantype', range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['bantype'])) : $ban_data_array['BANTYPE'])), form_input_hidden('old_bantype', $ban_data_array['BANTYPE']), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\">&nbsp;{$lang['bandata']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
     echo "                  <td align=\"left\">", form_input_text('bandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['bandata'])) : $ban_data_array['BANDATA']), 40, 255), form_input_hidden('old_bandata', $ban_data_array['BANDATA']), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">&nbsp;{$lang['bancomment']}:</td>\n";
+    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
     echo "                  <td align=\"left\">", form_textarea('bancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['bancomment'])) : $ban_data_array['COMMENT']), 5, 37), form_input_hidden('old_bancomment', $ban_data_array['COMMENT']), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -671,26 +671,26 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
 
 
     if ($sort_by == 'BANTYPE' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
     }elseif ($sort_by == 'BANTYPE' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
     }
 
     if ($sort_by == 'BANDATA' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
     }elseif ($sort_by == 'BANDATA' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data</a></td>\n";
     }
 
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;&nbsp;</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;</td>\n";
     echo "                 </tr>\n";
 
     $start = floor($page - 1) * 10;
@@ -707,8 +707,8 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
         foreach($ban_list_array['ban_array'] as $ban_list_id => $ban_list_entry) {
 
             echo "                 <tr>\n";
-            echo "                   <td align=\"left\">&nbsp;<a href=\"admin_banned.php?ban_id=$ban_list_id\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_array)) ? $ban_types_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
-            echo "                   <td align=\"left\">&nbsp;{$ban_list_entry['BANDATA']}</td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_banned.php?ban_id=$ban_list_id\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_array)) ? $ban_types_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
+            echo "                   <td align=\"left\">{$ban_list_entry['BANDATA']}</td>\n";
             echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y", false), "</td>\n";
             echo "                 </tr>\n";
         }
@@ -739,7 +739,7 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     }else {
 
         echo "                 <tr>\n";
-        echo "                   <td align=\"left\" colspan=\"5\">&nbsp;{$lang['noexistingbandata']}</td>\n";
+        echo "                   <td align=\"left\" colspan=\"5\">{$lang['noexistingbandata']}</td>\n";
         echo "                 </tr>\n";
         echo "                 <tr>\n";
         echo "                   <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";

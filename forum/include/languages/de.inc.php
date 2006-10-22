@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.13 2006-09-27 21:31:43 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.14 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // International English language file
 
@@ -1394,7 +1394,7 @@ $lang['recentthreads'] = "Neue Eintraege";
 $lang['startreading'] = "Lesen";
 $lang['threadoptions'] = "Eintragsoptionen";
 $lang['editthreadoptions'] = "Eintragsoptionen aendern";
-$lang['showmorevisitors'] = "Mehr Besucher anzeigen";
+$lang['morevisitors'] = "Mehr Besucher";
 $lang['forthcomingbirthdays'] = "Bevorstehende Geburtstage";
 
 // Start page (start_main.php) -----------------------------------------

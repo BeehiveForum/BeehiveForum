@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.56 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.57 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -410,27 +410,27 @@ if ($threaddata['LENGTH'] > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\"> \n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['useroptions']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['useroptions']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"250\" class=\"posthead\">&nbsp;{$lang['markedasread']}:</td>\n";
-    echo "                  <td align=\"left\">&nbsp;", form_input_text("markasread", $threaddata['LAST_READ'], 5), " {$lang['postsoutof']} {$threaddata['LENGTH']}</td>\n";
+    echo "                  <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['markedasread']}:</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("markasread", $threaddata['LAST_READ'], 5), " {$lang['postsoutof']} {$threaddata['LENGTH']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" valign=\"top\" class=\"posthead\">&nbsp;{$lang['interest']}:</td>\n";
-    echo "                  <td align=\"left\">&nbsp;", form_radio("interest", -1, $lang['ignore'], $threaddata['INTEREST'] == -1), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;", form_radio("interest", 0, $lang['normal'], $threaddata['INTEREST'] == 0), "</td>\n";
+    echo "                  <td align=\"left\" valign=\"top\" class=\"posthead\">{$lang['interest']}:</td>\n";
+    echo "                  <td align=\"left\">", form_radio("interest", -1, $lang['ignore'], $threaddata['INTEREST'] == -1), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;", form_radio("interest", 1, $lang['interested'], $threaddata['INTEREST'] == 1), "</td>\n";
+    echo "                  <td align=\"left\">", form_radio("interest", 0, $lang['normal'], $threaddata['INTEREST'] == 0), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;", form_radio("interest", 2, $lang['subscribe'], $threaddata['INTEREST'] == 2), "</td>\n";
+    echo "                  <td align=\"left\">", form_radio("interest", 1, $lang['interested'], $threaddata['INTEREST'] == 1), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", form_radio("interest", 2, $lang['subscribe'], $threaddata['INTEREST'] == 2), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -449,23 +449,23 @@ if ($threaddata['LENGTH'] > 0) {
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['rename']} / {$lang['move']}</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['rename']} / {$lang['move']}</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" width=\"250\" class=\"posthead\">&nbsp;{$lang['renamethread']}:</td>\n";
+        echo "                  <td align=\"left\" width=\"250\" class=\"posthead\">{$lang['renamethread']}:</td>\n";
 
         if (thread_is_poll($tid)) {
-            echo "                  <td align=\"left\">&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
+            echo "                  <td align=\"left\"><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
         }else {
-            echo "                  <td align=\"left\">&nbsp;".form_input_text("rename", $threaddata['TITLE'], 30, 64)."</td>\n";
+            echo "                  <td align=\"left\">".form_input_text("rename", $threaddata['TITLE'], 30, 64)."</td>\n";
         }
 
         $thread_type = (thread_is_poll($tid) ? FOLDER_ALLOW_POLL_THREAD : FOLDER_ALLOW_NORMAL_THREAD);
 
         echo "                </tr>\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"posthead\">&nbsp;{$lang['movethread']}:</td>\n";
-        echo "                  <td align=\"left\">&nbsp;", folder_draw_dropdown($threaddata['FID'], "move", "", $thread_type, "", "post_folder_dropdown"), "</td>\n";
+        echo "                  <td align=\"left\" class=\"posthead\">{$lang['movethread']}:</td>\n";
+        echo "                  <td align=\"left\">", folder_draw_dropdown($threaddata['FID'], "move", "", $thread_type, "", "post_folder_dropdown"), "</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -491,27 +491,27 @@ if ($threaddata['LENGTH'] > 0) {
             if (!thread_is_poll($tid)) {
             
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['mergesplitthread']}</td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['mergesplitthread']}</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\" width=\"250\">", form_radio("thread_merge_split", 0, $lang['mergewiththreadid'], false, false, 'posthead'), "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;", form_input_text('merge_thread', '', 30), "</td>\n";
+                echo "                  <td align=\"left\">", form_input_text('merge_thread', '', 30), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_radio("merge_type", 0, $lang['postsinthisthreadatstart'], false), "</td>\n";
+                echo "                  <td align=\"left\" class=\"posthead\">", form_radio("merge_type", 0, $lang['postsinthisthreadatstart'], false), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_radio("merge_type", 1, $lang['postsinthisthreadatend'], false), "</td>\n";
+                echo "                  <td align=\"left\" class=\"posthead\">", form_radio("merge_type", 1, $lang['postsinthisthreadatend'], false), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_radio("merge_type", 2, $lang['reorderpostsintodateorder'], false), "</td>\n";
+                echo "                  <td align=\"left\" class=\"posthead\">", form_radio("merge_type", 2, $lang['reorderpostsintodateorder'], false), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                  <td align=\"left\">&nbsp;", form_checkbox("merge_thread_con", "Y", $lang['confirm']), "</td>\n";
+                echo "                  <td align=\"left\">", form_checkbox("merge_thread_con", "Y", $lang['confirm']), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -522,31 +522,31 @@ if ($threaddata['LENGTH'] > 0) {
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\" width=\"250\">", form_radio("thread_merge_split", 1, $lang['splitthreadatpost'], false, false, 'posthead'), "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;", form_dropdown_array('split_thread', $thread_length_array, $thread_length_array), "</td>\n";
+                echo "                  <td align=\"left\">", form_dropdown_array('split_thread', $thread_length_array, $thread_length_array), "</td>\n";
                 echo "                </tr>\n";
 
             }else {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['mergesplitthread']}</td>\n";
+                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['mergesplitthread']}</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" width=\"250\">&nbsp;", form_input_hidden("thread_merge_split", 1), $lang['splitthreadatpost'], "</td>\n";
-                echo "                  <td align=\"left\">&nbsp;", form_dropdown_array('split_thread', $thread_length_array, $thread_length_array), "</td>\n";
+                echo "                  <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 1), $lang['splitthreadatpost'], "</td>\n";
+                echo "                  <td align=\"left\">", form_dropdown_array('split_thread', $thread_length_array, $thread_length_array), "</td>\n";
                 echo "                </tr>\n";
             }
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_radio("split_type", 0, $lang['selectedpostsandrepliesonly'], false), "</td>\n";
+            echo "                  <td align=\"left\" class=\"posthead\">", form_radio("split_type", 0, $lang['selectedpostsandrepliesonly'], false), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_radio("split_type", 1, $lang['selectedandallfollowingposts'], true), "</td>\n";
+            echo "                  <td align=\"left\" class=\"posthead\">", form_radio("split_type", 1, $lang['selectedandallfollowingposts'], true), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\">&nbsp;", form_checkbox("split_thread_con", "Y", $lang['confirm']), "</td>\n";
+            echo "                  <td align=\"left\">", form_checkbox("split_thread_con", "Y", $lang['confirm']), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -562,10 +562,10 @@ if ($threaddata['LENGTH'] > 0) {
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['makethreadsticky']}</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['makethreadsticky']}</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" width=\"50%\" class=\"posthead\">&nbsp;{$lang['sticky']}:</td>\n";
+            echo "                  <td align=\"left\" width=\"50%\" class=\"posthead\">{$lang['sticky']}:</td>\n";
 
             if ($threaddata['STICKY_UNTIL'] && $threaddata['STICKY'] == "Y") {
 
@@ -580,11 +580,11 @@ if ($threaddata['LENGTH'] > 0) {
                 $day = 0;
             }
 
-            echo "                  <td align=\"left\" nowrap=\"nowrap\">&nbsp;", form_radio("sticky", "Y", $lang['until'], $threaddata['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($year, $month, $day, "sticky_"), "&nbsp;&nbsp;</td>\n";
+            echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio("sticky", "Y", $lang['until'], $threaddata['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($year, $month, $day, "sticky_"), "&nbsp;&nbsp;</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\">&nbsp;", form_radio("sticky", "N", $lang['no'], $threaddata['STICKY'] == "N"), "</td>\n";
+            echo "                  <td align=\"left\">", form_radio("sticky", "N", $lang['no'], $threaddata['STICKY'] == "N"), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -600,18 +600,18 @@ if ($threaddata['LENGTH'] > 0) {
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['locked']} / {$lang['closed']}</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['locked']} / {$lang['closed']}</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;{$lang['closedforposting']}:</td>\n";
-            echo "                  <td align=\"left\">&nbsp;\n";
+            echo "                  <td align=\"left\" class=\"posthead\">{$lang['closedforposting']}:</td>\n";
+            echo "                  <td align=\"left\">\n";
             echo "                    ", form_radio("closed", "Y", $lang['yes'], $threaddata['CLOSED']), " \n";
             echo "                    ", form_radio("closed", "N", $lang['no'], !$threaddata['CLOSED']), "\n";
             echo "                  </td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;{$lang['locktitleandfolder']}:</td>\n";
-            echo "                  <td align=\"left\">&nbsp;\n";
+            echo "                  <td align=\"left\" class=\"posthead\">{$lang['locktitleandfolder']}:</td>\n";
+            echo "                  <td align=\"left\">\n";
             echo "                    ", form_radio("lock", "Y", $lang['yes'], $threaddata['ADMIN_LOCK']), " \n";
             echo "                    ", form_radio("lock", "N", $lang['no'], !$threaddata['ADMIN_LOCK']), "\n";
             echo "                  </td>\n";
@@ -633,12 +633,12 @@ if ($threaddata['LENGTH'] > 0) {
             echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['deleteposts']}</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;{$lang['deletepostsinthreadbyuser']}:</td>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", post_draw_to_dropdown_in_thread($tid, 0, false, true), "</td>\n";
+            echo "                  <td align=\"left\" class=\"posthead\">{$lang['deletepostsinthreadbyuser']}:</td>\n";
+            echo "                  <td align=\"left\" class=\"posthead\">", post_draw_to_dropdown_in_thread($tid, 0, false, true), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_checkbox("deluser_con", "Y", $lang['confirm']), "</td>\n";
+            echo "                  <td align=\"left\" class=\"posthead\">", form_checkbox("deluser_con", "Y", $lang['confirm']), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -657,21 +657,21 @@ if ($threaddata['LENGTH'] > 0) {
             echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['deletethread']}</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;{$lang['deletethread']}:</td>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_radio("delthread", -1, $lang['no'], true), "</td>\n";
+            echo "                  <td align=\"left\" class=\"posthead\">{$lang['deletethread']}:</td>\n";
+            echo "                  <td align=\"left\" class=\"posthead\">", form_radio("delthread", -1, $lang['no'], true), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_radio("delthread", 0, "Permenant Delete", false), " \n";
+            echo "                  <td align=\"left\" class=\"posthead\">", form_radio("delthread", 0, "Permenant Delete", false), " \n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_radio("delthread", 1, "Move to Deleted Threads", false), " \n";
+            echo "                  <td align=\"left\" class=\"posthead\">", form_radio("delthread", 1, "Move to Deleted Threads", false), " \n";
             echo "                  </td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_checkbox("delthread_con", "Y", $lang['confirm'], false), " \n";
+            echo "                  <td align=\"left\" class=\"posthead\">", form_checkbox("delthread_con", "Y", $lang['confirm'], false), " \n";
             echo "                  </td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
@@ -718,16 +718,16 @@ if ($threaddata['LENGTH'] > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\"> \n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;{$lang['undeletethread']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['undeletethread']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;{$lang['undeletethread']}</td>\n";
-    echo "                  <td align=\"left\">&nbsp;", form_radio("undelthread", "Y", $lang['yes']), "&nbsp;", form_radio("undelthread", "N", $lang['no'], true), "</td>\n";
+    echo "                  <td align=\"left\">{$lang['undeletethread']}</td>\n";
+    echo "                  <td align=\"left\">", form_radio("undelthread", "Y", $lang['yes']), "&nbsp;", form_radio("undelthread", "N", $lang['no'], true), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"posthead\">&nbsp;", form_checkbox("undelthread_con", "Y", $lang['confirm'], false), " \n";
+    echo "                  <td align=\"left\" class=\"posthead\">", form_checkbox("undelthread_con", "Y", $lang['confirm'], false), " \n";
     echo "                  </td>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

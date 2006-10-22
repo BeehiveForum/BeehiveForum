@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.80 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: logout.php,v 1.81 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,7 +122,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\" nowrap=\"nowrap\">&nbsp;{$lang['currentlyloggedinas']} ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "&nbsp;</td>\n";
+echo "                        <td align=\"center\" nowrap=\"nowrap\">{$lang['currentlyloggedinas']} ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

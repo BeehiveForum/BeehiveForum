@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.175 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.176 2006-10-22 16:24:32 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -1029,7 +1029,7 @@ function poll_preview_graph_vert($pollresults)
             if ($pollresults['VOTES'][$i] > 0) {
 
                 if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-                    $polldisplay.= "                                <td align=\"left\" style=\"width: 2px; border - left: 1px solid #000000\"></td>\n";
+                    $polldisplay.= "                                <td align=\"left\" style=\"width: 2px; border - left: 1px solid #000000\">&nbsp;</td>\n";
                 }
 
                 $polldisplay.= "                                <td align=\"center\" valign=\"bottom\">\n";
@@ -1070,7 +1070,7 @@ function poll_preview_graph_vert($pollresults)
             }
 
             if ($pollresults['GROUP_ID'][$i] <> $poll_previous_group) {
-                $polldisplay.= "                                <td align=\"left\" style=\"width: 2px; border - left: 1px solid #000000\"></td>\n";
+                $polldisplay.= "                                <td align=\"left\" style=\"width: 2px; border - left: 1px solid #000000\">&nbsp;</td>\n";
             }
 
             $polldisplay.= "                                <td class=\"postbody\" align=\"center\" valign=\"top\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "<br />". $pollresults['VOTES'][$i]. " {$lang['votes']}<br />(". $vote_percent. "%)</td>\n";

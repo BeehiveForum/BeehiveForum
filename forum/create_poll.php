@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.177 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.178 2006-10-22 16:24:32 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -805,7 +805,7 @@ if ($emot_prev != "") {
     echo "<br />\n";
     echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">&nbsp;{$lang['emoticons']}:</td>\n";
+    echo "    <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
@@ -1076,7 +1076,7 @@ if ($allow_sig == true) {
         echo "            <br />\n";
         echo "            <table width=\"480\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
         echo "              <tr>\n";
-        echo "                <td align=\"left\" class=\"subhead\">&nbsp;{$lang['signature']}:</td>\n";
+        echo "                <td align=\"left\" class=\"subhead\">{$lang['signature']}:</td>\n";
 
         $t_sig = ($fix_html ? $sig->getTidyContent() : $sig->getOriginalContent());
 

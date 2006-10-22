@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.88 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.89 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -247,10 +247,10 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['itemname']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['type']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['moveto']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;{$lang['deleteitem']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['itemname']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['type']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['moveto']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteitem']}</td>\n";
 echo "                </tr>\n";
 
 if ($profile_items = profile_items_get($psid)) {

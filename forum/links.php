@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.85 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: links.php,v 1.86 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -310,27 +310,27 @@ echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
 
 if ($sort_by == "TITLE" && $sort_dir == "ASC") {
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=DESC\">{$lang['name']}</a>&nbsp;</td>\n";
 }else {
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"250\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"250\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>&nbsp;</td>\n";
 }else {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"250\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"250\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>&nbsp;</td>\n";
 }else {
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=ASC\">{$lang['date']}</a>&nbsp;</td>\n";
 }
 
 if ($sort_by == "RATING" && $sort_dir == "DESC") {
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>&nbsp;</td>";
+    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=ASC\">{$lang['rating']}</a>&nbsp;</td>";
 }else {
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>&nbsp;</td>";
+    echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>&nbsp;</td>";
 }
 
 echo "                  <td align=\"left\" class=\"subhead\">{$lang['commentsslashvote']}</td>\n";

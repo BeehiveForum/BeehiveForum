@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.99 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: pm.php,v 1.100 2006-10-22 16:24:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -259,22 +259,22 @@ if ($start < 0) $start = 0;
 if ($folder == PM_FOLDER_INBOX) {
 
     $pm_messages_array = pm_get_inbox($start);
-    echo "    <td align=\"left\" class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pminbox']}</b></td>\n";
+    echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['pminbox']}</b></td>\n";
 
 }elseif ($folder == PM_FOLDER_SENT) {
 
     $pm_messages_array = pm_get_sent($start);
-    echo "    <td align=\"left\" class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pmsentitems']}</b></td>\n";
+    echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['pmsentitems']}</b></td>\n";
 
 }elseif ($folder == PM_FOLDER_OUTBOX) {
 
     $pm_messages_array = pm_get_outbox($start);
-    echo "    <td align=\"left\" class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pmoutbox']}</b></td>\n";
+    echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['pmoutbox']}</b></td>\n";
 
 }elseif ($folder == PM_FOLDER_SAVED) {
 
     $pm_messages_array = pm_get_saveditems($start);
-    echo "    <td align=\"left\" class=\"pmheadl\">&nbsp;<b>{$lang['privatemessages']}: {$lang['pmsaveditems']}</b></td>\n";
+    echo "    <td align=\"left\" class=\"pmheadl\"><b>{$lang['privatemessages']}: {$lang['pmsaveditems']}</b></td>\n";
 }
 
 echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$webtag\" target=\"_self\">{$lang['sendnewpm']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=1\" target=\"_self\">{$lang['pminbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=2\" target=\"_self\">{$lang['pmsentitems']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=3\" target=\"_self\">{$lang['pmoutbox']}</a> | <a href=\"pm.php?webtag=$webtag&amp;folder=4\" target=\"_self\">{$lang['pmsaveditems']}</a>&nbsp;</td>\n";
@@ -307,18 +307,18 @@ echo "  ", form_input_hidden('folder', $folder), "\n";
 echo "  <table width=\"95%\" border=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td width=\"20\" align=\"center\">&nbsp;</td>\n";
-echo "      <td align=\"left\" class=\"posthead\" width=\"50%\">&nbsp;{$lang['subject']}</td>\n";
+echo "      <td align=\"left\" class=\"posthead\" width=\"50%\">{$lang['subject']}</td>\n";
 
 if ($folder == PM_FOLDER_INBOX) {
-    echo "      <td align=\"left\" class=\"posthead\" width=\"30%\">&nbsp;{$lang['from']}</td>\n";
+    echo "      <td align=\"left\" class=\"posthead\" width=\"30%\">{$lang['from']}</td>\n";
 }elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX) {
-    echo "      <td align=\"left\" class=\"posthead\" width=\"30%\">&nbsp;{$lang['to']}</td>\n";
+    echo "      <td align=\"left\" class=\"posthead\" width=\"30%\">{$lang['to']}</td>\n";
 }elseif  ($folder == PM_FOLDER_SAVED) {
-    echo "      <td align=\"left\" class=\"posthead\" width=\"15%\">&nbsp;{$lang['to']}</td>\n";
-    echo "      <td align=\"left\" class=\"posthead\" width=\"15%\">&nbsp;{$lang['from']}</td>\n";
+    echo "      <td align=\"left\" class=\"posthead\" width=\"15%\">{$lang['to']}</td>\n";
+    echo "      <td align=\"left\" class=\"posthead\" width=\"15%\">{$lang['from']}</td>\n";
 }
 
-echo "      <td align=\"left\" class=\"posthead\" width=\"20%\">&nbsp;{$lang['timesent']}</td>\n";
+echo "      <td align=\"left\" class=\"posthead\" width=\"20%\">{$lang['timesent']}</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
@@ -399,7 +399,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     echo "      <td align=\"left\" class=\"posthead\" width=\"20\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\"></td><td align=\"left\" class=\"postbody\">{$lang['nomessages']}</td>\n";
+    echo "      <td class=\"postbody\">&nbsp;</td><td align=\"left\" class=\"postbody\">{$lang['nomessages']}</td>\n";
     echo "    </tr>\n";
 }
 
@@ -431,7 +431,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" title=\"{$pm_used_percent}% {$lang['used']}\">\n";
 echo "                          <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar\" style=\"width: {$pm_used_percent}%\">\n";
 echo "                            <tr>\n";
-echo "                              <td align=\"left\"></td>\n";
+echo "                              <td></td>\n";
 echo "                            </tr>\n";
 echo "                          </table>\n";
 echo "                        </td>\n";

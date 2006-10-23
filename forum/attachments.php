@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.123 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.124 2006-10-23 20:25:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -168,7 +168,13 @@ echo "}\n\n";
 echo "//-->\n";
 echo "</script>\n";
 
-$users_free_space = get_free_attachment_space(bh_session_get_value('UID'));
+// User's UID
+
+$uid = bh_session_get_value('UID');
+
+// Get user's free attachment space.
+
+$users_free_space = get_free_attachment_space($uid);
 $total_attachment_size = 0;
 
 // Check that $attachment_dir does not have a slash on the end of it.
@@ -184,10 +190,6 @@ if (!(@is_dir($attachment_dir))) {
     @mkdir($attachment_dir, 0755);
     @chmod($attachment_dir, 0777);
 }
-
-// User's UID
-
-$uid = bh_session_get_value('UID');
 
 // Arrays to hold the success and error messages
 
@@ -257,16 +259,102 @@ if (isset($_POST['upload'])) {
         }
     }
 
-}elseif (isset($_POST['delete'])) {
+}elseif (isset($_POST['delete_confirm'])) {
     
-    if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
-
-        foreach($_POST['delete_attachment'] as $hash => $del_attachment) {
+    if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
+        
+        foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
             if ($del_attachment == "Y") {
     
                 delete_attachment($hash);
             }
+        }
+    }
+
+}elseif (isset($_POST['delete'])) {
+
+    if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
+
+        $hash_array = array_keys($_POST['delete_attachment']);
+
+        if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
+            
+            html_draw_top();
+
+            echo "<h1>{$lang['deleteattachments']}</h1>\n";
+            echo "<br />\n";
+            echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"attachments.php\">\n";
+            echo "  ", form_input_hidden('webtag', $webtag), "\n";
+            echo "  ". form_input_hidden('aid', $aid), "\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"left\" class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteattachments']}</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">{$lang['deleteattachmentsconfirm']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"center\">\n";
+            echo "                          <table class=\"posthead\" width=\"95%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td><br />\n";
+
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+                
+                foreach($attachments_array as $attachment) {
+
+                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                }
+            }
+
+            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                foreach($image_attachments_array as $key => $attachment) {
+
+                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                }
+            }
+
+            echo "                              </td>\n";
+            echo "                            </tr>\n";
+            echo "                          </table>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">", form_submit("delete_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+            echo "</form>\n";
+
+            html_draw_bottom();
+            exit;
         }
     }
 
@@ -355,7 +443,7 @@ echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lan
 echo "                  <td width=\"25\" class=\"subhead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if (get_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
+if (get_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
@@ -429,7 +517,7 @@ echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lan
 echo "                  <td width=\"25\" class=\"subhead\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if (get_all_attachments(bh_session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
+if (get_all_attachments($uid, $aid, $attachments_array, $image_attachments_array)) {
 
     if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 

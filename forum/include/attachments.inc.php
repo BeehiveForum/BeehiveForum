@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.114 2006-07-03 18:09:47 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.115 2006-10-23 20:25:47 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -88,7 +88,7 @@ function attachments_check_dir()
 * @param array $user_attachments - By reference array containing image attachments
 */
 
-function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachments)
+function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachments, $hash_array = false)
 {
     $user_attachments = array();
     $user_image_attachments = array();
@@ -98,18 +98,35 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
     if (!is_numeric($uid)) return false;
     if (!is_md5($aid)) return false;
 
+    if (!is_array($hash_array)) $hash_array = false;
+
     if (!$table_data = get_table_prefix()) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $forum_settings = forum_get_settings();
 
-    $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-    $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-    $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID = '$aid' ";
-    $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+    if (is_array($hash_array)) {
+
+        $hash_list = implode("', '", preg_grep("/^[A-Fa-f0-9]{32}$/", $hash_array));
+
+        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
+        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+        $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID = '$aid' ";
+        $sql.= "AND PAF.HASH IN ('$hash_list') ";
+        $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+
+    }else {
+
+        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
+        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+        $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID = '$aid' ";
+        $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+    }
 
     $result = db_query($sql, $db_get_attachments);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.30 2006-10-15 11:50:20 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.31 2006-10-24 19:47:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,6 +88,12 @@ if (isset($_COOKIE['bh_remember_username'][0]) && isset($_COOKIE['bh_remember_pa
     $user_sess = bh_session_check(false, $user_hash, true);
 }
 
+// Default values (limit 20, all folders, sort by modified)
+
+$limit = 20;
+$fid_list = false;
+$sort_created = false;
+
 // Check to see if the user is banned.
 
 if (bh_session_check_user_ban()) {
@@ -105,10 +111,33 @@ if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
 
     if ($limit > 20) $limit = 20;
     if ($limit < 1)  $limit = 1;
+}
 
-}else {
+// Check to see if the user wants a specified list of folders
+// or the default to show all folders.
 
-    $limit = 20;
+if (isset($_GET['fid']) && strlen(trim(stripslashes($_GET['fid']))) > 0) {
+
+    $fid = trim(stripslashes($_GET['fid']));
+
+    if (preg_match("/(([0-9]+),)+,?/", $fid)) {
+        
+        $fid_list = preg_grep("/^[0-9]+$/", explode(",", $fid));
+
+    }else if (is_numeric($_GET['fid'])) {
+
+        $fid_list = array($_GET['fid']);
+    }
+}
+
+// Check to see if the user wants threads ordered by created
+// or modified date. Modified date bumps a thread to the top
+// when it receives a reply. Created threads show the threads
+// in the order they were created and is more useful as a
+// RSS news feed within your forum.
+
+if (isset($_GET['sort_created'])) {
+    $sort_created = true;
 }
 
 // echo out the rss feed
@@ -126,7 +155,7 @@ echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
 
-if ($threads_array = threads_get_most_recent($limit)) {
+if ($threads_array = threads_get_most_recent($limit, $fid_list, $sort_created)) {
 
     foreach ($threads_array as $thread) {
 
@@ -140,8 +169,16 @@ if ($threads_array = threads_get_most_recent($limit)) {
 
         // Get the post content and remove the HTML tags.
 
-        $t_content = message_get_content($thread['TID'], $thread['LENGTH']);
-        $t_content = strip_tags(trim($t_content));
+        if ($sort_created === true) {
+
+            $t_content = message_get_content($thread['TID'], 1);
+            $t_content = strip_tags(trim($t_content));
+
+        }else {
+
+            $t_content = message_get_content($thread['TID'], $thread['LENGTH']);
+            $t_content = strip_tags(trim($t_content));
+        }
 
         // Convert HTML special chars (& -> &amp;, etc);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.229 2006-10-19 19:34:45 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.230 2006-10-24 19:47:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1070,14 +1070,13 @@ function threads_get_unread_by_days($uid, $days = 0) // get unread messages for 
     return threads_process_list($result);
 }
 
-function threads_get_most_recent($limit = 10, $titles_only = false)
+function threads_get_most_recent($limit = 10, $fid_list = false, $creation_order = false)
 {
     $db_threads_get_recent = db_connect();
 
     // If there are any problems with the function arguments we bail out.
     
     if (!is_numeric($limit)) return array(0, 0);
-    if (!is_bool($titles_only)) return array(0, 0);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
 
@@ -1086,6 +1085,30 @@ function threads_get_most_recent($limit = 10, $titles_only = false)
     // Get the folders the user can see.
 
     if (!$folders = folder_get_available()) return array(0, 0);
+
+    // If we have an array of folders we should only
+    // use the ones the user can see.
+
+    if (is_array($fid_list) && sizeof($fid_list) > 0) {
+
+        foreach($fid_list as $key => $fid) {
+            if (!in_array($fid, explode(", ", $folders))) {
+                unset($fid_list[$key]);
+            }
+        }
+
+        if (sizeof($fid_list) > 0) {
+            $folders = implode(",", $fid_list);
+        }
+    }
+
+    // Do we want to sort by thread created or thread modified?
+
+    if ($creation_order === true) {
+        $order_by = "THREAD.CREATED DESC";
+    }else {
+        $order_by = "THREAD.MODIFIED DESC";
+    }
 
     // Constants for user relationships
 
@@ -1109,7 +1132,7 @@ function threads_get_most_recent($limit = 10, $titles_only = false)
         $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
         $sql.= "WHERE THREAD.FID IN ($folders) AND THREAD.LENGTH > 0 ";
-        $sql.= "ORDER BY THREAD.MODIFIED DESC ";
+        $sql.= "ORDER BY $order_by ";
         $sql.= "LIMIT 0, $limit";
 
     }else {
@@ -1137,7 +1160,7 @@ function threads_get_most_recent($limit = 10, $titles_only = false)
         $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
         $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
         $sql.= "AND THREAD.LENGTH > 0 ";
-        $sql.= "ORDER BY THREAD.MODIFIED DESC ";
+        $sql.= "ORDER BY $order_by ";
         $sql.= "LIMIT 0, $limit";
     }
 
@@ -1164,15 +1187,8 @@ function threads_get_most_recent($limit = 10, $titles_only = false)
                 }
             }
 
-            if ($titles_only === true) {
-
-                $threads_get_array[$thread['TID']] = $thread['TITLE'];
-
-            }else {
-            
-                $threads_get_array[$thread['TID']] = $thread;
-                $tid_array[] = $thread['TID'];
-            }
+            $threads_get_array[$thread['TID']] = $thread;
+            $tid_array[] = $thread['TID'];
 
             if (isset($polldata['PEER_NICKNAME'])) {
                 if (!is_null($polldata['PEER_NICKNAME']) && strlen($polldata['PEER_NICKNAME']) > 0) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.87 2006-10-13 17:30:57 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.88 2006-10-25 16:42:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -862,7 +862,12 @@ function thread_split_get_following($tid, $spid)
             $post_data_array[$new_post_pid] = $post_data;
 
             if ($post_data['REPLY_TO_PID'] > 0) {
-                $post_data_array[$new_post_pid]['REPLY_TO_PID'] = $dest_pid_array[$post_data['REPLY_TO_PID']];
+
+                if ($post_data['REPLY_TO_PID'] < $spid) {
+                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = 0;
+                }else {
+                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = $dest_pid_array[$post_data['REPLY_TO_PID']];
+                }
             }
         }
 
@@ -902,7 +907,12 @@ function thread_split_recursive($tid, $spid, &$post_data_array, &$dest_pid_array
             $post_data_array[$new_post_pid] = $post_data;
 
             if ($post_data['REPLY_TO_PID'] > 0) {
-                $post_data_array[$new_post_pid]['REPLY_TO_PID'] = $dest_pid_array[$post_data['REPLY_TO_PID']];
+
+                if ($post_data['REPLY_TO_PID'] < $spid) {
+                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = 0;
+                }else {
+                    $post_data_array[$new_post_pid]['REPLY_TO_PID'] = $dest_pid_array[$post_data['REPLY_TO_PID']];
+                }
             }
 
             thread_split_recursive($tid, $post_data['PID'], $post_data_array, $dest_pid_array, $new_post_pid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.88 2006-10-25 16:42:35 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.89 2006-10-25 20:55:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -546,64 +546,67 @@ function thread_merge($tida, $tidb, $merge_type)
         
                 $post_data_array = thread_merge_get_by_created($tida, $tidb);
                 if (!$new_thread = thread_get($post_data_array[1]['TID'])) return false;
-                $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], $new_thread['TITLE'], 'N', 'N', true);
+                $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], _htmlentities_decode($new_thread['TITLE']), 'N', 'N', true);
                 break;
 
             case THREAD_MERGE_START:
 
                 $post_data_array = thread_merge_get($tidb, $tida);
-                $new_tid = post_create_thread($threadb['FID'], $threadb['BY_UID'], $threadb['TITLE'], 'N', 'N', true);
+                $new_tid = post_create_thread($threadb['FID'], $threadb['BY_UID'], _htmlentities_decode($threadb['TITLE']), 'N', 'N', true);
                 break;
 
             case THREAD_MERGE_END:
 
                 $post_data_array = thread_merge_get($tida, $tidb);
-                $new_tid = post_create_thread($threada['FID'], $threada['BY_UID'], $threada['TITLE'], 'N', 'N', true);
+                $new_tid = post_create_thread($threada['FID'], $threada['BY_UID'], _htmlentities_decode($threada['TITLE']), 'N', 'N', true);
                 break;
         }
 
-        if (is_array($post_data_array) && sizeof($post_data_array) > 0 && $new_tid > 0) {
+        if ($thread_new = thread_get($new_tid, true)) {
 
-            foreach ($post_data_array as $post_data) {
+            if (is_array($post_data_array) && sizeof($post_data_array) > 0 && $new_tid > 0) {
 
-                if (!isset($post_data['APPROVED']))    $post_data['APPROVED'] = '';
-                if (!isset($post_data['APPROVED_BY'])) $post_data['APPROVED_BY'] = '';
-                if (!isset($post_data['EDITED']))      $post_data['EDITED'] = '';
-                if (!isset($post_data['EDITED_BY']))   $post_data['EDITED_BY'] = '';
-                if (!isset($post_data['IPADDRESS']))   $post_data['IPADDRESS'] = '';
+                foreach ($post_data_array as $post_data) {
 
-                $sql = "INSERT INTO {$table_data['PREFIX']}POST (TID, REPLY_TO_PID, FROM_UID, ";
-                $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
-                $sql.= "VALUES ('$new_tid', '{$post_data['REPLY_TO_PID']}', ";
-                $sql.= "'{$post_data['FROM_UID']}', '{$post_data['TO_UID']}', ";
-                $sql.= "'{$post_data['CREATED']}', '{$post_data['APPROVED']}', ";
-                $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
-                $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
+                    if (!isset($post_data['APPROVED']))    $post_data['APPROVED'] = '';
+                    if (!isset($post_data['APPROVED_BY'])) $post_data['APPROVED_BY'] = '';
+                    if (!isset($post_data['EDITED']))      $post_data['EDITED'] = '';
+                    if (!isset($post_data['EDITED_BY']))   $post_data['EDITED_BY'] = '';
+                    if (!isset($post_data['IPADDRESS']))   $post_data['IPADDRESS'] = '';
 
-                if ($result_insert = db_query($sql, $db_thread_merge)) {
+                    $sql = "INSERT INTO {$table_data['PREFIX']}POST (TID, REPLY_TO_PID, FROM_UID, ";
+                    $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
+                    $sql.= "VALUES ('$new_tid', '{$post_data['REPLY_TO_PID']}', ";
+                    $sql.= "'{$post_data['FROM_UID']}', '{$post_data['TO_UID']}', ";
+                    $sql.= "'{$post_data['CREATED']}', '{$post_data['APPROVED']}', ";
+                    $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
+                    $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
 
-                    $new_pid = db_insert_id($db_thread_merge);
+                    if ($result_insert = db_query($sql, $db_thread_merge)) {
 
-                    $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
-                    $sql.= "SELECT $new_tid, $new_pid, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
-                    $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+                        $new_pid = db_insert_id($db_thread_merge);
 
-                    $result_content = db_query($sql, $db_thread_merge);
+                        $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
+                        $sql.= "SELECT $new_tid, $new_pid, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
+                        $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
 
-                    $sql = "UPDATE {$table_data['PREFIX']}POST SET MOVED_TID = '$new_tid', MOVED_PID = '$new_pid' ";
-                    $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+                        $result_content = db_query($sql, $db_thread_merge);
 
-                    $result_update = db_query($sql, $db_thread_merge);
+                        $sql = "UPDATE {$table_data['PREFIX']}POST SET MOVED_TID = '$new_tid', MOVED_PID = '$new_pid' ";
+                        $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+
+                        $result_update = db_query($sql, $db_thread_merge);
+                    }
                 }
+
+                thread_set_moved($tida, $new_tid);
+                thread_set_moved($tidb, $new_tid);
+
+                thread_set_length($new_tid, sizeof($post_data_array));
+                thread_set_closed($new_tid, false);
+
+                return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $thread_new['TITLE']);
             }
-
-            thread_set_moved($tida, $new_tid);
-            thread_set_moved($tidb, $new_tid);
-
-            thread_set_length($new_tid, sizeof($post_data_array));
-            thread_set_closed($new_tid, false);
-
-            return true;
         }
     }
 
@@ -624,6 +627,7 @@ function thread_merge_get_by_created($dest_tid, $source_tid)
     $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
     $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
     $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID IN ($dest_tid, $source_tid) ";
+    $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
     $sql.= "ORDER BY CREATED";
 
     $result = db_query($sql, $db_thread_merge_get_by_created);
@@ -681,6 +685,7 @@ function thread_merge_get($tida, $tidb)
         $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
         $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
         $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID IN ($tida, $tidb) ";
+        $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
         $sql.= "ORDER BY CREATED";
 
         $result = db_query($sql, $db_thread_merge_get_by_created);
@@ -738,59 +743,62 @@ function thread_split($tid, $spid, $split_type)
             case THREAD_SPLIT_REPLIES:
         
                 $post_data_array = thread_split_get_replies($tid, $spid);
-                $new_tid = post_create_thread($threaddata['FID'], $threaddata['BY_UID'], $threaddata['TITLE'], 'N', 'N', true);
+                $new_tid = post_create_thread($threaddata['FID'], $threaddata['BY_UID'], _htmlentities_decode($threaddata['TITLE']), 'N', 'N', true);
                 break;
 
             case THREAD_SPLIT_FOLLOWING:
 
                 $post_data_array = thread_split_get_following($tid, $spid);
-                $new_tid = post_create_thread($threaddata['FID'], $threaddata['BY_UID'], $threaddata['TITLE'], 'N', 'N', true);
+                $new_tid = post_create_thread($threaddata['FID'], $threaddata['BY_UID'], _htmlentities_decode($threaddata['TITLE']), 'N', 'N', true);
                 break;
         }
 
-        if (is_array($post_data_array) && sizeof($post_data_array) > 0 && $new_tid > 0) {
+        if ($thread_new = thread_get($new_tid, true)) {
 
-            foreach ($post_data_array as $post_data) {
+            if (is_array($post_data_array) && sizeof($post_data_array) > 0 && $new_tid > 0) {
 
-                if (!isset($post_data['APPROVED']))    $post_data['APPROVED'] = '';
-                if (!isset($post_data['APPROVED_BY'])) $post_data['APPROVED_BY'] = '';
-                if (!isset($post_data['EDITED']))      $post_data['EDITED'] = '';
-                if (!isset($post_data['EDITED_BY']))   $post_data['EDITED_BY'] = '';
-                if (!isset($post_data['IPADDRESS']))   $post_data['IPADDRESS'] = '';
+                foreach ($post_data_array as $post_data) {
 
-                $sql = "INSERT INTO {$table_data['PREFIX']}POST (TID, REPLY_TO_PID, FROM_UID, ";
-                $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
-                $sql.= "VALUES ('$new_tid', '{$post_data['REPLY_TO_PID']}', ";
-                $sql.= "'{$post_data['FROM_UID']}', '{$post_data['TO_UID']}', ";
-                $sql.= "'{$post_data['CREATED']}', '{$post_data['APPROVED']}', ";
-                $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
-                $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
+                    if (!isset($post_data['APPROVED']))    $post_data['APPROVED'] = '';
+                    if (!isset($post_data['APPROVED_BY'])) $post_data['APPROVED_BY'] = '';
+                    if (!isset($post_data['EDITED']))      $post_data['EDITED'] = '';
+                    if (!isset($post_data['EDITED_BY']))   $post_data['EDITED_BY'] = '';
+                    if (!isset($post_data['IPADDRESS']))   $post_data['IPADDRESS'] = '';
 
-                if ($result_insert = db_query($sql, $db_thread_split)) {
+                    $sql = "INSERT INTO {$table_data['PREFIX']}POST (TID, REPLY_TO_PID, FROM_UID, ";
+                    $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
+                    $sql.= "VALUES ('$new_tid', '{$post_data['REPLY_TO_PID']}', ";
+                    $sql.= "'{$post_data['FROM_UID']}', '{$post_data['TO_UID']}', ";
+                    $sql.= "'{$post_data['CREATED']}', '{$post_data['APPROVED']}', ";
+                    $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
+                    $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
 
-                    $new_pid = db_insert_id($db_thread_split);
+                    if ($result_insert = db_query($sql, $db_thread_split)) {
 
-                    $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
-                    $sql.= "SELECT $new_tid, $new_pid, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
-                    $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+                        $new_pid = db_insert_id($db_thread_split);
 
-                    $result_content = db_query($sql, $db_thread_split);
+                        $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
+                        $sql.= "SELECT $new_tid, $new_pid, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
+                        $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
 
-                    $sql = "UPDATE {$table_data['PREFIX']}POST SET MOVED_TID = '$new_tid', MOVED_PID = '$new_pid' ";
-                    $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+                        $result_content = db_query($sql, $db_thread_split);
 
-                    $result_update = db_query($sql, $db_thread_split);
+                        $sql = "UPDATE {$table_data['PREFIX']}POST SET MOVED_TID = '$new_tid', MOVED_PID = '$new_pid' ";
+                        $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+
+                        $result_update = db_query($sql, $db_thread_split);
+                    }
                 }
+
+                thread_set_split($tid, $new_tid);
+
+                thread_set_length($new_tid, sizeof($post_data_array));
+
+                thread_set_closed($tid, false);
+                thread_set_closed($new_tid, false);
+                
+                return array($tid, $spid, $new_tid, $thread_new['TITLE']);
             }
-
-            thread_set_split($tid, $new_tid);
-            
-            thread_set_length($new_tid, sizeof($post_data_array));
-            
-            thread_set_closed($tid, false);
-            thread_set_closed($new_tid, false);
-
-            return true;
         }
     }
 
@@ -811,7 +819,8 @@ function thread_split_get_replies($tid, $pid)
 
     $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
     $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID = '$tid' AND PID = '$pid'";
+    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID = '$tid' AND PID = '$pid' ";
+    $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
 
     $result = db_query($sql, $db_thread_split_get);
 
@@ -842,6 +851,7 @@ function thread_split_get_following($tid, $spid)
     $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
     $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
     $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND PID >= '$spid' ";
+    $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
     $sql.= "ORDER BY PID";
 
     $result = db_query($sql, $db_thread_split_get_following);
@@ -893,7 +903,8 @@ function thread_split_recursive($tid, $spid, &$post_data_array, &$dest_pid_array
 
     $sql = "SELECT TID, PID, REPLY_TO_PID, FROM_UID, TO_UID, CREATED, ";
     $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS ";
-    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND REPLY_TO_PID = $spid";
+    $sql.= "FROM {$table_data['PREFIX']}POST WHERE TID = $tid AND REPLY_TO_PID = $spid ";
+    $sql.= "AND MOVED_TID IS NULL AND MOVED_PID IS NULL ";
 
     $result = db_query($sql, $db_thread_split_recursive);
 
@@ -919,6 +930,34 @@ function thread_split_recursive($tid, $spid, &$post_data_array, &$dest_pid_array
         }
 
         return true;
+    }
+
+    return false;
+}
+
+function thread_get_unmoved_posts($tid)
+{
+    if (!is_numeric($tid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $db_thread_get_unmoved_posts = db_connect();
+
+    $sql = "SELECT PID FROM {$table_data['PREFIX']}POST ";
+    $sql.= "WHERE TID = '$tid' AND MOVED_TID IS NULL ";
+    $sql.= "AND MOVED_PID IS NULL AND PID > 1";
+
+    $result = db_query($sql, $db_thread_get_unmoved_posts);
+
+    if (db_num_rows($result) > 0) {
+
+        $thread_data = array();
+        
+        while ($row = db_fetch_array($result)) {
+            $thread_data[] = $row['PID'];
+        }
+
+        return $thread_data;
     }
 
     return false;

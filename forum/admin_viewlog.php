@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.96 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.97 2006-10-25 20:55:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -326,8 +326,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case MOVED_THREAD:
 
-                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[2], $entry_array[3]);
-                $action_text = sprintf($lang['movedthread'], $entry_array[0], $entry_array[1], $thread_link);
+                $thread_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $action_text = sprintf($lang['movedthread'], $thread_link, $entry_array[2], $entry_array[3]);
                 break;
 
             case CLOSED_THREAD:
@@ -484,6 +484,23 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $ban_link = sprintf("<a href=\"admin_banned.php?ban_id=%s\" target=\"_blank\">#%s</a>", $entry_array[0], $entry_array[0]);
                 $action_text = sprintf($lang['updatedban'], $ban_link, $admin_log_ban_types[$entry_array[1]], $admin_log_ban_types[$entry_array[3]], $entry_array[2], $entry_array[4]);
+                break;
+
+            case THREAD_SPLIT:
+
+                $threada_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[3]);
+                $threadb_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[2], $entry_array[3]);
+
+                $action_text = sprintf($lang['splitthreadatpostintonewthread'], $threada_link, $entry_array[1], $threadb_link);
+                break;
+
+            case THREAD_MERGE:
+
+                $threada_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[0], $entry_array[1]);
+                $threadb_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[2], $entry_array[3]);
+                $threadc_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[4], $entry_array[5]);
+
+                $action_text = sprintf($lang['mergedthreadintonewthread'], $threada_link, $threadb_link, $threadc_link);
                 break;
 
             default:

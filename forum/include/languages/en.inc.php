@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.347 2006-10-25 20:55:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.348 2006-10-25 20:56:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -1654,6 +1654,6 @@ $lang['somepostsinthisthreadweremovedfrom'] = "<b>Thread Split:</b> Some posts i
 $lang['threadmergefailed'] = "Thread merge failed";
 $lang['threadsplitfailed'] = "Thread split failed";
 
-$lang['cannotmergeorsplitthread'] = "There are no posts in this thread that can be merged or split
+$lang['cannotmergeorsplitthread'] = "There are no posts in this thread that can be merged or split";
 
 ?>

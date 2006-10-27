@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-04-to-05.php,v 1.46 2006-09-15 11:03:44 decoyduck Exp $ */
+/* $Id: upgrade-04-to-05.php,v 1.47 2006-10-27 23:28:43 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-04-to-05.php") {
 
@@ -958,9 +958,6 @@ if (isset($forum_webtag_array) && sizeof($forum_webtag_array) > 0) {
             $valid = false;
             return;
         }
-
-        $sql = "ALTER TABLE SESSIONS TYPE = HEAP";
-        $result = @db_query($sql, $db_install);
 
         $sql = "CREATE TABLE FORUMS (";
         $sql.= "  FID mediumint(8) unsigned NOT NULL auto_increment,";

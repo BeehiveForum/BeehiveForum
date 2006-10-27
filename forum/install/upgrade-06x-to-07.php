@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-07.php,v 1.2 2006-10-25 20:55:13 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-07.php,v 1.3 2006-10-27 23:28:43 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
 
@@ -426,9 +426,6 @@ $sql = "ALTER TABLE USER ADD REFERER VARCHAR(255) DEFAULT NULL";
 $result = @db_query($sql, $db_install);
 
 $sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255) DEFAULT NULL";
-$result = @db_query($sql, $db_install);
-
-$sql = "ALTER TABLE SESSIONS TYPE = HEAP";
 $result = @db_query($sql, $db_install);
 
 // Table structure for POST_ATTACHMENT_FILES has changed.

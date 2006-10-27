@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-05-to-064.php,v 1.23 2006-08-26 16:39:24 decoyduck Exp $ */
+/* $Id: upgrade-05-to-064.php,v 1.24 2006-10-27 23:28:43 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-05-to-064.php") {
 
@@ -261,9 +261,6 @@ if (!$result = @db_query($sql, $db_install)) {
     $valid = false;
     return;
 }
-
-$sql = "ALTER TABLE SESSIONS TYPE = HEAP";
-$result = @db_query($sql, $db_install);
 
 $sql = "ALTER TABLE USER ADD REGISTERED DATETIME DEFAULT NULL";
 

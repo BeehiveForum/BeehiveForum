@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.58 2006-10-25 20:55:13 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.59 2006-10-27 23:28:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -467,7 +467,7 @@ if ($threaddata['LENGTH'] > 0) {
         if (thread_is_poll($tid)) {
             echo "                  <td align=\"left\"><a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_parent\">{$lang['editthepoll']}</a> {$lang['torenamethisthread']}.</td>\n";
         }else {
-            echo "                  <td align=\"left\">".form_input_text("rename", $threaddata['TITLE'], 30, 64)."</td>\n";
+            echo "                  <td align=\"left\">", form_input_text("rename", $threaddata['TITLE'], 30, 64), "</td>\n";
         }
 
         $thread_type = (thread_is_poll($tid) ? FOLDER_ALLOW_POLL_THREAD : FOLDER_ALLOW_NORMAL_THREAD);

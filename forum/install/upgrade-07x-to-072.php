@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.1 2006-10-25 20:55:13 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.2 2006-10-27 23:28:43 decoyduck Exp $ */
 
-if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
+if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
     header("Request-URI: ../install.php");
     header("Content-Location: ../install.php");
@@ -181,6 +181,19 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
+
+    // Performance boost for admin_user.php when looking up
+    // a user's last few IP addresses to match against other users.
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX IPADDRESS ";
+    $sql.= "ADD INDEX IPADDRESS (IPADDRESS, FROM_UID)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.348 2006-10-25 20:56:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.349 2006-10-27 23:28:42 decoyduck Exp $ */
 
 // International English language file
 
@@ -1465,6 +1465,12 @@ $lang['ignorefolderconfirm'] = "Are you sure you want to ignore this folder?";
 $lang['unignorefolderconfirm'] = "Are you sure you want to stop ignoring this folder?";
 $lang['threadviewedonetime'] = "Viewed: 1 time";
 $lang['threadviewedtimes'] = "Viewed: %d times";
+$lang['gotofirstpostinthread'] = "Go to first post in thread";
+$lang['gotolastpostinthread'] = "Go to last post in thread";
+$lang['viewmessagesinthisfolderonly'] = "View messages in this folder only";
+$lang['shownext50threads'] = "Show next 50 threads";
+$lang['showprev50threads'] = "Show previous 50 threads";
+$lang['createnewdiscussioninthisfolder'] = "Create new discussion in this folder";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Bold";

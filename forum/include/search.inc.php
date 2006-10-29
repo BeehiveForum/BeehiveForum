@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.162 2006-08-26 16:39:23 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.163 2006-10-29 21:05:16 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -223,7 +223,6 @@ function search_execute($argarray, &$error)
 
 function search_strip_keywords($search_string, $strip_valid = false)
 {
-
     // MySQL has a list of stop words for fulltext searches.
     // We'll save ourselves some server time by checking
     // them first.
@@ -288,6 +287,28 @@ function search_strip_keywords($search_string, $strip_valid = false)
                  'filtered_word_count'   => $filtered_keyword_count);
 }
 
+function search_strip_special_chars($keywords_array)
+{
+    if (!is_array($keywords_array)) return false;
+    
+    // Get the min and max word lengths that MySQL supports
+
+    search_get_word_lengths($min_length, $max_length);
+
+    // Expression to match words prefixed with a hyphen (for do not match)
+
+    $boolean_non_match = "/^-[\"]?([\w\s']){{$min_length},{$max_length}}[\"]?$/";
+
+    // Apply expression above and also strip out + and quotes.
+
+    $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
+    $keywords_array = preg_replace("/[\"|\+]+/", "", $keywords_array);
+
+    // return array
+
+    return $keywords_array;
+}
+
 function search_get_word_lengths(&$min_length, &$max_length)
 {
     $db_search_get_word_lengths = db_connect();
@@ -322,6 +343,8 @@ function search_save_keywords($keywords_array)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!is_array($keywords_array)) return false;
+
+    $keywords_array = search_strip_special_chars($keywords_array);
 
     $keywords = addslashes(implode(' ', $keywords_array));
 
@@ -373,6 +396,7 @@ function search_fetch_results($offset, $order_by)
         $search_results_array = array();
 
         while ($search_result = db_fetch_array($result)) {
+
             $search_results_array[] = $search_result;
         }
 

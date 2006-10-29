@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.49 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.50 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -154,7 +154,7 @@ if (isset($_POST['changepermissions']) && is_array($_POST['changepermissions']))
 
     $fid = $_GET['delete'];
 
-    echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
@@ -211,7 +211,7 @@ if (isset($_POST['changepermissions']) && is_array($_POST['changepermissions']))
     forum_update_default($fid);
 }
 
-echo "<h1>{$lang['admin']} : {$lang['manageforums']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['manageforums']}</h1>\n";
 echo "<br />\n";
 
 if (isset($message_html) && strlen($message_html) > 0) {

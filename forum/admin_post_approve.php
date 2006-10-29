@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.25 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.26 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,7 +132,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['nomessagespecifiedfordel']}</h2>";
     html_draw_bottom();
     exit;
@@ -212,7 +212,7 @@ if ($valid) {
 
             admin_add_log_entry(APPROVED_POST, array($t_fid, $tid, $pid));
 
-            echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['approvepost']} {$tid}.{$pid}</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['approvepost']} &raquo; ", add_wordfilter_tags($threaddata['TITLE']), "</h1>";
             echo "<br />\n";
             echo "<table class=\"posthead\" width=\"720\">\n";
             echo "  <tr>\n";

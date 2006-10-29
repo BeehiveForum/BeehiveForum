@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.43 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.44 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -105,14 +105,14 @@ if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 }elseif (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
     $fid = $_GET['fid'];
 }else {
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['nofolderidspecified']}</h2>\n";
     html_draw_bottom();
     exit;
 }
 
 if (!folder_is_valid($fid)) {
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['invalidfolderid']}</h2>\n";
     html_draw_bottom();
     exit;
@@ -239,7 +239,7 @@ if (isset($_POST['delete']) && $folder_data['THREAD_COUNT'] == 0) {
 $allow_labels = array($lang['normalthreadsonly'], $lang['pollthreadsonly'], $lang['both']);
 $allow_values = array(FOLDER_ALLOW_NORMAL_THREAD, FOLDER_ALLOW_POLL_THREAD, FOLDER_ALLOW_ALL_THREAD);
 
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['managefolders']} : {$folder_data['TITLE']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['managefolders']} &raquo; {$folder_data['TITLE']}</h1>\n";
 
 if (isset($status_html) && strlen($status_html) > 0) {
     echo $status_html;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.80 2006-10-29 21:55:18 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.81 2006-10-29 23:07:23 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -458,13 +458,16 @@ function admin_session_end($uid)
 * @param integer $uid - UID of the user account to fetch attachments for.
 */
 
-function admin_get_users_attachments($uid)
+function admin_get_users_attachments($uid, &$user_attachments, &$user_image_attachments, $hash_array = false)
 {
-    $userattachments = false;
+    $user_attachments = array();
+    $user_image_attachments = array();
 
     $db_get_users_attachments = db_connect();
 
     if (!is_numeric($uid)) return false;
+
+    if (!is_array($hash_array)) $hash_array = false;
 
     if (!$table_data = get_table_prefix()) return $userattachments;
 
@@ -472,26 +475,63 @@ function admin_get_users_attachments($uid)
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $sql = "SELECT * FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    if (is_array($hash_array)) {
+
+        $hash_list = implode("', '", preg_grep("/^[A-Fa-f0-9]{32}$/", $hash_array));
+
+        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
+        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+        $sql.= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list') ";
+        $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+
+    }else {
+
+        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
+        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+        $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+    }
+
     $result = db_query($sql, $db_get_users_attachments);
 
-    while($row = db_fetch_array($result)) {
+    while($attachment = db_fetch_array($result)) {
 
-        if (@file_exists("$attachment_dir/{$row['HASH']}")) {
+        if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
 
-            if (!is_array($userattachments)) $userattachments = array();
+            if (@file_exists("$attachment_dir/{$attachment['HASH']}.thumb")) {
 
-            $userattachments[] = array("filename"  => rawurldecode($row['FILENAME']),
-                                       "filesize"  => filesize("$attachment_dir/{$row['HASH']}"),
-                                       "filedate"  => filemtime("$attachment_dir/{$row['HASH']}"),
-                                       "aid"       => $row['AID'],
-                                       "hash"      => $row['HASH'],
-                                       "mimetype"  => $row['MIMETYPE'],
-                                       "downloads" => $row['DOWNLOADS']);
+                $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
+                $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
+
+                $user_image_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
+                                                  "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                                                  "filesize"     => $filesize,
+                                                  "aid"          => $attachment['AID'],
+                                                  "hash"         => $attachment['HASH'],
+                                                  "mimetype"     => $attachment['MIMETYPE'],
+                                                  "downloads"    => $attachment['DOWNLOADS'],
+                                                  "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
+                                                  "forum_webtag" => $attachment['WEBTAG']);
+
+            }else {
+
+                $user_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
+                                            "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                                            "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
+                                            "aid"          => $attachment['AID'],
+                                            "hash"         => $attachment['HASH'],
+                                            "mimetype"     => $attachment['MIMETYPE'],
+                                            "downloads"    => $attachment['DOWNLOADS'],
+                                            "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
+                                            "forum_webtag" => $attachment['WEBTAG']);
+            }
         }
     }
 
-    return $userattachments;
+    return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
 }
 
 /**

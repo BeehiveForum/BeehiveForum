@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.52 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.53 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -317,7 +317,7 @@ if (isset($_POST['submit'])) {
 
 html_draw_top("emoticons.js");
 
-echo "<h1>{$lang['admin']} : {$lang['globalforumsettings']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; {$lang['globalforumsettings']}</h1>\n";
 
 // Any error messages to display?
 

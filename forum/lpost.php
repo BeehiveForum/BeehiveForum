@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.92 2006-10-13 17:30:57 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.93 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -508,7 +508,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<h2>{$lang['messagepreview']}:</h2>";
+    echo "<h2>{$lang['messagepreview']}</h2>";
 
     if ($_POST['t_to_uid'] == 0) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_detail.php,v 1.75 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: links_detail.php,v 1.76 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -240,7 +240,7 @@ $folders = links_folders_get(bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0))
 
 html_draw_top();
 
-echo "<h1>{$lang['links']}: ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;:&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
+echo "<h1>{$lang['links']} &raquo; ", links_display_folder_path($link['FID'], $folders, true, true, "./links.php?webtag=$webtag"), "&nbsp;&raquo;&nbsp;<a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">{$link['TITLE']}</a></h1>\n";
 
 if (isset($error_html) && strlen(trim($error_html)) > 0) {
     echo "<p>$error_html</p>\n";

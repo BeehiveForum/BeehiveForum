@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.178 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.179 2006-10-29 23:07:22 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -775,13 +775,13 @@ echo "      <td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "        <table class=\"posthead\" width=\"210\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\">\n";
-echo "              <h2>{$lang['folder']}:</h2>\n";
+echo "              <h2>{$lang['folder']}</h2>\n";
 echo "              ", $folder_dropdown, "\n";
-echo "              <h2>{$lang['threadtitle']}:</h2>\n";
+echo "              <h2>{$lang['threadtitle']}</h2>\n";
 echo "              ", form_input_text("t_threadtitle", isset($t_threadtitle) ? _htmlentities($t_threadtitle) : '', 0, 0, false, "thread_title"), "\n";
 echo "              <h2>{$lang['pollquestion']}</h2>\n";
 echo "              ", form_input_text('t_question', isset($t_question) ? _htmlentities($t_question) : '', 0, 0, false, "thread_title"), "\n";
-echo "              <h2>{$lang['messageoptions']}:</h2>\n";
+echo "              <h2>{$lang['messageoptions']}</h2>\n";
 echo "              ", form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo "              ", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo "              ", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
@@ -790,7 +790,7 @@ echo "              ", form_checkbox("t_post_interest", "Y", $lang['setthreadtoh
 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     echo "              <br />\n";
-    echo "              <h2>{$lang['admin']}:</h2>\n";
+    echo "              <h2>{$lang['admin']}</h2>\n";
     echo "              ", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
     echo "              ", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br />\n";
     echo "              ", form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N"), "\n";
@@ -831,7 +831,7 @@ echo "      <td align=\"left\" valign=\"top\" width=\"530\">\n";
 echo "        <table class=\"posthead\" width=\"530\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\">\n";
-echo "              <h2>{$lang['poll']}:</h2>\n";
+echo "              <h2>{$lang['poll']}</h2>\n";
 echo "              <div class=\"create_poll_display\">\n";
 echo "              <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "                <tr>\n";
@@ -1054,7 +1054,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "            <h2>{$lang['htmlinmessage']}:</h2>\n";
+        echo "            <h2>{$lang['htmlinmessage']}</h2>\n";
 
         $tph_radio = $post->getHTML();
 

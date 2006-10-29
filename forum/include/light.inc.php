@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.109 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.110 2006-10-29 23:07:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -413,7 +413,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
 
     if ($uid != 0) {
 
-        echo "  <h5>{$lang['markasread']}:</h5>\n";
+        echo "  <h5>{$lang['markasread']}</h5>\n";
         echo "    <form name=\"f_mark\" method=\"get\" action=\"lthread_list.php\">\n";
         echo "      ", form_input_hidden("webtag", $webtag), "\n";
 

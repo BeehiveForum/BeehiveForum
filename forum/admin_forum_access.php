@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.38 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.39 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,7 +101,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
     $fid = $_POST['fid'];
 }else {
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['noforumidspecified']}</h2>\n";
     html_draw_bottom();
     exit;
@@ -122,7 +122,7 @@ if (isset($_POST['back'])) {
 if ($forum_array = forum_get($fid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['manageforumpermissions']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageforumpermissions']}</h1>\n";
 
     if ($forum_array['ACCESS_LEVEL'] != 1) {
         echo "<h2>{$lang['forumisnotrestricted']}</h2>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.115 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.116 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,7 +132,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
     html_draw_bottom();
     exit;
@@ -659,7 +659,7 @@ echo "      <td align=\"left\" valign=\"top\" width=\"530\">\n";
 echo "        <table class=\"posthead\" width=\"530\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\">\n";
-echo "              <h2>{$lang['poll']}:</h2>\n";
+echo "              <h2>{$lang['poll']}</h2>\n";
 echo "              <div class=\"create_poll_display\">\n";
 echo "              <table width=\"100%\" cellpadding=\"2\">\n";
 echo "                <tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.62 2006-10-27 23:28:43 decoyduck Exp $ */
+/* $Id: install.php,v 1.63 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -539,7 +539,7 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\"><img src=\"./images/warning.png\" /></td>\n";
-        echo "      <td align=\"left\"><h2>The following errors need correcting before you continue:</h2></td>\n";
+        echo "      <td align=\"left\"><h2>The following errors need correcting before you continue</h2></td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\" colspan=\"2\">\n";

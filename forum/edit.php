@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.198 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: edit.php,v 1.199 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -750,16 +750,16 @@ echo "<td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "<table class=\"posthead\" width=\"210\">\n";
 echo "<tr><td align=\"left\">\n";
 
-echo "<h2>{$lang['folder']}:</h2>\n";
+echo "<h2>{$lang['folder']}</h2>\n";
 echo _stripslashes($threaddata['FOLDER_TITLE'])."\n";
-echo "<h2>{$lang['threadtitle']}:</h2>\n";
+echo "<h2>{$lang['threadtitle']}</h2>\n";
 echo add_wordfilter_tags(_stripslashes($threaddata['TITLE'])), "\n";
 
 echo form_input_hidden("t_msg", $edit_msg);
 echo form_input_hidden("t_to_uid", $to_uid);
 echo form_input_hidden("t_from_uid", $from_uid);
 
-echo "<h2>{$lang['to']}:</h2>\n";
+echo "<h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
@@ -772,7 +772,7 @@ if ($preview_message['TLOGON'] != $lang['allcaps']) {
     echo _stripslashes(add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])));
 }
 
-echo "<h2>{$lang['messageoptions']}:</h2>\n";
+echo "<h2>{$lang['messageoptions']}</h2>\n";
 
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
@@ -810,7 +810,7 @@ echo "<td align=\"left\" valign=\"top\" width=\"500\">\n";
 echo "<table class=\"posthead\" width=\"500\">\n";
 echo "<tr><td align=\"left\">\n";
 
-echo "<h2>{$lang['message']}:</h2>\n";
+echo "<h2>{$lang['message']}</h2>\n";
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
@@ -848,7 +848,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
+        echo "<h2>{$lang['htmlinmessage']}</h2>\n";
 
         $tph_radio = $post->getHTML();
 

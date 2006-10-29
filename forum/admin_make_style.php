@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.93 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.94 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -161,7 +161,7 @@ if (isset($_POST['submit'])) {
                     $style_path = dirname($_SERVER['PHP_SELF']);
                     $style_path.= "/forums/$webtag/styles/$stylename/";
 
-                    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['createforumstyle']}</h1>\n";
+                    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
                     echo "<br />\n";
 
                     echo "<div align=\"center\">\n";
@@ -232,7 +232,7 @@ if (isset($_POST['submit'])) {
                     $forum_path = dirname($_SERVER['PHP_SELF']);
                     $forum_path.= "/forums/$webtag/styles/";
 
-                    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['createforumstyle']}</h1>\n";
+                    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
                     echo "<br />\n";
                     echo "<div align=\"center\">\n";
                     echo "<form method=\"post\" action=\"admin_make_style.php\">\n";
@@ -308,7 +308,7 @@ if (isset($_POST['submit'])) {
 
 html_draw_top();
 
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['createforumstyle']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['createforumstyle']}</h1>\n";
 
 if (isset($result_html) && strlen($result_html) > 0) {
     echo $result_html;
@@ -499,7 +499,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "</div>\n";
 echo "<br />\n";
-echo "<h1>{$lang['stylepreview']}:</h1>\n";
+echo "<h1>{$lang['stylepreview']}</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" cellpadding=\"0\" cellspacing=\"0\" class=\"box\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.82 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.83 2006-10-29 23:07:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,7 +127,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     $mid = $_POST['mid'];
 }else {
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>";
     html_draw_bottom();
     exit;
@@ -418,13 +418,13 @@ echo "  <tr>\n";
 echo "    <td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "      <table class=\"posthead\" width=\"210\">\n";
 echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['subject']}:</h2></td>\n";
+echo "          <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? _htmlentities($t_subject) : "", 42, false, false, "thread_title"), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['to']}:</h2></td>\n";
+echo "          <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td align=\"left\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">", _stripslashes(add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK']))), "</a></td>\n";
@@ -433,7 +433,7 @@ echo "        <tr>\n";
 echo "          <td align=\"left\">&nbsp;</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['messageoptions']}:</h2>\n";
+echo "          <td align=\"left\"><h2>{$lang['messageoptions']}</h2>\n";
 echo "            ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo "            ".form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
 echo "            ".form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."\n";
@@ -476,7 +476,7 @@ echo "    <td align=\"left\" width=\"500\" valign=\"top\">\n";
 echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "        <tr>\n";
 echo "          <td align=\"left\">";
-echo "           <h2>{$lang['message']}:</h2>\n";
+echo "           <h2>{$lang['message']}</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
@@ -521,7 +521,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
+        echo "<h2>{$lang['htmlinmessage']}</h2>\n";
 
         $tph_radio = $post->getHTML();
 

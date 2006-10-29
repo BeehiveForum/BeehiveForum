@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.163 2006-10-29 21:05:16 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.164 2006-10-29 21:55:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -302,7 +302,7 @@ function search_strip_special_chars($keywords_array)
     // Apply expression above and also strip out + and quotes.
 
     $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
-    $keywords_array = preg_replace("/[\"|\+]+/", "", $keywords_array);
+    $keywords_array = preg_replace('/["|\+|\x00]+/', '', $keywords_array);
 
     // return array
 
@@ -346,7 +346,7 @@ function search_save_keywords($keywords_array)
 
     $keywords_array = search_strip_special_chars($keywords_array);
 
-    $keywords = addslashes(implode(' ', $keywords_array));
+    $keywords = addslashes(implode("\x00", $keywords_array));
 
     $sql = "UPDATE {$table_data['PREFIX']}USER_TRACK ";
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords' ";
@@ -355,6 +355,34 @@ function search_save_keywords($keywords_array)
     if (!$result = db_query($sql, $db_search_save_keywords)) return false;
 
     return true;
+}
+
+function search_get_keywords()
+{
+    $db_search_get_keywords = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "SELECT LAST_SEARCH_KEYWORDS FROM ";
+    $sql.= "{$table_data['PREFIX']}USER_TRACK ";
+    $sql.= "WHERE UID = '$uid'";
+
+    $result = db_query($sql, $db_search_get_keywords);
+
+    if (db_num_rows($result) > 0) {
+
+        list($keywords_string) = db_fetch_array($result, DB_RESULT_NUM);
+        $keywords_array = explode("\x00", $keywords_string);
+
+        if (is_array($keywords_array) && sizeof($keywords_array) > 0) {
+
+            return $keywords_array;
+        }
+    }
+
+    return false;
 }
 
 function search_fetch_results($offset, $order_by)

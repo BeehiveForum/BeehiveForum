@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.146 2006-10-29 21:05:16 decoyduck Exp $ */
+/* $Id: search.php,v 1.147 2006-10-29 21:55:18 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -346,12 +346,12 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
                 if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
                     echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                     
                 }else {
 
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
                     echo "{$message['CONTENT']}<br /><span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                 }
             }

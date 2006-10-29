@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.145 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: search.php,v 1.146 2006-10-29 21:05:16 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -225,8 +225,10 @@ if (isset($_POST) && sizeof($_POST) > 0) {
         switch($error) {
 
             case SEARCH_USER_NOT_FOUND:
+
                 echo "<p>{$lang['usernamenotfound']}</p>\n";
                 break;
+
             case SEARCH_NO_KEYWORDS:
 
                 $mysql_stop_word_link = "<a href=\"javascript:void(0);\" onclick=\"display_mysql_stopwords('$webtag')\">{$lang['mysqlstopwordlist']}</a>";
@@ -251,6 +253,7 @@ if (isset($_POST) && sizeof($_POST) > 0) {
                 break;
 
             case SEARCH_FREQUENCY_TOO_GREAT:
+
                 echo "<p>{$lang['searchfrequencyerror_1']} $search_frequency {$lang['searchfrequencyerror_2']}</p>\n";
                 break;
         }
@@ -289,17 +292,17 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
             if ($threaddata = thread_get($search_result['TID'])) {
 
-                if (thread_is_poll($search_result['TID'])) {
+                //if ((thread_is_poll($search_result['TID'])) && ($search_result['PID'] == 1)) {
 
-                    $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
-                    $message['CONTENT'] = '';
+                    //$message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
+                    //$message['CONTENT'] = '';
 
-                }else {
+                //}else {
 
                     $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
                     $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
 
-                }
+                //}
 
                 // Limit thread title to 20 characters.
 
@@ -341,15 +344,15 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
                 
                 $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
 
-                if (strlen($message['CONTENT']) > 0) {
-
-                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-                    echo "{$message['CONTENT']}<br /><span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
-
-                }else {
+                if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
                     echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    
+                }else {
+
+                    echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;search_string=", rawurlencode(trim($search_result['KEYWORDS'])), "\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
+                    echo "{$message['CONTENT']}<br /><span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                 }
             }
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.11 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.12 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,7 +101,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
     $fid = $_POST['fid'];
 }else {
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['noforumidspecified']}</h2>\n";
     html_draw_bottom();
     exit;
@@ -122,7 +122,7 @@ if (isset($_POST['back'])) {
 if ($forum_array = forum_get($fid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['admin']} : ", (isset($forum_array['forum_name']) ? $forum_array['forum_name'] : 'A Beehive Forum'), " : {$lang['changepassword']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_array['forum_name']) ? $forum_array['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['changepassword']}</h1>\n";
 
     if (isset($_POST['submit'])) {
 

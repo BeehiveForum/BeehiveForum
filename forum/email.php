@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.70 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: email.php,v 1.71 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,7 +109,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['nouserspecifiedforemail']}</h2>";
     html_draw_bottom();
     exit;
@@ -133,14 +133,14 @@ if (isset($_POST['submit'])) {
     if (isset($_POST['t_subject']) && strlen(trim(_stripslashes($_POST['t_subject']))) > 0) {
         $subject = trim(_stripslashes($_POST['t_subject']));
     }else {
-        $error = "<h2>{$lang['entersubjectformessage']}:</h2>";
+        $error = "<h2>{$lang['entersubjectformessage']}</h2>";
         $valid = false;
     }
 
     if (isset($_POST['t_message']) && strlen(trim(_stripslashes($_POST['t_message']))) > 0) {
         $message = trim(_stripslashes($_POST['t_message']));
     }else {
-        $error = "<h2>{$lang['entercontentformessage']}:</h2>";
+        $error = "<h2>{$lang['entercontentformessage']}</h2>";
         $valid = false;
     }
 

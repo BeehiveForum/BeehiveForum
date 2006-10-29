@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.2 2006-10-27 23:28:43 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.3 2006-10-29 23:07:23 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -155,7 +155,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
         $error_array[] = $error_str;
 
-        $error_str = "<h2>Conflicting tables:</h2>\n";
+        $error_str = "<h2>Conflicting tables</h2>\n";
         $error_str.= "<ul><li>". implode("</li><li>", $conflicting_tables). "</li></ul>\n";
 
         $error_array[] = $error_str;

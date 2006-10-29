@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links_add.php,v 1.74 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: links_add.php,v 1.75 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -231,7 +231,7 @@ if ($mode == "link") {
     if (!isset($name)) $name = "";
     if (!isset($description)) $description = "";
 
-    echo "<h1>{$lang['links']}: {$lang['addlink']}</h1>\n";
+    echo "<h1>{$lang['links']} &raquo; {$lang['addlink']}</h1>\n";
     echo "<p>{$lang['addinglinkin']}: <b>" . links_display_folder_path($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error)) echo "<h2>$error</h2>\n";
@@ -287,7 +287,7 @@ if ($mode == "link") {
 
     html_draw_top();
 
-    echo "<h1>{$lang['links']}: {$lang['addnewfolder']}</h1>\n";
+    echo "<h1>{$lang['links']} &raquo; {$lang['addnewfolder']}</h1>\n";
     echo "<p>{$lang['addnewfolderunder']}: <b>". links_display_folder_path($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_html) && strlen(trim($error_html))) {

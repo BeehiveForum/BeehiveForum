@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.97 2006-10-25 20:55:13 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.98 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -133,7 +133,7 @@ if (isset($_POST['clear'])) {
 }
 
 // Draw the form
-echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['adminaccesslog']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['adminaccesslog']}</h1>\n";
 echo "<p>{$lang['adminlogexp']}</p>\n";
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
@@ -505,7 +505,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             default:
 
-                $action_text = "{$lang['unknown']} : {$admin_log_entry['ACTION']}";
+                $action_text = "{$lang['unknown']} &raquo; {$admin_log_entry['ACTION']}";
                 $action_text.= implode(", ", $entry_array);
                 break;
         }

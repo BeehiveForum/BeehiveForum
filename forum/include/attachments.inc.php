@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.115 2006-10-23 20:25:47 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.116 2006-10-29 23:07:23 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -102,9 +102,9 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
-
     $forum_settings = forum_get_settings();
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     if (is_array($hash_array)) {
 
@@ -191,9 +191,9 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
-
     $forum_settings = forum_get_settings();
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
     $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -263,9 +263,9 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 
     if (!$table_data = get_table_prefix()) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
-
     $forum_settings = forum_get_settings();
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
     $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";

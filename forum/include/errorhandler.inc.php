@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.79 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.80 2006-10-29 23:07:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -180,7 +180,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         echo "          <td align=\"left\"><hr /></td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
-        echo "          <td align=\"left\"><h2>Error Message for server admins and developers:</h2></td>\n";
+        echo "          <td align=\"left\"><h2>Error Message for server admins and developers</h2></td>\n";
         echo "        </tr>\n";
         echo "        <tr>\n";
         echo "          <td align=\"left\" class=\"postbody\">\n";

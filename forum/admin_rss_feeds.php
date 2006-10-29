@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.19 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.20 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -387,7 +387,7 @@ if (isset($_POST['testfeedurl'])) {
 
 if (isset($_POST['addfeed'])) {
 
-    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['rssfeeds']} : {$lang['addnewfeed']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['addnewfeed']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;
@@ -491,7 +491,7 @@ if (isset($_POST['addfeed'])) {
         exit;
     }
     
-    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['rssfeeds']} : {$lang['editfeed']} : {$rss_feed['NAME']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; {$rss_feed['NAME']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;
@@ -591,7 +591,7 @@ if (isset($_POST['addfeed'])) {
     echo "</script>\n";
 
     // Draw the form
-    echo "<h1>{$lang['admin']} : ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " : {$lang['rssfeeds']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;

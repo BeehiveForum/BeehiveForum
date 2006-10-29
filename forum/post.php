@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.280 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: post.php,v 1.281 2006-10-29 23:07:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -858,9 +858,9 @@ echo "<tr><td align=\"left\">\n";
 
 if ($newthread) {
 
-    echo "<h2>{$lang['folder']}:</h2>\n";
+    echo "<h2>{$lang['folder']}</h2>\n";
     echo "$folder_dropdown\n";
-    echo "<h2>{$lang['threadtitle']}:</h2>\n";
+    echo "<h2>{$lang['threadtitle']}</h2>\n";
     echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, false, "thread_title"), "\n";
 
     echo form_input_hidden("t_newthread", "Y")."\n";
@@ -868,9 +868,9 @@ if ($newthread) {
 
 }else {
 
-    echo "<h2>{$lang['folder']}:</h2>\n";
+    echo "<h2>{$lang['folder']}</h2>\n";
     echo $threaddata['FOLDER_TITLE'], "\n";
-    echo "<h2>{$lang['threadtitle']}:</h2>\n";
+    echo "<h2>{$lang['threadtitle']}</h2>\n";
     echo add_wordfilter_tags($threaddata['TITLE']), "\n";
 
     echo form_input_hidden("t_tid", $reply_to_tid);
@@ -878,7 +878,7 @@ if ($newthread) {
     echo "<br /><br />\n";
 }
 
-echo "<h2>{$lang['to']}:</h2>\n";
+echo "<h2>{$lang['to']}</h2>\n";
 
 if (!$newthread) {
     echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true), "<br />\n";
@@ -891,7 +891,7 @@ echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : (
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
 echo form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(".($newthread ? 1 : 2).")\"", "post_to_others")."<br /><br />\n";
 
-echo "<h2>{$lang['messageoptions']}:</h2>\n";
+echo "<h2>{$lang['messageoptions']}</h2>\n";
 
 echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
@@ -901,7 +901,7 @@ echo form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $hi
 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     echo "<br />\n";
-    echo "<h2>{$lang['admin']}:</h2>\n";
+    echo "<h2>{$lang['admin']}</h2>\n";
     echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
     echo form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br />\n";
     echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
@@ -943,7 +943,7 @@ echo "<tr><td align=\"left\">\n";
 
 if (!isset($t_to_uid)) $t_to_uid = -1;
 
-echo "<h2>{$lang['message']}:</h2>\n";
+echo "<h2>{$lang['message']}</h2>\n";
 
 $t_content = ($fix_html ? $post->getTidyContent() : $post->getOriginalContent());
 
@@ -982,7 +982,7 @@ if ($allow_html == true) {
 
     }else {
 
-        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
+        echo "<h2>{$lang['htmlinmessage']}</h2>\n";
 
         $tph_radio = $post->getHTML();
 

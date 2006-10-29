@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.78 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.79 2006-10-29 23:07:23 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -215,7 +215,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }elseif (!isset($peer_uid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}:</h1>";
+    echo "<h1>{$lang['error']}</h1>";
     echo "<h2>{$lang['nouserspecified']}</h2>";
     html_draw_bottom();
     exit;
@@ -224,7 +224,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 if (!$user = user_get($peer_uid)) {
 
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}:</h1>";
+    echo "<h1>{$lang['error']}</h1>";
     echo "<h2>{$lang['invalidusername']}</h2>";
     html_draw_bottom();
     exit;
@@ -241,7 +241,7 @@ $user_prefs = user_get_prefs($uid);
 $user_perms = perm_get_user_permissions($uid);
 $user_peer_perms = perm_get_user_permissions($peer_uid);
 
-echo "<h1>{$lang['userrelationship']}: <a href=\"javascript:void(0);\" onclick=\"openProfile($peer_uid, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></h1>\n";
+echo "<h1>{$lang['userrelationship']} &raquo; <a href=\"javascript:void(0);\" onclick=\"openProfile($peer_uid, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></h1>\n";
 echo "<br />\n";
 echo "<form name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.173 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.174 2006-10-29 23:07:22 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -118,7 +118,7 @@ if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
     header_redirect("./admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid");
 }
 
-html_draw_top('admin.js');
+html_draw_top('admin.js', 'attachments.js');
 
 if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
@@ -132,7 +132,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
     $uid = $_POST['uid'];
 }else {
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['nouserspecified']}</h2>\n";
     html_draw_bottom();
     exit;
@@ -143,18 +143,110 @@ $user['POST_COUNT'] = user_get_post_count($uid);
 
 $user_perms = perm_get_forum_user_permissions($uid);
 
-// Draw the form
-echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
-
 // Do updates
 
-if (isset($_POST['delete'])) {
+if (isset($_POST['delete_confirm'])) {
+    
+    if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
+        
+        foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
-    if (isset($_POST['hash']) && is_md5($_POST['hash'])) {
+            if ($del_attachment == "Y") {
+    
+                delete_attachment($hash);
+            }
+        }
+    }
 
-        delete_attachment($_POST['hash']);
+}elseif (isset($_POST['delete'])) {
+
+    if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
+
+        $hash_array = array_keys($_POST['delete_attachment']);
+
+        if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
+            
+            html_draw_top();
+
+            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), " &raquo; {$lang['deleteattachments']}</h1>\n";
+            echo "<br />\n";
+            echo "<div align=\"center\">\n";
+            echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_user.php?uid=$uid\">\n";
+            echo "  ", form_input_hidden('webtag', $webtag), "\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"left\" class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteattachments']}</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">{$lang['deleteattachmentsconfirm']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"center\">\n";
+            echo "                          <table class=\"posthead\" width=\"95%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td><br />\n";
+
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+                
+                foreach($attachments_array as $attachment) {
+
+                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                }
+            }
+
+            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                foreach($image_attachments_array as $key => $attachment) {
+
+                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                }
+            }
+
+            echo "                              </td>\n";
+            echo "                            </tr>\n";
+            echo "                          </table>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">", form_submit("delete_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel_delete", $lang['cancel']), "</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+            echo "</form>\n";
+            echo "</div>\n";
+
+            html_draw_bottom();
+            exit;
+        }
     }
 }
+
+echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
 
 if (isset($_POST['t_confirm_delete_posts'])) {
 
@@ -1036,8 +1128,10 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['attachments']}</td>\n";
     echo "                </tr>\n";
 
-    if ($attachments_array = admin_get_users_attachments($uid, true)) {
+    if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array)) {
 
+        $attachments_array = array_merge($attachments_array, $image_attachments_array);
+        
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;</td>\n";
         echo "                </tr>\n";
@@ -1051,7 +1145,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                              <td align=\"left\" class=\"subhead\">{$lang['filename']}</td>\n";
         echo "                              <td align=\"left\" class=\"subhead\">{$lang['message']}</td>\n";
         echo "                              <td class=\"subhead\" align=\"right\">{$lang['size']}&nbsp;</td>\n";
-        echo "                              <td class=\"subhead\" align=\"right\">{$lang['delete']}&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"attachment_toggle_all();\""), "&nbsp;</td>\n";
         echo "                            </tr>\n";
 
         foreach($attachments_array as $attachment) {
@@ -1059,22 +1153,19 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
             if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
                 echo "                            <tr>\n";
-                echo "                              <td align=\"left\" valign=\"top\" width=\"300\" class=\"postbody\">$attachment_link</td>\n";
+                echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'], false)) {
+                if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
 
-                    echo "                              <td align=\"left\" valign=\"top\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\"><a href=\"", $message_link, "\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
 
                 }else {
 
-                    echo "                              <td align=\"left\" valign=\"top\" width=\"100\" class=\"postbody\">&nbsp;</td>\n";
+                    echo "                              <td align=\"left\">&nbsp;</td>\n";
                 }
 
-                echo "                              <td align=\"right\" valign=\"top\" width=\"200\" class=\"postbody\">". format_file_size($attachment['filesize']). "</td>\n";
-                echo "                              <td align=\"right\" width=\"100\" class=\"postbody\" nowrap=\"nowrap\" valign=\"top\">\n";
-                echo "                                ", form_input_hidden('hash', $attachment['hash']), "\n";
-                echo "                                ", form_submit('delete', $lang['delete']), "\n";
-                echo "                              </td>\n";
+                echo "                              <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                echo "                              <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "&nbsp;</td>\n";
                 echo "                            </tr>\n";
             }
         }
@@ -1084,6 +1175,12 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td>&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"postbody\" colspan=\"2\" align=\"center\">", form_submit("delete", $lang['delete']), "</td>\n";
         echo "                </tr>\n";
 
     }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.138 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.139 2006-10-29 23:07:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -605,13 +605,13 @@ echo "  <tr>\n";
 echo "    <td align=\"left\" valign=\"top\" width=\"210\">\n";
 echo "      <table class=\"posthead\" width=\"210\">\n";
 echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['subject']}:</h2></td>\n";
+echo "          <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
 echo "          <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, false, "thread_title"), "</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['to']}:</h2></td>\n";
+echo "          <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
 echo "        </tr>\n";
 
 if ($friends_array = pm_user_get_friends()) {
@@ -662,7 +662,7 @@ if (!is_array($friends_array)) {
     echo "          <td align=\"left\">&nbsp;</td>\n";
     echo "        </tr>\n";
     echo "        <tr>\n";
-    echo "          <td align=\"left\"><h2>{$lang['hint']}:</h2><span class=\"smalltext\">{$lang['adduserstofriendslist']}</span></td>\n";
+    echo "          <td align=\"left\"><h2>{$lang['hint']}</h2><span class=\"smalltext\">{$lang['adduserstofriendslist']}</span></td>\n";
     echo "        </tr>\n";
 }
 
@@ -670,7 +670,7 @@ echo "        <tr>\n";
 echo "          <td align=\"left\">&nbsp;</td>\n";
 echo "        </tr>\n";
 echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['messageoptions']}:</h2>\n";
+echo "          <td align=\"left\"><h2>{$lang['messageoptions']}</h2>\n";
 
 echo "            ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
 echo "            ".form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
@@ -717,7 +717,7 @@ echo "    <td align=\"left\" width=\"500\" valign=\"top\">\n";
 echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "        <tr>\n";
 echo "          <td align=\"left\">";
-echo "           <h2>{$lang['message']}:</h2>\n";
+echo "           <h2>{$lang['message']}</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
@@ -762,7 +762,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>{$lang['htmlinmessage']}:</h2>\n";
+        echo "<h2>{$lang['htmlinmessage']}</h2>\n";
 
         $tph_radio = $post->getHTML();
 

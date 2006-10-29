@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.php,v 1.124 2006-10-23 20:25:47 decoyduck Exp $ */
+/* $Id: attachments.php,v 1.125 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,7 +122,7 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 }else {
 
     html_draw_top();
-    echo "<h1>{$lang['invalidop']}</h1>\n";
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['aidnotspecified']}</h2>\n";
     html_draw_bottom();
     exit;

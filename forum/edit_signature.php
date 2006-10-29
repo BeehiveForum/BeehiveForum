@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_signature.php,v 1.72 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: edit_signature.php,v 1.73 2006-10-29 23:07:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,7 +108,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         } else {
 
             html_draw_top();
-            echo "<h1>{$lang['invalidop']}</h1>\n";
+            echo "<h1>{$lang['error']}</h1>\n";
             echo "<h2>{$lang['nouserspecified']}</h2>\n";
             html_draw_bottom();
             exit;
@@ -123,7 +123,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         } else {
             html_draw_top();
-            echo "<h1>{$lang['invalidop']}</h1>\n";
+            echo "<h1>{$lang['error']}</h1>\n";
             echo "<h2>{$lang['nouserspecified']}</h2>\n";
             html_draw_bottom();
             exit;
@@ -214,7 +214,7 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    echo "<h1>{$lang['admin']} : {$lang['manageuser']} : ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
 
 }else {
 

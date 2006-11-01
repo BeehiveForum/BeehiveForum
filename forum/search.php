@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.148 2006-10-29 23:07:23 decoyduck Exp $ */
+/* $Id: search.php,v 1.149 2006-11-01 22:54:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -97,6 +97,13 @@ $lang = load_language_file();
 if (!forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
+}
+
+// Open Search support (FireFox 2.0, etc.)
+
+if (isset($_GET['opensearch'])) {
+    search_output_opensearch_xml();
+    exit;
 }
 
 if (bh_session_get_value('UID') == 0) {
@@ -265,6 +272,12 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
     $search_success = true;
     $offset = $_GET['offset'];
+
+}elseif (isset($_GET['search_string']) && strlen(trim(_stripslashes($_GET['search_string']))) > 0) {
+
+    $search_success = true;
+    $search_arguments['search_string'] = trim(_stripslashes($_GET['search_string']));
+    $offset = 0;
 }
 
 if (isset($search_success) && $search_success === true && isset($offset)) {

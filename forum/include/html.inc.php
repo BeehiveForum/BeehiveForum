@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.192 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.193 2006-11-01 22:54:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -477,7 +477,7 @@ function html_draw_top()
         echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{$title} - {$lang['rssfeed']}\" href=\"$forum_path/threads_rss.php?webtag=$webtag\" />\n";
     }
 
-    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+    echo "<link rel=\"icon\" href=\"$forum_path/forums/$webtag/favicon.ico\" type=\"image/ico\" />\n";
 
     if ($stylesheet = html_get_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
@@ -492,6 +492,8 @@ function html_draw_top()
             echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
         }
     }
+
+    echo "<link rel=\"search\" type=\"application/opensearchdescription+xml\" href=\"$forum_path/search.php?webtag=$webtag&amp;opensearch\" title=\"{$title}\" />\n";
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 

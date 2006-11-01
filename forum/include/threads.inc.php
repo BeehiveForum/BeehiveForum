@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.230 2006-10-24 19:47:29 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.231 2006-11-01 22:54:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -375,7 +375,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
         $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
         $sql.= "WHERE THREAD.FID IN ($folders) AND THREAD.LENGTH > 0 ";
-        $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
+        $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) < $days ";
         $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
         $sql.= "LIMIT 0, 50";
 
@@ -400,7 +400,7 @@ function threads_get_by_days($uid, $days = 1) // get threads from the last $days
         $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
         $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
         $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
-        $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) <= $days ";
+        $sql.= "AND TO_DAYS(NOW()) - TO_DAYS(THREAD.MODIFIED) < $days ";
         $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
         $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
         $sql.= "AND THREAD.LENGTH > 0 ";

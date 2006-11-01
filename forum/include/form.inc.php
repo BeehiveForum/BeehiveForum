@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.83 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.84 2006-11-01 22:54:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -305,12 +305,16 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = false, 
 
 // Creates a form submit button using an image
 
-function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false, $class = "button")
+function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = false, $class = false)
 {
     $id = form_unique_id();
     
-    $html = "<input name=\"$name\" value=\"$value\" id=\"$id\" class=\"$class\" ";
+    $html = "<input name=\"$name\" value=\"$value\" id=\"$id\" ";
     $html.= "type=\"image\" src=\"". style_image($image). "\" ";
+
+    if ($class) {
+        $html.= "class=\"$class\" ";
+    }
 
     if ($custom_html) {
         $custom_html = trim($custom_html);

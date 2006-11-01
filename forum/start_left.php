@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.115 2006-10-27 23:28:43 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.116 2006-11-01 22:54:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -121,26 +121,80 @@ if ($thread_array = threads_get_most_recent()) {
 
         $tid = $thread['TID'];
 
+        echo "                      <tr>\n";
+
+        if (!isset($thread['LAST_READ'])) {
+            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadthread']}\" title=\"{$lang['unreadthread']}\" />&nbsp;</td>\n";
+        }else if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
+            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" />&nbsp;</td>\n";
+        }else if ($thread['LAST_READ'] == $thread['LENGTH']) {
+            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\" width=\"20\"><img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />&nbsp;</td>\n";
+        }
+
+        if ($thread['LAST_READ'] == 0) {
+
+            if ($thread['LENGTH'] > 1) {
+
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number.= sprintf($lang['manynew'], $thread['LENGTH']);
+                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+
+            }else {
+
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number.= sprintf($lang['onenew'], $thread['LENGTH']);
+                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+            }
+
+            $latest_post = 1;
+
+        }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
+
+            $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
+
+            if ($new_posts > 1) {
+
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
+                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+
+            }else {
+
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
+                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+            }
+
+            $latest_post = $thread['LAST_READ'] + 1;
+
+        }else {
+
+            if ($thread['LENGTH'] > 1) {
+
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+
+            }else {
+
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+            }
+
+            $latest_post = 1;
+        }
+
         if (isset($thread['LAST_READ']) && $thread['LAST_READ'] && $thread['LENGTH'] > $thread['LAST_READ']) {
             $pid = $thread['LAST_READ'] + 1;
         } else {
             $pid = 1;
         }
 
-        echo "                      <tr>\n";
+        $thread_time = format_time($thread['MODIFIED']);
 
-        if (!isset($thread['LAST_READ'])) {
-            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadthread']}\" title=\"{$lang['unreadthread']}\" />&nbsp;</td>\n";
-        }else if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
-            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['unreadmessages']}\" title=\"{$lang['unreadmessages']}\" />&nbsp;</td>\n";
-        }else if ($thread['LAST_READ'] == $thread['LENGTH']) {
-            echo "                        <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"{$lang['readthread']}\" title=\"{$lang['readthread']}\" />&nbsp;</td>\n";
-        }
-
-        echo "                        <td align=\"left\" nowrap=\"nowrap\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
-        echo "title=\"#$tid Started by ", add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ". ";
+        echo "                        <td align=\"left\" valign=\"top\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"main\" ";
+        echo "title=\"#{$thread['TID']} {$lang['startedby']} ", add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), ". ";
         echo ($thread['VIEWCOUNT'] == 1) ? $lang['threadviewedonetime'] : sprintf($lang['threadviewedtimes'], $thread['VIEWCOUNT']), "\">";
-        echo add_wordfilter_tags($thread['TITLE']), "</a>&nbsp;";
+        echo add_wordfilter_tags($thread['TITLE']), "</a> ";
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
@@ -149,7 +203,8 @@ if ($thread_array = threads_get_most_recent()) {
         if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
         if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"", style_image('attach.png'), "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
 
-        echo "                        </td>\n";
+        echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
+        echo "                        <td valign=\"top\" nowrap=\"nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
         echo "                      </tr>\n";
     }
 
@@ -335,9 +390,6 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
 
     echo "                          </table>\n";
     echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

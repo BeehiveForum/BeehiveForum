@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.116 2006-09-13 22:47:15 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.117 2006-11-01 22:54:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -323,39 +323,6 @@ function _array_search($needle, $haystack)
         }
     }
     return false;
-}
-
-// Split an array into a multi-dimensional array.
-// PHP 4 >= 4.2.0, PHP 5 already include this function.
-
-function _array_chunk($input_array, $size = 1, $preserve_keys = false) {
-
-   if (!is_array($input_array)) return false;
-   if (!is_numeric($size) || $size < 1) return false;
-   if (!is_bool($preserve_keys)) $preserve_keys = false;
-
-   reset($input_array);
-
-   $i = 0;
-
-   $chunks_array = array();
-
-   foreach($input_array as $key => $value) {
-
-       if (!isset($chunks_array[$i])) $chunks_array[$i] = array();
-       if (sizeof($chunks_array[$i]) >= $size) $i++;
-
-       if ($preserve_keys) {
-
-           $chunks_array[$i][$key] = $value;
-
-       }else {
-
-           $chunks_array[$i][] = $value;
-       }
-   }
-
-   return $chunks_array;
 }
 
 // is_md5 validates an md5 hash to make sure it is correctly

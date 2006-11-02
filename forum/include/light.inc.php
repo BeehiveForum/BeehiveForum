@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.110 2006-10-29 23:07:23 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.111 2006-11-02 17:45:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -896,10 +896,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         return;
     }
 
-    // Check for words that should be filtered ---------------------------------
-
-    $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
-
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
@@ -907,7 +903,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
 
-    $message['CONTENT'] = message_mouseover_spoiler($message['CONTENT']);
+    // Does the user have mouseover spoiler reveal enabled?
+
+    if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
+        $message['CONTENT'] = message_mouseover_spoiler($message['CONTENT']);
+    }
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
 
@@ -917,6 +917,10 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
+
+    // Check for words that should be filtered ---------------------------------
+
+    if ($is_poll !== true) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
 
     if($in_list){
         echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";

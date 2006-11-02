@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.417 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.418 2006-11-02 17:45:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -618,6 +618,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
+    }
+
+    // Does the user have mouseover spoiler reveal enabled?
+
+    if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
+        $message['CONTENT'] = message_mouseover_spoiler($message['CONTENT']);
     }
 
     // Check length of post to see if we should truncate it for display --------

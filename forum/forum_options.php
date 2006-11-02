@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.93 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.94 2006-11-02 17:45:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -325,6 +325,18 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['SHOW_THUMBS'] = ($_POST['show_thumbs_global'] == "Y") ? true : false;
     } else {
         $user_prefs_global['SHOW_THUMBS'] = false;
+    }
+
+    if (isset($_POST['use_mover_spoiler']) && $_POST['use_mover_spoiler'] == "Y") {
+        $user_prefs['USE_MOVER_SPOILER'] = "Y";
+    }else {
+        $user_prefs['USE_MOVER_SPOILER'] = "N";
+    }
+
+    if (isset($_POST['use_mover_spoiler_global'])) {
+        $user_prefs_global['USE_MOVER_SPOILER'] = ($_POST['use_mover_spoiler_global'] == "Y") ? true : false;
+    }else {
+        $user_prefs_global['USE_MOVER_SPOILER'] = false;
     }
 
     if (isset($_POST['enable_wiki_words']) && $_POST['enable_wiki_words'] == "Y") {
@@ -632,6 +644,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("enable_wiki_words", "Y", $lang['enablewikiintegration'], (isset($user_prefs['ENABLE_WIKI_WORDS']) && $user_prefs['ENABLE_WIKI_WORDS'] == "Y") ? true : false), "</td>\n";
 echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("enable_wiki_words_global", "Y", $lang['setforallforums'], (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_mover_spoiler", "Y", $lang['revealspoileronmouseover'], (isset($user_prefs['USE_MOVER_SPOILER']) && $user_prefs['USE_MOVER_SPOILER'] == "Y")), "</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("use_mover_spoiler_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == "Y") ? true : false), "</td>\n";

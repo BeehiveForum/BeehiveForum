@@ -627,6 +627,7 @@ a {
     display: block;
     text-decoration: none;
     color: #EEEEEE;
+    cursor: default;
 }
 
 .spoiler a:hover {

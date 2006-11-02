@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.3 2006-10-29 23:07:23 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.4 2006-11-02 17:45:13 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -194,6 +194,25 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
+    // New User preference for mouseover spoiler reveal
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
+    $sql.= "USE_MOVER_SPOILER CHAR(1) NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER ";
+    $sql.= "CHAR(1) NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 ?>

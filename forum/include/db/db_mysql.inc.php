@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: db_mysql.inc.php,v 1.19 2006-07-30 16:19:27 decoyduck Exp $ */
+/* $Id: db_mysql.inc.php,v 1.20 2006-11-02 21:57:22 decoyduck Exp $ */
 
 function db_connect($trigger_error = true)
 {
@@ -122,14 +122,17 @@ function db_insert_id($connection_id)
     return false;
 }
 
-function db_trigger_error($sql, $connection_id)
+function db_trigger_error($sql, $connection_id, $file = false, $line = false)
 {
     if (error_reporting()) {
 
+        if ($file === false) $file = __FILE__;
+        if (!is_numeric($line)) $line = __LINE__;
+        
         $errno  = db_errno($connection_id);
         $errstr = db_error($connection_id);
 
-        bh_error_handler($errno, "<p>$errstr</p>\n<p>$sql</p>", __FILE__, __LINE__);
+        bh_error_handler($errno, "<p>$errstr</p>\n<p>$sql</p>", $file, $line);
     }
 }
 

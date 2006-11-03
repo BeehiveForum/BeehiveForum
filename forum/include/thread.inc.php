@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.89 2006-10-25 20:55:13 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.90 2006-11-03 23:00:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -522,13 +522,15 @@ function thread_undelete($tid)
 
 function thread_merge($tida, $tidb, $merge_type)
 {
+    $db_thread_merge = db_connect();
+
     if (!is_numeric($tida)) return false;
     if (!is_numeric($tidb)) return false;
     if (!is_numeric($merge_type)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $db_thread_merge = db_connect();
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (thread_is_poll($tida) || thread_is_poll($tidb)) return false;
 
@@ -545,70 +547,74 @@ function thread_merge($tida, $tidb, $merge_type)
             case THREAD_MERGE_BY_CREATED:
         
                 $post_data_array = thread_merge_get_by_created($tida, $tidb);
-                if (!$new_thread = thread_get($post_data_array[1]['TID'])) return false;
-                $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], _htmlentities_decode($new_thread['TITLE']), 'N', 'N', true);
                 break;
 
             case THREAD_MERGE_START:
 
                 $post_data_array = thread_merge_get($tidb, $tida);
-                $new_tid = post_create_thread($threadb['FID'], $threadb['BY_UID'], _htmlentities_decode($threadb['TITLE']), 'N', 'N', true);
                 break;
 
             case THREAD_MERGE_END:
 
                 $post_data_array = thread_merge_get($tida, $tidb);
-                $new_tid = post_create_thread($threada['FID'], $threada['BY_UID'], _htmlentities_decode($threada['TITLE']), 'N', 'N', true);
                 break;
         }
 
-        if ($thread_new = thread_get($new_tid, true)) {
+        if (is_array($post_data_array) && isset($post_data_array[0]['TID'])) {
 
-            if (is_array($post_data_array) && sizeof($post_data_array) > 0 && $new_tid > 0) {
+            if ($new_thread = thread_get($post_data_array[0]['TID'])) {
 
-                foreach ($post_data_array as $post_data) {
+                $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], _htmlentities_decode($new_thread['TITLE']), 'N', 'N', true);
 
-                    if (!isset($post_data['APPROVED']))    $post_data['APPROVED'] = '';
-                    if (!isset($post_data['APPROVED_BY'])) $post_data['APPROVED_BY'] = '';
-                    if (!isset($post_data['EDITED']))      $post_data['EDITED'] = '';
-                    if (!isset($post_data['EDITED_BY']))   $post_data['EDITED_BY'] = '';
-                    if (!isset($post_data['IPADDRESS']))   $post_data['IPADDRESS'] = '';
+                if (($new_tid > -1) && ($thread_new = thread_get($new_tid, true))) {
 
-                    $sql = "INSERT INTO {$table_data['PREFIX']}POST (TID, REPLY_TO_PID, FROM_UID, ";
-                    $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
-                    $sql.= "VALUES ('$new_tid', '{$post_data['REPLY_TO_PID']}', ";
-                    $sql.= "'{$post_data['FROM_UID']}', '{$post_data['TO_UID']}', ";
-                    $sql.= "'{$post_data['CREATED']}', '{$post_data['APPROVED']}', ";
-                    $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
-                    $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
+                    foreach ($post_data_array as $post_data) {
 
-                    if ($result_insert = db_query($sql, $db_thread_merge)) {
+                        if (!isset($post_data['APPROVED']))    $post_data['APPROVED'] = '';
+                        if (!isset($post_data['APPROVED_BY'])) $post_data['APPROVED_BY'] = '';
+                        if (!isset($post_data['EDITED']))      $post_data['EDITED'] = '';
+                        if (!isset($post_data['EDITED_BY']))   $post_data['EDITED_BY'] = '';
+                        if (!isset($post_data['IPADDRESS']))   $post_data['IPADDRESS'] = '';
 
-                        $new_pid = db_insert_id($db_thread_merge);
+                        $sql = "INSERT INTO {$table_data['PREFIX']}POST (TID, REPLY_TO_PID, FROM_UID, ";
+                        $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
+                        $sql.= "VALUES ('$new_tid', '{$post_data['REPLY_TO_PID']}', ";
+                        $sql.= "'{$post_data['FROM_UID']}', '{$post_data['TO_UID']}', ";
+                        $sql.= "'{$post_data['CREATED']}', '{$post_data['APPROVED']}', ";
+                        $sql.= "'{$post_data['APPROVED_BY']}', '{$post_data['EDITED']}', ";
+                        $sql.= "'{$post_data['EDITED_BY']}', '{$post_data['IPADDRESS']}')";
 
-                        $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
-                        $sql.= "SELECT $new_tid, $new_pid, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
-                        $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+                        if ($result_insert = db_query($sql, $db_thread_merge)) {
 
-                        $result_content = db_query($sql, $db_thread_merge);
+                            $new_pid = db_insert_id($db_thread_merge);
 
-                        $sql = "UPDATE {$table_data['PREFIX']}POST SET MOVED_TID = '$new_tid', MOVED_PID = '$new_pid' ";
-                        $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+                            $sql = "INSERT INTO {$table_data['PREFIX']}POST_CONTENT (TID, PID, CONTENT) ";
+                            $sql.= "SELECT $new_tid, $new_pid, CONTENT FROM {$table_data['PREFIX']}POST_CONTENT ";
+                            $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
 
-                        $result_update = db_query($sql, $db_thread_merge);
+                            $result_content = db_query($sql, $db_thread_merge);
+
+                            $sql = "UPDATE {$table_data['PREFIX']}POST SET MOVED_TID = '$new_tid', MOVED_PID = '$new_pid' ";
+                            $sql.= "WHERE TID = '{$post_data['TID']}' AND PID = '{$post_data['PID']}'";
+
+                            $result_update = db_query($sql, $db_thread_merge);
+                        }
                     }
+
+                    thread_set_moved($tida, $new_tid);
+                    thread_set_moved($tidb, $new_tid);
+
+                    thread_set_length($new_tid, sizeof($post_data_array));
+                    thread_set_closed($new_tid, false);
+
+                    return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $thread_new['TITLE']);
                 }
-
-                thread_set_moved($tida, $new_tid);
-                thread_set_moved($tidb, $new_tid);
-
-                thread_set_length($new_tid, sizeof($post_data_array));
-                thread_set_closed($new_tid, false);
-
-                return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $thread_new['TITLE']);
             }
         }
     }
+
+    thread_set_closed($tida, false);
+    thread_set_closed($tidb, false);
 
     return false;
 }
@@ -709,15 +715,16 @@ function thread_merge_get($tida, $tidb)
 
                     $tidb_post_array[$new_post_pid] = $post_data;
 
-                    $tidb_post_array[$new_post_pid]['PID'] += ($threaddata['LENGTH'] - 1);
-
                     if ($tidb_post_array[$new_post_pid]['REPLY_TO_PID'] > 0) {
                         $tidb_post_array[$new_post_pid]['REPLY_TO_PID'] += ($threaddata['LENGTH'] - 1);
                     }
                 }
             }
 
-            $post_data_array = array_merge($tida_post_array, $tidb_post_array);
+            if (sizeof($tida_post_array) > 0 && sizeof($tidb_post_array) > 0) {
+
+                $post_data_array = array_merge($tida_post_array, $tidb_post_array);
+            }
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.31 2006-10-24 19:47:29 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.32 2006-11-06 18:36:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -192,8 +192,8 @@ if ($threads_array = threads_get_most_recent($limit, $fid_list, $sort_created)) 
 
         // Convert HTML entities to XML literals.
         
-        $t_content = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $t_content);
-        $t_title   = preg_replace("/(&[^;]+;)/me", "xml_literal_to_numeric('\\1')", $t_title);
+        $t_content = html_entity_to_decimal($t_content);
+        $t_title   = html_entity_to_decimal($t_title);
 
         echo "<item>\n";
         echo "<guid isPermaLink=\"true\">{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";

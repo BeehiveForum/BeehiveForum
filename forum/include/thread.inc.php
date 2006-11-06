@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.90 2006-11-03 23:00:10 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.91 2006-11-06 18:36:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -699,7 +699,7 @@ function thread_merge_get($tida, $tidb)
         if (db_num_rows($result) > 0) {
 
             $tida_post_array = array();
-            $tidb_post_array   = array();
+            $tidb_post_array = array();
 
             $new_post_pid = 0;
 

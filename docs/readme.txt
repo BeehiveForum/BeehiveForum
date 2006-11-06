@@ -38,13 +38,14 @@ in release.txt.
       1.4.1.2    Back up your files
       1.4.1.3    Upload new forum files
       1.4.1.4    Run the upgrade script
-    1.4.2    Upgrading 0.5PR1 to 0.5.
-    1.4.3    Upgrading 0.3 to 0.4.
-      1.4.3.1    Update the database
-      1.4.3.2    Update the config file
-    1.4.4   Upgrading from 0.2 to 0.3
-    1.4.5   Upgrading from 0.1 / 0.1.1 to 0.2
-    1.4.6   Upgrading from 0.1 or 0.2 to 0.4
+    1.4.2    Skipping a version during upgrade
+    1.4.3    Upgrading 0.5PR1 to 0.5.
+    1.4.4    Upgrading 0.3 to 0.4.
+      1.4.4.1    Update the database
+      1.4.4.2    Update the config file
+    1.4.5   Upgrading from 0.2 to 0.3
+    1.4.6   Upgrading from 0.1 / 0.1.1 to 0.2
+    1.4.7   Upgrading from 0.1 or 0.2 to 0.4
 
 2.    Known Issues
 
@@ -447,9 +448,8 @@ backed up.
 ==============================================
 
 Beehive Forum's install script should be used to perform any upgrade from 0.4
-or higher. There are two ways you can use the upgrade scripts. From a web
-browser or via the command line over telnet / SSH. Using a web browser is the
-preferred method.
+or newer. Previously .sql scripts were provided but due to the nature of the
+software these are no longer viable.
 
 
 1.4.1.1 Make a back up of your database
@@ -471,10 +471,10 @@ anything does go wrong you can ask them to restore the data.
 
 If your hosting provider is less than cooperative about doing this then your next
 best chance of performing a backup is by using phpMyAdmin and making use of it's
-Export facility to save a copy of the database to your HD using your web browser. 
+Export facility to save a copy of the database to your PC using your web browser. 
 Be warned that doing it this way will result in a easily rather large file being
-created on your HD so make sure you have adequate disc space in order to do this.
-It will also be harder to restore the backup this way.
+created on your HDD so make sure you have adequate disc space in order to do
+this. It will also be harder to restore the backup this way.
 
 
 1.4.1.2 Back up your files
@@ -482,8 +482,7 @@ It will also be harder to restore the backup this way.
 
 The easiest way to back up your Beehive Forum files is to take a copy of the forum
 directory and it's contents. Restoring this back up incase of upgrade failure is
-then simply a case of uploading the files again just as you would when performing
-a new install.
+then simply a case of uploading the files and overwriting the changes.
 
 
 1.4.1.3 Upload new forum files
@@ -508,53 +507,65 @@ http://www.mysite.com/forumtemp/install.php
 Make sure you select the right 'Upgrade' proceedure from the installation
 method drop-down list, and then follow the instructions.
 
-1.4.2 Upgrading from 0.5PR1 to 0.5
+
+1.4.2 Skipping a version during upgrade
+=======================================
+
+Skipping versions during upgrade is unsupported by the Beehive Forum development
+team. To upgrade from 0.5 to 0.7 (for example) you should first download and
+upgrade to 0.6 and then upgrade separatly to 0.7. We appreciate that this is
+long winded and highly inconvienient but it is the only reliable method of
+upgrading and you should really only have to do it once.
+
+
+1.4.3 Upgrading from 0.5PR1 to 0.5
 ==================================
 
 0.5PR1 is no longer supported by the development team. If you are still running
 this version of Beehive Forum please upgrade to the 0.5 or a later release.
 
 
-1.4.3 Upgrading from 0.3 to 0.4
+1.4.4 Upgrading from 0.3 to 0.4
 ===============================
 
 If you are already using 0.3 of Beehive Forum, you will need to update your
 database. You should first backup by following the steps in 1.4.1.
 
 
-1.4.3.1 Update the database
+1.4.4.1 Update the database
 ===========================
 
-Simply run the /docs/update-03-to-04.sql script against the database using phpMyAdmin or
-MySQL directly.
+Simply run the /docs/update-03-to-04.sql script against the database using phpMyAdmin
+or MySQL directly.
 
 
-1.4,3,2 Update the config file
+1.4,4,2 Update the config file
 ==============================
 
 Probably the easiest way to do this is to edit the config.inc.php in the 0.4 download
 and set the relevant variables again.
 
 
-1.4.4 Upgrading from 0.2 to 0.3
+1.4.5 Upgrading from 0.2 to 0.3
 ===============================
 
-Follow the same procedure as detailed above, but you must run /docs/upgrade-02-to-03.sql
-beforehand.
+Follow the procedures as detailed in steps 1.4.4 but when upgrading the database
+as in step 1.4.4.1 use the /docs/update-02-to-03.sql script instead of update-03-to-04.sql.
 
 
-1.4.5 Upgrading from 0.1 / 0.1.1 to 0.2
+1.4.6 Upgrading from 0.1 / 0.1.1 to 0.2
 =======================================
 
-Follow the same procedure as detailed above, but you must run /docs/upgrade-01-to-02.sql
-beforehand
+Follow the procedure as detailed in steps 1.4.4 but when upgrading the database
+as in step 1.4.4.1 use the /docs/update-01-to-02.sql script instead of update-03-to-04.sql.
 
 
-1.4.6 Upgrading from 0.1 or 0.2 to 0.4
-======================================
+1.4.7 Upgrading from 0.1 or 0.2 to 0.4 and newer
+================================================
 
-No direct route exists for 0.1 or 0.2 to be upgraded to 0.4. To upgrade either of these
-versions to 0.4 you will need to run the relevant schema files in order. 
+No direct route exists for 0.1 or 0.2 to be upgraded to versions of Beehive newer than 0.3.
+To upgrade either of these versions to the latest release you will first need to run the
+relevant .sql script files in order and then proceed to use the built in installer script.
 
 For example if you are using Beehive Forum 0.1 you will need to run:
 
@@ -562,7 +573,8 @@ upgrade-01-to-02.sql followed by..
 upgrade-02-to-03.sql followed by..
 upgrade-03-to-04.sql.
 
-This will bring the database up to 0.4, and from there you can use 0.5's upgrade script.
+This will bring the database up to 0.4 compatibility, and from there you can use the 
+upgrade script built into the newer releases of Beehive to bring you bang up to date.
 
 
 2 Known Issues

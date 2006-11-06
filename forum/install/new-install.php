@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.122 2006-11-02 21:57:23 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.123 2006-11-06 23:35:44 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -302,7 +302,7 @@ $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (TID,PID),";
 $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY FROM_UID (FROM_UID),";
-$sql.= "  KEY IPADDRESS (IPADDRESS),";
+$sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID),";
 $sql.= "  KEY CREATED (CREATED)";
 $sql.= ") TYPE=MYISAM";
 
@@ -443,7 +443,7 @@ $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
 $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
 $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (TID)";
+$sql.= "  PRIMARY KEY  (TID, NEW_TID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -866,6 +866,7 @@ $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  POST_PAGE VARCHAR(4) NOT NULL DEFAULT '0',";
 $sql.= "  SHOW_THUMBS VARCHAR(2) NOT NULL DEFAULT '2',";
 $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y',";
+$sql.= "  USE_MOVER_SPOILER CHAR(1) DEFAULT 'N',";
 $sql.= "  PRIMARY KEY  (UID)";
 $sql.= ") TYPE=MYISAM";
 
@@ -880,6 +881,7 @@ $sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
 $sql.= "  SID MEDIUMINT(8) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (VID),";
 $sql.= "  KEY UID (UID, LAST_LOGON)";

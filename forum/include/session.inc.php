@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.251 2006-10-18 22:01:23 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.252 2006-11-06 23:35:44 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -349,6 +349,8 @@ function bh_guest_session_init($use_sess_hash = false)
 
         }else {
 
+            $http_referer = addslashes($http_referer);
+
             $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
             $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', NOW(), '$http_referer')";
 
@@ -362,7 +364,7 @@ function bh_guest_session_init($use_sess_hash = false)
                                'PASSWD'    => md5('GUEST'),
                                'FID'       => $forum_fid,
                                'IPADDRESS' => $ipaddress,
-                               'REFERER'   => $http_referer,
+                               'REFERER'   => _stripslashes($http_referer),
                                'PERMS'     => bh_session_get_perm_array(0));
         }
 
@@ -537,15 +539,17 @@ function bh_update_visitor_log($uid, $forum_fid = false)
 
     }else {
 
+        $http_referer = bh_session_get_referer();
+
         if (($search_id = bh_session_is_search_engine()) !== false) {
 
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, SID) ";
-            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$sid')";
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, REFERER, SID) ";
+            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$http_referer', '$sid')";
 
         }else {
 
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
-            $sql.= "VALUES ('$forum_fid', 0, NOW())";
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, REFERER) ";
+            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$http_referer')";
         }
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
@@ -757,6 +761,7 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     }else {
 
         $user_hash = md5(uniqid(rand()));
+        $http_referer = addslashes($http_referer);
 
         $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
         $sql.= "VALUES ('$user_hash', '$uid', '$forum_fid', ";

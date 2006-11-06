@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.192 2006-11-02 21:57:22 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.193 2006-11-06 23:35:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -865,7 +865,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (TID,PID),";
         $sql.= "  KEY TO_UID (TO_UID),";
         $sql.= "  KEY FROM_UID (FROM_UID),";
-        $sql.= "  KEY IPADDRESS (IPADDRESS),";
+        $sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID),";
         $sql.= "  KEY CREATED (CREATED)";
         $sql.= ") TYPE=MYISAM";
 
@@ -1051,7 +1051,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL DEFAULT '0',";
         $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
         $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (TID)";
+        $sql.= "  PRIMARY KEY  (TID, NEW_TID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {

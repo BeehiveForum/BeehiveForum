@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.199 2006-10-29 23:07:22 decoyduck Exp $ */
+/* $Id: edit.php,v 1.200 2006-11-07 22:59:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -710,7 +710,13 @@ if (isset($_POST['preview'])) {
 
 echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
 echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
-echo form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 
 $tools = new TextAreaHTML("f_edit");
 echo $tools->preload();
@@ -922,6 +928,12 @@ echo "</td>\n";
 echo "</tr>\n";
 echo "<tr><td align=\"left\" colspan=\"2\">&nbsp;</td></tr>\n";
 echo "</table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "</form>";
 
 html_draw_bottom();

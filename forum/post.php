@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.281 2006-10-29 23:07:23 decoyduck Exp $ */
+/* $Id: post.php,v 1.282 2006-11-07 22:59:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -745,6 +745,12 @@ html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprof
 echo "<h1>{$lang['postmessage']}</h1>\n";
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if (!$newthread) {
 
@@ -1088,6 +1094,12 @@ if (!$newthread && $reply_to_pid > 0) {
     echo "</table>\n";
 }
 
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();

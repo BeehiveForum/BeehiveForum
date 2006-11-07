@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.118 2006-11-06 18:36:12 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.119 2006-11-07 22:59:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -269,19 +269,25 @@ function _htmlentities($text)
 
 function _htmlentities_decode($text)
 {
-    if (function_exists('html_entity_decode')) {
-       return html_entity_decode($text, ENT_QUOTES, 'ISO-8859-1');
-    }
-
     $trans_tbl = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
     $trans_tbl = array_flip($trans_tbl);
-    
-    $text = strtr($text, $trans_tbl);
 
-    $text = preg_replace('/&#x([0-9a-f]+);/ei', 'chr(hexdec("\\1"))', $text);
-    $text = preg_replace('/&#([0-9]+);/e', 'chr("\\1")', $text);
-   
-    return $text;
+    $trans_tbl['&apos;'] = '\'';
+    $trans_tbl['&#039;'] = '\'';
+
+    $trans_tbl['&lsquo;'] = "'"; 
+    $trans_tbl['&rsquo;'] = "'";
+    $trans_tbl['&ldquo;'] = '"';
+    $trans_tbl['&rdquo;'] = '"';
+    $trans_tbl['&mdash;'] = '-';
+
+    unset($trans_tbl['&#39;']);
+
+    $ret = strtr($text, $trans_tbl);
+    $ret = html_entity_to_decimal($ret, true);
+
+    $ret = preg_replace('/&#(\d+);/me', "chr(\\1)", $ret);
+    return preg_replace('/&#x([a-f0-9]+);/mei', "chr(0x\\1)", $ret);
 }
 
 // Translate &nbsp; to &#160; etc. If translation of entity fails

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.44 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.45 2006-11-09 21:53:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -211,6 +211,14 @@ function draw_logon_form($logon_main)
         $otherlogon = true;
     }else {
         $otherlogon = false;
+    }
+
+    if (isset($_COOKIE['bh_logon_failed'])) {
+
+        bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
+
+        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+        echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
     }
 
     if ($logon_main) {

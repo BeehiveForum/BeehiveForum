@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.162 2006-07-28 17:48:40 decoyduck Exp $ */
+/* $Id: logon.php,v 1.163 2006-11-09 21:53:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -188,14 +188,6 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 html_draw_top('logon.js');
 
 echo "<div align=\"center\">\n";
-
-if (isset($_COOKIE['bh_logon_failed'])) {
-
-    bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
-
-    echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-    echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
-}
 
 draw_logon_form(true);
 

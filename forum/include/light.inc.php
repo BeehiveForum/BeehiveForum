@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.111 2006-11-02 17:45:13 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.112 2006-11-09 21:53:43 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,6 +77,14 @@ function light_draw_logon_form()
     $lang = load_language_file();
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+
+    if (isset($_COOKIE['bh_logon_failed'])) {
+
+        bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
+
+        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+        echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
+    }
 
     echo "<form name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.128 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: index.php,v 1.129 2006-11-09 21:53:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -77,12 +77,13 @@ $top_html = html_get_top_page();
 // Check to see if we have an active session
 
 $session_active = bh_session_active();
+$logon_failed = isset($_COOKIE['bh_logon_failed']);
 
 // Clear the logon cookie
 
 bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
 
-if ($session_active) {
+if ($session_active && !$logon_failed) {
 
     // Fetch the forum settings
 
@@ -211,7 +212,7 @@ echo "<body>\n";
 
 define('BEEHIVE_LIGHT_INCLUDE', 1);
 
-if ($session_active) {
+if ($session_active && !$logon_failed) {
 
     if ($webtag = get_webtag($webtag_search)) {
 

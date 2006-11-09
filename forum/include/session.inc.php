@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.252 2006-11-06 23:35:44 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.253 2006-11-09 21:53:43 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -261,6 +261,10 @@ function bh_session_expired()
 
             html_draw_bottom();
             exit;
+
+        }else {
+
+            bh_setcookie("bh_logon_failed", "1");
         }
     }
 

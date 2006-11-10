@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.350 2006-11-02 17:45:13 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.351 2006-11-10 22:06:24 decoyduck Exp $ */
 
 // International English language file
 
@@ -1662,5 +1662,10 @@ $lang['threadmergefailed'] = "Thread merge failed";
 $lang['threadsplitfailed'] = "Thread split failed";
 
 $lang['cannotmergeorsplitthread'] = "There are no posts in this thread that can be merged or split";
+
+// Thread subscriptions
+
+$lang['threadsubscriptions'] = "Thread Subscriptions";
+$lang['nosubscriptions'] = "No Subscriptions";
 
 ?>

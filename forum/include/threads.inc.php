@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.231 2006-11-01 22:54:43 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.232 2006-11-10 22:06:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1770,6 +1770,90 @@ function thread_auto_prune_unread_data()
     }
 
     return false;
+}
+
+function threads_get_user_subscriptions($offset = 0)
+{
+    $db_threads_get_user_subscriptions = db_connect();
+
+    $thread_array = array();
+    $thread_count = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (!is_numeric($offset)) $offset = 0;
+
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "WHERE USER_THREAD.INTEREST <> 0";
+
+    $result = db_query($sql, $db_threads_get_user_subscriptions);
+    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT THREAD.TID, THREAD.TITLE, USER_THREAD.INTEREST ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+    $sql.= "LIMIT $offset, 20";
+
+    $result = db_query($sql, $db_threads_get_user_subscriptions);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($thread_data = db_fetch_array($result)) {
+
+            $thread_array[] = $thread_data;
+        }
+    }
+    
+    return array('thread_count' => $thread_count,
+                 'thread_array' => $thread_array);
+}
+
+function threads_search_user_subscriptions($threadsearch, $offset = 0)
+{
+    $db_threads_search_user_subscriptions = db_connect();
+
+    if (!is_numeric($offset)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $threadsearch = addslashes($threadsearch);
+
+    $thread_array = array();
+    $thread_count = 0;
+
+    $uid = bh_session_get_value('UID');
+
+    $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "WHERE THREAD.TITLE LIKE '%$threadsearch%' ";
+    
+    $result = db_query($sql, $db_threads_search_user_subscriptions);
+    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT THREAD.TID, THREAD.TITLE, USER_THREAD.INTEREST ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "WHERE THREAD.TITLE LIKE '%$threadsearch%' ";
+    $sql.= "LIMIT $offset, 20";
+
+    $result = db_query($sql, $db_threads_search_user_subscriptions);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($thread_data = db_fetch_array($result)) {
+
+            $thread_array[] = $thread_data;
+        }
+    }
+    
+    return array('thread_count' => $thread_count,
+                 'thread_array' => $thread_array);
 }
 
 ?>

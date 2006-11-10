@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_font.php,v 1.51 2006-07-25 21:43:52 decoyduck Exp $ */
+/* $Id: user_font.php,v 1.52 2006-11-10 22:06:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -81,6 +81,11 @@ if (!$webtag = get_webtag($webtag_search)) {
 // Load language file
 
 $lang = load_language_file();
+
+if (bh_session_get_value('UID') == 0) {
+    html_guest_error();
+    exit;
+}
 
 // Check that we have access to this forum
 

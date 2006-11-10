@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.419 2006-11-03 23:00:10 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.420 2006-11-10 22:06:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1537,31 +1537,35 @@ function messages_fontsize_form($tid, $pid)
 
     $fontstrip = "<p>{$lang['adjtextsize']}: ";
 
-    if ((bh_session_get_value('FONT_SIZE') > 5) && (bh_session_get_value('FONT_SIZE') < 15)) {
+    if (($fontsize = bh_session_get_value('FONT_SIZE')) === false) {
+        $fontsize = 10;
+    }
 
-        $fontsmaller = bh_session_get_value('FONT_SIZE') - 1;
-        $fontlarger = bh_session_get_value('FONT_SIZE') + 1;
+    if (($fontsize > 5) && ($fontsize < 15)) {
+
+        $fontsmaller = $fontsize - 1;
+        $fontlarger = $fontsize + 1;
 
         if ($fontsmaller < 5) $fontsmaller = 5;
         if ($fontlarger > 15) $fontlarger = 15;
 
         $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">&laquo; {$lang['smaller']}</a> ";
-        $fontstrip.= bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">{$lang['larger']} &raquo;</a></p>\n";
+        $fontstrip.= $fontsize. " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">{$lang['larger']} &raquo;</a></p>\n";
 
-    }elseif (bh_session_get_value('FONT_SIZE') <= 5) {
+    }elseif ($fontsize <= 5) {
 
-        $fontlarger = bh_session_get_value('FONT_SIZE') + 1;
-        $fontstrip.= "{$lang['smaller']} ". bh_session_get_value('FONT_SIZE'). " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=6\" target=\"_self\">{$lang['larger']} &raquo;</a></p>\n";
+        $fontlarger = $fontsize + 1;
+        $fontstrip.= "{$lang['smaller']} ". $fontsize. " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=6\" target=\"_self\">{$lang['larger']} &raquo;</a></p>\n";
 
-    }elseif (bh_session_get_value('FONT_SIZE') >= 15) {
+    }elseif ($fontsize >= 15) {
 
-        $fontsmaller = bh_session_get_value('FONT_SIZE') - 1;
-        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">&laquo; {$lang['smaller']}</a> ". bh_session_get_value('FONT_SIZE'). " {$lang['larger']}</p>\n";
+        $fontsmaller = $fontsize - 1;
+        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">&laquo; {$lang['smaller']}</a> ". $fontsize. " {$lang['larger']}</p>\n";
 
     }else {
 
-        $fontsmaller = bh_session_get_value('FONT_SIZE') - 1;
-        $fontlarger = bh_session_get_value('FONT_SIZE') + 1;
+        $fontsmaller = $fontsize - 1;
+        $fontlarger = $fontsize + 1;
 
         $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=9\" target=\"_self\">&laquo; {$lang['smaller']}</a> ";
         $fontstrip.= "10 <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=11\" target=\"_self\">{$lang['larger']} &raquo;</a></p>\n";

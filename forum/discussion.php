@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.92 2006-11-09 21:53:43 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.93 2006-11-10 22:06:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -91,27 +91,49 @@ if (!forum_check_access_level()) {
 
 $uid = bh_session_get_value('UID');
 
-html_draw_top('body_tag=false', 'frames=true');
-
-echo "<frameset cols=\"275,*\" border=\"4\">\n";
-
 if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessible($_GET['folder'])) {
 
     $fid = $_GET['folder'];
     $msg = messages_get_most_recent($uid, $fid);
 
+    html_draw_top('body_tag=false', 'frames=true');
+    
+    echo "<frameset cols=\"275,*\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "</frameset>\n";
+
+    html_draw_bottom(false);
 
 }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
+    html_draw_top('body_tag=false', 'frames=true');
+    
+    echo "<frameset cols=\"275,*\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "</frameset>\n";
+
+    html_draw_bottom(false);
 
 }else if (isset($_GET['right']) && $_GET['right'] == 'search') {
 
+    // Guests can't use this
+
+    if (bh_session_get_value('UID') == 0) {
+
+        html_guest_error();
+        exit;
+    }    
+    
+    html_draw_top('body_tag=false', 'frames=true');
+    
+    echo "<frameset cols=\"275,*\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./search.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
+    echo "</frameset>\n";
+
+    html_draw_bottom(false);
 
 }else {
 
@@ -119,11 +141,14 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     bh_setcookie('bh_thread_mode', 0, time() - YEAR_IN_SECONDS);
 
+    html_draw_top('body_tag=false', 'frames=true');
+    
+    echo "<frameset cols=\"275,*\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
-}
+    echo "</frameset>\n";
 
-echo "</frameset>\n";
-echo "</html>\n";
+    html_draw_bottom(false);
+}
 
 ?>

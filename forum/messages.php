@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.206 2006-10-29 21:55:18 decoyduck Exp $ */
+/* $Id: messages.php,v 1.207 2006-11-10 22:06:24 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -456,21 +456,23 @@ echo "</table>\n";
 echo "</div>\n";
 
 messages_start_panel();
+
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $posts_per_page);
 
 if ($threaddata['POLL_FLAG'] == 'Y') {
     echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
 }
 
-if ($uid > 0) {
+messages_interest_form($tid, $pid);
 
-    messages_interest_form($tid,$pid);
-    messages_fontsize_form($tid, $pid);
-}
+messages_fontsize_form($tid, $pid);
 
 draw_beehive_bar();
+
 messages_end_panel();
+
 messages_forum_stats($tid, $pid);
+
 html_draw_bottom();
 
 ?>

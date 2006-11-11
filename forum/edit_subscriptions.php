@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.1 2006-11-10 22:06:24 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.2 2006-11-11 13:16:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -105,6 +105,43 @@ echo "<h1>{$lang['threadsubscriptions']}</h1>\n";
 
 $uid = bh_session_get_value('UID');
 
+// Array to store the update texts in
+
+$update_array = array();
+$threads_array = array();
+
+// User pressed Save button
+
+if (isset($_POST['save'])) {
+
+    $valid = true;
+
+    if (isset($_POST['set_interest']) && is_array($_POST['set_interest'])) {
+
+        foreach ($_POST['set_interest'] as $thread => $interest) {
+
+            $threads_array[] = $thread;
+            
+            if (is_numeric($thread)  && is_numeric($interest)) {
+
+                if (!thread_set_interest($thread, $interest)) {
+
+                    $valid = false;
+                    $thread_title = thread_get_title($thread);
+                    $update_array[] = sprintf("{$lang['couldnotupdateinterestonthread']}", $thread_title);
+                }
+            }
+        }
+
+        if ($valid) {
+
+            $update_array[] = "{$lang['threadinterestsupdatedsuccessfully']}";
+        }
+    }
+}
+
+// Page links.
+
 if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
     $main_page = $_GET['main_page'];
     $start_main = floor($main_page - 1) * 20;
@@ -115,6 +152,8 @@ if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
     $main_page = 1;
     $start_main = 0;
 }
+
+// Search links.
 
 if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $search_page = $_GET['search_page'];
@@ -127,6 +166,8 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
+// Thread search keywords.
+
 if (isset($_GET['threadsearch']) && strlen(trim(_stripslashes($_GET['threadsearch']))) > 0) {
     $threadsearch = trim(_stripslashes($_GET['threadsearch']));
 }else if (isset($_POST['threadsearch']) && strlen(trim(_stripslashes($_POST['threadsearch']))) > 0) {
@@ -135,15 +176,15 @@ if (isset($_GET['threadsearch']) && strlen(trim(_stripslashes($_GET['threadsearc
     $threadsearch = "";
 }
 
+// Clear search?
+
 if (isset($_POST['clear'])) {
     $threadsearch = "";
 }
 
-// Any error messages to display?
+// Any messages to display?
 
-if (!empty($error_html)) {
-    echo $error_html;
-}else if (isset($update_array) && is_array($update_array) && sizeof($update_array) > 0) {
+if (isset($update_array) && is_array($update_array) && sizeof($update_array) > 0) {
     foreach($update_array as $update_text) {
         echo "<h2>$update_text</h2>\n";
     }
@@ -170,7 +211,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "                  <td align=\"left\" class=\"subhead\">{$lang['interest']}</td>\n";
     echo "                </tr>\n";
 
-    $thread_search_array = threads_search_user_subscriptions($threadsearch, $start_search);
+    $thread_search_array = threads_search_user_subscriptions($threadsearch, $threads_array, $start_search);
 
     if (sizeof($thread_search_array['thread_array']) > 0) {
 
@@ -178,7 +219,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\"><img src=\"", style_image('ct.png'), "\" title=\"{$lang['thread']}\" alt=\"{$lang['thread']}\" />&nbsp;<a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">{$thread['TITLE']}</a></td>\n";
-            echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio_array("setinterest[{$thread['TID']}]", array(-1, 0, 1, 2), array("{$lang['ignore']} ", "{$lang['normal']} ", "{$lang['interested']} ", "{$lang['subscribe']} "), $thread['INTEREST']), "</td>\n";
+            echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio_array("set_interest[{$thread['TID']}]", array(-1, 0, 1, 2), array("{$lang['ignore']} ", "{$lang['normal']} ", "{$lang['interested']} ", "{$lang['subscribe']} "), $thread['INTEREST']), "</td>\n";
             echo "                </tr>\n";
         }
 
@@ -238,7 +279,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "                  <td align=\"left\" class=\"subhead\">{$lang['interest']}</td>\n";
     echo "                </tr>\n";
 
-    $thread_subscriptions = threads_get_user_subscriptions($start_main);
+    $thread_subscriptions = threads_get_user_subscriptions($threads_array, $start_main);
 
     if (sizeof($thread_subscriptions['thread_array']) > 0) {
 
@@ -246,7 +287,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\"><img src=\"", style_image('ct.png'), "\" title=\"{$lang['thread']}\" alt=\"{$lang['thread']}\" />&nbsp;<a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">{$thread['TITLE']}</a></td>\n";
-            echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio_array("setinterest[{$thread['TID']}]", array(-1, 0, 1, 2), array("{$lang['ignore']} ", "{$lang['normal']} ", "{$lang['interested']} ", "{$lang['subscribe']} "), $thread['INTEREST']), "</td>\n";
+            echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_radio_array("set_interest[{$thread['TID']}]", array(-1, 0, 1, 2), array("{$lang['ignore']} ", "{$lang['normal']} ", "{$lang['interested']} ", "{$lang['subscribe']} "), $thread['INTEREST']), "</td>\n";
             echo "                </tr>\n";
         }
 
@@ -279,7 +320,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("save", $lang['save']), "</td>\n";
         echo "    </tr>\n";
     }
 

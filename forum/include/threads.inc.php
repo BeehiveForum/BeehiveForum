@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.232 2006-11-10 22:06:24 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.233 2006-11-11 13:16:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1772,7 +1772,7 @@ function thread_auto_prune_unread_data()
     return false;
 }
 
-function threads_get_user_subscriptions($offset = 0)
+function threads_get_user_subscriptions($include_threads = array(), $offset = 0)
 {
     $db_threads_get_user_subscriptions = db_connect();
 
@@ -1788,7 +1788,13 @@ function threads_get_user_subscriptions($offset = 0)
     $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "WHERE USER_THREAD.INTEREST <> 0";
+    $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+
+    if (isset($include_threads) && sizeof($include_threads) > 0) {
+
+        $threads_list = implode("', '", preg_grep("/^[0-9]+$/", $include_threads));
+        $sql.= "OR THREAD.TID IN ('$threads_list') ";
+    }
 
     $result = db_query($sql, $db_threads_get_user_subscriptions);
     list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -1798,6 +1804,14 @@ function threads_get_user_subscriptions($offset = 0)
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+
+    if (isset($include_threads) && sizeof($include_threads) > 0) {
+
+        $threads_list = implode("', '", preg_grep("/^[0-9]+$/", $include_threads));
+        $sql.= "OR THREAD.TID IN ('$threads_list') ";
+    }
+
+    $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_threads_get_user_subscriptions);
@@ -1814,7 +1828,7 @@ function threads_get_user_subscriptions($offset = 0)
                  'thread_array' => $thread_array);
 }
 
-function threads_search_user_subscriptions($threadsearch, $offset = 0)
+function threads_search_user_subscriptions($threadsearch, $include_threads = array(), $offset = 0)
 {
     $db_threads_search_user_subscriptions = db_connect();
 
@@ -1830,7 +1844,16 @@ function threads_search_user_subscriptions($threadsearch, $offset = 0)
     $uid = bh_session_get_value('UID');
 
     $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "WHERE THREAD.TITLE LIKE '%$threadsearch%' ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+    $sql.= "AND THREAD.TITLE LIKE '%$threadsearch%' ";
+
+    if (isset($include_threads) && sizeof($include_threads) > 0) {
+
+        $threads_list = implode("', '", preg_grep("/^[0-9]+$/", $include_threads));
+        $sql.= "OR THREAD.TID IN ('$threads_list') ";
+    }
     
     $result = db_query($sql, $db_threads_search_user_subscriptions);
     list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
@@ -1839,7 +1862,16 @@ function threads_search_user_subscriptions($threadsearch, $offset = 0)
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "WHERE THREAD.TITLE LIKE '%$threadsearch%' ";
+    $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+    $sql.= "AND THREAD.TITLE LIKE '%$threadsearch%' ";
+
+    if (isset($include_threads) && sizeof($include_threads) > 0) {
+
+        $threads_list = implode("', '", preg_grep("/^[0-9]+$/", $include_threads));
+        $sql.= "OR THREAD.TID IN ('$threads_list') ";
+    }
+
+    $sql.= "ORDER BY THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $offset, 20";
 
     $result = db_query($sql, $db_threads_search_user_subscriptions);

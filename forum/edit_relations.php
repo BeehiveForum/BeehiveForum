@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.56 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.57 2006-11-11 13:16:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -225,11 +225,9 @@ if (isset($_POST['reset_nickname'])) {
     }
 }            
 
-// Any error messages to display?
+// Any messages to display?
 
-if (!empty($error_html)) {
-    echo $error_html;
-}else if (isset($update_array) && is_array($update_array) && sizeof($update_array) > 0) {
+if (isset($update_array) && is_array($update_array) && sizeof($update_array) > 0) {
     foreach($update_array as $update_text) {
         echo "<h2>$update_text</h2>\n";
     }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.351 2006-11-10 22:06:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.352 2006-11-11 13:16:40 decoyduck Exp $ */
 
 // International English language file
 
@@ -1667,5 +1667,7 @@ $lang['cannotmergeorsplitthread'] = "There are no posts in this thread that can 
 
 $lang['threadsubscriptions'] = "Thread Subscriptions";
 $lang['nosubscriptions'] = "No Subscriptions";
+$lang['couldnotupdateinterestonthread'] = "Could not update interest on thread '%s'";
+$lang['threadinterestsupdatedsuccessfully'] = "Thread interests updated successfully";
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.91 2006-11-06 18:36:12 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.92 2006-11-11 13:16:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -312,17 +312,17 @@ function thread_set_interest($tid, $interest)
     $sql = "UPDATE LOW_PRIORITY {$table_data['PREFIX']}USER_THREAD ";
     $sql.= "SET INTEREST = '$interest' WHERE UID = '$uid' AND TID = '$tid'";
 
-    $result = db_query($sql, $db_thread_set_interest);
+    if (!$result = db_query($sql, $db_thread_set_interest)) return false;
 
     if (db_affected_rows($db_thread_set_interest) < 1) {
 
         $sql = "INSERT IGNORE INTO {$table_data['PREFIX']}USER_THREAD (UID, TID, INTEREST) ";
         $sql.= "VALUES ('$uid', '$tid', '$interest')";
 
-        $result = db_query($sql, $db_thread_set_interest);
+        if (!$result = db_query($sql, $db_thread_set_interest)) return false;
     }
     
-    return $result;
+    return true;
 }
 
 // Same as thread_set_interest but this one won't

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.352 2006-11-11 13:16:40 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.353 2006-11-11 13:55:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -1338,6 +1338,7 @@ $lang['yoursearchdidnotreturnanymatches'] = "Your search did not return any matc
 
 // Relationships (user_rel.php) ----------------------------------------
 
+$lang['relationships'] = "Relationships";
 $lang['userrelationship'] = "User Relationship";
 $lang['userrelationships'] = "User Relationships";
 $lang['friends'] = "Friends";

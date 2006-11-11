@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.233 2006-11-11 13:16:40 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.234 2006-11-11 13:55:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1772,7 +1772,7 @@ function thread_auto_prune_unread_data()
     return false;
 }
 
-function threads_get_user_subscriptions($include_threads = array(), $offset = 0)
+function threads_get_user_subscriptions($include_threads = array(), $interest_type = 0, $offset = 0)
 {
     $db_threads_get_user_subscriptions = db_connect();
 
@@ -1782,13 +1782,20 @@ function threads_get_user_subscriptions($include_threads = array(), $offset = 0)
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($interest_type)) $interest_type = 0;
+    if (!is_array($include_threads)) $include_threads = array();
 
     $uid = bh_session_get_value('UID');
 
     $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+
+    if ($interest_type <> 0) {
+        $sql.= "WHERE USER_THREAD.INTEREST = '$interest_type' ";
+    }else {
+        $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+    }
 
     if (isset($include_threads) && sizeof($include_threads) > 0) {
 
@@ -1803,7 +1810,12 @@ function threads_get_user_subscriptions($include_threads = array(), $offset = 0)
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+
+    if ($interest_type <> 0) {
+        $sql.= "WHERE USER_THREAD.INTEREST = '$interest_type' ";
+    }else {
+        $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+    }
 
     if (isset($include_threads) && sizeof($include_threads) > 0) {
 
@@ -1828,11 +1840,13 @@ function threads_get_user_subscriptions($include_threads = array(), $offset = 0)
                  'thread_array' => $thread_array);
 }
 
-function threads_search_user_subscriptions($threadsearch, $include_threads = array(), $offset = 0)
+function threads_search_user_subscriptions($threadsearch, $include_threads = array(), $interest_type = 0, $offset = 0)
 {
     $db_threads_search_user_subscriptions = db_connect();
 
-    if (!is_numeric($offset)) return false;
+    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($interest_type)) $interest_type = 0;
+    if (!is_array($include_threads)) $include_threads = array();
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1846,7 +1860,13 @@ function threads_search_user_subscriptions($threadsearch, $include_threads = arr
     $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+
+    if ($interest_type <> 0) {
+        $sql.= "WHERE USER_THREAD.INTEREST = '$interest_type' ";
+    }else {
+        $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+    }
+
     $sql.= "AND THREAD.TITLE LIKE '%$threadsearch%' ";
 
     if (isset($include_threads) && sizeof($include_threads) > 0) {
@@ -1862,7 +1882,13 @@ function threads_search_user_subscriptions($threadsearch, $include_threads = arr
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+
+    if ($interest_type <> 0) {
+        $sql.= "WHERE USER_THREAD.INTEREST = '$interest_type' ";
+    }else {
+        $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
+    }
+
     $sql.= "AND THREAD.TITLE LIKE '%$threadsearch%' ";
 
     if (isset($include_threads) && sizeof($include_threads) > 0) {

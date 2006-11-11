@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.2 2006-11-11 13:16:40 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.3 2006-11-11 13:55:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -176,6 +176,16 @@ if (isset($_GET['threadsearch']) && strlen(trim(_stripslashes($_GET['threadsearc
     $threadsearch = "";
 }
 
+// View filter
+
+if (isset($_GET['view_filter']) && is_numeric($_GET['view_filter'])) {
+    $view_filter = $_GET['view_filter'];
+}else if (isset($_POST['view_filter']) && is_numeric($_POST['view_filter'])) {
+    $view_filter = $_POST['view_filter'];
+}else {
+    $view_filter = 0;
+}
+
 // Clear search?
 
 if (isset($_POST['clear'])) {
@@ -199,7 +209,13 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "  ", form_input_hidden("threadsearch", $threadsearch), "\n";
     echo "  ", form_input_hidden("main_page", $main_page), "\n";
     echo "  ", form_input_hidden("search_page", $search_page), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"right\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(0, -1, 1, 2), array("{$lang['all']}", "{$lang['ignored']} ", "{$lang['interested']} ", "{$lang['subscribed']} "), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -207,11 +223,11 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['threadtitle']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"50%\">{$lang['threadtitle']}</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\">{$lang['interest']}</td>\n";
     echo "                </tr>\n";
 
-    $thread_search_array = threads_search_user_subscriptions($threadsearch, $threads_array, $start_search);
+    $thread_search_array = threads_search_user_subscriptions($threadsearch, $threads_array, $view_filter, $start_search);
 
     if (sizeof($thread_search_array['thread_array']) > 0) {
 
@@ -246,7 +262,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&main_page=$main_page", $start_search, $thread_search_array['thread_count'], 20, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&main_page=$main_page&view_filter=$view_filter", $start_search, $thread_search_array['thread_count'], 20, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -267,7 +283,13 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "  ", form_input_hidden("main_page", $main_page), "\n";
     echo "  ", form_input_hidden("search_page", $search_page), "\n";
     echo "  ", form_input_hidden("threadsearch", $threadsearch), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"right\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(0, -1, 1, 2), array("{$lang['all']}", "{$lang['ignored']} ", "{$lang['interested']} ", "{$lang['subscribed']} "), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -275,11 +297,11 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['threadtitle']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"50%\">{$lang['threadtitle']}</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\">{$lang['interest']}</td>\n";
     echo "                </tr>\n";
 
-    $thread_subscriptions = threads_get_user_subscriptions($threads_array, $start_main);
+    $thread_subscriptions = threads_get_user_subscriptions($threads_array, $view_filter, $start_main);
 
     if (sizeof($thread_subscriptions['thread_array']) > 0) {
 
@@ -314,7 +336,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&search_page=$search_page", $start_main, $thread_subscriptions['thread_count'], 20, "main_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&search_page=$search_page&view_filter=$view_filter", $start_main, $thread_subscriptions['thread_count'], 20, "main_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -334,7 +356,7 @@ echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

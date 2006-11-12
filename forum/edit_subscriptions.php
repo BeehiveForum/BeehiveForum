@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.4 2006-11-11 13:59:44 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.5 2006-11-12 22:52:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -306,7 +306,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     }else {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" colspan=\"2\">&nbsp;{$lang['nosubscriptions']}</td>\n";
+        echo "                  <td align=\"left\" colspan=\"2\">&nbsp;{$lang['nomatches']}</td>\n";
         echo "                </tr>\n";
     }
 

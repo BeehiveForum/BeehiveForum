@@ -210,7 +210,7 @@ A {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: solid;
+    border-style: none;
     border-top-width: 1px;
     border-right-width: 0px;
     border-bottom-width: 0px;
@@ -230,7 +230,7 @@ A {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: solid;
+    border-style: none;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 0px;
@@ -250,7 +250,7 @@ A {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: solid;
+    border-style: none;
     border-top-width: 0px;
     border-right-width: 0px;
     border-bottom-width: 1px;
@@ -270,7 +270,7 @@ A {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: solid;
+    border-style: none;
     border-top-width: 0px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -290,7 +290,7 @@ A {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: solid;
+    border-style: none;
     border-top-width: 0px;
     border-right-width: 1px;
     border-bottom-width: 0px;
@@ -310,7 +310,7 @@ A {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: solid;
+    border-style: none;
     border-top-width: 0px;
     border-right-width: 1px;
     border-bottom-width: 1px;
@@ -330,7 +330,7 @@ A {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: solid;
+    border-style: none;
     border-top-width: 1px;
     border-right-width: 0px;
     border-bottom-width: 1px;
@@ -350,7 +350,7 @@ A {
     padding-bottom: 2px;
     padding-left: 2px;
     border: #000000;
-    border-style: solid;
+    border-style: none;
     border-top-width: 1px;
     border-right-width: 1px;
     border-bottom-width: 1px;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.420 2006-11-10 22:06:24 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.421 2006-11-14 18:25:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1054,6 +1054,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if ($perm_has_admin_access) {
 
+                if ($perm_is_moderator) {
+                
+                    if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
+                
+                        echo "<a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" border=\"0\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a>&nbsp;";
+                    }
+                }
+                
                 if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
 
                     if (ip_is_banned($message['IPADDRESS'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.78 2006-10-21 11:33:46 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.79 2006-11-14 22:09:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -135,6 +135,9 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag\" target=\"right\">{$lang['viewlog']}</a></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"right\">{$lang['postapprovalqueue']}</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";

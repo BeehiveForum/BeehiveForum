@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.81 2006-10-29 23:07:23 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.82 2006-11-14 22:09:12 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -677,6 +677,42 @@ function admin_get_ban($ban_id)
     }
 
     return false;
+}
+
+function admin_get_post_approval_queue($offset = 0)
+{
+    $db_admin_get_post_approval_queue = db_connect();
+
+    if (!is_numeric($offset)) $offset = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $post_approval_array = array();
+
+    $sql = "SELECT COUNT(PID) FROM {$table_data['PREFIX']}POST ";
+    $sql.= "WHERE APPROVED = 0";
+
+    $result = db_query($sql, $db_admin_get_post_approval_queue);
+    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT THREAD.TITLE, CONCAT(POST.TID, '.', POST.PID) AS MSG ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
+    $sql.= "WHERE POST.APPROVED = 0 ";
+    $sql.= "LIMIT $offset, 10";
+
+    $result = db_query($sql, $db_admin_get_post_approval_queue);
+
+    while ($post_array = db_fetch_array($result)) {
+
+        if (isset($post_array['MSG']) && validate_msg($post_array['MSG'])) {
+
+            $post_approval_array[] = $post_array;
+        }
+    }
+
+    return array('post_count' => $post_count,
+                 'post_array' => $post_approval_array);
 }
 
 ?>

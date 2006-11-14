@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.6 2006-11-12 23:50:24 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.7 2006-11-14 18:25:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -101,14 +101,23 @@ if (bh_session_get_value('UID') == 0) {
 
 html_draw_top();
 
-echo "<h1>{$lang['threadsubscriptions']}</h1>\n";
-
-$uid = bh_session_get_value('UID');
-
-// Array to store the update texts in
-
-$update_array = array();
-$threads_array = array();
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+echo "<!--\n";
+echo "function subscriptions_toggle_all() {\n";
+echo "    for (var i = 0; i < document.subscriptions.elements.length; i++) {\n";
+echo "        if (document.subscriptions.elements[i].type == 'checkbox') {\n";
+echo "            if (document.subscriptions.toggle_all.value == -1) {\n";
+echo "                document.subscriptions.elements[i].checked = true;\n";
+echo "            }else {\n";
+echo "                document.subscriptions.elements[i].checked = false;\n";
+echo "            }\n";
+echo "        }\n";
+echo "    }\n";
+echo "    var toggle = document.subscriptions.toggle_all.value;\n";
+echo "    document.subscriptions.toggle_all.value = toggle * -1;\n";
+echo "}\n";
+echo "//-->\n";
+echo "</script>\n";
 
 // User pressed Save button
 
@@ -192,6 +201,20 @@ if (isset($_POST['clear'])) {
     $threadsearch = "";
 }
 
+// Save button text and header text change depending on view selected.
+
+$save_button_text = array('-1' => 'Unignore Selected', '1' => 'Reset Selected', '2' => 'Unsubscribe Selected');
+$header_text = array('-1' => 'Ignored Threads', '1' => 'High Interest Threads', '2' => 'Subscribed Threads');
+
+echo "<h1>{$lang['threadsubscriptions']} &raquo; {$header_text[$view_filter]}</h1>\n";
+
+$uid = bh_session_get_value('UID');
+
+// Array to store the update texts in
+
+$update_array = array();
+$threads_array = array();
+
 // Any messages to display?
 
 if (isset($update_array) && is_array($update_array) && sizeof($update_array) > 0) {
@@ -202,18 +225,14 @@ if (isset($update_array) && is_array($update_array) && sizeof($update_array) > 0
 
 echo "<br />\n";
 
-// Save button text changes depending on view selected.
-
-$save_button_text = array('-1' => 'Unignore Selected', '1' => 'Reset Selected', '2' => 'Unsubscribe Selected');
-
 if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
-    echo "<form method=\"post\" action=\"edit_subscriptions.php\" target=\"_self\">\n";
+    echo "<form name=\"subscriptions\" method=\"post\" action=\"edit_subscriptions.php\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("threadsearch", $threadsearch), "\n";
     echo "  ", form_input_hidden("main_page", $main_page), "\n";
     echo "  ", form_input_hidden("search_page", $search_page), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\" colspan=\"3\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -222,7 +241,6 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"600\">{$lang['threadtitle']}</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"50\">&nbsp;</td>\n";
     echo "                  <td align=\"right\" class=\"subhead\" width=\"50\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
@@ -234,25 +252,6 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\"><img src=\"", style_image('ct.png'), "\" title=\"{$lang['thread']}\" alt=\"{$lang['thread']}\" />&nbsp;<a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">{$thread['TITLE']}</a></td>\n";
-
-            switch ($thread['INTEREST']) {
-
-                case THREAD_IGNORED:
-
-                    echo "                  <td align=\"center\"><img src=\"", style_image('ignored_thread.png'), "\" title=\"{$lang['ignored']}\" alt=\"{$lang['ignored']}\" /></td>\n";
-                    break;
-
-                case THREAD_INTERESTED:
-
-                    echo "                  <td align=\"center\"><img src=\"", style_image('interested_thread.png'), "\" title=\"{$lang['interested']}\" alt=\"{$lang['interested']}\" /></td>\n";
-                    break;
-
-                case THREAD_SUBSCRIBED:
-
-                    echo "                  <td align=\"center\"><img src=\"", style_image('subscribed_thread.png'), "\" title=\"{$lang['subscribed']}\" alt=\"{$lang['subscribed']}\" /></td>\n";
-                    break;
-            }
-
             echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('unsubscribe[]', $thread['TID'], ''), "</td>\n";
             echo "                </tr>\n";
         }
@@ -279,7 +278,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "    <tr>\n";
     echo "      <td align=\"left\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(-1, 1, 2), array("{$lang['ignored']} ", "{$lang['interested']} ", "{$lang['subscribed']} "), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
     echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&main_page=$main_page&view_filter=$view_filter", $start_search, $thread_search_array['thread_count'], 20, "search_page"), "</td>\n";
-    echo "      <td align=\"right\" width=\"33%\">", form_button("selectall", "Select all", "onclick=\"alert('not finished');\""), "</td>\n";    
+    echo "      <td align=\"right\" width=\"33%\">", form_button("selectall", "Select all", "subscriptions_toggle_all();\""), form_input_hidden("toggle_all", -1), "</td>\n";    
     echo "    </tr>\n";
 
     if (sizeof($thread_search_array['thread_array']) > 0) {
@@ -298,12 +297,12 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
 }else {
 
-    echo "<form name=\"prefs\" action=\"edit_subscriptions.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form name=\"subscriptions\" action=\"edit_subscriptions.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("main_page", $main_page), "\n";
     echo "  ", form_input_hidden("search_page", $search_page), "\n";
     echo "  ", form_input_hidden("threadsearch", $threadsearch), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" colspan=\"3\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -312,7 +311,6 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"600\">{$lang['threadtitle']}</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"50\">&nbsp;</td>\n";
     echo "                  <td align=\"right\" class=\"subhead\" width=\"50\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
@@ -324,25 +322,6 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\"><img src=\"", style_image('ct.png'), "\" title=\"{$lang['thread']}\" alt=\"{$lang['thread']}\" />&nbsp;<a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">{$thread['TITLE']}</a></td>\n";
-
-            switch ($thread['INTEREST']) {
-
-                case THREAD_IGNORED:
-
-                    echo "                  <td align=\"center\"><img src=\"", style_image('ignored_thread.png'), "\" title=\"{$lang['ignored']}\" alt=\"{$lang['ignored']}\" /></td>\n";
-                    break;
-
-                case THREAD_INTERESTED:
-
-                    echo "                  <td align=\"center\"><img src=\"", style_image('interested_thread.png'), "\" title=\"{$lang['interested']}\" alt=\"{$lang['interested']}\" /></td>\n";
-                    break;
-
-                case THREAD_SUBSCRIBED:
-
-                    echo "                  <td align=\"center\"><img src=\"", style_image('subscribed_thread.png'), "\" title=\"{$lang['subscribed']}\" alt=\"{$lang['subscribed']}\" /></td>\n";
-                    break;
-            }
-
             echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('unsubscribe[]', $thread['TID'], ''), "</td>\n";
             echo "                </tr>\n";
         }
@@ -369,7 +348,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "    <tr>\n";
     echo "      <td align=\"left\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(-1, 1, 2), array("{$lang['ignored']} ", "{$lang['interested']} ", "{$lang['subscribed']} "), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
     echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&search_page=$search_page&view_filter=$view_filter", $start_main, $thread_subscriptions['thread_count'], 20, "main_page"), "</td>\n";
-    echo "      <td align=\"right\" width=\"33%\">", form_button("selectall", "Select all", "onclick=\"alert('not finished');\""), "</td>\n";    
+    echo "      <td align=\"right\" width=\"33%\">", form_button("selectall", "Select all", "onclick=\"subscriptions_toggle_all();\""), form_input_hidden("toggle_all", -1), "</td>\n";    
     echo "    </tr>\n";
 
     if (sizeof($thread_subscriptions['thread_array']) > 0) {
@@ -392,7 +371,7 @@ echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
 echo "  ", form_input_hidden("search_page", $search_page), "\n";
 echo "  ", form_input_hidden("main_page", $main_page), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

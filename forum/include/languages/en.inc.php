@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.354 2006-11-12 23:50:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.355 2006-11-14 22:09:12 decoyduck Exp $ */
 
 // International English language file
 
@@ -90,6 +90,7 @@ $lang['folders'] = "Folders";
 $lang['thread'] = "thread";
 $lang['threads'] = "threads";
 $lang['message'] = "Message";
+$lang['messagenumber'] = "Message Number";
 $lang['from'] = "From";
 $lang['to'] = "To";
 $lang['all_caps'] = "ALL";
@@ -491,6 +492,8 @@ $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
 $lang['postcount'] = "Post Count:";
 $lang['resetpostcount'] = "Reset Post Count";
+$lang['postapprovalqueue'] = "Post Approval Queue";
+$lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -1031,6 +1034,8 @@ $lang['until'] = "Until 00:00 UTC";
 $lang['approvalrequired'] = "Approval Required";
 $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
+$lang['postapprovalfailed'] = "Post approval failed.";
+$lang['postdoesnotrequireapproval'] = "Post does not require approval";
 $lang['approvepost'] = "Approve post for display";
 $lang['approvedcaps'] = "APPROVED";
 $lang['makesticky'] = "Make sticky";

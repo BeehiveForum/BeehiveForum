@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.421 2006-11-14 18:25:02 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.422 2006-11-14 22:09:12 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1052,7 +1052,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 echo "<a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.$first_msg\" target=\"_self\" title=\"{$lang['privileges']}\"><img src=\"", style_image('admintool.png'), "\" border=\"0\" alt=\"{$lang['privileges']}\" title=\"{$lang['privileges']}\" /></a>&nbsp;";
             }
 
-            if ($perm_has_admin_access) {
+            if ($perm_is_moderator || $perm_has_admin_access) {
 
                 if ($perm_is_moderator) {
                 
@@ -1071,29 +1071,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     }else {
 
                         echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> <a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$message['IPADDRESS']}</a>&nbsp;</span>";
-                    }
-
-                }else {
-
-                    echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['notlogged']}&nbsp;</span>";
-                }
-
-            }elseif ($perm_is_moderator) {
-
-                if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
-
-                    echo "<a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"{$lang['approvepost']}\"><img src=\"", style_image('approved.png'), "\" border=\"0\" alt=\"{$lang['approvepost']}\" title=\"{$lang['approvepost']}\" /></a>&nbsp;";
-                }
-
-                if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
-
-                    if (ip_is_banned($message['IPADDRESS'])) {
-
-                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$lang['banned']}&nbsp;</span>";
-
-                    }else {
-
-                        echo "<span class=\"adminipdisplay\"><b>{$lang['ip']}:</b> {$message['IPADDRESS']}&nbsp;</span>";
                     }
 
                 }else {

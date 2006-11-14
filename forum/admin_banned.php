@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.36 2006-10-29 23:07:22 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.37 2006-11-14 22:09:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -707,7 +707,7 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
         foreach($ban_list_array['ban_array'] as $ban_list_id => $ban_list_entry) {
 
             echo "                 <tr>\n";
-            echo "                   <td align=\"left\"><a href=\"admin_banned.php?ban_id=$ban_list_id\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_array)) ? $ban_types_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_array)) ? $ban_types_array[$ban_list_entry['BANTYPE']] : $lang['unknown']), "</a></td>\n";
             echo "                   <td align=\"left\">{$ban_list_entry['BANDATA']}</td>\n";
             echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y", false), "</td>\n";
             echo "                 </tr>\n";

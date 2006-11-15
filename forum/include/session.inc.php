@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.253 2006-11-09 21:53:43 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.254 2006-11-15 18:34:37 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -89,11 +89,13 @@ function bh_session_check($show_session_fail = true, $use_sess_hash = false)
         $user_hash = $_COOKIE['bh_sess_hash'];
     }
 
-    // Get the forum data
+    // Check for a webtag and get the forum FID.
 
-    if (!$table_data = get_table_prefix()) return false;
-
-    $forum_fid = $table_data['FID'];
+    if ($table_data = get_table_prefix()) {
+        $forum_fid = $table_data['FID'];
+    }else {
+        $forum_fid = 0;
+    }
 
     // Check the current user's session data. This is the main session
     // data that Beehive relies on. If this data does not match what
@@ -452,10 +454,6 @@ function bh_session_get_value($session_key)
 
 function bh_remove_stale_sessions()
 {
-    if (!$table_data = get_table_prefix()) return false;   
-
-    $forum_fid = $table_data['FID'];
-    
     $sess_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 50));
 
     if ($sess_rem_prob < 1) $sess_rem_prob = 1;
@@ -848,7 +846,11 @@ function bh_session_get_perm_array($uid)
 
     $db_bh_session_get_perm_array = db_connect();
 
-    if (!$table_data = get_table_prefix()) return false;   
+    if ($table_data = get_table_prefix()) {
+        $forum_fid = $table_data['FID'];
+    }else {
+        $forum_fid = 0;
+    }
 
     $sql = "SELECT GP.GID, GP.FORUM, GP.FID, BIT_OR(GP.PERM) AS PERM ";
     $sql.= "FROM GROUP_PERMS GP LEFT JOIN GROUP_USERS GU ON (GU.GID = GP.GID) ";
@@ -895,8 +897,11 @@ function bh_session_check_perm($perm, $folder_fid, $forum_fid = false)
 
     if ($forum_fid === false) {
 
-        if (!$table_data = get_table_prefix()) return false;
-        $forum_fid = $table_data['FID'];
+        if ($table_data = get_table_prefix()) {
+            $forum_fid = $table_data['FID'];
+        }else {
+            $forum_fid = 0;
+        }
     }
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -935,8 +940,11 @@ function bh_session_get_perm($folder_fid, $forum_fid = false)
 
     if ($forum_fid === false) {
 
-        if (!$table_data = get_table_prefix()) return false;
-        $forum_fid = $table_data['FID'];
+        if ($table_data = get_table_prefix()) {
+            $forum_fid = $table_data['FID'];
+        }else {
+            $forum_fid = 0;
+        }
     }
 
     if (($uid = bh_session_get_value('UID')) === false) return false;

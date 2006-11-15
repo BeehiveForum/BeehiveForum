@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: nav.php,v 1.90 2006-07-25 21:43:51 decoyduck Exp $ */
+/* $Id: nav.php,v 1.91 2006-11-15 18:34:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -73,17 +73,13 @@ if (bh_session_check_user_ban()) {
 
 $lang = load_language_file();
 
-// Make sure we have a webtag
-
-$webtag = get_webtag($webtag_search);
-
 header_no_cache();
 
 html_draw_top("class=navpage", "forumlinks.js");
 
 echo "<div class=\"navleft\">\n";
 
-if ($webtag) {
+if ($webtag = get_webtag($webtag_search)) {
 
     echo "<a href=\"start.php?webtag=$webtag\" target=\"main\">{$lang['start']}</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"discussion.php?webtag=$webtag\" target=\"main\">{$lang['messages']}</a>&nbsp;|&nbsp;\n";

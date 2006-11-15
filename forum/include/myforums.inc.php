@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.56 2006-08-07 19:56:54 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.57 2006-11-15 18:34:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -43,7 +43,7 @@ function get_forum_list()
     $db_get_forum_list = db_connect();
     $get_forum_list_array = array();
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = bh_session_get_value('UID')) === false) $uid = 0;
 
     $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
@@ -102,7 +102,7 @@ function get_my_forums()
                                  'RECENT_FORUMS' => array(),
                                  'OTHER_FORUMS'  => array());
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = bh_session_get_value('UID')) === false) $uid = 0;
 
     $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
@@ -250,28 +250,31 @@ function user_set_forum_interest($fid, $interest)
 {
     $db_user_set_forum_interest = db_connect();
 
-    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (($uid = bh_session_get_value('UID')) === false) $uid = 0;
 
     if (!is_numeric($fid)) return false;
     if (!is_numeric($interest)) return false;
 
-    $sql = "SELECT UID FROM USER_FORUM ";
-    $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
+    if ($uid > 0) {
 
-    $result = db_query($sql, $db_user_set_forum_interest);
+        $sql = "SELECT UID FROM USER_FORUM WHERE UID = '$uid' AND FID = '$fid'";
+        if (!$result = db_query($sql, $db_user_set_forum_interest)) return false;
 
-    if (db_num_rows($result) > 0) {
+        if (db_num_rows($result) > 0) {
 
-        $sql = "UPDATE USER_FORUM SET INTEREST = '$interest' ";
-        $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
+            $sql = "UPDATE USER_FORUM SET INTEREST = '$interest' ";
+            $sql.= "WHERE UID = '$uid' AND FID = '$fid'";
 
-    }else {
+        }else {
 
-        $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
-        $sql.= "VALUES ('$uid', '$fid', 1)";
+            $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
+            $sql.= "VALUES ('$uid', '$fid', 1)";
+        }
+
+        if (!$result = db_query($sql, $db_user_set_forum_interest)) return false;
     }
 
-    return db_query($sql, $db_user_set_forum_interest);
+    return true;
 }
 
 ?>

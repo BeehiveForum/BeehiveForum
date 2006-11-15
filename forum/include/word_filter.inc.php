@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: word_filter.inc.php,v 1.30 2006-11-15 18:53:43 decoyduck Exp $ */
+/* $Id: word_filter.inc.php,v 1.31 2006-11-15 18:56:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -55,7 +55,7 @@ function load_wordfilter()
 
         // Should we include the admin filters?
 
-        if ((bh_session_get_value('USE_ADMIN_FILTER') == 'Y' && bh_session_get_value('USE_WORD_FILTER') != "Y") || forum_get_setting('admin_force_word_filter', 'Y', false)) {
+        if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('admin_force_word_filter', 'Y', false)) {
 
             $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST ";
             $sql.= "WHERE UID = 0 ORDER BY ID LIMIT 0, 20";

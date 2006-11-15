@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.200 2006-11-07 22:59:28 decoyduck Exp $ */
+/* $Id: edit.php,v 1.201 2006-11-15 22:43:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -136,47 +136,46 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         exit;
     }
 
-}else {
+}
+
+if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 
     html_draw_top();
 
     echo "<h1>{$lang['editmessage']}</h1>\n";
     echo "<br />\n";
-
-    echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>\n";
-    echo "<tr><td align=\"left\">\n";
-
-    echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
-    echo "</td></tr>\n";
-
-    echo "<tr><td align=\"center\">\n";
-    echo form_quick_button("./discussion.php", $lang['back']);
-    echo "</td></tr>\n";
-    echo "</table>\n";
-
-    html_draw_bottom();
-    exit;
-}
-
-if (!is_numeric($tid) || !is_numeric($pid)) {
-
-    html_draw_top();
-
-    echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
-    echo "<br />\n";
-
-    echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>\n";
-    echo "<tr><td align=\"left\">\n";
-
-    echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
-    echo "</td></tr>\n";
-
-    echo "<tr><td align=\"center\">\n";
-    echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid");
-    echo "</td></tr>\n";
-    echo "</table>\n";
+    echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\"><h2>{$lang['nomessagespecifiedforedit']}</h2></td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
 
     html_draw_bottom();
     exit;
@@ -217,10 +216,8 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top();
-
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
-
     html_draw_bottom();
     exit;
 }
@@ -493,20 +490,40 @@ if (isset($_POST['preview'])) {
         || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
         || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
+        echo "<h1>{$lang['editmessage']}</h1>\n";
         echo "<br />\n";
-
-        echo "<table class=\"posthead\" width=\"720\">\n";
-        echo "<tr><td align=\"left\" class=\"subhead\">{$lang['error']}</td></tr>\n";
-        echo "<tr><td align=\"left\">\n";
-
-        echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
-        echo "</td></tr>\n";
-
-        echo "<tr><td align=\"center\">\n";
-        echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid");
-        echo "</td></tr>\n";
-        echo "</table>\n";
+        echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
+        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\"><h2>{$lang['nopermissiontoedit']}</h2></td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
 
         html_draw_bottom();
         exit;
@@ -547,18 +564,38 @@ if (isset($_POST['preview'])) {
 
             echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
             echo "<br />\n";
-
-            echo "<table class=\"posthead\" width=\"720\">\n";
-            echo "<tr><td align=\"left\" class=\"subhead\">{$lang['editmessage']}</td></tr>\n";
-            echo "<tr><td align=\"left\">\n";
-
-            echo "<h2>{$lang['editappliedtomessage']}</h2>\n";
-            echo "</td></tr>\n";
-
-            echo "<tr><td align=\"center\">\n";
-            echo form_quick_button("discussion.php", $lang['continue'], "msg", "$tid.$pid");
-            echo "</td></tr>\n";
-            echo "</table>\n";
+            echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
+            echo "  ", form_input_hidden('webtag', $webtag), "\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"left\" class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">{$lang['editmessage']}</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\"><h2>{$lang['editappliedtomessage']}</h2></td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">", form_submit("back", $lang['continue']), "</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+            echo "</form>\n";
 
             html_draw_bottom();
             exit;

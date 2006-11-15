@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.422 2006-11-14 22:09:12 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.423 2006-11-15 22:34:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -46,7 +46,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 {
     $lang = load_language_file();
 
-    if (!$uid = bh_session_get_value('UID')) $uid = 0;
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $db_messages_get = db_connect();
 

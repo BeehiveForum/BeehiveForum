@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.27 2006-11-14 22:09:12 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.28 2006-11-15 22:34:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -226,46 +226,56 @@ if (isset($msg) && validate_msg($msg)) {
 
                 html_draw_top();
 
+                if ($threaddata['LENGTH'] == 1) {
+                    $msg = messages_get_most_recent(bh_session_get_value('UID'));
+                }else {
+                    $msg = "$tid.$pid";
+                }
+
                 echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['approvepost']} &raquo; ", add_wordfilter_tags($threaddata['TITLE']), "</h1>";
                 echo "<br />\n";
-                echo "<table class=\"posthead\" width=\"720\">\n";
-                echo "  <tr>\n";
-                echo "    <td align=\"left\" class=\"subhead\">{$lang['approvepost']}</td>\n";
-                echo "  </tr>\n";
-                echo "  <tr>\n";
-                echo "    <td align=\"left\"><h2>{$lang['postapprovedsuccessfully']}</h2></td>\n";
-                echo "  </tr>\n";
-                echo "  <tr>\n";
-                echo "    <td align=\"center\">\n";
 
                 if (isset($ret) && strlen(trim($ret)) > 0) {
-                
-                    echo form_quick_button("./admin_post_approve.php", $lang['back']);
+
+                    echo "<form name=\"prefs\" action=\"$ret\" method=\"post\" target=\"_self\">\n";
 
                 }else {
 
-                    if ($threaddata['LENGTH'] < 1) {
-
-                        if ($msg = messages_get_most_recent(bh_session_get_value('UID'))) {
-
-                            echo form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
-
-                        }else {
-
-                            bh_setcookie('bh_thread_mode', 0);
-                            $msg = messages_get_most_recent(bh_session_get_value('UID'));
-                            echo form_quick_button("./discussion.php", $lang['back'], "msg", $msg, "_self");
-                        }
-
-                    }else {
-
-                        echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
-                    }
+                    echo "<form name=\"prefs\" action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
+                    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                    echo "  ", form_input_hidden('msg', $msg), "\n";
                 }
 
-                echo "    </td>\n";
-                echo "  </tr>\n";
-                echo "</table>\n";
+                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">\n";
+                echo "        <table class=\"box\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td align=\"left\" class=\"posthead\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['approvepost']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\"><h2>{$lang['postapprovedsuccessfully']}</h2></td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+                echo "      </td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">&nbsp;</td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+                echo "    </tr>\n";
+                echo "  </table>\n";
+                echo "</form>\n";
 
                 html_draw_bottom();
                 exit;
@@ -279,7 +289,7 @@ if (isset($msg) && validate_msg($msg)) {
         html_draw_top();
 
         echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['approvepost']}</h1>\n";
-        echo "<h2>", add_wordfilter_tags($threaddata['TITLE']), "</h2>";
+        echo "<br />\n";
 
         if ($preview_message['TO_UID'] == 0) {
 
@@ -300,6 +310,25 @@ if (isset($msg) && validate_msg($msg)) {
 
         $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 
+        if (isset($error_html)) echo $error_html;
+
+        echo "<form name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
+        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('msg', $msg), "\n";
+        echo "  ", form_input_hidden("ret", $ret), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['approvepost']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">\n";
+
         if (thread_is_poll($tid) && $pid == 1) {
 
             poll_display($tid, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, true, true, true);
@@ -309,16 +338,25 @@ if (isset($msg) && validate_msg($msg)) {
             message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
         }
 
-        if (isset($error_html)) echo $error_html;
-
-        echo "<div align=\"center\">\n";
-        echo "  <form name=\"f_approve\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
-        echo "    ", form_input_hidden('webtag', $webtag), "\n";
-        echo "    ", form_input_hidden("msg", $msg), "\n";
-        echo "    ", form_input_hidden("ret", $ret), "\n";
-        echo "    <p>", form_submit("approve", $lang['approve']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
-        echo "  </form>\n";
-        echo "</div>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("approve", $lang['approve']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
 
         html_draw_bottom();
 
@@ -347,7 +385,7 @@ if (isset($msg) && validate_msg($msg)) {
     echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['postapprovalqueue']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -355,7 +393,7 @@ if (isset($msg) && validate_msg($msg)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                 <tr>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"400\">{$lang['threadtitle']}</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"420\">{$lang['threadtitle']}</td>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">{$lang['messagenumber']}</td>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"100\">&nbsp;</td>\n";
     echo "                 </tr>\n";

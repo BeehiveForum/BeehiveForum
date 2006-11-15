@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: delete.php,v 1.110 2006-10-29 23:07:22 decoyduck Exp $ */
+/* $Id: delete.php,v 1.111 2006-11-15 22:34:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -159,10 +159,8 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
     html_draw_top();
-
     echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['cannotdeletepostsinthisfolder']}</h2>\n";
-
     html_draw_bottom();
     exit;
 }
@@ -178,13 +176,12 @@ if (!$threaddata = thread_get($tid)) {
 
 if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
-    $preview_message = messages_get($tid, $pid, 1);
-
-    if (count($preview_message) > 0) {
+    if ($preview_message = messages_get($tid, $pid, 1)) {
 
         $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
         if ((strlen(trim($preview_message['CONTENT'])) == 0) && !thread_is_poll($tid)) {
+
             html_draw_top();
             edit_refuse($tid, $pid);
             html_draw_bottom();
@@ -199,98 +196,145 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
             exit;
         }
 
-        $to_uid = $preview_message['TO_UID'];
-        $from_uid = $preview_message['FROM_UID'];
-
     }else {
 
-        $valid = false;
-        $error_html = "<h2>{$lang['message']} $tid.$pid {$lang['wasnotfound']}</h2>";
+        html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['message']} $tid.$pid {$lang['wasnotfound']}</h2>\n";
+        html_draw_bottom();
+        exit;
     }
 }
 
 html_draw_top("openprofile.js", "basetarget=_blank");
 
-if ($valid) {
+if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
 
-    if (isset($_POST['submit']) && is_numeric($tid) && is_numeric($pid)) {
+    if (post_delete($tid, $pid)) {
 
-        if (post_delete($tid, $pid)) {
+        if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
 
-            if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != bh_session_get_value('UID')) {
-
-                admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
-            }
-
-            echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
-            echo "<br />\n";
-            echo "<table class=\"posthead\" width=\"720\">\n";
-            echo "  <tr>\n";
-            echo "    <td align=\"left\" class=\"subhead\">{$lang['deletemessage']}</td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td align=\"left\"><h2>{$lang['postdelsuccessfully']}</h2></td>\n";
-            echo "  </tr>\n";
-            echo "  <tr>\n";
-            echo "    <td align=\"center\">\n";
-
-            if ($threaddata['LENGTH'] < 1) {
-                $msg = messages_get_most_recent(bh_session_get_value('UID'));
-            }
-
-            echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
-            echo "    </td>\n";
-            echo "  </tr>\n";
-            echo "</table>\n";
-
-            html_draw_bottom();
-            exit;
-
-        }else {
-
-            $error_html = "<h2>{$lang['errordelpost']}</h2>";
+            admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
-    }
 
-    echo "<h1>{$lang['delthismessage']} &raquo; ", add_wordfilter_tags($threaddata['TITLE']), "</h1>";
+        if ($threaddata['LENGTH'] == 1) {
+            $msg = messages_get_most_recent(bh_session_get_value('UID'));
+        }else {
+            $msg = "$tid.$pid";
+        }
 
-    if ($to_uid == 0) {
+        echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
+        echo "<br />\n";
+        echo "<form name=\"prefs\" action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
+        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('msg', $msg), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$lang['deletemessage']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\"><h2>{$lang['postdelsuccessfully']}</h2></td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("back", $lang['back']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
 
-        $preview_message['TLOGON'] = $lang['allcaps'];
-        $preview_message['TNICK'] = $lang['allcaps'];
+        html_draw_bottom();
+        exit;
 
     }else {
 
-        $preview_tuser = user_get($to_uid);
-        $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-        $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-
-    }
-
-    $preview_tuser = user_get($from_uid);
-    $preview_message['FLOGON'] = $preview_tuser['LOGON'];
-    $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
-
-    if (thread_is_poll($tid) && $pid == 1) {
-
-        poll_display($tid, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, true, true, true);
-
-    }else {
-
-        message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
-
+        $error_html = "<h2>{$lang['errordelpost']}</h2>";
     }
 }
 
+echo "<h1>{$lang['deletemessage']} {$tid}.{$pid}</h1>\n";
+echo "<br />\n";
+
+if ($preview_message['TO_UID'] == 0) {
+
+    $preview_message['TLOGON'] = $lang['allcaps'];
+    $preview_message['TNICK'] = $lang['allcaps'];
+
+}else {
+
+    $preview_tuser = user_get($preview_message['TO_UID']);
+    $preview_message['TLOGON'] = $preview_tuser['LOGON'];
+    $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
+
+}
+
+$preview_tuser = user_get($preview_message['FROM_UID']);
+
+$preview_message['FLOGON'] = $preview_tuser['LOGON'];
+$preview_message['FNICK'] = $preview_tuser['NICKNAME'];
+
 if (isset($error_html)) echo $error_html;
 
-echo "<div align=\"center\">\n";
-echo "  <form name=\"f_delete\" action=\"delete.php\" method=\"post\" target=\"_self\">\n";
-echo "    ", form_input_hidden('webtag', $webtag), "\n";
-echo "    ", form_input_hidden("msg", $msg), "\n";
-echo "    <p>", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</p>\n";
-echo "  </form>\n";
-echo "</div>\n";
+echo "<form name=\"f_delete\" action=\"delete.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('msg', $msg), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['deletemessage']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\">\n";
+
+if (thread_is_poll($tid) && $pid == 1) {
+
+    poll_display($tid, $threaddata['LENGTH'], $pid, $threaddata['FID'], false, false, false, true, true, true);
+
+}else {
+
+    message_display($tid, $preview_message, $threaddata['LENGTH'], $pid, $threaddata['FID'], true, false, false, false, $show_sigs, true);
+}
+
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['delete']), "&nbsp;".form_submit("cancel", $lang['cancel']), "</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
 
 html_draw_bottom();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.132 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: register.php,v 1.133 2006-11-15 18:16:18 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -75,13 +75,9 @@ if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri'])))
     $final_uri = basename(trim(_stripslashes(rawurldecode($_GET['final_uri']))));
 }
 
-// Check we're logged in correctly
+// Load the user session
 
-if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
-}
+$user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
 

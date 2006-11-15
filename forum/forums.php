@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.58 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: forums.php,v 1.59 2006-11-15 18:34:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -56,13 +56,9 @@ include_once(BH_INCLUDE_PATH. "myforums.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
-// Check we're logged in correctly
+// Load the user session
 
-if (!$user_sess = bh_session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    $webtag = get_webtag($webtag_search);
-    header_redirect("./logon.php?webtag=$webtag&final_uri=$request_uri");
-}
+$user_sess = bh_session_check(false);
 
 // Check to see if the user is banned.
 

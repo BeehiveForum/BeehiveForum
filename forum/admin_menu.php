@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.80 2006-11-16 23:38:39 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.81 2006-11-16 23:43:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -84,7 +84,7 @@ $lang = load_language_file();
 
 html_draw_top();
 
-if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0) && !bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -158,6 +158,9 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 }elseif (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
     echo "<table border=\"0\" width=\"100%\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" class=\"subhead\">{$lang['admintools']}</td>\n";
+    echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"right\">{$lang['postapprovalqueue']}</a></td>\n";
     echo "  </tr>\n";

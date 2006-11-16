@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.355 2006-11-14 22:09:12 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.356 2006-11-16 23:43:33 decoyduck Exp $ */
 
 // International English language file
 
@@ -234,6 +234,7 @@ $lang['adminexp_12'] = "<b>Forum links</b> lets you manage the links dropdown in
 $lang['adminexp_13'] = "<b>View log</b> lists recent actions by the forum moderators.";
 $lang['adminexp_14'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
 $lang['adminexp_15'] = "<b>Global Forum Settings</b> allows you to modify settings which affect all forums.";
+$lang['adminexp_16'] = "<b>Post Approval Queue</b> allows you to view any posts awaiting approval by a moderator.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['newstyle'] = "New style";
 $lang['successfullycreated'] = "successfully created.";

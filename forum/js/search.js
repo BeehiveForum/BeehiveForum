@@ -24,7 +24,7 @@ function enable_search_button() {
     enable_button(top.frames['main'].frames['right'].document.forms['search_form'].go_button);
 }
 
-function display_mysql_stopwords(webtag) {
+function display_mysql_stopwords(webtag, keywords) {
 
-    window.open('search.php?webtag=' + webtag + '&show_stop_words=true', 'show_stop_words', 'width=580, height=450, scrollbars=yes, scrolling=yes');
+    window.open('search.php?webtag=' + webtag + '&show_stop_words=true&keywords=' + keywords, 'show_stop_words', 'width=580, height=450, scrollbars=yes, scrolling=yes');
 }

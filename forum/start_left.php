@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.116 2006-11-01 22:54:43 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.117 2006-11-18 11:48:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -135,15 +135,15 @@ if ($thread_array = threads_get_most_recent()) {
 
             if ($thread['LENGTH'] > 1) {
 
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                 $number.= sprintf($lang['manynew'], $thread['LENGTH']);
-                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
             }else {
 
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                 $number.= sprintf($lang['onenew'], $thread['LENGTH']);
-                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
             }
 
             $latest_post = 1;
@@ -154,15 +154,15 @@ if ($thread_array = threads_get_most_recent()) {
 
             if ($new_posts > 1) {
 
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                 $number.= sprintf($lang['manynewoflength'], $new_posts, $thread['LENGTH']);
-                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
             }else {
 
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
                 $number.= sprintf($lang['onenewoflength'], $new_posts, $thread['LENGTH']);
-                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
             }
 
             $latest_post = $thread['LAST_READ'] + 1;
@@ -171,13 +171,13 @@ if ($thread_array = threads_get_most_recent()) {
 
             if ($thread['LENGTH'] > 1) {
 
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
 
             }else {
 
-                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
-                $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"right\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
+                $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotofirstpostinthread']}\">[</a>";
+                $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"main\" title=\"{$lang['gotolastpostinthread']}\">]</a>";
             }
 
             $latest_post = 1;

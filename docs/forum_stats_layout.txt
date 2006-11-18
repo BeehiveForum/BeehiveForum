@@ -1,30 +1,67 @@
 [[Forum Stats]]
 
-[Session Stats]
+[Forum Stats]
 
-Active users
-Active guests
-
-Most users ever online
-Most guests ever online
-
-Most active user
-Longest user session
-
-[User Stats]
-
-Number of registered users
-Newest user
-
-[Post Stats]
-
-Total number of posts
-Number of posts made in last 60 minutes
-Most posts made in a single 60 minute period
-Top 20 posters (link to existing admin_post_stats.php)
-
-[Thread Stats]
-
-Total number of threads
+Number of folders
+Number of threads
 Longest thread
 Most read thread
+Average threads per user
+Number of posts
+Number of posts made in last 60 minutes
+Most posts made in a single 60 minute period
+Average posts per user
+Total number of thread subscriptions
+Most popular thread by subscription
+
+[Top 20 posters]
+
+Top 20 posters
+
+[Personal Messages]
+
+Total number personal messages stored per folder plus total
+Average personal messages per user
+
+[Users]
+
+Number of user accounts
+Current active users (inc. anonymous)
+Most users ever online
+Current active guests
+Most guests ever online
+Most active user
+Longest user session
+Number of registered users
+Newest user
+Inactive users (0 posts)
+Active users (> 0 posts)
+Number of users visited (today, this week, ... )
+Average age
+Most popular birth month and year
+Number of users with / without profile
+Number of users with / without signature
+Total number of user releationships
+Average number of relationships per user
+Number of users using / not using a word filter
+Average number of word filter entries per user
+
+[Polls]
+
+Number of polls
+Total number of poll options
+Total number of votes cast
+Averge votes per poll
+
+[Attachments]
+
+Number of attachments
+Average number of attachments per post
+Largest attachment size
+
+
+[Other]
+
+Most popular forum style
+Most popular forum language
+Most popular timezone

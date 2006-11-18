@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: discussion.php,v 1.93 2006-11-10 22:06:24 decoyduck Exp $ */
+/* $Id: discussion.php,v 1.94 2006-11-18 11:48:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,7 +98,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     html_draw_top('body_tag=false', 'frames=true');
     
-    echo "<frameset cols=\"275,*\" border=\"4\">\n";
+    echo "<frameset cols=\"280,*\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "</frameset>\n";
@@ -109,7 +109,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     html_draw_top('body_tag=false', 'frames=true');
     
-    echo "<frameset cols=\"275,*\" border=\"4\">\n";
+    echo "<frameset cols=\"280,*\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg={$_GET['msg']}\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "</frameset>\n";
@@ -128,7 +128,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
     
     html_draw_top('body_tag=false', 'frames=true');
     
-    echo "<frameset cols=\"275,*\" border=\"4\">\n";
+    echo "<frameset cols=\"280,*\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./search.php?webtag=$webtag\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "</frameset>\n";
@@ -143,7 +143,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     html_draw_top('body_tag=false', 'frames=true');
     
-    echo "<frameset cols=\"275,*\" border=\"4\">\n";
+    echo "<frameset cols=\"280,*\" border=\"4\">\n";
     echo "  <frame src=\"./thread_list.php?webtag=$webtag&amp;msg=$msg\" name=\"left\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "  <frame src=\"./messages.php?webtag=$webtag&amp;msg=$msg\" name=\"right\" frameborder=\"0\" framespacing=\"0\" />\n";
     echo "</frameset>\n";

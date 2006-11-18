@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.149 2006-11-01 22:54:43 decoyduck Exp $ */
+/* $Id: search.php,v 1.150 2006-11-18 17:59:33 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -134,6 +134,8 @@ if (!$folder_dropdown = folder_search_dropdown()) {
 
 if (isset($_GET['show_stop_words'])) {
 
+    $highlight_keywords_array = array();
+    
     html_draw_top();
 
     if (isset($_GET['close'])) {
@@ -144,6 +146,10 @@ if (isset($_GET['show_stop_words'])) {
 
         html_draw_bottom();
         exit;
+    }
+
+    if (isset($_GET['keywords']) && strlen(trim(_stripslashes($_GET['keywords']))) > 0) {
+        $highlight_keywords_array = explode(" ", trim(_stripslashes($_GET['keywords'])));
     }
 
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
@@ -162,7 +168,11 @@ if (isset($_GET['show_stop_words'])) {
             echo "  <tr>\n";
         }
 
-        echo "    <td align=\"left\" class=\"postbody\">{$mysql_fulltext_stopwords[$i]}</td>\n";
+        if (in_array($mysql_fulltext_stopwords[$i], $highlight_keywords_array)) {
+            echo "    <td align=\"left\" class=\"postbody\"><span class=\"highlight\">{$mysql_fulltext_stopwords[$i]}</span></td>\n";
+        }else {
+            echo "    <td align=\"left\" class=\"postbody\">{$mysql_fulltext_stopwords[$i]}</td>\n";
+        }
     }
 
     echo "  </tr>\n";
@@ -238,14 +248,17 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
             case SEARCH_NO_KEYWORDS:
 
-                $mysql_stop_word_link = "<a href=\"javascript:void(0);\" onclick=\"display_mysql_stopwords('$webtag')\">{$lang['mysqlstopwordlist']}</a>";
-
-                echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
-
                 if (isset($search_arguments['search_string']) && strlen(trim(_stripslashes($search_arguments['search_string']))) > 0) {
 
                     $search_string = trim(_stripslashes($search_arguments['search_string']));
+                    
                     $keywords_error_array = search_strip_keywords($search_string, true);
+                    $keywords_error_array['keywords'] = search_strip_special_chars($keywords_error_array['keywords'], false);
+
+                    $stopped_keywords = urlencode(implode(' ', $keywords_error_array['keywords']));
+                    
+                    $mysql_stop_word_link = "<a href=\"javascript:void(0);\" onclick=\"display_mysql_stopwords('$webtag', '$stopped_keywords')\">{$lang['mysqlstopwordlist']}</a>";
+                    echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
 
                     echo "<h2>Keywords containing errors</h2>\n";
                     echo "<ul>\n";
@@ -255,6 +268,11 @@ if (isset($_POST) && sizeof($_POST) > 0) {
                     }
 
                     echo "</ul>\n";
+
+                }else {
+
+                    $mysql_stop_word_link = "<a href=\"javascript:void(0);\" onclick=\"display_mysql_stopwords('$webtag', ')\">{$lang['mysqlstopwordlist']}</a>";
+                    echo sprintf("<p>{$lang['notexttosearchfor']}</p>\n", $min_length, $max_length, $mysql_stop_word_link);
                 }
 
                 break;

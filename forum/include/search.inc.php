@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.165 2006-11-01 22:54:43 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.166 2006-11-18 17:59:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -236,7 +236,7 @@ function search_strip_keywords($search_string, $strip_valid = false)
     // Split the search string into boolean parts and clean out
     // the empty array values.
 
-    $keyword_match = "([\+|-]?[\w']+)|([\+|-]?[\"][\w'\s']+[\"])";
+    $keyword_match = "([\+|-]?[\w]+)|([\+|-]?[\"][^\"]+[\"])";
 
     $keywords_array = preg_split("/$keyword_match/", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
     $keywords_array = preg_grep("/^ {0,}$/", $keywords_array, PREG_GREP_INVERT);
@@ -254,22 +254,22 @@ function search_strip_keywords($search_string, $strip_valid = false)
     // Prepare the MySQL Full-Text stop word list
 
     array_walk($mysql_fulltext_stopwords, 'mysql_fulltext_callback', '/');
-    $mysql_fulltext_stopwords = implode('$|^', $mysql_fulltext_stopwords);
+    $mysql_fulltext_stopwords = implode('[\"]?$|^[\+|-]?[\"]?', $mysql_fulltext_stopwords);
 
     // Filter the boolean parts through the MySQl Full-Text stop word list
     // and by checking individual words lengths.
 
     if ($strip_valid === true) {
-
+        
         $keywords_array_length = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/", $keywords_array, PREG_GREP_INVERT);
-        $keywords_array_swords = preg_grep("/^$mysql_fulltext_stopwords$/", $keywords_array);
+        $keywords_array_swords = preg_grep("/^[\+|-]?[\"]?{$mysql_fulltext_stopwords}[\"]?$/", $keywords_array);
 
         $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
 
     }else {
-
+        
         $keywords_array = preg_grep("/^[\+|-]?[\"]?[\w\s']{{$min_length},{$max_length}}[\"]?$/", $keywords_array);
-        $keywords_array = preg_grep("/^$mysql_fulltext_stopwords$/", $keywords_array, PREG_GREP_INVERT);
+        $keywords_array = preg_grep("/^[\+|-]?[\"]?{$mysql_fulltext_stopwords}[\"]?$/", $keywords_array, PREG_GREP_INVERT);
     }
 
     // Remove any duplicate words, reindex the array and finally
@@ -287,9 +287,10 @@ function search_strip_keywords($search_string, $strip_valid = false)
                  'filtered_word_count'   => $filtered_keyword_count);
 }
 
-function search_strip_special_chars($keywords_array)
+function search_strip_special_chars($keywords_array, $remove_non_matches = true)
 {
     if (!is_array($keywords_array)) return false;
+    if (!is_bool($remove_non_matches)) $remove_non_matches = true;
     
     // Get the min and max word lengths that MySQL supports
 
@@ -297,12 +298,17 @@ function search_strip_special_chars($keywords_array)
 
     // Expression to match words prefixed with a hyphen (for do not match)
 
-    $boolean_non_match = "/^-[\"]?([\w\s']){{$min_length},{$max_length}}[\"]?$/";
+    if ($remove_non_matches === true) {
 
-    // Apply expression above and also strip out + and quotes.
+        $boolean_non_match = "/^-[\"]?([\w\s']){{$min_length},{$max_length}}[\"]?$/";
+        
+        $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
+        $keywords_array = preg_replace('/["|\+|\x00]+/', '', $keywords_array);
 
-    $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
-    $keywords_array = preg_replace('/["|\+|\x00]+/', '', $keywords_array);
+    }else {
+
+        $keywords_array = preg_replace('/["|\+|\-|\x00]+/', '', $keywords_array);
+    }
 
     // return array
 

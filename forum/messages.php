@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.207 2006-11-10 22:06:24 decoyduck Exp $ */
+/* $Id: messages.php,v 1.208 2006-11-19 00:13:22 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -77,9 +77,17 @@ if (!$user_sess = bh_session_check()) {
 
 // Check to see if the user is banned.
 
-if (bh_session_check_user_ban()) {
-    
+if (bh_session_user_banned()) {
+
     html_user_banned();
+    exit;
+}
+
+// Check to see if the user has been approved.
+
+if (!bh_session_user_approved()) {
+
+    html_user_require_approval();
     exit;
 }
 

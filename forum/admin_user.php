@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.174 2006-10-29 23:07:22 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.175 2006-11-19 00:13:21 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -83,8 +83,8 @@ if (!$user_sess = bh_session_check()) {
 
 // Check to see if the user is banned.
 
-if (bh_session_check_user_ban()) {
-    
+if (bh_session_user_banned()) {
+
     html_user_banned();
     exit;
 }
@@ -167,8 +167,8 @@ if (isset($_POST['delete_confirm'])) {
         if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
             
             html_draw_top();
+            echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), " &raquo; {$lang['deleteattachments']}</h1>\n";
 
-            echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), " &raquo; {$lang['deleteattachments']}</h1>\n";
             echo "<br />\n";
             echo "<div align=\"center\">\n";
             echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_user.php?uid=$uid\">\n";
@@ -246,7 +246,7 @@ if (isset($_POST['delete_confirm'])) {
     }
 }
 
-echo "<h1>{$lang['admin']} &raquo; {$lang['manageuser']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
 
 if (isset($_POST['t_confirm_delete_posts'])) {
 
@@ -337,6 +337,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
         $t_all_forum_tools = (double) (isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;
         $t_all_folder_mod  = (double) (isset($_POST['t_all_folder_mod']))  ? $_POST['t_all_folder_mod']  : 0;
         $t_all_links_mod   = (double) (isset($_POST['t_all_links_mod']))   ? $_POST['t_all_links_mod']   : 0;
+        $t_all_banned      = (double) (isset($_POST['t_all_banned']))      ? $_POST['t_all_banned']      : 0;
 
         if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] != 'cancel') {
             $t_confirm_email = (double) USER_PERM_EMAIL_CONFIRM;
@@ -344,7 +345,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
             $t_confirm_email = (double) 0;
         }
 
-        $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_confirm_email;
+        $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_all_banned | $t_confirm_email;
 
         if (perm_has_forumtools_access($uid) && $forum_tools_perm_count == 1) {
 
@@ -497,7 +498,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['userstatus']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteposts']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
@@ -675,6 +676,9 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">", form_checkbox("t_all_links_mod", USER_PERM_LINKS_MODERATE, $lang['usercanmodlinkssectiononallforums'], $global_user_perm & USER_PERM_LINKS_MODERATE), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_all_banned", USER_PERM_BANNED, $lang['userisbannedfromallforums'], $global_user_perm & USER_PERM_BANNED), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";

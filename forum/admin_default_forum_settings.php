@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.53 2006-10-29 23:07:22 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.54 2006-11-19 00:13:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -71,8 +71,8 @@ if (!$user_sess = bh_session_check()) {
 
 // Check to see if the user is banned.
 
-if (bh_session_check_user_ban()) {
-    
+if (bh_session_user_banned()) {
+
     html_user_banned();
     exit;
 }

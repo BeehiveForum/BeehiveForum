@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.91 2006-10-29 23:07:22 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.92 2006-11-19 00:13:21 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -80,8 +80,8 @@ if (!$user_sess = bh_session_check()) {
 
 // Check to see if the user is banned.
 
-if (bh_session_check_user_ban()) {
-    
+if (bh_session_user_banned()) {
+
     html_user_banned();
     exit;
 }
@@ -300,6 +300,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['guest_account_enabled'] = "Y";
     }else {
         $new_forum_settings['guest_account_enabled'] = "N";
+    }
+
+    if (isset($_POST['require_user_approval']) && $_POST['require_user_approval'] == "Y") {
+        $new_forum_settings['require_user_approval'] = "Y";
+    }else {
+        $new_forum_settings['require_user_approval'] = "N";
     }
 
     if (isset($_POST['guest_show_recent']) && $_POST['guest_show_recent'] == "Y") {
@@ -733,11 +739,15 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['guestaccess']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['userandguestaccesssettings']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['requireuserapproval']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("require_user_approval", "Y", $lang['yes'], (isset($forum_settings['require_user_approval']) && $forum_settings['require_user_approval'] == "Y")), "&nbsp;", form_radio("require_user_approval", "N", $lang['no'], (isset($forum_settings['require_user_approval']) && $forum_settings['require_user_approval'] == "N") || !isset($forum_settings['require_user_approval'])), "</td>\n";
+echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['allowguestaccess']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("guest_account_enabled", "Y", $lang['yes'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "Y")), "&nbsp;", form_radio("guest_account_enabled", "N", $lang['no'], (isset($forum_settings['guest_account_enabled']) && $forum_settings['guest_account_enabled'] == "N") || !isset($forum_settings['guest_account_enabled'])), "</td>\n";

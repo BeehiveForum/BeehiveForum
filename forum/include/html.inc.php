@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.193 2006-11-01 22:54:43 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.194 2006-11-19 00:13:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -77,6 +77,57 @@ function html_user_banned()
     echo "<h2>HTTP/1.0 500 Internal Server Error</h2>\n";
     exit;
 }   
+
+function html_user_require_approval()
+{
+    $lang = load_language_file();
+
+    $webtag = get_webtag($webtag_search);
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    html_draw_top("robots=noindex,nofollow");
+
+    $user_array = user_get($uid);
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form action=\"confirm_email.php\" method=\"get\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('uid', $user_array['UID']), "\n";
+    echo "  ", form_input_hidden('resend', 'Y'), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"550\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['userapprovalrequired']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">{$lang['userapprovalrequiredbeforeaccess']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+
+    html_draw_bottom();
+}
 
 function html_email_confirmation_error()
 {

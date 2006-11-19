@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.24 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.25 2006-11-19 00:13:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -70,8 +70,8 @@ if (!$user_sess = bh_session_check()) {
 
 // Check to see if the user is banned.
 
-if (bh_session_check_user_ban()) {
-    
+if (bh_session_user_banned()) {
+
     html_user_banned();
     exit;
 }

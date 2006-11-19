@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.27 2006-11-02 17:45:13 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.28 2006-11-19 00:13:22 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -633,7 +633,7 @@ $lang['searchfrequency'] = "Search Frequency";
 $lang['sessions'] = "Sessions";
 $lang['sessioncutoffseconds'] = "Session cut off (seconds)";
 $lang['activesessioncutoffseconds'] = "Active session cut off (seconds)";
-$lang['stats'] = "stats";
+$lang['stats'] = "Stats";
 $lang['hide_stats'] = "Hide Stats";
 $lang['show_stats'] = "Show Stats";
 $lang['enablestatsdisplay'] = "Enable Stats Display";

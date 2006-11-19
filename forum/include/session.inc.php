@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.256 2006-11-15 22:34:54 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.257 2006-11-19 00:13:22 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -982,7 +982,7 @@ function bh_session_get_perm($folder_fid, $forum_fid = false)
 * @param void
 */
 
-function bh_session_check_user_ban()
+function bh_session_user_banned()
 {
     if (bh_session_check_perm(USER_PERM_BANNED, 0, 0)) {
         return true;
@@ -993,6 +993,33 @@ function bh_session_check_user_ban()
     }
 
     return false;
+}
+
+/**
+* Check to see if user has been approved to access the current forum.
+*
+* Checks the forum settings to see if user approval is enabled and that the user
+* has been approved. This setting applies only at the per-forum level. Users
+* awaiting approval can still access "My Forums", "PM Inbox" and login and out.
+*
+* @return bool - true if approved or setting disabled, false if approval required.
+* @param void
+*/
+
+function bh_session_user_approved()
+{
+    $forum_settings = forum_get_settings();
+
+    if (forum_get_setting('require_user_approval', 'Y')) {
+
+        if (bh_session_check_perm(USER_PERM_APPROVED, 0)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    return true;
 }
 
 /**

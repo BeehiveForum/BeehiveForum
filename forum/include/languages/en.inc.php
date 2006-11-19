@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.356 2006-11-16 23:43:33 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.357 2006-11-19 00:13:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -294,7 +294,7 @@ $lang['editstartpage'] = "Edit Start Page";
 $lang['nouserspecified'] = "No user specified for editing.";
 $lang['manageuser'] = "Manage User";
 $lang['manageusers'] = "Manage Users";
-$lang['userstatus'] = "User Status";
+$lang['userstatus'] = "User Status (current forum)";
 $lang['userdetails'] = "User Details";
 $lang['nicknameheader'] = "Nickname:";
 $lang['warning_caps'] = "WARNING";
@@ -399,6 +399,7 @@ $lang['usercanaccessforumtools'] = "User can access forum tools and can create, 
 $lang['usercanmodallfoldersonallforums'] = "User can moderate <b>all folders</b> on <b>all forums</b>";
 $lang['usercanmodlinkssectiononallforums'] = "User can moderate links section on <b>all forums</b>";
 $lang['emailconfirmationrequired'] = "Email confirmation required";
+$lang['userisbannedfromallforums'] = "User is banned from <b>all forums</b>";
 $lang['cancelemailconfirmation'] = "Cancel email confirmation and allow user to start posting";
 $lang['resendconfirmationemail'] = "Resend confirmation email to user";
 $lang['donothing'] = "Do nothing";
@@ -637,7 +638,7 @@ $lang['searchfrequency'] = "Search Frequency";
 $lang['sessions'] = "Sessions";
 $lang['sessioncutoffseconds'] = "Session cut off (seconds)";
 $lang['activesessioncutoffseconds'] = "Active session cut off (seconds)";
-$lang['stats'] = "stats";
+$lang['stats'] = "Stats";
 $lang['hide_stats'] = "Hide Stats";
 $lang['show_stats'] = "Show Stats";
 $lang['enablestatsdisplay'] = "Enable Stats Display";
@@ -651,6 +652,8 @@ $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['listguestsinvisitorlog'] = "List Guests in Visitor Log";
 $lang['guestaccess'] = "Guest Access";
 $lang['allowguestaccess'] = "Allow Guest Access";
+$lang['userandguestaccesssettings'] = "User and guest access settings";
+$lang['requireuserapproval'] = "Require user approval by admin";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
@@ -994,6 +997,8 @@ $lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required b
 $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Please contact the forum owner to rectify this.";
 $lang['emailconfirmationsent'] = "Confirmation email has been resent.";
 $lang['resendconfirmation'] = "Resend Confirmation";
+$lang['userapprovalrequired'] = "User approval required";
+$lang['userapprovalrequiredbeforeaccess'] = "Your user account needs to be approved by a forum admin before you can access the requested forum.";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 

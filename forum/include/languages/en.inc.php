@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.357 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.358 2006-11-19 20:31:46 decoyduck Exp $ */
 
 // International English language file
 
@@ -496,6 +496,9 @@ $lang['postcount'] = "Post Count:";
 $lang['resetpostcount'] = "Reset Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
+$lang['userapprovalqueue'] = "User Approval Queue";
+$lang['approveselected'] = "Approve selected";
+$lang['banselected'] = "Ban selected";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 

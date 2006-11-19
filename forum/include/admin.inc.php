@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.83 2006-11-16 23:38:39 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.84 2006-11-19 20:31:46 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -717,6 +717,51 @@ function admin_get_post_approval_queue($offset = 0)
 
     return array('post_count' => $post_count,
                  'post_array' => $post_approval_array);
+}
+
+function admin_get_user_approval_queue($offset = 0)
+{
+    $db_admin_get_user_approval_queue = db_connect();
+
+    if (!is_numeric($offset)) $offset = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    if ($folder_list = bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+        $fidlist = implode(',', $folder_list);
+    }
+
+    $user_approval_array = array();
+
+    $up_approved = USER_PERM_APPROVED;
+
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
+    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+    $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = 0) ";
+    $sql.= "WHERE GROUP_PERMS.PERM & $up_approved = 0 ";
+
+    $result = db_query($sql, $db_admin_get_user_approval_queue);
+    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER ";
+    $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
+    $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
+    $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = 0) ";
+    $sql.= "WHERE GROUP_PERMS.PERM & $up_approved = 0 ";
+    $sql.= "GROUP BY USER.UID LIMIT $offset, 10";
+
+    $result = db_query($sql, $db_admin_get_user_approval_queue);
+
+    while ($user_array = db_fetch_array($result)) {
+
+        $user_approval_array[] = $user_array;
+    }
+
+    return array('user_count' => $user_count,
+                 'user_array' => $user_approval_array);
 }
 
 ?>

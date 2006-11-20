@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.31 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.32 2006-11-20 22:10:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -273,7 +273,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "                  <td align=\"left\" width=\"50%\" class=\"subhead\">{$lang['searchresults']}</td>\n";
     echo "                </tr>\n";
 
-    $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', $start_search);
+    $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', 0, $start_search);
 
     if (sizeof($user_search_array['user_array']) > 0) {
 

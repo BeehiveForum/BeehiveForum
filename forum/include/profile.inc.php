@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.39 2006-10-11 17:47:04 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.40 2006-11-20 22:10:23 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -171,7 +171,6 @@ function profile_item_create($psid, $name, $type)
     $db_profile_item_create = db_connect();
 
     if (!is_numeric($psid)) return false;
-    if (!is_numeric($position)) return false;
     if (!is_numeric($type)) return false;
 
     $name = addslashes($name);
@@ -181,7 +180,7 @@ function profile_item_create($psid, $name, $type)
     $sql = "SELECT MAX(POSITION) + 1 FROM {$table_data['PREFIX']}PROFILE_ITEM ";
     $sql.= "LIMIT 0, 1";
 
-    $result = db_query($sql, $db_profile_section_create);
+    $result = db_query($sql, $db_profile_item_create);
 
     list($new_position) = db_fetch_array($result, DB_RESULT_NUM);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.358 2006-11-19 20:31:46 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.359 2006-11-20 22:10:23 decoyduck Exp $ */
 
 // International English language file
 
@@ -311,10 +311,17 @@ $lang['aliasdesc'] = "This is a list of other posters who match this user's last
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
+$lang['userfilter'] = "User filter";
+$lang['onlineusers'] = "Online users";
+$lang['offlineusers'] = "Offline users";
+$lang['usersawaitingapproval'] = "Users awaiting approval";
+$lang['bannedusers'] = "Banned users";
+$lang['guestusers'] = "Guest Users";
 $lang['lastlogon'] = "Last Logon";
 $lang['sessionreferer'] = "Session Referer";
 $lang['signupreferer'] = "Sign-up Referer:";
 $lang['nouseraccounts'] = "No user accounts in database.";
+$lang['nouseraccountsmatchingfilter'] = "No user accounts matching filter";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['adminaccesslog'] = "Admin Access Log";
 $lang['adminlogexp'] = "This list shows the last actions sanctioned by users with Admin privileges.";
@@ -499,6 +506,7 @@ $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['userapprovalqueue'] = "User Approval Queue";
 $lang['approveselected'] = "Approve selected";
 $lang['banselected'] = "Ban selected";
+$lang['nousersawaitingapproval'] = "No users are awaiting approval";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 

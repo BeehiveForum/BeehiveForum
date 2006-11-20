@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.175 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.176 2006-11-20 22:10:23 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -552,10 +552,41 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}</td>\n";
         echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
         echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-        echo "                        <td align=\"left\">", (isset($user['REFERER']) && strlen($user['REFERER']) > 0) ? $user['REFERER'] : $lang['unknown'], "</td>\n";
-        echo "                      </tr>\n";
+
+        if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
+
+            $user['REFERER_FULL'] = $user['REFERER'];
+
+            if (!$user['REFERER'] = split_url($user['REFERER'])) {
+                if (strlen($user['REFERER_FULL']) > 25) {
+                    $user['REFERER'] = substr($user['REFERER_FULL'], 0, 25);
+                    $user['REFERER'].= "&hellip;";
+                }
+            }
+
+            if (referer_is_banned($user['REFERER'])) {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=admin_user.php%3Fuid%3D$uid\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a> ({$lang['banned']})</td>\n";
+                echo "                      </tr>\n";
+
+            }else {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=admin_user.php%3Fuid%3D$uid\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a></td>\n";
+                echo "                      </tr>\n";
+            }
+
+        }else {
+
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
+            echo "                        <td align=\"left\">{$lang['unknown']}</td>\n";
+            echo "                      </tr>\n";
+        }
+
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">{$lang['lastipaddress']}:</td>\n";
 

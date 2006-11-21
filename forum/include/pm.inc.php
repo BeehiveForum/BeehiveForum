@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.157 2006-10-19 19:34:45 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.158 2006-11-21 09:06:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1307,11 +1307,12 @@ function pm_user_prune_folders($uid = false)
     if (isset($user_prefs['PM_AUTO_PRUNE']) && intval($user_prefs['PM_AUTO_PRUNE']) > 0) {
 
         $pm_prune_length = intval($user_prefs['PM_AUTO_PRUNE']);
+        $pm_prune_length = ($pm_prune_length * DAY_IN_SECONDS);
 
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ";
         $sql.= "((TYPE = TYPE & ". PM_READ. " AND TO_UID = '$uid') ";
         $sql.= "OR (TYPE = TYPE & ". PM_SENT_ITEMS. " AND FROM_UID = '$uid')) ";
-        $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTMAMP(NOW()) - $pm_prune_length)";
+        $sql.= "AND CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $pm_prune_length)";
 
         if (!$result = db_query($sql, $db_pm_prune_folders)) return false;
     }

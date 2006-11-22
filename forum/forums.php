@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.60 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: forums.php,v 1.61 2006-11-22 21:38:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,6 +108,14 @@ if (isset($_GET['reset'])) {
 }
 
 if (bh_session_get_value('UID') != 0) {
+
+    // Check to see if the user has been approved.
+
+    if (!bh_session_user_approved()) {
+
+        html_user_require_approval();
+        exit;
+    }
 
     if ($forums_array = get_my_forums()) {
 

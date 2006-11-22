@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.99 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.100 2006-11-22 21:38:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -501,6 +501,11 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 $threadc_link = sprintf("<a href=\"index.php?msg=%s.1\" target=\"_blank\">%s</a>", $entry_array[4], $entry_array[5]);
 
                 $action_text = sprintf($lang['mergedthreadintonewthread'], $threada_link, $threadb_link, $threadc_link);
+                break;
+
+            case APPROVED_USER:
+
+                $action_text = sprintf($lang['approveduser'], $entry_array[0]);
                 break;
 
             default:

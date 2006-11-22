@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_edit.php,v 1.84 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: pm_edit.php,v 1.85 2006-11-22 21:38:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -75,6 +75,14 @@ if (!$user_sess = bh_session_check()) {
 if (bh_session_user_banned()) {
     
     html_user_banned();
+    exit;
+}
+
+// Check to see if the user has been approved.
+
+if (!bh_session_user_approved()) {
+
+    html_user_require_approval();
     exit;
 }
 

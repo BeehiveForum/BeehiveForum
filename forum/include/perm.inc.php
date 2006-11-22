@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.90 2006-11-21 23:22:03 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.91 2006-11-22 00:09:48 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -608,8 +608,8 @@ function perm_update_global_perms($uid, $perm)
         
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE GROUP_PERMS SET PERM = $perm WHERE GID = $gid ";
-            $sql.= "AND FORUM = 0 AND FID = 0";
+            $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE GID = '$gid' ";
+            $sql.= "AND FORUM = '0' AND FID = '0'";
 
             $result = db_query($sql, $db_perm_add_global_perms);
 

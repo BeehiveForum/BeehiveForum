@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.63 2006-10-29 23:07:22 decoyduck Exp $ */
+/* $Id: install.php,v 1.64 2006-11-22 00:09:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -585,7 +585,7 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" valign=\"top\" class=\"postbody\">Default Forum Webtag:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"forum_webtag\" class=\"install_text\" value=\"", (isset($forum_webtag) ? $forum_webtag : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"2\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext\" value=\"", (isset($forum_webtag) ? $forum_webtag : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"2\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -617,23 +617,23 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Hostname:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_server\" class=\"install_text\" value=\"", (isset($db_server) ? $db_server : "localhost"), "\" size=\"36\" maxlength=\"64\" tabindex=\"3\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext\" value=\"", (isset($db_server) ? $db_server : "localhost"), "\" size=\"36\" maxlength=\"64\" tabindex=\"3\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Database Name:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_database\" class=\"install_text\" value=\"", (isset($db_database) ? $db_database : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"4\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext\" value=\"", (isset($db_database) ? $db_database : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"4\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Username:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_username\" class=\"install_text\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"5\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext\" value=\"", (isset($db_username) ? $db_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"5\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Password:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"password\" name=\"db_password\" class=\"install_text\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"6\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"password\" name=\"db_cpassword\" class=\"install_text\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"7\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -665,19 +665,19 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Username:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"admin_username\" class=\"install_text\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"8\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext\" value=\"", (isset($admin_username) ? $admin_username : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"8\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Email Address:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"text\" name=\"admin_email\" class=\"install_text\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"9\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext\" value=\"", (isset($admin_email) ? $admin_email : ""), "\" size=\"36\" maxlength=\"64\" tabindex=\"9\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Password:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"password\" name=\"admin_password\" class=\"install_text\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"10\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"10\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-    echo "                        <td align=\"left\"><input type=\"password\" name=\"admin_cpassword\" class=\"install_text\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"11\" /></td>\n";
+    echo "                        <td align=\"left\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext\" value=\"\" size=\"36\" maxlength=\"64\" tabindex=\"11\" /></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -738,8 +738,8 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" value=\"Install\" class=\"button\" onclick=\"return confirm_install(this);\" tabindex=\"14\" /></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "</form>\n";
     echo "</div>\n";
+    echo "</form>\n";
 
 }else {
 
@@ -777,7 +777,6 @@ if (!@file_exists(BH_INCLUDE_PATH. "config.inc.php") || $force_install) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
-    echo "</div>\n";
 }
 
 echo "</body>\n";

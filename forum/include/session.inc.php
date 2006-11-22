@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.259 2006-11-21 23:22:03 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.260 2006-11-22 00:09:48 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -914,21 +914,27 @@ function bh_session_check_perm($perm, $folder_fid, $forum_fid = false)
         }
     }
 
+    $user_perm_test = 0;
+
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
-        return (($user_sess['PERMS'][$forum_fid][$uid][$folder_fid] & $perm) == $perm);
+        $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$uid][$folder_fid];
     }
 
     if (isset($user_sess['PERMS'][$forum_fid][0][$folder_fid])) {
-        return (($user_sess['PERMS'][$forum_fid][0][$folder_fid] & $perm) == $perm);
+        $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][0][$folder_fid];
     }
 
     if (isset($user_sess['PERMS'][0][$uid][$folder_fid])) {
-        return (($user_sess['PERMS'][0][$uid][$folder_fid] & $perm) == $perm);
+        $user_perm_test = $user_perm_test | $user_sess['PERMS'][0][$uid][$folder_fid];
     }
 
-    return false;
+    if (isset($user_sess['PERMS'][0][$uid][0])) {
+        $user_perm_test = $user_perm_test | $user_sess['PERMS'][0][$uid][0];
+    }
+
+    return (($user_perm_test & $perm) == $perm);
 }
 
 /**

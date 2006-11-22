@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.176 2006-11-20 22:10:23 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.177 2006-11-22 00:09:47 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -330,8 +330,8 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
         $new_global_user_perms = (double) 0;
 
-        $forum_tools_perm_count = perm_get_admin_tools_perm_count();
-        $admin_tools_perm_count = perm_get_forum_tools_perm_count();
+        $admin_tools_perm_count = perm_get_admin_tools_perm_count();
+        $forum_tools_perm_count = perm_get_forum_tools_perm_count();
 
         $t_all_admin_tools = (double) (isset($_POST['t_all_admin_tools'])) ? $_POST['t_all_admin_tools'] : 0;
         $t_all_forum_tools = (double) (isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;

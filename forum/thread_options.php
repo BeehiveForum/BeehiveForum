@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.62 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.63 2006-11-22 00:09:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -505,7 +505,83 @@ if ($threaddata['LENGTH'] > 0) {
 
             $thread_available_pids = thread_get_unmoved_posts($tid);   
 
-            if (!thread_is_poll($tid)) {
+            if (thread_is_poll($tid) && $thread_available_pids) {
+
+                echo "        <br />\n";
+                echo "        <table class=\"box\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td align=\"left\" class=\"posthead\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['mergesplitthread']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 1), $lang['splitthreadatpost'], "</td>\n";
+                echo "                  <td align=\"left\">", form_dropdown_array('split_thread', $thread_available_pids, $thread_available_pids), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" class=\"posthead\">", form_radio("split_type", 0, $lang['selectedpostsandrepliesonly'], false), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" class=\"posthead\">", form_radio("split_type", 1, $lang['selectedandallfollowingposts'], true), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\">", form_checkbox("split_thread_con", "Y", $lang['confirm']), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+
+            }else if (!thread_is_poll($tid) && !$thread_available_pids) {
+
+                echo "        <br />\n";
+                echo "        <table class=\"box\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td align=\"left\" class=\"posthead\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['mergesplitthread']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 0), $lang['mergewiththreadid'], "</td>\n";
+                echo "                  <td align=\"left\">", form_input_text('merge_thread', '', 30), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" class=\"posthead\">", form_radio("merge_type", 0, $lang['postsinthisthreadatstart'], false), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" class=\"posthead\">", form_radio("merge_type", 1, $lang['postsinthisthreadatend'], false), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" class=\"posthead\">", form_radio("merge_type", 2, $lang['reorderpostsintodateorder'], false), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\">", form_checkbox("merge_thread_con", "Y", $lang['confirm']), "</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+
+            }else if (!thread_is_poll($tid) && $thread_available_pids) {
+
+                array_unshift($thread_available_pids, '');
 
                 echo "        <br />\n";
                 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -539,55 +615,11 @@ if ($threaddata['LENGTH'] > 0) {
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
                 echo "                </tr>\n";
-
-                if ($thread_available_pids) {
-
-                    array_unshift($thread_available_pids, '');
-
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\" width=\"250\">", form_radio("thread_merge_split", 1, $lang['splitthreadatpost'], false, false, 'posthead'), "</td>\n";
-                    echo "                  <td align=\"left\">", form_dropdown_array('split_thread', $thread_available_pids, $thread_available_pids), "</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                  <td align=\"left\" class=\"posthead\">", form_radio("split_type", 0, $lang['selectedpostsandrepliesonly'], false), "</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                  <td align=\"left\" class=\"posthead\">", form_radio("split_type", 1, $lang['selectedandallfollowingposts'], true), "</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                  <td align=\"left\">", form_checkbox("split_thread_con", "Y", $lang['confirm']), "</td>\n";
-                    echo "                </tr>\n";
-                    echo "                <tr>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                  <td align=\"left\">&nbsp;</td>\n";
-                    echo "                </tr>\n";
-                }
-
-                echo "              </table>\n";
-                echo "            </td>\n";
-                echo "          </tr>\n";
-                echo "        </table>\n";
-
-            }elseif ($thread_available_pids) {
-
-                array_unshift($thread_available_pids, '');
-
-                echo "        <br />\n";
-                echo "        <table class=\"box\" width=\"100%\">\n";
-                echo "          <tr>\n";
-                echo "            <td align=\"left\" class=\"posthead\">\n";
-                echo "              <table class=\"posthead\" width=\"100%\">\n";
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['mergesplitthread']}</td>\n";
+                echo "                  <td align=\"left\" colspan=\"2\"><hr /></td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 1), $lang['splitthreadatpost'], "</td>\n";
+                echo "                  <td align=\"left\" width=\"250\">", form_radio("thread_merge_split", 1, $lang['splitthreadatpost'], false, false, 'posthead'), "</td>\n";
                 echo "                  <td align=\"left\">", form_dropdown_array('split_thread', $thread_available_pids, $thread_available_pids), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";

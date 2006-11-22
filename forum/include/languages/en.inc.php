@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.359 2006-11-20 22:10:23 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.360 2006-11-22 21:38:22 decoyduck Exp $ */
 
 // International English language file
 
@@ -505,8 +505,11 @@ $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['userapprovalqueue'] = "User Approval Queue";
 $lang['approveselected'] = "Approve selected";
+$lang['successfullyapproveduser'] = "Successfully approved user";
 $lang['banselected'] = "Ban selected";
 $lang['nousersawaitingapproval'] = "No users are awaiting approval";
+$lang['kickselected'] = "Kick selected";
+$lang['approveselected'] = "Approve selected";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -588,6 +591,8 @@ $lang['updatedban'] = "Updated ban '%s'. '%s' to '%s', '%s' to '%s'.";
 
 $lang['splitthreadatpostintonewthread'] = "Split thread '%s' at post %s  into new thread '%s'";
 $lang['mergedthreadintonewthread'] = "Merged threads '%s' and '%s' into new thread '%s'";
+
+$lang['approveduser'] = "Approved user '%s'";
 
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['clearlog'] = "Clear Log";
@@ -714,6 +719,7 @@ $lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to d
 $lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cut-off period will automatically appear as read.";
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
 $lang['forum_settings_help_50'] = "Your Beehive Forum will not automatically prune the unread messages data from your database. You must choose to do this by using the prune options below.";
+$lang['forum_settings_help_51'] = "You can require approval of all new user accounts before they are used by enabling this option. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

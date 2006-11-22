@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.123 2006-11-20 22:10:23 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.124 2006-11-22 21:38:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -158,16 +158,41 @@ echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $f
 
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-    if (isset($_POST['t_kick'])) {
+    if (isset($_POST['kick_submit'])) {
 
-        list($user_uid) = array_keys($_POST['t_kick']);
+        if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
 
-        if (admin_session_end($user_uid)) {
+            $kick_users = preg_grep("/^[0-9]+$/", array_keys($_POST['user_update']));
+            
+            foreach($kick_users as $user_uid) {
 
-            $user_logon = user_get_logon($user_uid);
+                if (admin_session_end($user_uid)) {
 
-            admin_add_log_entry(END_USER_SESSION, $user_logon);
-            echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">$user_logon</a></b></p>\n";
+                    $user_logon = user_get_logon($user_uid);
+                    admin_add_log_entry(END_USER_SESSION, $user_logon);
+                    echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">$user_logon</a></b></p>\n";
+                }
+            }
+        }
+
+    }elseif (isset($_POST['approve_submit'])) {
+
+        if (forum_get_setting('require_user_approval', 'Y')) {
+        
+            if (isset($_POST['user_update']) && is_array($_POST['user_update'])) {
+
+                $approve_users = preg_grep("/^[0-9]+$/", array_keys($_POST['user_update']));
+
+                foreach($approve_users as $user_uid) {
+
+                    if (perm_user_approve($user_uid)) {
+
+                        $user_logon = user_get_logon($user_uid);
+                        admin_add_log_entry(APPROVED_USER, $user_logon);
+                        echo "<p><b>{$lang['successfullyapproveduser']}: <a href=\"javascript:void(0)\" onclick=\"openProfile($user_uid, '$webtag')\" target=\"_self\">$user_logon</a></b></p>\n";
+                    }
+                }
+            }
         }
     }
 }
@@ -306,11 +331,24 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"33%\">", bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) ? form_submit("kick_submit", "Kick selected"). "&nbsp;" : "", forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) ? form_submit("approve_submit", "Approve selected") : "", "</td>\n";
-echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=UID&sort_dir=DESC&usersearch=$usersearch&filter=$filter", $start, $admin_user_array['user_count'], 20), "</td>\n";
-echo "      <td align=\"right\" width=\"33%\">{$lang['userfilter']}: ", form_dropdown_array("filter", range(0, 4), array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['usersawaitingapproval'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
-echo "    </tr>\n";
+
+if (sizeof($admin_user_array['user_array']) > 0) {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"left\" width=\"33%\">", bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) ? form_submit("kick_submit", $lang['kickselected']). "&nbsp;" : "", forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) ? form_submit("approve_submit", $lang['approveselected']) : "", "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=UID&sort_dir=DESC&usersearch=$usersearch&filter=$filter", $start, $admin_user_array['user_count'], 20), "</td>\n";
+    echo "      <td align=\"right\" width=\"33%\">{$lang['userfilter']}: ", form_dropdown_array("filter", range(0, 4), array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['usersawaitingapproval'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
+    echo "    </tr>\n";
+
+}else {
+
+    echo "    <tr>\n";
+    echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=UID&sort_dir=DESC&usersearch=$usersearch&filter=$filter", $start, $admin_user_array['user_count'], 20), "</td>\n";
+    echo "      <td align=\"right\" width=\"33%\">{$lang['userfilter']}: ", form_dropdown_array("filter", range(0, 4), array($lang['all'], $lang['onlineusers'], $lang['offlineusers'], $lang['usersawaitingapproval'], $lang['bannedusers']), $filter), "&nbsp;", form_submit("submit_filter", $lang['go']), "</td>\n";
+    echo "    </tr>\n";
+}
+
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

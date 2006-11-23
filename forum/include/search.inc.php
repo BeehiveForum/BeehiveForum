@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.166 2006-11-18 17:59:33 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.167 2006-11-23 17:54:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -436,6 +436,40 @@ function search_fetch_results($offset, $order_by)
 
         return array('result_count' => $result_count,
                      'result_array' => $search_results_array);
+    }
+
+    return false;
+}
+
+function search_get_first_result_msg()
+{
+    $db_search_fetch_results = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = $uid";
+    $result = db_query($sql, $db_search_fetch_results);
+
+    list($result_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    if ($result_count > 0) {
+
+        $sql = "SELECT SEARCH_RESULTS.TID, SEARCH_RESULTS.PID FROM SEARCH_RESULTS ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+        $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
+        $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
+        $sql.= "ORDER BY SEARCH_RESULTS.CREATED DESC ";
+        $sql.= "LIMIT 0, 1";
+
+        $result = db_query($sql, $db_search_fetch_results);
+
+        if (db_num_rows($result) > 0) {
+
+            list($tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
+            return "$tid.$pid";
+        }
     }
 
     return false;

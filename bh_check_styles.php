@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_styles.php,v 1.4 2006-05-27 16:39:02 decoyduck Exp $ */
+/* $Id: bh_check_styles.php,v 1.5 2006-11-23 11:57:28 decoyduck Exp $ */
 
 function item_preg_callback(&$item, $key, $delimiter) {
     $item = preg_quote($item, $delimiter);
@@ -40,23 +40,23 @@ if (file_exists("$styles_dir/default/style.css")) {
     // Default theme
 
     $default_style_file = file_get_contents("$styles_dir/default/style.css");
-    preg_match_all("/(\.[ a-z0-9_-]+)/i", $default_style_file, $matches_array);
-    array_walk($matches_array[0], 'item_trim_callback');
-    $default_style_array = $matches_array[0];
+    preg_match_all("/([^\{]+){[^\}]+}/i", $default_style_file, $matches_array);
+    array_walk($matches_array[1], 'item_trim_callback');
+    $default_style_array = $matches_array[1];
 
     // make_style.css
 
     $default_style_file = file_get_contents("$styles_dir/make_style.css");
-    preg_match_all("/(\.[ a-z0-9_-]+)/i", $default_style_file, $matches_array);
-    array_walk($matches_array[0], 'item_trim_callback');
-    $style_file_array['make_style.css'] = $matches_array[0];
+    preg_match_all("/([^\{]+){[^\}]+}/i", $default_style_file, $matches_array);
+    array_walk($matches_array[1], 'item_trim_callback');
+    $style_file_array['make_style.css'] = $matches_array[1];
 
     // main style.css (when no DEFAULT)
 
     $default_style_file = file_get_contents("$styles_dir/style.css");
-    preg_match_all("/(\.[ a-z0-9_-]+)/i", $default_style_file, $matches_array);
-    array_walk($matches_array[0], 'item_trim_callback');
-    $style_file_array['style.css'] = $matches_array[0];
+    preg_match_all("/([^\{]+){[^\}]+}/i", $default_style_file, $matches_array);
+    array_walk($matches_array[1], 'item_trim_callback');
+    $style_file_array['style.css'] = $matches_array[1];
 
     if (is_dir($styles_dir)) {
 
@@ -67,9 +67,9 @@ if (file_exists("$styles_dir/default/style.css")) {
                 if ($file != "." && $file != ".." && file_exists("$styles_dir/$file/style.css")) {
 
                     $style_file = file_get_contents("$styles_dir/$file/style.css");
-                    preg_match_all("/(\.[ a-z0-9_-]+)/i", $style_file, $matches_array);
-                    array_walk($matches_array[0], 'item_trim_callback');
-                    $style_file_array[$file] = $matches_array[0];
+                    preg_match_all("/([^\{]+){[^\}]+}/i", $style_file, $matches_array);
+                    array_walk($matches_array[1], 'item_trim_callback');
+                    $style_file_array[$file] = $matches_array[1];
                 }
             }
         }
@@ -77,15 +77,82 @@ if (file_exists("$styles_dir/default/style.css")) {
         closedir($dir);
     }
 
-    array_walk($default_style_array, 'item_preg_callback', '/');
-    $default_style_matches = implode('$|^', $default_style_array);
+    $default_style_array_preg = $default_style_array;
+    array_walk($default_style_array_preg, 'item_preg_callback', '/');
+    $default_style_array_preg = implode('$|^', $default_style_array_preg);
 
     foreach($style_file_array as $style_file => $style_class_array) {
 
-        $style_errors[$style_file] = preg_grep("/^$default_style_matches$/i", $style_class_array, PREG_GREP_INVERT);
+        $classes_deprecated[$style_file] = preg_grep("/^$default_style_array_preg$/i", $style_class_array, PREG_GREP_INVERT);
+        
+        $style_file_matches_preg = $style_class_array;
+        array_walk($style_file_matches_preg, 'item_preg_callback', '/');
+        $style_file_matches_preg = implode('$|^', $style_file_matches_preg);
+
+        $classes_missing[$style_file] = preg_grep("/^$style_file_matches_preg$/i", $default_style_array, PREG_GREP_INVERT);
     }
 
-    print_r($style_errors);
+    $shown_header_deprecated = false;
+    $shown_header_missing = false;
+
+    $shown_deprecated_results = false;
+    $shown_missing_results = false;
+
+    foreach($classes_deprecated as $style_file => $style_classes_array) {
+
+        if (sizeof($style_classes_array) > 0) {
+        
+            $shown_deprecated_results = true;
+            
+            if ($shown_header_deprecated === false) {
+
+                echo "Deprecated Classes\n==================\n\n";
+                $shown_header_deprecated = true;
+            }
+
+            echo $style_file, "\n", str_repeat("-", strlen($style_file)), "\n\n";
+
+            foreach($style_classes_array as $deprecated_class) {
+                echo $deprecated_class, "\n";
+            }
+
+            echo "\n\n\n";
+        }
+    }
+
+    if ($shown_deprecated_results === false) {
+
+        echo "Deprecated Classes\n==================\n\n";
+        echo "No deprecated classes in CSS files.\n\n";
+    }
+
+    foreach($classes_missing as $style_file => $style_classes_array) {
+
+        if (sizeof($style_classes_array) > 0) {
+        
+            $shown_missing_results = true;
+            
+            if ($shown_header_missing === false) {
+
+                echo "Missing Classes\n==================\n\n";
+                $shown_header_missing = true;
+            }
+
+            echo $style_file, "\n", str_repeat("-", strlen($style_file)), "\n\n";
+
+            foreach($style_classes_array as $missing_class) {
+                echo $missing_class, "\n";
+            }
+
+            echo "\n\n\n";
+        }
+    }
+
+    if ($shown_missing_results === false) {
+
+        echo "Missing Classes\n==================\n\n";
+        echo "No missing classes in CSS files.\n\n";
+    }
 }
 
 ?>

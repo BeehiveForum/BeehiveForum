@@ -1,10 +1,10 @@
-BODY {
+body {
     background-color: #FFFFC1;
     margin-top: 10px;
     margin-bottom: 10px;
     margin-left: 05px;
     margin-right: 05px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
     font-size: 10pt;
 }
 
@@ -22,8 +22,9 @@ frameset {
 frame {
     border-style: none;
     border-width: 0px;
-    margin: 0px;
-    padding: 0px;
+    border-color: #000000;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
 }
 
 .navpage {
@@ -35,7 +36,7 @@ frame {
     color: #FFFFFF;
 }
 
-.navpage A {
+.navpage a {
     color: #FFFFFF;
     text-decoration: none;
 }
@@ -50,23 +51,23 @@ frame {
 }
 
 .forumlinks {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
 }
 
-P, H1, H2, .form {
+p, h1, h2 {
     background-color: transparent;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
     text-decoration: none;
 }
 
-P {
+p {
     color: #000000;
     font-size: 10pt;
 }
 
-H1 {
+h1 {
     background-color: #FFCC33;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
     text-decoration: none;
     color: #000000;
     font-size: 10pt;
@@ -76,9 +77,9 @@ H1 {
     width: 100%
 }
 
-H2 {
+h2 {
     background-color: transparent;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
     text-decoration: none;
     color: #000000;
     font-size: 10pt;
@@ -89,7 +90,7 @@ H2 {
     margin-right: 05px;
 }
 
-A {
+a {
     background-color: transparent;
     color: #000000;
     text-decoration: underline;
@@ -387,12 +388,12 @@ A {
 }
 
 .foldername {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-family: verdana, arial, helvetica, sans-serif;
       font-size: 10pt;
       font-style: normal;
       font-weight: bold;
       text-decoration: none;
-      color: #ffffff;
+      color: #FFFFFF;
       padding-top: 2px;
       padding-right: 2px;
       padding-bottom: 2px;
@@ -457,7 +458,7 @@ A {
 }
 
 .postresponse {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-family: verdana, arial, helvetica, sans-serif;
       font-size: 10pt;
       font-style: normal;
       color: #000000;
@@ -467,7 +468,7 @@ A {
       padding-bottom: 1px;}
 
 .messagefoot {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-family: verdana, arial, helvetica, sans-serif;
       font-size: 10pt;
       font-style: normal;
       background-color: #FFC846;
@@ -475,7 +476,7 @@ A {
 }
 
 .dictionary_button, .button {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-family: verdana, arial, helvetica, sans-serif;
       font-size: 9pt;
       font-weight: bold;
       color: #FFFFFF;
@@ -489,7 +490,7 @@ A {
 }
 
 .button_disabled {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #808080;
     background-color: #EBEBE4;
@@ -502,7 +503,7 @@ A {
 }
 
 .smallbutton {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-family: verdana, arial, helvetica, sans-serif;
       font-size: 8pt;
       font-weight: bold;
       color: #FFFFFF;
@@ -516,7 +517,7 @@ A {
 }
 
 .subhead {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-family: verdana, arial, helvetica, sans-serif;
       font-size: 10pt;
       color: #FFFFFF;
       background-color: #FFA41A;
@@ -527,7 +528,7 @@ A {
       padding-left: 5px;
 }
 
-.bhinputtext, .bhtextarea, .bhselect,
+.bhinputtext, .bhtextarea, .bhselect, .install_dropdown,
 .logon_dropdown, .register_dropdown, .search_dropdown,
 .banned_dropdown, .links_dropdown, .admin_startpage_textarea,
 .dictionary_word_display, .dictionary_best_selection,
@@ -535,20 +536,20 @@ A {
 .thread_title, .post_to_others, .post_content,
 .signature_content, .to_uid_dropdown, .recipient_dropdown,
 .recent_user_dropdown, .user_in_thread_dropdown {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
-      font-size: 9pt;
-      color: #000000;
-      background-color: #FFFFFF;
-      border-top-width: 1px;
-      border-right-width: 1px;
-      border-bottom-width: 1px;
-      border-left-width: 1px;
-      padding-left: 2px;
-      border-style: inset;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    padding-left: 2px;
+    border-style: inset;
 }
 
 .bhinputcheckbox, .bhinputradio {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-family: verdana, arial, helvetica, sans-serif;
       font-size: 8pt
 }
 
@@ -578,7 +579,7 @@ A {
 }
 
 .quotetext {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
     font-size: 8pt;
     margin-top: 5px;
     margin-left: 40px;
@@ -599,7 +600,7 @@ A {
 }
 
 .quote {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
     border: 1px solid #CCCCCC;
     background-color: #EEEEEE;
     margin-top: 0px;
@@ -610,7 +611,7 @@ A {
 }
 
 .spoiler {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-family: verdana, arial, helvetica, sans-serif;
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
     background-color: #EEEEEE;
@@ -619,6 +620,37 @@ A {
     margin-left: 40px;
     margin-right: 10px;
     padding: 3px;
+}
+
+.spoiler a {
+    display: block;
+    text-decoration: none;
+    color: #EEEEEE;
+    cursor: default;
+}
+
+.spoiler a:hover {
+    display: block;
+    text-decoration: none;
+    color: #000000;
+}
+
+.spoiler_light {
+    font-family: verdana, arial, helvetica, sans-serif;
+    border: 1px solid #CCCCCC;
+    color: #CCCCCC;
+    background-color: #EEEEEE;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    margin-left: 40px;
+    margin-right: 10px;
+    padding: 3px;
+}
+
+.spoiler_light a {
+    display: block;
+    text-decoration: none;
+    color: #CCCCCC;
 }
 
 .tools {
@@ -735,6 +767,10 @@ A {
     border: 1px solid #777777;
     padding: 5px;
     margin: 5px;
+}
+
+.install_dropdown {
+    width: 234px;
 }
 
 .logon_dropdown {
@@ -877,6 +913,14 @@ A {
     border-bottom-width: 1px;
     border-left-width: 1px;
     border-style: dashed;
+}
+
+.fnotification {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    height: 100px;
+    width: 100px;
 }
 
 .move_ctrl {

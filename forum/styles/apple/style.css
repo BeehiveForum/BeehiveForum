@@ -624,17 +624,16 @@ a {
     padding: 3px;
 }
 
-.spoiler a {
-    display: block;
-    text-decoration: none;
-    color: #EEEEEE;
-    cursor: default;
-}
-
-.spoiler a:hover {
-    display: block;
-    text-decoration: none;
+.spoiler_reveal {
+    font-family: verdana, arial, helvetica, sans-serif;
+    border: 1px solid #CCCCCC;
     color: #000000;
+    background-color: #EEEEEE;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    margin-left: 40px;
+    margin-right: 10px;
+    padding: 3px;
 }
 
 .spoiler_light {
@@ -649,10 +648,16 @@ a {
     padding: 3px;
 }
 
-.spoiler_light a {
-    display: block;
-    text-decoration: none;
-    color: #CCCCCC;
+.spoiler_light_reveal {
+    font-family: verdana, arial, helvetica, sans-serif;
+    border: 1px solid #CCCCCC;
+    color: #000000;
+    background-color: #EEEEEE;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    margin-left: 40px;
+    margin-right: 10px;
+    padding: 3px;
 }
 
 .tools {

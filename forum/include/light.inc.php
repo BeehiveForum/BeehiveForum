@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.112 2006-11-09 21:53:43 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.113 2006-11-23 21:42:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -59,6 +59,21 @@ function light_html_draw_top ($title = false)
 
     $stylesheet = html_get_style_sheet();
     echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
+
+    $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
+                                   'delete.php', 'display.php', 'edit.php', 
+                                   'edit_poll.php', 'edit_signature.php', 
+                                   'ldisplay.php', 'lmessages.php', 
+                                   'lpost.php', 'messages.php', 'post.php');
+
+    if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
+
+        if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
+
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js\"></script>\n";
+            if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
+        }
+    }
 
     echo "</head>\n";
     echo "<body>\n";
@@ -909,12 +924,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
-    }
-
-    // Does the user have mouseover spoiler reveal enabled?
-
-    if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
-        $message['CONTENT'] = message_mouseover_spoiler($message['CONTENT']);
     }
 
     if ((strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {

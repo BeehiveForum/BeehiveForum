@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.208 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: messages.php,v 1.209 2006-11-23 16:44:03 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -468,7 +468,14 @@ messages_start_panel();
 messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $posts_per_page);
 
 if ($threaddata['POLL_FLAG'] == 'Y') {
-    echo "<p><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
+
+    echo "            <table class=\"posthead\" width=\"100%\">\n";
+    echo "              <tr>\n";
+    echo "                <td align=\"center\">\n";
+    echo "                  <p align=\"center\"><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
+    echo "                </td>\n";
+    echo "              </tr>\n";
+    echo "            </table>\n";
 }
 
 messages_interest_form($tid, $pid);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.inc.php,v 1.48 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: install.inc.php,v 1.49 2006-11-23 16:44:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -54,7 +54,7 @@ function check_install()
     if (isset($_POST['install_remove_files']) && $_POST['install_remove_files'] == 'Y') {
 
         install_remove_files();
-    header_redirect('index.php');
+        header_redirect('index.php');
     }
 
     if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {

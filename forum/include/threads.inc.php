@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.234 2006-11-11 13:55:25 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.235 2006-11-23 16:44:03 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1719,9 +1719,12 @@ function thread_has_attachments($tid)
     return (db_num_rows($result) > 0);
 }
 
-function thread_auto_prune_unread_data()
+function thread_auto_prune_unread_data($force_start = false, $debug_output = false)
 {
     $db_thread_prune_unread_data = db_connect();
+
+    if (!is_bool($force_start)) return false;
+    if (!is_bool($debug_output)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1732,7 +1735,7 @@ function thread_auto_prune_unread_data()
     if ($unread_rem_prob < 1) $unread_rem_prob = 1;
     if ($unread_rem_prob > 100) $unread_rem_prob = 100;
 
-    if (($mt_result = mt_rand(1, $unread_rem_prob)) == 1) {
+    if ((($mt_result = mt_rand(1, $unread_rem_prob)) == 1) || $force_start === true) {
 
         $tid_array = array();
 
@@ -1743,13 +1746,21 @@ function thread_auto_prune_unread_data()
         $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
         $sql.= "WHERE USER_THREAD.LAST_READ IS NOT NULL ";
         $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME('$unread_cutoff_stamp') ";
-        $sql.= "GROUP BY THREAD.TID LIMIT 0, 5";
+        $sql.= "GROUP BY THREAD.TID ";
+        
+        if ($force_start !== true) $sql.= "LIMIT 0, 5";
 
         if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 
         if (db_num_rows($result) > 0) {
 
             while ($row = db_fetch_array($result)) {
+                
+                if ($debug_output === true) {
+
+                    echo "Updating thread unread cutoff for thread: {$row['TID']}<br />\n";
+                    install_flush_buffer();
+                }
                 
                 thread_update_unread_cutoff($row['TID'], $row['LENGTH'], $row['MODIFIED']);
                 $tid_array[] = $row['TID'];
@@ -1758,6 +1769,12 @@ function thread_auto_prune_unread_data()
             if (sizeof($tid_array) > 0) {
 
                 $tid_list = implode(", ", $tid_array);
+
+                if ($debug_output === true) {
+
+                    echo "Pruning thread unread data for threads: $tid_list<br />\n";
+                    install_flush_buffer();
+                }
 
                 $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}USER_THREAD ";
                 $sql.= "WHERE TID IN ($tid_list) AND INTEREST = 0";

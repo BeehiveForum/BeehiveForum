@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.151 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: search.php,v 1.152 2006-11-23 17:54:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -195,13 +195,15 @@ if (isset($_GET['show_stop_words'])) {
 
 search_get_word_lengths($min_length, $max_length);
 
-if (isset($_POST) && sizeof($_POST) > 0) {
+if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string'])) {
 
     $offset = 0;
 
     $search_arguments = array();
 
-    if (isset($_POST['search_string'])) {
+    if (isset($_GET['search_string']) && strlen(trim(_stripslashes($_GET['search_string']))) > 0) {
+        $search_arguments['search_string'] = trim(_stripslashes($_GET['search_string']));
+    }else if (isset($_POST['search_string'])) {
         $search_arguments['search_string'] = $_POST['search_string'];
     }
 
@@ -298,12 +300,14 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
     $search_success = true;
     $offset = $_GET['offset'];
+}
 
-}elseif (isset($_GET['search_string']) && strlen(trim(_stripslashes($_GET['search_string']))) > 0) {
+if (isset($search_success) && $search_success === true && isset($_GET['search_string'])) {
 
-    $search_success = true;
-    $search_arguments['search_string'] = trim(_stripslashes($_GET['search_string']));
-    $offset = 0;
+    $redirect_uri = "./index.php?webtag=$webtag&final_uri=.%2Fdiscussion.php";
+    $redirect_uri.= "%3Fwebtag%3D$webtag%26amp%3Bleft%3Dsearch_results";
+    header_redirect($redirect_uri);
+    exit;
 }
 
 if (isset($search_success) && $search_success === true && isset($offset)) {
@@ -568,37 +572,40 @@ if (isset($search_success) && $search_success === true) {
     echo "</table>\n";
 }
 
-echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\">&nbsp;</td>\n";
-echo "    <td align=\"left\" class=\"smalltext\">\n";
-echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
-echo "        ", form_input_hidden("webtag", $webtag), "\n";
-echo "        ", form_input_text('msg', '1.1', 10). "\n";
-echo "        ", form_submit("go",$lang['goexcmark']). "\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+if (!isset($_GET['search_string'])) {
 
-echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\">&nbsp;</td>\n";
-echo "    <td align=\"left\" class=\"smalltext\">\n";
-echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
-echo "        ", form_input_hidden('webtag', $webtag), "\n";
-echo "        ", form_input_text("search_string", "", 20). "\n";
-echo "        ", form_submit("submit", $lang['find']). "\n";
-echo "      </form>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">&nbsp;</td>\n";
+    echo "    <td align=\"left\" class=\"smalltext\">\n";
+    echo "      <form name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"right\">\n";
+    echo "        ", form_input_hidden("webtag", $webtag), "\n";
+    echo "        ", form_input_text('msg', '1.1', 10). "\n";
+    echo "        ", form_submit("go",$lang['goexcmark']). "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+
+    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">&nbsp;</td>\n";
+    echo "    <td align=\"left\" class=\"smalltext\">\n";
+    echo "      <form method=\"post\" action=\"search.php\" target=\"_self\">\n";
+    echo "        ", form_input_hidden('webtag', $webtag), "\n";
+    echo "        ", form_input_text("search_string", "", 20). "\n";
+    echo "        ", form_submit("submit", $lang['find']). "\n";
+    echo "      </form>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+}
 
 html_draw_bottom();
 

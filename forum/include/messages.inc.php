@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.423 2006-11-15 22:34:54 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.424 2006-11-23 21:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -495,49 +495,6 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
     return $message;
 }
 
-function message_mouseover_spoiler($content)
-{
-    if ($html_parts = preg_split('/(<div[^>]*>)|(<\/div[^>]*>)/', $content, -1, PREG_SPLIT_DELIM_CAPTURE)) {
-       
-        $div_count = 0;
-        $spoiler_count = 0;
-        
-        foreach($html_parts as $key => $html) {
-
-            if (preg_match("/<div[^>]*>/", $html)) {
-
-                $div_count++;
-
-                if (preg_match("/<div class=\"spoiler\">/", $html)) {
-
-                    $spoiler_count++;
-
-                    if (isset($_SERVER['HTTP_USER_AGENT']) && stristr($_SERVER['HTTP_USER_AGENT'], "Smartphone")) {
-                        $html_parts[$key] = "<div class=\"spoiler_light\"><a href=\"Javascript:void(0)\">";
-                    }else {
-                        $html_parts[$key] = "<div class=\"spoiler\"><a href=\"Javascript:void(0)\">";
-                    }
-                }
-            }
-
-            if (preg_match("/<\/div[^>]*>/", $html) && $div_count > 0) {
-
-                $div_count--;
-
-                if ($div_count == 0 && $spoiler_count > 0) {
-
-                    $spoiler_count--;
-                    $html_parts[$key] = "</a></div>";
-                }
-            }
-        }
-
-        return implode("", $html_parts);
-    }
-
-    return $content;
-}
-
 function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false, $deleted = false)
 {
     $lang = load_language_file();
@@ -618,12 +575,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
-    }
-
-    // Does the user have mouseover spoiler reveal enabled?
-
-    if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
-        $message['CONTENT'] = message_mouseover_spoiler($message['CONTENT']);
     }
 
     // Check length of post to see if we should truncate it for display --------

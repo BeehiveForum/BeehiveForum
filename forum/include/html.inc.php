@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.194 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.195 2006-11-23 21:26:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -565,6 +565,12 @@ function html_draw_top()
         echo "</script>\n";
     }
 
+    $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
+                                   'delete.php', 'display.php', 'edit.php', 
+                                   'edit_poll.php', 'edit_signature.php', 
+                                   'ldisplay.php', 'lmessages.php', 
+                                   'lpost.php', 'messages.php', 'post.php');
+
     if ($include_body_tag === true) {
     
         if (!stristr($_SERVER['PHP_SELF'], 'pm') && !stristr($_SERVER['PHP_SELF'], 'nav.php')) {
@@ -594,6 +600,16 @@ function html_draw_top()
                 echo "//-->\n";
                 echo "</script>\n";
                 if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
+            }
+
+        }
+        
+        if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
+
+            if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
+                
+                echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js\"></script>\n";
+                if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
             }
         }
     }

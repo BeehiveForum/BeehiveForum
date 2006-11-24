@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.158 2006-11-21 09:06:54 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.159 2006-11-24 22:22:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -802,16 +802,22 @@ function pm_display($pm_elements_array, $pm_export_html = false)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $html = "<div align=\"center\">\n";
-    $html.= "  <table width=\"96%\" class=\"box\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    $html.= "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     $html.= "    <tr>\n";
     $html.= "      <td align=\"left\">\n";
-    $html.= "        <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
+    $html.= "        <table class=\"box\" width=\"100%\">\n";
     $html.= "          <tr>\n";
+    $html.= "            <td align=\"left\">\n";
+    $html.= "              <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    $html.= "                <tr>\n";
+    $html.= "                  <td align=\"left\">\n";
+    $html.= "                    <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
+    $html.= "                      <tr>\n";
 
     if (isset($pm_elements_array['FOLDER']) && $pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
 
-        $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
-        $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+        $html.= "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['from']}:&nbsp;</span></td>\n";
+        $html.= "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
         if ($pm_export_html === true) {
 
@@ -819,15 +825,15 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
         }else {
 
-            $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
+            $html.= "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
             $html.= add_wordfilter_tags(format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK'])). "</a>";
-            $html.= "</span></td>\n";
+            $html.= "            </span></td>\n";
         }
 
     }else {
 
-        $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
-        $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+        $html.= "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['to']}:&nbsp;</span></td>\n";
+        $html.= "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
         if (is_array($pm_elements_array['TO_UID'])) {
 
@@ -839,7 +845,7 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
                 }else {
                 
-                    $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
+                    $html.= "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
                     $html.= add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i])). "</a>&nbsp;";
                 }
             }
@@ -852,12 +858,12 @@ function pm_display($pm_elements_array, $pm_export_html = false)
             
             }else {
 
-                $html.= "<a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
+                $html.= "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
                 $html.= add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK'])). "</a>";
             }
         }
 
-        $html.= "</span></td>\n";
+        $html.= "            </span></td>\n";
     }
 
     // Check for words that should be filtered
@@ -875,30 +881,30 @@ function pm_display($pm_elements_array, $pm_export_html = false)
     $pm_elements_array['CONTENT'] = message_split_fiddle($pm_elements_array['CONTENT']);
 
 
-    $html.= "          </tr>\n";
-    $html.= "          <tr>\n";
-    $html.= "            <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
-    $html.= "            <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">{$pm_elements_array['SUBJECT']}</span></td>\n";
+    $html.= "                      </tr>\n";
+    $html.= "                      <tr>\n";
+    $html.= "                        <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"posttofromlabel\">&nbsp;{$lang['subject']}:&nbsp;</span></td>\n";
+    $html.= "                        <td nowrap=\"nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">{$pm_elements_array['SUBJECT']}</span></td>\n";
 
     if ($pm_export_html === true) {
-        $html.= "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED'], true). "&nbsp;</span></td>\n";
+        $html.= "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED'], true). "&nbsp;</span></td>\n";
     }else {
-        $html.= "            <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED']). "&nbsp;</span></td>\n";
+        $html.= "                        <td align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\">". format_time($pm_elements_array['CREATED']). "&nbsp;</span></td>\n";
     }
 
-    $html.= "          </tr>\n";
-    $html.= "        </table>\n";
-    $html.= "      </td>\n";
-    $html.= "    </tr>\n";
-    $html.= "    <tr>\n";
-    $html.= "      <td align=\"left\">\n";
-    $html.= "        <table width=\"100%\">\n";
-    $html.= "          <tr align=\"right\">\n";
-    $html.= "            <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-    $html.= "          </tr>\n";
-    $html.= "          <tr>\n";
-    $html.= "            <td class=\"postbody\" align=\"left\">{$pm_elements_array['CONTENT']}</td>\n";
-    $html.= "          </tr>\n";
+    $html.= "                      </tr>\n";
+    $html.= "                    </table>\n";
+    $html.= "                  </td>\n";
+    $html.= "                </tr>\n";
+    $html.= "                <tr>\n";
+    $html.= "                  <td align=\"left\">\n";
+    $html.= "                    <table width=\"100%\">\n";
+    $html.= "                      <tr align=\"right\">\n";
+    $html.= "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+    $html.= "                      </tr>\n";
+    $html.= "                      <tr>\n";
+    $html.= "                        <td class=\"postbody\" align=\"left\">{$pm_elements_array['CONTENT']}</td>\n";
+    $html.= "                      </tr>\n";
 
     if (isset($pm_elements_array['AID'])) {
 
@@ -908,58 +914,64 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
             // Draw the attachment header at the bottom of the post
 
-            $html.= "          <tr>\n";
-            $html.= "            <td class=\"postbody\" align=\"left\">\n";
+            $html.= "                      <tr>\n";
+            $html.= "                        <td class=\"postbody\" align=\"left\">\n";
 
             if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
-                $html.= "                  <p><b>{$lang['attachments']}:</b><br />\n";
+                $html.= "                              <p><b>{$lang['attachments']}:</b><br />\n";
 
                 foreach($attachments_array as $attachment) {
 
-                    $html.= "                  ". attachment_make_link($attachment, true, false, $pm_export_html). "\n";
+                    $html.= "                              ". attachment_make_link($attachment, true, false, $pm_export_html). "\n";
                 }
 
-                $html.= "                  </p>\n";
+                $html.= "                              </p>\n";
             }
 
             if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
 
-                $html.= "                  <p><b>{$lang['imageattachments']}:</b><br />\n";
+                $html.= "                              <p><b>{$lang['imageattachments']}:</b><br />\n";
 
                 foreach($image_attachments_array as $key => $attachment) {
 
-                    $html.= "                  ". attachment_make_link($attachment, true, false, $pm_export_html). "\n";
+                    $html.= "                              ". attachment_make_link($attachment, true, false, $pm_export_html). "\n";
                 }
 
-                $html.= "                  </p>\n";
+                $html.= "                              </p>\n";
             }
 
-            $html.= "            </td>\n";
-            $html.= "          </tr>\n";
+            $html.= "                        </td>\n";
+            $html.= "                      </tr>\n";
         }
     }
 
-    $html.= "        </table>\n";
-    $html.= "        <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
-    $html.= "          <tr>\n";
+    $html.= "                    </table>\n";
+    $html.= "                    <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
+    $html.= "                      <tr>\n";
 
     if (isset($pm_elements_array['FOLDER']) && (isset($pm_elements_array['MID'])) && $pm_export_html === false) {
 
         if ($pm_elements_array['FOLDER'] == PM_FOLDER_INBOX) {
 
-            $html.= "            <td align=\"center\"><img src=\"". style_image('post.png'). "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
+            $html.= "                        <td align=\"center\"><img src=\"". style_image('post.png'). "\" border=\"0\" alt=\"{$lang['reply']}\" title=\"{$lang['reply']}\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_elements_array['MID']}\" target=\"_self\">{$lang['reply']}</a></td>\n";
 
         }else {
 
-            $html.= "            <td align=\"center\">&nbsp;</td>\n";
+            $html.= "                        <td align=\"center\">&nbsp;</td>\n";
         }
 
     }else {
 
-        $html.= "            <td align=\"center\">&nbsp;</td>\n";
+        $html.= "                        <td align=\"center\">&nbsp;</td>\n";
     }
 
+    $html.= "                      </tr>\n";
+    $html.= "                    </table>\n";
+    $html.= "                  </td>\n";
+    $html.= "                </tr>\n";
+    $html.= "              </table>\n";
+    $html.= "            </td>\n";
     $html.= "          </tr>\n";
     $html.= "        </table>\n";
     $html.= "      </td>\n";

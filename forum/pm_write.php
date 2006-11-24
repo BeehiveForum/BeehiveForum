@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.141 2006-11-22 21:38:22 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.142 2006-11-24 22:22:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -545,15 +545,21 @@ echo "<br />\n";
 
 echo "<form name=\"f_post\" action=\"pm_write.php\" method=\"post\" target=\"_self\">\n";
 echo form_input_hidden('webtag', $webtag), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 
 // preview message
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['messagepreview']}</td>\n";
-    echo "  </tr>\n";
+    echo "              <table class=\"posthead\" width=\"720\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['messagepreview']}</td>\n";
+    echo "                </tr>\n";
 
     if (isset($to_radio) && $to_radio == 0) {
 
@@ -584,43 +590,45 @@ if ($valid && isset($_POST['preview'])) {
 
     $pm_preview_array['CONTENT'] = $t_content;
 
-    echo "  <tr>\n";
-    echo "    <td align=\"left\"><br />", pm_display($pm_preview_array, true), "</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data), "</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
 }
 
 if (!$valid && isset($error_html) && strlen(trim($error_html)) > 0) {
 
-    echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
-    echo "  </tr>";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\">$error_html</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
+    echo "              <table class=\"posthead\" width=\"720\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['error']}</td>\n";
+    echo "                </tr>";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">$error_html</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
 }
 
-echo "<table width=\"720\" class=\"posthead\">\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['writepm']}</td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\" valign=\"top\" width=\"210\">\n";
-echo "      <table class=\"posthead\" width=\"210\">\n";
-echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, false, "thread_title"), "</td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
-echo "        </tr>\n";
+echo "              <table width=\"720\" class=\"posthead\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['writepm']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" valign=\"top\" width=\"210\">\n";
+echo "                    <table class=\"posthead\" width=\"210\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><h2>{$lang['subject']}</h2></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", form_input_text("t_subject", isset($t_subject) ? $t_subject : "", 42, false, false, "thread_title"), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
+echo "                      </tr>\n";
 
 if ($friends_array = pm_user_get_friends()) {
 
@@ -636,17 +644,17 @@ if ($friends_array = pm_user_get_friends()) {
         }
     }
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">\n";
-    echo "            ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
-    echo "            ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "<br />\n";
-    echo "            ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
-    echo "            ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_dropdown"), "\n";
-    echo "          </td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"checkToRadio(1); addRecipient()\""), "&nbsp;&nbsp;</td>\n";
-    echo "        </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
+    echo "                          ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "<br />\n";
+    echo "                          ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
+    echo "                          ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_dropdown"), "\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"checkToRadio(1); addRecipient()\""), "&nbsp;&nbsp;</td>\n";
+    echo "                      </tr>\n";
 
 }else {
 
@@ -656,76 +664,76 @@ if ($friends_array = pm_user_get_friends()) {
         $t_recipient_list = $to_user['LOGON'];
     }
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_dropdown"), "</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"addRecipient()\""), "&nbsp;&nbsp;</td>\n";
-    echo "        </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_dropdown"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"right\">", form_button("add", $lang['addrecipient'], "onclick=\"addRecipient()\""), "&nbsp;&nbsp;</td>\n";
+    echo "                      </tr>\n";
 }
 
 if (!is_array($friends_array)) {
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\"><h2>{$lang['hint']}</h2><span class=\"smalltext\">{$lang['adduserstofriendslist']}</span></td>\n";
-    echo "        </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\"><h2>{$lang['hint']}</h2><span class=\"smalltext\">{$lang['adduserstofriendslist']}</span></td>\n";
+    echo "                      </tr>\n";
 }
 
-echo "        <tr>\n";
-echo "          <td align=\"left\">&nbsp;</td>\n";
-echo "        </tr>\n";
-echo "        <tr>\n";
-echo "          <td align=\"left\"><h2>{$lang['messageoptions']}</h2>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\"><h2>{$lang['messageoptions']}</h2>\n";
 
-echo "            ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
-echo "            ".form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
-echo "            ".form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
+echo "                          ".form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
+echo "                          ".form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
+echo "                          ".form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
 
-echo "          </td>\n";
-echo "        </tr>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
 
 $emot_user = bh_session_get_value('EMOTICONS');
 $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">&nbsp;</td>\n";
-    echo "        </tr>\n";
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">\n";
-    echo "            <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
-    echo "              <tr>\n";
-    echo "                <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
-        echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "&nbsp;</td>\n";
-        echo "              </tr>\n";
-        echo "              <tr>\n";
-        echo "                <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('emots_hide.png', 'emots_toggle', 'hide'), "&nbsp;</td>\n";
+        echo "                            </tr>\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
 
     }else {
 
-        echo "                <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('emots_show.png', 'emots_toggle', 'show'), "&nbsp;</td>\n";
     }
 
-    echo "              </tr>\n";
-    echo "            </table>\n";
-    echo "          </td>\n";
-    echo "        </tr>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
 }
 
-echo "      </table>\n";
-echo "    </td>\n";
-echo "    <td align=\"left\" width=\"500\" valign=\"top\">\n";
-echo "      <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
-echo "        <tr>\n";
-echo "          <td align=\"left\">";
-echo "           <h2>{$lang['message']}</h2>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                  <td align=\"left\" width=\"500\" valign=\"top\">\n";
+echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">";
+echo "                         <h2>{$lang['message']}</h2>\n";
 
 $tools = new TextAreaHTML("f_post");
 
@@ -747,20 +755,20 @@ if ($allow_html == true && $tool_type != 0) {
 
 echo $tools->textarea("t_content", $t_content, 20, 75, "virtual", "tabindex=\"1\"", "post_content"), "\n";
 
-echo "          </td>\n";
-echo "        </tr>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
 
 if ($post->isDiff() && $fix_html) {
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\">\n";
-    echo "            ", $tools->compare_original("t_content", $post->getOriginalContent()), "\n";
-    echo "          </td>\n";
-    echo "        </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          ", $tools->compare_original("t_content", $post->getOriginalContent()), "\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
 }
 
-echo "        <tr>\n";
-echo "          <td align=\"left\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">\n";
 
 if ($allow_html == true) {
 
@@ -770,7 +778,7 @@ if ($allow_html == true) {
 
     } else {
 
-        echo "<h2>{$lang['htmlinmessage']}</h2>\n";
+        echo "              <h2>{$lang['htmlinmessage']}</h2>\n";
 
         $tph_radio = $post->getHTML();
 
@@ -782,7 +790,7 @@ if ($allow_html == true) {
                 echo $tools->assign_checkbox("t_post_html[1]", "t_post_html[0]");
         }
 
-        echo "<br />";
+        echo "              <br />";
     }
 
 } else {
@@ -790,27 +798,27 @@ if ($allow_html == true) {
         echo form_input_hidden("t_post_html", "disabled");
 }
 
-echo "<br />\n";
+echo "              <br />\n";
 
 echo form_submit('submit', $lang['post'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
-echo "&nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
-echo "&nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
+echo "              &nbsp;".form_submit('preview', $lang['preview'], 'tabindex="3" onclick="clearFocus()"');
+echo "              &nbsp;".form_submit('cancel', $lang['cancel'], 'tabindex="4" onclick="closeAttachWin(); clearFocus()"');
 
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
-    echo "&nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
+    echo "              &nbsp;".form_button("attachments", $lang['attachments'], "onclick=\"launchAttachWin('{$aid}', '$webtag')\"");
     echo form_input_hidden("aid", $aid);
 }
 
-echo "          </td>\n";
-echo "        </tr>\n";
-echo "      </table>\n";
-echo "    </td>\n";
-echo "  </tr>\n";
-echo "  <tr>\n";
-echo "    <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
 
 
 echo $tools->js();
@@ -826,19 +834,27 @@ if (isset($t_rmid)) echo form_input_hidden("replyto", $t_rmid), "\n";
 
 if (isset($pm_data) && is_array($pm_data)) {
 
-    echo "<table class=\"posthead\" width=\"720\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['inreplyto']}</td>\n";
-    echo "  </tr>";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\"><br />", pm_display($pm_data), "</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
+    echo "              <table class=\"posthead\" width=\"720\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['inreplyto']}</td>\n";
+    echo "                </tr>";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data), "</td>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
 }
 
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();

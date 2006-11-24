@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.102 2006-11-22 21:38:22 decoyduck Exp $ */
+/* $Id: pm.php,v 1.103 2006-11-24 22:22:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -289,6 +289,7 @@ echo "    <td class=\"pmheadr\" align=\"right\"><a href=\"pm_write.php?webtag=$w
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
+echo "<div align=\"center\">\n";
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
@@ -299,7 +300,16 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $pm_elements_array['FOLDER'] = $folder;
         $pm_elements_array['CONTENT'] = pm_get_content($mid);
 
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+       
         pm_display($pm_elements_array);
+
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+
         echo "<br />\n";
 
     }else {
@@ -308,35 +318,40 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     }
 }
 
-echo "<div align=\"center\">\n";
 echo "<form name=\"pm\" action=\"pm.php?page=$page\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden('folder', $folder), "\n";
-echo "  <table width=\"95%\" border=\"0\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"80%\">\n";
 echo "    <tr>\n";
-echo "      <td width=\"20\" align=\"center\">&nbsp;</td>\n";
-echo "      <td align=\"left\" class=\"posthead\" width=\"50%\">{$lang['subject']}</td>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table width=\"100%\" border=\"0\">\n";
+echo "                <tr>\n";
+echo "                  <td width=\"20\" align=\"center\" class=\"subhead\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"50%\">{$lang['subject']}</td>\n";
 
 if ($folder == PM_FOLDER_INBOX) {
-    echo "      <td align=\"left\" class=\"posthead\" width=\"30%\">{$lang['from']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"30%\">{$lang['from']}</td>\n";
 }elseif ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX) {
-    echo "      <td align=\"left\" class=\"posthead\" width=\"30%\">{$lang['to']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"30%\">{$lang['to']}</td>\n";
 }elseif  ($folder == PM_FOLDER_SAVED) {
-    echo "      <td align=\"left\" class=\"posthead\" width=\"15%\">{$lang['to']}</td>\n";
-    echo "      <td align=\"left\" class=\"posthead\" width=\"15%\">{$lang['from']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['to']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['from']}</td>\n";
 }
 
-echo "      <td align=\"left\" class=\"posthead\" width=\"20%\">{$lang['timesent']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" width=\"20%\">{$lang['timesent']}</td>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
-    echo "      <td class=\"posthead\" align=\"center\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
-    echo "    </tr>\n";
+    echo "                  <td class=\"subhead\" align=\"center\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
+    echo "                </tr>\n";
 
     foreach($pm_messages_array['message_array'] as $message) {
 
-        echo "    <tr>\n";
-        echo "      <td align=\"left\" class=\"postbody\">";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"postbody\">";
 
         if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
             $mid = $_GET['mid'];
@@ -345,78 +360,84 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         }
 
         if ($mid == $message['MID']) {
-            echo "<img src=\"".style_image('current_thread.png')."\" title=\"{$lang['currentmessage']}\" alt=\"{$lang['currentmessage']}\" />";
+            echo "            <img src=\"".style_image('current_thread.png')."\" title=\"{$lang['currentmessage']}\" alt=\"{$lang['currentmessage']}\" />";
         }else {
             if (($message['TYPE'] == PM_UNREAD)) {
-                echo "<img src=\"".style_image('pmunread.png')."\" title=\"{$lang['unreadmessage']}\" alt=\"{$lang['unreadmessage']}\" />";
+                echo "            <img src=\"".style_image('pmunread.png')."\" title=\"{$lang['unreadmessage']}\" alt=\"{$lang['unreadmessage']}\" />";
             }else {
-                echo "<img src=\"".style_image('pmread.png')."\" title=\"{$lang['readmessage']}\" alt=\"{$lang['readmessage']}\" />";
+                echo "            <img src=\"".style_image('pmread.png')."\" title=\"{$lang['readmessage']}\" alt=\"{$lang['readmessage']}\" />";
             }
         }
 
-        echo "</td>\n";
+        echo "            </td>\n";
 
-        echo "      <td align=\"left\" class=\"postbody\">";
-        echo "<a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
+        echo "                  <td align=\"left\" class=\"postbody\">";
+        echo "            <a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
         
         if (pm_has_attachments($message['MID'])) {
-            echo "&nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
+            echo "            &nbsp;&nbsp;<img src=\"".style_image('attach.png')."\" border=\"0\" alt=\"{$lang['attachment']} - {$message['AID']}\" title=\"{$lang['attachment']}\" />";
         }
 
         if (($folder == PM_FOLDER_OUTBOX) && ($message['TYPE'] == PM_UNREAD)) {
-            echo "&nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&amp;mid={$message['MID']}\">Edit</a>]</span>";
+            echo "            &nbsp;&nbsp;<span class=\"threadxnewofy\">[<a target=\"_self\" href=\"pm_edit.php?webtag=$webtag&amp;mid={$message['MID']}\">Edit</a>]</span>";
         }
 
-        echo "</td>\n";
+        echo "            </td>\n";
 
         if ($folder == PM_FOLDER_SENT || $folder == PM_FOLDER_OUTBOX) {
 
-            echo "      <td align=\"left\" class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
+            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
             echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
-            echo "</td>\n";
+            echo "            </td>\n";
 
         }elseif ($folder == PM_FOLDER_SAVED) {
 
-            echo "      <td align=\"left\" class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
+            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
             echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])) . "</a>";
-            echo "</td>\n";
+            echo "            </td>\n";
 
-            echo "      <td align=\"left\" class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
+            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
             echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
-            echo "</td>\n";
+            echo "            </td>\n";
 
         }else {
 
-            echo "      <td align=\"left\" class=\"postbody\">";
-            echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
+            echo "                  <td align=\"left\" class=\"postbody\">";
+            echo "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
             echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])) . "</a>";
-            echo "</td>\n";
+            echo "            </td>\n";
 
         }
 
-        echo "      <td align=\"left\" class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
-        echo "    </tr>\n";
+        echo "                  <td align=\"left\" class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
+        echo "                  <td class=\"postbody\" align=\"center\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
+        echo "                </tr>\n";
     }
 
 }else {
 
-    echo "      <td align=\"left\" class=\"posthead\" width=\"20\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\">&nbsp;</td><td align=\"left\" class=\"postbody\">{$lang['nomessages']}</td>\n";
-    echo "    </tr>\n";
+    echo "                  <td align=\"left\" class=\"posthead\" width=\"20\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"postbody\">&nbsp;</td><td align=\"left\" class=\"postbody\">{$lang['nomessages']}</td>\n";
+    echo "                </tr>\n";
 }
 
-echo "    <tr>\n";
-echo "      <td align=\"left\" class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"postbody\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
 echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\" class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
-echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
+echo "  <table width=\"80%\" border=\"0\">\n";
 
 // Fetch the free PM space and calculate it as a percentage.
 
@@ -426,8 +447,7 @@ $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
 $pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space);
 
 echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" colspan=\"5\" align=\"center\">\n";
+echo "      <td class=\"postbody\" align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" colspan=\"2\" width=\"25%\">\n";
@@ -468,16 +488,15 @@ echo "    </tr>\n";
 if (pm_auto_prune_enabled()) {
 
     echo "    <tr>\n";
-    echo "      <td align=\"left\" class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+    echo "      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "      <td align=\"left\" class=\"pmbar_text\" colspan=\"4\"><img src=\"", style_image('warning.png'), "\" alt=\"{$lang['pmfolderpruningisenabled']}\" title=\"{$lang['pmfolderpruningisenabled']}\" /> {$lang['pmfolderpruningisenabled']}&nbsp;[<a href=\"javascript:void(0)\" target=\"_self\" onclick=\"alert('{$lang['pmpruneexplanation']}');\">?</a>]</td>\n";
+    echo "      <td align=\"left\" class=\"pmbar_text\"><img src=\"", style_image('warning.png'), "\" alt=\"{$lang['pmfolderpruningisenabled']}\" title=\"{$lang['pmfolderpruningisenabled']}\" /> {$lang['pmfolderpruningisenabled']}&nbsp;[<a href=\"javascript:void(0)\" target=\"_self\" onclick=\"alert('{$lang['pmpruneexplanation']}');\">?</a>]</td>\n";
     echo "    </tr>\n";
 }
 
 echo "    <tr>\n";
-echo "      <td align=\"left\" class=\"postbody\" colspan=\"5\">&nbsp;</td>\n";
+echo "      <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

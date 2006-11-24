@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.28 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.29 2006-11-24 21:34:27 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -90,6 +90,7 @@ $lang['folders'] = "Folders";
 $lang['thread'] = "thread";
 $lang['threads'] = "threads";
 $lang['message'] = "Message";
+$lang['messagenumber'] = "Message Number";
 $lang['from'] = "From";
 $lang['to'] = "To";
 $lang['all_caps'] = "ALL";
@@ -197,6 +198,7 @@ $lang['show'] = "Show";
 $lang['hint'] = "Hint";
 $lang['new'] = "New";
 $lang['reset'] = "Reset";
+$lang['referer'] = "Referer";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -233,6 +235,8 @@ $lang['adminexp_12'] = "<b>Forum links</b> lets you manage the links dropdown in
 $lang['adminexp_13'] = "<b>View log</b> lists recent actions by the forum moderators.";
 $lang['adminexp_14'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
 $lang['adminexp_15'] = "<b>Global Forum Settings</b> allows you to modify settings which affect all forums.";
+$lang['adminexp_16'] = "<b>Post Approval Queue</b> allows you to view any posts awaiting approval by a moderator.";
+$lang['adminexp_17'] = "<b>Visitor Log</b> allows you to view an extended list of visitors including their HTTP referers.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['newstyle'] = "New style";
 $lang['successfullycreated'] = "successfully created.";
@@ -309,10 +313,17 @@ $lang['aliasdesc'] = "This is a list of other posters who match this user's last
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";
+$lang['userfilter'] = "User filter";
+$lang['onlineusers'] = "Online users";
+$lang['offlineusers'] = "Offline users";
+$lang['usersawaitingapproval'] = "Users awaiting approval";
+$lang['bannedusers'] = "Banned users";
+$lang['guestusers'] = "Guest Users";
 $lang['lastlogon'] = "Last Logon";
 $lang['sessionreferer'] = "Session Referer";
 $lang['signupreferer'] = "Sign-up Referer:";
 $lang['nouseraccounts'] = "No user accounts in database.";
+$lang['nouseraccountsmatchingfilter'] = "No user accounts matching filter";
 $lang['searchforusernotinlist'] = "Search for a user not in list";
 $lang['adminaccesslog'] = "Admin Access Log";
 $lang['adminlogexp'] = "This list shows the last actions sanctioned by users with Admin privileges.";
@@ -397,6 +408,7 @@ $lang['usercanaccessforumtools'] = "User can access forum tools and can create, 
 $lang['usercanmodallfoldersonallforums'] = "User can moderate <b>all folders</b> on <b>all forums</b>";
 $lang['usercanmodlinkssectiononallforums'] = "User can moderate links section on <b>all forums</b>";
 $lang['emailconfirmationrequired'] = "Email confirmation required";
+$lang['userisbannedfromallforums'] = "User is banned from <b>all forums</b>";
 $lang['cancelemailconfirmation'] = "Cancel email confirmation and allow user to start posting";
 $lang['resendconfirmationemail'] = "Resend confirmation email to user";
 $lang['donothing'] = "Do nothing";
@@ -491,6 +503,16 @@ $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
 $lang['postcount'] = "Post Count:";
 $lang['resetpostcount'] = "Reset Post Count";
+$lang['postapprovalqueue'] = "Post Approval Queue";
+$lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
+$lang['userapprovalqueue'] = "User Approval Queue";
+$lang['approveselected'] = "Approve selected";
+$lang['successfullyapproveduser'] = "Successfully approved user";
+$lang['banselected'] = "Ban selected";
+$lang['nousersawaitingapproval'] = "No users are awaiting approval";
+$lang['kickselected'] = "Kick selected";
+$lang['visitorlog'] = "Visitor Log";
+$lang['novisitorslogged'] = "No Visitors Logged";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -573,6 +595,8 @@ $lang['updatedban'] = "Updated ban '%s'. '%s' to '%s', '%s' to '%s'.";
 $lang['splitthreadatpostintonewthread'] = "Split thread '%s' at post %s  into new thread '%s'";
 $lang['mergedthreadintonewthread'] = "Merged threads '%s' and '%s' into new thread '%s'";
 
+$lang['approveduser'] = "Approved user '%s'";
+
 $lang['adminlogempty'] = "Admin Log is empty";
 $lang['clearlog'] = "Clear Log";
 
@@ -647,6 +671,8 @@ $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['listguestsinvisitorlog'] = "List Guests in Visitor Log";
 $lang['guestaccess'] = "Guest Access";
 $lang['allowguestaccess'] = "Allow Guest Access";
+$lang['userandguestaccesssettings'] = "User and guest access settings";
+$lang['requireuserapproval'] = "Require user approval by admin";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
@@ -696,6 +722,7 @@ $lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to d
 $lang['forum_settings_help_48'] = "<b>Unread messages cutoff</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cutoff period will automatically appear as read.";
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
 $lang['forum_settings_help_50'] = "Your Beehive Forum will not automatically prune the unread messages data from your database. You must choose to do this by using the prune options below.";
+$lang['forum_settings_help_51'] = "You can require approval of all new user accounts before they are used by enabling this option. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
 
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
@@ -716,6 +743,8 @@ $lang['freespace'] = "Free Space";
 $lang['attachmentproblem'] = "There was a problem downloading this attachment. Please try again later.";
 $lang['attachmentshavebeendisabled'] = "Attachments have been disabled by the forum owner.";
 $lang['canonlyuploadmaximum'] = "You can only upload a maximum of 10 files at a time";
+$lang['deleteattachments'] = "Delete attachments";
+$lang['deleteattachmentsconfirm'] = "Are you sure you want to delete the selected attachments?";
 
 // Changing passwords (change_pw.php) ----------------------------------
 
@@ -991,6 +1020,8 @@ $lang['emailconfirmationrequiredbeforepost'] = "Email confirmation is required b
 $lang['emailconfirmationfailedtosend'] = "Confirmation email failed to send. Please contact the forum owner to rectify this.";
 $lang['emailconfirmationsent'] = "Confirmation email has been resent.";
 $lang['resendconfirmation'] = "Resend Confirmation";
+$lang['userapprovalrequired'] = "User approval required";
+$lang['userapprovalrequiredbeforeaccess'] = "Your user account needs to be approved by a forum admin before you can access the requested forum.";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 
@@ -1032,6 +1063,8 @@ $lang['until'] = "Until 00:00 UTC";
 $lang['approvalrequired'] = "Approval Required";
 $lang['awaitingapprovalbymoderator'] = "is awaiting approval by a moderator";
 $lang['postapprovedsuccessfully'] = "Post approved successfully";
+$lang['postapprovalfailed'] = "Post approval failed.";
+$lang['postdoesnotrequireapproval'] = "Post does not require approval";
 $lang['approvepost'] = "Approve post for display";
 $lang['approvedcaps'] = "APPROVED";
 $lang['makesticky'] = "Make sticky";
@@ -1337,6 +1370,7 @@ $lang['yoursearchdidnotreturnanymatches'] = "Your search did not return any matc
 
 // Relationships (user_rel.php) ----------------------------------------
 
+$lang['relationships'] = "Relationships";
 $lang['userrelationship'] = "User Relationship";
 $lang['userrelationships'] = "User Relationships";
 $lang['friends'] = "Friends";
@@ -1465,6 +1499,12 @@ $lang['ignorefolderconfirm'] = "Are you sure you want to ignore this folder?";
 $lang['unignorefolderconfirm'] = "Are you sure you want to stop ignoring this folder?";
 $lang['threadviewedonetime'] = "Viewed: 1 time";
 $lang['threadviewedtimes'] = "Viewed: %d times";
+$lang['gotofirstpostinthread'] = "Go to first post in thread";
+$lang['gotolastpostinthread'] = "Go to last post in thread";
+$lang['viewmessagesinthisfolderonly'] = "View messages in this folder only";
+$lang['shownext50threads'] = "Show next 50 threads";
+$lang['showprev50threads'] = "Show previous 50 threads";
+$lang['createnewdiscussioninthisfolder'] = "Create new discussion in this folder";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Bold";
@@ -1654,5 +1694,13 @@ $lang['threadmergefailed'] = "Thread merge failed";
 $lang['threadsplitfailed'] = "Thread split failed";
 
 $lang['cannotmergeorsplitthread'] = "There are no posts in this thread that can be merged or split";
+
+// Thread subscriptions
+
+$lang['threadsubscriptions'] = "Thread Subscriptions";
+$lang['nosubscriptions'] = "No Subscriptions";
+$lang['couldnotupdateinterestonthread'] = "Could not update interest on thread '%s'";
+$lang['threadinterestsupdatedsuccessfully'] = "Thread interests updated successfully";
+$lang['unsubscribebutton'] = "Unsubscribe";
 
 ?>

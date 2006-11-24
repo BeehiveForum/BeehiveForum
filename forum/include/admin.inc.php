@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.85 2006-11-20 22:10:23 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.86 2006-11-24 20:59:25 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -695,10 +695,12 @@ function admin_get_forum_list()
 /**
 * Fetch ban data
 *
-* Fetches available ban data
+* Fetches available ban data from database.
 *
 * @return array
-* @void
+* @param string $sort_by - Optional column to sort results by (default: ID)
+* @param string $sort_dir - Optional sort direction for results (default: ASC);
+* @param integer $offset - Offset for results
 */
 
 function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
@@ -736,6 +738,15 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
                  'ban_array' => $ban_data_array);
 }
 
+/**
+* Fetch ban data by ban ID
+*
+* Fetches available ban data from database for the specified ban ID.
+*
+* @return array
+* @param string $ban_id - ID of ban to return.
+*/
+
 function admin_get_ban($ban_id)
 {
     $db_admin_get_bandata = db_connect();
@@ -757,6 +768,15 @@ function admin_get_ban($ban_id)
 
     return false;
 }
+
+/**
+* Fetch post approval queue.
+*
+* Fetches list of posts awaiting approval from database.
+*
+* @return array
+* @param string $offset - Optional offset for results
+*/
 
 function admin_get_post_approval_queue($offset = 0)
 {
@@ -797,6 +817,15 @@ function admin_get_post_approval_queue($offset = 0)
     return array('post_count' => $post_count,
                  'post_array' => $post_approval_array);
 }
+
+/**
+* Fetch user approval queue.
+*
+* Fetches list of users awaiting approval from database.
+*
+* @return array
+* @param string $offset - Optional offset for results
+*/
 
 function admin_get_user_approval_queue($offset = 0)
 {
@@ -847,6 +876,122 @@ function admin_get_user_approval_queue($offset = 0)
 
     return array('user_count' => $user_count,
                  'user_array' => $user_approval_array);
+}
+
+/**
+* Fetch visitor log from database.
+*
+* Fetches an extended list of visitors from database including HTTP referer
+* which isn't shown on the normal visitor log.
+*
+* @return array
+* @param integer $offset - offset for results
+* @param integer $limit  - limit for number of results
+*/
+
+function admin_get_visitor_log($offset, $limit)
+{
+    $db_admin_get_visitor_log = db_connect();
+
+    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($limit)) $limit = 20;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $users_get_recent_array = array();
+    $users_get_recent_count = 0;
+
+    $lang = load_language_file();
+
+    $uid = bh_session_get_value('UID');
+
+    $forum_fid = $table_data['FID'];
+
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM VISITOR_LOG VISITOR_LOG ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid'";
+
+    $result = db_query($sql, $db_admin_get_visitor_log);
+    list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, VISITOR_LOG.REFERER, ";
+    $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
+    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
+    $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
+    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
+    $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
+    $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
+    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, $limit";
+
+    $result = db_query($sql, $db_admin_get_visitor_log);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($visitor_array = db_fetch_array($result)) {
+            
+            if (!isset($visitor_array['UID']) || $visitor_array['UID'] == 0) {
+
+                $visitor_array['UID']      = 0;
+                $visitor_array['LOGON']    = $lang['guest'];
+                $visitor_array['NICKNAME'] = $lang['guest'];
+            }
+
+            if (isset($visitor_array['PEER_NICKNAME'])) {
+                if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
+                    $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
+                }
+            }
+
+            if (isset($visitor_array['REFERER']) && strlen(trim($visitor_array['REFERER'])) > 0) {
+
+                if (stristr($visitor_array['REFERER'], get_request_uri())) $visitor_array['REFERER'] = "";
+                if (stristr($visitor_array['REFERER'], html_get_forum_uri())) $visitor_array['REFERER'] = "";
+
+            }else {
+
+                $visitor_array['REFERER'] = "";
+            }
+
+            $users_get_recent_array[] = $visitor_array;
+            $users_get_recent_count++;
+        }
+    }
+
+    return array('user_count' => $users_get_recent_count,
+                 'user_array' => $users_get_recent_array);
+}
+
+/**
+* Clears visitor log
+*
+* Clears the forum visitor log
+*
+* @return bool
+* @param void
+*/
+
+function admin_clear_visitor_log()
+{
+    $db_admin_clear_visitor_log = db_connect();
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+
+    $sql = "DELETE FROM VISITOR_LOG WHERE FORUM = '$forum_fid'";
+    if (!$result = db_query($sql, $db_admin_clear_visitor_log)) return false;
+
+    return true;
 }
 
 ?>

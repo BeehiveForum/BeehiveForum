@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.261 2006-11-22 21:38:22 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.262 2006-11-24 20:59:25 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -471,6 +471,11 @@ function bh_remove_stale_sessions()
         $db_bh_remove_stale_sessions = db_connect();
 
         if ($session_cutoff = forum_get_setting('session_cutoff', false, 86400)) {
+
+            $sql = "DELETE FROM SESSIONS WHERE UID = 0 AND ";
+            $sql.= "TIME < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff) ";
+
+            if (!$result = db_query($sql, $db_bh_remove_stale_sessions)) return false;
 
             $expired_sessions_array = array();
 
@@ -1212,10 +1217,16 @@ function bh_session_is_search_engine()
 function bh_session_get_referer()
 {
     if (!$http_referer = bh_session_get_value('REFERER')) {
+
         if (isset($_SERVER['HTTP_REFERER']) && strlen(trim($_SERVER['HTTP_REFERER'])) > 0) {
+
             $http_referer = addslashes(trim($_SERVER['HTTP_REFERER']));
+
             if (stristr($http_referer, get_request_uri())) $http_referer = "";
+            if (stristr($http_referer, html_get_forum_uri())) $http_referer = "";
+
         }else {
+
             $http_referer = "";
         }
     }

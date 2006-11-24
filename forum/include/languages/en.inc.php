@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.360 2006-11-22 21:38:22 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.361 2006-11-24 20:59:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -198,6 +198,7 @@ $lang['show'] = "Show";
 $lang['hint'] = "Hint";
 $lang['new'] = "New";
 $lang['reset'] = "Reset";
+$lang['referer'] = "Referer";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -235,6 +236,7 @@ $lang['adminexp_13'] = "<b>View log</b> lists recent actions by the forum modera
 $lang['adminexp_14'] = "<b>Manage Forums</b> lets you create and delete and close or reopen forums.";
 $lang['adminexp_15'] = "<b>Global Forum Settings</b> allows you to modify settings which affect all forums.";
 $lang['adminexp_16'] = "<b>Post Approval Queue</b> allows you to view any posts awaiting approval by a moderator.";
+$lang['adminexp_17'] = "<b>Visitor Log</b> allows you to view an extended list of visitors including their HTTP referers.";
 $lang['createforumstyle'] = "Create a Forum Style";
 $lang['newstyle'] = "New style";
 $lang['successfullycreated'] = "successfully created.";
@@ -510,6 +512,8 @@ $lang['banselected'] = "Ban selected";
 $lang['nousersawaitingapproval'] = "No users are awaiting approval";
 $lang['kickselected'] = "Kick selected";
 $lang['approveselected'] = "Approve selected";
+$lang['visitorlog'] = "Visitor Log";
+$lang['novisitorslogged'] = "No Visitors Logged";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 

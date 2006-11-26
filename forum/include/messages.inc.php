@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.424 2006-11-23 21:26:07 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.425 2006-11-26 15:32:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1110,6 +1110,7 @@ function messages_start_panel()
     echo "      <table class=\"box\" width=\"100%\">\n";
     echo "        <tr>\n";
     echo "          <td class=\"posthead\">\n";
+    echo "            <br />\n";
 }
 
 function messages_end_panel()
@@ -1201,14 +1202,13 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
     }
 
     unset($navbits);
-
+    
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
-    echo "                <td align=\"center\">\n";
-    echo "                  <p align=\"center\" class=\"messagefoot\">$html</p>\n";
-    echo "                </td>\n";
+    echo "                <td align=\"center\">$html</td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";
+    echo "            <br />\n";
 }
 
 function mess_nav_range($from,$to)
@@ -1247,6 +1247,7 @@ function messages_interest_form($tid,$pid)
     echo "                </td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";
+    echo "            <br />\n";
 }
 
 function message_get_user($tid, $pid)
@@ -1471,7 +1472,7 @@ function messages_fontsize_form($tid, $pid)
 
     $webtag = get_webtag($webtag_search);
 
-    $fontstrip = "<p>{$lang['adjtextsize']}: ";
+    $fontstrip = "{$lang['adjtextsize']}: ";
 
     if (($fontsize = bh_session_get_value('FONT_SIZE')) === false) {
         $fontsize = 10;
@@ -1504,7 +1505,7 @@ function messages_fontsize_form($tid, $pid)
         $fontlarger = $fontsize + 1;
 
         $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=9\" target=\"_self\">&laquo; {$lang['smaller']}</a> ";
-        $fontstrip.= "10 <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=11\" target=\"_self\">{$lang['larger']} &raquo;</a></p>\n";
+        $fontstrip.= "10 <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=11\" target=\"_self\">{$lang['larger']} &raquo;</a>\n";
 
     }
 
@@ -1512,7 +1513,8 @@ function messages_fontsize_form($tid, $pid)
     echo "              <tr>\n";
     echo "                <td align=\"center\">$fontstrip</td>\n";
     echo "              </tr>\n";
-    echo "            </table>\n";    
+    echo "            </table>\n";
+    echo "            <br />\n";
 }
 
 function validate_msg($msg)

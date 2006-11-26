@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.209 2006-11-23 16:44:03 decoyduck Exp $ */
+/* $Id: messages.php,v 1.210 2006-11-26 15:32:39 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -140,7 +140,8 @@ if (isset($_POST['pollsubmit'])) {
         if (poll_check_tabular_votes($_POST['tid'], $_POST['pollvote'])) {
 
             poll_vote($_POST['tid'], $_POST['pollvote']);
-            header_redirect("./messages.php?webtag=$webtag&msg=". $_POST['tid']. ".1");
+            $user_poll_votes = implode(",", $_POST['pollvote']);
+            header_redirect("./messages.php?webtag=$webtag&user_poll_votes=$user_poll_votes&msg=". $_POST['tid']. ".1");
 
         }else {
 
@@ -270,21 +271,14 @@ if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 
     if ($userpollvote = poll_get_user_vote($tid)) {
 
-        if ($userpollvote ^ POLL_MULTIVOTE) {
+        for ($i = 0; $i < sizeof($userpollvote); $i++) {
+            $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
+        }
 
-            for ($i = 0; $i < sizeof($userpollvote); $i++) {
-
-                $userpollvotes_array[] = $userpollvote[$i]['OPTION_ID'];
-            }
-
-            if (sizeof($userpollvotes_array) > 1) {
-
-                echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
-
-            }else {
-
-                echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
-            }
+        if (sizeof($userpollvotes_array) > 1) {
+            echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoptions']}: ", implode(", ", $userpollvotes_array), "</td>\n";
+        }else {
+            echo "    <td width=\"1%\" align=\"right\" nowrap=\"nowrap\"><span class=\"postinfo\"><a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\" title=\"{$lang['clicktochangevote']}\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['poll']}\" title=\"{$lang['poll']}\" /></a> {$lang['youvotedforoption']} #", implode(", ", $userpollvotes_array), "</td>\n";
         }
 
     }else {
@@ -472,10 +466,11 @@ if ($threaddata['POLL_FLAG'] == 'Y') {
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
     echo "                <td align=\"center\">\n";
-    echo "                  <p align=\"center\"><a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a></p>\n";
+    echo "                  <a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a>\n";
     echo "                </td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";
+    echo "            <br />\n";
 }
 
 messages_interest_form($tid, $pid);

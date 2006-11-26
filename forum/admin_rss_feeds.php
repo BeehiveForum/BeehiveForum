@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.23 2006-11-19 20:31:46 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.24 2006-11-26 23:39:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -617,9 +617,9 @@ if (isset($_POST['addfeed'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"center\" width=\"20\">&nbsp;</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" width=\"300\">{$lang['name']}</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\" width=\"225\">{$lang['updatefrequency']}&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"center\" width=\"25\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
     if ($rss_feeds = rss_get_feeds()) {
@@ -627,16 +627,17 @@ if (isset($_POST['addfeed'])) {
         foreach ($rss_feeds as $rss_feed) {
             
             echo "                <tr>\n";
+            echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("t_delete[{$rss_feed['RSSID']}]", "Y", false), "</td>\n";
             echo "                  <td valign=\"top\" align=\"left\" width=\"300\"><a href=\"admin_rss_feeds.php?feed_id={$rss_feed['RSSID']}\">{$rss_feed['NAME']}</a></td>\n";
             echo "                  <td valign=\"top\" align=\"left\" width=\"225\">", (in_array($rss_feed['FREQUENCY'], array_keys($update_labels))) ? $update_labels[$rss_feed['FREQUENCY']] : $lang['unknown'], "</td>\n";
-            echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("t_delete[{$rss_feed['RSSID']}]", "Y", false), "</td>\n";
             echo "                </tr>\n";
         }
 
     }else {
 
         echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"left\" colspan=\"4\">{$lang['noexistingfeeds']}</td>\n";
+        echo "                  <td valign=\"top\" align=\"center\" width=\"25\">&nbsp;</td>\n";
+        echo "                  <td valign=\"top\" align=\"left\" colspan=\"3\">{$lang['noexistingfeeds']}</td>\n";
         echo "                </tr>\n";
     }
 

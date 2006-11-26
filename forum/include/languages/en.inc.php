@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.364 2006-11-26 15:32:38 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.365 2006-11-26 23:39:09 decoyduck Exp $ */
 
 // International English language file
 
@@ -334,12 +334,22 @@ $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Last IP Address";
 $lang['logged'] = "Logged";
 $lang['notlogged'] = "Not Logged";
+$lang['addwordfilter'] = "Add word filter";
+$lang['deleteselectedwordfilters'] = "Delete selected";
+$lang['addnewwordfilter'] = "Add New Word Filter";
 $lang['wordfilterupdated'] = "Word Filter updated";
+$lang['filtertype'] = "Filter Type";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['wordfilterexp_1'] = "Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line.";
 $lang['wordfilterexp_2'] = "Perl-compatible regular expressions can also be used to match words if you know how.";
 $lang['wordfilterexp_3'] = "Use this page to edit your personal Word Filter. Place each word to be filtered on a new line.";
 $lang['wordfilterisfull'] = "You cannot add any more word filters. Remove some unused ones or edit the existing ones first.";
+$lang['nowordfilterentriesfound'] = "No existing word filter entries found. To add a word filter click the button below.";
+$lang['mustspecifymatchedtext'] = "You must specify matched text";
+$lang['mustspecifyfilteroption'] = "You must specify a filter option";
+$lang['mustspecifyfilterid'] = "You must specify a filter ID";
+$lang['invalidfilterid'] = "Invalid Filter ID";
+$lang['failedtoupdatewordfilter'] = "Failed to update word filter. Check that the filter still exists.";
 $lang['allow'] = "Allow";
 $lang['access'] = "Access";
 $lang['normalthreadsonly'] = "Normal threads only";
@@ -387,6 +397,7 @@ $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID 
 $lang['successfullyaddedfolder'] = "Successfully Added Folder";
 $lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
 $lang['folderupdatedsuccessfully'] = "Folder updated successfully";
+$lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
 $lang['forumisnotrestricted'] = "Forum is not restricted";
 $lang['noforumidspecified'] = "No Forum ID specified";
 $lang['groups'] = "Groups";
@@ -488,6 +499,7 @@ $lang['refererban'] = "Referer ban";
 $lang['invalidbanid'] = "Invalid Ban ID";
 $lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
 $lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
+$lang['noaffectsessionwarn'] = "This ban affects no active sessions";
 $lang['mustspecifybantype'] = "You must specify a ban type";
 $lang['mustspecifybandata'] = "You must specify some ban data";
 $lang['successfullyremovedselectedbans'] = "Successfully removed selected bans";
@@ -497,7 +509,7 @@ $lang['duplicatebandataentered'] = "Duplicate ban data entered. Please check you
 $lang['successfullyaddedban'] = "Successfully added ban";
 $lang['successfullyupdatedban'] = "Successfully updated ban";
 $lang['noexistingbandata'] = "There is no existing ban data. To add some ban data please click the button below.";
-$lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254</p>";
+$lang['youcanusethepercentwildcard'] = "You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254";
 $lang['cannotusewildcardonown'] = "You cannot add % as a wildcard match on it's own!";
 $lang['requirepostapproval'] = "Require Post Approval";
 $lang['adminforumtoolsusercounterror'] = "There must be at least 1 user with admin tools and forum tools access on all forums!";
@@ -514,6 +526,8 @@ $lang['kickselected'] = "Kick selected";
 $lang['approveselected'] = "Approve selected";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
+$lang['addselectedusers'] = "Add selected users";
+$lang['removeselectedusers'] = "Remove selected users";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -682,6 +696,7 @@ $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
+$lang['allowgueststoaccessattachments'] = "Allow Guests to access attachments";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
 $lang['forumstatusmessages'] = "Forum Status Messages";
 $lang['forumclosedmessage'] = "Forum Closed Message";

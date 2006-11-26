@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.32 2006-11-20 22:10:23 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.33 2006-11-26 23:39:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,7 +93,7 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
-if (isset($_POST['cancel'])) {
+if (isset($_POST['back'])) {
     header_redirect("./admin_user_groups.php?webtag=$webtag");
 }
 
@@ -203,7 +203,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">{$lang['users']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['users']}</td>\n";
 echo "                </tr>\n";
 
 $group_users_array = perm_group_get_users($gid, $start_main);
@@ -213,13 +213,15 @@ if (sizeof($group_users_array['user_array']) > 0) {
     foreach($group_users_array['user_array'] as $user) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\">", form_checkbox("remove_user[]", $user['UID'], "", false), "&nbsp;", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</td>\n";
+        echo "                  <td align=\"left\" width=\"20\">", form_checkbox("remove_user[]", $user['UID'], "", false), "</td>\n";
+        echo "                  <td align=\"left\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</td>\n";
         echo "                </tr>\n";
     }
 
 }else {
 
     echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                  <td align=\"left\">{$lang['nousersingroup']}</td>\n";
     echo "                </tr>\n";
 }
@@ -246,7 +248,7 @@ if (sizeof($group_users_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("remove", $lang['remove']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("remove", $lang['removeselectedusers']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
     echo "    </tr>\n";
 }
 
@@ -270,7 +272,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"50%\" class=\"subhead\">{$lang['searchresults']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['searchresults']}</td>\n";
     echo "                </tr>\n";
 
     $user_search_array = admin_user_search($usersearch, 'USER.LOGON', 'ASC', 0, $start_search);
@@ -280,14 +282,16 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         foreach ($user_search_array['user_array'] as $user) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\">", form_checkbox("add_user[]", $user['UID'], "", false), "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
+            echo "                  <td align=\"left\" width=\"20\">", form_checkbox("add_user[]", $user['UID'], "", false), "</td>\n";
+            echo "                  <td align=\"left\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
             echo "                </tr>\n";
         }
 
     }else {
 
         echo "                <tr>\n";
-        echo "                  <td class=\"posthead\" align=\"left\">{$lang['nomatches']}</td>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\">{$lang['nomatches']}</td>\n";
         echo "                </tr>\n";
     }
 
@@ -313,7 +317,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("add", $lang['add']), "</td>\n";
+        echo "      <td align=\"center\">", form_submit("add", $lang['addselectedusers']), "</td>\n";
         echo "    </tr>\n";
     }
 
@@ -338,12 +342,18 @@ echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['search']}:</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? $usersearch : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td class=\"posthead\" align=\"left\">\n";
+echo "                          {$lang['username']}: ", form_input_text("usersearch", isset($usersearch) ? $usersearch : "", 30, 64), " ", form_submit('submit', $lang['search']), "\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

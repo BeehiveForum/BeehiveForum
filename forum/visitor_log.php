@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: visitor_log.php,v 1.73 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: visitor_log.php,v 1.74 2006-11-26 23:39:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -203,7 +203,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", page_links(get_request_uri(false), $start, $user_search_array['user_count'], 20), "</td>\n";
+echo "      <td align=\"center\">", page_links("visitor_log.php?webtag=$webtag", $start, $user_search_array['user_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

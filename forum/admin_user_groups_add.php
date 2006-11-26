@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.33 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.34 2006-11-26 23:39:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -193,16 +193,22 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['nameanddesc']}:</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
-echo "                  <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? $t_name : ""), 30, 64)."</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
-echo "                  <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? $t_description : ""), 30, 64)."</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">&nbsp;</td>\n";
-echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? $t_name : ""), 30, 64)."</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? $t_description : ""), 30, 64)."</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

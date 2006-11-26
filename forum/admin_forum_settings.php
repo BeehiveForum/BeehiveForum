@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.95 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.96 2006-11-26 23:39:09 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -500,7 +500,7 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
             echo "                        <td align=\"center\" colspan=\"2\">\n";
             echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
             echo "                            <tr>\n";
-            echo "                              <td align=\"left\" width=\"30\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+            echo "                              <td align=\"left\" width=\"30\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
             echo "                              <td align=\"left\">{$lang['passwordprotectwarning']}</td>\n";
             echo "                            </tr>\n";
             echo "                          </table>\n";            

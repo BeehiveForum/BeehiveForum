@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.263 2006-11-26 12:36:10 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.264 2006-11-26 23:39:09 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -1131,14 +1131,7 @@ function parse_array($array, $sep, &$result_var)
 
             $value = rawurlencode($value);
 
-            if ($key == 'webtag') {
-
-                if (preg_match("/^[A-Z0-9_]+$/", $value) > 0) {
-
-                    $result_var.= "webtag=$value$sep";
-                }
-
-            }else {
+            if ($key != 'webtag') {
 
                 $result_var.= "$key=$value$sep";
             }
@@ -1163,11 +1156,16 @@ function get_request_uri($encoded_uri_query = true)
 {
     if (!is_bool($encoded_uri_query)) $encoded_uri_query = true;
 
-    $request_uri = "{$_SERVER['PHP_SELF']}?";
+    $webtag = get_webtag($webtag_search);
 
     if ($encoded_uri_query) {
+
+        $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag&amp;";
         parse_array($_GET, "&amp;", $request_uri);
+
     }else {
+
+        $request_uri = "{$_SERVER['PHP_SELF']}?webtag=$webtag&";
         parse_array($_GET, "&", $request_uri);
     }
 

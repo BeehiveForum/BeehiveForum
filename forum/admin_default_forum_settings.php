@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.55 2006-11-22 21:38:22 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.56 2006-11-26 23:39:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -308,6 +308,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['attachment_use_old_method'] = "Y";
     }else {
         $new_forum_settings['attachment_use_old_method'] = "N";
+    }
+
+    if (isset($_POST['attachment_allow_guests']) && $_POST['attachment_allow_guests'] == "Y") {
+        $new_forum_settings['attachment_allow_guests'] = "Y";
+    }else {
+        $new_forum_settings['attachment_allow_guests'] = "N";
     }
 
     if ($valid) {
@@ -755,6 +761,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['usealtattachmentmethod']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("attachment_use_old_method", "Y", $lang['yes'], (isset($default_forum_settings['attachment_use_old_method']) && $default_forum_settings['attachment_use_old_method'] == 'Y')), "&nbsp;", form_radio("attachment_use_old_method", "N", $lang['no'], (isset($default_forum_settings['attachment_use_old_method']) && $default_forum_settings['attachment_use_old_method'] == 'N') || !isset($default_forum_settings['attachment_use_old_method'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">{$lang['allowgueststoaccessattachments']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("attachment_allow_guests", "Y", $lang['yes'], (isset($default_forum_settings['attachment_allow_guests']) && $default_forum_settings['attachment_allow_guests'] == 'Y')), "&nbsp;", form_radio("attachment_allow_guests", "N", $lang['no'], (isset($default_forum_settings['attachment_allow_guests']) && $default_forum_settings['attachment_allow_guests'] == 'N') || !isset($default_forum_settings['attachment_allow_guests'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">{$lang['attachmentdir']}:</td>\n";

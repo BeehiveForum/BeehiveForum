@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.40 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.41 2006-11-26 23:39:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -414,7 +414,7 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"120\" class=\"posthead\">{$lang['bantype']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array('newbantype', range(0, 5), array('', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : (isset($add_new_ban_type) ? _htmlentities($add_new_ban_type) : ''))), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array('newbantype', range(0, 5), array('&nbsp;', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : (isset($add_new_ban_type) ? _htmlentities($add_new_ban_type) : ''))), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
@@ -473,6 +473,27 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
             echo "            </td>\n";
             echo "          </tr>\n";
             echo "        </table>\n";
+        
+        }else {
+
+            echo "        <br />\n";
+            echo "        <table width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"center\">\n";
+            echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">{$lang['noaffectsessionwarn']}</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
         }
     }
 
@@ -501,9 +522,9 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "    <tr>\n";
     echo "      <td align=\"left\"><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
+    echo "</div>\n";
 
 }elseif (isset($_POST['ban_id']) || isset($_GET['ban_id']) || isset($remove_ban_id)) {
 
@@ -587,7 +608,7 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
         echo "            <td align=\"center\">\n";
         echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\">{$lang['affectsessionwarnremove']}:</td>\n";
+        echo "                  <td align=\"left\">{$lang['affectsessionwarnadd']}:</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"left\">\n";
@@ -596,14 +617,35 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
         foreach($affected_sessions_array as $affected_session) {
 
             if ($affected_session['UID'] > 0) {
-                echo "                    <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</a></li>\n";
+                echo "                      <li><a href=\"javascript:void(0);\" onclick=\"openProfile({$affected_session['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</a></li>\n";
             }else {
-                echo "                    <li>", add_wordfilter_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</li>\n";
+                echo "                      <li>", add_wordfilter_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME'])), "</li>\n";
             }
         }
 
         echo "                    </ul>\n";
         echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+
+    }else {
+
+        echo "        <br />\n";
+        echo "        <table width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"center\">\n";
+        echo "              <table class=\"text_captcha_error\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">{$lang['noaffectsessionwarn']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">&nbsp;</td>\n";
         echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
@@ -635,9 +677,9 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "    <tr>\n";
     echo "      <td align=\"left\"><p>{$lang['youcanusethepercentwildcard']}</p></td>\n";
     echo "    </tr>\n";
-    echo "    <tr>\n";
     echo "  </table>\n";
     echo "</form>\n";
+    echo "</div>\n";
 
 }else {
 
@@ -681,13 +723,13 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     }
 
     if ($sort_by == 'BANTYPE' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"100\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
     }elseif ($sort_by == 'BANTYPE' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"100\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
     }elseif ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"100\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
     }else {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"100\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
+        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
     }
 
     echo "                 </tr>\n";
@@ -738,7 +780,8 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     }else {
 
         echo "                 <tr>\n";
-        echo "                   <td align=\"left\" colspan=\"5\">{$lang['noexistingbandata']}</td>\n";
+        echo "                   <td align=\"left\">&nbsp;</td>\n";
+        echo "                   <td align=\"left\" colspan=\"4\">{$lang['noexistingbandata']}</td>\n";
         echo "                 </tr>\n";
         echo "                 <tr>\n";
         echo "                   <td align=\"left\" colspan=\"5\">&nbsp;</td>\n";
@@ -772,7 +815,6 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "  <br />\n";
     echo "</form>\n";
     echo "</div>\n";
-
 }
 
 html_draw_bottom();

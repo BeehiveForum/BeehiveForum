@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.195 2006-11-23 21:26:07 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.196 2006-11-26 23:39:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -62,6 +62,17 @@ function html_guest_error ()
          echo "<h1>{$lang['guesterror_1']} <a href=\"logout.php?webtag=$webtag";
          echo "&amp;final_uri=$final_uri\" target=\"_top\">{$lang['guesterror_2']}</a></h1>";
      }
+
+     html_draw_bottom();
+}
+
+function html_guest_attachment_error ()
+{
+     $lang = load_language_file();
+
+     html_draw_top("robots=noindex,nofollow");
+
+     echo "<h1>{$lang['guesterror_1']}</h1>\n";
 
      html_draw_bottom();
 }
@@ -770,6 +781,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
     if ($current_page < 1) $current_page = 1;
 
     $uri = href_remove_query_keys($uri, $page_var);
+
     $sep = strstr($uri, '?') ? "&amp;" : "?";
 
     if ($page_count > 1) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.46 2006-11-18 11:48:29 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.47 2006-11-26 12:36:10 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -376,7 +376,7 @@ function draw_logon_form($logon_main)
     echo "                          <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false)), "</td>\n";
     echo "                        </tr>\n";
     echo "                        <tr>\n";
-    echo "                          <td align=\"center\" colspan=\"2\">", form_submit(uniqid('bh'), $lang['logonbutton'], 'onclick="has_clicked = true"'), "</td>\n";
+    echo "                          <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton'], 'onclick="has_clicked = true"'), "</td>\n";
     echo "                        </tr>\n";
     echo "                      </table>\n";
     echo "                    </td>\n";

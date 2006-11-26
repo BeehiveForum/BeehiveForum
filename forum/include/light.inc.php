@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.115 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.116 2006-11-26 12:23:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -798,29 +798,29 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
       if ($totalvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
 
-          $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>";
+          $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>, ";
 
       }elseif ($totalvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
 
-          $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>";
+          $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>, ";
 
       }elseif ($totalvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
 
-          $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>";
+          $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>, ";
 
       }elseif ($totalvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
 
-          $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>";
+          $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>, ";
 
       }else {
 
           if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
 
-              $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplevoted']}</b>";
+              $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplevoted']}</b>, ";
 
           }else {
 
-              $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplehavevoted']}</b>";
+              $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplehavevoted']}</b>, ";
           }
       }
 

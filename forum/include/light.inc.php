@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.116 2006-11-26 12:23:54 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.117 2006-11-26 15:32:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -794,65 +794,7 @@ function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list 
 
       poll_get_total_votes($tid, $totalvotes, $guestvotes);
 
-      $polldata['CONTENT'] .= "<p>";
-
-      if ($totalvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
-
-          $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>, ";
-
-      }elseif ($totalvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
-
-          $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>, ";
-
-      }elseif ($totalvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
-
-          $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>, ";
-
-      }elseif ($totalvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
-
-          $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>, ";
-
-      }else {
-
-          if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
-
-              $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplevoted']}</b>, ";
-
-          }else {
-
-              $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplehavevoted']}</b>, ";
-          }
-      }
-
-      if ($guestvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
-
-          $polldata['CONTENT'].= "<b>{$lang['noguestsvoted']}</b>";
-
-      }elseif ($guestvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
-
-          $polldata['CONTENT'].= "<b>{$lang['noguestshavevoted']}</b>";
-
-      }elseif ($guestvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
-
-          $polldata['CONTENT'].= "<b>{$lang['1guestvoted']}</b>";
-
-      }elseif ($guestvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
-
-          $polldata['CONTENT'].= "<b>{$lang['1guesthasvoted']}</b>";
-
-      }else {
-
-          if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
-
-              $polldata['CONTENT'].= "<b>$guestvotes {$lang['guestsvoted']}</b>";
-
-          }else {
-
-              $polldata['CONTENT'].= "<b>$guestvotes {$lang['guestshavevoted']}</b>";
-          }
-      }
-
-      $polldata['CONTENT'].= "</p>\n";
+      $polldata['CONTENT'].= "<p>". poll_format_vote_counts($polldata, $totalvotes, $guestvotes). "</p>\n";
 
       if (($polldata['CLOSES'] <= mktime()) && $polldata['CLOSES'] != 0) {
 

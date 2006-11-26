@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.363 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.364 2006-11-26 15:32:38 decoyduck Exp $ */
 
 // International English language file
 
@@ -1291,7 +1291,8 @@ $lang['polladditionalmessageexp'] = "Do you want to include an additional post a
 $lang['mustspecifypolltoview'] = "You must specify a poll to view.";
 $lang['pollconfirmclose'] = "Are you sure you want to close the following Poll?";
 $lang['endpoll'] = "End Poll";
-$lang['nobodyvoted'] = "Nobody voted";
+
+/*$lang['nobodyvoted'] = "Nobody voted";
 $lang['nobodyhasvoted'] = "Nobody has voted";
 $lang['1personvoted'] = "1 person voted";
 $lang['1personhasvoted'] = "1 person has voted";
@@ -1302,7 +1303,22 @@ $lang['noguestshavevoted'] = "No Guests have voted";
 $lang['1guestvoted'] = "1 Guest voted";
 $lang['1guesthasvoted'] = "1 Guest has voted";
 $lang['guestsvoted'] = "guests voted";
-$lang['guestshavevoted'] = "guest have voted";
+$lang['guestshavevoted'] = "guests have voted"; */
+
+$lang['nobodyvotedopenpoll'] = "Nobody has voted";
+$lang['nobodyvotedclosedpoll'] = "Nobody voted";
+
+$lang['votedisplayopenpoll'] = "%s and %s have voted.";
+$lang['votedisplayclosedpoll'] = "%s and %s voted.";
+
+$lang['nousersvoted'] = "No users";
+$lang['oneuservoted'] = "1 user";
+$lang['xusersvoted'] = "%s users";
+
+$lang['noguestsvoted'] = "No guests";
+$lang['oneguestvoted'] = "1 guest";
+$lang['xguestsvoted'] = "%s guests";
+
 $lang['pollhasended'] = "Poll has ended";
 $lang['youvotedfor'] = "You voted for";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";

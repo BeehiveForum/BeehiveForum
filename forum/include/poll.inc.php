@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.177 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.178 2006-11-26 15:32:39 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -600,64 +600,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
         poll_get_total_votes($tid, $totalvotes, $guestvotes);
         $poll_group_count = sizeof($group_array);
 
-        if ($totalvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
-
-            $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>, ";
-
-        }else if ($totalvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
-
-            $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>, ";
-
-        }else if ($totalvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
-
-            $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>, ";
-
-        }else if ($totalvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
-
-            $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>, ";
-
-        }else {
-
-            if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
-
-                $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplevoted']}</b>, ";
-
-            }else {
-
-                $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplehavevoted']}</b>, ";
-
-            }
-
-        }
-
-        if ($guestvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
-  
-            $polldata['CONTENT'].= "<b>{$lang['noguestsvoted']}</b>";
-  
-        }elseif ($guestvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
-  
-            $polldata['CONTENT'].= "<b>{$lang['noguestshavevoted']}</b>";
-  
-        }elseif ($guestvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
-  
-            $polldata['CONTENT'].= "<b>{$lang['1guestvoted']}</b>";
-  
-        }elseif ($guestvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
-  
-            $polldata['CONTENT'].= "<b>{$lang['1guesthasvoted']}</b>";
-  
-        }else {
-  
-            if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
-  
-                $polldata['CONTENT'].= "<b>$guestvotes {$lang['guestsvoted']}</b>";
-  
-            }else {
-  
-                $polldata['CONTENT'].= "<b>$guestvotes {$lang['guestshavevoted']}</b>";
-            }
-        }
-
+        $polldata['CONTENT'].= poll_format_vote_counts($polldata, $totalvotes, $guestvotes);
         $polldata['CONTENT'].= "</td>\n";
         $polldata['CONTENT'].= "                </tr>\n";
         $polldata['CONTENT'].= "                <tr>\n";
@@ -853,6 +796,44 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     message_display($tid, $polldata, $msg_count, $first_msg, $folder_fid, true, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight);
 }
 
+function poll_format_vote_counts($polldata, $user_votes, $guest_votes)
+{
+    $html = "";
+
+    $lang = load_language_file();
+
+    if ($user_votes == 0) {
+        $user_votes_display = $lang['nousersvoted'];
+    }elseif ($user_votes == 1) {
+        $user_votes_display = $lang['oneuservoted'];
+    }else {
+        $user_votes_display = sprintf($lang['xusersvoted'], $user_votes);
+    }
+
+    if ($guest_votes == 0) {
+        $guest_votes_display = $lang['noguestsvoted'];
+    }elseif ($guest_votes == 1) {
+        $guest_votes_display = $lang['oneguestvoted'];
+    }else {
+        $guest_votes_display = sprintf($lang['xguestsvoted'], $guest_votes);
+    }
+
+    if ($polldata['CLOSES'] > 0 && $polldata['CLOSED'] <= mktime()) {
+        if ($user_votes > 0 || $guest_votes > 0) {
+            $html.= sprintf("<b>{$lang['votedisplayclosedpoll']}</b>", $user_votes_display, $guest_votes_display);
+        }else {
+            $html.= $lang['nobodyvotedclosedpoll'];
+        }
+    }elseif ($polldata['CLOSES'] == 0 || ($polldata['CLOSES'] > mktime())) {
+        if ($user_votes > 0 || $guest_votes > 0) {
+            $html.= sprintf("<b>{$lang['votedisplayopenpoll']}</b>", $user_votes_display, $guest_votes_display);
+        }else {
+            $html.= $lang['nobodyvotedclosedpoll'];
+        }
+    }
+
+    return $html;
+}
 
 function poll_preview_form($pollresults, $polldata)
 {
@@ -1954,18 +1935,18 @@ function poll_vote($tid, $vote_array)
     if (!$table_data = get_table_prefix()) return false;
 
     $polldata = poll_get($tid);
-    $vote_count = sizeof($vote_array);
-
-    $timestamp = mktime();
 
     if ((!poll_get_user_vote($tid)) || ($polldata['CHANGEVOTE'] == 2) || (user_is_guest() && ($polldata['ALLOWGUESTS'] == 1 && forum_get_setting('poll_allow_guests', false)))) {
 
         foreach ($vote_array as $user_vote) {
 
-            $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
-            $sql.= "VALUES ($tid, $uid, $user_vote, FROM_UNIXTIME($timestamp))";
+            if (is_numeric($user_vote)) {
+            
+                $sql = "INSERT INTO {$table_data['PREFIX']}USER_POLL_VOTES (TID, UID, OPTION_ID, TSTAMP) ";
+                $sql.= "VALUES ('$tid', '$uid', '$user_vote', NOW())";
 
-            $result = db_query($sql, $db_poll_vote);
+                $result = db_query($sql, $db_poll_vote);
+            }
         }
     }
 }

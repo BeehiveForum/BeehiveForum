@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.180 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.181 2006-11-26 12:23:11 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -402,6 +402,15 @@ if (isset($_POST['cancel'])) {
         $valid = false;
     }
 
+    if (isset($_POST['allow_guests']) && is_numeric($_POST['allow_guests'])) {
+        $t_allow_guests = $_POST['allow_guests'];
+    }elseif (!forum_get_setting('poll_allow_guests', false)) {
+        $t_allow_guests = 0;
+    }else {        
+        $error_html = "<h2>{$lang['mustprovidepollguestvotetype']}</h2>\n";
+        $valid = false;
+    }
+
     if (isset($_POST['close_poll']) && is_numeric($_POST['close_poll'])) {
         $t_close_poll = $_POST['close_poll'];
     }else {
@@ -569,7 +578,7 @@ if ($valid && isset($_POST['submit'])) {
                 $t_poll_vote_type = 1;
             }
 
-            poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_question);
+            poll_create($t_tid, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_question, $t_allow_guests);
 
             post_save_attachment_id($t_tid, $t_pid, $aid);
 
@@ -951,6 +960,30 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
+
+if (forum_get_setting('poll_allow_guests', false)) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\"><h2>{$lang['guestvoting']}</h2></td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['guestchangingexp']}</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          <table border=\"0\" width=\"400\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" width=\"25%\">", form_radio('allow_guests', '1', $lang['yes'], isset($t_allow_guests) ? $t_allow_guests == 1 : false), "</td>\n";
+    echo "                              <td align=\"left\" width=\"25%\">", form_radio('allow_guests', '0', $lang['no'], isset($t_allow_guests) ? $t_allow_guests == 0 : true), "</td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>{$lang['pollresults']}</h2></td>\n";
 echo "                      </tr>\n";

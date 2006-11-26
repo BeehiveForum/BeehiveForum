@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.362 2006-11-26 00:41:38 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.363 2006-11-26 12:23:11 decoyduck Exp $ */
 
 // International English language file
 
@@ -646,6 +646,8 @@ $lang['maximumpostlength'] = "Maximum Post Length";
 $lang['postfrequency'] = "Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
+$lang['allowguestvotesinpolls'] = "Allow Guests to vote in polls";
+$lang['allowguestvotesinpoll'] = "Allow Guests to vote in poll";
 $lang['unreadmessagescutoff'] = "Unread messages cut-off";
 $lang['unreadcutoffseconds'] = "seconds";
 $lang['disableunreadmessages'] = "Disable unread messages";
@@ -1240,6 +1242,7 @@ $lang['mustprovideanswergroups'] = "You must provide some answer groups";
 $lang['mustprovidepolltype'] = "You must provide a poll type";
 $lang['mustprovidepollresultsdisplaytype'] = "You must provide results display type";
 $lang['mustprovidepollvotetype'] = "You must provide a poll vote type";
+$lang['mustprovidepollguestvotetype'] = "You must specify if guests should be allowed to vote";
 $lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
 $lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
 $lang['pleaseselectfolder'] = "Please select a folder";
@@ -1262,6 +1265,8 @@ $lang['dropdown'] = "As drop-down list(s)";
 $lang['radios'] = "As a series of radio buttons";
 $lang['votechanging'] = "Vote Changing";
 $lang['votechangingexp'] = "Can a person change his or her vote?";
+$lang['guestvoting'] = "Guest Voting";
+$lang['guestchangingexp'] = "Can guests vote in this poll?";
 $lang['allowmultiplevotes'] = "Allow Multiple Votes";
 $lang['pollresults'] = "Poll Results";
 $lang['pollresultsexp'] = "How would you like to display the results of your poll?";
@@ -1286,12 +1291,18 @@ $lang['polladditionalmessageexp'] = "Do you want to include an additional post a
 $lang['mustspecifypolltoview'] = "You must specify a poll to view.";
 $lang['pollconfirmclose'] = "Are you sure you want to close the following Poll?";
 $lang['endpoll'] = "End Poll";
-$lang['nobodyvoted'] = "Nobody voted.";
-$lang['nobodyhasvoted'] = "Nobody has voted.";
-$lang['1personvoted'] = "1 person voted.";
-$lang['1personhasvoted'] = "1 person has voted.";
-$lang['peoplevoted'] = "people voted.";
-$lang['peoplehavevoted'] = "people have voted.";
+$lang['nobodyvoted'] = "Nobody voted";
+$lang['nobodyhasvoted'] = "Nobody has voted";
+$lang['1personvoted'] = "1 person voted";
+$lang['1personhasvoted'] = "1 person has voted";
+$lang['peoplevoted'] = "people voted";
+$lang['peoplehavevoted'] = "people have voted";
+$lang['noguestsvoted'] = "No Guests voted";
+$lang['noguestshavevoted'] = "No Guests have voted";
+$lang['1guestvoted'] = "1 Guest voted";
+$lang['1guesthasvoted'] = "1 Guest has voted";
+$lang['guestsvoted'] = "guests voted";
+$lang['guestshavevoted'] = "guest have voted";
 $lang['pollhasended'] = "Poll has ended";
 $lang['youvotedfor'] = "You voted for";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.39 2006-11-26 00:41:37 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.40 2006-11-26 12:23:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -668,7 +668,7 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                 <tr>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
 
     if ($sort_by == 'BANDATA' && $sort_dir == 'ASC') {
         echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";

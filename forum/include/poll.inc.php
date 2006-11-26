@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.176 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.177 2006-11-26 12:23:11 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -43,7 +43,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 
-function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $question)
+function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $question, $allow_guests)
 {
     $db_poll_create = db_connect();
 
@@ -61,13 +61,20 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     if (!is_numeric($show_results)) $show_results = 1;
     if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
     if (!is_numeric($option_type)) $option_type = 0;
+    if (!is_numeric($allow_guests)) $option_type = 0;
+
+    if (!forum_get_setting('poll_allow_guests', false)) {
+        $allow_guests = 0;
+    }
 
     $question  = addslashes(_htmlentities($question));
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "INSERT INTO {$table_data['PREFIX']}POLL (TID, CLOSES, CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION) ";
-    $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', '$poll_vote_type', '$option_type', '$question')";
+    $sql = "INSERT INTO {$table_data['PREFIX']}POLL (TID, CLOSES, ";
+    $sql.= "CHANGEVOTE, POLLTYPE, SHOWRESULTS, VOTETYPE, OPTIONTYPE, QUESTION) ";
+    $sql.= "VALUES ('$tid', $closes, '$change_vote', '$poll_type', '$show_results', ";
+    $sql.= "'$poll_vote_type', '$option_type', '$question', '$allow_guests')";
 
     if (db_query($sql, $db_poll_create)) {
 
@@ -91,7 +98,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     }
 }
 
-function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $hardedit)
+function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $hardedit)
 {
     $db_poll_edit = db_connect();
 
@@ -103,6 +110,11 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_g
     if (!is_numeric($show_results)) $show_results = 1;
     if (!is_numeric($poll_vote_type)) $poll_vote_type = 0;
     if (!is_numeric($option_type)) $option_type = 0;
+    if (!is_numeric($allow_guests)) $allow_guests = 0;
+
+    if (!forum_get_setting('poll_allow_guests', false)) {
+        $allow_guests = 0;
+    }
 
     $edit_uid = bh_session_get_value('UID');
 
@@ -124,7 +136,7 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_g
     $sql = "UPDATE {$table_data['PREFIX']}POLL SET CHANGEVOTE = '$change_vote', ";
     $sql.= "POLLTYPE = '$poll_type', SHOWRESULTS = '$show_results', ";
     $sql.= "VOTETYPE = '$poll_vote_type', OPTIONTYPE = '$option_type', ";
-    $sql.= "QUESTION = '$poll_question' ";
+    $sql.= "QUESTION = '$poll_question', ALLOWGUESTS = '$allow_guests' ";
 
     if ($closes) {
 
@@ -175,7 +187,7 @@ function poll_get($tid)
     $sql.= "USER_PEER.PEER_NICKNAME, POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, ";
     $sql.= "POLL.VOTETYPE, POLL.OPTIONTYPE, UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.QUESTION, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
-    $sql.= "POST.EDITED_BY, POST.APPROVED_BY, POST.IPADDRESS ";
+    $sql.= "POLL.ALLOWGUESTS, POST.EDITED_BY, POST.APPROVED_BY, POST.IPADDRESS ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) ";
@@ -274,7 +286,7 @@ function poll_get_votes($tid)
     return $pollresults;
 }
 
-function poll_get_total_votes($tid)
+function poll_get_total_votes($tid, &$totalvotes, &$guestvotes)
 {
     $db_poll_get_total_votes = db_connect();
 
@@ -282,12 +294,18 @@ function poll_get_total_votes($tid)
     if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(DISTINCT UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
-    $sql.= "WHERE TID = $tid";
+    $sql.= "WHERE TID = $tid AND UID > 0";
 
     $result = db_query($sql, $db_poll_get_total_votes);
-    list($vote_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($totalvotes) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return $vote_count;
+    $sql = "SELECT COUNT(UID) FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
+    $sql.= "WHERE TID = $tid AND UID = 0";
+
+    $result = db_query($sql, $db_poll_get_total_votes);
+    list($guestvotes) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return true;
 }
 
 function poll_get_user_votes($tid, $viewstyle)
@@ -302,7 +320,8 @@ function poll_get_user_votes($tid, $viewstyle)
     $sql = "SELECT UP.UID, UP.OPTION_ID, UNIX_TIMESTAMP(UP.TSTAMP) AS TSTAMP ";
     $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES UP ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}POLL POLL ON (UP.TID = POLL.TID) ";
-    $sql.= "WHERE UP.TID = '$tid' AND POLL.VOTETYPE = 1";
+    $sql.= "WHERE UP.TID = '$tid' AND POLL.VOTETYPE = 1 ";
+    $sql.= "AND UP.UID > 0";
 
     $result = db_query($sql, $db_poll_get_user_vote_hashes);
 
@@ -329,6 +348,8 @@ function poll_get_user_vote($tid)
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     if (!$table_data = get_table_prefix()) return false;
+
+    if (user_is_guest()) return false;
 
     $sql = "SELECT OPTION_ID, UNIX_TIMESTAMP(TSTAMP) AS TSTAMP ";
     $sql.= "FROM {$table_data['PREFIX']}USER_POLL_VOTES ";
@@ -393,18 +414,9 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     $poll_group_count = 1;
 
-    /*for ($i = 0; $i < sizeof($pollresults['GROUP_ID']); $i++) {
-
-        if (!isset($pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]]))         {
-            $pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]] = 1;
-        }else {
-            $pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]]++;
-        }
-    }*/
-
     if ($in_list) {
 
-        if (((!is_array($user_poll_data) || $polldata['CHANGEVOTE'] == 2) && bh_session_get_value('UID') > 0) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > mktime()) && !$is_preview) {
+        if (((!is_array($user_poll_data) || $polldata['CHANGEVOTE'] == 2) && (bh_session_get_value('UID') > 0 || ($polldata['ALLOWGUESTS'] == 1 && forum_get_setting('poll_allow_guests', false)))) && ($polldata['CLOSES'] == 0 || $polldata['CLOSES'] > mktime()) && !$is_preview) {
 
             $polldata['CONTENT'].= "          <tr>\n";
             $polldata['CONTENT'].= "            <td align=\"left\">\n";
@@ -585,37 +597,65 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             }
         }
 
-        $totalvotes = poll_get_total_votes($tid);
+        poll_get_total_votes($tid, $totalvotes, $guestvotes);
         $poll_group_count = sizeof($group_array);
 
         if ($totalvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
 
-            $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>";
+            $polldata['CONTENT'].= "<b>{$lang['nobodyvoted']}</b>, ";
 
         }else if ($totalvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
 
-            $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>";
+            $polldata['CONTENT'].= "<b>{$lang['nobodyhasvoted']}</b>, ";
 
         }else if ($totalvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
 
-            $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>";
+            $polldata['CONTENT'].= "<b>{$lang['1personvoted']}</b>, ";
 
         }else if ($totalvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
 
-            $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>";
+            $polldata['CONTENT'].= "<b>{$lang['1personhasvoted']}</b>, ";
 
         }else {
 
             if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
 
-                $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplevoted']}</b>";
+                $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplevoted']}</b>, ";
 
             }else {
 
-                $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplehavevoted']}</b>";
+                $polldata['CONTENT'].= "<b>$totalvotes {$lang['peoplehavevoted']}</b>, ";
 
             }
 
+        }
+
+        if ($guestvotes == 0 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
+  
+            $polldata['CONTENT'].= "<b>{$lang['noguestsvoted']}</b>";
+  
+        }elseif ($guestvotes == 0 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
+  
+            $polldata['CONTENT'].= "<b>{$lang['noguestshavevoted']}</b>";
+  
+        }elseif ($guestvotes == 1 && ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0)) {
+  
+            $polldata['CONTENT'].= "<b>{$lang['1guestvoted']}</b>";
+  
+        }elseif ($guestvotes == 1 && ($polldata['CLOSES'] > mktime() || $polldata['CLOSES'] == 0)) {
+  
+            $polldata['CONTENT'].= "<b>{$lang['1guesthasvoted']}</b>";
+  
+        }else {
+  
+            if ($polldata['CLOSES'] <= mktime() && $polldata['CLOSES'] != 0) {
+  
+                $polldata['CONTENT'].= "<b>$guestvotes {$lang['guestsvoted']}</b>";
+  
+            }else {
+  
+                $polldata['CONTENT'].= "<b>$guestvotes {$lang['guestshavevoted']}</b>";
+            }
         }
 
         $polldata['CONTENT'].= "</td>\n";
@@ -758,7 +798,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $polldata['CONTENT'].= "                </tr>\n";
                 }
 
-            }else if (bh_session_get_value('UID') > 0) {
+            }else if (bh_session_get_value('UID') > 0 || ($polldata['ALLOWGUESTS'] == 1 && forum_get_setting('poll_allow_guests', false))) {
 
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', $lang['vote']). "</td>\n";
@@ -1918,7 +1958,7 @@ function poll_vote($tid, $vote_array)
 
     $timestamp = mktime();
 
-    if ((!poll_get_user_vote($tid)) || ($polldata['CHANGEVOTE'] == 2)) {
+    if ((!poll_get_user_vote($tid)) || ($polldata['CHANGEVOTE'] == 2) || (user_is_guest() && ($polldata['ALLOWGUESTS'] == 1 && forum_get_setting('poll_allow_guests', false)))) {
 
         foreach ($vote_array as $user_vote) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.86 2006-11-24 20:59:25 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.87 2006-11-26 23:39:09 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -155,32 +155,80 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 }
 
 /**
-* Fetches admin word filter
+* Fetches admin word filter list
 *
 * Fetches the available word filter entries into an array
 *
-* @return bool
-* @param void
+* @return array
+* @param integer $offset - Offset for results
 */
 
-function admin_get_word_filter()
+function admin_get_word_filter_list($offset)
 {
     $db_admin_get_word_filter = db_connect();
 
-    if (!$table_data = get_table_prefix()) return array();
+    if (!is_numeric($offset)) $offset = 0;
 
-    $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $word_filter_array = array();
+    $word_filter_count = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT COUNT(ID) FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE UID = 0 ORDER BY ID";
 
-    if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
+    $result = db_query($sql, $db_admin_get_word_filter);
+    list($word_filter_count) = db_num_rows($result, DB_RESULT_NUM);
 
-    $filter_array = array();
+    $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
+    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE UID = 0 ORDER BY ID ";
+    $sql.= "LIMIT $offset, 10";
 
-    while($row = db_fetch_array($result)) {
-        $filter_array[$row['ID']] = $row;
+    $result = db_query($sql, $db_admin_get_word_filter);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($row = db_fetch_array($result)) {
+
+            $word_filter_array[$row['ID']] = $row;
+        }
     }
 
-    return $filter_array;
+    return array('word_filter_count' => $word_filter_count,
+                 'word_filter_array' => $word_filter_array);
+}
+
+/**
+* Fetches specified admin word filter
+*
+* Fetches the specified admin word filter entry data.
+*
+* @return mixed - array on success, false on failure.
+* @param integer $filter_id - Word Filter entry to retrieve from database.
+*/
+
+function admin_get_word_filter($filter_id)
+{
+    $db_admin_get_word_filter = db_connect();
+
+    if (!is_numeric($filter_id)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
+    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE ID = '$filter_id' ORDER BY ID";
+
+    $result = db_query($sql, $db_admin_get_word_filter);
+
+    if (db_num_rows($result) > 0) {
+
+        $word_filter_array = db_fetch_array($result);
+        return $word_filter_array;
+    }
+
+    return false;
 }
 
 /**
@@ -203,7 +251,9 @@ function admin_delete_word_filter($id)
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE ID = '$id' AND UID = 0";
 
-    $result = db_query($sql, $db_user_delete_word_filter);
+    if (!$result = db_query($sql, $db_user_delete_word_filter)) return false;
+
+    return true;
 }
 
 /**
@@ -252,7 +302,9 @@ function admin_add_word_filter($match, $replace, $filter_option)
     $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
     $sql.= "VALUES ('$match', '$replace', '$filter_option')";
 
-    $result = db_query($sql, $db_admin_add_word_filter);
+    if (!$result = db_query($sql, $db_admin_add_word_filter)) return false;
+
+    return true;
 }
 
 /**
@@ -284,7 +336,9 @@ function admin_update_word_filter($filter_id, $match, $replace, $filter_option)
     $sql.= "REPLACE_TEXT = '$replace', FILTER_OPTION = '$filter_option' ";
     $sql.= "WHERE ID = '$filter_id'";
 
-    $result = db_query($sql, $db_admin_add_word_filter);
+    if (!$result = db_query($sql, $db_admin_add_word_filter)) return false;
+
+    return true;
 }
 
 /**

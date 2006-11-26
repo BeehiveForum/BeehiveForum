@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.40 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.41 2006-11-26 23:39:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -217,7 +217,7 @@ if ($forum_array = forum_get($fid)) {
         echo "        <td align=\"left\">&nbsp;</td>\n";
         echo "      </tr>\n";
         echo "      <tr>\n";
-        echo "        <td align=\"center\">", form_submit('remove_user', $lang['remove']), "</td>\n";
+        echo "        <td align=\"center\">", form_submit('remove_user', $lang['removeselectedusers']), "</td>\n";
         echo "      </tr>\n";
         echo "    </td>\n";
         echo "  </table>\n";
@@ -277,7 +277,7 @@ if ($forum_array = forum_get($fid)) {
             echo "        <td align=\"left\">&nbsp;</td>\n";
             echo "      </tr>\n";
             echo "      <tr>\n";
-            echo "        <td align=\"center\">", form_submit('add_searched_user', $lang['add']), "</td>\n";
+            echo "        <td align=\"center\">", form_submit('add_searched_user', $lang['addselectedusers']), "</td>\n";
             echo "      </tr>\n";
             echo "    </td>\n";
             echo "  </table>\n";

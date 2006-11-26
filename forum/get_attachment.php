@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.17 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.18 2006-11-26 23:39:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -128,6 +128,12 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
     $hash = $_GET['hash'];
 
+    if (user_is_guest() && !forum_get_setting('attachment_allow_guests', 'Y')) {
+
+        html_guest_error();
+        exit;
+    }
+
 }else {
 
     if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) {
@@ -145,6 +151,14 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 }
 
 if (isset($hash) && is_md5($hash)) {
+
+    if (user_is_guest() && !forum_get_setting('attachment_allow_guests', 'Y')) {
+
+        $forum_path = preg_replace("/\/get_attachment.php\/[a-f0-9]{32}/i", "", html_get_forum_uri());
+        $redirect_uri = "$forum_path/get_attachment.php?webtag=$webtag&hash=$hash";
+        header_redirect($redirect_uri);
+        exit;
+    }
 
     if ($attachment_details = get_attachment_by_hash($hash)) {
 

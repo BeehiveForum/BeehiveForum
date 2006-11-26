@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.45 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.46 2006-11-26 23:39:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -222,16 +222,23 @@ if (isset($_POST['submit'])) {
 
 $folder_data = folder_get($fid);
 
-if (isset($_POST['delete']) && $folder_data['THREAD_COUNT'] == 0) {
+if (isset($_POST['delete'])) {
 
-    $folder_name = folder_get_title($fid);
+    if ($folder_data['THREAD_COUNT'] == 0) {
 
-    folder_delete($fid);
+        $folder_name = folder_get_title($fid);
 
-    admin_add_log_entry(DELETE_FOLDER, $folder_name);
+        folder_delete($fid);
 
-    $del_success = rawurlencode($folder_data['TITLE']);
-    header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success");
+        admin_add_log_entry(DELETE_FOLDER, $folder_name);
+
+        $del_success = rawurlencode($folder_data['TITLE']);
+        header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success");
+
+    }else {
+
+        $status_html = "<h2>{$lang['cannotdeletefolderwiththreads']}</h2>\n";
+    }
 }
 
 // Make the arrays for the allow post types dropdown
@@ -421,20 +428,9 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
-
-if ($folder_data['THREAD_COUNT'] > 0) {
-
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
-    echo "    </tr>\n";
-
-}else {
-
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("submit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
-    echo "    </tr>\n";
-}
-
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("submit", $lang['save']), " &nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";
 echo "</div>\n";

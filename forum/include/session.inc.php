@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.262 2006-11-24 20:59:25 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.263 2006-11-26 12:36:10 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -212,57 +212,68 @@ function bh_session_expired()
 
         if (perform_logon(false)) {
 
+            unset($_POST['user_logon'], $_POST['user_password'], $_POST['user_passhash']);
+            unset($_POST['remember_user'], $_POST['logon'], $_POST['webtag']);
+            
             $lang = load_language_file();
             $webtag = get_webtag($webtag_search);
 
-            echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
-
-            $top_html = html_get_top_page();
-
-            echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-            echo "<!--\n\n";
-            echo "if (top.document.body.rows) {\n\n";
-            echo "    top.frames['ftop'].location.replace('$top_html');\n";
-            echo "    top.frames['fnav'].location.reload();\n";
-            echo "}\n\n";
-            echo "-->\n";
-            echo "</script>";
-
-            echo "<div align=\"center\">\n";
-            echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
-
             $request_uri = get_request_uri();
 
-            if (stristr($request_uri, 'logon.php')) {
+            if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
+            
+                echo "<h1>{$lang['loggedinsuccessfully']}</h1>";
 
-                if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+                $top_html = html_get_top_page();
 
-                    echo "<form method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
+                echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+                echo "<!--\n\n";
+                echo "if (top.document.body.rows) {\n\n";
+                echo "    top.frames['ftop'].location.replace('$top_html');\n";
+                echo "    top.frames['fnav'].location.reload();\n";
+                echo "}\n\n";
+                echo "-->\n";
+                echo "</script>";
+
+                echo "<div align=\"center\">\n";
+                echo "<p><b>{$lang['presscontinuetoresend']}</b></p>\n";
+
+                if (stristr($request_uri, 'logon.php')) {
+
+                    if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+
+                        echo "<form method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
+
+                    }else {
+
+                        echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
+                    }
 
                 }else {
 
-                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
+                    echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
                 }
+
+                echo form_input_hidden('webtag', $webtag);
+
+                $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
+
+                if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
+                    echo $post_vars;
+                }
+
+                echo form_submit('continue', $lang['continue']), "&nbsp;";
+                echo form_button('cancel', $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
+                echo "</form>\n";
+
+                html_draw_bottom();
+                exit;
 
             }else {
 
-                echo "<form method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+                header_redirect($request_uri, $lang['loggedinsuccessfully']);
+                exit;
             }
-
-            echo form_input_hidden('webtag', $webtag);
-
-            $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
-
-            if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
-                echo $post_vars;
-            }
-
-            echo form_submit(md5(uniqid(rand())), $lang['continue']), "&nbsp;";
-            echo form_button(md5(uniqid(rand())), $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";
-            echo "</form>\n";
-
-            html_draw_bottom();
-            exit;
 
         }else {
 

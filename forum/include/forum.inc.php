@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.195 2006-11-26 00:41:37 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.196 2006-11-26 12:23:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -173,7 +173,7 @@ function forum_closed_message()
     echo "<h1>{$lang['closed']}</h1>\n";
     
     if ($closed_message = forum_get_setting('closed_message', false)) {
-        echo "<h2>$closed_message</h2>\n";
+        echo "<h2>", fix_html($closed_message), "</h2>\n";
     }else {
         echo "<h2>$forum_name {$lang['iscurrentlyclosed']}</h2>\n";
     }
@@ -196,8 +196,8 @@ function forum_restricted_message()
 
     echo "<h1>{$lang['restricted']}</h1>\n";
     
-    if ($restricted_message = forum_get_setting('closed_message', false)) {
-        echo "<h2>{$restricted_message}</h2>\n";
+    if ($restricted_message = forum_get_setting('restricted_message', false)) {
+        echo "<h2>", fix_html($restricted_message), "</h2>\n";
     }else {
         echo "<h2>{$lang['youdonothaveaccessto']} $forum_name.</h2>\n";
         echo "<h2>{$lang['toapplyforaccessplease']}</h2>\n";
@@ -259,7 +259,7 @@ function forum_check_password($forum_fid)
         echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
 
         if ($password_protected_message = forum_get_setting('password_protected_message', false)) {
-            echo "<h2>{$password_protected_message}</h2>\n";
+            echo "<h2>", fix_html($password_protected_message), "</h2>\n";
         }else {
             echo "<h2>{$lang['passwdprotectedwarning']}</h2>\n";
         }

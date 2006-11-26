@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.94 2006-11-26 00:41:37 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.95 2006-11-26 12:23:11 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -300,6 +300,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['allow_polls'] = "Y";
     }else {
         $new_forum_settings['allow_polls'] = "N";
+    }
+
+    if (isset($_POST['poll_allow_guests']) && $_POST['poll_allow_guests'] == "Y") {
+        $new_forum_settings['poll_allow_guests'] = "Y";
+    }else {
+        $new_forum_settings['poll_allow_guests'] = "N";
     }
 
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
@@ -727,6 +733,10 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['allowcreationofpolls']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("allow_polls", "Y", $lang['yes'], (isset($forum_settings['allow_polls']) && $forum_settings['allow_polls'] == "Y")), "&nbsp;", form_radio("allow_polls", "N", $lang['no'], (isset($forum_settings['allow_polls']) && $forum_settings['allow_polls'] == "N") || !isset($forum_settings['allow_polls'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['allowguestvotesinpolls']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("poll_allow_guests", "Y", $lang['yes'], (isset($forum_settings['poll_allow_guests']) && $forum_settings['poll_allow_guests'] == "Y")), "&nbsp;", form_radio("poll_allow_guests", "N", $lang['no'], (isset($forum_settings['poll_allow_guests']) && $forum_settings['poll_allow_guests'] == "N") || !isset($forum_settings['poll_allow_guests'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";

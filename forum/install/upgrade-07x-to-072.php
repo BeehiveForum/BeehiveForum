@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.6 2006-11-26 00:41:38 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.7 2006-11-26 12:23:11 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -236,6 +236,70 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
+    // New USER_POLL_VOTES table format to allow guests to vote in polls
+
+    $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+
+    while (install_get_table_conflicts(false, false, array($upv_new))) {
+        $upv_new = preg_replace("/[^a-z]/", "", md5(uniqid(rand())));
+    }
+
+    $sql = "CREATE TABLE {$forum_webtag}_{$upv_new} (";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  VOTE_ID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+    $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
+    $sql.= "  PRIMARY KEY (TID, VOTE),";
+    $sql.= "  KEY UID (UID)";
+    $sql.= ") TYPE=MYISAM";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Copy the existing data into the new table.
+
+    $sql = "INSERT INTO {$forum_webtag}_{$upv_new} (TID, UID, OPTION_ID, TSTAMP) ";
+    $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES ";
+    
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Removed the old USER_POLL_VOTES table
+
+    $sql = "DROP TABLE {$forum_webtag}_USER_POLL_VOTES";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Rename our new USER_POLL_VOTES table
+    
+    $sql = "ALTER TABLE {$forum_webtag}_{$upv_new} RENAME {$forum_webtag}_USER_POLL_VOTES";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Flag to allow guest votes configurable at poll level
+
+    $sql = "ALTER TABLE {$forum_webtag}_POLL ADD ALLOWGUESTS TINYINT(1) NOT NULL DEFAULT '0'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
 }
 
 ?>

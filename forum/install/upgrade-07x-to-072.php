@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.5 2006-11-06 23:35:44 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.6 2006-11-26 00:41:38 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -224,6 +224,18 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
+
+    // Index on APPROVED column to help speed up display of
+    // Post Approval Queue in Admin.
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (APPROVED)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
 }
 
 ?>

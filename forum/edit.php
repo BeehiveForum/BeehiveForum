@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.202 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: edit.php,v 1.203 2006-11-26 00:41:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -143,7 +143,6 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         html_draw_bottom();
         exit;
     }
-
 }
 
 if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
@@ -550,9 +549,7 @@ if (isset($_POST['preview'])) {
             $t_content_tmp = $t_content;
         }
 
-        $updated = post_update($t_fid, $tid, $pid, $t_content_tmp);
-
-        if ($updated) {
+        if (post_update($t_fid, $tid, $pid, $t_content_tmp)) {
 
             post_add_edit_text($tid, $pid);
 
@@ -570,10 +567,11 @@ if (isset($_POST['preview'])) {
             echo "  //-->\n";
             echo "</script>\n";
 
-            echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
+            echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
             echo "<br />\n";
-            echo "<form action=\"discussion.php\" method=\"post\" target=\"_self\">\n";
+            echo "<form action=\"discussion.php\" method=\"get\" target=\"_self\">\n";
             echo "  ", form_input_hidden('webtag', $webtag), "\n";
+            echo "  ", form_input_hidden('msg', $edit_msg), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
@@ -659,7 +657,7 @@ if (isset($_POST['preview'])) {
                 || (perm_get_user_permissions(bh_session_get_value('UID')) & USER_PERM_PILLORIED)
                 || (((time() - $editmessage['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-                echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
+                echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
                 echo "<br />\n";
 
                 echo "<table class=\"posthead\" width=\"720\">\n";
@@ -670,7 +668,7 @@ if (isset($_POST['preview'])) {
                 echo "</td></tr>\n";
 
                 echo "<tr><td align=\"center\">\n";
-                echo form_quick_button("discussion.php", $lang['back'], "msg", "$tid.$pid");
+                echo form_quick_button("discussion.php", $lang['back'], "msg", $edit_msg);
                 echo "</td></tr>\n";
                 echo "</table>\n";
 
@@ -716,7 +714,7 @@ if (isset($_POST['preview'])) {
                 $msg = messages_get_most_recent(bh_session_get_value('UID'));
             }
 
-            echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
+            echo form_quick_button("./discussion.php", $lang['back'], "msg", $edit_msg, "_self");
             echo "    </td>\n";
             echo "  </tr>\n";
 
@@ -742,7 +740,7 @@ if (isset($_POST['preview'])) {
            $msg = messages_get_most_recent(bh_session_get_value('UID'));
        }
 
-       echo form_quick_button("./discussion.php", $lang['back'], "msg", "$tid.$pid", "_self");
+       echo form_quick_button("./discussion.php", $lang['back'], "msg", $edit_msg, "_self");
        echo "    </td>\n";
        echo "  </tr>\n";
 
@@ -753,7 +751,7 @@ if (isset($_POST['preview'])) {
     }
 }
 
-echo "<h1>{$lang['editmessage']} $tid.$pid</h1>\n";
+echo "<h1>{$lang['editmessage']} $edit_msg</h1>\n";
 echo "<br /><form name=\"f_edit\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

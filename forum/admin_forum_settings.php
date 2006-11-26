@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.93 2006-11-22 21:38:22 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.94 2006-11-26 00:41:37 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -216,6 +216,24 @@ if (isset($_POST['changepermissions'])) {
 
     if (isset($_POST['access_level']) && is_numeric($_POST['access_level'])) {
         forum_update_access($forum_settings['fid'], $_POST['access_level']);
+    }
+
+    if (isset($_POST['closed_message']) && strlen(trim(_stripslashes($_POST['closed_message']))) > 0) {
+        $new_forum_settings['closed_message'] = trim(_stripslashes($_POST['closed_message']));
+    }else {
+        $new_forum_settings['closed_message'] = "";
+    }
+
+    if (isset($_POST['restricted_message']) && strlen(trim(_stripslashes($_POST['restricted_message']))) > 0) {
+        $new_forum_settings['restricted_message'] = trim(_stripslashes($_POST['restricted_message']));
+    }else {
+        $new_forum_settings['restricted_message'] = "";
+    }
+
+    if (isset($_POST['password_protected_message']) && strlen(trim(_stripslashes($_POST['password_protected_message']))) > 0) {
+        $new_forum_settings['password_protected_message'] = trim(_stripslashes($_POST['password_protected_message']));
+    }else {
+        $new_forum_settings['password_protected_message'] = "";
     }
 
     if (isset($_POST['require_post_approval']) && $_POST['require_post_approval'] == "Y") {
@@ -465,6 +483,25 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
         echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
         echo "                        <td align=\"left\">", form_submit("changepassword", $lang['changepassword']), "</td>\n";
         echo "                      </tr>\n";
+
+        if (!forum_get_password($forum_settings['fid'])) {
+
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"center\" colspan=\"2\">\n";
+            echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" width=\"30\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+            echo "                              <td align=\"left\">{$lang['passwordprotectwarning']}</td>\n";
+            echo "                            </tr>\n";
+            echo "                          </table>\n";            
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+        }
+
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -494,6 +531,54 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
     echo "  <br />\n";
 }
 
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['forumstatusmessages']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['forumclosedmessage']}:</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", form_textarea("closed_message", (isset($forum_settings['closed_message']) ? $forum_settings['closed_message'] : ''), 4, 76), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumrestrictedmessage']}:</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", form_textarea("restricted_message", (isset($forum_settings['restricted_message']) ? $forum_settings['restricted_message'] : ''), 4, 76), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['forumpasswordprotectedmessage']}:</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">", form_textarea("password_protected_message", (isset($forum_settings['password_protected_message']) ? $forum_settings['password_protected_message'] : ''), 4, 76), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_52']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_53']}</p>\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  <br />\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

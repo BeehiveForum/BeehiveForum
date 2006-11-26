@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.25 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.26 2006-11-26 00:41:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -98,7 +98,7 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 }
 
 if (isset($_POST['submit'])) {
-
+    
     $valid = true;
 
     $status_array = array();
@@ -113,17 +113,12 @@ if (isset($_POST['submit'])) {
     if ($valid) {
 
         forum_links_update_top_link($l_top_title);
-        
-        if (isset($_POST['l_lid']) && is_array($_POST['l_lid'])) {
 
-            foreach($_POST['l_lid'] as $lid => $value) {
+        if (isset($_POST['l_title']) && is_array($_POST['l_title'])) {
 
-                if (isset($_POST['l_title'][$lid]) && strlen(trim(_stripslashes($_POST['l_title'][$lid]))) > 0) {
-                    $l_title = trim(_stripslashes($_POST['l_title'][$lid]));
-                }else {
-                    $status_array[] = "<h2>{$lang['youmustenteratitleforalllinks']}</h2>\n";
-                    $valid = false;
-                }
+            foreach($_POST['l_title'] as $lid => $l_title) {
+
+                $l_title = trim(_stripslashes($l_title));
 
                 if (isset($_POST['l_uri'][$lid]) && strlen(trim(_stripslashes($_POST['l_uri'][$lid]))) > 0) {
 

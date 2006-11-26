@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.361 2006-11-24 20:59:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.362 2006-11-26 00:41:38 decoyduck Exp $ */
 
 // International English language file
 
@@ -633,6 +633,7 @@ $lang['forumaccessstatus'] = "Forum Access Status";
 $lang['changepermissions'] = "Change Permissions";
 $lang['changepassword'] = "Change Password";
 $lang['passwordprotected'] = "Password Protected";
+$lang['passwordprotectwarning'] = "You have not set a forum password. If you do not set a password the password protection functionality will be automatically disabled!";
 $lang['postoptions'] = "Post Options";
 $lang['allowpostoptions'] = "Allow Post Editing";
 $lang['postedittimeout'] = "Post Edit Timeout";
@@ -680,6 +681,10 @@ $lang['userattachmentspace'] = "Attachment space per user";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
+$lang['forumstatusmessages'] = "Forum Status Messages";
+$lang['forumclosedmessage'] = "Forum Closed Message";
+$lang['forumrestrictedmessage'] = "Forum Restricted Message";
+$lang['forumpasswordprotectedmessage'] = "Forum Password Protected Message";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -724,6 +729,8 @@ $lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how 
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
 $lang['forum_settings_help_50'] = "Your Beehive Forum will not automatically prune the unread messages data from your database. You must choose to do this by using the prune options below.";
 $lang['forum_settings_help_51'] = "You can require approval of all new user accounts before they are used by enabling this option. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
+$lang['forum_settings_help_52'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";
+$lang['forum_settings_help_53'] = "You cannot use HTML. Hyperlinks and email addresses will automatically be made clickable. To use the default Beehive Forum messages clear the fields.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 

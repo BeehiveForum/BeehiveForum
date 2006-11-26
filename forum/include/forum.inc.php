@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.194 2006-11-15 22:34:54 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.195 2006-11-26 00:41:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -75,6 +75,10 @@ function get_forum_data()
             if (db_num_rows($result) > 0) {
 
                 $forum_data = db_fetch_array($result);
+
+                if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
+                if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
+
                 return $forum_data;
             }
 
@@ -167,7 +171,12 @@ function forum_closed_message()
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     echo "<h1>{$lang['closed']}</h1>\n";
-    echo "<h2>$forum_name {$lang['iscurrentlyclosed']}</h2>\n";
+    
+    if ($closed_message = forum_get_setting('closed_message', false)) {
+        echo "<h2>$closed_message</h2>\n";
+    }else {
+        echo "<h2>$forum_name {$lang['iscurrentlyclosed']}</h2>\n";
+    }
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
         echo "<p>{$lang['adminforumclosedtip']}</p>\n";
@@ -186,8 +195,13 @@ function forum_restricted_message()
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     echo "<h1>{$lang['restricted']}</h1>\n";
-    echo "<h2>{$lang['youdonothaveaccessto']} $forum_name.</h2>\n";
-    echo "<h2>{$lang['toapplyforaccessplease']}</h2>\n";
+    
+    if ($restricted_message = forum_get_setting('closed_message', false)) {
+        echo "<h2>{$restricted_message}</h2>\n";
+    }else {
+        echo "<h2>{$lang['youdonothaveaccessto']} $forum_name.</h2>\n";
+        echo "<h2>{$lang['toapplyforaccessplease']}</h2>\n";
+    }
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
         echo "<p>{$lang['adminforumclosedtip']}</p>\n";
@@ -195,6 +209,24 @@ function forum_restricted_message()
 
     html_draw_bottom();
     exit;
+}
+
+function forum_get_password($forum_fid)
+{
+    $db_forum_get_password = db_connect();
+
+    if (!is_numeric($forum_fid)) return false;
+
+    $sql = "SELECT FORUM_PASSWD FROM FORUMS WHERE FID = '$forum_fid'";
+    $result = db_query($sql, $db_forum_get_password);
+
+    if (db_num_rows($result) > 0) {
+
+        list($forum_passwd) = db_fetch_array($result, DB_RESULT_NUM);
+        return is_md5($forum_passwd) ? $forum_passwd : false;
+    }
+
+    return false;
 }
 
 function forum_check_password($forum_fid)
@@ -207,91 +239,88 @@ function forum_check_password($forum_fid)
 
     if (!is_numeric($forum_fid)) return false;
 
-    $sql = "SELECT FORUM_PASSWD FROM FORUMS WHERE FID = '$forum_fid'";
-    $result = db_query($sql, $db_forum_check_password);
+    if ($forum_passwd = forum_get_password($forum_fid)) {
 
-    if (db_num_rows($result) > 0) {
-
-        list($forum_passwd) = db_fetch_array($result, DB_RESULT_NUM);
-
-        if (isset($forum_passwd) && is_md5($forum_passwd)) {
-
-            if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
-                $passwd = md5($_COOKIE["bh_{$webtag}_password"]);
-            }else {
-                $passwd = "";
-            }
-
-            if ($passwd == $forum_passwd) return true;
-
-            // If we got this far then the password verification failed or
-            // the user hasn't seen the password dialog before.
-
-            $lang = load_language_file();
-
-            html_draw_top();
-
-            echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
-            echo "<p>{$lang['passwdprotectedwarning']}</p>\n";
-
-            if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
-                bh_setcookie("bh_{$webtag}_password", "", time() - YEAR_IN_SECONDS);
-                echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-                echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
-            }
-
-            echo "<div align=\"center\">\n";
-            
-            if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-                echo "<form method=\"post\" action=\"./forum_password.php\" target=\"$frame_top_target\">\n";
-            }else {
-                echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
-            }
-
-            echo "  ", form_input_hidden('webtag', $webtag), "\n";
-            echo "  ", form_input_hidden('ret', get_request_uri()), "\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">\n";
-            echo "        <table class=\"box\" width=\"90%\">\n";
-            echo "          <tr>\n";
-            echo "            <td class=\"posthead\" align=\"center\">\n";
-            echo "              <table class=\"posthead\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "              <table class=\"posthead\" width=\"90%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\">{$lang['passwd']}:</td>\n";
-            echo "                  <td align=\"left\">", form_input_password('forum_password', '', 32), "</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                  <td align=\"left\">", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], false), "</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "      </td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\">&nbsp;</td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-            echo "    </tr>\n";
-            echo "  </table>\n";
-            echo "</form>\n";
-            echo "</div>\n";
-
-            html_draw_bottom();
-            exit;
+        if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
+            $passwd = md5($_COOKIE["bh_{$webtag}_password"]);
+        }else {
+            $passwd = "";
         }
+
+        if ($passwd == $forum_passwd) return true;
+
+        // If we got this far then the password verification failed or
+        // the user hasn't seen the password dialog before.
+
+        $lang = load_language_file();
+
+        html_draw_top();
+
+        echo "<h1>{$lang['passwdprotectedforum']}</h1>\n";
+
+        if ($password_protected_message = forum_get_setting('password_protected_message', false)) {
+            echo "<h2>{$password_protected_message}</h2>\n";
+        }else {
+            echo "<h2>{$lang['passwdprotectedwarning']}</h2>\n";
+        }
+
+        if (isset($_COOKIE["bh_{$webtag}_password"]) && strlen(trim(_stripslashes($_COOKIE["bh_{$webtag}_password"]))) > 0) {
+            bh_setcookie("bh_{$webtag}_password", "", time() - YEAR_IN_SECONDS);
+            echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+            echo "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
+        }
+
+        echo "<div align=\"center\">\n";
+
+        if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
+            echo "<form method=\"post\" action=\"./forum_password.php\" target=\"$frame_top_target\">\n";
+        }else {
+            echo "<form method=\"post\" action=\"./forum_password.php\" target=\"_top\">\n";
+        }
+
+        echo "  ", form_input_hidden('webtag', $webtag), "\n";
+        echo "  ", form_input_hidden('ret', get_request_uri()), "\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">\n";
+        echo "        <table class=\"box\" width=\"90%\">\n";
+        echo "          <tr>\n";
+        echo "            <td class=\"posthead\" align=\"center\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['enterpasswd']}</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "              <table class=\"posthead\" width=\"90%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">{$lang['passwd']}:</td>\n";
+        echo "                  <td align=\"left\">", form_input_password('forum_password', '', 32), "</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\">", form_checkbox('remember_password', 'Y', $lang['rememberpassword'], false), "</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
+        echo "</div>\n";
+
+        html_draw_bottom();
+        exit;
     }
 
     return true;

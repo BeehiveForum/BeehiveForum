@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.php,v 1.103 2006-11-24 22:22:09 decoyduck Exp $ */
+/* $Id: pm.php,v 1.104 2006-11-26 00:41:37 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -329,7 +329,13 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table width=\"100%\" border=\"0\">\n";
 echo "                <tr>\n";
-echo "                  <td width=\"20\" align=\"center\" class=\"subhead\">&nbsp;</td>\n";
+
+if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
+    echo "                  <td class=\"subhead\" align=\"center\" width=\"20\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
+}else {
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
+}
+
 echo "                  <td align=\"left\" class=\"subhead\" width=\"50%\">{$lang['subject']}</td>\n";
 
 if ($folder == PM_FOLDER_INBOX) {
@@ -341,16 +347,15 @@ if ($folder == PM_FOLDER_INBOX) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"15%\">{$lang['from']}</td>\n";
 }
 
-echo "                  <td align=\"left\" class=\"subhead\" width=\"20%\">{$lang['timesent']}</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['timesent']}</td>\n";
+echo "                </tr>\n";
 
 if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
-
-    echo "                  <td class=\"subhead\" align=\"center\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"pm_toggle_all();\""), "</td>\n";
-    echo "                </tr>\n";
 
     foreach($pm_messages_array['message_array'] as $message) {
 
         echo "                <tr>\n";
+        echo "                  <td class=\"postbody\" align=\"center\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
         echo "                  <td align=\"left\" class=\"postbody\">";
 
         if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
@@ -369,9 +374,6 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             }
         }
 
-        echo "            </td>\n";
-
-        echo "                  <td align=\"left\" class=\"postbody\">";
         echo "            <a href=\"pm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}&amp;page=$page\" target=\"_self\">{$message['SUBJECT']}</a>";
         
         if (pm_has_attachments($message['MID'])) {
@@ -413,14 +415,11 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
         }
 
         echo "                  <td align=\"left\" class=\"postbody\">", format_time($message['CREATED']), "</td>\n";
-        echo "                  <td class=\"postbody\" align=\"center\">", form_checkbox('process[]', $message['MID'], ''), "</td>\n";
         echo "                </tr>\n";
     }
 
 }else {
 
-    echo "                  <td align=\"left\" class=\"posthead\" width=\"20\">&nbsp;</td>\n";
-    echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td class=\"postbody\">&nbsp;</td><td align=\"left\" class=\"postbody\">{$lang['nomessages']}</td>\n";
     echo "                </tr>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.177 2006-11-22 00:09:47 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.178 2006-11-27 22:50:51 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -265,7 +265,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $valid = true;
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
 
@@ -326,7 +326,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     // Global user permissions
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $new_global_user_perms = (double) 0;
 
@@ -406,7 +406,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     // Password reset
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         if (isset($_POST['t_reset_password']) && $_POST['t_reset_password'] == 'Y') {
             $t_reset_password = true;
@@ -529,7 +529,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
 }else {
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";
@@ -679,7 +679,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $global_user_perm = perm_get_global_user_permissions($uid);
 
@@ -1104,7 +1104,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "    <tr>\n";

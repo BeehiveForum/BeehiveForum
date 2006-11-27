@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.92 2006-11-22 21:38:22 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.93 2006-11-27 22:50:51 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -231,7 +231,7 @@ function perm_check_global_permissions($access_level, $uid)
     if (!is_numeric($uid)) return false;
 
     if ($uid == bh_session_get_value('UID')) {
-        return bh_session_check_perm($access_level, 0, 0);
+        return bh_session_check_perm($access_level, 0);
     }
 
     $sql = "SELECT GROUP_PERMS.PERM FROM GROUPS ";

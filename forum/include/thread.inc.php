@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.92 2006-11-11 13:16:40 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.93 2006-11-27 01:29:08 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -534,7 +534,11 @@ function thread_merge($tida, $tidb, $merge_type)
 
     if (thread_is_poll($tida) || thread_is_poll($tidb)) return false;
 
-    if ($threada = thread_get($tida) && $threadb = thread_get($tidb)) {
+    if (!$threada = thread_get($tida)) return false;
+
+    if (!$threadb = thread_get($tidb)) return false;
+        
+    if (isset($threada['TITLE']) && isset($threadb['TITLE'])) {
 
         thread_set_closed($tida, true);
         thread_set_closed($tidb, true);
@@ -545,7 +549,7 @@ function thread_merge($tida, $tidb, $merge_type)
         switch ($merge_type) {
 
             case THREAD_MERGE_BY_CREATED:
-        
+
                 $post_data_array = thread_merge_get_by_created($tida, $tidb);
                 break;
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.123 2006-11-06 23:35:44 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.124 2006-11-27 09:40:45 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -303,7 +303,8 @@ $sql.= "  PRIMARY KEY  (TID,PID),";
 $sql.= "  KEY TO_UID (TO_UID),";
 $sql.= "  KEY FROM_UID (FROM_UID),";
 $sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID),";
-$sql.= "  KEY CREATED (CREATED)";
+$sql.= "  KEY CREATED (CREATED),";
+$sql.= "  KEY APPROVED (APPROVED)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -481,11 +482,12 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "CREATE TABLE {$forum_webtag}_USER_POLL_VOTES (";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  VOTE_ID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  VOTE_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-$sql.= "  PRIMARY KEY  (TID,UID,VOTE_ID,OPTION_ID)";
+$sql.= "  PRIMARY KEY (TID, VOTE_ID),";
+$sql.= "  KEY UID (UID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

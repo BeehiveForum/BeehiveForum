@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.63 2006-11-22 00:09:48 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.64 2006-11-27 01:29:08 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -313,6 +313,10 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
                 $merge_thread = $_POST['merge_thread'];
                 $merge_type = $_POST['merge_type'];
+
+                if (validate_msg($merge_thread)) {
+                    list($merge_thread,) = explode('.', $merge_thread);
+                }
 
                 $error_msg = "";
 

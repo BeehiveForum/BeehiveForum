@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.264 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.265 2006-11-27 22:50:51 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -914,21 +914,16 @@ function bh_session_get_perm_array($uid)
 * @param integer $forum_fid - Optional forum fid otherwise uses current forum FID.
 */
 
-function bh_session_check_perm($perm, $folder_fid, $forum_fid = false)
+function bh_session_check_perm($perm, $folder_fid)
 {
     global $user_sess;
 
     if (!is_array($user_sess)) return false;
     if (!is_numeric($folder_fid)) return false;
 
-    if ($forum_fid === false) {
+    if (!$table_data = get_table_prefix()) return false;
 
-        if ($table_data = get_table_prefix()) {
-            $forum_fid = $table_data['FID'];
-        }else {
-            $forum_fid = 0;
-        }
-    }
+    $forum_fid = $table_data['FID'];
 
     $user_perm_test = 0;
 
@@ -1009,10 +1004,6 @@ function bh_session_get_perm($folder_fid, $forum_fid = false)
 
 function bh_session_user_banned()
 {
-    if (bh_session_check_perm(USER_PERM_BANNED, 0, 0)) {
-        return true;
-    }
-
     if (bh_session_check_perm(USER_PERM_BANNED, 0)) {
         return true;
     }
@@ -1040,7 +1031,7 @@ function bh_session_user_approved()
 
     if (forum_get_setting('require_user_approval', 'Y')) {
 
-        if (bh_session_check_perm(USER_PERM_APPROVED, 0, 0)) {
+        if (bh_session_check_perm(USER_PERM_APPROVED, 0)) {
             return true;
         }
 

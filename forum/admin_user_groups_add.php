@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.34 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.35 2006-11-27 22:50:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -136,7 +136,7 @@ if (isset($_POST['submit'])) {
 
     $new_group_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $new_group_perms = (double)$new_group_perms | $t_admintools;
     }
@@ -226,7 +226,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"90%\">\n";
 
-if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['groupcanaccessadmintools'], false), "</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.125 2006-11-24 23:36:38 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.126 2006-11-27 22:50:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -156,7 +156,7 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
 // Draw the form
 echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageusers']}</h1>\n";
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_POST['kick_submit'])) {
 
@@ -335,7 +335,7 @@ echo "    <tr>\n";
 
 if (sizeof($admin_user_array['user_array']) > 0) {
 
-    echo "      <td align=\"left\" width=\"40%\">", bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) ? form_submit("kick_submit", $lang['kickselected']). "&nbsp;" : "", forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) ? form_submit("approve_submit", $lang['approveselected']) : "", "</td>\n";
+    echo "      <td align=\"left\" width=\"40%\">", bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) ? form_submit("kick_submit", $lang['kickselected']). "&nbsp;" : "", forum_get_setting('require_user_approval', 'Y') && bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) ? form_submit("approve_submit", $lang['approveselected']) : "", "</td>\n";
 
 }else {
 

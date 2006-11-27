@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.196 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.197 2006-11-27 09:40:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -895,7 +895,8 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY TO_UID (TO_UID),";
         $sql.= "  KEY FROM_UID (FROM_UID),";
         $sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID),";
-        $sql.= "  KEY CREATED (CREATED)";
+        $sql.= "  KEY CREATED (CREATED),";
+        $sql.= "  KEY APPROVED (APPROVED)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -1133,11 +1134,12 @@ function forum_create($webtag, $forum_name, $access)
 
         $sql = "CREATE TABLE {$webtag}_USER_POLL_VOTES (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  VOTE_ID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  VOTE_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  OPTION_ID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  TSTAMP DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',";
-        $sql.= "  PRIMARY KEY  (TID,UID,VOTE_ID,OPTION_ID)";
+        $sql.= "  PRIMARY KEY (TID, VOTE_ID),";
+        $sql.= "  KEY UID (UID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -1629,7 +1631,7 @@ function forum_get($fid)
 {
     if (!is_numeric($fid)) return false;
 
-    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0, 0)) {
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         $db_forum_get = db_connect();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.51 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.52 2006-11-27 09:40:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -251,7 +251,7 @@ if (sizeof($forums_array) > 0) {
         echo "                        <td align=\"left\"><a href=\"index.php?webtag={$forum['WEBTAG']}\" target=\"_blank\">{$forum['WEBTAG']}</a></td>\n";
         echo "                        <td align=\"left\">{$forum['FORUM_NAME']}</td>\n";
         echo "                        <td align=\"left\">{$forum['MESSAGES']} Messages</td>\n";
-        echo "                        <td align=\"left\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-2, -1, 0, 1, 2), array($lang['disabled'], $lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), $forum['ACCESS_LEVEL']);
+        echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_dropdown_array("t_access[{$forum['FID']}]", array(-2, -1, 0, 1, 2), array($lang['disabled'], $lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), $forum['ACCESS_LEVEL']);
 
         if ($forum['ACCESS_LEVEL'] == 1) {
 

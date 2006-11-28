@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.152 2006-11-23 17:54:15 decoyduck Exp $ */
+/* $Id: search.php,v 1.153 2006-11-28 22:27:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -195,7 +195,7 @@ if (isset($_GET['show_stop_words'])) {
 
 search_get_word_lengths($min_length, $max_length);
 
-if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string'])) {
+if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || isset($_GET['logon'])) {
 
     $offset = 0;
 
@@ -213,6 +213,8 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string'])) {
 
     if (isset($_POST['username']) && strlen(trim($_POST['username'])) > 0) {
         $search_arguments['username'] = $_POST['username'];
+    }elseif (isset($_GET['logon']) && strlen(trim($_GET['logon'])) > 0) {
+        $search_arguments['username'] = $_GET['logon'];
     }
 
     if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
@@ -302,7 +304,7 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string'])) {
     $offset = $_GET['offset'];
 }
 
-if (isset($search_success) && $search_success === true && isset($_GET['search_string'])) {
+if (isset($search_success) && $search_success === true && (isset($_GET['search_string']) || isset($_GET['logon']))) {
 
     $redirect_uri = "./index.php?webtag=$webtag&final_uri=.%2Fdiscussion.php";
     $redirect_uri.= "%3Fwebtag%3D$webtag%26amp%3Bleft%3Dsearch_results";

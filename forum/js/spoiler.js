@@ -47,17 +47,25 @@ function spoilerInitialise() {
 function spoilerReveal(evt) {
     
     if (window.event) {
-        window.event.srcElement.className = 'spoiler_reveal';
-    }else if (evt.target) {
-        evt.target.className = 'spoiler_reveal';
+        if (window.event.srcElement.className == 'spoiler') {
+            window.event.srcElement.className = 'spoiler_reveal';
+        }
+    }else if (evt.target) {                  
+        if (evt.target.className == 'spoiler') {
+            evt.target.className = 'spoiler_reveal';
+        }
     }
 }
 
 function spoilerHide(evt) {
     
     if (window.event) {
-        window.event.srcElement.className = 'spoiler';
+        if (window.event.srcElement.className == 'spoiler_reveal') {
+            window.event.srcElement.className = 'spoiler';
+        }
     }else if (evt.target) {
-        evt.target.className = 'spoiler';
+        if (evt.target.className == 'spoiler_reveal') {
+            evt.target.className = 'spoiler';
+        }
     }
 }

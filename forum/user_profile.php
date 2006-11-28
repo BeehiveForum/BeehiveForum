@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.106 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.107 2006-11-28 22:27:32 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -108,15 +108,29 @@ if (!forum_check_access_level()) {
     header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=$request_uri");
 }
 
-if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
+if (isset($_GET['close_window'])) {
+
+    html_draw_top();
+
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "  window.close();\n";
+    echo "</script>\n";
+
+    html_draw_bottom();
+    exit;
+
+}elseif (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $uid = $_GET['uid'];
+    $logon = user_get_logon($uid);
 
 }elseif (isset($_GET['logon']) && strlen(trim(_stripslashes($_GET['logon']))) > 0) {
 
     $logon = trim(_stripslashes($_GET['logon']));
-    $user_array = user_get_uid($logon);
-    $uid = $user_array['UID'];
+    
+    if ($user_array = user_get_uid($logon)) {
+        $uid = $user_array['UID'];
+    }
 }
 
 if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
@@ -365,6 +379,10 @@ if (bh_session_get_value('UID') != 0) {
         echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;setrel=$setrel\" target=\"_self\">$text</a></td>\n";
         echo "                      </tr>\n";
     }
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\">Find user's posts</a></td>\n";
+    echo "                      </tr>\n";
 }
 
 echo "                      <tr>\n";

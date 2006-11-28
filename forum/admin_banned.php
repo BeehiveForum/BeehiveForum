@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.41 2006-11-26 23:39:08 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.42 2006-11-28 22:27:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -162,6 +162,40 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = basename(trim(_stripslashes($_GET['ret'])));
 }
 
+// Return to the page we came from.
+
+if (isset($_POST['back']) && isset($ret)) {
+    header_redirect($ret);
+}
+
+if (isset($_POST['cancel']) || isset($_POST['delete'])) {
+    unset($_POST['addban'], $_POST['ban_id'], $_GET['ban_id'], $ban_id);
+}
+
+// Delete existing ban entry
+
+if (isset($_POST['delete'])) {
+
+    if (isset($_POST['delete_ban']) && is_array($_POST['delete_ban'])) {
+
+        foreach($_POST['delete_ban'] as $ban_id => $delete_ban) {
+
+            if (($delete_ban == "Y") && $ban_data_array = admin_get_ban($ban_id)) {
+            
+                if (remove_ban_data_by_id($ban_id)) {
+
+                    admin_add_log_entry($admin_log_rem_types[$ban_data_array['BANTYPE']], $ban_data_array['BANDATA']);
+                    $del_success = "<h2>{$lang['successfullyremovedselectedbans']}</h2>\n";
+
+                }else {
+                    
+                    $error_html.= "<h2>{$lang['failedtoremovebans']}</h2>\n";
+                }
+            }
+        }
+    }
+}
+
 // Is there an URL query to process?
 
 if (isset($_GET['ban_ipaddress']) && strlen(trim(_stripslashes($_GET['ban_ipaddress'])))) {
@@ -256,9 +290,8 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
             $valid = false;
         }
     }
-}
 
-if (isset($_POST['update'])) {
+}elseif (isset($_POST['update'])) {
 
     if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
 
@@ -348,45 +381,18 @@ if (isset($_POST['update'])) {
             }
         }
     }
+
+}elseif (isset($_POST['addban'])) {
+
+    $redirect = "./admin_banned.php?webtag=$webtag&addban=true";
+    header_redirect($redirect);
+    exit;
 }
 
-// Delete existing ban entry
-
-if (isset($_POST['delete'])) {
-
-    if (isset($_POST['delete_ban']) && is_array($_POST['delete_ban'])) {
-
-        foreach($_POST['delete_ban'] as $ban_id => $delete_ban) {
-
-            if (($delete_ban == "Y") && $ban_data_array = admin_get_ban($ban_id)) {
-            
-                if (remove_ban_data_by_id($ban_id)) {
-
-                    admin_add_log_entry($admin_log_rem_types[$ban_data_array['BANTYPE']], $ban_data_array['BANDATA']);
-                    $del_success = "<h2>{$lang['successfullyremovedselectedbans']}</h2>\n";
-
-                }else {
-                    
-                    $error_html.= "<h2>{$lang['failedtoremovebans']}</h2>\n";
-                }
-            }
-        }
-    }
-}
-
-// Return to the page we came from.
-
-if (isset($_POST['back']) && isset($ret)) {
-    header_redirect($ret);
-}
-
-if (isset($_POST['cancel']) || isset($_POST['delete'])) {
-    unset($_POST['addban'], $_POST['ban_id'], $_GET['ban_id'], $ban_id);
-}
 
 html_draw_top('openprofile.js');
 
-if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_data))) {
+if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_data))) {
 
     echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
@@ -413,20 +419,26 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['addban']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"120\" class=\"posthead\">{$lang['bantype']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array('newbantype', range(0, 5), array('&nbsp;', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : (isset($add_new_ban_type) ? _htmlentities($add_new_ban_type) : ''))), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text('newbandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['newbandata'])) : (isset($add_new_ban_data) ? _htmlentities($add_new_ban_data) : '')), 40, 255), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
-    echo "                  <td align=\"left\">", form_textarea('newbancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['newbancomment'])) : ''), 5, 37), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bantype']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array('newbantype', range(0, 5), array('&nbsp;', 'IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['newbantype'])) : (isset($add_new_ban_type) ? _htmlentities($add_new_ban_type) : ''))), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text('newbandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['newbandata'])) : (isset($add_new_ban_data) ? _htmlentities($add_new_ban_data) : '')), 40, 255), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
+    echo "                        <td align=\"left\">", form_textarea('newbancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['newbancomment'])) : ''), 5, 37), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -580,20 +592,26 @@ if (isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_d
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['editban']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"120\" class=\"posthead\">{$lang['bantype']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array('bantype', range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['bantype'])) : $ban_data_array['BANTYPE'])), form_input_hidden('old_bantype', $ban_data_array['BANTYPE']), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text('bandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['bandata'])) : $ban_data_array['BANDATA']), 40, 255), form_input_hidden('old_bandata', $ban_data_array['BANDATA']), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
-    echo "                  <td align=\"left\">", form_textarea('bancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['bancomment'])) : $ban_data_array['COMMENT']), 5, 37), form_input_hidden('old_bancomment', $ban_data_array['COMMENT']), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bantype']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array('bantype', range(1, 5), array('IP Address', 'Logon', 'Nickname', 'Email', 'HTTP Referer'), (isset($_POST['newbantype']) ? _htmlentities(_stripslashes($_POST['bantype'])) : $ban_data_array['BANTYPE'])), form_input_hidden('old_bantype', $ban_data_array['BANTYPE']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">{$lang['bandata']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text('bandata', (isset($_POST['newbandata']) ? _htmlentities(_stripslashes($_POST['bandata'])) : $ban_data_array['BANDATA']), 40, 255), form_input_hidden('old_bandata', $ban_data_array['BANDATA']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">{$lang['bancomment']}:</td>\n";
+    echo "                        <td align=\"left\">", form_textarea('bancomment', (isset($_POST['newbancomment']) ? _htmlentities(_stripslashes($_POST['bancomment'])) : $ban_data_array['COMMENT']), 5, 37), form_input_hidden('old_bancomment', $ban_data_array['COMMENT']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.24 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.25 2006-11-28 22:27:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -100,7 +100,33 @@ $add_success = "";
 $del_success = "";
 $edit_success = "";
 
-if (isset($_POST['addfeedsubmit'])) {
+if (isset($_POST['cancel']) || isset($_POST['delete'])) {
+
+    unset($_POST['addfeed'], $_POST['feed_id'], $_GET['feed_id']);
+}
+
+if (isset($_POST['delete'])) {
+
+    if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
+
+        foreach($_POST['t_delete'] as $feed_id => $delete_feed) {
+    
+            if (($delete_feed == "Y") && ($rss_feed = rss_get_feed($feed_id))) {
+
+                if (rss_remove_feed($feed_id)) {
+
+                    admin_add_log_entry(DELETED_RSS_FEED, $rss_feed['NAME']);
+                    $del_success = "<h2>{$lang['successfullyremovedselectedfeeds']}</h2>\n";
+
+                }else {
+                    
+                    $error_html.= "<h2>{$lang['failedtoremovefeeds']}</h2>\n";
+                }               
+            }
+        }
+    }
+
+}elseif (isset($_POST['addfeedsubmit'])) {
 
     $valid = true;
 
@@ -204,9 +230,8 @@ if (isset($_POST['addfeedsubmit'])) {
             $error_html.= "<h2>{$lang['failedtoaddnewrssfeed']}</h2>\n";
         }
     }
-}
 
-if (isset($_POST['updatefeedsubmit'])) {
+}elseif (isset($_POST['updatefeedsubmit'])) {
 
     $valid = true;
     
@@ -314,33 +339,12 @@ if (isset($_POST['updatefeedsubmit'])) {
             }
         }
     }
-}
 
-if (isset($_POST['delete'])) {
+}elseif (isset($_POST['addfeed'])) {
 
-    if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
-
-        foreach($_POST['t_delete'] as $feed_id => $delete_feed) {
-    
-            if (($delete_feed == "Y") && ($rss_feed = rss_get_feed($feed_id))) {
-
-                if (rss_remove_feed($feed_id)) {
-
-                    admin_add_log_entry(DELETED_RSS_FEED, $rss_feed['NAME']);
-                    $del_success = "<h2>{$lang['successfullyremovedselectedfeeds']}</h2>\n";
-
-                }else {
-                    
-                    $error_html.= "<h2>{$lang['failedtoremovefeeds']}</h2>\n";
-                }               
-            }
-        }
-    }
-}
-
-if (isset($_POST['cancel']) || isset($_POST['delete'])) {
-
-    unset($_POST['addfeed'], $_POST['feed_id'], $_GET['feed_id']);
+    $redirect = "./admin_rss_feeds.php?webtag=$webtag&addfeed=true";
+    header_redirect($redirect);
+    exit;
 }
 
 html_draw_top();
@@ -385,7 +389,7 @@ if (isset($_POST['testfeedurl'])) {
     unset($t_url);
 }
 
-if (isset($_POST['addfeed'])) {
+if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['addnewfeed']}</h1>\n";
 
@@ -397,7 +401,7 @@ if (isset($_POST['addfeed'])) {
     echo "<div align=\"center\">\n";
     echo "  <form name=\"thread_options\" action=\"admin_rss_feeds.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ", form_input_hidden('addfeed', ''), "\n";
+    echo "  ", form_input_hidden('addfeed', 'true'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -406,19 +410,25 @@ if (isset($_POST['addfeed'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['feednameandlocation']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['feednameandlocation']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedname']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : ""), 40, 32), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedlocation']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("t_url_new", (isset($_POST['t_url_new']) ? _htmlentities(_stripslashes($_POST['t_url_new'])) : ""), 32, 255), "&nbsp;", form_submit('testfeedurl', "Test"), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedname']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : ""), 40, 32), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedlocation']}:</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text("t_url_new", (isset($_POST['t_url_new']) ? _htmlentities(_stripslashes($_POST['t_url_new'])) : ""), 30, 255), "&nbsp;", form_submit('testfeedurl', "Test"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
@@ -430,27 +440,33 @@ if (isset($_POST['addfeed'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['feedsettings']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['feedsettings']}</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feeduseraccount']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("t_user_new", (isset($_POST['t_user_new']) ? _htmlentities(_stripslashes($_POST['t_user_new'])) : ""), 20, 64), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("t_prefix_new", (isset($_POST['t_prefix_new']) ? _htmlentities(_stripslashes($_POST['t_prefix_new'])) : ""), 20, 16), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedfoldername']}:</td>\n";
-    echo "                  <td align=\"left\">", folder_draw_dropdown_all((isset($_POST['t_fid_new']) ? _htmlentities(_stripslashes($_POST['t_fid_new'])) : 0), "t_fid_new", "", "", "post_folder_dropdown"), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['updatefrequency']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("t_frequency_new", array(0, 30, 60, 360, 720, 1440), array($lang['never'], $lang['every30mins'], $lang['onceanhour'], $lang['every6hours'], $lang['every12hours'], $lang['onceaday']), (isset($_POST['t_frequency_new']) ? _htmlentities(_stripslashes($_POST['t_frequency_new'])) : 1440)), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feeduseraccount']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_user_new", (isset($_POST['t_user_new']) ? _htmlentities(_stripslashes($_POST['t_user_new'])) : ""), 20, 64), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_prefix_new", (isset($_POST['t_prefix_new']) ? _htmlentities(_stripslashes($_POST['t_prefix_new'])) : ""), 20, 16), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['feedfoldername']}:</td>\n";
+    echo "                        <td align=\"left\">", folder_draw_dropdown_all((isset($_POST['t_fid_new']) ? _htmlentities(_stripslashes($_POST['t_fid_new'])) : 0), "t_fid_new", "", "", "post_folder_dropdown"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['updatefrequency']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_frequency_new", array(0, 30, 60, 360, 720, 1440), array($lang['never'], $lang['every30mins'], $lang['onceanhour'], $lang['every6hours'], $lang['every12hours'], $lang['onceaday']), (isset($_POST['t_frequency_new']) ? _htmlentities(_stripslashes($_POST['t_frequency_new'])) : 1440)), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.43 2006-11-27 22:50:51 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.44 2006-11-28 22:27:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -221,7 +221,7 @@ echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lan
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
 echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? $t_name : $group['GROUP_NAME']), 30, 64)."</td>\n";
@@ -251,7 +251,7 @@ echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lan
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
 if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 

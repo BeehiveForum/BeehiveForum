@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.46 2006-11-26 23:39:08 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.47 2006-11-28 22:27:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -270,7 +270,7 @@ echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lan
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['name']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("name", $folder_data['TITLE'], 30, 32), form_input_hidden("old_name", $folder_data['TITLE']), "</td>\n";
@@ -302,7 +302,7 @@ if ($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], "move", "",
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"90%\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['movethreadstofolder']}:</td>\n";
     echo "                        <td align=\"left\">", $folder_dropdown, "</td>\n";
@@ -334,7 +334,7 @@ echo "                  <td align=\"left\" class=\"subhead\">{$lang['permissions
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_checkbox("t_post_read", USER_PERM_POST_READ, $lang['readposts'], $folder_data['PERM'] & USER_PERM_POST_READ), "</td>\n";
 echo "                        <td align=\"left\">", form_checkbox("t_post_create", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder_data['PERM'] & USER_PERM_POST_CREATE), "</td>\n";
@@ -375,7 +375,7 @@ echo "                  <td align=\"left\" class=\"subhead\">{$lang['resetuserpe
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"50%\">Reset User Perms:</td>\n";
 echo "                        <td align=\"left\">", form_radio("t_reset_user_perms", "Y", $lang['yes'], false), "</td>\n";
@@ -408,7 +408,7 @@ echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lan
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"90%\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['allowfoldertocontain']}:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("allowed_types", $allow_values, $allow_labels, isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : FOLDER_ALLOW_NORMAL_THREAD | FOLDER_ALLOW_POLL_THREAD), form_input_hidden("old_allowed_types", isset($folder_data['ALLOWED_TYPES']) ? $folder_data['ALLOWED_TYPES'] : 0), "</td>\n";

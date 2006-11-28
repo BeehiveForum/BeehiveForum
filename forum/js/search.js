@@ -21,7 +21,12 @@ USA
 
 function enable_search_button() {
 
-    enable_button(top.frames['main'].frames['right'].document.forms['search_form'].go_button);
+    var search_page = top.frames['main'].frames['right'].document;
+
+    if (search_page.getElementById('search_form')) {
+
+        enable_button(search_page.forms['search_form'].go_button);
+    }
 }
 
 function display_mysql_stopwords(webtag, keywords) {

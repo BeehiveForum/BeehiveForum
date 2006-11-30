@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.365 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.366 2006-11-30 21:39:01 decoyduck Exp $ */
 
 // International English language file
 
@@ -519,11 +519,10 @@ $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
 $lang['userapprovalqueue'] = "User Approval Queue";
 $lang['approveselected'] = "Approve selected";
-$lang['successfullyapproveduser'] = "Successfully approved user";
+$lang['successfullyapproveduser'] = "Successfully approved user";                                                
 $lang['banselected'] = "Ban selected";
 $lang['nousersawaitingapproval'] = "No users are awaiting approval";
 $lang['kickselected'] = "Kick selected";
-$lang['approveselected'] = "Approve selected";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add selected users";
@@ -747,7 +746,7 @@ $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will 
 $lang['forum_settings_help_50'] = "Your Beehive Forum will not automatically prune the unread messages data from your database. You must choose to do this by using the prune options below.";
 $lang['forum_settings_help_51'] = "You can require approval of all new user accounts before they are used by enabling this option. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
 $lang['forum_settings_help_52'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";
-$lang['forum_settings_help_53'] = "You cannot use HTML. Hyperlinks and email addresses will automatically be made clickable. To use the default Beehive Forum messages clear the fields.";
+$lang['forum_settings_help_53'] = "You can use HTML in your messages. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum messages clear the fields.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1306,34 +1305,16 @@ $lang['polladditionalmessageexp'] = "Do you want to include an additional post a
 $lang['mustspecifypolltoview'] = "You must specify a poll to view.";
 $lang['pollconfirmclose'] = "Are you sure you want to close the following Poll?";
 $lang['endpoll'] = "End Poll";
-
-/*$lang['nobodyvoted'] = "Nobody voted";
-$lang['nobodyhasvoted'] = "Nobody has voted";
-$lang['1personvoted'] = "1 person voted";
-$lang['1personhasvoted'] = "1 person has voted";
-$lang['peoplevoted'] = "people voted";
-$lang['peoplehavevoted'] = "people have voted";
-$lang['noguestsvoted'] = "No Guests voted";
-$lang['noguestshavevoted'] = "No Guests have voted";
-$lang['1guestvoted'] = "1 Guest voted";
-$lang['1guesthasvoted'] = "1 Guest has voted";
-$lang['guestsvoted'] = "guests voted";
-$lang['guestshavevoted'] = "guests have voted"; */
-
 $lang['nobodyvotedopenpoll'] = "Nobody has voted";
 $lang['nobodyvotedclosedpoll'] = "Nobody voted";
-
 $lang['votedisplayopenpoll'] = "%s and %s have voted.";
 $lang['votedisplayclosedpoll'] = "%s and %s voted.";
-
 $lang['nousersvoted'] = "No users";
 $lang['oneuservoted'] = "1 user";
 $lang['xusersvoted'] = "%s users";
-
 $lang['noguestsvoted'] = "No guests";
 $lang['oneguestvoted'] = "1 guest";
 $lang['xguestsvoted'] = "%s guests";
-
 $lang['pollhasended'] = "Poll has ended";
 $lang['youvotedfor'] = "You voted for";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";

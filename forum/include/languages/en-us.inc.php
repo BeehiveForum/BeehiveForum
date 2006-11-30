@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.29 2006-11-24 21:34:27 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.30 2006-11-30 21:39:01 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -334,12 +334,22 @@ $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Last IP Address";
 $lang['logged'] = "Logged";
 $lang['notlogged'] = "Not Logged";
+$lang['addwordfilter'] = "Add word filter";
 $lang['wordfilterupdated'] = "Word Filter updated";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['wordfilterexp_1'] = "Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line.";
 $lang['wordfilterexp_2'] = "Perl-compatible regular expressions can also be used to match words if you know how.";
 $lang['wordfilterexp_3'] = "Use this page to edit your personal Word Filter. Place each word to be filtered on a new line.";
 $lang['wordfilterisfull'] = "You cannot add any more word filters. Remove some unused ones or edit the existing ones first.";
+$lang['deleteselectedwordfilters'] = "Delete selected";
+$lang['addnewwordfilter'] = "Add New Word Filter";
+$lang['filtertype'] = "Filter Type";
+$lang['nowordfilterentriesfound'] = "No existing word filter entries found. To add a word filter click the button below.";
+$lang['mustspecifymatchedtext'] = "You must specify matched text";
+$lang['mustspecifyfilteroption'] = "You must specify a filter option";
+$lang['mustspecifyfilterid'] = "You must specify a filter ID";
+$lang['invalidfilterid'] = "Invalid Filter ID";
+$lang['failedtoupdatewordfilter'] = "Failed to update word filter. Check that the filter still exists.";
 $lang['allow'] = "Allow";
 $lang['access'] = "Access";
 $lang['normalthreadsonly'] = "Normal threads only";
@@ -387,6 +397,7 @@ $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID 
 $lang['successfullyaddedfolder'] = "Successfully Added Folder";
 $lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
 $lang['folderupdatedsuccessfully'] = "Folder updated successfully";
+$lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
 $lang['forumisnotrestricted'] = "Forum is not restricted";
 $lang['noforumidspecified'] = "No Forum ID specified";
 $lang['groups'] = "Groups";
@@ -488,6 +499,7 @@ $lang['refererban'] = "Referer ban";
 $lang['invalidbanid'] = "Invalid Ban ID";
 $lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
 $lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
+$lang['noaffectsessionwarn'] = "This ban affects no active sessions";
 $lang['mustspecifybantype'] = "You must specify a ban type";
 $lang['mustspecifybandata'] = "You must specify some ban data";
 $lang['successfullyremovedselectedbans'] = "Successfully removed selected bans";
@@ -513,6 +525,8 @@ $lang['nousersawaitingapproval'] = "No users are awaiting approval";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
+$lang['addselectedusers'] = "Add selected users";
+$lang['removeselectedusers'] = "Remove selected users";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -632,6 +646,7 @@ $lang['forumaccessstatus'] = "Forum Access Status";
 $lang['changepermissions'] = "Change Permissions";
 $lang['changepassword'] = "Change Password";
 $lang['passwordprotected'] = "Password Protected";
+$lang['passwordprotectwarning'] = "You have not set a forum password. If you do not set a password the password protection functionality will be automatically disabled!";
 $lang['postoptions'] = "Post Options";
 $lang['allowpostoptions'] = "Allow Post Editing";
 $lang['postedittimeout'] = "Post Edit Timeout";
@@ -644,6 +659,8 @@ $lang['maximumpostlength'] = "Maximum Post Length";
 $lang['postfrequency'] = "Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
+$lang['allowguestvotesinpolls'] = "Allow Guests to vote in polls";
+$lang['allowguestvotesinpoll'] = "Allow Guests to vote in poll";
 $lang['unreadmessagescutoff'] = "Unread messages cutoff";
 $lang['unreadcutoffseconds'] = "seconds";
 $lang['disableunreadmessages'] = "Disable unread messages";
@@ -678,7 +695,12 @@ $lang['attachmentdir'] = "Attachment Dir";
 $lang['userattachmentspace'] = "Attachment space per user";
 $lang['allowembeddingofattachments'] = "Allow embedding of attachments";
 $lang['usealtattachmentmethod'] = "Use Alternative attachment method";
+$lang['allowgueststoaccessattachments'] = "Allow Guests to access attachments";
 $lang['forumsettingsupdated'] = "Forum settings successfully updated";
+$lang['forumstatusmessages'] = "Forum Status Messages";
+$lang['forumclosedmessage'] = "Forum Closed Message";
+$lang['forumrestrictedmessage'] = "Forum Restricted Message";
+$lang['forumpasswordprotectedmessage'] = "Forum Password Protected Message";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -723,7 +745,8 @@ $lang['forum_settings_help_48'] = "<b>Unread messages cutoff</b> specifies how l
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
 $lang['forum_settings_help_50'] = "Your Beehive Forum will not automatically prune the unread messages data from your database. You must choose to do this by using the prune options below.";
 $lang['forum_settings_help_51'] = "You can require approval of all new user accounts before they are used by enabling this option. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
-
+$lang['forum_settings_help_52'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";
+$lang['forum_settings_help_53'] = "You can use HTML in your messages. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum messages clear the fields.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1235,6 +1258,7 @@ $lang['mustprovideanswergroups'] = "You must provide some answer groups";
 $lang['mustprovidepolltype'] = "You must provide a poll type";
 $lang['mustprovidepollresultsdisplaytype'] = "You must provide results display type";
 $lang['mustprovidepollvotetype'] = "You must provide a poll vote type";
+$lang['mustprovidepollguestvotetype'] = "You must specify if guests should be allowed to vote";
 $lang['mustprovidepolloptiontype'] = "You must provide a poll option type";
 $lang['mustprovidepollchangevotetype'] = "You must provide a poll change vote type";
 $lang['pleaseselectfolder'] = "Please select a folder";
@@ -1257,6 +1281,8 @@ $lang['dropdown'] = "As drop-down list(s)";
 $lang['radios'] = "As a series of radio buttons";
 $lang['votechanging'] = "Vote Changing";
 $lang['votechangingexp'] = "Can a person change his or her vote?";
+$lang['guestvoting'] = "Guest Voting";
+$lang['guestchangingexp'] = "Can guests vote in this poll?";
 $lang['allowmultiplevotes'] = "Allow Multiple Votes";
 $lang['pollresults'] = "Poll Results";
 $lang['pollresultsexp'] = "How would you like to display the results of your poll?";
@@ -1281,12 +1307,16 @@ $lang['polladditionalmessageexp'] = "Do you want to include an additional post a
 $lang['mustspecifypolltoview'] = "You must specify a poll to view.";
 $lang['pollconfirmclose'] = "Are you sure you want to close the following Poll?";
 $lang['endpoll'] = "End Poll";
-$lang['nobodyvoted'] = "Nobody voted.";
-$lang['nobodyhasvoted'] = "Nobody has voted.";
-$lang['1personvoted'] = "1 person voted.";
-$lang['1personhasvoted'] = "1 person has voted.";
-$lang['peoplevoted'] = "people voted.";
-$lang['peoplehavevoted'] = "people have voted.";
+$lang['nobodyvotedopenpoll'] = "Nobody has voted";
+$lang['nobodyvotedclosedpoll'] = "Nobody voted";
+$lang['votedisplayopenpoll'] = "%s and %s have voted.";
+$lang['votedisplayclosedpoll'] = "%s and %s voted.";
+$lang['nousersvoted'] = "No users";
+$lang['oneuservoted'] = "1 user";
+$lang['xusersvoted'] = "%s users";
+$lang['noguestsvoted'] = "No guests";
+$lang['oneguestvoted'] = "1 guest";
+$lang['xguestsvoted'] = "%s guests";
 $lang['pollhasended'] = "Poll has ended";
 $lang['youvotedfor'] = "You voted for";
 $lang['thisisapoll'] = "This is a poll. Click to view results.";

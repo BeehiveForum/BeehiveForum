@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.142 2006-11-24 22:22:09 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.143 2006-11-30 21:39:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -592,7 +592,7 @@ if ($valid && isset($_POST['preview'])) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data), "</td>\n";
+    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array), "</td>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";

@@ -647,6 +647,7 @@ Current complete translations are as follows:
 
 English (UK)
 French Canadian
+German
 X-Hacker
 
 3.3.3 Incomplete / Partial Translations
@@ -654,8 +655,7 @@ X-Hacker
 
 Current incomplete translations also available include:
 
-English (US)
-German
+English (US) - Still contains some British-isms.
 
 These translations can be obtained from the Beehive Forum Project CVS Repository.
 For instructions on accessing the CVS Reporistory please see:
@@ -697,6 +697,7 @@ Andy Black.
 ================
 
 French Canadian - Joanne McNair.
+German          - Arda
 X-Hacker        - Matt Beale.
 
 

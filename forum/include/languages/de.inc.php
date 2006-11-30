@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.15 2006-10-29 23:07:23 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.16 2006-11-30 21:39:01 decoyduck Exp $ */
 
 // International English language file
 
@@ -90,6 +90,7 @@ $lang['folders'] = "Ordner";
 $lang['thread'] = "Eintrag";
 $lang['threads'] = "Eintraege";
 $lang['message'] = "Nachricht";
+$lang['messagenumber'] = "Nachricht Nummer";
 $lang['from'] = "Von";
 $lang['to'] = "An";
 $lang['all_caps'] = "ALLE";
@@ -197,6 +198,7 @@ $lang['show'] = "Anzeigen";
 $lang['hint'] = "Tipp";
 $lang['new'] = "Neu";
 $lang['reset'] = "Zurücksetzen";
+$lang['referer'] = "Verweis";
 
 // Admin interface (admin*.php) ----------------------------------------
 
@@ -233,6 +235,8 @@ $lang['adminexp_12'] = "<b>Forum links</b> Links definieren fuer das rechte Drop
 $lang['adminexp_13'] = "<b>Log anzeigen</b> zeigt die letzten Aktionen der Forenmoderatoren.";
 $lang['adminexp_14'] = "<b>Manage Foren</b> Erstellen, Oeffnen, Schliessen oder Wiederoeffnen von Foren.";
 $lang['adminexp_15'] = "<b>Global Foreneinstellungen</b> Aenderung der Einstellungen fuer alle Foren.";
+$lang['adminexp_16'] = "<b>Post Zustimmungswarteschlange</b> zeigt alle Posts die auf Zustimmung/Akzeptierung des Moderators warten.";
+$lang['adminexp_17'] = "<b>Besucher Log</b> zeigt eine erweiterte Liste aller Besucher inkl. deren HTTP-Verweise.";
 $lang['createforumstyle'] = "Forenstil erstellen";
 $lang['newstyle'] = "Neuer Stil";
 $lang['successfullycreated'] = "erfolgreich erstellt.";
@@ -273,6 +277,7 @@ $lang['forumstyle'] = "Forenstil";
 $lang['wordfilter'] = "Wortfilter";
 $lang['forumlinks'] = "Forum Links";
 $lang['viewlog'] = "Log Anzeigen";
+$lang['invalidop'] = "Unerlaubte Aktion";
 $lang['error'] = "Unerlaubter Vorgang";
 $lang['noprofilesectionspecified'] = "Kein Profilbereich angegeben.";
 $lang['newitem'] = "Neuer Eintrag";
@@ -309,10 +314,17 @@ $lang['aliasdesc'] = "Dies ist eine Liste von anderen Eintragungen die auf die l
 $lang['forgottenpassworddesc'] = "Falls der Benutzer sein Passwort vergessen hat kann es hier zurueckgesetzt werden.";
 $lang['manageusersexp_1'] = "Diese Liste zeigt eine Benutzerauswahl, die in diesem Forum angemeldet sind, sortiert nach";
 $lang['manageusersexp_2'] = "Um Benutzerrechte zu aendern auf den Namen klicken.";
+$lang['userfilter'] = "Benutzerfilter";
+$lang['onlineusers'] = "Benutzer Online";
+$lang['offlineusers'] = "Benutzer Offline";
+$lang['usersawaitingapproval'] = "Noch nicht zugelassene Benutzer";
+$lang['bannedusers'] = "Gebannte Benutzer";
+$lang['guestusers'] = "Gastbenutzer";
 $lang['lastlogon'] = "Letzte Anmeldung";
 $lang['sessionreferer'] = "Abschnittsverweis";
 $lang['signupreferer'] = "Ueberschriftsverweis:";
 $lang['nouseraccounts'] = "Keine Benutzeraccounts in der Datenbank.";
+$lang['nouseraccountsmatchingfilter'] = "Kein Benutzerkonto entspricht dem Filter";
 $lang['searchforusernotinlist'] = "Suche nach einem nicht aufgelisteten Benutzer";
 $lang['adminaccesslog'] = "Admin Zugriffslog";
 $lang['adminlogexp'] = "Liste zeigt die letzten Aktionen die von Admin-Benutzern unterbunden wurden.";
@@ -397,6 +409,7 @@ $lang['usercanaccessforumtools'] = "Benutzer hat Zugriff auf Foren-Tools und kan
 $lang['usercanmodallfoldersonallforums'] = "Benutzer ist Moderator ueber <b>alle Ordner</b> in <b>allen Foren</b>";
 $lang['usercanmodlinkssectiononallforums'] = "Benutzer kann den Links-Bereicht moderieren in <b>allen Foren</b>";
 $lang['emailconfirmationrequired'] = "Email-Bestaetigung erforderlich";
+$lang['userisbannedfromallforums'] = "Benutzer ist gebannt in <b>Allen Foren</b>";
 $lang['cancelemailconfirmation'] = "Email-Bestaetigung abbrechen und Benutzer Start von Postings erlauben";
 $lang['resendconfirmationemail'] = "Wiederhole Bestaetigungs-Email an Benutzer";
 $lang['donothing'] = "Keine Aktion";
@@ -491,6 +504,16 @@ $lang['requirepostapproval'] = "Erfordert Post-Zustimmung";
 $lang['adminforumtoolsusercounterror'] = "Es muss mindestens 1 Benutzer mit Admin-Tools und Forum-Tools Berechtigung in allen Foren vorhanden sein!";
 $lang['postcount'] = "Postzaehler:";
 $lang['resetpostcount'] = "Postzaehler zuruecksetzen";
+$lang['postapprovalqueue'] = "Post Zustimmungswarteschlange";
+$lang['nopostsawaitingapproval'] = "Keine Posts warten auf Zustimmung";
+$lang['userapprovalqueue'] = "Benutzer-Zustimmungswarteschlange";
+$lang['approveselected'] = "Zustimmung ausgewaehlt";
+$lang['successfullyapproveduser'] = "Benutzer erfolgreich aktiviert";
+$lang['banselected'] = "Bann ausgewaehlt";
+$lang['nousersawaitingapproval'] = "Kein Benutzer wartet auf Zustimmung";
+$lang['kickselected'] = "Kick (kurzfristiger Rauswurf) ausgewaehlt";
+$lang['visitorlog'] = "Benutzer Log";
+$lang['novisitorslogged'] = "Kein Besucher protokolliert";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -569,6 +592,11 @@ $lang['deletedrssfeed'] = "RSS Feed '%s' geloescht";
 
 $lang['updatedban'] = "Sperre '%s'. '%s' an '%s', '%s' an '%s' aktualisiert.";
 
+$lang['splitthreadatpostintonewthread'] = "Teile Eintrag '%s' im Post %s in neuen Eintrag '%s'";
+$lang['mergedthreadintonewthread'] = "Gemischte Eintraege '%s' und '%s' in neuen Eintrag '%s'";
+
+$lang['approveduser'] = "Anerkannter Benutzer '%s'";
+
 $lang['adminlogempty'] = "Admin Log ist leer";
 $lang['clearlog'] = "Log leeren";
 
@@ -643,6 +671,8 @@ $lang['enableguestaccount'] = "Aktiviere Gastzugang";
 $lang['listguestsinvisitorlog'] = "Gaesteliste in Besucher-Log";
 $lang['guestaccess'] = "Gastzugang";
 $lang['allowguestaccess'] = "Erlaube Gastzugang";
+$lang['requireuserapproval'] = "Benoetige Benutzerzustimmung vom Admin";
+$lang['userandguestaccesssettings'] = "Benutzer- und Gast-Zugriffseinstellungen";
 $lang['enableattachments'] = "Erlaube Anhaenge";
 $lang['attachmentdir'] = "Anhangsverzeichnis";
 $lang['userattachmentspace'] = "Anhangsspeicherplatz je Benutzer";
@@ -692,6 +722,7 @@ $lang['forum_settings_help_47'] = "<b>Post Bearbeitung Grace Periode</b> zur Def
 $lang['forum_settings_help_48'] = "<b>Ungelesene Nachrichten abschneiden</b> definiert wie lange ungelesene Nachrichten gehalten werden. Man kann von verschiedenen voreingestellten Werten auswaehlen oder eigene Schnittzeiten in Sekunden eingeben. Eintraege die frueher geaendert wurden als die definierte Zeitspanne werden dann abgeschnitten und automatisch als gelesen gekennzeichnet.";
 $lang['forum_settings_help_49'] = "Auswahl von <b>Ungelesene Nachrichten deaktivieren</b> wird der Ungelesene-Nachrichten-Support vollstaendig und alle relevanten Optionen des Diskussionstyps aus der Drop-Down-Liste der Eintraege entfernt.";
 $lang['forum_settings_help_50'] = "Ihr Beehive Forum wird nicht automatisch die ungelesenen Nachrichten Ihrer Datenbank abschneiden. Sie muessen dies in den Abschneide-Optionen explizit auswaehlen.";
+$lang['forum_settings_help_51'] = "Du kannst eine vorhergehende Genehmigung für alle Benutzerrechte anfordern, bevor sie genutzt werden koennen, indem Du diese Option aktivierst. Ohne Aktivierung kann ein Benutzer keinen Bereich der Beehive-Forumsinstallation einschliesslich individueller Foren nutzen, PM-Eingang und Mein-Forum-Bereiche.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -711,6 +742,8 @@ $lang['freespace'] = "Freier Speicher";
 $lang['attachmentproblem'] = "Problem beim Herunterladen des Anhangs. Bitte spaeter nochmal probieren.";
 $lang['attachmentshavebeendisabled'] = "Dateianhaenge wurden vom Admin deaktiviert.";
 $lang['canonlyuploadmaximum'] = "Es duerfen im Moment max. 10 Dateien hochgeladen werden";
+$lang['deleteattachments'] = "Loesche Anhaenge";
+$lang['deleteattachmentsconfirm'] = "Bist Du sicher dass die ausgewaehlten Anhaenge geloescht werden sollen?";
 
 // Changing passwords (change_pw.php) ----------------------------------
 
@@ -984,6 +1017,8 @@ $lang['emailconfirmationrequiredbeforepost'] = "eMail-Bestaetigung ist notwendig
 $lang['emailconfirmationfailedtosend'] = "Bestaetigungsmail konnte nicht gesendet werden. Bitte kontaktiere den Admin um das zu pruefen.";
 $lang['emailconfirmationsent'] = "Bestaetigungs-eMail wurde noch einmal gesendet.";
 $lang['resendconfirmation'] = "Sende Bestaetigungs-eMail noch einmal";
+$lang['userapprovalrequired'] = "Benutzergenehmigung erforderlich";
+$lang['userapprovalrequiredbeforeaccess'] = "Dein Benutzerkonto muss von einem Foren-Admin genehmigt werden bevor du auf das gewuenschte Forum zugreifen kannst.";
 
 // Message display (messages.php & messages.inc.php) --------------------------------------
 
@@ -1025,6 +1060,8 @@ $lang['until'] = "Bis 00:00 UTC";
 $lang['approvalrequired'] = "Aktivierung notwendig";
 $lang['awaitingapprovalbymoderator'] = "wartet auf Aktivierung eines Moderators";
 $lang['postapprovedsuccessfully'] = "Post erfolgreich aktiviert";
+$lang['postapprovalfailed'] = "Post-Genehmigung fehlgeschlagen.";
+$lang['postdoesnotrequireapproval'] = "Post benoetigt keine Genehmigung";
 $lang['approvepost'] = "Stimme Post zur Anzeige zu";
 $lang['approvedcaps'] = "ZUSTIMMUNG";
 $lang['makesticky'] = "Erstelle Sticker";
@@ -1159,6 +1196,7 @@ $lang['showmyageanddobtoothers'] = "Alter und Geburtsdatum anderen sichtbar mach
 $lang['listmeontheactiveusersdisplay'] = "In den Aktiven Benutzern anzeigen wenn angemeldet";
 $lang['browseanonymously'] = "Forum anonym durchsuchen";
 $lang['allowfriendstoseemeasonline'] = "anonym durchsuchen, aber Freunden erlauben mich als Online zu sehen";
+$lang['revealspoileronmouseover'] = "Spoiler hervorheben durch Mouse-Over";
 $lang['showforumstats'] = "Zeige Forenstatistik am Fuss der Nachrichten";
 $lang['usewordfilter'] = "Wortfilter aktivieren.";
 $lang['forceadminwordfilter'] = "Nutze Admin Wortfilter bei allen Benutzern (inkl. Gast)";
@@ -1331,6 +1369,7 @@ $lang['yoursearchdidnotreturnanymatches'] = "Deine Suche ergab keine Treffer. Ae
 
 // Relationships (user_rel.php) ----------------------------------------
 
+$lang['relationships'] = "Verhaeltnisse";
 $lang['userrelationship'] = "Benutzerverhaeltnis";
 $lang['userrelationships'] = "Benutzerverhaeltnisse";
 $lang['friends'] = "Freunde";
@@ -1459,6 +1498,12 @@ $lang['ignorefolderconfirm'] = "Bist Du sicher dass Du diesen Ordner ignorieren 
 $lang['unignorefolderconfirm'] = "Bist Du sicher dass Du diesen Ordner nicht mehr ignorieren willst?";
 $lang['threadviewedonetime'] = "Angezeigehaeufigkeit: 1 mal";
 $lang['threadviewedtimes'] = "Angezeigehaeufigkeit: %d mal";
+$lang['gotofirstpostinthread'] = "Springe zum ersten Post im Eintrag";
+$lang['gotolastpostinthread'] = "Springe zu letztem Post im Eintrag";
+$lang['viewmessagesinthisfolderonly'] = "Nachrichten nur in diesem Ordner anzeigen";
+$lang['shownext50threads'] = "Zeige naechste 50 Eintraege";
+$lang['showprev50threads'] = "Zeige vorherige 50 Eintraege";
+$lang['createnewdiscussioninthisfolder'] = "Erstelle neue Diskussion in diesem Ordner";
 
 // HTML toolbar (htmltools.inc.php) ------------------------------------
 $lang['bold'] = "Fellt";
@@ -1646,5 +1691,15 @@ $lang['somepostsinthisthreadweremovedfrom'] = "<b>Eintragsaufteilung:</b> Einige
 
 $lang['threadmergefailed'] = "Eintragsanfuegung fehlgeschlagen";
 $lang['threadsplitfailed'] = "Eintragsaufteilung fehlgeschlagen";
+
+$lang['cannotmergeorsplitthread'] = "Es sind keine Posts in diesem Eintrag die zusammengefuegt oder geteilt werden koennen";
+
+// Thread subscriptions
+
+$lang['threadsubscriptions'] = "Eintragsbeschreibungen";
+$lang['nosubscriptions'] = "Keine Beschreibungen";
+$lang['couldnotupdateinterestonthread'] = "Konnte Interessensfunktion in Eintrag '%s' nicht aendern";
+$lang['threadinterestsupdatedsuccessfully'] = "Interessensfunktion des Eintrags erfolgreich geaendert";
+$lang['unsubscribebutton'] = "Abbestellen";
 
 ?>

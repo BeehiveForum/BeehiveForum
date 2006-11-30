@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.168 2006-11-23 19:30:46 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.169 2006-11-30 17:42:36 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -236,7 +236,7 @@ function search_strip_keywords($search_string, $strip_valid = false)
     // Split the search string into boolean parts and clean out
     // the empty array values.
 
-    $keyword_match = "([\+|-]?[\w]+)|([\+|-]?[\"][^\"]+[\"])";
+    $keyword_match = "([\+|-]?[\w']+)|([\+|-]?[\"][^\"]+[\"])";
 
     $keywords_array = preg_split("/$keyword_match/", $search_string, -1, PREG_SPLIT_DELIM_CAPTURE);
     $keywords_array = preg_grep("/^ {0,}$/", $keywords_array, PREG_GREP_INVERT);

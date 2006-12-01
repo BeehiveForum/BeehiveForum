@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.26 2006-11-26 00:41:37 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.27 2006-12-01 23:17:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -181,13 +181,23 @@ if (isset($_POST['l_delete']) && is_array($_POST['l_delete'])) {
 if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
 
     list($lid) = array_keys($_POST['move_up']);
-    forum_links_move_up($lid);
+
+    if (forum_links_move_up($lid)) {
+        header_redirect("admin_forum_links.php?webtag=$webtag");
+    }
 }
 
 if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
     list($lid) = array_keys($_POST['move_down']);
-    forum_links_move_down($lid);
+    
+    if (forum_links_move_down($lid)) {
+        header_redirect("admin_forum_links.php?webtag=$webtag");
+    }
+}
+
+if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
+    header_redirect("admin_forum_links.php?webtag=$webtag");
 }
 
 html_draw_top();
@@ -258,19 +268,19 @@ if ($forum_links_array = forum_links_get_links(true)) {
 
         if (sizeof($forum_links_array) == 1) {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
         }elseif ($link_index == sizeof($forum_links_array)) {
 
-            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\" class=\"move_ctrl\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
         }elseif ($link_index > 1) {
 
-            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\""), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
         }else {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
         }
 
         echo "                  <td align=\"left\">", form_field("l_title[{$forum_link['LID']}]", $forum_link['TITLE'], 32, 64), "</td>\n";

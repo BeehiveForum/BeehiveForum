@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.111 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.112 2006-12-01 23:17:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,13 +108,23 @@ if (isset($_POST['addnew'])) {
 if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
 
     list($fid) = array_keys($_POST['move_up']);
-    folder_move_up($fid);
+    
+    if (folder_move_up($fid)) {
+        header_redirect("admin_folders.php?webtag=$webtag");
+    }
 }
 
 if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
     list($fid) = array_keys($_POST['move_down']);
-    folder_move_down($fid);
+    
+    if (folder_move_down($fid)) {
+        header_redirect("admin_folders.php?webtag=$webtag");
+    }
+}
+
+if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
+    header_redirect("admin_folders.php?webtag=$webtag");
 }
 
 html_draw_top();
@@ -160,22 +170,22 @@ if ($folder_array = folder_get_all()) {
 
         if (sizeof($folder_array) == 1) {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
 
         }elseif ($folder_index == sizeof($folder_array)) {
 
-            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\" class=\"move_ctrl\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
 
         }elseif ($folder_index > 1) {
 
-            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\""), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
 
         }else {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
         }
 

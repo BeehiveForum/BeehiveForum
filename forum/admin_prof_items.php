@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.91 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.92 2006-12-01 23:17:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -265,19 +265,19 @@ if ($profile_items = profile_items_get($psid)) {
 
         if (sizeof($profile_items) == 1) {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" /><img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
         }elseif ($profile_index == sizeof($profile_items)) {
 
-            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\" class=\"move_ctrl\""), "<img src=\"", style_image('move_down.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
         }elseif ($profile_index > 1) {
 
-            echo "                  <td align=\"center\" width=\"40\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\""), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
         }else {
 
-            echo "                  <td align=\"center\" width=\"40\"><img src=\"", style_image('move_up.png'), "\" width=\"20\" height=\"20\" class=\"move_ctrl_disabled\" />", form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\""), "</td>\n";
+            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
         }
 
         echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_item['PIID']}]", $profile_item['NAME'], 40, 64), form_input_hidden("t_old_name[{$profile_item['PIID']}]", $profile_item['NAME']), "</td>\n";

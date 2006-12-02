@@ -898,19 +898,36 @@ a {
     border-style: dashed;
 }
 
-.move_ctrl {
-    margin-left: 1px;
-}
-
-.move_ctrl_disabled {
-    vertical-align: top;
-    margin-top: -1px;
-}
-
 .fnotification {
     position: absolute;
     top: 100px;
     left: 100px;
     height: 100px;
     width: 100px;
+}
+
+.move_up_ctrl {
+    height: 18px;
+    width: 18px;
+    background-color: #688A00;
+    border: none;
+}
+
+.move_down_ctrl {
+    height: 18px;
+    width: 18px;
+    background-color: #688A00;
+    border: none;
+}
+
+.move_up_ctrl_disabled {
+    height: 18px;
+    width: 18px;
+    border: none;
+}
+
+.move_down_ctrl_disabled {
+    height: 18px;
+    width: 18px;
+    border: none;
 }

@@ -905,11 +905,28 @@ a {
     width: 100px;
 }
 
-.move_ctrl {
-    margin-left: 1px;
+.move_up_ctrl {
+    height: 18px;
+    width: 18px;
+    background-color: #624792;
+    border: none;
 }
 
-.move_ctrl_disabled {
-    vertical-align: top;
-    margin-top: -1px;
+.move_down_ctrl {
+    height: 18px;
+    width: 18px;
+    background-color: #624792;
+    border: none;
+}
+
+.move_up_ctrl_disabled {
+    height: 18px;
+    width: 18px;
+    border: none;
+}
+
+.move_down_ctrl_disabled {
+    height: 18px;
+    width: 18px;
+    border: none;
 }

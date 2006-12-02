@@ -866,11 +866,10 @@ a {
 }
 
 .text_captcha_error {
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-style: dashed;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    background-color: #FDFC9F;
+    border: 1px solid #000000;
 }
 
 .user_stats_curuser {
@@ -904,18 +903,6 @@ a {
     left: 100px;
     height: 100px;
     width: 100px;
-}
-
-.move_cont {
-    vertical-align: top;
-}
-
-.move_cont_down_disabled {
-    padding-left: 1px;
-}
-
-.move_cont_up_disabled {
-    padidng-left: -1px;
 }
 
 .move_up_ctrl {

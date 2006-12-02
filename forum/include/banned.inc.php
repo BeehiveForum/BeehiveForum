@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.15 2006-08-01 21:14:14 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.16 2006-12-02 15:59:13 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -298,10 +298,10 @@ function check_affected_sessions($ban_type, $ban_data)
 
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME FROM SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-    $sql.= "WHERE (('$ban_data' LIKE SESSIONS.IPADDRESS AND $ban_type = 1) ";
-    $sql.= "OR ('$ban_data' LIKE SESSIONS.REFERER AND $ban_type = 5)";
-    $sql.= "OR ('$ban_data' LIKE USER.IPADDRESS AND $ban_type = 1) ";
-    $sql.= "OR ('$ban_data' LIKE USER.REFERER AND $ban_type = 5)) ";
+    $sql.= "WHERE ((SESSIONS.IPADDRESS LIKE '$ban_data' AND $ban_type = 1) ";
+    $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND $ban_type = 5)";
+    $sql.= "OR (USER.IPADDRESS LIKE '$ban_data' AND $ban_type = 1) ";
+    $sql.= "OR (USER.REFERER LIKE '$ban_data' AND $ban_type = 5)) ";
     $sql.= "AND SESSIONS.UID > 0";
 
     $result = db_query($sql, $db_check_affected_sessions);
@@ -316,7 +316,7 @@ function check_affected_sessions($ban_type, $ban_data)
 
     $sql = "SELECT COUNT(SESSIONS.UID) FROM SESSIONS ";
     $sql.= "WHERE (('$ban_data' LIKE SESSIONS.IPADDRESS AND $ban_type = 1) ";
-    $sql.= "OR ('$ban_data' LIKE SESSIONS.REFERER AND $ban_type = 5)) ";
+    $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND $ban_type = 5)) ";
     $sql.= "AND SESSIONS.UID = 0";
 
     $result = db_query($sql, $db_check_affected_sessions);

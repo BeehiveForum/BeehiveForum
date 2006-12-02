@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.96 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.97 2006-12-02 15:59:13 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -467,16 +467,15 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
     echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
     echo "                        <td align=\"left\">", form_radio("access_level", 2, $lang['passwordprotected'], (isset($forum_settings['access_level']) && $forum_settings['access_level'] == 2 ? true : false)), "</td>\n";
     echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
 
     if ($forum_settings['access_level'] == 1) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">", form_submit("changepermissions", $lang['changepermissions']), "</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"center\" colspan=\"2\">", form_submit("changepermissions", $lang['changepermissions']), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -484,11 +483,6 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
         echo "                      </tr>\n";
 
     }elseif ($forum_settings['access_level'] == 2) {
-
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"220\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">", form_submit("changepassword", $lang['changepassword']), "</td>\n";
-        echo "                      </tr>\n";
 
         if (!forum_get_password($forum_settings['fid'])) {
 
@@ -500,7 +494,7 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
             echo "                        <td align=\"center\" colspan=\"2\">\n";
             echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
             echo "                            <tr>\n";
-            echo "                              <td align=\"left\" width=\"30\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
+            echo "                              <td align=\"left\" width=\"20\" valign=\"top\"><img src=\"", style_image('warning.png'), "\" alt=\"\" /></td>\n";
             echo "                              <td align=\"left\">{$lang['passwordprotectwarning']}</td>\n";
             echo "                            </tr>\n";
             echo "                          </table>\n";            
@@ -508,6 +502,13 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
             echo "                      </tr>\n";
         }
 
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"center\" colspan=\"2\">", form_submit("changepassword", $lang['changepassword']), "</td>\n";
+        echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";

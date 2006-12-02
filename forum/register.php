@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.134 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: register.php,v 1.135 2006-12-02 18:21:02 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -825,14 +825,32 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 
 if (forum_get_setting('text_captcha_enabled', 'Y')) {
 
     if ($text_captcha->generate_keys() && $text_captcha->make_image()) {
 
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['textcaptchaconfirmation']}</td>\n";
-        echo "                      </tr>\n";
+        echo "  <br />\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['textcaptchaconfirmation']}</td>\n";
+        echo "                </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" valign=\"top\">{$lang['textcaptchaexplain']}</td>\n";
         echo "                        <td align=\"left\"><img src=\"", $text_captcha->get_image_filename(), "\" alt=\"{$lang['textcaptchaimgtip']}\" title=\"{$lang['textcaptchaimgtip']}\" /></td>\n";
@@ -844,21 +862,21 @@ if (forum_get_setting('text_captcha_enabled', 'Y')) {
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
         echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
     }
 }
 
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "    </tr>\n";
+echo "  <br />\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">{$lang['moreoptionsavailable']}</td>\n";
 echo "    </tr>\n";

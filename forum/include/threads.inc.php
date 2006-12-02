@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.235 2006-11-23 16:44:03 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.236 2006-12-02 19:17:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1366,7 +1366,7 @@ function threads_mark_all_read()
 
     }else {
 
-        $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql = "SELECT THREAD.TID, THREAD.LENGTH, THREAD.MODIFIED FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
         $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
         $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
@@ -1376,8 +1376,8 @@ function threads_mark_all_read()
 
         $threads_array = array();
 
-        while($row = db_fetch_array($result_threads)) {
-            $threads_array[$row['TID']] = $row['LENGTH'];
+        while($thread_data = db_fetch_array($result_threads)) {
+            $threads_array[] = $thread_data;
         }
 
         threads_mark_read($threads_array);
@@ -1403,9 +1403,9 @@ function threads_mark_50_read()
         $sql.= "{$table_data['PREFIX']}USER_THREAD.INTEREST FROM {$table_data['PREFIX']}THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD ON ";
         $sql.= "({$table_data['PREFIX']}USER_THREAD.TID = {$table_data['PREFIX']}THREAD.TID ";
-        $sql.= "AND {$table_data['PREFIX']}USER_THREAD.UID = $uid) LIMIT 0, 50";
+        $sql.= "AND {$table_data['PREFIX']}USER_THREAD.UID = $uid) ";
         $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp') ";
-        $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
+        $sql.= "LIMIT 0, 50 ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ) ";
 
         $result_threads = db_query($sql, $db_threads_mark_50_read);
 
@@ -1413,7 +1413,7 @@ function threads_mark_50_read()
 
     }else {
 
-        $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql = "SELECT THREAD.TID, THREAD.LENGTH, THREAD.MODIFIED FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
         $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
         $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
@@ -1423,8 +1423,8 @@ function threads_mark_50_read()
 
         $threads_array = array();
 
-        while($row = db_fetch_array($result_threads)) {
-            $threads_array[$row['TID']] = $row['LENGTH'];
+        while($thread_data = db_fetch_array($result_threads)) {
+            $threads_array[] = $thread_data;
         }
 
         return threads_mark_read($threads_array);
@@ -1463,18 +1463,18 @@ function threads_mark_folder_read($fid)
 
     }else {
 
-        $sql = "SELECT THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
+        $sql = "SELECT THREAD.TID, THREAD.LENGTH, THREAD.MODIFIED FROM {$table_data['PREFIX']}THREAD THREAD ";
         $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ON ";
         $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = $uid) ";
         $sql.= "WHERE (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
         $sql.= "AND THREAD.FID = $fid";
 
-        $result_threads = db_query($sql, $db_threads_mark_50_read);
+        $result_threads = db_query($sql, $db_threads_mark_folder_read);
 
         $threads_array = array();
 
-        while($row = db_fetch_array($result_threads)) {
-            $threads_array[$row['TID']] = $row['LENGTH'];
+        while($thread_data = db_fetch_array($result_threads)) {
+            $threads_array[] = $thread_data;
         }
 
         return threads_mark_read($threads_array);
@@ -1515,10 +1515,10 @@ function threads_mark_read($tid_array)
 
     }else {
 
-        foreach($tid_array as $tid => $length) {
+        foreach($tid_array as $thread_data) {
 
-            if (is_numeric($tid) && is_numeric($length)) {
-                if (!$result = messages_update_read($tid, $length, $uid)) return false;
+            if (is_numeric($thread_data['TID']) && is_numeric($thread_data['LENGTH']) && is_numeric($thread_data['MODIFIED'])) {
+                if (!$result = messages_update_read($thread_data['TID'], $thread_data['LENGTH'], $uid, $thread_data['MODIFIED'])) return false;
             }
         }
 

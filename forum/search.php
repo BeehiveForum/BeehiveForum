@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.153 2006-11-28 22:27:32 decoyduck Exp $ */
+/* $Id: search.php,v 1.154 2006-12-03 20:31:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -212,9 +212,14 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
     }
 
     if (isset($_POST['username']) && strlen(trim($_POST['username'])) > 0) {
+
         $search_arguments['username'] = $_POST['username'];
+
     }elseif (isset($_GET['logon']) && strlen(trim($_GET['logon'])) > 0) {
+
         $search_arguments['username'] = $_GET['logon'];
+        $search_arguments['date_from'] = 12;
+        $search_arguments['date_to'] = 1;
     }
 
     if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
@@ -337,17 +342,8 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
 
             if ($threaddata = thread_get($search_result['TID'])) {
 
-                //if ((thread_is_poll($search_result['TID'])) && ($search_result['PID'] == 1)) {
-
-                    //$message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
-                    //$message['CONTENT'] = '';
-
-                //}else {
-
-                    $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
-                    $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
-
-                //}
+                $message['TITLE']   = trim(strip_tags(_stripslashes($threaddata['TITLE'])));
+                $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
 
                 // Limit thread title to 20 characters.
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.268 2006-12-02 23:54:39 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.269 2006-12-03 20:31:32 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -308,10 +308,6 @@ function bh_guest_session_init($use_sess_hash = false)
 
         $user_hash = md5($ipaddress);
     }
-
-    // HTTP referer
-
-    $http_referer = bh_session_get_referer();
     
     if (user_guest_enabled()) {
 
@@ -353,6 +349,8 @@ function bh_guest_session_init($use_sess_hash = false)
 
             if ($user_sess['FID'] != $forum_fid) {
                 
+                $ipaddress = addslashes($ipaddress);
+                
                 $sql = "UPDATE SESSIONS SET FID = '$forum_fid', TIME = NOW(), ";
                 $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$user_hash'";
 
@@ -362,6 +360,8 @@ function bh_guest_session_init($use_sess_hash = false)
 
             }else {
 
+                $ipaddress = addslashes($ipaddress);
+
                 $sql = "UPDATE SESSIONS SET TIME = NOW(), IPADDRESS = '$ipaddress' ";
                 $sql.= "WHERE HASH = '$user_hash'";
 
@@ -370,14 +370,11 @@ function bh_guest_session_init($use_sess_hash = false)
 
         }else {
 
-            $http_referer = addslashes($http_referer);
+            // HTTP referer
+        
+            $http_referer = bh_session_get_referer();
 
-            $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
-            $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', NOW(), '$http_referer')";
-
-            $result = db_query($sql, $db_bh_guest_session_init);
-
-            bh_update_visitor_log(0);
+            // Session array of default values.
 
             $user_sess = array('UID'       => 0,
                                'TIME'      => mktime(),
@@ -385,9 +382,22 @@ function bh_guest_session_init($use_sess_hash = false)
                                'PASSWD'    => md5('GUEST'),
                                'FID'       => $forum_fid,
                                'IPADDRESS' => $ipaddress,
-                               'REFERER'   => _stripslashes($http_referer),
+                               'REFERER'   => $http_referer,
                                'PERMS'     => bh_session_get_perm_array(0),
                                'RAND_HASH' => md5(uniqid(rand())));
+
+            $http_referer = addslashes($http_referer);
+
+            // Start a session for the new guest user
+
+            $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
+            $sql.= "VALUES ('$user_hash', 0, $forum_fid, '$ipaddress', NOW(), '$http_referer')";
+
+            $result = db_query($sql, $db_bh_guest_session_init);
+
+            // Update visitor log.
+
+            bh_update_visitor_log(0);
         }
 
         // check to see if the user's credentials match the
@@ -549,22 +559,25 @@ function bh_update_visitor_log($uid, $forum_fid = false)
 
         $result = db_query($sql, $db_bh_update_visitor_log);
 
+        $http_referer = addslashes(bh_session_get_referer());
+
         if (db_num_rows($result) > 0) {
 
-            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW() ";
-            $sql.= "WHERE UID = '$uid' AND FORUM = '$forum_fid'";
+            $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW(), ";
+            $sql.= "REFERER = '$http_referer' WHERE UID = '$uid' ";
+            $sql.= "AND FORUM = '$forum_fid'";
 
         }else {
 
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON) ";
-            $sql.= "VALUES ('$forum_fid', '$uid', NOW())";
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, REFERER) ";
+            $sql.= "VALUES ('$forum_fid', '$uid', NOW(), '$http_referer')";
         }
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
 
     }else {
 
-        $http_referer = bh_session_get_referer();
+        $http_referer = addslashes(bh_session_get_referer());
 
         if (($search_id = bh_session_is_search_engine()) !== false) {
 
@@ -786,6 +799,8 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
     }else {
 
         $user_hash = md5(uniqid(rand()));
+        
+        $ipaddress = addslashes($ipaddress);
         $http_referer = addslashes($http_referer);
 
         $sql = "INSERT INTO SESSIONS (HASH, UID, FID, IPADDRESS, TIME, REFERER) ";
@@ -1237,9 +1252,9 @@ function bh_session_get_referer()
 
             $http_referer = addslashes(trim($_SERVER['HTTP_REFERER']));
 
-            if (stristr($http_referer, get_request_uri())) $http_referer = "";
-            if (stristr($http_referer, html_get_forum_uri())) $http_referer = "";
-
+            if (stristr($http_referer, get_request_uri()) !== false) $http_referer = "";
+            if (stristr($http_referer, html_get_forum_uri()) !== false) $http_referer = "";
+ 
         }else {
 
             $http_referer = "";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.113 2006-10-11 17:47:04 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.114 2006-12-03 23:01:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -534,6 +534,8 @@ function folder_move_up($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    folder_positions_update();
+
     $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
@@ -584,6 +586,8 @@ function folder_move_down($fid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    folder_positions_update();
+
     $sql = "SELECT FID, POSITION FROM {$table_data['PREFIX']}FOLDER ";
     $sql.= "ORDER BY POSITION";
 
@@ -622,5 +626,32 @@ function folder_move_down($fid)
 
     return false;
 }
+
+function folder_positions_update()
+{
+    $new_position = 0;
+
+    $db_folder_positions_update = db_connect();
+
+    if (!$table_data = get_table_prefix()) return;
+
+    $sql = "SELECT FID FROM {$table_data['PREFIX']}FOLDER ";
+    $sql.= "ORDER BY POSITION";
+
+    $result = db_query($sql, $db_folder_positions_update);
+
+    while (list($fid) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+        if (isset($fid) && is_numeric($fid)) {
+
+            $new_position++;
+        
+            $sql = "UPDATE {$table_data['PREFIX']}FOLDER ";
+            $sql.= "SET POSITION = '$new_position' WHERE FID = '$fid'";
+
+            $result_update = db_query($sql, $db_folder_positions_update);
+        }
+    }
+}    
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.16 2006-10-11 17:47:04 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.17 2006-12-03 23:01:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -213,6 +213,8 @@ function forum_links_move_up($lid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    forum_links_positions_update();
+
     $sql = "SELECT LID, POS FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS";
 
@@ -260,6 +262,8 @@ function forum_links_move_down($lid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    forum_links_positions_update();
+
     $sql = "SELECT LID, POS FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS";
 
@@ -297,6 +301,33 @@ function forum_links_move_down($lid)
     }
 
     return false;
+}
+
+function forum_links_positions_update()
+{
+    $new_position = 0;
+
+    $db_forum_links_positions_update = db_connect();
+
+    if (!$table_data = get_table_prefix()) return;
+
+    $sql = "SELECT LID FROM {$table_data['PREFIX']}FORUM_LINKS ";
+    $sql.= "ORDER BY POS";
+
+    $result = db_query($sql, $db_forum_links_positions_update);
+
+    while (list($lid) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+        if (isset($lid) && is_numeric($lid)) {
+
+            $new_position++;
+        
+            $sql = "UPDATE {$table_data['PREFIX']}FORUM_LINKS ";
+            $sql.= "SET POS = '$new_position' WHERE LID = '$lid'";
+
+            $result_update = db_query($sql, $db_forum_links_positions_update);
+        }
+    }
 }
 
 ?>

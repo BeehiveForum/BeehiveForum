@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.92 2006-12-01 23:17:56 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.93 2006-12-03 23:01:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -220,13 +220,13 @@ if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
 if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
 
     list($piid) = array_keys($_POST['move_up']);
-    profile_item_move_up($piid);
+    profile_item_move_up($psid, $piid);
 }
 
 if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
     list($piid) = array_keys($_POST['move_down']);
-    profile_item_move_down($piid);
+    profile_item_move_down($psid, $piid);
 }
 
 html_draw_top();

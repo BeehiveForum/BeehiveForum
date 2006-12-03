@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.40 2006-11-20 22:10:23 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.41 2006-12-03 23:01:41 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -324,6 +324,8 @@ function profile_section_move_up($psid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    profile_sections_positions_update();
+
     $sql = "SELECT PSID, POSITION FROM {$table_data['PREFIX']}PROFILE_SECTION ";
     $sql.= "ORDER BY POSITION";
 
@@ -373,6 +375,8 @@ function profile_section_move_down($psid)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    profile_sections_positions_update();
+
     $sql = "SELECT PSID, POSITION FROM {$table_data['PREFIX']}PROFILE_SECTION ";
     $sql.= "ORDER BY POSITION";
 
@@ -414,16 +418,19 @@ function profile_section_move_down($psid)
     return false;
 }
 
-function profile_item_move_up($piid)
+function profile_item_move_up($psid, $piid)
 {
     $db_profile_item_move_down = db_connect();
 
     if (!is_numeric($piid)) return false;
+    if (!is_numeric($psid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
+    profile_items_positions_update();
+
     $sql = "SELECT PIID, POSITION FROM {$table_data['PREFIX']}PROFILE_ITEM ";
-    $sql.= "ORDER BY POSITION";
+    $sql.= "WHERE PSID = '$psid' ORDER BY POSITION";
 
     $result = db_query($sql, $db_profile_item_move_down);
 
@@ -446,14 +453,15 @@ function profile_item_move_up($piid)
         $new_position = $profile_item_position[$piid];
 
         $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
-        $sql.= "WHERE PIID = '{$profile_item_order[$profile_item_order_key]}'";
+        $sql.= "WHERE PIID = '{$profile_item_order[$profile_item_order_key]}' ";
+        $sql.= "AND PSID = '$psid'";
 
         if (!$result = db_query($sql, $db_profile_item_move_down)) return false;
 
         $new_position = $profile_item_position[$profile_item_order[$profile_item_order_key]];
 
         $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
-        $sql.= "WHERE PIID = '$piid'";
+        $sql.= "WHERE PIID = '$piid' AND PSID = '$psid'";
 
         if (!$result = db_query($sql, $db_profile_item_move_down)) return false;
 
@@ -463,16 +471,19 @@ function profile_item_move_up($piid)
     return false;
 }
 
-function profile_item_move_down($piid)
+function profile_item_move_down($psid, $piid)
 {
     $db_profile_item_move_down = db_connect();
 
     if (!is_numeric($piid)) return false;
+    if (!is_numeric($psid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
+    profile_items_positions_update();
+
     $sql = "SELECT PIID, POSITION FROM {$table_data['PREFIX']}PROFILE_ITEM ";
-    $sql.= "ORDER BY POSITION";
+    $sql.= "WHERE PSID = '$psid' ORDER BY POSITION";
 
     $result = db_query($sql, $db_profile_item_move_down);
 
@@ -495,14 +506,15 @@ function profile_item_move_down($piid)
         $new_position = $profile_item_position[$piid];
 
         $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
-        $sql.= "WHERE PIID = '{$profile_item_order[$profile_item_order_key]}'";
+        $sql.= "WHERE PIID = '{$profile_item_order[$profile_item_order_key]}' ";
+        $sql.= "AND PSID = '$psid'";
 
         if (!$result = db_query($sql, $db_profile_item_move_down)) return false;
 
         $new_position = $profile_item_position[$profile_item_order[$profile_item_order_key]];
 
         $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM SET POSITION = '$new_position' ";
-        $sql.= "WHERE PIID = '$piid'";
+        $sql.= "WHERE PIID = '$piid' AND PSID = '$psid'";
 
         if (!$result = db_query($sql, $db_profile_item_move_down)) return false;
 
@@ -510,6 +522,67 @@ function profile_item_move_down($piid)
     }
 
     return false;
+}
+
+function profile_sections_positions_update()
+{
+    $new_position = 0;
+
+    $db_profile_sections_positions_update = db_connect();
+
+    if (!$table_data = get_table_prefix()) return;
+
+    $sql = "SELECT PSID FROM {$table_data['PREFIX']}PROFILE_SECTION ";
+    $sql.= "ORDER BY POSITION";
+
+    $result = db_query($sql, $db_profile_sections_positions_update);
+
+    while (list($psid) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+        if (isset($psid) && is_numeric($psid)) {
+
+            $new_position++;
+        
+            $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION ";
+            $sql.= "SET POSITION = '$new_position' WHERE PSID = '$psid'";
+
+            $result_update = db_query($sql, $db_profile_sections_positions_update);
+        }
+    }
+}
+
+function profile_items_positions_update()
+{
+    $new_position = 0;
+    $current_section = false;
+
+    $db_profile_items_positions_update = db_connect();
+
+    if (!$table_data = get_table_prefix()) return;
+
+    $sql = "SELECT PIID, PSID FROM {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "ORDER BY PSID, POSITION";
+
+    $result = db_query($sql, $db_profile_items_positions_update);
+
+    while (list($piid, $psid) = db_fetch_array($result, DB_RESULT_NUM)) {
+        
+        if (($current_section == false) || ($current_section <> $psid)) {
+            
+            $new_position = 0;
+            $current_section = $psid;
+        }
+        
+        if (isset($piid) && is_numeric($piid)) {
+
+            $new_position++;
+        
+            $sql = "UPDATE {$table_data['PREFIX']}PROFILE_ITEM ";
+            $sql.= "SET POSITION = '$new_position' WHERE PIID = '$piid'";
+
+            $result_update = db_query($sql, $db_profile_items_positions_update);
+        }
+    }
 }
 
 ?>

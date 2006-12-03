@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: beehive.inc.php,v 1.49 2006-11-03 23:00:10 decoyduck Exp $ */
+/* $Id: beehive.inc.php,v 1.50 2006-12-03 22:23:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -49,7 +49,7 @@ function draw_beehive_bar()
     echo "      <a href=\"http://sourceforge.net/tracker/?group_id=50772&amp;atid=460926\" target=\"_blank\">{$lang['support']}</a>&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://sourceforge.net/donate/?group_id=50772\" target=\"_blank\">{$lang['donateexcmark']}</a>\n";
     echo "    </td>\n";
-    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date("Y", mktime()), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project Beehive Forum</a></td>\n";
+    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", date("Y", mktime()), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";

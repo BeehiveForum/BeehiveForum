@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.154 2006-12-03 20:31:32 decoyduck Exp $ */
+/* $Id: search.php,v 1.155 2006-12-03 22:23:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -435,8 +435,14 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchdiscussions']}:</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"40%\">{$lang['keywords']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("search_string", "", 32), "&nbsp;</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table cellpadding=\"0\" cellpadding=\"0\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"40%\">{$lang['keywords']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("search_string", "", 32), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -464,20 +470,26 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['searchbyuser']}:</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("username", "", 32), "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", form_radio("user_include", 1, $lang['postsfromuser'], true), "&nbsp;", "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", form_radio("user_include", 2, $lang['poststouser'], false), "&nbsp;", "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", form_radio("user_include", 3, $lang['poststoandfromuser'], false), "&nbsp;", "</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table cellpadding=\"0\" cellpadding=\"0\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("username", "", 32), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_radio("user_include", 1, $lang['postsfromuser'], true), "&nbsp;", "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_radio("user_include", 2, $lang['poststouser'], false), "&nbsp;", "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_radio("user_include", 3, $lang['poststoandfromuser'], false), "&nbsp;", "</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -505,24 +517,30 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">{$lang['additionalcriteria']}:</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"40%\">{$lang['folderbrackets_s']}:</td>\n";
-    echo "                  <td align=\"left\">", $folder_dropdown, "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">{$lang['postedfrom']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("date_from", range(1, 12), array($lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1), $lang['beginningoftime']), 7, false, "search_dropdown"), "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">{$lang['postedto']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1)), 2, false, "search_dropdown"), "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">{$lang['orderby']}:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("order_by", range(1, 2), array($lang['newestfirst'], $lang['oldestfirst']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
-    echo "                  <td align=\"left\">", form_radio("group_by_thread", 1, $lang['yes'], false), "&nbsp;", form_radio("group_by_thread", 0, $lang['no'], true), "&nbsp;</td>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table cellpadding=\"0\" cellpadding=\"0\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"40%\">{$lang['folderbrackets_s']}:</td>\n";
+    echo "                        <td align=\"left\">", $folder_dropdown, "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['postedfrom']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("date_from", range(1, 12), array($lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1), $lang['beginningoftime']), 7, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['postedto']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1)), 2, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['orderby']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("order_by", range(1, 2), array($lang['newestfirst'], $lang['oldestfirst']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
+    echo "                        <td align=\"left\">", form_radio("group_by_thread", 1, $lang['yes'], false), "&nbsp;", form_radio("group_by_thread", 0, $lang['no'], true), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

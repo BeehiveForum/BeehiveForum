@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.277 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.278 2006-12-03 00:17:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -427,15 +427,16 @@ foreach ($folder_order as $key1 => $folder_number) {
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
-        echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-        echo "  <tr>\n";
-        echo "    <td align=\"left\">\n";
-        echo "      <table class=\"box\" width=\"100%\">\n";
-        echo "        <tr>\n";
-        echo "          <td align=\"left\" class=\"posthead\">\n";
-        echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
         if ((bh_session_get_value('UID') == 0) || ($folder_info[$folder_number]['INTEREST'] != -1) || ($mode == 2) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+
+            echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+            echo "  <tr>\n";
+            echo "    <td align=\"left\">\n";
+            echo "      <table class=\"box\" width=\"100%\">\n";
+            echo "        <tr>\n";
+            echo "          <td align=\"left\" class=\"posthead\">\n";
+            echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
 
             if (is_array($thread_info)) {
 
@@ -681,15 +682,14 @@ foreach ($folder_order as $key1 => $folder_number) {
 
             }
 
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
         }
-
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
 
         if (is_array($thread_info)) reset($thread_info);
     }

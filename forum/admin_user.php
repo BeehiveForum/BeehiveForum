@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.178 2006-11-27 22:50:51 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.179 2006-12-04 18:23:46 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -931,7 +931,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         foreach ($user_groups_array as $user_group) {
 
             echo "                                  <tr>\n";
-            echo "                                    <td align=\"left\" valign=\"top\"><a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+            echo "                                    <td align=\"left\" valign=\"top\">&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
             echo "                                    <td valign=\"top\" align=\"center\">{$user_group['USER_COUNT']}</td>\n";
             echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
             echo "                                  </tr>\n";

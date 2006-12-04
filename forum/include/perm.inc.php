@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.93 2006-11-27 22:50:51 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.94 2006-12-04 18:17:44 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -901,17 +901,13 @@ function perm_user_get_folders($uid)
     $forum_fid = $table_data['FID'];
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
-    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
-    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
     $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
-    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "GROUP BY FOLDER.FID ";
-    $sql.= "ORDER BY FOLDER.FID";
+    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
+    $sql.= "WHERE GROUPS.AUTO_GROUP = 1 ";
+    $sql.= "GROUP BY FOLDER.FID ORDER BY FOLDER.FID";
 
     $result = db_query($sql, $db_perm_user_get_user_folders);
 
@@ -924,12 +920,6 @@ function perm_user_get_folders($uid)
                 $folders_array[$row['FID']] = array('FID'    => $row['FID'],
                                                     'TITLE'  => $row['TITLE'],
                                                     'STATUS' => $row['USER_STATUS']);
-
-            }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
-
-                $folders_array[$row['FID']] = array('FID'    => $row['FID'],
-                                                    'TITLE'  => $row['TITLE'],
-                                                    'STATUS' => $row['FOLDER_PERMS']);
             }else {
 
                 $folders_array[$row['FID']] = array('FID'    => $row['FID'],
@@ -961,6 +951,8 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
         $sql = "SELECT GID FROM GROUP_PERMS WHERE GID = '$gid' ";
         $sql.= "AND FORUM = '$forum_fid' AND FID = '$fid' LIMIT 0, 1";
 
+        echo $sql;
+
         $result = db_query($sql, $db_perm_update_user_folder_perms);
 
         if (db_num_rows($result) > 0) {
@@ -968,12 +960,16 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
             $sql = "UPDATE GROUP_PERMS SET PERM = '$perm' WHERE ";
             $sql.= "GID = '$gid' AND FORUM = '$forum_fid' AND FID = '$fid'";
 
+            echo $sql;
+
             return db_query($sql, $db_perm_update_user_folder_perms);
 
         }else {
 
             $sql = "INSERT INTO GROUP_PERMS (PERM, GID, FORUM, FID) ";
             $sql.= "VALUES ('$perm', '$gid', '$forum_fid', '$fid')";
+
+            echo $sql;
 
             return db_query($sql, $db_perm_update_user_folder_perms);
         }

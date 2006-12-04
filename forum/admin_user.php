@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.179 2006-12-04 18:23:46 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.180 2006-12-04 18:52:12 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -876,7 +876,14 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
+        echo "                        <td align=\"center\">\n";
+        echo "                          <table class=\"text_captcha_error\" width=\"95%\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+        echo "                              <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.210 2006-11-26 15:32:39 decoyduck Exp $ */
+/* $Id: messages.php,v 1.211 2006-12-04 18:52:12 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -146,6 +146,7 @@ if (isset($_POST['pollsubmit'])) {
         }else {
 
             html_draw_top();
+            echo "<h1>{$lang['error']}</h1>\n";
             echo "<h2>{$lang['mustvoteforallgroups']}</h2>";
             html_draw_bottom();
             exit;
@@ -154,6 +155,7 @@ if (isset($_POST['pollsubmit'])) {
     }else {
 
         html_draw_top();
+        echo "<h1>{$lang['error']}</h1>\n";
         echo "<h2>{$lang['mustselectpolloption']}</h2>";
         html_draw_bottom();
         exit;

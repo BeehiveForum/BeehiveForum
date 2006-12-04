@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.196 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.197 2006-12-04 19:12:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -786,11 +786,11 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
     if ($page_count > 1) {
 
-        echo "<span class=\"pagenum_text\">{$lang['pages']} ($page_count): ";
+        echo "<span class=\"pagenum_text\">{$lang['pages']}&nbsp;($page_count):&nbsp;";
 
     }else {
 
-        echo "<span class=\"pagenum_text\">{$lang['pages']}: ";
+        echo "<span class=\"pagenum_text\">{$lang['pages']}:&nbsp;";
     }
 
     if ($page_count > 1) {
@@ -825,38 +825,38 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
         if ($start_page > 1) {
 
-            echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\">&laquo; First</a> &hellip; ";
+            echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\">&laquo;&nbsp;First</a>&nbsp;&hellip;&nbsp;";
         }
 
         if ($current_page > 1) {
 
             $prev_page = (($current_page - 1) > 0) ? ($current_page - 1) : 1;
-            echo "<a href=\"{$uri}{$sep}{$page_var}={$prev_page}\" target=\"_self\">&laquo;</a> ";
+            echo "<a href=\"{$uri}{$sep}{$page_var}={$prev_page}\" target=\"_self\">&laquo;</a>&nbsp;";
         }
 
         for ($page = $start_page; $page <= $end_page; $page++) {
 
             if ($page == $current_page) {
-                echo "<b>[$page]</b> ";
+                echo "<b>[$page]</b>&nbsp;";
             }else {
-                echo "<a href=\"{$uri}{$sep}{$page_var}={$page}\" target=\"_self\">{$page}</a> ";
+                echo "<a href=\"{$uri}{$sep}{$page_var}={$page}\" target=\"_self\">{$page}</a>&nbsp;";
             }
         }
 
         if ($current_page < $page_count) {
 
             $next_page = (($current_page + 1) <= $page_count) ? ($current_page + 1) : $page_count;
-            echo "<a href=\"{$uri}{$sep}{$page_var}={$next_page}\" target=\"_self\">&raquo;</a> ";
+            echo "<a href=\"{$uri}{$sep}{$page_var}={$next_page}\" target=\"_self\">&raquo;</a>&nbsp;";
         }
 
         if ($end_page < $page_count) {
 
-            echo " &hellip; <a href=\"{$uri}{$sep}{$page_var}={$page_count}\" target=\"_self\">Last &raquo;</a> ";
+            echo "&nbsp;&hellip;&nbsp;<a href=\"{$uri}{$sep}{$page_var}={$page_count}\" target=\"_self\">Last&nbsp;&raquo;</a>&nbsp;";
         }
 
     }else {
 
-        echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\"><b>[1]</b></a> ";
+        echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\"><b>[1]</b></a>&nbsp;";
     }
 
     echo "</span>";

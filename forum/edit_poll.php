@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.118 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.119 2006-12-05 20:25:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -350,7 +350,7 @@ if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
     $t_answer_count = 0;
 }
 
-html_draw_top("basetarget=_blank", "openprofile.js", "post.js");
+html_draw_top("basetarget=_blank", "onload=addOverflow(785)", "openprofile.js", "post.js");
 
 $allow_html = true;
 
@@ -635,7 +635,12 @@ echo "<br />\n";
 echo "<form name=\"f_edit_poll\" action=\"edit_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden("t_msg", $edit_msg), "\n";
-
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if (isset($error_html)) {
 
@@ -1013,6 +1018,12 @@ if ($valid) {
     echo "</table>\n";
 }
 
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();

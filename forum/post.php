@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.283 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: post.php,v 1.284 2006-12-05 20:25:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -748,12 +748,12 @@ if ($newthread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", 
     exit;
 }
 
-html_draw_top("onUnload=clearFocus()", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
+html_draw_top("onUnload=clearFocus()", "onload=addOverflow(720)", "basetarget=_blank", "post.js", "openprofile.js", "htmltools.js", "emoticons.js", "dictionary.js");
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 echo "<br /><form name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.425 2006-11-26 15:32:38 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.426 2006-12-05 20:25:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -568,14 +568,14 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
 
-    $message['CONTENT'] = message_split_fiddle($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
-
     if (bh_session_get_value('IMAGES_TO_LINKS') == 'Y') {
 
         $message['CONTENT'] = preg_replace("/<a([^>]*)href=\"([^\"]*)\"([^\>]*)><img[^>]*src=\"([^\"]*)\"[^>]*><\/a>/i", "[img: <a\\1href=\"\\2\"\\3>\\4</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<img[^>]*src=\"([^\"]*)\"[^>]*>/i", "[img: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
         $message['CONTENT'] = preg_replace("/<embed[^>]*src=\"([^\"]*)\"[^>]*>/i", "[object: <a href=\"\\1\">\\1</a>]", $message['CONTENT']);
     }
+
+    $message['CONTENT'] = message_split_fiddle($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
 
     // Check length of post to see if we should truncate it for display --------
 
@@ -1487,17 +1487,17 @@ function messages_fontsize_form($tid, $pid)
         if ($fontlarger > 15) $fontlarger = 15;
 
         $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=$fontsmaller\" target=\"_self\">&laquo; {$lang['smaller']}</a> ";
-        $fontstrip.= $fontsize. " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">{$lang['larger']} &raquo;</a></p>\n";
+        $fontstrip.= $fontsize. " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=$fontlarger\" target=\"_self\">{$lang['larger']} &raquo;</a>\n";
 
     }elseif ($fontsize <= 5) {
 
         $fontlarger = $fontsize + 1;
-        $fontstrip.= "{$lang['smaller']} ". $fontsize. " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=6\" target=\"_self\">{$lang['larger']} &raquo;</a></p>\n";
+        $fontstrip.= "{$lang['smaller']} ". $fontsize. " <a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=6\" target=\"_self\">{$lang['larger']} &raquo;</a>\n";
 
     }elseif ($fontsize >= 15) {
 
         $fontsmaller = $fontsize - 1;
-        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">&laquo; {$lang['smaller']}</a> ". $fontsize. " {$lang['larger']}</p>\n";
+        $fontstrip.= "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=14\" target=\"_self\">&laquo; {$lang['smaller']}</a> $fontsize {$lang['larger']}\n";
 
     }else {
 

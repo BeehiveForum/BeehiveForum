@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.181 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.182 2006-12-05 20:25:21 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -627,12 +627,18 @@ if (!$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "" ,FOLDER_ALLOW_P
     exit;
 }
 
-html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "create_poll.js", "openprofile.js", "post.js", "dictionary.js", "htmltools.js", "emoticons.js");
+html_draw_top("basetarget=_blank", "onUnload=clearFocus()", "onload=addOverflow(785)", "post.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js");
 
 echo "<h1>{$lang['postmessage']}</h1>\n";
 echo "<br />\n";
 echo "<form name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if (isset($error_html)) {
 
@@ -1157,6 +1163,7 @@ echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
+echo "            </div>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "          <tr>\n";
@@ -1188,6 +1195,12 @@ if (isset($_POST['t_dedupe'])) {
     echo "  ", form_input_hidden("t_dedupe", mktime()), "\n";
 }
 
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();

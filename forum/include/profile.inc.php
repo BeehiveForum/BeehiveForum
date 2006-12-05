@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.41 2006-12-03 23:01:41 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.42 2006-12-05 22:07:37 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -112,9 +112,13 @@ function profile_sections_get()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PSID, NAME, POSITION ";
-    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION ";
-    $sql.= "ORDER BY POSITION, PSID";
+    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME, ";
+    $sql.= "PROFILE_SECTION.POSITION, COUNT(PROFILE_ITEM.PIID) AS ITEM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
+    $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
+    $sql.= "GROUP BY PROFILE_SECTION.PSID ";
+    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID";
 
     $result = db_query($sql, $db_profile_section_get);
 
@@ -583,6 +587,28 @@ function profile_items_positions_update()
             $result_update = db_query($sql, $db_profile_items_positions_update);
         }
     }
+}
+
+function profile_get_section($psid)
+{
+    $db_profile_get_section = db_connect();
+
+    if (!is_numeric($psid)) return false;
+
+    if (!$table_data = get_table_prefix()) return;
+
+    $sql = "SELECT NAME FROM {$table_data['PREFIX']}PROFILE_SECTION ";
+    $sql.= "WHERE PSID = '$psid'";
+
+    $result = db_query($sql, $db_profile_get_section);
+
+    if (db_num_rows($result)) {
+
+        $profile_section_data = db_fetch_array($result);
+        return $profile_section_data;
+    }
+
+    return false;
 }
 
 ?>

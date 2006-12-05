@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.81 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.82 2006-12-05 20:25:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,8 +175,8 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($add_new_filter_option == 2 && preg_match("/e[^\/]*$/i", $match_text)) {
-            $match_text = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $match_text);
+        if ($add_new_filter_option == 2 && preg_match("/e[^\/]*$/i", $add_new_match_text)) {
+            $add_new_match_text = preg_replace_callback("/\/[^\/]*$/i", "filter_limit_preg", $add_new_match_text);
         }
 
         if (admin_add_word_filter($add_new_match_text, $add_new_replace_text, $add_new_filter_option)) {
@@ -446,8 +446,8 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['matchedtext']}&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['replacementtext']}&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\" colspan=\"2\">{$lang['matchedtext']}&nbsp;</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\" colspan=\"2\">{$lang['replacementtext']}&nbsp;</td>\n";
     echo "                  <td align=\"left\" class=\"subhead\" nowrap=\"nowrap\">{$lang['filtertype']}&nbsp;</td>\n";
     echo "                </tr>\n";
 
@@ -462,8 +462,10 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\">", form_checkbox("delete_filters[$filter_id]", "Y", false), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"admin_wordfilter.php?webtag$webtag&amp;filter_id=$filter_id\">{$word_filter['MATCH_TEXT']}</a></td>\n";
-            echo "                  <td align=\"left\"><a href=\"admin_wordfilter.php?webtag$webtag&amp;filter_id=$filter_id\">{$word_filter['REPLACE_TEXT']}</a></td>\n";
+            echo "                  <td align=\"left\" nowrap=\"nowrap\"><span style=\"overflow: hidden; display:block\"><a href=\"admin_wordfilter.php?webtag$webtag&amp;filter_id=$filter_id\">{$word_filter['MATCH_TEXT']}</a></span></td>\n";
+            echo "                  <td align=\"left\" width=\"5\">&nbsp;</td>\n";
+            echo "                  <td align=\"left\" nowrap=\"nowrap\"><span style=\"overflow: hidden; display:block\"><a href=\"admin_wordfilter.php?webtag$webtag&amp;filter_id=$filter_id\">{$word_filter['REPLACE_TEXT']}</a></span></td>\n";
+            echo "                  <td align=\"left\" width=\"5\">&nbsp;</td>\n";
             echo "                  <td align=\"left\">{$admin_word_filter_options[$word_filter['FILTER_OPTION']]}</td>\n";
             echo "                </tr>\n";
         }
@@ -472,7 +474,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                  <td align=\"left\" colspan=\"3\">{$lang['nowordfilterentriesfound']}</td>\n";
+        echo "                  <td align=\"left\" colspan=\"5\">{$lang['nowordfilterentriesfound']}</td>\n";
         echo "                </tr>\n";
     }
 

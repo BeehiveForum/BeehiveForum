@@ -33,7 +33,13 @@ function checkToRadio(num) {
         document.f_post.to_radio[num].checked=true;
 }
 
-function addOverflow() {
+function is_numeric(value)
+{
+   if ((isNaN(value)) || (value.length == 0)) return false;
+   return true;
+}
+
+function addOverflow(maxWidth) {
 
         var IE = (document.all ? true : false);
         
@@ -43,11 +49,15 @@ function addOverflow() {
         var td_tags = document.getElementsByTagName('td');
         var td_count = td_tags.length;
 
+        if (!is_numeric(maxWidth)) {
+            maxWidth = body_tag.clientWidth;
+        }
+
         for (var i = 0; i < td_count; i++)  {
 
                 if (td_tags[i].className == 'postbody') {
                         
-                        if (td_tags[i].clientWidth >= body_tag.clientWidth) {
+                        if (td_tags[i].clientWidth >= maxWidth) {
 
                                 var new_div = document.createElement('div');
 
@@ -58,13 +68,13 @@ function addOverflow() {
 
                                 new_div.className = 'bhoverflowfix';
                         
-                                new_div.style.width = (body_tag.clientWidth * 0.94) + 'px';
+                                new_div.style.width = (maxWidth * 0.94) + 'px';
 
                                 while (td_tags[i].hasChildNodes()) {
                                         new_div.appendChild(td_tags[i].firstChild);
                                 }
 
-                                td_tags[i].style.width = (body_tag.clientWidth * 0.98) + 'px';
+                                td_tags[i].style.width = (maxWidth * 0.98) + 'px';
                                 td_tags[i].appendChild(new_div);
                         }
                 }
@@ -72,14 +82,14 @@ function addOverflow() {
 
         if (IE) {
         
-                window.attachEvent("onresize", redoOverFlow);
+                window.attachEvent("onresize", function () { redoOverFlow(maxWidth) });
         }else {
         
-                window.addEventListener("resize", redoOverFlow, true);
+                window.addEventListener("resize", function () { redoOverFlow(maxWidth) }, true);
         }
 }
 
-function redoOverFlow() {
+function redoOverFlow(maxWidth) {
 
         var body_tag = document.getElementsByTagName('body');
         var body_tag = body_tag[0];
@@ -87,11 +97,15 @@ function redoOverFlow() {
         var td_tags = document.getElementsByTagName('td');
         var td_count = td_tags.length;
 
+        if (!is_numeric(maxWidth)) {
+            maxWidth = body_tag.clientWidth;
+        }
+
         for (var i = 0; i < td_count; i++)  {
 
                 if (td_tags[i].className == 'postbody') {
                         
-                        td_tags[i].style.width = (body_tag.clientWidth * 0.98) + 'px';
+                        td_tags[i].style.width = (maxWidth * 0.98) + 'px';
                         
                         var div_tags = td_tags[i].getElementsByTagName('div');
                         var div_count = div_tags.length;
@@ -100,14 +114,14 @@ function redoOverFlow() {
 
                                 if (div_tags[j].className == 'bhoverflowfix') {
 
-                                        div_tags[j].style.width = (body_tag.clientWidth * 0.94) + 'px';
+                                        div_tags[j].style.width = (maxWidth * 0.94) + 'px';
                                 }
                         }
                 }
         }
 }
 
-function resizeImages() {
+function resizeImages(maxWidth) {
         
         var body_tag = document.getElementsByTagName('body');
         var body_tag = body_tag[0];
@@ -115,11 +129,15 @@ function resizeImages() {
         var img_tags = document.getElementsByTagName('img');
         var img_count = img_tags.length;
 
+        if (!is_numeric(maxWidth)) {
+            maxWidth = body_tag.clientWidth;
+        }
+
         for (var i = 0; i < img_count; i++)  {
 
-                if (img_tags[i].width >= body_tag.clientWidth) {
+                if (img_tags[i].width >= maxWidth) {
                         
-                        img_tags[i].style.width = Math.round(body_tag.clientWidth * 0.9) + 'px';
+                        img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
                         img_tags[i].style.cursor = 'pointer';
 
                         if (img_tags[i].attachEvent) {

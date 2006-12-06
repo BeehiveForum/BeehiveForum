@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.366 2006-11-30 21:39:01 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.367 2006-12-06 18:05:47 decoyduck Exp $ */
 
 // International English language file
 
@@ -527,6 +527,13 @@ $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add selected users";
 $lang['removeselectedusers'] = "Remove selected users";
+$lang['addnew'] = "Add new";
+$lang['deleteselected'] = "Delete selected";
+$lang['noprofilesectionsfound'] = "There are no existing profile sections. To add a profile section please click the button below.";
+$lang['mustspecifyprofilesectioname'] = "Must specify profile section name";
+$lang['addnewprofilesection'] = "Add new profile section";
+$lang['editprofilesection'] = "Edit profile section";
+$lang['successfullyaddedsection'] = "Successfully added section";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 

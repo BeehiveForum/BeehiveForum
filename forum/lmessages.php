@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.73 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.74 2006-12-06 18:05:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -244,7 +244,9 @@ if ($last_pid < $threaddata['LENGTH']) {
 
 light_messages_nav_strip($tid, $pid, $threaddata['LENGTH'], $posts_per_page);
 
-echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></p>\n";
+if (($threaddata['CLOSED'] == 0 && bh_session_check_perm(USER_PERM_POST_CREATE, $threaddata['FID'])) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $threaddata['FID'])) {
+    echo "<p><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\">{$lang['replyall']}</a></p>\n";
+}
 
 if ($uid == 0) {
     echo "<h4><a href=\"lthread_list.php?webtag=$webtag\">{$lang['backtothreadlist']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>\n";

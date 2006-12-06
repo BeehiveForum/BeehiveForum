@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.94 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.95 2006-12-06 18:05:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -552,6 +552,20 @@ if (!$newthread) {
         $t_to_uid = message_get_user($reply_to_tid,$reply_to_pid);
     }else {
         $t_to_uid = $_POST['t_to_uid'];
+    }
+
+    if (isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0) {
+
+        if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+            echo "<h2>{$lang['moderatorthreadclosed']}</h2>\n";
+
+        }else {
+
+            echo "<h2>{$lang['threadisclosedforposting']}</h2>\n";
+            light_html_draw_bottom();
+            exit;
+        }
     }
 }
 

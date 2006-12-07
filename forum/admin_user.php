@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.180 2006-12-04 18:52:12 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.181 2006-12-07 22:05:54 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -376,6 +376,8 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
         $t_update_perms_array = $_POST['t_update_perms_array'];
 
+        $folder_array = perm_group_get_folders($gid);
+
         foreach ($t_update_perms_array as $fid) {
 
             $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
@@ -389,12 +391,14 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
             $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
             $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
-            $new_folder_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
-            $new_folder_perms = (double) $new_folder_perms | $t_post_edit | $t_post_delete;
-            $new_folder_perms = (double) $new_folder_perms | $t_moderator | $t_post_attach;
-            $new_folder_perms = (double) $new_folder_perms | $t_post_html | $t_post_sig | $t_post_approval;
+            $new_user_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
+            $new_user_perms = (double) $new_user_perms | $t_post_edit | $t_post_delete;
+            $new_user_perms = (double) $new_user_perms | $t_moderator | $t_post_attach;
+            $new_user_perms = (double) $new_user_perms | $t_post_html | $t_post_sig | $t_post_approval;
 
-            perm_update_user_folder_perms($uid, $fid, $new_folder_perms);
+            if ($new_user_perms <> $folder_array[$fid]['STATUS']) {
+                perm_update_user_folder_perms($uid, $fid, $new_user_perms);
+            }
         }
     }
 

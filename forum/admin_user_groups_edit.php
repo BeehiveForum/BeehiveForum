@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit.php,v 1.44 2006-11-28 22:27:32 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit.php,v 1.45 2006-12-07 22:05:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,6 +175,8 @@ if (isset($_POST['submit'])) {
 
                 $t_update_perms_array = $_POST['t_update_perms_array'];
 
+                $folder_array = perm_group_get_folders($gid);
+
                 foreach ($t_update_perms_array as $fid) {
 
                     $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
@@ -193,7 +195,9 @@ if (isset($_POST['submit'])) {
                     $new_group_perms = (double) $new_group_perms | $t_moderator | $t_post_attach;
                     $new_group_perms = (double) $new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;;
 
-                    perm_update_group_folder_perms($gid, $fid, $new_group_perms);
+                    if ($new_group_perms <> $folder_array[$fid]['STATUS']) {
+                        perm_update_group_folder_perms($gid, $fid, $new_group_perms);
+                    }
                 }
             }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_add.php,v 1.36 2006-11-28 22:27:32 decoyduck Exp $ */
+/* $Id: admin_user_groups_add.php,v 1.37 2006-12-07 22:05:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -149,6 +149,8 @@ if (isset($_POST['submit'])) {
 
                 $t_new_perms_array = $_POST['t_new_perms_array'];
 
+                $folder_array = perm_group_get_folders($gid);
+
                 foreach ($t_new_perms_array as $fid) {
 
                     $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
@@ -160,13 +162,16 @@ if (isset($_POST['submit'])) {
                     $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
                     $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
                     $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                    $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
                     $new_group_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
                     $new_group_perms = (double) $new_group_perms | $t_post_edit | $t_post_delete;
                     $new_group_perms = (double) $new_group_perms | $t_moderator | $t_post_attach;
-                    $new_group_perms = (double) $new_group_perms | $t_post_html | $t_post_sig;
+                    $new_group_perms = (double) $new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;
 
-                    perm_update_group_folder_perms($new_gid, $fid, $new_group_perms);
+                    if ($new_group_perms <> $folder_array[$fid]['STATUS']) {
+                        perm_update_group_folder_perms($new_gid, $fid, $new_group_perms);
+                    }
                 }
             }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.96 2006-12-07 21:33:04 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.97 2006-12-07 22:05:54 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -707,20 +707,23 @@ function perm_group_get_folders($gid)
 
                 if ($row['GROUP_PERM_COUNT'] > 0) {
 
-                    $folders_array[$row['FID']] = array('FID'    => $row['FID'],
-                                                        'TITLE'  => $row['TITLE'],
-                                                        'STATUS' => $row['GROUP_PERMS']);
+                    $folders_array[$row['FID']] = array('FID'          => $row['FID'],
+                                                        'TITLE'        => $row['TITLE'],
+                                                        'STATUS'       => $row['GROUP_PERMS'],
+                                                        'FOLDER_PERMS' => $row['FOLDER_PERMS']);
 
                 }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
 
-                    $folders_array[$row['FID']] = array('FID'    => $row['FID'],
-                                                        'TITLE'  => $row['TITLE'],
-                                                        'STATUS' => $row['FOLDER_PERMS']);
+                    $folders_array[$row['FID']] = array('FID'          => $row['FID'],
+                                                        'TITLE'        => $row['TITLE'],
+                                                        'STATUS'       => $row['FOLDER_PERMS'],
+                                                        'FOLDER_PERMS' => $row['FOLDER_PERMS']);
                 }else {
 
-                    $folders_array[$row['FID']] = array('FID'    => $row['FID'],
-                                                        'TITLE'  => $row['TITLE'],
-                                                        'STATUS' => 0);
+                    $folders_array[$row['FID']] = array('FID'          => $row['FID'],
+                                                        'TITLE'        => $row['TITLE'],
+                                                        'STATUS'       => 0,
+                                                        'FOLDER_PERMS' => $row['FOLDER_PERMS']);
                 }
             }
 
@@ -920,20 +923,23 @@ function perm_user_get_folders($uid)
 
             if ($row['USER_PERM_COUNT'] > 0) {
 
-                $folders_array[$row['FID']] = array('FID'    => $row['FID'],
-                                                    'TITLE'  => $row['TITLE'],
-                                                    'STATUS' => $row['USER_STATUS']);
+                $folders_array[$row['FID']] = array('FID'          => $row['FID'],
+                                                    'TITLE'        => $row['TITLE'],
+                                                    'STATUS'       => $row['USER_STATUS'],
+                                                    'FOLDER_PERMS' => $row['FOLDER_PERMS']);
 
             }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
 
-                $folders_array[$row['FID']] = array('FID'    => $row['FID'],
-                                                    'TITLE'  => $row['TITLE'],
-                                                    'STATUS' => $row['FOLDER_PERMS']);
+                $folders_array[$row['FID']] = array('FID'          => $row['FID'],
+                                                    'TITLE'        => $row['TITLE'],
+                                                    'STATUS'       => $row['FOLDER_PERMS'],
+                                                    'FOLDER_PERMS' => $row['FOLDER_PERMS']);
             }else {
 
-                $folders_array[$row['FID']] = array('FID'    => $row['FID'],
-                                                    'TITLE'  => $row['TITLE'],
-                                                    'STATUS' => 0);
+                $folders_array[$row['FID']] = array('FID'          => $row['FID'],
+                                                    'TITLE'        => $row['TITLE'],
+                                                    'STATUS'       => 0,
+                                                    'FOLDER_PERMS' => $row['FOLDER_PERMS']);
             }
         }
 

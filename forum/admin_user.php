@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.181 2006-12-07 22:05:54 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.182 2006-12-07 22:41:15 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -320,15 +320,17 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     $new_user_perms = (double) $t_admintools | $t_banned | $t_wormed | $t_pilloried | $t_globalmod | $t_linksmod | $t_ignoreadmin;
 
-    perm_update_user_permissions($uid, $new_user_perms);
-
-    $user_perms = perm_get_forum_user_permissions($uid);
+    if ($user_perms <> $new_user_perms) {    
+        perm_update_user_permissions($uid, $new_user_perms);
+    }
 
     // Global user permissions
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $new_global_user_perms = (double) 0;
+
+        $global_user_perm = perm_get_global_user_permissions($uid);
 
         $admin_tools_perm_count = perm_get_admin_tools_perm_count();
         $forum_tools_perm_count = perm_get_forum_tools_perm_count();
@@ -365,7 +367,8 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
             }
         }
 
-        if ($valid) {
+        if ($valid && ($new_global_user_perms <> $global_user_perm)) {
+
             perm_update_global_perms($uid, $new_global_user_perms);
         }
     }
@@ -376,7 +379,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
         $t_update_perms_array = $_POST['t_update_perms_array'];
 
-        $folder_array = perm_group_get_folders($gid);
+        $folder_array = perm_user_get_folders($uid);
 
         foreach ($t_update_perms_array as $fid) {
 
@@ -669,7 +672,26 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
     echo "                        <td align=\"left\">", form_checkbox("t_ignoreadmin", USER_PERM_CAN_IGNORE_ADMIN, $lang['usercanignoreadmin'], $user_perms & USER_PERM_CAN_IGNORE_ADMIN), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"center\">\n";
+    echo "                          <table width=\"100%\" class=\"posthead\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\">&nbsp;</td>\n";
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"center\">\n";
+    echo "                                <table class=\"text_captcha_error\" width=\"95%\">\n";
+    echo "                                  <tr>\n";
+    echo "                                    <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+    echo "                                    <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
+    echo "                                  </tr>\n";
+    echo "                                </table>\n";
+    echo "                              </td>\n";
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\">&nbsp;</td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+    echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";

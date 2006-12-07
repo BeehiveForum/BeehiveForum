@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.97 2006-12-07 22:05:54 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.98 2006-12-07 22:41:15 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -822,12 +822,11 @@ function perm_get_forum_user_permissions($uid)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS ";
-    $sql.= "FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+    $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
+    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID = 0 ";
-    $sql.= "AND GROUP_PERMS.FORUM IN ($forum_fid)";
+    $sql.= "AND GROUP_PERMS.FORUM IN ($forum_fid) ";
 
     $result = db_query($sql, $db_perm_get_user_permissions);
 

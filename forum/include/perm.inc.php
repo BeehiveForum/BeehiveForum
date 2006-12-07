@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.95 2006-12-06 18:05:47 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.96 2006-12-07 21:33:04 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -887,7 +887,6 @@ function perm_get_global_user_gid($uid)
     return false;
 }
 
-
 function perm_user_get_folders($uid)
 {
     $db_perm_user_get_user_folders = db_connect();
@@ -901,13 +900,17 @@ function perm_user_get_folders($uid)
     $forum_fid = $table_data['FID'];
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, BIT_OR(GROUP_PERMS.PERM) AS USER_STATUS, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = '$uid') ";
     $sql.= "LEFT JOIN GROUP_PERMS GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
     $sql.= "AND GROUP_PERMS.GID = GROUP_USERS.GID AND GROUP_PERMS.FORUM IN (0, $forum_fid)) ";
-    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_USERS.GID) ";
-    $sql.= "WHERE GROUPS.AUTO_GROUP = 1 ";
-    $sql.= "GROUP BY FOLDER.FID ORDER BY FOLDER.FID";
+    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "GROUP BY FOLDER.FID ";
+    $sql.= "ORDER BY FOLDER.FID";
 
     $result = db_query($sql, $db_perm_user_get_user_folders);
 
@@ -920,6 +923,12 @@ function perm_user_get_folders($uid)
                 $folders_array[$row['FID']] = array('FID'    => $row['FID'],
                                                     'TITLE'  => $row['TITLE'],
                                                     'STATUS' => $row['USER_STATUS']);
+
+            }elseif ($row['FOLDER_PERM_COUNT'] > 0) {
+
+                $folders_array[$row['FID']] = array('FID'    => $row['FID'],
+                                                    'TITLE'  => $row['TITLE'],
+                                                    'STATUS' => $row['FOLDER_PERMS']);
             }else {
 
                 $folders_array[$row['FID']] = array('FID'    => $row['FID'],

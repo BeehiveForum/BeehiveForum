@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.269 2006-12-03 20:31:32 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.270 2006-12-07 21:33:04 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -988,37 +988,39 @@ function bh_session_check_perm($perm, $folder_fid)
 * @param integer $forum_fid - Optional forum fid otherwise uses current forum FID.
 */
 
-function bh_session_get_perm($folder_fid, $forum_fid = false)
+function bh_session_get_perm($folder_fid)
 {
     global $user_sess;
 
     if (!is_array($user_sess)) return false;
     if (!is_numeric($folder_fid)) return false;
 
-    if ($forum_fid === false) {
+    if (!$table_data = get_table_prefix()) return false;
 
-        if ($table_data = get_table_prefix()) {
-            $forum_fid = $table_data['FID'];
-        }else {
-            $forum_fid = 0;
-        }
-    }
+    $forum_fid = $table_data['FID'];
+
+    $user_perm_test = 0;
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
-        return $user_sess['PERMS'][$forum_fid][$uid][$folder_fid];
+    if (user_is_guest()) {
+
+        if (isset($user_sess['PERMS'][$forum_fid][0][$folder_fid])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][0][$folder_fid];
+        }
+
+    }else {
+
+        if (isset($user_sess['PERMS'][$forum_fid][$uid][$folder_fid])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][$forum_fid][$uid][$folder_fid];
+        }
+
+        if (isset($user_sess['PERMS'][0][$uid][$folder_fid])) {
+            $user_perm_test = $user_perm_test | $user_sess['PERMS'][0][$uid][$folder_fid];
+        }
     }
 
-    if (isset($user_sess['PERMS'][$forum_fid][0][$folder_fid])) {
-        return $user_sess['PERMS'][$forum_fid][0][$folder_fid];
-    }
-
-    if (isset($user_sess['PERMS'][0][$uid][$folder_fid])) {
-        return $user_sess['PERMS'][0][$uid][$folder_fid];
-    }
-
-    return false;
+    return $user_perm_test;
 }
 
 /**

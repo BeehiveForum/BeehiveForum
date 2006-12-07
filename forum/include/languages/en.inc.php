@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.368 2006-12-07 22:05:54 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.369 2006-12-07 22:41:15 decoyduck Exp $ */
 
 // International English language file
 
@@ -139,7 +139,6 @@ $lang['posts'] = "Posts";
 $lang['change'] = "Change";
 $lang['yes'] = "Yes";
 $lang['no'] = "No";
-$lang['default'] = "Default";
 $lang['signature'] = "Signature";
 $lang['signaturepreview'] = "Signature Preview";
 $lang['signatureupdated'] = "Signature Updated";
@@ -413,7 +412,7 @@ $lang['nousersingroup'] = "There are no users in this group";
 $lang['deletegroups'] = "Delete Groups";
 $lang['useringroups'] = "This user is a member of the following groups";
 $lang['usernotinanygroups'] = "This user is not in any user groups";
-$lang['usergroupwarning'] = "Note: This user may still inherit permissions from any user groups listed below and if applicable from the folders own permission settings. To view permissions for a specific folder click on it's name in the above list.";
+$lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
 $lang['successfullyaddedgroup'] = "Successfully added group";
 $lang['successfullydeletedgroup'] = "Successfully deleted group";
 $lang['usercanaccessforumtools'] = "User can access forum tools and can create, delete and edit forums";

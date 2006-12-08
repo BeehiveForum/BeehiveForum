@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.26 2006-12-05 22:06:37 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.27 2006-12-08 19:11:54 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -222,8 +222,8 @@ if (isset($_POST['delete'])) {
         if (rss_add_feed($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new)) {
 
             admin_add_log_entry(ADDED_RSS_FEED, array($t_name_new, $t_url_new));
-            unset($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new, $_POST['addfeed']);
             $add_success = "<h2>{$lang['successfullyaddedfeed']}</h2>\n";
+            unset($t_name_new, $t_user_uid, $t_fid_new, $t_url_new, $t_prefix_new, $t_frequency_new, $_POST['addfeed']);
 
         }else {
 
@@ -485,8 +485,6 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
 }elseif (isset($_POST['feed_id']) || isset($_GET['feed_id'])) {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; {$rss_feed['NAME']}</h1>\n";
-
     if (isset($_POST['feed_id']) && is_numeric($_POST['feed_id'])) {
 
         $feed_id = $_POST['feed_id'];
@@ -497,6 +495,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     }else {
 
+        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']}</h1>\n";
         echo "<h2>{$lang['invalidfeedidorfeednotfound']}</h2>\n";
         html_draw_bottom();
         exit;
@@ -504,11 +503,14 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     if (!$rss_feed = rss_get_feed($feed_id)) {
 
+        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']}</h1>\n";
         echo "<h2>{$lang['invalidfeedidorfeednotfound']}</h2>\n";
         html_draw_bottom();
         exit;
     }
     
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['rssfeeds']} &raquo; {$lang['editfeed']} &raquo; {$rss_feed['NAME']}</h1>\n";
+
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;
     }

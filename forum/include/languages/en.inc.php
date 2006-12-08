@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.369 2006-12-07 22:41:15 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.370 2006-12-08 19:11:54 decoyduck Exp $ */
 
 // International English language file
 
@@ -287,9 +287,16 @@ $lang['deleteitem'] = "Delete Item";
 $lang['deletesection'] = "Delete Section";
 $lang['new_caps'] = "NEW";
 $lang['newsection'] = "New Section";
+$lang['editsection'] = "Edit Section";
 $lang['manageprofilesections'] = "Manage Profile Sections";
 $lang['sectionname'] = "Section Name";
 $lang['items'] = "Items";
+$lang['mustspecifyaprofilesectionid'] = "Must specify a profile section ID";
+$lang['mustsepecifyaprofilesectionname'] = "Must specify a profile section name";
+$lang['successfullyeditedprofilesection'] = "Successfully edited profile section";
+$lang['addnewprofilesection'] = "Add new profile section";
+$lang['mustsepecifyaprofilesectionname'] = "Must specify a profile section name";
+$lang['successfullyremovedselectedprofilesections'] = "Successfully removed selected profile sections";
 $lang['startpageupdated'] = "Start Page updated";
 $lang['viewupdatedstartpage'] = "View updated Start Page";
 $lang['editstartpage'] = "Edit Start Page";

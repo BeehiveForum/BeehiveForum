@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.50 2006-12-02 23:54:39 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.51 2006-12-09 15:48:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -406,6 +406,24 @@ function draw_logon_form($logon_main)
     echo "      </tr>\n";
     echo "    </table>\n";
     echo "  </form>\n";
+}
+
+function logon_unset_post_data()
+{
+    if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
+        $username_array = $_COOKIE['bh_remember_username'];
+    }elseif (isset($_COOKIE['bh_remember_username']) && strlen($_COOKIE['bh_remember_username']) > 0) {
+        $username_array = explode(",", $_COOKIE['bh_remember_username']);
+    }else {
+        $username_array = array();
+    }
+
+    for ($i = 0; $i < sizeof($username_array); $i++) {
+        unset($_POST["user_password$i"], $_POST["user_passhash$i"]);
+    }
+
+    unset($_POST['user_logon'], $_POST['user_password'], $_POST['user_passhash']);
+    unset($_POST['remember_user'], $_POST['logon'], $_POST['logonarray'], $_POST['webtag']);
 }
 
 ?>

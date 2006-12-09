@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.270 2006-12-07 21:33:04 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.271 2006-12-09 15:48:48 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -212,13 +212,12 @@ function bh_session_expired()
 
         if (perform_logon(false)) {
 
-            unset($_POST['user_logon'], $_POST['user_password'], $_POST['user_passhash']);
-            unset($_POST['remember_user'], $_POST['logon'], $_POST['webtag']);
-            
+            logon_unset_post_data();
+                        
             $lang = load_language_file();
             $webtag = get_webtag($webtag_search);
 
-            $request_uri = get_request_uri();
+            $request_uri = get_request_uri(false);
 
             if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
             
@@ -270,6 +269,9 @@ function bh_session_expired()
                 exit;
 
             }else {
+
+                $sep = strstr($request_uri, '?') ? "&" : "?";
+                $request_uri = "{$request_uri}{$sep}reload_frames=true";
 
                 header_redirect($request_uri, $lang['loggedinsuccessfully']);
                 exit;
@@ -1148,7 +1150,7 @@ function parse_array($array, $sep, &$result_var)
 
         if (is_array($value)) {
 
-            parse_array($value, $sep, $result_var);
+            parse_array($value, rawurlencode($sep), $result_var);
 
         }else {
 

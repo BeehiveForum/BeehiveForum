@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.197 2006-12-04 19:12:22 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.198 2006-12-09 15:48:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -645,6 +645,20 @@ function html_draw_top()
 
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/$func_args\"></script>\n";
         }
+    }
+
+    if (isset($_GET['reload_frames'])) {
+
+        $top_html = html_get_top_page();
+
+        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+        echo "<!--\n\n";
+        echo "if (top.document.body.rows) {\n\n";
+        echo "    top.frames['ftop'].location.replace('$top_html');\n";
+        echo "    top.frames['fnav'].location.reload();\n";
+        echo "}\n\n";
+        echo "-->\n";
+        echo "</script>";
     }
 
     $onload = trim(implode(";", $onload_array));

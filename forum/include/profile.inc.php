@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.43 2006-12-08 19:11:54 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.44 2006-12-09 14:05:56 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -166,6 +166,28 @@ function profile_items_get($psid)
 
         return false;
     }
+}
+
+function profile_item_get_name($piid)
+{
+    $db_profile_item_get = db_connect();
+
+    if (!is_numeric($piid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT NAME FROM {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "WHERE PIID = '$piid'";
+
+    $result = db_query($sql, $db_profile_item_get);
+
+    if (db_num_rows($result) > 0) {
+
+        $profile_data = db_fetch_array($result);
+        return $profile_data['NAME'];
+    }
+
+    return false;
 }
 
 function profile_item_create($psid, $name, $type)
@@ -402,19 +424,22 @@ function profile_section_move_down($psid)
 
         $new_position = $profile_section_position[$psid];
 
-        $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
-        $sql.= "WHERE PSID = '{$profile_section_order[$profile_section_order_key]}'";
+        if (isset($profile_section_order[$profile_section_order_key])) {
 
-        if (!$result = db_query($sql, $db_profile_section_move_down)) return false;
+            $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
+            $sql.= "WHERE PSID = '{$profile_section_order[$profile_section_order_key]}'";
 
-        $new_position = $profile_section_position[$profile_section_order[$profile_section_order_key]];
+            if (!$result = db_query($sql, $db_profile_section_move_down)) return false;
 
-        $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
-        $sql.= "WHERE PSID = '$psid'";
+            $new_position = $profile_section_position[$profile_section_order[$profile_section_order_key]];
 
-        if (!$result = db_query($sql, $db_profile_section_move_down)) return false;
+            $sql = "UPDATE {$table_data['PREFIX']}PROFILE_SECTION SET POSITION = '$new_position' ";
+            $sql.= "WHERE PSID = '$psid'";
 
-        return true;
+            if (!$result = db_query($sql, $db_profile_section_move_down)) return false;
+
+            return true;
+        }
     }
 
     return false;
@@ -604,6 +629,28 @@ function profile_get_section($psid)
 
         $profile_section_data = db_fetch_array($result);
         return $profile_section_data;
+    }
+
+    return false;
+}
+
+function profile_get_item($piid)
+{
+    $db_profile_get_item = db_connect();
+
+    if (!is_numeric($piid)) return false;
+
+    if (!$table_data = get_table_prefix()) return;
+
+    $sql = "SELECT NAME, TYPE FROM {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "WHERE PIID = '$piid'";
+
+    $result = db_query($sql, $db_profile_get_item);
+
+    if (db_num_rows($result)) {
+
+        $profile_item_data = db_fetch_array($result);
+        return $profile_item_data;
     }
 
     return false;

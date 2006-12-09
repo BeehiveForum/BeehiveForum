@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.33 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.34 2006-12-09 14:05:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -67,22 +67,58 @@ $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
 $build_data = gmdate("D, d M Y H:i:s");
 
-// Check to see if we can login a user
+// Retrieve existing cookie data if any
 
-if (isset($_COOKIE['bh_remember_username'][0]) && isset($_COOKIE['bh_remember_passhash'][0])) {
+// Username array
 
-    $username = strtoupper($_COOKIE['bh_remember_username'][0]);
-    $passhash = $_COOKIE['bh_remember_passhash'][0];
-
-    $uid = user_logon($username, $passhash);
-
-    if (isset($uid) && $uid > -1) {
-
-        $user_hash = bh_session_init($uid, false, true);
-        $user_sess = bh_session_check(false, $user_hash);
-    }
-
+if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
+    $username_array = $_COOKIE['bh_remember_username'];
+}elseif (isset($_COOKIE['bh_remember_username']) && strlen($_COOKIE['bh_remember_username']) > 0) {
+    $username_array = explode(",", $_COOKIE['bh_remember_username']);
 }else {
+    $username_array = array();
+}
+
+// Password array
+
+if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
+    $password_array = $_COOKIE['bh_remember_password'];
+}elseif (isset($_COOKIE['bh_remember_password']) && strlen($_COOKIE['bh_remember_password']) > 0) {
+    $password_array = explode(",", $_COOKIE['bh_remember_password']);
+}else {
+    $password_array = array();
+}
+
+// Passhash array
+
+if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
+    $passhash_array = $_COOKIE['bh_remember_passhash'];
+}elseif (isset($_COOKIE['bh_remember_passhash']) && strlen($_COOKIE['bh_remember_passhash']) > 0) {
+    $passhash_array = explode(",", $_COOKIE['bh_remember_passhash']);
+}else {
+    $passhash_array = array();
+}
+
+// Try and log in the last used user account
+
+if (isset($username_array[0]) && strlen(trim($username_array[0])) > 0) {
+
+    if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
+
+        $username = strtoupper($username_array[0]);
+        $passhash = $passhash_array[0];
+
+        if ($uid = user_logon($username, $passhash)) {
+
+            $user_hash = bh_session_init($uid, false, true);
+        }
+    }
+}
+
+// If logon failed or there was no saved user credentials
+// we need to try and logon as a guest.
+
+if (!$user_sess = bh_session_check()) {
 
     $user_hash = bh_session_init(0, false, true);
     $user_sess = bh_session_check(false, $user_hash, true);

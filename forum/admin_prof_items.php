@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.93 2006-12-03 23:01:41 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.94 2006-12-09 14:05:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,96 +94,67 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
-if (isset($_POST['cancel'])) {
-    header_redirect("./admin_prof_sect.php?webtag=$webtag");
-}
-
 if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
-  $psid = $_GET['psid'];
+    $psid = $_GET['psid'];
 
-}elseif (isset($_POST['t_psid']) && is_numeric($_POST['t_psid'])) {
+}elseif (isset($_POST['psid']) && is_numeric($_POST['psid'])) {
 
-  $psid = $_POST['t_psid'];
+    $psid = $_POST['psid'];
 
 }else {
 
-  html_draw_top();
-  echo "<h1>{$lang['error']}</h1>\n";
-  echo "<p>{$lang['noprofilesectionspecified']}</p>\n";
-  html_draw_bottom();
-  exit;
-
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<p>{$lang['noprofilesectionspecified']}</p>\n";
+    html_draw_bottom();
+    exit;
 }
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['delete'])) {
 
-    $valid = true;
+    if (isset($_POST['delete_item']) && is_array($_POST['delete_item'])) {
 
-    if (isset($_POST['t_piid']) && is_array($_POST['t_piid'])) {
+        foreach($_POST['delete_item'] as $piid => $delete_item) {
 
-        foreach($_POST['t_piid'] as $piid => $value) {
+            if (($delete_item == "Y") && ($profile_item_name = profile_item_get_name($piid))) {
 
-            if (isset($_POST['t_name'][$piid]) && strlen(trim(_stripslashes($_POST['t_name'][$piid]))) > 0) {
-                $t_new_name = trim(_stripslashes($_POST['t_name'][$piid]));
-            }else {
-                $valid = false;
-            }
+                if ($section_name = profile_section_get_name($_POST['psid'])) {
 
-            if (isset($_POST['t_old_name'][$piid]) && strlen(trim(_stripslashes($_POST['t_old_name'][$piid]))) > 0) {
-                $t_old_name = trim(_stripslashes($_POST['t_old_name'][$piid]));
-            }else {
-                $valid = false;
-            }
+                    if (profile_item_delete($piid)) {
 
-            if (isset($_POST['t_type'][$piid]) && is_numeric($_POST['t_type'][$piid])) {
-                $t_new_type = $_POST['t_type'][$piid];
-            }else {
-                $valid = false;
-            }
+                        admin_add_log_entry(DELETE_PROFILE_ITEM, array($section_name, $profile_item_name));
+                        $del_success = "<h2>{$lang['successfullyremovedselectedprofileitems']}</h2>\n";
+                        unset($_POST['piid'], $_GET['piid'], $piid);
 
-            if (isset($_POST['t_old_type'][$piid]) && is_numeric($_POST['t_old_type'][$piid])) {
-                $t_old_type = $_POST['t_old_type'][$piid];
-            }else {
-                $valid = false;
-            }
+                    }else {
 
-            if (isset($_POST['t_section'][$piid]) && is_numeric($_POST['t_section'][$piid])) {
-                $t_new_section = $_POST['t_section'][$piid];
-            }else {
-                $valid = false;
-            }
-
-            if (isset($_POST['t_old_section'][$piid]) && is_numeric($_POST['t_old_section'][$piid])) {
-                $t_old_section = $_POST['t_old_section'][$piid];
-            }else {
-                $valid = false;
-            }
-
-            if ($valid && (($t_new_name != $t_old_name) || ($t_new_type != $t_old_type) || ($t_new_section != $t_old_section))) {
-
-                profile_item_update($piid, $t_new_section, $t_new_type, $t_new_name);
-
-                $t_section_name = profile_section_get_name($psid);
-
-                admin_add_log_entry(CHANGE_PROFILE_ITEM, array($t_new_name, $t_old_name, $t_new_type, $t_old_type, $t_new_section, $t_old_section));
+                        $error_html.= "<h2>{$lang['failedtoremoveprofileitems']}</h2>\n";
+                    }               
+                }
             }
         }
     }
+}
+
+if (isset($_POST['cancel'])) {
+    
+    $redirect = "./admin_prof_sect.php?webtag=$webtag&psid=$psid";
+    header_redirect($redirect);
+
+}elseif (isset($_POST['add_cancel'])) {
+    
+    $redirect = "./admin_prof_items.php?webtag=$webtag&psid=$psid";
+    header_redirect($redirect);
+}
+
+if (isset($_POST['additemsubmit'])) {
+
+    $valid = true;
 
     if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
-
-        if (trim(_stripslashes($_POST['t_name_new'])) != $lang['newitem']) {
-
-            $t_name_new = trim(_stripslashes($_POST['t_name_new']));
-
-        }else {
-
-            $valid = false;
-        }
-
+        $t_new_name = trim(_stripslashes($_POST['t_name_new']));
     }else {
-
         $valid = false;
     }
 
@@ -195,26 +166,61 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        $new_piid = profile_item_create($psid, $t_name_new, $t_type_new);
-
+        $new_piid = profile_item_create($psid, $t_new_name, $t_type_new);
         $t_section_name = profile_section_get_name($psid);
-
-        admin_add_log_entry(ADDED_PROFILE_ITEM, array($t_section_name, $t_name_new));
+        admin_add_log_entry(ADDED_PROFILE_ITEM, array($t_section_name, $t_new_name));
     }
 
-}
+}elseif (isset($_POST['edititemsubmit'])) {
 
-if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
+    $valid = true;
 
-    list($piid) = array_keys($_POST['t_delete']);
+    if (isset($_POST['piid']) && is_numeric($_POST['piid'])) {
+        $piid = $_POST['piid'];
+    }else {
+        $valid = false;
+    }
 
-    $t_section_name = profile_section_get_name($psid);
+    if (isset($_POST['t_name_new']) && strlen(trim(_stripslashes($_POST['t_name_new']))) > 0) {
+        $t_name_new = trim(_stripslashes($_POST['t_name_new']));
+    }else {
+        $valid = false;
+    }
 
-    $t_item_name = isset($_POST['t_old_name'][$piid]) ? $_POST['t_old_name'][$piid] : "";
+    if (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new'])) {
+        $t_type_new = $_POST['t_type_new'];
+    }else {
+        $valid = false;
+    }
 
-    profile_item_delete($piid);
+    if (isset($_POST['t_section_new']) && is_numeric($_POST['t_section_new'])) {
+        $t_section_new = $_POST['t_section_new'];
+    }else {
+        $valid = false;
+    }
 
-    admin_add_log_entry(DELETE_PROFILE_ITEM, array($t_section_name, $t_item_name));
+    if ($valid) {
+
+        if (profile_item_update($piid, $t_section_new, $t_type_new, $t_name_new)) {
+
+            $profile_item = profile_get_item($piid);
+
+            if (($t_name_new != $profile_item['NAME']) || ($t_type_new != $profile_item['TYPE']) || ($t_section_new != $psid)) {
+                
+                $log_data = array($t_name_new, $profile_item['NAME'], $t_type_new, $profile_item['TYPE'], $t_section_new, $psid);
+                admin_add_log_entry(CHANGE_PROFILE_ITEM, $log_data);
+            }
+
+            $edit_success = "<h2>{$lang['successfullyeditedprofilesection']}</h2>\n";
+            unset($_POST['edititemsubmit'], $_POST['psid'], $_POST['piid'], $_POST['t_name_new'], $profile_item, $piid, $t_name_new, $t_type_new, $t_section_new);
+        }
+    }
+
+}elseif (isset($_POST['additem'])) {
+
+    $redirect = "./admin_prof_items.php?webtag=$webtag&psid=$psid&additem=true";
+    header_redirect($redirect);
+    exit;
 }
 
 if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
@@ -231,99 +237,261 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 html_draw_top();
 
-// Draw the form
-echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofileitems']} &raquo; ", profile_section_get_name($psid), "</h1>\n";
-echo "<br />\n";
-echo "<div align=\"center\">\n";
-echo "<form name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
-echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ", form_input_hidden("t_psid", $psid), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['itemname']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['type']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['moveto']}</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteitem']}</td>\n";
-echo "                </tr>\n";
+if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
-if ($profile_items = profile_items_get($psid)) {
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['addnewitem']}</h1>\n";
 
-    $profile_index = 0;
+    if (isset($error_html) && strlen(trim($error_html)) > 0) {
+        echo $error_html;
+    }
 
-    foreach ($profile_items as $profile_item) {
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden("psid", $psid), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">{$lang['addnewitem']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : ""), 32, 64), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown'])), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("additemsubmit", $lang['add']), "&nbsp;", form_submit("add_cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\"><p>{$lang['fieldtypeexample1']}</p></td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\"><p>{$lang['fieldtypeexample2']}</p></td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
 
-        $profile_index++;
+}elseif (isset($_GET['piid']) || isset($_POST['piid'])) {
+
+    if (isset($_POST['piid']) && is_numeric($_POST['piid'])) {
+
+        $piid = $_POST['piid'];
+
+    }elseif (isset($_GET['piid']) && is_numeric($_GET['piid'])) {
+
+        $piid = $_GET['piid'];
+
+    }else {
+
+        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']}</h1>\n";
+        echo "<h2>{$lang['invaliditemidoritemnotfound']}</h2>\n";
+        html_draw_bottom();
+        exit;
+    }
+
+    if (!$profile_item = profile_get_item($piid)) {
+
+        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
+        echo "<h2>{$lang['invaliditemidoritemnotfound']}</h2>\n";
+        html_draw_bottom();
+        exit;
+    }
+    
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
+
+    if (isset($error_html) && strlen(trim($error_html)) > 0) {
+        echo $error_html;
+    }
+
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden("psid", $psid), "\n";
+    echo "  ", form_input_hidden("piid", $piid), "\n";
+    echo "  ", form_input_hidden("delete_item[$piid]", "Y"), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">{$lang['edititem']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : $profile_item['NAME']), 32, 64), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['type']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_type_new", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown']), (isset($_POST['t_type_new']) && is_numeric($_POST['t_type_new']) ? $_POST['t_type_new'] : $profile_item['TYPE'])), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"150\">{$lang['moveto']}</td>\n";
+    echo "                        <td align=\"left\">", profile_section_dropdown($psid, "t_section_new"), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("edititemsubmit", $lang['save']), "&nbsp;", form_submit("delete", $lang['delete']), "&nbsp;", form_submit("add_cancel", $lang['cancel']), "</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\"><p>{$lang['fieldtypeexample1']}</p></td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\"><p>{$lang['fieldtypeexample2']}</p></td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+
+}else {
+
+    $item_types_array = array($lang['largetextfield'], $lang['mediumtextfield'], 
+                              $lang['smalltextfield'], $lang['multilinetextfield'], 
+                              $lang['radiobuttons'], $lang['dropdown']);
+    
+    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['viewitems']}</h1>\n";
+
+    if (isset($error_html) && strlen(trim($error_html)) > 0) {
+        echo $error_html;
+    }
+
+    if (isset($add_success) && strlen(trim($add_success)) > 0) echo $add_success;
+    if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
+    if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
+
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden("psid", $psid), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" colspan=\"2\">{$lang['itemname']}</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">{$lang['type']}</td>\n";
+    echo "                </tr>\n";
+
+    if ($profile_items = profile_items_get($psid)) {
+
+        $profile_index = 0;
+
+        foreach ($profile_items as $profile_item) {
+
+            $profile_index++;
+
+            echo "                <tr>\n";
+            echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_item[{$profile_item['PIID']}]", "Y", false), "</td>\n";
+
+            if (sizeof($profile_items) == 1) {
+
+                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
+
+            }elseif ($profile_index == sizeof($profile_items)) {
+
+                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
+
+            }elseif ($profile_index > 1) {
+
+                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+
+            }else {
+
+                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+            }
+
+            echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;&piid={$profile_item['PIID']}\">{$profile_item['NAME']}</a></td>\n";
+            echo "                  <td valign=\"top\" align=\"left\">{$item_types_array[$profile_item['TYPE']]}</td>\n";
+            echo "                </tr>\n";
+        }
+    
+    }else {
 
         echo "                <tr>\n";
-
-        if (sizeof($profile_items) == 1) {
-
-            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
-
-        }elseif ($profile_index == sizeof($profile_items)) {
-
-            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
-
-        }elseif ($profile_index > 1) {
-
-            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-
-        }else {
-
-            echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-        }
-
-        echo "                  <td valign=\"top\" align=\"left\">", form_field("t_name[{$profile_item['PIID']}]", $profile_item['NAME'], 40, 64), form_input_hidden("t_old_name[{$profile_item['PIID']}]", $profile_item['NAME']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type[{$profile_item['PIID']}]", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown']), $profile_item['TYPE']), form_input_hidden("t_old_type[{$profile_item['PIID']}]", $profile_item['TYPE']), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\">", profile_section_dropdown($psid, "t_section[{$profile_item['PIID']}]"), form_input_hidden("t_old_section[{$profile_item['PIID']}]", $psid), "</td>\n";
-        echo "                  <td valign=\"top\" align=\"left\" width=\"100\">", form_submit("t_delete[{$profile_item['PIID']}]", $lang['delete']), "</td>\n";
+        echo "                  <td align=\"left\" colspan=\"4\">{$lang['noexistingprofileitemsfound']}</td>\n";
         echo "                </tr>\n";
+
     }
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("additem", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
 }
-
-// Draw a row for a new section to be created
-
-echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['new_caps']}</td>\n";
-echo "                  <td align=\"left\">", form_field("t_name_new", $lang['newitem'], 40, 64), "</td>";
-echo "                  <td valign=\"top\" align=\"left\">", form_dropdown_array("t_type_new", range(0, 5), array($lang['largetextfield'], $lang['mediumtextfield'], $lang['smalltextfield'], $lang['multilinetextfield'], $lang['radiobuttons'], $lang['dropdown'])), "</td>\n";
-echo "                  <td align=\"center\">&nbsp;</td>\n";
-echo "                  <td align=\"center\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\"><p>{$lang['fieldtypeexample1']}</p></td>\n";
-echo "    </tr>\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\"><p>{$lang['fieldtypeexample2']}</p></td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "</form>\n";
-echo "</div>\n";
 
 html_draw_bottom();
 

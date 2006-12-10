@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.166 2006-12-02 23:54:39 decoyduck Exp $ */
+/* $Id: logon.php,v 1.167 2006-12-10 17:08:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -159,7 +159,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
         header_redirect("./index.php?webtag=$webtag", $lang['cookiessuccessfullydeleted']);
     }
 
-}elseif ((isset($_POST['user_logon']) && isset($_POST['user_password']) && (isset($_POST['user_passhash']) || isset($_GET['other']))) || isset($_POST['guest_logon'])) {
+}elseif (isset($_POST['logon'])) {
 
     if (perform_logon(true)) {
 
@@ -187,13 +187,31 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
             header_redirect("./index.php?webtag=$webtag", $lang['usernameorpasswdnotvalid']);
         }
     }
+
+}elseif (isset($_POST['other'])) {
+
+    if (isset($final_uri)) {
+
+        $final_uri = rawurlencode($final_uri);
+        header_redirect("./index.php?webtag=$webtag&other_logon=true&final_uri=$final_uri");
+
+    }else {
+
+        header_redirect("./index.php?webtag=$webtag&other_logon=true");
+    }
+}
+
+if (isset($_GET['other_logon'])) {
+    $other_logon = true;
+}else {
+    $other_logon = false;
 }
 
 html_draw_top('logon.js');
 
 echo "<div align=\"center\">\n";
 
-draw_logon_form(true);
+draw_logon_form(true, $other_logon);
 
 if (user_guest_enabled()) {
 

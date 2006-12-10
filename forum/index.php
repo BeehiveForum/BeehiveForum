@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.130 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: index.php,v 1.131 2006-12-10 17:08:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -183,27 +183,33 @@ if ($session_active && !$logon_failed) {
     echo "<frameset rows=\"60,*\" frameborder=\"0\" framespacing=\"0\">\n";
     echo "<frame src=\"$top_html\" name=\"top\" frameborder=\"0\" framespacing=\"0\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" noresize=\"noresize\" />\n";
 
+    if (isset($_GET['other_logon'])) {
+        $other_logon = "&amp;other_logon=true";
+    }else {
+        $other_logon = "";
+    }
+
     if (isset($_GET['final_uri']) && strlen(trim(_stripslashes($_GET['final_uri']))) > 0) {
 
         $final_uri = basename(trim(_stripslashes($_GET['final_uri'])));
 
-        echo "<frame src=\"./logon.php?webtag=$webtag&amp;final_uri=", rawurlencode($final_uri), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "<frame src=\"./logon.php?webtag=$webtag$other_logon&amp;final_uri=", rawurlencode($final_uri), "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        echo "<frame src=\"./logon.php?webtag=$webtag&amp;final_uri=". rawurlencode("./discussion.php?webtag=$webtag&amp;msg={$_GET['msg']}"). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "<frame src=\"./logon.php?webtag=$webtag$other_logon&amp;final_uri=". rawurlencode("./discussion.php?webtag=$webtag&amp;msg={$_GET['msg']}"). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-        echo "<frame src=\"./logon.php?webtag=$webtag&amp;final_uri=". rawurlencode("./discussion.php?webtag=$webtag&amp;folder={$_GET['folder']}"). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "<frame src=\"./logon.php?webtag=$webtag$other_logon&amp;final_uri=". rawurlencode("./discussion.php?webtag=$webtag&amp;folder={$_GET['folder']}"). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-        echo "<frame src=\"./logon.php?webtag=$webtag&amp;final_uri=". rawurlencode("./pm.php?webtag=$webtag&amp;mid={$_GET['pmid']}"). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "<frame src=\"./logon.php?webtag=$webtag$other_logon&amp;final_uri=". rawurlencode("./pm.php?webtag=$webtag&amp;mid={$_GET['pmid']}"). "\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
 
     }else {
 
-        echo "<frame src=\"./logon.php?webtag=$webtag\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
+        echo "<frame src=\"./logon.php?webtag=$webtag$other_logon\" name=\"main\" frameborder=\"0\" framespacing=\"0\" />\n";
     }
 }
 

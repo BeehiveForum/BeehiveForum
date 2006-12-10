@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.16 2006-09-15 11:03:44 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.17 2006-12-10 17:08:56 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.co.uk/forum/
@@ -242,9 +242,9 @@ if (isset($_GET['upload']) && $uid > 0) {
     echo "<h1>Convicts Gallery</h1>\n";
 
     if ($uid > 0) {
-        echo "<p><div align=\"center\">[<a href=\"?upload\">Upload an image</a>]</div></p>\n";
+        echo "<div align=\"center\"><p>[<a href=\"?upload\">Upload an image</a>]</p></div>\n";
     }else {
-        echo "<p><div align=\"center\">Gallery is empty</div></p>\n";
+        echo "<div align=\"center\"><p>Gallery is empty</p></div>\n";
     }
 }
 

@@ -136,18 +136,8 @@ function resizeImages(maxWidth) {
         for (var i = 0; i < img_count; i++)  {
 
                 if (img_tags[i].width >= maxWidth) {
-                        
-                        img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
-                        img_tags[i].style.cursor = 'pointer';
-
-                        if (img_tags[i].attachEvent) {
-
-                                img_tags[i].attachEvent("onclick", showFullImage);
-
-                        }else if (img_tags[i].addEventListener) {
-
-                                img_tags[i].addEventListener("click", showFullImage, false);
-                        }                       
+                       
+                        img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';                      
                 }
         }
 }
@@ -162,4 +152,6 @@ function showFullImage(evt) {
                 
                 window.open(evt.target.src);
         }
+
+        return false;
 }

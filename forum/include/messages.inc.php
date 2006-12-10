@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.426 2006-12-05 20:25:21 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.427 2006-12-10 17:08:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1067,26 +1067,35 @@ function message_display_deleted($tid, $pid, $message)
 {
     $lang = load_language_file();
 
-    if (isset($message['EDITED']) && $message['EDITED'] > 0) {
+    echo "<br /><div align=\"center\">";
+    echo "<table width=\"96%\" cellspacing=\"0\"cellpadding=\"0\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">\n";
+    echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"left\">\n";
+    echo "            <table class=\"posthead\" width=\"100%\">\n";
+    echo "              <tr>\n";
 
+    if (isset($message['EDITED']) && $message['EDITED'] > 0) {
+    
         $edit_logon = user_get_logon($message['EDITED_BY']);
-        
-        echo "<br /><div align=\"center\">";
-        echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td align=\"left\">\n";
-        echo "<table class=\"posthead\" width=\"100%\"><tr><td align=\"left\">\n";
-        echo "{$lang['message']} ${tid}.${pid} {$lang['deleted']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$edit_logon}\n";
-        echo "</td></tr></table>\n";
-        echo "</td></tr></table></div>\n";
+        echo "                <td align=\"left\">{$lang['message']} ${tid}.${pid} {$lang['deleted']}: ", format_time($message['EDITED'], 1), " {$lang['by']} {$edit_logon}</td>\n";
 
     }else {
 
-        echo "<br /><div align=\"center\">";
-        echo "<table width=\"96%\" border=\"1\" bordercolor=\"black\"><tr><td align=\"left\">\n";
-        echo "<table class=\"posthead\" width=\"100%\"><tr><td align=\"left\">\n";
         echo "{$lang['message']} ${tid}.${pid} {$lang['wasdeleted']}\n";
-        echo "</td></tr></table>\n";
-        echo "</td></tr></table></div>\n";
     }
+
+    echo "              </tr>\n";
+    echo "            </table>\n";
+    echo "          </td>\n";
+    echo "        </tr>\n";
+    echo "      </table>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</div>\n";
 }
 
 function message_display_approval_req($tid, $pid)

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.51 2006-12-09 15:48:48 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.52 2006-12-10 17:08:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -182,7 +182,7 @@ function perform_logon($logon_main)
     return false;
 }
 
-function draw_logon_form($logon_main)
+function draw_logon_form($logon_main, $other_logon = false)
 {
     global $frame_top_target;
    
@@ -222,14 +222,6 @@ function draw_logon_form($logon_main)
         $passhash_array = array();
     }
 
-    // Has the 'Other' button been clicked?
-
-    if (isset($_GET['other'])) {
-        $otherlogon = true;
-    }else {
-        $otherlogon = false;
-    }
-
     if (isset($_COOKIE['bh_logon_failed'])) {
 
         bh_setcookie("bh_logon_failed", "1", time() - YEAR_IN_SECONDS);
@@ -243,9 +235,9 @@ function draw_logon_form($logon_main)
         echo "  <br />\n";
 
         if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-            echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"$frame_top_target\" onsubmit=\"return has_clicked;\">\n";
+            echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"$frame_top_target\">\n";
         }else {
-            echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+            echo "  <form name=\"logonform\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_top\">\n";
         }
 
     }else {
@@ -257,12 +249,12 @@ function draw_logon_form($logon_main)
 
         if (stristr($request_uri, 'logon.php')) {
             if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-                echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\" onsubmit=\"return has_clicked;\">\n";
+                echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"$frame_top_target\">\n";
             }else {
-                echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_top\" onsubmit=\"return has_clicked;\">\n";
+                echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_top\">\n";
             }
         }else {
-            echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\" onsubmit=\"return has_clicked;\">\n";
+            echo "<form name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
         }
 
         $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
@@ -289,7 +281,7 @@ function draw_logon_form($logon_main)
     echo "                    <td align=\"center\">\n";
     echo "                      <table class=\"posthead\" width=\"95%\">\n";
 
-    if ((sizeof($username_array) > 1) && $otherlogon == false) {
+    if ((sizeof($username_array) > 1) && $other_logon === false) {
 
         echo "                        <tr>\n";
         echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
@@ -330,16 +322,7 @@ function draw_logon_form($logon_main)
             }
         }
 
-        $request_uri = get_request_uri();
-
-        if (strstr($request_uri, '?')) {
-            $request_uri.= "&amp;other=true";
-        }else {
-            $request_uri.= "?other=true";
-        }
-
-        echo "              ", form_button("other", $lang['otherbutton'], "onclick=\"self.location.href='$request_uri';\""), "</td>\n";
-
+        echo "              ", form_submit("other", $lang['otherbutton']), "</td>\n";
         echo "                        </tr>\n";
         echo "                        <tr>\n";
         echo "                          <td align=\"right\">{$lang['passwd']}:</td>\n";
@@ -364,7 +347,7 @@ function draw_logon_form($logon_main)
 
     }else {
 
-        if ($otherlogon) {
+        if ($other_logon === true) {
 
             echo "                        <tr>\n";
             echo "                          <td align=\"right\">{$lang['username']}:</td>\n";
@@ -390,10 +373,10 @@ function draw_logon_form($logon_main)
 
     echo "                        <tr>\n";
     echo "                          <td align=\"left\">&nbsp;</td>\n";
-    echo "                          <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $otherlogon == false), "autocomplete=\"off\""), "</td>\n";
+    echo "                          <td align=\"left\">", form_checkbox("remember_user", "Y", $lang['rememberpasswds'], (isset($password_array[0]) && isset($passhash_array[0]) && $other_logon === false), "autocomplete=\"off\""), "</td>\n";
     echo "                        </tr>\n";
     echo "                        <tr>\n";
-    echo "                          <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton'], 'onclick="has_clicked = true"'), "</td>\n";
+    echo "                          <td align=\"center\" colspan=\"2\">", form_submit('logon', $lang['logonbutton']), "</td>\n";
     echo "                        </tr>\n";
     echo "                      </table>\n";
     echo "                    </td>\n";

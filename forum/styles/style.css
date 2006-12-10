@@ -13,17 +13,15 @@ img {
 }
 
 frameset {
-    border-style: none;
-    margin: 0;
-    padding: 0;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 frame {
-    border-style: none;
-    border-width: 0px;
-    border-color: #000000;
-    margin: 0px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 .navpage {

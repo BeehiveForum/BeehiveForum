@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.119 2006-12-05 20:25:21 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.120 2006-12-10 17:08:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -350,7 +350,7 @@ if (isset($_POST['answer_count']) && is_numeric($_POST['answer_count'])) {
     $t_answer_count = 0;
 }
 
-html_draw_top("basetarget=_blank", "onload=addOverflow(785)", "openprofile.js", "post.js");
+html_draw_top("basetarget=_blank", "onload=resizeImages(785)", "onload=addOverflow(785)", "openprofile.js", "post.js");
 
 $allow_html = true;
 

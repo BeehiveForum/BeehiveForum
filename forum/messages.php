@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.211 2006-12-04 18:52:12 decoyduck Exp $ */
+/* $Id: messages.php,v 1.212 2006-12-11 21:58:17 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -170,7 +170,7 @@ if (isset($_POST['pollsubmit'])) {
 
     }else {
 
-        html_draw_top("openprofile.js");
+        html_draw_top("openprofile.js", "poll.js");
         poll_confirm_close($_POST['tid']);
         html_draw_bottom();
         exit;
@@ -213,7 +213,7 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-html_draw_top("title=$forum_name > {$threaddata['TITLE']}", "openprofile.js", "post.js", "basetarget=_blank", "robots=index,follow", "onload=resizeImages()", "onload=addOverflow()");
+html_draw_top("title=$forum_name > {$threaddata['TITLE']}", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow", "onload=resizeImages()", "onload=addOverflow()");
 
 if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
 
@@ -468,7 +468,7 @@ if ($threaddata['POLL_FLAG'] == 'Y') {
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
     echo "                <td align=\"center\">\n";
-    echo "                  <a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=", $tid, "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\">{$lang['viewresults']}</a>\n";
+    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_self\" target=\"_blank\" onclick=\"return openPollResults('$tid', '$webtag')\">{$lang['viewresults']}</a>\n";
     echo "                </td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.8 2006-11-27 09:40:49 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.9 2006-12-11 21:58:18 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -294,6 +294,18 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Flag to allow guest votes configurable at poll level
 
     $sql = "ALTER TABLE {$forum_webtag}_POLL ADD ALLOWGUESTS TINYINT(1) NOT NULL DEFAULT '0'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Reindex POST_ATTACHMENT_IDS table to make queries quicker
+
+    install_remove_table_keys("{$forum_webtag}_POST_ATTACHMENT_IDS");
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_IDS ADD INDEX (AID)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

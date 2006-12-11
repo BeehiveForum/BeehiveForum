@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.180 2006-12-04 18:52:12 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.181 2006-12-11 21:58:18 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -620,7 +620,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $polldata['CONTENT'].= "                </tr>\n";
                 $polldata['CONTENT'].= "                <tr>\n";
                 $polldata['CONTENT'].= "                    <td colspan=\"2\" align=\"center\">";
-                $polldata['CONTENT'].= "                      ". form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+                $polldata['CONTENT'].= "                      ". form_button("pollresults", $lang['resultdetails'], "onclick=\"openPollResults('$tid', '$webtag');\"");
                 $polldata['CONTENT'].= "                    </td>\n";
                 $polldata['CONTENT'].= "                </tr>\n";
                 $polldata['CONTENT'].= "                <tr>\n";
@@ -707,11 +707,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                     if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
-                        $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+                        $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"openPollResults('$tid', '$webtag')\"");
 
                     }else {
 
-                        $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+                        $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"openPollResults('$tid', '$webtag')\"");
 
                     }
                 }
@@ -753,11 +753,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                     if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
-                        $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+                        $polldata['CONTENT'].= form_button("pollresults", $lang['resultdetails'], "onclick=\"openPollResults('$tid', '$webtag')\"");
 
                     }else {
 
-                        $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=". $tid. "', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"");
+                        $polldata['CONTENT'].= form_button("pollresults", $lang['results'], "onclick=\"openPollResults('$tid', '$webtag')\"");
                     }
                 }
 
@@ -1761,7 +1761,7 @@ function poll_public_ballot($tid, $viewstyle)
 
                                 $polldisplay.= "                            <tr>\n";
                                 $polldisplay.= "                                <td align=\"left\" width=\"150\" class=\"$row_class\">&nbsp;</td>\n";
-                                $polldisplay.= "                                <td align=\"left\" width=\"150\" class=\"$row_class\"><a href=\"javascript:void(0)\" onclick=\"openProfile({$user['UID']}, '$webtag')\">". add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a></td>\n";
+                                $polldisplay.= "                                <td align=\"left\" width=\"150\" class=\"$row_class\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a></td>\n";
                                 $polldisplay.= "                            </tr>\n";
                             }
                         }
@@ -1800,7 +1800,7 @@ function poll_public_ballot($tid, $viewstyle)
                 $polldisplay.= "                        <div align=\"center\">\n";
                 $polldisplay.= "                        <table width=\"460\" cellpadding=\"5\" cellspacing=\"0\" class=\"$table_class\">\n";
                 $polldisplay.= "                            <tr>\n";
-                $polldisplay.= "                                <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border - bottom: 1px solid\" colspan=\"2\"><h2><a href=\"javascript:void(0)\" onclick=\"openProfile({$user['UID']}, '$webtag')\">". add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a><h2></td>\n";
+                $polldisplay.= "                                <td align=\"left\" width=\"150\" class=\"$row_class\" style=\"border - bottom: 1px solid\" colspan=\"2\"><h2><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">". add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])). "</a><h2></td>\n";
                 $polldisplay.= "                            </tr>\n";
 
                 for ($i = 0; $i < sizeof($optionid_array); $i++) {

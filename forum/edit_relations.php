@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.58 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.59 2006-12-11 21:58:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -289,7 +289,7 @@ if (sizeof($user_peers['user_array']) > 0) {
         }
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">{$user_peer['LOGON']}</a></td>\n";
+        echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user_peer['UID']};\" target=\"_blank\" onclick=\"return openProfile({$user_peer['UID']}, '$webtag')\" target=\"_self\">{$user_peer['LOGON']}</a></td>\n";
         echo "                  <td align=\"left\">", form_input_text("nickname[{$user_peer['UID']}]", $nickname, 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname[{$user_peer['UID']}]", "Y", "title=\"{$lang['restorenickname']}\"", "relationship_reset"), "</td>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\">\n";
         echo "                    &nbsp;", form_radio("relationship[{$user_peer['UID']}]", USER_FRIEND, "", $peer_relationship & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";
@@ -369,7 +369,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
         foreach ($user_search_array['user_array'] as $user) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" width=\"200\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">{$user['LOGON']}</a></td>\n";
+            echo "                  <td align=\"left\" width=\"200\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\" target=\"_self\">{$user['LOGON']}</a></td>\n";
             echo "                  <td align=\"left\">", form_input_text("add_nickname[{$user['UID']}]", $user['NICKNAME'], 30), "</td>\n";
             echo "                  <td align=\"left\">\n";
             echo "                    &nbsp;", form_radio("add_relationship[{$user['UID']}]", USER_FRIEND, "", $user['RELATIONSHIP'] & USER_FRIEND), "<img src=\"", style_image("friend.png"), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" />\n";

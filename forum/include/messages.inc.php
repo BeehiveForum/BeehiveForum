@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.427 2006-12-10 17:08:56 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.428 2006-12-11 21:58:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -460,7 +460,7 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
                         if ($enable_wiki_links) {
 
                             $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                            $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
                         }
                     }
                 }
@@ -712,7 +712,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if ($message['FROM_UID'] > -1) {
 
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
+        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
         echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</a></span>";
 
     }else {
@@ -766,7 +766,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "<a href=\"javascript:void(0);\" onclick=\"openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
+        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
         echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])), "</a></span>";
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
@@ -807,7 +807,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if ($is_poll) {
 
-            echo "<a href=\"javascript:void(0);\" target=\"_self\" onclick=\"window.open('poll_results.php?webtag=$webtag&amp;tid=$tid', 'pollresults', 'width=520, height=360, toolbar=0, location=0, directories=0, status=0, menubar=0, scrollbars=yes, resizable=yes');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> {$lang['poll']} ";
+            echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_self\" target=\"_blank\" onclick=\"return openPollResults('$tid', '$webtag');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> {$lang['poll']} ";
         }
 
         echo "{$message['PID']} {$lang['of']} $msg_count";
@@ -1591,7 +1591,7 @@ function messages_forum_stats($tid, $pid)
 
                     foreach ($user_stats['USERS'] as $user) {
 
-                        $active_user = "<a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
+                        $active_user = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
 
                         if ($user['UID'] == $uid) {
 
@@ -1703,7 +1703,7 @@ function messages_forum_stats($tid, $pid)
 
             if ($newest_member = get_newest_user()) {
 
-                echo "                          {$lang['thenewestmemberis']} <a href=\"javascript:void(0);\" onclick=\"openProfile({$newest_member['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME'])), "</a>.\n";
+                echo "                          {$lang['thenewestmemberis']} <a href=\"user_profile.php?webtag=$webtag&amp;uid={$newest_member['UID']}\" target=\"_blank\" onclick=\"return openProfile({$newest_member['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME'])), "</a>.\n";
             }
 
             echo "                        </td>\n";

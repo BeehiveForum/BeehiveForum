@@ -20,9 +20,10 @@ USA
 ======================================================================*/
 
 function openForumLink(obj) {
-	var url = obj.options[obj.selectedIndex].value;
-	if (url.length > 0) {
-		window.open(url);
-	}
-	obj.selectedIndex = 0;
+        var url = obj.options[obj.selectedIndex].value;
+        if (url.length > 0) {
+                window.open(url);
+                return false;
+        }
+        obj.selectedIndex = 0;
 }

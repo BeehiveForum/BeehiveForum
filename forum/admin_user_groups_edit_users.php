@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups_edit_users.php,v 1.33 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: admin_user_groups_edit_users.php,v 1.34 2006-12-11 21:58:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -283,7 +283,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" width=\"20\">", form_checkbox("add_user[]", $user['UID'], "", false), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"javascript:void(0);\" onclick=\"openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</a></td>\n";
             echo "                </tr>\n";
         }
 

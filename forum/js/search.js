@@ -32,4 +32,5 @@ function enable_search_button() {
 function display_mysql_stopwords(webtag, keywords) {
 
     window.open('search.php?webtag=' + webtag + '&show_stop_words=true&keywords=' + keywords, 'show_stop_words', 'width=580, height=450, scrollbars=yes, scrolling=yes');
+    return false;
 }

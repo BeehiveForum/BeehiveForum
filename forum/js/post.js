@@ -27,6 +27,7 @@ function closeAttachWin () {
 
 function launchAttachWin (aid, webtag) {
         attachwin = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+        return false;
 }
 
 function checkToRadio(num) {
@@ -140,18 +141,4 @@ function resizeImages(maxWidth) {
                         img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';                      
                 }
         }
-}
-
-function showFullImage(evt) {
-
-        if (window.event) {
-
-                window.open(window.event.srcElement.src);
-
-        }else if (evt.target) {
-                
-                window.open(evt.target.src);
-        }
-
-        return false;
 }

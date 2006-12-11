@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: htmltools.inc.php,v 1.53 2006-10-20 23:38:51 decoyduck Exp $ */
+/* $Id: htmltools.inc.php,v 1.54 2006-12-11 21:58:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -104,7 +104,7 @@ function TinyMCE() {
     $str.= "        if (form_obj.checked == true && !auto_check_spell_started) {\n";
     $str.= "            auto_check_spell_started = true;\n";
     $str.= "            window.open('dictionary.php?webtag=' + webtag + '&obj_id=mce_editor_0', 'spellcheck','width=450, height=550, scrollbars=1');\n";
-    $str.= "                    return false;\n";
+    $str.= "            return false;\n";
     $str.= "        }\n";
     $str.= "    }\n\n";
 

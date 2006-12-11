@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.17 2006-12-10 17:08:56 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.18 2006-12-11 21:58:18 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.co.uk/forum/
@@ -106,8 +106,8 @@ if (isset($_POST['upload']) && $uid > 0) {
 
                     echo "<h1>Uploaded Image</h1>\n";
                     echo "<div class=\"image\">\n";
-                    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\"><img src=\"$images_dir/$logon\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
-                    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$logon', '$webtag')\">", formatname($logon), "</a></div></p>\n";
+                    echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return openProfileByLogon('$logon', '$webtag')\"><img src=\"$images_dir/$logon\" border=\"0\" alt=\"", formatname($logon), "\" title=\"", formatname($logon), "\" /></a></div></p>\n";
+                    echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return openProfileByLogon('$logon', '$webtag')\">", formatname($logon), "</a></div></p>\n";
                     echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a> | <a href=\"?upload\">Upload different image</a>]</div></p>\n";
                     echo "</div>\n";
 
@@ -157,8 +157,8 @@ if (isset($_GET['delete'])) {
 
         echo "<h1>Delete Image</h1>\n";
         echo "<div class=\"image\">\n";
-        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
-        echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></div></p>\n";
+        echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;logon=$image\" target=\"_blank\" onclick=\"return openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
+        echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;logon=$image\" target=\"_blank\" onclick=\"return openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></div></p>\n";
         echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?confirm_delete=$image\">Delete</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Cancel</a>]</div></p>\n";
         echo "</div>\n";
 
@@ -207,8 +207,8 @@ if (isset($_GET['upload']) && $uid > 0) {
 
         echo "  <tr>\n";
         echo "    <td align=\"center\">\n";
-        echo "      <p><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></p>\n";
-        echo "      <p class=\"bodytext\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></p>\n";
+        echo "      <p><a href=\"user_profile.php?webtag=$webtag&amp;logon=$image\" target=\"_blank\" onclick=\"return openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></p>\n";
+        echo "      <p class=\"bodytext\"><a href=\"user_profile.php?webtag=$webtag&amp;logon=$image\" target=\"_blank\" onclick=\"return openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></p>\n";
 
         if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || strtolower($image) == strtolower($logon)) {
             echo "      <p class=\"bodytext\"><a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?delete=$image\">[Delete]</a></p>\n";
@@ -230,8 +230,8 @@ if (isset($_GET['upload']) && $uid > 0) {
 
     echo "<h1>Some random person</h1>\n";
     echo "<div class=\"image\">\n";
-    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
-    echo "<p><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></div></p>\n";
+    echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;logon=$image\" target=\"_blank\" onclick=\"return openProfileByLogon('$image', '$webtag')\"><img src=\"$images_dir/$image\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" /></a></div></p>\n";
+    echo "<p><div align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;logon=$image\" target=\"_blank\" onclick=\"return openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a></div></p>\n";
     echo "<p><div align=\"center\">[<a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}\">Random Image</a> | <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?gallery\">Gallery</a>";
     echo $uid > 0 ? "| <a href=\"?upload\">Upload an image</a>" : "";
     echo "]</div></p>\n";

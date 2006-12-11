@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.205 2006-12-10 17:08:56 decoyduck Exp $ */
+/* $Id: edit.php,v 1.206 2006-12-11 21:58:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -251,7 +251,7 @@ $valid = true;
 
 $fix_html = true;
 
-html_draw_top("onUnload=clearFocus()", "onload=resizeImages(720)", "onload=addOverflow(720)", "basetarget=_blank", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js");
+html_draw_top("onUnload=clearFocus()", "onload=resizeImages(720)", "onload=addOverflow(720)", "basetarget=_blank", "edit.js", "openprofile.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", "poll.js");
 
 $t_content = "";
 $t_sig = "";
@@ -812,7 +812,7 @@ echo "<h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
-    echo "<a href=\"javascript:void(0);\" onclick=\"openProfile($to_uid, '$webtag')\" target=\"_self\">";
+    echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\" target=\"_self\">";
     echo _stripslashes(add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])));
     echo "</a><br /><br />\n";
 
@@ -921,7 +921,7 @@ if ($tools->getTinyMCE()) {
 } else {
     echo "<br /><br />\n";
 }
-echo form_submit('submit',$lang['apply'], "tabindex=\"2\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
+echo form_submit('submit',$lang['apply'], "tabindex=\"2\" target=\"_blank\" onclick=\"return autoCheckSpell('$webtag'); closeAttachWin(); clearFocus()\"");
 echo "&nbsp;".form_submit("preview", $lang['preview'], "tabindex=\"3\" onclick=\"clearFocus()\"");
 echo "&nbsp;".form_submit("cancel", $lang['cancel'], "tabindex=\"4\" onclick=\"closeAttachWin(); clearFocus()\"");
 

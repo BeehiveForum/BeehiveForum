@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.97 2006-12-02 15:59:13 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.98 2006-12-11 21:58:17 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -406,7 +406,7 @@ echo "                        <td align=\"left\" width=\"220\">{$lang['defaultst
 echo "                        <td align=\"left\">", form_dropdown_array("default_style", array_keys($available_styles), array_values($available_styles), (isset($forum_settings['default_style']) && in_array($forum_settings['default_style'], array_keys($available_styles)) ? $forum_settings['default_style'] : 'default')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">{$lang['defaultemoticons']} [<a href=\"javascript:void(0);\" onclick=\"openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['defaultemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('','$webtag')\" target=\"_self\">{$lang['preview']}</a>]:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("default_emoticons", array_keys($available_emoticons), array_values($available_emoticons), (isset($forum_settings['default_emoticons']) && in_array($forum_settings['default_emoticons'], array_keys($available_emoticons)) ? $forum_settings['default_emoticons'] : 'none')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

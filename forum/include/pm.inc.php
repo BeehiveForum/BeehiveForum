@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.159 2006-11-24 22:22:09 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.160 2006-12-11 21:58:18 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -825,7 +825,7 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
         }else {
 
-            $html.= "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
+            $html.= "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_elements_array['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_elements_array['FROM_UID']}, '$webtag')\" target=\"_self\">";
             $html.= add_wordfilter_tags(format_user_name($pm_elements_array['FLOGON'], $pm_elements_array['FNICK'])). "</a>";
             $html.= "            </span></td>\n";
         }
@@ -845,7 +845,7 @@ function pm_display($pm_elements_array, $pm_export_html = false)
 
                 }else {
                 
-                    $html.= "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
+                    $html.= "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_elements_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_elements_array['TO_UID'][$i]}, '$webtag')\" target=\"_self\">";
                     $html.= add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'][$i], $pm_elements_array['TNICK'][$i])). "</a>&nbsp;";
                 }
             }
@@ -858,7 +858,7 @@ function pm_display($pm_elements_array, $pm_export_html = false)
             
             }else {
 
-                $html.= "            <a href=\"javascript:void(0);\" onclick=\"openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
+                $html.= "            <a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_elements_array['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$pm_elements_array['TO_UID']}, '$webtag')\" target=\"_self\">";
                 $html.= add_wordfilter_tags(format_user_name($pm_elements_array['TLOGON'], $pm_elements_array['TNICK'])). "</a>";
             }
         }

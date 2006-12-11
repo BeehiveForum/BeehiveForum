@@ -20,7 +20,8 @@ USA
 ======================================================================*/
 
 function openWindow(url, name, width, height) {
-	window.open(url, name, 'width=' + width + ', height=' + height + ', toolbars=no, scrollbars=1');
+        window.open(url, name, 'width=' + width + ', height=' + height + ', toolbars=no, scrollbars=1');
+        return false;
 }
 
 function disable_button(button) {

@@ -20,11 +20,12 @@ USA
 ======================================================================*/
 
 function openEmoticons(pack, webtag) {
-	window.open('display_emoticons.php?webtag=' + webtag + '&pack=' + pack, 'emoticons','width=500, height=400, scrollbars=1');
+        window.open('display_emoticons.php?webtag=' + webtag + '&pack=' + pack, 'emoticons','width=500, height=400, scrollbars=1');
+        return false;
 }
 
 function insertEmoticon(text) {
-	if (window.opener.add_text) {
-		window.opener.add_text(text);
-	}
+        if (window.opener.add_text) {
+                window.opener.add_text(text);
+        }
 }

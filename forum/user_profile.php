@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.107 2006-11-28 22:27:32 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.108 2006-12-11 21:58:18 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -334,7 +334,7 @@ if (isset($user_profile['HOMEPAGE_URL'])) {
 if ($uid == bh_session_get_value('UID')) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><a href=\"javascript:void(0)\" onclick=\"launchAttachProfileWin('$webtag');\" target=\"_self\">{$lang['editmyattachments']}</a></td>\n";
+    echo "                        <td align=\"left\"><a href=\"attachments.php?webtag=$webtag\" target=\"_blank\" onclick=\"return launchAttachProfileWin('$webtag');\" target=\"_self\">{$lang['editmyattachments']}</a></td>\n";
     echo "                      </tr>\n";
 }
 
@@ -381,7 +381,7 @@ if (bh_session_get_value('UID') != 0) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\">Find user's posts</a></td>\n";
+    echo "                        <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\">Find user's posts</a></td>\n";
     echo "                      </tr>\n";
 }
 

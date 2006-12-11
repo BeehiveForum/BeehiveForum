@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.125 2006-12-01 23:17:56 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.126 2006-12-11 21:58:18 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -97,18 +97,15 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
     $conflicting_tables = addslashes(implode(", ", $conflicting_tables));
     
-    $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum.";
+    $error_str = "<h2>Selected database contains tables which conflict with BeehiveForum. ";
     $error_str.= "If this database contains an existing BeehiveForum installation please ";
     $error_str.= "check that you have selected the correct install / upgrade method.<h2>\n";
 
     $error_array[] = $error_str;
 
     $error_str = "<h2>If you continue to encounter errors you may want to consider enabling ";
-    $error_str.= "the remove conflicts option at the bottom of the installer.</h2>\n";
-
-    $error_array[] = $error_str;
-
-    $error_str = "<h2>Conflicting tables: <a href=\"Javascript:void(0)\" onclick=\"alert('$conflicting_tables');\">View</a></h2>\n";
+    $error_str.= "the remove conflicts option at the bottom of this page. Please note that ";
+    $error_str.= "enabling this option could cause other installed software to fail.";
 
     $error_array[] = $error_str;
 
@@ -738,7 +735,8 @@ $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (FID,TID,PID)";
+$sql.= "  PRIMARY KEY  (FID,TID,PID),";
+$sql.= "  KEY AID (AID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

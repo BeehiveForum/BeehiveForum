@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.182 2006-12-07 22:41:15 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.183 2006-12-12 21:42:26 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -167,7 +167,7 @@ if (isset($_POST['delete_confirm'])) {
         if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
             
             html_draw_top();
-            echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), " &raquo; {$lang['deleteattachments']}</h1>\n";
+            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), " &raquo; {$lang['deleteattachments']}</h1>\n";
 
             echo "<br />\n";
             echo "<div align=\"center\">\n";
@@ -246,7 +246,7 @@ if (isset($_POST['delete_confirm'])) {
     }
 }
 
-echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
 
 if (isset($_POST['t_confirm_delete_posts'])) {
 

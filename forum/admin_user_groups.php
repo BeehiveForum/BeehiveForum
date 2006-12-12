@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.33 2006-11-26 12:23:11 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.34 2006-12-12 21:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,7 +127,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
-echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['usergroups']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['usergroups']}</h1>\n";
 
 if (isset($_GET['add_success']) && strlen(trim(_stripslashes($_GET['add_success']))) > 0) {
     echo "<h2>{$lang['successfullyaddedgroup']}: ", _stripslashes($_GET['add_success']), "</h2>\n";

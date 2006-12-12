@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.98 2006-12-11 21:58:17 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.99 2006-12-12 21:42:26 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -349,7 +349,7 @@ if (isset($_POST['changepermissions'])) {
 html_draw_top("emoticons.js");
 
 if ($webtag) {
-    echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), "</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; {$lang['forumsettings']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), "</h1>\n";
 }else {
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>\n";

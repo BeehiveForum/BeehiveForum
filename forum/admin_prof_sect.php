@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.87 2006-12-11 21:58:17 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.88 2006-12-12 21:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -208,7 +208,7 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['addnewprofilesection']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['addnewprofilesection']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;
@@ -270,7 +270,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     }else {
 
-        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['editsection']}</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['editsection']}</h1>\n";
         echo "<h2>{$lang['invalidfeedidorfeednotfound']}</h2>\n";
         html_draw_bottom();
         exit;
@@ -278,13 +278,13 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     if (!$profile_section = profile_get_section($psid)) {
 
-        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['editsection']}</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$lang['editsection']}</h1>\n";
         echo "<h2>{$lang['invalidfeedidorfeednotfound']}</h2>\n";
         html_draw_bottom();
         exit;
     }
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$profile_section['NAME']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; {$profile_section['NAME']}</h1>\n";
     
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;
@@ -340,7 +340,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
 }else {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;

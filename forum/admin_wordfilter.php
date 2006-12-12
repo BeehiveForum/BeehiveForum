@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.82 2006-12-05 20:25:21 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.83 2006-12-12 21:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -249,7 +249,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['wordfilter']} &raquo; {$lang['addwordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']} &raquo; {$lang['addwordfilter']}</h1>\n";
 
     if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
 
@@ -329,7 +329,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 }elseif (isset($_POST['filter_id']) || isset($_GET['filter_id'])) {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['wordfilter']} &raquo; {$lang['editwordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']} &raquo; {$lang['editwordfilter']}</h1>\n";
 
     if (isset($_POST['filter_id']) && is_numeric($_POST['filter_id'])) {
         $filter_id = $_POST['filter_id'];
@@ -427,7 +427,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 }else {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['wordfilter']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['wordfilter']}</h1>\n";
 
     if (isset($_GET['updated'])) {
         echo "<h2>{$lang['wordfilterupdated']}</h2>\n";

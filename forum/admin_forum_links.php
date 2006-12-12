@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.28 2006-12-11 21:58:17 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.29 2006-12-12 21:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -202,7 +202,7 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
 
 html_draw_top();
 
-echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['editforumlinks']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['editforumlinks']}</h1>\n";
 echo "<br />\n";
 
 if (isset($status_array) && is_array($status_array)) {

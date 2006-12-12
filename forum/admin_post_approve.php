@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.34 2006-12-11 21:58:17 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.35 2006-12-12 21:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -232,7 +232,7 @@ if (isset($msg) && validate_msg($msg)) {
                     $msg = "$tid.$pid";
                 }
 
-                echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['approvepost']} &raquo; ", add_wordfilter_tags($threaddata['TITLE']), "</h1>";
+                echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']} &raquo; ", add_wordfilter_tags($threaddata['TITLE']), "</h1>";
                 echo "<br />\n";
 
                 if (isset($ret) && strlen(trim($ret)) > 0) {
@@ -288,7 +288,7 @@ if (isset($msg) && validate_msg($msg)) {
 
         html_draw_top("post.js", "poll.js", "onload=resizeImages(720)", "onload=addOverflow(720)");
 
-        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['approvepost']}</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']}</h1>\n";
         echo "<br />\n";
 
         if ($preview_message['TO_UID'] == 0) {
@@ -382,7 +382,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     html_draw_top();
    
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['postapprovalqueue']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['postapprovalqueue']}</h1>\n";
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";

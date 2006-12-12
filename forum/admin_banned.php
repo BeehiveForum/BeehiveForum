@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.44 2006-12-11 21:58:17 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.45 2006-12-12 21:42:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -391,7 +391,7 @@ html_draw_top('openprofile.js');
 
 if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_type) && isset($add_new_ban_data))) {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
     if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
 
@@ -574,7 +574,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         }
     }
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
     if (isset($error_html) && strlen($error_html) > 0) echo $error_html;
     if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
@@ -707,7 +707,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
 }else {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['bancontrols']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;

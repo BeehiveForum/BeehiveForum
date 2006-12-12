@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.95 2006-12-11 21:58:17 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.96 2006-12-12 21:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -239,7 +239,7 @@ html_draw_top();
 
 if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['addnewitem']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['addnewitem']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;
@@ -315,7 +315,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     }else {
 
-        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']}</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']}</h1>\n";
         echo "<h2>{$lang['invaliditemidoritemnotfound']}</h2>\n";
         html_draw_bottom();
         exit;
@@ -323,13 +323,13 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (!$profile_item = profile_get_item($piid)) {
 
-        echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
+        echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
         echo "<h2>{$lang['invaliditemidoritemnotfound']}</h2>\n";
         html_draw_bottom();
         exit;
     }
     
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['edititem']} &raquo; {$profile_item['NAME']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;
@@ -404,7 +404,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
                               $lang['smalltextfield'], $lang['multilinetextfield'], 
                               $lang['radiobuttons'], $lang['dropdown']);
     
-    echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['viewitems']}</h1>\n";
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageprofilesections']} &raquo; ", profile_section_get_name($psid), " &raquo; {$lang['viewitems']}</h1>\n";
 
     if (isset($error_html) && strlen(trim($error_html)) > 0) {
         echo $error_html;

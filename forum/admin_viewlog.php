@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.101 2006-11-27 01:29:08 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.102 2006-12-12 21:42:26 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -133,7 +133,7 @@ if (isset($_POST['clear'])) {
 }
 
 // Draw the form
-echo "<h1>{$lang['admin']} &raquo; ", (isset($forum_settings['forum_name']) ? $forum_settings['forum_name'] : 'A Beehive Forum'), " &raquo; {$lang['adminaccesslog']}</h1>\n";
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['adminaccesslog']}</h1>\n";
 echo "<p>{$lang['adminlogexp']}</p>\n";
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";

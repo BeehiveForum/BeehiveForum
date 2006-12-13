@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.88 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.89 2006-12-13 18:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -380,11 +380,11 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
             if (sizeof($profile_sections) == 1) {
 
-                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" target=\"_blank\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" target=\"_blank\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
+                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
             }elseif ($profile_index == sizeof($profile_sections)) {
 
-                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" target=\"_blank\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
+                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
             }elseif ($profile_index > 1) {
 
@@ -392,11 +392,11 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
             }else {
 
-                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" target=\"_blank\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             }
 
             echo "                  <td valign=\"top\" align=\"left\" width=\"450\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;psid={$profile_section['PSID']}\">{$profile_section['NAME']}</td>\n";
-            echo "                  <td valign=\"top\" align=\"center\">{$profile_section['ITEM_COUNT']}</td>\n";
+            echo "                  <td valign=\"top\" align=\"center\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&ret=admin_prof_sect.php%3Fwebtag%3D$webtag\">{$profile_section['ITEM_COUNT']}</a></td>\n";
             echo "                </tr>\n";
         }
     }

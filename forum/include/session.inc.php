@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.271 2006-12-09 15:48:48 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.272 2006-12-13 22:24:09 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -550,6 +550,8 @@ function bh_update_visitor_log($uid, $forum_fid = false)
 
     if (!is_numeric($forum_fid)) $forum_fid = $table_data['FID'];
 
+    if (!$ipaddress = get_ip_address()) $ipaddress = "";
+
     $db_bh_update_visitor_log = db_connect();
 
     if ($uid > 0) {
@@ -562,17 +564,18 @@ function bh_update_visitor_log($uid, $forum_fid = false)
         $result = db_query($sql, $db_bh_update_visitor_log);
 
         $http_referer = addslashes(bh_session_get_referer());
+        $ipaddress = addslashes($ipaddress);
 
         if (db_num_rows($result) > 0) {
 
             $sql = "UPDATE VISITOR_LOG SET LAST_LOGON = NOW(), ";
-            $sql.= "REFERER = '$http_referer' WHERE UID = '$uid' ";
-            $sql.= "AND FORUM = '$forum_fid'";
+            $sql.= "IPADDRESS = '$ipaddress', REFERER = '$http_referer' ";
+            $sql.= "WHERE UID = '$uid' AND FORUM = '$forum_fid'";
 
         }else {
 
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, REFERER) ";
-            $sql.= "VALUES ('$forum_fid', '$uid', NOW(), '$http_referer')";
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
+            $sql.= "VALUES ('$forum_fid', '$uid', NOW(), '$ipaddress', '$http_referer')";
         }
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
@@ -583,13 +586,13 @@ function bh_update_visitor_log($uid, $forum_fid = false)
 
         if (($search_id = bh_session_is_search_engine()) !== false) {
 
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, REFERER, SID) ";
-            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$http_referer', '$sid')";
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer', '$sid')";
 
         }else {
 
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, REFERER) ";
-            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$http_referer')";
+            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
+            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer')";
         }
 
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;

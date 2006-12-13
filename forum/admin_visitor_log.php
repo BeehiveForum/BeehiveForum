@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.3 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.4 2006-12-13 22:24:09 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -123,6 +123,7 @@ echo "               <table width=\"100%\">\n";
 echo "                 <tr>\n";
 echo "                   <td class=\"subhead\" align=\"left\">{$lang['member']}</td>\n";
 echo "                   <td class=\"subhead\" align=\"left\" width=\"100\">{$lang['lastvisit']}</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$lang['lastipaddress']}</td>\n";
 echo "                   <td class=\"subhead\" align=\"left\" width=\"400\">{$lang['referer']}</td>\n";
 echo "                 </tr>\n";
 
@@ -148,9 +149,15 @@ if ($admin_visitor_log_array = admin_get_visitor_log($start, 20)) {
             }
 
             if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_time($visitor['LAST_LOGON']), "&nbsp;</td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_time($visitor['LAST_LOGON']), "</td>\n";
             }else {
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">{$lang['unknown']}&nbsp;</td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">{$lang['unknown']}</td>\n";
+            }
+
+            if (isset($visitor['IPADDRESS']) && $visitor['IPADDRESS'] > 0) {
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"150\">{$visitor['IPADDRESS']}</td>\n";
+            }else {
+                echo "                   <td class=\"postbody\" align=\"left\" width=\"150\">{$lang['unknown']}</td>\n";
             }
 
             if (isset($visitor['REFERER']) && strlen(trim($visitor['REFERER'])) > 0) {

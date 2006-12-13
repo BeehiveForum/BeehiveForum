@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.9 2006-12-11 21:58:18 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.10 2006-12-13 22:24:09 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -219,6 +219,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE VISITOR_LOG ADD REFERER ";
     $sql.= "VARCHAR(255) DEFAULT NULL";
     
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // IP Address tracking for Visitor Log
+
+    $sql = " ALTER TABLE VISITOR_LOG ADD IPADDRESS VARCHAR(15) NULL AFTER LAST_LOGON";
+
     if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;

@@ -812,6 +812,13 @@ a {
     width: 290px;
 }
 
+.links_folder_list {
+    height: 140px;
+    overflow: auto;
+    padding: 2px;
+}
+
+
 .register_dropdown {
     width: 228px;
 }

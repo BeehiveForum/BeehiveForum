@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.14 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.15 2006-12-13 09:17:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,7 +94,7 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     exit;
 }
 
-if (!forum_get_setting('access_level', 2, false)) {
+if (!$access_level = forum_get_setting('access_level', 2, false)) {
 
     html_draw_top();
     echo "<h2>{$lang['forumisnotrestricted']}</h2>\n";
@@ -175,7 +175,7 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        if (forum_update_access($forum_array['FID'], $forum_array['ACCESS_LEVEL'], $t_password)) {
+        if (forum_update_access($fid, $access_level, $t_password)) {
 
             echo "<h2>{$lang['passwdchanged']}</h2>\n";
         }

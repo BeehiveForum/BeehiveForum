@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.116 2006-10-29 23:07:23 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.117 2006-12-13 18:41:26 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -114,7 +114,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
         $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
         $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
         $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-        $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID = '$aid' ";
+        $sql.= "WHERE PAF.UID = '$uid' ";
         $sql.= "AND PAF.HASH IN ('$hash_list') ";
         $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
 

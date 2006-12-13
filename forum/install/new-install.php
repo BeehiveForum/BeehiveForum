@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.126 2006-12-11 21:58:18 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.127 2006-12-13 22:24:09 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -257,6 +257,7 @@ $sql.= "  POLLTYPE TINYINT(1) NOT NULL DEFAULT '0',";
 $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
 $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  ALLOWGUESTS TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (TID)";
 $sql.= ") TYPE=MYISAM";
 
@@ -881,6 +882,7 @@ $sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
+$sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
 $sql.= "  SID MEDIUMINT(8) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (VID),";

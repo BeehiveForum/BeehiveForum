@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.87 2006-11-26 23:39:09 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.88 2006-12-13 22:24:09 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -970,7 +970,8 @@ function admin_get_visitor_log($offset, $limit)
     list($users_get_recent_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, VISITOR_LOG.REFERER, ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql.= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, ";
     $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";

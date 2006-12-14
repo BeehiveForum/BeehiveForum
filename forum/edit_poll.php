@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.121 2006-12-11 21:58:17 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.122 2006-12-14 20:37:28 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -927,7 +927,7 @@ if (forum_get_setting('poll_allow_guests', false)) {
     echo "                        <td align=\"left\"><h2>{$lang['guestvoting']}</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['guestchangingexp']}</td>\n";
+    echo "                        <td align=\"left\">{$lang['guestvotingexp']}</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">\n";

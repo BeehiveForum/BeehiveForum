@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.371 2006-12-09 14:05:56 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.372 2006-12-14 20:37:28 decoyduck Exp $ */
 
 // International English language file
 
@@ -1303,7 +1303,7 @@ $lang['radios'] = "As a series of radio buttons";
 $lang['votechanging'] = "Vote Changing";
 $lang['votechangingexp'] = "Can a person change his or her vote?";
 $lang['guestvoting'] = "Guest Voting";
-$lang['guestchangingexp'] = "Can guests vote in this poll?";
+$lang['guestvotingexp'] = "Can guests vote in this poll?";
 $lang['allowmultiplevotes'] = "Allow Multiple Votes";
 $lang['pollresults'] = "Poll Results";
 $lang['pollresultsexp'] = "How would you like to display the results of your poll?";

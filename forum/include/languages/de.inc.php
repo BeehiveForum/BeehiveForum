@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.16 2006-11-30 21:39:01 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.17 2006-12-14 20:37:28 decoyduck Exp $ */
 
 // International English language file
 
@@ -335,12 +335,22 @@ $lang['ip'] = "IP";
 $lang['lastipaddress'] = "Letztes IP-address";
 $lang['logged'] = "Gespeichert";
 $lang['notlogged'] = "Nicht gelogged";
+$lang['addwordfilter'] = "Wortfilter hinzufuegen";
+$lang['deleteselectedwordfilters'] = "Ausgeaehlte loeschen";
+$lang['addnewwordfilter'] = "neuen Wortfilter hinzufuegen";
 $lang['wordfilterupdated'] = "Wortfilter aktualisiert";
+$lang['filtertype'] = "Filtertyp";
 $lang['editwordfilter'] = "Wortfilter editieren";
 $lang['wordfilterexp_1'] = "Diese Seite dient der Anpassung des Wortfilters fuer dein Forum. Jedes zu filternde Wort in eine neue Zeile setzen.";
 $lang['wordfilterexp_2'] = "Perl-kompatible Erweiterungen koennen auch benutzt werden um Woerter zu finden wenn das Wissen dazu (Perl-Know-How) vorhanden ist.";
 $lang['wordfilterexp_3'] = "Benutze diese Seite um deinen persoenlichen Wortfilter anzupassen. Setze jede zu filternde Wort in eine extra Zeile.";
 $lang['wordfilterisfull'] = "Es koennen keine weiteren Wortfilter gesetzt werden. Loesche einige unbenutzte oder aendere bestehende.";
+$lang['nowordfilterentriesfound'] = "Kein existierender Wortfilter gefunden. Um einen Wortfilter hinzuzufuegen folgenden Button klicken.";
+$lang['mustspecifymatchedtext'] = "Bitte Trefferauswahl definieren";
+$lang['mustspecifyfilteroption'] = "Bitte Filteroption definieren";
+$lang['mustspecifyfilterid'] = "Bitte Filter-ID definieren";
+$lang['invalidfilterid'] = "nicht erlaubte Filter-ID";
+$lang['failedtoupdatewordfilter'] = "Fehler beim Aendern des Wortfilters. Bitte pruefen ob Wortfilter existiert.";
 $lang['allow'] = "Erlaubt";
 $lang['access'] = "Zugriff";
 $lang['normalthreadsonly'] = "Nur Normale Eintraege";
@@ -388,6 +398,7 @@ $lang['invalidfolderid'] = "Unbekannte Ordner-ID. Stelle sicher dass ein Ordner 
 $lang['successfullyaddedfolder'] = "Ordner erfolgreich angefuegt";
 $lang['successfullydeletedfolder'] = "Ordner erfolgreich geloescht";
 $lang['folderupdatedsuccessfully'] = "Ordner erfolgreich geaendert";
+$lang['cannotdeletefolderwiththreads'] = "Kann Ordner die noch Eintraege enthalten nicht loeschen.";
 $lang['forumisnotrestricted'] = "kein eingeschraenktes Forum";
 $lang['noforumidspecified'] = "Keine Foren-ID vorhanden";
 $lang['groups'] = "Gruppen";
@@ -489,6 +500,7 @@ $lang['refererban'] = "Verweis sperren";
 $lang['invalidbanid'] = "Unzulaessige Sperr-ID";
 $lang['affectsessionwarnadd'] = "Diese Sperren beeinflusst folgende aktiven Benutzersitzungen";
 $lang['affectsessionwarnremove'] = "Diese Sperre beeinflusst folgende aktiven Benutzersitzungen";
+$lang['noaffectsessionwarn'] = "Dieser Bann betrifft keine aktive Sitzungen";
 $lang['mustspecifybantype'] = "Sperrtyp muss ausgewaehlt sein";
 $lang['mustspecifybandata'] = "Einige Sperrdaten muessen ausgewaehlt werden";
 $lang['successfullyremovedselectedbans'] = "Ausgewaehlte Sperren erfolgreich entfernt";
@@ -514,6 +526,8 @@ $lang['nousersawaitingapproval'] = "Kein Benutzer wartet auf Zustimmung";
 $lang['kickselected'] = "Kick (kurzfristiger Rauswurf) ausgewaehlt";
 $lang['visitorlog'] = "Benutzer Log";
 $lang['novisitorslogged'] = "Kein Besucher protokolliert";
+$lang['addselectedusers'] = "Ausgewaehlte Benutzer hinzufuegen";
+$lang['removeselectedusers'] = "Ausgewaehlte Benutzer loeschen";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -632,6 +646,7 @@ $lang['forumaccessstatus'] = "Forenzugriffsstatus";
 $lang['changepermissions'] = "Berechtigungen aendern";
 $lang['changepassword'] = "Passwort aendern";
 $lang['passwordprotected'] = "Passwort geschuetzt";
+$lang['passwordprotectwarning'] = "Es ist noch kein Foren-Passwort gesetzt. Wenn Sie kein Passwort setzen werden Schutzfunktionen automatisch deaktiviert!";
 $lang['postoptions'] = "Post Optionen";
 $lang['allowpostoptions'] = "Erlaube Post Editierung";
 $lang['postedittimeout'] = "Post Editierungs-Timeout";
@@ -644,6 +659,8 @@ $lang['maximumpostlength'] = "Max Post-Laenge";
 $lang['postfrequency'] = "Post Haeufigkeit";
 $lang['enablelinkssection'] = "Linksbereich aktivieren";
 $lang['allowcreationofpolls'] = "Abstimmungserstellung erlauben";
+$lang['allowguestvotesinpolls'] = "Erlaube Gaesten in Abstimmungen zu waehlen";
+$lang['allowguestvotesinpoll'] = "Erlaube Gaesten in der Abstimmung zu waehlen";
 $lang['unreadmessagescutoff'] = "Ungelesene Nachrichten abgeschnitten";
 $lang['unreadcutoffseconds'] = "Sekunden";
 $lang['disableunreadmessages'] = "Ungelesene Nachrichten deaktiviert";
@@ -678,7 +695,12 @@ $lang['attachmentdir'] = "Anhangsverzeichnis";
 $lang['userattachmentspace'] = "Anhangsspeicherplatz je Benutzer";
 $lang['allowembeddingofattachments'] = "Erlaube Einbettung von Anhaengen";
 $lang['usealtattachmentmethod'] = "Benutze alternative Anhangsmethoden";
+$lang['allowgueststoaccessattachments'] = "Zugriff auf Anhaenge Gaesten erlauben";
 $lang['forumsettingsupdated'] = "Forumeinstellungen erfolgreich geaendert";
+$lang['forumstatusmessages'] = "Forum Status-Nachrichten";
+$lang['forumclosedmessage'] = "Forum-Nachricht geschlossen";
+$lang['forumrestrictedmessage'] = "Forum Eingeschraenkte Nachricht";
+$lang['forumpasswordprotectedmessage'] = "Forum Passwort-geschuetzte Nachricht";
 
 // Admin Forum Settings Help Text (admin_forum_settings.php) ------------------------------
 
@@ -723,6 +745,8 @@ $lang['forum_settings_help_48'] = "<b>Ungelesene Nachrichten abschneiden</b> def
 $lang['forum_settings_help_49'] = "Auswahl von <b>Ungelesene Nachrichten deaktivieren</b> wird der Ungelesene-Nachrichten-Support vollstaendig und alle relevanten Optionen des Diskussionstyps aus der Drop-Down-Liste der Eintraege entfernt.";
 $lang['forum_settings_help_50'] = "Ihr Beehive Forum wird nicht automatisch die ungelesenen Nachrichten Ihrer Datenbank abschneiden. Sie muessen dies in den Abschneide-Optionen explizit auswaehlen.";
 $lang['forum_settings_help_51'] = "Du kannst eine vorhergehende Genehmigung für alle Benutzerrechte anfordern, bevor sie genutzt werden koennen, indem Du diese Option aktivierst. Ohne Aktivierung kann ein Benutzer keinen Bereich der Beehive-Forumsinstallation einschliesslich individueller Foren nutzen, PM-Eingang und Mein-Forum-Bereiche.";
+$lang['forum_settings_help_52'] = "Nutze <b>Geschlossene Nachricht</b>, <b>Eingeschraenkte Nachricht</b> und <b>Passwort-geschuetzte Nachricht</b> um besondere Einstellungen der Nachricht anzuzeigen wenn Benutzer auf das Forum auf verschiedene Arten zugreifen.";
+$lang['forum_settings_help_53'] = "In den Nachrichten kann HTML genutzt werden. Hyperlinks und email-Addressen werden ebenfalls automatisch in Links konvertiert. Um die Standard-Beehive-Forum-Einstellungen zu nutzen leere die Felder.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1232,6 +1256,7 @@ $lang['mustprovideanswergroups'] = "Du musst einige Antwortgruppen bereitstellen
 $lang['mustprovidepolltype'] = "Du musst einen Abstimmungstyp auswaehlen";
 $lang['mustprovidepollresultsdisplaytype'] = "Du musst einen Ergebnisanzeigentyp auswaehlen";
 $lang['mustprovidepollvotetype'] = "Du musst einen Abstimmungstyp auswaehlen";
+$lang['mustprovidepollguestvotetype'] = "Bitte definieren ob Gaesten das Waehlen erlaubt sein soll";
 $lang['mustprovidepolloptiontype'] = "Du musst einen Abstimmungsoptionstyp auswaehlen";
 $lang['mustprovidepollchangevotetype'] = "Du musst einen Abstimmungsaenderungstyp auswaehlen";
 $lang['pleaseselectfolder'] = "Bitte waehle einen Ordner";
@@ -1254,6 +1279,8 @@ $lang['dropdown'] = "Als Drop-Down-Liste";
 $lang['radios'] = "Mit mehreren Radio-Buttons (Schaltern)";
 $lang['votechanging'] = "Stimmaenderung";
 $lang['votechangingexp'] = "Kann ein Benutzer seine Stimme aendern?";
+$lang['guestvoting'] = "Gaestewahl";
+$lang['guestvotingexp'] = "Koennen Gaeste in dieser Abstimmung waehlen?";
 $lang['allowmultiplevotes'] = "Erlaube mehrfache Stimmen";
 $lang['pollresults'] = "Abstimmungsergebnis";
 $lang['pollresultsexp'] = "Wie soll das Ergebnis angezeigt werden?";
@@ -1278,16 +1305,20 @@ $lang['polladditionalmessageexp'] = "Willst Du einen zusaetzlichen Post integrie
 $lang['mustspecifypolltoview'] = "du musst eine Abstimmung zur Anzeige auswaehlen.";
 $lang['pollconfirmclose'] = "Bist du sicher dass Du diese Abstimmung schliessen willst?";
 $lang['endpoll'] = "Abstimmungsende";
-$lang['nobodyvoted'] = "Niemand hat gestimmt.";
-$lang['nobodyhasvoted'] = "Niemand hat gestimmt.";
-$lang['1personvoted'] = "1 Benutzer hat gestimmt.";
-$lang['1personhasvoted'] = "1 Benutzer hat gestimmt.";
-$lang['peoplevoted'] = "Benutzer haben gestimmt.";
-$lang['peoplehavevoted'] = "Benutzer haben gestimmt.";
 $lang['pollhasended'] = "Abstimmung ist beendet";
 $lang['youvotedfor'] = "Du stimmtest fuer";
 $lang['thisisapoll'] = "Dies ist eine Abstimmung. Klicke auf Ergebnis der Abstimmung.";
 $lang['editpoll'] = "Abstimmung editieren";
+$lang['nobodyvotedopenpoll'] = "Niemand hat gewaehlt";
+$lang['nobodyvotedclosedpoll'] = "Niemand waehlte";
+$lang['votedisplayopenpoll'] = "%s und %s haben gewaehlt.";
+$lang['votedisplayclosedpoll'] = "%s und %s waehlten.";
+$lang['nousersvoted'] = "Keine Benutzer";
+$lang['oneuservoted'] = "1 Benutzer";
+$lang['xusersvoted'] = "%s Benutzer";
+$lang['noguestsvoted'] = "Keine Gaeste";
+$lang['oneguestvoted'] = "1 Gast";
+$lang['xguestsvoted'] = "%s Gaeste";
 $lang['results'] = "Ergebnisse";
 $lang['resultdetails'] = "Ergebnis-Details";
 $lang['changevote'] = "Stimme aendern";

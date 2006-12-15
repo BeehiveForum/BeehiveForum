@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.30 2006-11-30 21:39:01 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.31 2006-12-15 20:27:00 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -287,9 +287,24 @@ $lang['deleteitem'] = "Delete Item";
 $lang['deletesection'] = "Delete Section";
 $lang['new_caps'] = "NEW";
 $lang['newsection'] = "New Section";
+$lang['editsection'] = "Edit Section";
 $lang['manageprofilesections'] = "Manage Profile Sections";
 $lang['sectionname'] = "Section Name";
 $lang['items'] = "Items";
+$lang['mustspecifyaprofilesectionid'] = "Must specify a profile section ID";
+$lang['mustsepecifyaprofilesectionname'] = "Must specify a profile section name";
+$lang['successfullyeditedprofilesection'] = "Successfully edited profile section";
+$lang['addnewprofilesection'] = "Add new profile section";
+$lang['successfullyremovedselectedprofilesections'] = "Successfully removed selected profile sections";
+$lang['failedtoremoveprofilesections'] = "Failed to remove profile sections";
+$lang['deleteitems'] = "Delete items";
+$lang['viewitems'] = "View items";
+$lang['successfullyremovedselectedprofileitems'] = "Successfully removed selected profile items";
+$lang['failedtoremoveprofileitems'] = "Failed to remove profile items";
+$lang['noexistingprofileitemsfound'] = "There are no existing profile items in this section. To add a profile item click the button below.";
+$lang['edititem'] = "Edit item";
+$lang['invaliditemidoritemnotfound'] = "Invalid item ID or item not found";
+$lang['addnewitem'] = "Add new item";
 $lang['startpageupdated'] = "Start Page updated";
 $lang['viewupdatedstartpage'] = "View updated Start Page";
 $lang['editstartpage'] = "Edit Start Page";
@@ -527,6 +542,12 @@ $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
 $lang['addselectedusers'] = "Add selected users";
 $lang['removeselectedusers'] = "Remove selected users";
+$lang['addnew'] = "Add new";
+$lang['deleteselected'] = "Delete selected";
+$lang['noprofilesectionsfound'] = "There are no existing profile sections. To add a profile section please click the button below.";
+$lang['mustspecifyprofilesectioname'] = "Must specify profile section name";
+$lang['editprofilesection'] = "Edit profile section";
+$lang['successfullyaddedsection'] = "Successfully added section";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
 
@@ -1282,7 +1303,7 @@ $lang['radios'] = "As a series of radio buttons";
 $lang['votechanging'] = "Vote Changing";
 $lang['votechangingexp'] = "Can a person change his or her vote?";
 $lang['guestvoting'] = "Guest Voting";
-$lang['guestchangingexp'] = "Can guests vote in this poll?";
+$lang['guestvotingexp'] = "Can guests vote in this poll?";
 $lang['allowmultiplevotes'] = "Allow Multiple Votes";
 $lang['pollresults'] = "Poll Results";
 $lang['pollresultsexp'] = "How would you like to display the results of your poll?";

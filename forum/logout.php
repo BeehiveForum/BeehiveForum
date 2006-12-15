@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logout.php,v 1.81 2006-10-22 16:24:32 decoyduck Exp $ */
+/* $Id: logout.php,v 1.82 2006-12-15 20:27:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -106,6 +106,7 @@ if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
     echo "<form name=\"logon\" action=\"./logout.php\" method=\"post\" target=\"_top\">\n";
 }
 
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"300\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

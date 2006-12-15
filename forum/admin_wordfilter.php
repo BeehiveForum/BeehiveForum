@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_wordfilter.php,v 1.83 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_wordfilter.php,v 1.84 2006-12-15 20:37:11 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -120,15 +120,21 @@ if (isset($_POST['delete'])) {
 
             if (($delete_filter == "Y")) {
                 
-                if (admin_delete_word_filter($filter_id)) {
-                
-                    admin_add_log_entry(EDIT_WORD_FILTER);
+                if (!admin_delete_word_filter($filter_id)) {
 
-                    $redirect = "./admin_wordfilter.php?webtag=$webtag&updated=true";
-                    header_redirect($redirect, $lang['wordfilterupdated']);
-                    exit;
+                    $valid = false;
+                    $error_html = "<h2>{$lang['failedtoupdatewordfilter']}</h2>\n";
                 }
             }
+        }
+
+        if ($valid) {
+
+            admin_add_log_entry(EDIT_WORD_FILTER);
+            
+            $redirect = "./admin_wordfilter.php?webtag=$webtag&updated=true";
+            header_redirect($redirect, $lang['wordfilterupdated']);
+            exit;
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.88 2006-12-13 22:24:09 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.89 2006-12-15 20:37:11 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -976,16 +976,10 @@ function admin_get_visitor_log($offset, $limit)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
-    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
     $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
-    $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-    $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, $limit";
 
     $result = db_query($sql, $db_admin_get_visitor_log);

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.117 2006-11-26 15:32:38 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.118 2006-12-16 22:04:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -40,22 +40,33 @@ include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
-function light_html_draw_top ($title = false)
+function light_html_draw_top ($title = false, $override_frames = false)
 {
     $lang = load_language_file();
 
-    if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
+    if (defined('BEEHIVE_LIGHT_INCLUDE') && $override_frames === false) {
+        return false;
+    }
 
     if (!isset($title) || !$title) {
         $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
     }
 
+    $forum_keywords = html_get_forum_keywords();
+    $forum_description = html_get_forum_description();
+    $forum_email = html_get_forum_email();
+
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"DTD/xhtml1-transitional.dtd\">\n";
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"{$lang['_textdir']}\">\n";
     echo "<head>\n";
     echo "<title>$title</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+    echo "<meta name=\"generator\" content=\"BeehiveForums ", BEEHIVE_VERSION, "\" />\n";
+    echo "<meta name=\"reply-to\" content=\"$forum_email\" />\n";
+    echo "<meta name=\"keywords\" content=\"$forum_keywords\" />\n";
+    echo "<meta name=\"description\" content=\"$forum_description\" />\n";
+
 
     if ($stylesheet = html_get_style_sheet()) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" />\n";
@@ -85,7 +96,9 @@ function light_html_draw_top ($title = false)
 
 function light_html_draw_bottom ()
 {
-    if (defined('BEEHIVE_LIGHT_INCLUDE')) return false;
+    if (defined('BEEHIVE_LIGHT_INCLUDE') && $override_frames === false) {
+        return false;
+    }
 
     echo "</body>\n";
     echo "</html>\n";
@@ -985,27 +998,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (!$in_list && isset($message['PID'])) echo "<p><i>{$lang['message']} {$message['PID']} {$lang['of']} $msg_count</i></p>\n";
 
-        if (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs) {
-
-            if (preg_match("/<div class=\"sig\">/", $message['CONTENT']) > 0) {
-
-                $msg_split = preg_split("/<div class=\"sig\">/", $message['CONTENT']);
-
-                $tmp_sig = preg_split('/<\/div>/', $msg_split[count($msg_split) - 1]);
-
-                $msg_split[count($msg_split)-1] = $tmp_sig[count($tmp_sig)-1];
-
-                $message['CONTENT'] = "";
-
-                for ($i = 0; $i < count($msg_split); $i++) {
-
-                    if ($i > 0) $message['CONTENT'] .= "<div class=\"sig\">";
-                    $message['CONTENT'].= $msg_split[$i];
-                }
-
-                $message['CONTENT'].= "</div>";
-            }
-        }
+        $message['CONTENT'] = message_split_fiddle($message['CONTENT'], false, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
 
         echo "<p>{$message['CONTENT']}</p>\n";
 
@@ -1309,6 +1302,33 @@ function light_threads_draw_discussions_dropdown($mode)
 
         return light_form_dropdown_array("mode", range(0, 18), $labels, $mode, "onchange=\"submit()\"");
 
+    }
+}
+
+function light_mode_check_noframes()
+{
+    $webtag = get_webtag($webtag_search);
+    
+    if (isset($_GET['noframes'])) {
+
+        if (bh_session_active() && !isset($_COOKIE['bh_logon_failed'])) {
+
+            if ($webtag !== false) {
+
+                header_redirect("lthread_list.php?webtag=$webtag");
+                exit;
+
+            }else {
+
+                header_redirect("lforums.php?webtag=$webtag");
+                exit;
+            }
+
+        }else {
+
+            header_redirect("llogon.php?webtag=$webtag");
+            exit;
+        }
     }
 }
 

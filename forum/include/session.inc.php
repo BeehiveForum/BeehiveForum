@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.272 2006-12-13 22:24:09 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.273 2006-12-16 16:29:51 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -358,7 +358,7 @@ function bh_guest_session_init($use_sess_hash = false)
 
                 $result = db_query($sql, $db_bh_guest_session_init);
                 
-                bh_update_visitor_log($user_sess['UID'], $forum_fid);
+                bh_update_visitor_log(0, $forum_fid, true);
 
             }else {
 
@@ -542,13 +542,14 @@ function bh_remove_stale_sessions()
 * @param integer $uid - UID of the user account we're updating the visitor log for.
 */
 
-function bh_update_visitor_log($uid, $forum_fid = false)
+function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
 {
     if (!is_numeric($uid)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
     if (!is_numeric($forum_fid)) $forum_fid = $table_data['FID'];
+    if (!is_bool($force_update)) $force_update = false;
 
     if (!$ipaddress = get_ip_address()) $ipaddress = "";
 
@@ -556,15 +557,13 @@ function bh_update_visitor_log($uid, $forum_fid = false)
 
     if ($uid > 0) {
 
-        $user_prefs = user_get_prefs($uid);
+        $http_referer = addslashes(bh_session_get_referer());
+        $ipaddress = addslashes($ipaddress);
 
         $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE UID = '$uid'";
         $sql.= "AND FORUM = '$forum_fid'";
 
         $result = db_query($sql, $db_bh_update_visitor_log);
-
-        $http_referer = addslashes(bh_session_get_referer());
-        $ipaddress = addslashes($ipaddress);
 
         if (db_num_rows($result) > 0) {
 
@@ -583,19 +582,28 @@ function bh_update_visitor_log($uid, $forum_fid = false)
     }else {
 
         $http_referer = addslashes(bh_session_get_referer());
+        $ipaddress = addslashes($ipaddress);
 
-        if (($search_id = bh_session_is_search_engine()) !== false) {
+        $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE UID = '0' ";
+        $sql.= "AND IPADDRESS = '$ipaddress' AND FORUM = '$forum_fid'";
 
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
-            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer', '$sid')";
+        $result = db_query($sql, $db_bh_update_visitor_log);
 
-        }else {
+        if ((db_num_rows($result) < 1) || $force_update === true) {
 
-            $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
-            $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer')";
+            if (($search_id = bh_session_is_search_engine()) !== false) {
+
+                $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, SID) ";
+                $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer', '$sid')";
+
+            }else {
+
+                $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
+                $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer')";
+            }
+
+            if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
         }
-
-        if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
     }
 
     return false;

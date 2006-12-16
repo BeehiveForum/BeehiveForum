@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.273 2006-12-16 16:29:51 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.274 2006-12-16 18:33:27 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -584,12 +584,15 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
         $http_referer = addslashes(bh_session_get_referer());
         $ipaddress = addslashes($ipaddress);
 
+        $session_cutoff = forum_get_setting('session_cutoff', false, 86400);
+
         $sql = "SELECT LAST_LOGON FROM VISITOR_LOG WHERE UID = '0' ";
-        $sql.= "AND IPADDRESS = '$ipaddress' AND FORUM = '$forum_fid'";
+        $sql.= "AND IPADDRESS = '$ipaddress' AND FORUM = '$forum_fid' ";
+        $sql.= "AND LAST_LOGON > FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - $session_cutoff)";
 
         $result = db_query($sql, $db_bh_update_visitor_log);
 
-        if ((db_num_rows($result) < 1) || $force_update === true) {
+        if ((db_num_rows($result) == 0) || $force_update === true) {
 
             if (($search_id = bh_session_is_search_engine()) !== false) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.428 2006-12-11 21:58:18 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.429 2006-12-16 22:04:21 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -459,8 +459,15 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
 
                         if ($enable_wiki_links) {
 
-                            $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                            $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            if (defined('BEEHIVEMODE_LIGHT')) {
+
+                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"lmessages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                
+                            }else {
+                            
+                                $html_parts[$j] = preg_replace("/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/i", "<a href=\"messages.php?msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                                $html_parts[$j] = preg_replace("/\b(user:([a-z0-9_-]{2,15}))\b/i", "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" onclick=\"return openProfileByLogon('\\2', '$webtag')\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
+                            }
                         }
                     }
                 }

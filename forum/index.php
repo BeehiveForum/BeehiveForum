@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: index.php,v 1.131 2006-12-10 17:08:56 decoyduck Exp $ */
+/* $Id: index.php,v 1.132 2006-12-16 22:04:21 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -65,6 +65,10 @@ if (bh_session_user_banned()) {
     html_user_banned();
     exit;
 }
+
+// Check to see if noframes URL query specified
+
+light_mode_check_noframes();
 
 // Load language file
 

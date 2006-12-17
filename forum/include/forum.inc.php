@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.199 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.200 2006-12-17 10:31:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1571,12 +1571,10 @@ function forum_delete_tables($webtag)
     return false;
 }
 
-function forum_update_access($fid, $access, $passwd = false)
+function forum_update_access($fid, $access)
 {
     if (!is_numeric($fid)) return false;
     if (!is_numeric($access)) return false;
-
-    // Only the queen can change a forums status!!
 
     if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
@@ -1584,44 +1582,51 @@ function forum_update_access($fid, $access, $passwd = false)
 
         $db_forum_update_access = db_connect();
 
-        $sql = "SELECT FID FROM FORUMS WHERE FID = '$fid' LIMIT 0, 1";
-        $result = db_query($sql, $db_forum_update_access);
+        $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access' ";
+        $sql.= "WHERE FID = '$fid'";
+
+        if (!$result = db_query($sql, $db_forum_update_access)) return false;
+
+        $sql = "SELECT UID FROM USER_FORUM WHERE FID = '$fid' ";
+        $sql.= "AND UID = '$uid' LIMIT 0, 1";
+
+        if (!$result = db_query($sql, $db_forum_update_access)) return false;
 
         if (db_num_rows($result) > 0) {
 
-            if ($passwd) {
+            $sql = "UPDATE USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
+            if (!$result = db_query($sql, $db_forum_update_access)) return false;
 
-                $passwd = md5($passwd);
+        }else {
 
-                $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access', ";
-                $sql.= "FORUM_PASSWD = '$passwd' WHERE FID = '$fid'";
+            $sql = "INSERT IGNORE INTO USER_FORUM (UID, FID, ALLOWED) ";
+            $sql.= "VALUES ('$uid', '$fid', '1')";
 
-            }else {
-
-                $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access' ";
-                $sql.= "WHERE FID = '$fid'";
-            }
-
-            $result = db_query($sql, $db_forum_update_access);
-
-            $sql = "SELECT UID FROM USER_FORUM WHERE FID = '$fid' AND UID = '$uid' LIMIT 0, 1";
-            $result = db_query($sql, $db_forum_update_access);
-
-            if (db_num_rows($result) > 0) {
-
-                $sql = "UPDATE USER_FORUM SET ALLOWED = 1 WHERE UID = '$uid' AND FID = '$fid'";
-                $result = db_query($sql, $db_forum_update_access);
-
-            }else {
-
-                $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-                $sql.= "VALUES ('$uid', '$fid', '1')";
-
-                $result = db_query($sql, $db_forum_update_access);
-            }
+            if (!$result = db_query($sql, $db_forum_update_access)) return false;
         }
 
-        return $result;
+        return true;
+    }
+
+    return false;
+}
+
+function forum_update_password($fid, $password)
+{
+    $db_forum_update_password = db_connect();
+    
+    if (!is_numeric($fid)) return false;
+
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+
+        $password = addslashes(md5($password));
+
+        $sql = "UPDATE FORUMS SET FORUM_PASSWD = '$password' ";
+        $sql.= "WHERE FID = '$fid'";
+
+        if (!$result = db_query($sql, $db_forum_update_password)) return false;
+
+        return true;
     }
 
     return false;

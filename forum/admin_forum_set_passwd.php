@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_set_passwd.php,v 1.15 2006-12-13 09:17:43 decoyduck Exp $ */
+/* $Id: admin_forum_set_passwd.php,v 1.16 2006-12-17 10:31:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,15 +94,16 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     exit;
 }
 
-if (!$access_level = forum_get_setting('access_level', 2, false)) {
+if (!forum_get_setting('access_level', 2, false)) {
 
     html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['forumisnotrestricted']}</h2>\n";
     html_draw_bottom();
     exit;
 }
 
-if (!$fid = forum_get_setting('fid') ) {
+if (!$fid = forum_get_setting('fid')) {
 
     html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
@@ -123,63 +124,71 @@ if (isset($_POST['back'])) {
     header_redirect($ret);
 }
 
-html_draw_top();
-
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['changepassword']}</h1>\n";
-
 if (isset($_POST['submit'])) {
 
     $valid = true;
+    $error_html = "";
+    $success_html = "";
 
     if (isset($_POST['pw']) && strlen(trim(_stripslashes($_POST['pw']))) > 0) {
+        $t_password = trim(_stripslashes($_POST['pw']));
+    }else {
+        $error_html.= "<h2>{$lang['passwdrequired']}</h2>\n";
+        $valid = false;
+    }
 
-        if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
-
-            if (trim(_stripslashes($_POST['pw'])) == trim(_stripslashes($_POST['cpw']))) {
-
-                if (_htmlentities(trim(_stripslashes($_POST['pw']))) != trim(trim(_stripslashes($_POST['pw'])))) {
-
-                    echo "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
-                    $valid = false;
-                }
-
-                if (!preg_match("/^[a-z0-9_-]+$/i", trim(_stripslashes($_POST['pw'])))) {
-
-                    echo "<h2>{$lang['passwordinvalidchars']}</h2>\n";
-                    $valid = false;
-                }
-
-                if (strlen(trim(_stripslashes($_POST['pw']))) < 6) {
-
-                    echo "<h2>{$lang['passwdtooshort']}</h2>\n";
-                    $valid = false;
-                }
-
-                if ($valid) {
-
-                    $t_password = trim(_stripslashes($_POST['pw']));
-                }
-
-            }else {
-
-                echo "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
-                $valid = false;
-            }
-
-        }else {
-
-            echo "<h2>{$lang['passwdrequired']}</h2>\n";
-            $valid = false;
-        }
+    if (isset($_POST['cpw']) && strlen(trim(_stripslashes($_POST['cpw']))) > 0) {
+        $t_check_password = trim(_stripslashes($_POST['cpw']));
+    }else {
+        $valid = false;
     }
 
     if ($valid) {
 
-        if (forum_update_access($fid, $access_level, $t_password)) {
+        if ($t_password != $t_check_password) {
 
-            echo "<h2>{$lang['passwdchanged']}</h2>\n";
+            $error_html.= "<h2>{$lang['passwdsdonotmatch']}</h2>\n";
+            $valid = false;
+        }
+
+        if (_htmlentities($t_password) != $t_password) {
+
+            $error_html.= "<h2>{$lang['passwdmustnotcontainHTML']}</h2>\n";
+            $valid = false;
+        }
+
+        if (!preg_match("/^[a-z0-9_-]+$/i", $t_password)) {
+
+            $error_html.= "<h2>{$lang['passwordinvalidchars']}</h2>\n";
+            $valid = false;
+        }
+
+        if (strlen($t_password) < 6) {
+
+            $error_html.= "<h2>{$lang['passwdtooshort']}</h2>\n";
+            $valid = false;
+        }
+
+        if ($valid) {
+
+            if (forum_update_password($fid, $t_password)) {
+
+                $success_html.= "<h2>{$lang['passwdchanged']}</h2>\n";
+            }
         }
     }
+}
+
+html_draw_top();
+
+echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['changepassword']}</h1>\n";
+
+if (isset($error_html) && strlen(trim($error_html)) > 0) {
+    echo $error_html;
+}
+
+if (isset($success_html) && strlen(trim($success_html)) > 0) {
+    echo $success_html;
 }
 
 echo "<br />\n";

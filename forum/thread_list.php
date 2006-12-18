@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.279 2006-12-11 21:58:18 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.280 2006-12-18 21:41:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -142,14 +142,29 @@ if (bh_session_get_value('UID') == 0) {
     $uid = bh_session_get_value('UID');
 
     if (isset($_GET['markread'])) {
+        
+        if ($_GET['markread'] == 2) {
+        
+            if (isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
 
-        if ($_GET['markread'] == 2 && isset($_GET['tid_array']) && is_array($_GET['tid_array'])) {
-            threads_mark_read($_GET['tid_array']);
+                $tid_array = preg_grep("/^[0-9]+$/", $_GET['tid_array']);
+
+                $thread_data = array();
+                
+                threads_get_unread_data($thread_data, $tid_array);
+                threads_mark_read($thread_data);
+            }
+
         }elseif ($_GET['markread'] == 0) {
+
             threads_mark_all_read();
+
         }elseif ($_GET['markread'] == 1) {
+
             threads_mark_50_read();
+
         }elseif ($_GET['markread'] == 3 && isset($folder)) {
+
             threads_mark_folder_read($folder);
         }
     }
@@ -483,7 +498,7 @@ foreach ($folder_order as $key1 => $folder_number) {
                     foreach($thread_info as $key2 => $thread) {
 
                         if (!isset($visible_threads_array) || !is_array($visible_threads_array)) $visible_threads_array = array();
-                        if (!in_array($thread['TID'], array_keys($visible_threads_array))) $visible_threads_array[$thread['TID']] = $thread['LENGTH'];
+                        if (!in_array($thread['TID'], $visible_threads_array)) $visible_threads_array[] = $thread['TID'];
 
                         if ($thread['FID'] == $folder_number) {
 
@@ -755,8 +770,8 @@ if (bh_session_get_value('UID') != 0) {
         $labels[] = $lang['visiblediscussions'];
         $selected_option = 2;
 
-        foreach ($visible_threads_array as $tid => $length) {
-            echo "        ", form_input_hidden("tid_array[$tid]", $length), "\n";
+        foreach ($visible_threads_array as $tid) {
+            echo "        ", form_input_hidden("tid_array[]", $tid), "\n";
         }
     }
 

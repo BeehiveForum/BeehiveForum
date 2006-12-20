@@ -150,6 +150,7 @@ function resizeImages(maxWidth, resizeText) {
                        
                         img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
 
+                        var line_break = document.createElement('br');
                         var img_resize_link = document.createElement('a');
 
                         img_resize_link.setAttribute('target', '_blank');                        
@@ -164,11 +165,14 @@ function resizeImages(maxWidth, resizeText) {
                             var child_node = parent_node;
 
                             parent_node = parent_node.parentNode;
+
                             parent_node.insertBefore(img_resize_link, child_node.nextSibling);
+                            parent_node.insertBefore(line_break, child_node.nextSibling);
                         
                         }else {
 
                             parent_node.insertBefore(img_resize_link, img_tags[i].nextSibling);
+                            parent_node.insertBefore(line_break, img_tags[i].nextSibling);
                         }                        
                 }
         }

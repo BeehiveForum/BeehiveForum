@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.372 2006-12-14 20:37:28 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.373 2006-12-20 20:13:48 decoyduck Exp $ */
 
 // International English language file
 
@@ -1115,6 +1115,7 @@ $lang['makesticky'] = "Make sticky";
 $lang['linktothread'] = "Permanent link to this thread";
 $lang['linktopost'] = "Link to post";
 $lang['linktothispost'] = "Link to this post";
+$lang['imageresized'] = "This image has been resized. To view the full-size image click here.";
 
 // Moderators list (mods_list.php) -------------------------------------
 

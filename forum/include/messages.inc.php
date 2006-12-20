@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.429 2006-12-16 22:04:21 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.430 2006-12-20 20:13:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -719,7 +719,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if ($message['FROM_UID'] > -1) {
 
-        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\" target=\"_self\">";
+        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['FROM_UID']}, '$webtag')\">";
         echo add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), "</a></span>";
 
     }else {
@@ -773,7 +773,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (($message['TLOGON'] != $lang['allcaps']) && $message['TO_UID'] != 0) {
 
-        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\" target=\"_self\">";
+        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" onclick=\"return openProfile({$message['TO_UID']}, '$webtag')\">";
         echo add_wordfilter_tags(format_user_name($message['TLOGON'], $message['TNICK'])), "</a></span>";
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {

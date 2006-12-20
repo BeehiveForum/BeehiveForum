@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.35 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.36 2006-12-20 20:13:48 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -286,7 +286,7 @@ if (isset($msg) && validate_msg($msg)) {
             }
         }
 
-        html_draw_top("post.js", "poll.js", "onload=resizeImages(720)", "onload=addOverflow(720)");
+        html_draw_top("post.js", "poll.js", "onload=resizeImages(720, '{$lang['imageresized']}')", "onload=addOverflow(720)");
 
         echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['approvepost']}</h1>\n";
         echo "<br />\n";

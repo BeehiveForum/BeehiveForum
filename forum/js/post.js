@@ -40,6 +40,12 @@ function is_numeric(value)
    return true;
 }
 
+function is_defined(var_name)
+{
+   if (typeof(var_name) !="undefined") return true;
+   return false;
+}
+
 function addOverflow(maxWidth) {
 
         var IE = (document.all ? true : false);
@@ -122,7 +128,7 @@ function redoOverFlow(maxWidth) {
         }
 }
 
-function resizeImages(maxWidth) {
+function resizeImages(maxWidth, resizeText) {
         
         var body_tag = document.getElementsByTagName('body');
         var body_tag = body_tag[0];
@@ -130,15 +136,40 @@ function resizeImages(maxWidth) {
         var img_tags = document.getElementsByTagName('img');
         var img_count = img_tags.length;
 
-        if (!is_numeric(maxWidth)) {
+        if (!is_numeric(maxWidth) || maxWidth == 0) {
             maxWidth = body_tag.clientWidth;
+        }
+
+        if (!is_defined(resizeText)) {
+            resizeText = 'This image has been resized. To view the full-size image click here.';
         }
 
         for (var i = 0; i < img_count; i++)  {
 
                 if (img_tags[i].width >= maxWidth) {
                        
-                        img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';                      
+                        img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
+
+                        var img_resize_link = document.createElement('a');
+
+                        img_resize_link.setAttribute('target', '_blank');                        
+                        img_resize_link.setAttribute('href', img_tags[i].getAttribute('src'));
+
+                        img_resize_link.innerHTML = resizeText;
+
+                        var parent_node = img_tags[i].parentNode;
+
+                        if (parent_node.tagName.toUpperCase() == 'A') {
+                            
+                            var child_node = parent_node;
+
+                            parent_node = parent_node.parentNode;
+                            parent_node.insertBefore(img_resize_link, child_node.nextSibling);
+                        
+                        }else {
+
+                            parent_node.insertBefore(img_resize_link, img_tags[i].nextSibling);
+                        }                        
                 }
         }
 }

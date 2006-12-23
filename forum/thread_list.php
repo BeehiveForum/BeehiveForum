@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.280 2006-12-18 21:41:04 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.281 2006-12-23 13:46:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -431,9 +431,9 @@ foreach ($folder_order as $key1 => $folder_number) {
             echo "          <td align=\"left\" class=\"folderpostnew\" nowrap=\"nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" target=\"_blank\" onclick=\"return openModsList({$folder_number}, '$webtag')\"><img src=\"". style_image('mods_list.png'). "\" border=\"0\" alt=\"View moderators\" title=\"View moderators\" /></a>";
 
             if ($folder_info[$folder_number]['INTEREST'] == 0) {
-                echo "<a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\" target=\"_blank\" onclick=\"return confirmFolderIgnore();\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
+                echo "<a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=-1\" target=\"_self\" onclick=\"return confirmFolderIgnore();\"><img src=\"". style_image('folder_hide.png'). "\" border=\"0\" alt=\"{$lang['ignorethisfolder']}\" title=\"{$lang['ignorethisfolder']}\" /></a></td>\n";
             }else {
-                echo "<a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\" target=\"_blank\" onclick=\"return confirmFolderUnignore();\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" alt=\"{$lang['stopignoringthisfolder']}\" title=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";
+                echo "<a href=\"user_folder.php?webtag=$webtag&amp;fid=$folder_number&amp;interest=0\" target=\"_self\" onclick=\"return confirmFolderUnignore();\"><img src=\"". style_image('folder_show.png'). "\" border=\"0\" alt=\"{$lang['stopignoringthisfolder']}\" title=\"{$lang['stopignoringthisfolder']}\" /></a></td>\n";
             }
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.35 2006-12-22 18:33:47 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.36 2006-12-23 13:46:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -65,7 +65,7 @@ $forum_location = html_get_forum_uri();
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-$build_data = gmdate("D, d M Y H:i:s");
+$build_date = gmdate("D, d M Y H:i:s");
 
 // Retrieve existing cookie data if any
 
@@ -186,15 +186,15 @@ if (isset($_GET['sort_created'])) {
 
 // echo out the rss feed
 
-header('Content-type: text/xml');
+header('Content-type: text/xml; charset=UTF-8');
 
-echo "<?xml version=\"1.0\"?>\n";
-echo "<rss version=\"2.0\">\n";
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+echo "<rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\">\n";
 echo "<channel>\n";
 echo "<title>{$forum_name}</title>\n";
 echo "<link>{$forum_location}/</link>\n";
 echo "<description>{$forum_name} - {$forum_location}/</description>\n";
-echo "<lastBuildDate>{$build_data} UT</lastBuildDate>\n";
+echo "<lastBuildDate>{$build_date} UT</lastBuildDate>\n";
 echo "<generator>$forum_name / www.beehiveforum.net</generator>\n";
 
 // Get the 20 most recent threads
@@ -245,13 +245,20 @@ if ($threads_array = threads_get_most_recent($limit, $fid_list, $sort_created)) 
         $t_content = html_entity_to_decimal($t_content);
         $t_title   = html_entity_to_decimal($t_title);
 
+        // Get the author of the message.
+
+        $t_user = format_user_name($thread['LOGON'], $thread['NICKNAME']);
+
+        // Output the item.
+
         echo "<item>\n";
-        echo "<guid isPermaLink=\"true\">{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
-        echo "<pubDate>{$modified_date} UT</pubDate>\n";
-        echo "<title>{$t_title}</title>\n";
-        echo "<link>{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
-        echo "<description>{$t_content}</description>\n";
-        echo "<comments>{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";
+        echo "  <guid isPermaLink=\"true\">{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
+        echo "  <pubDate>{$modified_date} UT</pubDate>\n";
+        echo "  <title>{$t_title}</title>\n";
+        echo "  <link>{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
+        echo "  <dc:creator>{$t_user}</dc:creator>\n";
+        echo "  <description>{$t_content}</description>\n";
+        echo "  <comments>{$forum_location}/?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";
         echo "</item>\n";
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: llogon.php,v 1.55 2006-11-19 00:13:22 decoyduck Exp $ */
+/* $Id: llogon.php,v 1.56 2006-12-28 23:21:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -88,6 +88,10 @@ $lang = load_language_file();
 
 $webtag = get_webtag($webtag_search);
 
+// Error messages string
+
+$error_html = "";
+
 if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
     if (perform_logon(true)) {
@@ -96,17 +100,16 @@ if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
     }else {
 
-        light_html_draw_top();
-        echo "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
-        echo form_quick_button("./llogon.php", $lang['back'], false, false, "_top");
-        light_html_draw_bottom();
-        exit;
+        $error_html.= "<h2>{$lang['usernameorpasswdnotvalid']}</h2>\n";
+        $error_html.= "<h2>{$lang['pleasereenterpasswd']}</h2>\n";
     }
 }
 
 light_html_draw_top();
 
-if (isset($error_html)) echo $error_html;
+if (isset($error_html) && strlen($error_html) > 0) {
+    echo $error_html;
+}
 
 light_draw_logon_form();
 

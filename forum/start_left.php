@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.119 2006-12-11 21:58:18 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.120 2006-12-28 23:21:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -342,6 +342,12 @@ if ($users_array['user_count'] > 0) {
 
     echo "                          </table>\n";
     echo "                        </td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['novisitorslogged']}</td>\n";
     echo "                      </tr>\n";
 }
 

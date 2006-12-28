@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.430 2006-12-20 20:13:48 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.431 2006-12-28 23:21:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1286,6 +1286,31 @@ function message_get_user($tid, $pid)
     }
 
     return $uid;
+}
+
+function message_get_user_array($tid, $pid)
+{
+    $db_message_get_user = db_connect();
+
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME ";
+    $sql.= "FROM {$table_data['PREFIX']}POST POST ";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
+
+    $result = db_query($sql, $db_message_get_user);
+
+    if (db_num_rows($result) > 0) {
+
+        $user_array = db_fetch_array($result);
+        return $user_array;
+    }
+
+    return false;
 }
 
 /**

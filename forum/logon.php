@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.168 2006-12-15 20:27:02 decoyduck Exp $ */
+/* $Id: logon.php,v 1.169 2006-12-28 23:21:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,7 +175,7 @@ if (isset($_GET['deletecookie']) && $_GET['deletecookie'] == 'yes') {
 
     }else {
 
-        bh_setcookie("bh_logon_failed", "1");
+        if (!defined('BEEHIVEMODE_LIGHT')) bh_setcookie("bh_logon_failed", "1");
         
         if (isset($final_uri)) {
 

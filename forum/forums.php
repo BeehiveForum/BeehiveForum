@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.62 2006-12-13 19:44:33 decoyduck Exp $ */
+/* $Id: forums.php,v 1.63 2006-12-28 23:21:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -367,6 +367,7 @@ if (bh_session_get_value('UID') != 0) {
             echo "      <td align=\"right\">", form_submit("submit", $lang['addtofavourites']), "</td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
+            echo "  <br />\n";
         }
 
         echo "</form>\n";
@@ -386,8 +387,8 @@ if (bh_session_get_value('UID') != 0) {
 
         echo "<h1>{$lang['availableforums']}</h1>\n";
         echo "<br />\n";
-        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
         echo "<div align=\"center\">\n";
+        echo "<form name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -437,8 +438,8 @@ if (bh_session_get_value('UID') != 0) {
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "  <br />\n";
-        echo "</div>\n";
         echo "</form>\n";
+        echo "</div>\n";
 
     }else {
 

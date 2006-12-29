@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.200 2006-12-17 10:31:41 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.201 2006-12-29 21:30:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1853,18 +1853,18 @@ function forum_search($search_string)
 
                 // Get Last Visited
 
-                $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG ";
-                $sql.= "WHERE UID = '$uid' AND FORUM = $forum_fid ";
-                $sql.= "AND LAST_LOGON IS NOT NULL AND LAST_LOGON > 0";
+                $sql = "SELECT UNIX_TIMESTAMP(LAST_VISIT) AS LAST_VISIT FROM USER_FORUM ";
+                $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid' ";
+                $sql.= "AND LAST_VISIT IS NOT NULL AND LAST_VISIT > 0";
 
                 $result_last_visit = db_query($sql, $db_forum_search);
 
                 $row = db_fetch_array($result_last_visit);
 
-                if (!isset($row['LAST_LOGON']) || is_null($row['LAST_LOGON'])) {
-                    $forum_data['LAST_LOGON'] = 0;
+                if (!isset($row['LAST_VISIT']) || is_null($row['LAST_VISIT'])) {
+                    $forum_data['LAST_VISIT'] = 0;
                 }else {
-                    $forum_data['LAST_LOGON'] = $row['LAST_LOGON'];
+                    $forum_data['LAST_VISIT'] = $row['LAST_VISIT'];
                 }
 
                 $forum_search_array[$forum_data['FID']] = $forum_data;
@@ -1917,6 +1917,40 @@ function forum_get_all_fids()
     }
 
     return false;
+}
+
+function forum_update_last_visit($uid)
+{
+    $db_forum_update_last_visit = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_fid = $table_data['FID'];
+    
+    if ($uid > 0) {
+
+        $sql = "SELECT LAST_VISIT FROM USER_FORUM WHERE UID = '$uid'";
+        $sql.= "AND FID = '$forum_fid'";
+
+        if (!$result = db_query($sql, $db_forum_update_last_visit)) return false;
+
+        if (db_num_rows($result) > 0) {
+
+            $sql = "UPDATE USER_FORUM SET LAST_VISIT = NOW() ";
+            $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid'";
+
+        }else {
+
+            $sql = "INSERT INTO USER_FORUM (UID, FID, LAST_VISIT) ";
+            $sql.= "VALUES ('$uid', '$forum_fid', NOW())";
+        }
+
+        if (!$result = db_query($sql, $db_forum_update_last_visit)) return false;
+    }
+
+    return true;
 }
 
 ?>

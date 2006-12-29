@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.119 2006-12-28 23:21:47 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.120 2006-12-29 21:30:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -503,8 +503,8 @@ function light_draw_my_forums()
                         echo "<p>{$forum['UNREAD_MESSAGES']} {$lang['unreadmessages']}</p>\n";
                     }
 
-                    if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
-                        echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_LOGON']), "</p>\n";
+                    if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
+                        echo "<p>{$lang['lastvisited']}: ", format_time($forum['LAST_VISIT']), "</p>\n";
                     }else {
                         echo "<p>{$lang['lastvisited']}: {$lang['never']}</p>\n";
                     }

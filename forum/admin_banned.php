@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.45 2006-12-12 21:42:24 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.46 2006-12-29 20:53:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -109,10 +109,10 @@ if (isset($_GET['sort_by'])) {
     } elseif ($_GET['sort_by'] == "BANDATA") {
         $sort_by = "BANDATA";
     } else {
-        $sort_by = "ID";
+        $sort_by = "BANDATA";
     }
 } else {
-    $sort_by = "USER.LAST_LOGON";
+    $sort_by = "BANDATA";
 }
 
 if (isset($_GET['sort_dir'])) {

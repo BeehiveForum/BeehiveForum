@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.58 2006-11-15 22:34:54 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.59 2006-12-29 21:30:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -212,18 +212,18 @@ function get_my_forums()
 
             // Get Last Visited
 
-            $sql = "SELECT UNIX_TIMESTAMP(LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG ";
-            $sql.= "WHERE UID = '$uid' AND FORUM = $forum_fid ";
-            $sql.= "AND LAST_LOGON IS NOT NULL AND LAST_LOGON > 0";
+            $sql = "SELECT UNIX_TIMESTAMP(LAST_VISIT) AS LAST_VISIT FROM USER_FORUM ";
+            $sql.= "WHERE UID = '$uid' AND FID = '$forum_fid' ";
+            $sql.= "AND LAST_VISIT IS NOT NULL AND LAST_VISIT > 0";
 
             $result_last_visit = db_query($sql, $db_get_my_forums);
 
             $row = db_fetch_array($result_last_visit);
 
-            if (!isset($row['LAST_LOGON']) || is_null($row['LAST_LOGON'])) {
-                $forum_data['LAST_LOGON'] = 0;
+            if (!isset($row['LAST_VISIT']) || is_null($row['LAST_VISIT'])) {
+                $forum_data['LAST_VISIT'] = 0;
             }else {
-                $forum_data['LAST_LOGON'] = $row['LAST_LOGON'];
+                $forum_data['LAST_VISIT'] = $row['LAST_VISIT'];
             }
 
             if (isset($forum_data['INTEREST']) && $forum_data['INTEREST'] == 1) {
@@ -232,7 +232,7 @@ function get_my_forums()
 
             }else {
 
-                if ($forum_data['LAST_LOGON'] > 0) {
+                if ($forum_data['LAST_VISIT'] > 0) {
                     $get_my_forums_array['RECENT_FORUMS'][] = $forum_data;
                 }else {
                     $get_my_forums_array['OTHER_FORUMS'][] = $forum_data;

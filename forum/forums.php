@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forums.php,v 1.63 2006-12-28 23:21:47 decoyduck Exp $ */
+/* $Id: forums.php,v 1.64 2006-12-29 21:30:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -175,9 +175,9 @@ if (bh_session_get_value('UID') != 0) {
                     echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['NUM_MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
                 }
 
-                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">", format_time($forum['LAST_LOGON']), "</td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">", format_time($forum['LAST_VISIT']), "</td>\n";
 
                 }else {
 
@@ -257,9 +257,9 @@ if (bh_session_get_value('UID') != 0) {
                     echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['NUM_MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
                 }
 
-                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">", format_time($forum['LAST_LOGON']), "</td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">", format_time($forum['LAST_VISIT']), "</td>\n";
 
                 }else {
 
@@ -339,9 +339,9 @@ if (bh_session_get_value('UID') != 0) {
                     echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['NUM_MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
                 }
 
-                if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
+                if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
 
-                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">", format_time($forum['LAST_LOGON']), "</td>\n";
+                    echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">", format_time($forum['LAST_VISIT']), "</td>\n";
 
                 }else {
 
@@ -490,8 +490,8 @@ if (isset($webtag_search) && strlen($webtag_search) > 0) {
                 echo "                  <td align=\"left\" width=\"20%\" valign=\"top\"><a href=\"index.php?webtag={$forum['WEBTAG']}&amp;final_uri=.%2Fdiscussion.php\">", number_format($forum['NUM_MESSAGES'], 0, ".", ","), " {$lang['messages']}</a></td>\n";
             }
 
-            if (isset($forum['LAST_LOGON']) && $forum['LAST_LOGON'] > 0) {
-                echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">", format_time($forum['LAST_LOGON']), "</td>\n";
+            if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
+                echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">", format_time($forum['LAST_VISIT']), "</td>\n";
             }else {
                 echo "                  <td align=\"left\" width=\"20%\" valign=\"top\">{$lang['never']}</td>\n";
             }

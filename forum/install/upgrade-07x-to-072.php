@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.10 2006-12-13 22:24:09 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.11 2006-12-29 21:30:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -318,6 +318,46 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_IDS ADD INDEX (AID)";
 
     if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Moved the LAST_LOGON from VISITOR_LOG to LAST_VISIT in USER_FORUM
+    // so that clearing the visitor log doesn't clear out the user's last
+    // visited forums.
+
+    $sql = "ALTER TABLE USER_FORUM ADD LAST_VISIT DATETIME NULL";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Move the existing data across to the new column.
+
+    $sql = "SELECT UID, LAST_LOGON FROM VISITOR_LOG WHERE UID > 0";
+
+    if ($result = @db_query($sql, $db_install)) {
+
+        while (list($uid, $last_logon) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+            $sql = "UPDATE USER_FORUM SET LAST_VISIT = '$last_logon' ";
+            $sql.= "WHERE UID = '$uid'";
+
+            $result_update = db_query($sql, $db_install);
+
+            if (db_affected_rows($db_install) < 1) {
+
+                $sql = "INSERT IGNORE INTO USER_FORUM (UID, LAST_VISIT) ";
+                $sql.= "VALUES ('$uid', '$last_logon')";
+
+                $result_insert = db_query($sql, $db_install);
+            }
+        }
+
+    }else {
 
         $valid = false;
         return;

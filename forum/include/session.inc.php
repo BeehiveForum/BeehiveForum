@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.275 2006-12-29 19:13:42 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.276 2006-12-29 20:12:04 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -803,6 +803,15 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 
     $http_referer = bh_session_get_referer();
 
+    // Delete any guest sessions this user might have.
+    
+    $user_hash = md5($ipaddress);
+
+    $sql = "DELETE FROM SESSIONS WHERE HASH = '$user_hash'";
+    $result = db_query($sql, $db_bh_session_init);
+
+    // Check for an existing user session.
+
     $sql = "SELECT HASH FROM SESSIONS WHERE UID = $uid ";
     $sql.= "AND IPADDRESS = '$ipaddress'";
 
@@ -835,18 +844,35 @@ function bh_session_init($uid, $update_visitor_log = true, $skip_cookie = false)
 /**
 * Ends current user session.
 *
-* Ends session for current logged in user by retrieving their cookie hash
-* and destroying relevant data in the SESSION table.
+* Ends session for current logged in user by destroying their cookie.
+* DOES NOT remove the data from the SESSION table.
 *
 * @return void
 * @param void
 */
 
-function bh_session_end()
+function bh_session_remove_cookies()
+{
+    // Unset the cookies used by Beehive.
+
+    bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
+    bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+}
+
+/**
+* Ends current user session.
+*
+* Ends session for current logged in user by destroying their cookie.
+* and removing the data from the SESSION table.
+*
+* @return void
+* @param void
+*/
+
+function bh_session_end($remove_cookies = true)
 {
     $db_bh_session_end = db_connect();
-
-    if (!$table_data = get_table_prefix()) return false;   
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -873,11 +899,7 @@ function bh_session_end()
         $result = db_query($sql, $db_bh_session_end);
     }
 
-    // Unset the cookies used by Beehive.
-
-    bh_setcookie("bh_sess_hash", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_thread_mode", "", time() - YEAR_IN_SECONDS);
-    bh_setcookie("bh_logon", "1", time() - YEAR_IN_SECONDS);
+    if ($remove_cookies === true) bh_session_remove_cookies();
 }
 
 /**

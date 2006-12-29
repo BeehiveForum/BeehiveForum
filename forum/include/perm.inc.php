@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.98 2006-12-07 22:41:15 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.99 2006-12-29 20:53:50 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -246,35 +246,50 @@ function perm_check_global_permissions($access_level, $uid)
     return ($user_status & $access_level) == $access_level;
 }
 
-function perm_get_user_groups()
+function perm_get_user_groups($offset, $sort_by = 'GROUP_NAME', $sort_dir = 'ASC')
 {
     $db_perm_get_user_groups = db_connect();
+
+    $sort_by_array  = array('GROUPS.GROUP_NAME', 'GROUPS.GROUP_DESC', 'USER_COUNT');
+    $sort_dir_array = array('ASC', 'DESC');
+
+    if (!is_numeric($offset)) return false;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'GROUPS.GROUP_NAME';
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
     if (!$table_data = get_table_prefix()) return false;
 
     $forum_fid = $table_data['FID'];
 
+    $user_groups_array = array();
+
+    $sql = "SELECT COUNT(GROUPS.GID) FROM GROUPS ";
+    $sql.= "WHERE GROUPS.AUTO_GROUP = 0 ";
+    $sql.= "AND GROUPS.FORUM = '$forum_fid' ";
+
+    $result = db_query($sql, $db_perm_get_user_groups);
+    list($user_groups_count) = db_fetch_array($result, DB_RESULT_NUM);
+
     $sql = "SELECT GROUPS.*, COUNT(GROUP_USERS.UID) AS USER_COUNT ";
     $sql.= "FROM GROUPS GROUPS LEFT JOIN GROUP_USERS GROUP_USERS ";
     $sql.= "ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUPS.AUTO_GROUP = 0 AND GROUPS.FORUM = '$forum_fid' ";
-    $sql.= "GROUP BY GROUPS.GID";
+    $sql.= "GROUP BY GROUPS.GID ORDER BY $sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_perm_get_user_groups);
 
     if (db_num_rows($result) > 0) {
 
-        $user_groups_array = array();
-
         while ($row = db_fetch_array($result)) {
 
             $user_groups_array[] = $row;
         }
-
-        return $user_groups_array;
     }
 
-    return false;
+    return array('user_groups_array' => $user_groups_array,
+                 'user_groups_count' => $user_groups_count);
 }
 
 function perm_user_get_groups($uid)

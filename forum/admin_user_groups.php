@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user_groups.php,v 1.35 2006-12-29 20:53:50 decoyduck Exp $ */
+/* $Id: admin_user_groups.php,v 1.36 2006-12-30 21:58:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -135,7 +135,7 @@ if (isset($_GET['sort_dir'])) {
         $sort_dir = "ASC";
     }
 } else {
-    $sort_dir = "DESC";
+    $sort_dir = "ASC";
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
@@ -184,9 +184,9 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
 
 if ($sort_by == 'GROUPS.GROUP_NAME' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=DESC&amp;page=$page\">{$lang['groups']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=DESC&amp;page=$page\">{$lang['groups']}</a></td>\n";
 }elseif ($sort_by == 'GROUPS.GROUP_NAME' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">{$lang['groups']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">{$lang['groups']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">{$lang['groups']}</a></td>\n";
 }else {
@@ -194,9 +194,9 @@ if ($sort_by == 'GROUPS.GROUP_NAME' && $sort_dir == 'ASC') {
 }
 
 if ($sort_by == 'GROUPS.GROUP_DESC' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">{$lang['description']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">{$lang['description']}</a></td>\n";
 }elseif ($sort_by == 'GROUPS.GROUP_DESC' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">{$lang['description']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">{$lang['description']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">{$lang['description']}</a></td>\n";
 }else {
@@ -204,9 +204,9 @@ if ($sort_by == 'GROUPS.GROUP_DESC' && $sort_dir == 'ASC') {
 }
 
 if ($sort_by == 'USER_COUNT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">{$lang['users']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" class=\"header_sort_asc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">{$lang['users']}</a></td>\n";
 }elseif ($sort_by == 'USER_COUNT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">{$lang['users']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">{$lang['users']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">{$lang['users']}</a></td>\n";
 }else {
@@ -229,7 +229,7 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
         echo "                  <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("delete_group[]", $user_group['GID'], "", false), "</td>\n";
         echo "                  <td align=\"left\"><a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
         echo "                  <td align=\"left\" nowrap=\"nowrap\">{$user_group['GROUP_DESC']}</td>\n";
-        echo "                  <td align=\"left\" width=\"60\">{$user_group['USER_COUNT']}</td>\n";
+        echo "                  <td align=\"left\" width=\"100\">{$user_group['USER_COUNT']}</td>\n";
         echo "                  <td width=\"180\" align=\"center\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
         echo "                </tr>\n";
     }

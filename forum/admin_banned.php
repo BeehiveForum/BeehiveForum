@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.46 2006-12-29 20:53:50 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.47 2006-12-30 21:58:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -737,9 +737,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
 
     if ($sort_by == 'BANDATA' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">Ban Data</a></td>\n";
     }elseif ($sort_by == 'BANDATA' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
         echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">Ban Data</a></td>\n";
     }else {
@@ -747,9 +747,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     }
 
     if ($sort_by == 'BANTYPE' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">Ban Type</a></td>\n";
     }elseif ($sort_by == 'BANTYPE' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
     }elseif ($sort_dir == 'ASC') {
         echo "                   <td class=\"subhead\" align=\"left\" width=\"150\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">Ban Type</a></td>\n";
     }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.102 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.103 2006-12-30 21:58:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -146,9 +146,9 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 
 if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page\">{$lang['datetime']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }elseif ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page\">{$lang['datetime']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
     echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page\">{$lang['datetime']}</a></td>\n";
 }else {
@@ -156,9 +156,9 @@ if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
 }
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;page=$page\">{$lang['logon']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }elseif ($sort_by == 'UID' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;page=$page\">{$lang['logon']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
     echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;page=$page\">{$lang['logon']}</a></td>\n";
 }else {
@@ -166,9 +166,9 @@ if ($sort_by == 'UID' && $sort_dir == 'ASC') {
 }
 
 if ($sort_by == 'ACTION' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;page=$page\">{$lang['action']}&nbsp;<img src=\"", style_image("sort_asc.png"), "\" border=\"0\" alt=\"{$lang['sortasc']}\" title=\"{$lang['sortasc']}\" /></a></td>\n";
+    echo "                    <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;page=$page\">{$lang['action']}</a></td>\n";
 }elseif ($sort_by == 'ACTION' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;page=$page\">{$lang['action']}&nbsp;<img src=\"", style_image("sort_desc.png"), "\" border=\"0\" alt=\"{$lang['sortdesc']}\" title=\"{$lang['sortdesc']}\" /></a></td>\n";
+    echo "                    <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;page=$page\">{$lang['action']}</a></td>\n";
 }elseif ($sort_dir == 'ASC') {
     echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;page=$page\">{$lang['action']}</a></td>\n";
 }else {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.115 2006-12-13 18:26:17 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.116 2006-12-30 22:16:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,6 +127,15 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
     header_redirect("admin_folders.php?webtag=$webtag");
 }
 
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}else {
+    $page = 1;
+}
+
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
+
 html_draw_top();
 
 // Draw the form
@@ -158,11 +167,13 @@ echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
 
-if ($folder_array = folder_get_all()) {
+$folder_array = folder_get_all_by_page($start);
+
+if (sizeof($folder_array['folder_array']) > 0) {
 
     $folder_index = 0;
 
-    foreach ($folder_array as $key => $folder) {
+    foreach ($folder_array['folder_array'] as $key => $folder) {
 
         $folder_index++;
 
@@ -203,6 +214,12 @@ if ($folder_array = folder_get_all()) {
 
         echo "                </tr>\n";
     }
+
+}else {
+
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" colspan=\"8\">{$lang['couldnotretrievefolderinformation']}</td>\n";
+    echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
@@ -213,6 +230,12 @@ echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $folder_array['folder_count'], 10), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

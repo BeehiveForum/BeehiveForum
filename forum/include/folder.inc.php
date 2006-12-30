@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: folder.inc.php,v 1.114 2006-12-03 23:01:41 decoyduck Exp $ */
+/* $Id: folder.inc.php,v 1.115 2006-12-30 22:16:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -364,6 +364,48 @@ function folder_get_all()
     }
 
     return false;
+}
+
+function folder_get_all_by_page($start)
+{
+    $db_folder_get_all_by_page = db_connect();
+
+    if (!is_numeric($start)) return false;
+
+    if (!$table_data = get_table_prefix()) return array();
+
+    $forum_fid = $table_data['FID'];
+
+    $folder_array = array();
+
+    $sql = "SELECT COUNT(FID) FROM {$table_data['PREFIX']}FOLDER ";
+    $result = db_query($sql, $db_folder_get_all_by_page);
+
+    list($folder_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, ";
+    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.POSITION, ";
+    $sql.= "BIT_OR(FOLDER_PERMS.PERM) AS FOLDER_PERMS, ";
+    $sql.= "COUNT(FOLDER_PERMS.PERM) AS FOLDER_PERM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "LEFT JOIN GROUP_PERMS FOLDER_PERMS ON (FOLDER_PERMS.FID = FOLDER.FID ";
+    $sql.= "AND FOLDER_PERMS.GID = 0 AND FOLDER_PERMS.FORUM IN (0, $forum_fid)) ";
+    $sql.= "GROUP BY FOLDER.FID ";
+    $sql.= "ORDER BY FOLDER.POSITION ";
+    $sql.= "LIMIT $start, 10";
+
+    $result = db_query($sql, $db_folder_get_all_by_page);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($row = db_fetch_array($result)) {
+
+            $folder_array[$row['FID']] = $row;
+        }
+    }
+
+    return array('folder_array' => $folder_array,
+                 'folder_count' => $folder_count);
 }
 
 function folder_get_thread_count($fid)

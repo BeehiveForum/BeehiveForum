@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.130 2006-12-30 21:58:05 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.131 2006-12-30 22:18:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -245,7 +245,7 @@ if ($sort_by == 'SESSIONS.REFERER' && $sort_dir == 'ASC') {
 echo "                   <td class=\"subhead\" align=\"left\">{$lang['active']}</td>\n";
 echo "                 </tr>\n";
 
-$start = floor($page - 1) * 20;
+$start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
 
 if (isset($usersearch) && strlen($usersearch) > 0) {
@@ -342,7 +342,7 @@ if (sizeof($admin_user_array['user_array']) > 0) {
     echo "      <td align=\"left\" width=\"40%\">&nbsp;</td>\n";
 }
 
-echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=UID&sort_dir=DESC&usersearch=$usersearch&filter=$filter", $start, $admin_user_array['user_count'], 20), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_users.php?webtag=$webtag&sort_by=UID&sort_dir=DESC&usersearch=$usersearch&filter=$filter", $start, $admin_user_array['user_count'], 10), "</td>\n";
 
 if (forum_get_setting('require_user_approval', 'Y')) {
 

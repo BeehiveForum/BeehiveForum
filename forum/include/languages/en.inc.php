@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.373 2006-12-20 20:13:48 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.374 2006-12-30 21:58:05 decoyduck Exp $ */
 
 // International English language file
 
@@ -1273,6 +1273,10 @@ $lang['savepminsentitems'] = "Save a copy of each PM I send in my Sent Items fol
 $lang['includepminreply'] = "Include message body when replying to PM";
 $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 $lang['friendsonly'] = "Friends only?";
+
+// User Profiles (user_profiles.php) -----------------------------------------------------
+
+$lang['userprofiles'] = "User Profiles";
 
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------
 

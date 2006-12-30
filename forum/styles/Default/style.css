@@ -10,7 +10,7 @@ body {
 }
 
 img {
-    vertical-align: text-top;
+    vertical-align: middle;
 }
 
 frameset {
@@ -935,4 +935,35 @@ a {
     height: 18px;
     width: 18px;
     border: none;
+}
+
+.subhead_sort_asc {
+    background-image: url('../../images/sort_asc.png');
+    background-repeat: no-repeat;
+    background-position: 98% 50%;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10pt;
+    color: #FFFFFF;
+    background-color: #A6BED7;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    padding-left: 5px;
+}
+
+
+.subhead_sort_desc {
+    background-image: url('../../images/sort_desc.png');
+    background-repeat: no-repeat;
+    background-position: 98% 50%;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10pt;
+    color: #FFFFFF;
+    background-color: #A6BED7;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    padding-left: 5px;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.89 2006-12-15 20:37:11 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.90 2006-12-30 22:18:22 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -434,7 +434,7 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
     $sql.= "AND VISITOR_LOG.FORUM = $forum_fid) ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
     $sql.= "GROUP BY USER.UID $having_sql ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20 ";
+    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
     $result = db_query($sql, $db_user_search);
 
@@ -541,7 +541,7 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID ";
     $sql.= "AND VISITOR_LOG.FORUM = $forum_fid) ";
     $sql.= "GROUP BY USER.UID $having_sql ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20 ";
+    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 
     $result = db_query($sql, $db_user_get_all);
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.11 2006-12-29 21:30:14 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.12 2007-01-03 23:17:45 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -346,14 +346,19 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql = "UPDATE USER_FORUM SET LAST_VISIT = '$last_logon' ";
             $sql.= "WHERE UID = '$uid'";
 
-            $result_update = db_query($sql, $db_install);
+            if ($result_update = @db_query($sql, $db_install)) {
 
-            if (db_affected_rows($db_install) < 1) {
+                if (db_affected_rows($db_install) < 1) {
 
-                $sql = "INSERT IGNORE INTO USER_FORUM (UID, LAST_VISIT) ";
-                $sql.= "VALUES ('$uid', '$last_logon')";
+                    $sql = "INSERT IGNORE INTO USER_FORUM (UID, LAST_VISIT) ";
+                    $sql.= "VALUES ('$uid', '$last_logon')";
 
-                $result_insert = db_query($sql, $db_install);
+                    if (!$result_insert = @db_query($sql, $db_install)) {
+
+                        $valid = false;
+                        return;
+                    }
+                }
             }
         }
 
@@ -361,6 +366,48 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
         $valid = false;
         return;
+    }
+
+    // The Forum Links dropdown caption (top link) has moved 
+    // to the FORUM_SETTINGS table to allow for improved
+    // functionality to the Admin section.
+
+    $sql = "SELECT LID, TITLE FROM {$forum_webtag}_FORUM_LINKS ";
+    $sql.= "ORDER BY POS ASC, LID ASC";
+
+    if ($result = @db_query($sql, $db_install)) {
+
+        if (db_num_rows($result) > 0) {
+        
+            list($lid, $forum_links_top_link) = db_fetch_array($result, DB_RESULT_NUM);
+
+            // Save the existing forum link caption to the FORUM_SETTINGS table
+
+            $forum_links_top_link = addslashes($forum_links_top_link);
+
+            $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ('$forum_fid', 'forum_links_top_link', ";
+            $sql.= "'$forum_links_top_link')";
+
+            if (!$result = @db_query($sql, $db_install)) {
+
+                $valid = false;
+                return;
+            }
+
+            // Delete the old record from the FORUM_LINKS table.
+
+            $lid = addslashes($lid);
+
+            $sql = "DELETE FROM {$forum_webtag}_FORUM_LINKS ";
+            $sql.= "WHERE LID = '$lid'";
+
+            if (!$result = @db_query($sql, $db_install)) {
+
+                $valid = false;
+                return;
+            }
+        }
     }
 }
 

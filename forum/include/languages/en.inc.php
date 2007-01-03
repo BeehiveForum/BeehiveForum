@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.375 2007-01-03 20:31:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.376 2007-01-03 23:17:45 decoyduck Exp $ */
 
 // International English language file
 
@@ -463,11 +463,19 @@ $lang['postinhtml'] = "Post in HTML";
 $lang['postasignature'] = "Post a signature";
 $lang['editforumlinks'] = "Edit Forum Links";
 $lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list displayed in the top-right of the forum frameset. If no links are set, the drop-down list will not be displayed.";
-$lang['notoplevellinkidspecified'] = "No top level link ID specified";
-$lang['notoplevellinktitlespecified'] = "No top level link title specified";
-$lang['youmustenteratitleforalllinks'] = "You must enter a title for all links";
+$lang['youmustenteralinktitle'] = "You must enter a link title";
 $lang['youmustprovideapositionforalllinks'] = "You must provide a link position for all links";
 $lang['alllinkurismuststartwithaschema'] = "All link URIs must start with a schema (i.e. http://, ftp://, irc://)";
+$lang['noexistingforumlinksfound'] = "There are no existing forum links. To add a forum link click the button below.";
+$lang['editlink'] = "Edit link";
+$lang['addnewforumlink'] = "Add new forum link";
+$lang['forumlinktitle'] = "Forum Link Title";
+$lang['forumlinklocation'] = "Forum Link Location";
+$lang['successfullyaddedlink'] = "Successfully added link";
+$lang['successfullyeditedlink'] = "Successfully edited link";
+$lang['invalidlinkidorlinknotfound'] = "Invalid link id or link not found";
+$lang['successfullyremovedselectedlinks'] = "Successfully removed selected links";
+$lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
 $lang['allowsearchenginespidering'] = "Allow Search Engine Spidering";

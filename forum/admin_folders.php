@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.116 2006-12-30 22:16:31 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.117 2007-01-03 21:44:51 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -171,7 +171,7 @@ $folder_array = folder_get_all_by_page($start);
 
 if (sizeof($folder_array['folder_array']) > 0) {
 
-    $folder_index = 0;
+    $folder_index = $start;
 
     foreach ($folder_array['folder_array'] as $key => $folder) {
 
@@ -179,12 +179,12 @@ if (sizeof($folder_array['folder_array']) > 0) {
 
         echo "                <tr>\n";
 
-        if (sizeof($folder_array) == 1) {
+        if ($folder_array['folder_count'] == 1) {
 
             echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
 
-        }elseif ($folder_index == sizeof($folder_array)) {
+        }elseif ($folder_index == $folder_array['folder_count']) {
 
             echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";

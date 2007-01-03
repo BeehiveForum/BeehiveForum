@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.117 2007-01-03 21:44:51 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.118 2007-01-03 23:17:45 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,12 +93,6 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
     exit;
-}
-
-if (isset($_POST['t_more'])) {
-
-    list($fid) = array_keys($_POST['t_more']);
-    header_redirect("./admin_folder_edit.php?webtag=$webtag&fid=$fid");
 }
 
 if (isset($_POST['addnew'])) {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.201 2006-12-29 21:30:14 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.202 2007-01-03 23:17:45 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1320,15 +1320,6 @@ function forum_create($webtag, $forum_name, $access)
         // Add some default forum links
 
         $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
-        $sql.= "VALUES (1, 'Forum Links:', NULL)";
-
-        if (!$result = @db_query($sql, $db_forum_create)) {
-
-            forum_delete($forum_fid);
-            return false;
-        }
-
-        $sql = "INSERT INTO {$webtag}_FORUM_LINKS (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Project Beehive Home', 'http://www.beehiveforum.net/')";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -1450,7 +1441,8 @@ function forum_create($webtag, $forum_name, $access)
                                 'allow_polls'             => 'Y',
                                 'show_stats'              => 'Y',
                                 'allow_search_spidering'  => 'Y',
-                                'guest_account_enabled'   => 'Y');
+                                'guest_account_enabled'   => 'Y',
+                                'forum_links_top_link'    => 'Forum Links');
 
         foreach ($forum_settings as $sname => $svalue) {
 

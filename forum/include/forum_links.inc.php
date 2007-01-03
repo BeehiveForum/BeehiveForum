@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.18 2007-01-03 23:17:45 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.19 2007-01-03 23:23:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,22 +35,22 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "links.inc.php");
 
-function forum_links_get_links($include_top_link)
+function forum_links_get_links()
 {
     $db_forum_links_get_links = db_connect();
 
-    if (!is_bool($include_top_link)) return false;
-
     if (!$table_data = get_table_prefix()) return false;
+
+    $forum_settings = forum_get_settings();
+    
+    $lang = load_language_file();
 
     $sql = "SELECT LID, POS, URI, TITLE FROM {$table_data['PREFIX']}FORUM_LINKS ";
     $sql.= "ORDER BY POS ASC, LID ASC";
 
     $result = db_query($sql, $db_forum_links_get_links);
 
-    $num_links = ($include_top_link) ? 0 : 1;
-
-    if (db_num_rows($result) > $num_links) {
+    if (db_num_rows($result) > 0) {
 
         $links_array = array();
 
@@ -61,6 +61,10 @@ function forum_links_get_links($include_top_link)
 
             $links_array[] = $row;
         }
+
+        $forum_links_top_link = forum_get_setting('forum_links_top_link', false, $lang['forumlinks']);
+        
+        array_unshift($links_array, array('TITLE' => $forum_links_top_link, 'URI' => ''));
 
         return $links_array;
     }
@@ -112,7 +116,10 @@ function forum_links_draw_dropdown()
 
         foreach($forum_links_array as $key => $forum_link) {
 
-            $html.= "<option value=\"{$forum_link['URI']}\">{$forum_link['TITLE']}</option>\n";
+            if (isset($forum_link['URI']) && isset($forum_link['TITLE'])) {
+
+                $html.= "<option value=\"{$forum_link['URI']}\">{$forum_link['TITLE']}</option>\n";
+            }
         }
 
         $html.= "</select>\n";

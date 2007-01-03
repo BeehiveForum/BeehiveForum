@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.30 2006-11-14 18:25:02 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.31 2007-01-03 20:31:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -302,31 +302,38 @@ function rss_check_feeds()
     }
 }
 
-function rss_get_feeds()
+function rss_get_feeds($start)
 {
     $db_rss_get_feeds = db_connect();
 
+    if (!is_numeric($start)) return false;
+
     if (!$table_data = get_table_prefix()) return false;
+
+    $rss_feed_array = array();
+
+    $sql = "SELECT COUNT(RSSID) FROM {$table_data['PREFIX']}RSS_FEEDS";
+    $result = db_query($sql, $db_rss_get_feeds);
+
+    list($rss_feed_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, ";
     $sql.= "RSS_FEEDS.FID, RSS_FEEDS.URL, RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY ";
     $sql.= "FROM {$table_data['PREFIX']}RSS_FEEDS RSS_FEEDS ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID)";
+    $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
+    $sql.= "LIMIT $start, 10";
 
     $result = db_query($sql, $db_rss_get_feeds);
 
     if (db_num_rows($result) > 0) {
 
-        $rss_feed_array = array();
-
         while($row = db_fetch_array($result)) {
             $rss_feed_array[] = $row;
         }
-
-        return $rss_feed_array;
     }
 
-    return false;
+    return array('rss_feed_array' => $rss_feed_array,
+                 'rss_feed_count' => $rss_feed_count);
 }
 
 function rss_add_feed($name, $uid, $fid, $url, $prefix, $frequency)

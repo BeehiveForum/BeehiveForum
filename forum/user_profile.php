@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.108 2006-12-11 21:58:18 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.109 2007-01-03 20:31:24 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -133,10 +133,6 @@ if (isset($_GET['close_window'])) {
     }
 }
 
-if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
-    $psid = $_GET['psid'];
-}
-
 if (!isset($uid)) {
     html_draw_top();
     echo "<h1>{$lang['error']}</h1>";
@@ -161,6 +157,13 @@ if (!$user_profile = user_get_profile($uid)) {
     exit;
 }
 
+if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
+    $psid = $_GET['psid'];
+}else {
+    list($first_key) = array_keys($profile_sections);
+    $psid = $profile_sections[$first_key]['PSID'];
+}
+
 $title = add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']));
 
 html_draw_top("title=$title", "openprofile.js", "basetarget=_blank");
@@ -180,93 +183,131 @@ echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"550\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"550\" cellpadding=\"0\" cellspacing=\"0\" border=\"1\">\n";
+echo "              <table class=\"posthead\" width=\"550\" cellpadding=\"0\" cellspacing=\"0\">\n";
 echo "                <tr>\n";
+echo "                  <td class=\"subhead\" width=\"300\" valign=\"top\">\n";
+echo "                    <table width=\"100%\" border=\"0\">\n";
+echo "                      <tr>\n";
 
-if (bh_session_get_value('UID') > 0) {
+if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
 
-    if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
+    echo "                        <td align=\"left\" class=\"subhead\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
 
-        echo "                  <td align=\"left\" class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
+}else if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
 
-    }else if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
-    
-        echo "                  <td align=\"left\" class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
+    echo "                        <td align=\"left\" class=\"subhead\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
 
-    }else {
+}else {
 
-        echo "                  <td align=\"left\" class=\"subhead\" rowspan=\"4\" valign=\"top\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "</h2></td>\n";
-    }
+    echo "                        <td align=\"left\" class=\"subhead\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "</h2></td>\n";
 }
 
-echo "                  <td  class=\"subhead\" align=\"right\" class=\"smalltext\">{$lang['registered']}: {$user_profile['REGISTERED']}&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"right\" class=\"subhead\"><span class=\"smalltext\">{$lang['lastvisit']}: {$user_profile['LAST_LOGON']}&nbsp;</span></td>\n";
-echo "                </tr>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td  class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['registered']}: {$user_profile['REGISTERED']}</span></td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" class=\"subhead\"><span class=\"smalltext\">{$lang['lastvisit']}: {$user_profile['LAST_LOGON']}</span></td>\n";
+echo "                      </tr>\n";
 
 if (isset($user_profile['AGE'])) {
 
-    echo "                <tr>\n";
-    echo "                  <td  class=\"subhead\" align=\"right\" class=\"smalltext\">";
+    echo "                      <tr>\n";
+    echo "                        <td  class=\"subhead\" align=\"left\"><span class=\"smalltext\">";
 
     if (isset($user_profile['DOB'])) {
 
-        echo "{$lang['birthday']}: {$user_profile['DOB']} ({$lang['aged']} {$user_profile['AGE']})&nbsp;</td>\n";
+        echo "{$lang['birthday']}: {$user_profile['DOB']} ({$lang['aged']} {$user_profile['AGE']})</span></td>\n";
 
     }else {
 
-        echo "{$lang['age']}: {$user_profile['AGE']}&nbsp;</td>\n";
+        echo "{$lang['age']}: {$user_profile['AGE']}</span></td>\n";
     }
 
-    echo "                </tr>\n";
+    echo "                      </tr>\n";
 
 }else if (isset($user_profile['DOB'])) {
 
-    echo "                <tr>\n";
-    echo "                  <td  class=\"subhead\" align=\"right\" class=\"smalltext\">{$lang['birthday']}: {$user_profile['DOB']}&nbsp;</td>\n";
-    echo "                </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td  class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['birthday']}: {$user_profile['DOB']}</span></td>\n";
+    echo "                      </tr>\n";
 }
 
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"right\" class=\"smalltext\">{$lang['posts']}: {$user_profile['POST_COUNT']}&nbsp;</td>\n";
+echo "                      <tr>\n";
+echo "                        <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">{$lang['posts']}: {$user_profile['POST_COUNT']}</span></td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                  <td class=\"subhead\" width=\"100\">\n";
+echo "                    <table width=\"100%\" border=\"0\">\n";
+
+if (isset($user_profile['PIC_URL'])) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"right\" class=\"subhead\">\n";
+    echo "                          <div class=\"profile_image\">\n";
+    echo "                            <img src=\"{$user_profile['PIC_URL']}\" width=\"95\" height=\"95\" alt=\"$title\" title=\"$title\" />\n";
+    echo "                          </div>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"right\" class=\"subhead\">\n";
+    echo "                          <div class=\"profile_image\">\n";
+    echo "                            <img src=\"", style_image('user_profile.png'), "\" width=\"95\" height=\"95\" alt=\"$title\" title=\"$title\" />\n";
+    echo "                          </div>\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+}
+
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
-echo "              <table width=\"550\" class=\"subhead\" border=\"0\">\n";
+
+$profile_section_rows_array = array_chunk($profile_sections, 4, true);
+
+foreach($profile_section_rows_array as $row_id => $profile_section_row) {
+
+    foreach($profile_section_row as $profile_section) {
+    
+        if ($profile_section['PSID'] == $psid) {
+
+            $bottom_profile_row = array_splice($profile_section_rows_array, $row_id, 1);
+            $profile_section_rows_array = array_merge($profile_section_rows_array, $bottom_profile_row);
+        }
+    }
+}
+
+echo "              <table width=\"550\" class=\"profile_tabs\">\n";
 echo "                <tr>\n";
 
-for ($i = 0; $i < sizeof($profile_sections); $i++) {
+foreach($profile_section_rows_array as $row_id => $profile_section_row) {
 
-    if ($i == 0) {
-
-        if (!isset($psid)) {
-            $psid = $profile_sections[$i]['PSID'];
+    foreach($profile_section_row as $profile_section) {
+        
+        if ($profile_section['PSID'] != $psid) {
+            echo "                  <td width=\"25%\" class=\"profile_tab\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;psid={$profile_section['PSID']}\" target=\"_self\">", _stripslashes($profile_section['NAME']), "</a></td>\n";
+        }else {
+            echo "                  <td width=\"25%\" class=\"profile_tab_selected\">", _stripslashes($profile_section['NAME']), "</td>\n";
         }
+    }
 
-    }else if (!($i % 4)) { // Start new row every 4 sections
-
+    if ($row_id < sizeof($profile_section_rows_array) - 1) {
+    
         echo "                </tr>\n";
         echo "                <tr>\n";
     }
-
-    if ($profile_sections[$i]['PSID'] != $psid) {
-        echo "                  <td width=\"25%\" align=\"center\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;psid={$profile_sections[$i]['PSID']}\" target=\"_self\">", _stripslashes($profile_sections[$i]['NAME']), "</a></td>\n";
-    }else {
-        echo "                  <td width=\"25%\" align=\"center\"><b>", _stripslashes($profile_sections[$i]['NAME']), "</b></td>\n";
-    }
-}
-
-for(;$i % 4; $i++) {
-    echo "                  <td align=\"left\" width=\"25%\">&nbsp;</td>\n";
 }
 
 echo "                </tr>\n";
 echo "              </table>\n";
-
-echo "              <table width=\"550\" class=\"posthead\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "              <table width=\"100%\" class=\"posthead\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"400\" valign=\"top\">\n";
-echo "                    <table width=\"400\">\n";
+echo "                  <td align=\"center\" valign=\"top\">\n";
+echo "                    <table width=\"540\" class=\"profile_items\">\n";
 
 $user_profile_array = user_get_profile_entries($uid, $psid);
 $rel = user_rel_get($uid, bh_session_get_value('UID'));
@@ -280,15 +321,15 @@ foreach ($user_profile_array as $profile_entry) {
         $field_values = explode(';', $field_values);
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" class=\"subhead\" width=\"33%\" valign=\"top\">", $field_name, "</td>\n";
+        echo "                        <td align=\"left\" width=\"33%\" valign=\"top\">$field_name</td>\n";
 
         if (isset($profile_entry['ENTRY']) && isset($field_values[$profile_entry['ENTRY']])) {
 
-            echo "                        <td align=\"left\" width=\"67%\" class=\"posthead\" valign=\"top\">{$field_values[$profile_entry['ENTRY']]}</td>\n";
+            echo "                        <td align=\"left\" width=\"67%\" class=\"profile_item_text\" valign=\"top\">{$field_values[$profile_entry['ENTRY']]}</td>\n";
 
         }else {
 
-            echo "                        <td align=\"left\" width=\"67%\" class=\"posthead\" valign=\"top\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"67%\" class=\"profile_item_text\" valign=\"top\">&nbsp;</td>\n";
         }
 
         echo "                      </tr>\n";
@@ -296,12 +337,12 @@ foreach ($user_profile_array as $profile_entry) {
     }else {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" class=\"subhead\" width=\"33%\" valign=\"top\">{$profile_entry['NAME']}</td>\n";
+        echo "                        <td align=\"left\" width=\"33%\" valign=\"top\">{$profile_entry['NAME']}</td>\n";
 
         if (($uid != bh_session_get_value('UID')) && ($rel != USER_FRIEND) && ($profile_entry['PRIVACY'] == 1)) {
-            echo "                        <td align=\"left\" width=\"67%\" class=\"posthead\" valign=\"top\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\" width=\"67%\" class=\"profile_item_text\" valign=\"top\">&nbsp;</td>\n";
         }else {
-            echo "                        <td align=\"left\" width=\"67%\" class=\"posthead\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(make_links(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";
+            echo "                        <td align=\"left\" width=\"67%\" class=\"profile_item_text\" valign=\"top\">", isset($profile_entry['ENTRY']) ? nl2br(make_links(_stripslashes($profile_entry['ENTRY']))) : "", "</td>\n";
         }
 
         echo "                      </tr>\n";
@@ -314,88 +355,41 @@ echo "                        <td align=\"left\" width=\"67%\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                  <td align=\"left\" width=\"150\" valign=\"top\">\n";
-echo "                    <table width=\"150\" class=\"subhead\" cellspacing=\"5\" cellpadding=\"0\">\n";
-
-if (isset($user_profile['PIC_URL'])) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"center\"><img src=\"{$user_profile['PIC_URL']}\" width=\"110\" height=\"110\" alt=\"$title\" title=\"$title\" /></td>\n";
-    echo "                      </tr>\n";
-}
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"right\">{$lang['longesttimeinforum']}: {$user_profile['USER_TIME_BEST']}&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">\n";
+echo "                    <table width=\"100%\">\n";
+echo "                      <tr>\n";
+echo "                        <td>\n";
 
 if (isset($user_profile['HOMEPAGE_URL'])) {
 
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\">{$lang['visithomepage']}</a></td>\n";
-    echo "                      </tr>\n";
-}
-
-if ($uid == bh_session_get_value('UID')) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><a href=\"attachments.php?webtag=$webtag\" target=\"_blank\" onclick=\"return launchAttachProfileWin('$webtag');\" target=\"_self\">{$lang['editmyattachments']}</a></td>\n";
-    echo "                      </tr>\n";
+    echo "<a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\"><img src=\"", style_image('home.png'), "\" alt=\"{$lang['visithomepage']}\" title=\"{$lang['visithomepage']}\" border=\"0\" /></a>&nbsp;";
 }
 
 if (bh_session_get_value('UID') != 0) {
 
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_self\">{$lang['sendemail']}</a></td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=", rawurlencode("./pm_write.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_blank\">{$lang['sendpm']}</a></td>\n";
-    echo "                      </tr>\n";
+    echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=", rawurlencode("./pm_write.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_blank\"><img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['sendpm']}\" border=\"0\" /></a>&nbsp;";
 
-    if ($uid != bh_session_get_value('UID')) {
+    if ($uid <> bh_session_get_value('UID')) {
 
-        if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
+        echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=", rawurlencode("user_profile.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_self\">{$lang['relationship']}</a>&nbsp;";
+        echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['findusersposts']}\" border=\"0\" /></a>&nbsp;";
+    
+    }else {
 
-            $setrel = 0;
-            $text = $lang['removefromfriends'];
-
-        }else {
-
-            $setrel = USER_FRIEND;
-            $text = $lang['addtofriends'];
-        }
-
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;setrel=$setrel\" target=\"_self\">$text</a></td>\n";
-        echo "                      </tr>\n";
-
-        if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
-
-            $setrel = 0;
-            $text = $lang['stopignoringuser'];
-
-        }else {
-
-            $setrel = USER_IGNORED;
-            $text = $lang['ignorethisuser'];
-        }
-
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;setrel=$setrel\" target=\"_self\">$text</a></td>\n";
-        echo "                      </tr>\n";
+        echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['findmyposts']}\" border=\"0\" /></a>&nbsp;";
     }
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\">Find user's posts</a></td>\n";
-    echo "                      </tr>\n";
 }
 
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                        </td>\n";
+echo "                        <td class=\"subhead\" colspan=\"2\" align=\"right\">{$lang['totaltimeinforum']}: {$user_profile['USER_TIME_TOTAL']}&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\" align=\"right\">{$lang['longesttimeinforum']}: {$user_profile['USER_TIME_BEST']}&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\" align=\"right\">{$lang['totaltimeinforum']}: {$user_profile['USER_TIME_TOTAL']}&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;</td>\n";
@@ -411,8 +405,6 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</div>\n";
-
-
 
 html_draw_bottom();
 

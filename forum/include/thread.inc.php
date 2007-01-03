@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.93 2006-11-27 01:29:08 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.94 2007-01-03 20:31:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -564,9 +564,24 @@ function thread_merge($tida, $tidb, $merge_type)
                 break;
         }
 
-        if (is_array($post_data_array) && isset($post_data_array[0]['TID'])) {
+        if (is_array($post_data_array) && sizeof($post_data_array) > 0) {
+
+            foreach ($post_data_array as $post_data) {
+
+                if (!is_array($post_data)) return false;
+                if (!isset($post_data['TID'])) return false;
+                if (!isset($post_data['REPLY_TO_PID'])) return false;
+                if (!isset($post_data['FROM_UID'])) return false;
+                if (!isset($post_data['TO_UID'])) return false;
+                if (!isset($post_data['CREATED'])) return false;
+            }
 
             if ($new_thread = thread_get($post_data_array[0]['TID'])) {
+
+                if (!is_array($new_thread)) return false;
+                if (!isset($new_thread['FID'])) return false;
+                if (!isset($new_thread['BY_UID'])) return false;
+                if (!isset($new_thread['TITLE'])) return false;
 
                 $new_tid = post_create_thread($new_thread['FID'], $new_thread['BY_UID'], _htmlentities_decode($new_thread['TITLE']), 'N', 'N', true);
 
@@ -738,7 +753,7 @@ function thread_merge_get($tida, $tidb)
 function thread_split($tid, $spid, $split_type)
 {
     if (!is_numeric($tid)) return false;
-    if (!is_numeric($spid)) return false;
+    if (!is_numeric($spid) || $spid < 1) return false;
     if (!is_numeric($split_type)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
@@ -747,26 +762,44 @@ function thread_split($tid, $spid, $split_type)
 
     if ($threaddata = thread_get($tid)) {
 
+        if (!is_array($threaddata)) return false;
+        if (!isset($threaddata['FID'])) return false;
+        if (!isset($threaddata['BY_UID'])) return false;
+        if (!isset($threaddata['TITLE'])) return false;
+
         thread_set_closed($tid, true);
+
+        $post_data_array = array();
+        $new_tid = -1;
 
         switch ($split_type) {
 
             case THREAD_SPLIT_REPLIES:
         
                 $post_data_array = thread_split_get_replies($tid, $spid);
-                $new_tid = post_create_thread($threaddata['FID'], $threaddata['BY_UID'], _htmlentities_decode($threaddata['TITLE']), 'N', 'N', true);
                 break;
 
             case THREAD_SPLIT_FOLLOWING:
 
-                $post_data_array = thread_split_get_following($tid, $spid);
-                $new_tid = post_create_thread($threaddata['FID'], $threaddata['BY_UID'], _htmlentities_decode($threaddata['TITLE']), 'N', 'N', true);
+                $post_data_array = thread_split_get_following($tid, $spid);               
                 break;
         }
 
-        if ($thread_new = thread_get($new_tid, true)) {
+        if (is_array($post_data_array) && sizeof($post_data_array) > 0) {
 
-            if (is_array($post_data_array) && sizeof($post_data_array) > 0 && $new_tid > 0) {
+            foreach ($post_data_array as $post_data) {
+
+                if (!is_array($post_data)) return false;
+                if (!isset($post_data['TID'])) return false;
+                if (!isset($post_data['REPLY_TO_PID'])) return false;
+                if (!isset($post_data['FROM_UID'])) return false;
+                if (!isset($post_data['TO_UID'])) return false;
+                if (!isset($post_data['CREATED'])) return false;
+            }
+
+            $new_tid = post_create_thread($threaddata['FID'], $threaddata['BY_UID'], _htmlentities_decode($threaddata['TITLE']), 'N', 'N', true);
+
+            if (($new_tid > -1) && ($thread_new = thread_get($new_tid, true))) {
 
                 foreach ($post_data_array as $post_data) {
 
@@ -807,7 +840,7 @@ function thread_split($tid, $spid, $split_type)
 
                 thread_set_closed($tid, false);
                 thread_set_closed($new_tid, false);
-                
+
                 return array($tid, $spid, $new_tid, $thread_new['TITLE']);
             }
         }

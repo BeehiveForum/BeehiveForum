@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.29 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.30 2007-01-03 20:31:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,6 +94,15 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     html_draw_bottom();
     exit;
 }
+
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}else {
+    $page = 1;
+}
+
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
 
 $error_html = "";
 $add_success = "";
@@ -630,9 +639,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                  <td class=\"subhead\" align=\"left\" width=\"225\">{$lang['updatefrequency']}&nbsp;</td>\n";
     echo "                </tr>\n";
 
-    if ($rss_feeds = rss_get_feeds()) {
+    $rss_feeds = rss_get_feeds($start);
 
-        foreach ($rss_feeds as $rss_feed) {
+    if (sizeof($rss_feeds['rss_feed_array']) > 0) {
+
+        foreach ($rss_feeds['rss_feed_array'] as $rss_feed) {
             
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("t_delete[{$rss_feed['RSSID']}]", "Y", false), "</td>\n";
@@ -657,6 +668,12 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $rss_feeds['rss_feed_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

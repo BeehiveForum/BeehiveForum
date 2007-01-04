@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.48 2006-12-12 21:42:25 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.49 2007-01-04 18:42:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -87,6 +87,14 @@ if (!$webtag = get_webtag($webtag_search)) {
 
 $lang = load_language_file();
 
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+}else {
+    $page = 1;
+}
+
 html_draw_top();
 
 if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
@@ -97,7 +105,7 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 }
 
 if (isset($_POST['back'])) {
-    header_redirect("./admin_folders.php?webtag=$webtag");
+    header_redirect("./admin_folders.php?webtag=$webtag&page=$page");
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
@@ -226,14 +234,17 @@ if (isset($_POST['delete'])) {
 
     if ($folder_data['THREAD_COUNT'] == 0) {
 
-        $folder_name = folder_get_title($fid);
+        if (folder_delete($fid)) {
 
-        folder_delete($fid);
+            admin_add_log_entry(DELETE_FOLDER, $folder_data['TITLE']);
 
-        admin_add_log_entry(DELETE_FOLDER, $folder_name);
+            $del_success = rawurlencode($folder_data['TITLE']);
+            header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success&page=$page");
 
-        $del_success = rawurlencode($folder_data['TITLE']);
-        header_redirect("./admin_folders.php?webtag=$webtag&del_success=$del_success");
+        }else {
+
+            $status_html = "<h2>{$lang['failedtodeletefolder']}</h2>\n";
+        }
 
     }else {
 
@@ -258,6 +269,7 @@ echo "  <form name=\"thread_options\" action=\"admin_folder_edit.php\" method=\"
 echo "  ", form_input_hidden('fid', $fid), "\n";
 echo "  ", form_input_hidden('position', $folder_data['POSITION']), "\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('page', $page), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

@@ -980,6 +980,7 @@ a {
     margin: 0px 0px 0px 0px;
     padding: 0px 5px 0px 5px;
     background-color: #A6BED7;
+    border-bottom: 1px solid #000000;
 }
 
 .profile_items {
@@ -999,7 +1000,6 @@ a {
     border-style: solid;
     background-color: #A6BED7;
     padding: 5px;
-    margin: 0px;
     text-align: center;
 }
 
@@ -1009,6 +1009,5 @@ a {
     border-style: solid;
     background-color: #C8D7E6;
     padding: 5px;
-    margin: 0px;
     text-align: center;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.376 2007-01-03 23:17:45 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.377 2007-01-04 18:42:24 decoyduck Exp $ */
 
 // International English language file
 
@@ -412,6 +412,7 @@ $lang['nofolderidspecified'] = "No Folder ID specified";
 $lang['invalidfolderid'] = "Invalid Folder ID. Check that a folder with this ID exists!";
 $lang['successfullyaddedfolder'] = "Successfully Added Folder";
 $lang['successfullydeletedfolder'] = "Successfully Deleted Folder";
+$lang['failedtodeletefolder'] = "Failed to delete folder.";
 $lang['folderupdatedsuccessfully'] = "Folder updated successfully";
 $lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
 $lang['forumisnotrestricted'] = "Forum is not restricted";

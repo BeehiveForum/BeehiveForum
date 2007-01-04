@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.118 2007-01-03 23:17:45 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.119 2007-01-04 18:42:24 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -95,8 +95,40 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     exit;
 }
 
+$error_html = "";
+
+if (isset($_POST['delete'])) {
+
+    if (isset($_POST['t_delete']) && is_array($_POST['t_delete'])) {
+
+        foreach($_POST['t_delete'] as $fid => $delete_folder) {
+    
+            if (($delete_folder == "Y") && ($folder_data = folder_get($fid))) {
+
+                if ($folder_data['THREAD_COUNT'] < 1) {
+                
+                    if (folder_delete($fid)) {
+
+                        admin_add_log_entry(DELETE_FOLDER, $folder_data['TITLE']);
+                        $del_success = "<h2>{$lang['successfullydeletedfolder']}</h2>\n";
+
+                    }else {
+                    
+                        $error_html.= "<h2>{$lang['failedtodeletefolder']}</h2>\n";
+                    }
+                
+                }else {
+
+                    $error_html = "<h2>{$lang['cannotdeletefolderwiththreads']}</h2>\n";
+                }                
+            }
+        }
+    }
+
+}
+
 if (isset($_POST['addnew'])) {
-    header_redirect("./admin_folder_add.php?webtag=$webtag");
+    header_redirect("./admin_folder_add.php?webtag=$webtag&page=$page");
 }
 
 if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
@@ -104,7 +136,7 @@ if (isset($_POST['move_up']) && is_array($_POST['move_up'])) {
     list($fid) = array_keys($_POST['move_up']);
     
     if (folder_move_up($fid)) {
-        header_redirect("admin_folders.php?webtag=$webtag");
+        header_redirect("admin_folders.php?webtag=$webtag&page=$page");
     }
 }
 
@@ -113,16 +145,18 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
     list($fid) = array_keys($_POST['move_down']);
     
     if (folder_move_down($fid)) {
-        header_redirect("admin_folders.php?webtag=$webtag");
+        header_redirect("admin_folders.php?webtag=$webtag&page=$page");
     }
 }
 
 if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
-    header_redirect("admin_folders.php?webtag=$webtag");
+    header_redirect("admin_folders.php?webtag=$webtag&page=$page");
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
 }else {
     $page = 1;
 }
@@ -132,7 +166,6 @@ if ($start < 0) $start = 0;
 
 html_draw_top();
 
-// Draw the form
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['managefolders']}</h1>\n";
 
 if (isset($_GET['add_success']) && strlen(trim(_stripslashes($_GET['add_success']))) > 0) {
@@ -143,10 +176,15 @@ if (isset($_GET['del_success']) && strlen(trim(_stripslashes($_GET['del_success'
     echo "<h2>{$lang['successfullydeletedfolder']}: ", trim(_stripslashes($_GET['del_success'])), "</h2>\n";
 }
 
+if (!isset($error_html) && strlen($error_html) > 0) {
+    echo $error_html;
+}
+
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
+echo "  ", form_input_hidden('page', $page), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -156,7 +194,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">&nbsp;</td>\n";
-echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['foldername']}</td>\n";
+echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\" colspan=\"2\">{$lang['foldername']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['threadcount']}</td>\n";
 echo "                  <td class=\"subhead\" align=\"left\" nowrap=\"nowrap\">{$lang['permissions']}</td>\n";
 echo "                </tr>\n";
@@ -172,26 +210,27 @@ if (sizeof($folder_array['folder_array']) > 0) {
         $folder_index++;
 
         echo "                <tr>\n";
+        echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("t_delete[{$folder['FID']}]", "Y", false), "</td>\n";
 
         if ($folder_array['folder_count'] == 1) {
 
             echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
 
         }elseif ($folder_index == $folder_array['folder_count']) {
 
             echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
 
         }elseif ($folder_index > 1) {
 
             echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
 
         }else {
 
             echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"Click To Edit Folder Details\">{$folder['TITLE']}</a></td>\n";
         }
 
         if ($thread_count = folder_get_thread_count($folder['FID'])) {
@@ -235,7 +274,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("addnew", $lang['addnewfolder']), "</td>\n";
+echo "      <td align=\"center\">", form_submit("addnew", $lang['addnewfolder']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

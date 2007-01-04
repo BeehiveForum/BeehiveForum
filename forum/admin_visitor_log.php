@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.5 2007-01-04 18:22:22 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.6 2007-01-04 18:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,7 +99,7 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
-    $start = floor($_GET['page'] - 1) * 20;
+    $start = floor($_GET['page'] - 1) * 10;
 }else {
     $start = 0;
 }

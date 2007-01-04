@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.91 2007-01-04 18:22:22 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.92 2007-01-04 18:26:17 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -987,12 +987,11 @@ function admin_get_user_approval_queue($offset = 0)
 * @param integer $limit  - limit for number of results
 */
 
-function admin_get_visitor_log($offset, $limit)
+function admin_get_visitor_log($offset)
 {
     $db_admin_get_visitor_log = db_connect();
 
     if (!is_numeric($offset)) $offset = 0;
-    if (!is_numeric($limit)) $limit = 10;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1024,7 +1023,7 @@ function admin_get_visitor_log($offset, $limit)
     $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, $limit";
+    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, 10";
 
     $result = db_query($sql, $db_admin_get_visitor_log);
 
@@ -1061,8 +1060,8 @@ function admin_get_visitor_log($offset, $limit)
 
     }else if ($users_get_recent_count > 0) {
 
-        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
-        admin_get_visitor_log($offset, $limit);
+        $offset = ($offset - 10) > 0 ? $offset - 10 : 0;        
+        admin_get_visitor_log($offset);
     }
 
     return array('user_count' => $users_get_recent_count,

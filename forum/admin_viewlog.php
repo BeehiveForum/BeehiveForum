@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.104 2007-01-04 18:22:22 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.105 2007-01-04 18:26:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -187,8 +187,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
     foreach ($admin_log_array['admin_log_array'] as $admin_log_entry) {
 
         echo "                  <tr>\n";
-        echo "                    <td class=\"posthead\" align=\"left\" valign=\"top\">", format_time($admin_log_entry['CREATED']), "</td>\n";
-        echo "                    <td class=\"posthead\" align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", add_wordfilter_tags(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME'])), "</a></td>\n";
+        echo "                    <td align=\"left\" valign=\"top\">", format_time($admin_log_entry['CREATED']), "</td>\n";
+        echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", add_wordfilter_tags(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME'])), "</a></td>\n";
 
         $entry_array = explode("\x00", $admin_log_entry['ENTRY']);
 
@@ -519,7 +519,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                 break;
         }
 
-        echo "                    <td class=\"posthead\" align=\"left\">", $action_text, "</td>\n";
+        echo "                    <td align=\"left\">", $action_text, "</td>\n";
         echo "                  </tr>\n";
 
     }
@@ -527,10 +527,13 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 }else {
 
     echo "                  <tr>\n";
-    echo "                    <td class=\"posthead\" colspan=\"3\" align=\"left\">{$lang['adminlogempty']}</td>\n";
+    echo "                    <td colspan=\"3\" align=\"left\">{$lang['adminlogempty']}</td>\n";
     echo "                  </tr>\n";
 }
 
+echo "                <tr>\n";
+echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";

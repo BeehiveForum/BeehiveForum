@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.90 2006-12-30 22:18:22 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.91 2007-01-04 18:22:22 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -138,7 +138,7 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
     $sql.= "ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY, USER.LOGON, USER.NICKNAME ";
     $sql.= "FROM {$table_data['PREFIX']}ADMIN_LOG ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
-    $sql.= "ORDER BY ADMIN_LOG.$sort_by $sort_dir LIMIT $offset, 20";
+    $sql.= "ORDER BY ADMIN_LOG.$sort_by $sort_dir LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_get_log_entries)) return false;
 
@@ -148,6 +148,11 @@ function admin_get_log_entries($offset, $sort_by = 'CREATED', $sort_dir = 'DESC'
 
             $admin_log_array[] = $row;
         }
+
+    }else if ($admin_log_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        return admin_get_log_entries($offset, $sort_by, $sort_dir);
     }
 
     return array('admin_log_count' => $admin_log_count,
@@ -193,6 +198,11 @@ function admin_get_word_filter_list($offset)
 
             $word_filter_array[$row['ID']] = $row;
         }
+
+    }else if ($word_filter_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        return admin_get_word_filter_list($offset);
     }
 
     return array('word_filter_count' => $word_filter_count,
@@ -447,6 +457,11 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
                 $user_search_array[$row['UID']] = $row;
             }
         }
+    
+    }else if ($user_search_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        admin_user_search($usersearch, $sort_by, $sort_dir, $filter, $offset);
     }
 
     return array('user_count' => $user_search_count,
@@ -551,6 +566,11 @@ function admin_user_get_all($sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'AS
 
             $user_get_all_array[$row['UID']] = $row;
         }
+
+    }else if ($user_get_all_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        admin_user_get_all($sort_by, $sort_dir, $filter, $offset);
     }
 
     return array('user_count' => $user_get_all_count,
@@ -783,9 +803,17 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
 
     $result = db_query($sql, $db_admin_get_bandata);
 
-    while ($row = db_fetch_array($result)) {
+    if (db_num_rows($result) > 0) {
+    
+        while ($row = db_fetch_array($result)) {
 
-        $ban_data_array[$row['ID']] = $row;
+            $ban_data_array[$row['ID']] = $row;
+        }
+
+    }else if ($ban_data_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        admin_get_ban_data($sort_by, $sort_dir, $offset);
     }
 
     return array('ban_count' => $ban_data_count,
@@ -860,12 +888,20 @@ function admin_get_post_approval_queue($offset = 0)
 
     $result = db_query($sql, $db_admin_get_post_approval_queue);
 
-    while ($post_array = db_fetch_array($result)) {
+    if (db_num_rows($result) > 0) {
+    
+        while ($post_array = db_fetch_array($result)) {
 
-        if (isset($post_array['MSG']) && validate_msg($post_array['MSG'])) {
+            if (isset($post_array['MSG']) && validate_msg($post_array['MSG'])) {
 
-            $post_approval_array[] = $post_array;
+                $post_approval_array[] = $post_array;
+            }
         }
+
+    }else if ($post_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        admin_get_post_approval_queue($offset);
     }
 
     return array('post_count' => $post_count,
@@ -923,9 +959,17 @@ function admin_get_user_approval_queue($offset = 0)
 
     $result = db_query($sql, $db_admin_get_user_approval_queue);
 
-    while ($user_array = db_fetch_array($result)) {
+    if (db_num_rows($result) > 0) {
+    
+        while ($user_array = db_fetch_array($result)) {
 
-        $user_approval_array[] = $user_array;
+            $user_approval_array[] = $user_array;
+        }
+
+    }else if ($user_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        admin_get_user_approval_queue($offset);
     }
 
     return array('user_count' => $user_count,
@@ -948,7 +992,7 @@ function admin_get_visitor_log($offset, $limit)
     $db_admin_get_visitor_log = db_connect();
 
     if (!is_numeric($offset)) $offset = 0;
-    if (!is_numeric($limit)) $limit = 20;
+    if (!is_numeric($limit)) $limit = 10;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1014,6 +1058,11 @@ function admin_get_visitor_log($offset, $limit)
             $users_get_recent_array[] = $visitor_array;
             $users_get_recent_count++;
         }
+
+    }else if ($users_get_recent_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        admin_get_visitor_log($offset, $limit);
     }
 
     return array('user_count' => $users_get_recent_count,

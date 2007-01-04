@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_make_style.php,v 1.96 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_make_style.php,v 1.97 2007-01-04 18:22:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -672,7 +672,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\">\n";
 echo "                    <table width=\"100%\">\n";
 echo "                      <tr align=\"right\">\n";
-echo "                        <td align=\"left\" colspan=\"3\"><span class=\"postnumber\" style=\"color: #", contrastFont($elements['box']), "\"><a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">1.1</a> {$lang['inreplyto']} <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">1.2</a>&nbsp;</span></td>\n";
+echo "                        <td align=\"right\" colspan=\"3\"><span class=\"postnumber\" style=\"color: #", contrastFont($elements['box']), "\"><a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">1.1</a> {$lang['inreplyto']} <a href=\"javascript:void(0)\" style=\"color: #", contrastFont($elements['box']), "\">1.2</a>&nbsp;</span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td class=\"postbody\" style=\"color: #", contrastFont($elements['box']), "\" align=\"left\">{$lang['messagepreview']}</td>\n";

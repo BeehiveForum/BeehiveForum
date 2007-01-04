@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.4 2006-12-13 22:24:09 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.5 2007-01-04 18:22:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,7 +127,7 @@ echo "                   <td class=\"subhead\" align=\"left\" width=\"150\">{$la
 echo "                   <td class=\"subhead\" align=\"left\" width=\"400\">{$lang['referer']}</td>\n";
 echo "                 </tr>\n";
 
-if ($admin_visitor_log_array = admin_get_visitor_log($start, 20)) {
+if ($admin_visitor_log_array = admin_get_visitor_log($start, 10)) {
 
     if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
@@ -219,7 +219,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", page_links(get_request_uri(false), $start, $admin_visitor_log_array['user_count'], 20), "</td>\n";
+echo "      <td align=\"center\">", page_links(get_request_uri(false), $start, $admin_visitor_log_array['user_count'], 10), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

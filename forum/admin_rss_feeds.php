@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_rss_feeds.php,v 1.31 2007-01-04 18:22:22 decoyduck Exp $ */
+/* $Id: admin_rss_feeds.php,v 1.32 2007-01-05 22:17:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -696,7 +696,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("addfeed", $lang['addnewfeed']), "&nbsp;", form_submit("delete", $lang['deleteselectedfeeds']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("addfeed", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

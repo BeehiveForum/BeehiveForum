@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_banned.php,v 1.47 2006-12-30 21:58:05 decoyduck Exp $ */
+/* $Id: admin_banned.php,v 1.48 2007-01-05 22:17:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -797,7 +797,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addban']), "&nbsp;", form_submit("delete", $lang['deleteselectbans']), "</td>\n";
+        echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
 
@@ -823,13 +823,13 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         if (isset($ret)) {
 
             echo "    <tr>\n";
-            echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addban']), "&nbsp;", form_submit("delete", $lang['deleteselectbans']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
+            echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
             echo "    </tr>\n";
 
         }else {
 
             echo "    <tr>\n";
-            echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addban']), "&nbsp;", form_submit("delete", $lang['deleteselectbans']), "</td>\n";
+            echo "      <td colspan=\"2\" align=\"center\">", form_submit("addban", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
             echo "    </tr>\n";
         }
 

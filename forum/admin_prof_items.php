@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.97 2006-12-13 18:26:17 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.98 2007-01-05 21:12:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -94,6 +94,25 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
+if (isset($_GET['sect_page']) && is_numeric($_GET['sect_page'])) {
+    $sect_page = ($_GET['sect_page'] > 0) ? $_GET['sect_page'] : 1;
+}elseif (isset($_POST['sect_page']) && is_numeric($_POST['sect_page'])) {
+    $sect_page = ($_POST['sect_page'] > 0) ? $_POST['sect_page'] : 1;
+}else {
+    $sect_page = 1;
+}
+
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}elseif (isset($_POST['page']) && is_numeric($_POST['page'])) {
+    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+}else {
+    $page = 1;
+}
+
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
+
 if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
     $psid = $_GET['psid'];
@@ -109,14 +128,6 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
     echo "<p>{$lang['noprofilesectionspecified']}</p>\n";
     html_draw_bottom();
     exit;
-}
-
-if (isset($_GET['ret']) && strlen(trim(_stripslashes($_GET['ret']))) > 0) {
-    $ret = trim(_stripslashes($_GET['ret']));
-}elseif (isset($_POST['ret']) && strlen(trim(_stripslashes($_POST['ret']))) > 0) {
-    $ret = trim(_stripslashes($_POST['ret']));
-}else {
-    $ret = "";
 }
 
 if (isset($_POST['delete'])) {
@@ -146,17 +157,14 @@ if (isset($_POST['delete'])) {
 }
 
 if (isset($_POST['cancel'])) {
+
+    unset($_POST['additem'], $_GET['additem'], $_POST['piid'], $_GET['piid']);
+}
+
+if (isset($_POST['back'])) {
     
-    if (isset($ret) && strlen(trim($ret)) > 0) {
-
-        $redirect = rawurldecode($ret);
-        header_redirect($redirect);
-
-    }else {
-
-        $redirect = "./admin_prof_sect.php?webtag=$webtag&psid=$psid";
-        header_redirect($redirect);
-    }
+    $redirect = "./admin_prof_sect.php?webtag=$webtag&psid=$psid&page=$sect_page";
+    header_redirect($redirect);
 }
 
 if (isset($_POST['additemsubmit'])) {
@@ -229,7 +237,7 @@ if (isset($_POST['additemsubmit'])) {
 
 }elseif (isset($_POST['additem'])) {
 
-    $redirect = "./admin_prof_items.php?webtag=$webtag&psid=$psid&additem=true";
+    $redirect = "./admin_prof_items.php?webtag=$webtag&psid=$psid&additem=true&sect_page=$sect_page";
     header_redirect($redirect);
     exit;
 }
@@ -256,16 +264,12 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
         echo $error_html;
     }
 
-    if (!isset($ret) || strlen(trim($ret)) < 1) {
-        $ret = "./admin_prof_items.php?webtag=$webtag&psid=$psid";
-    }
-
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("psid", $psid), "\n";
-    echo "  ", form_input_hidden("ret", $ret), "\n";
+    echo "  ", form_input_hidden("sect_page", $sect_page), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -279,7 +283,6 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">{$lang['itemname']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? _htmlentities(_stripslashes($_POST['t_name_new'])) : ""), 32, 64), "</td>\n";
@@ -351,17 +354,13 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
         echo $error_html;
     }
 
-    if (!isset($ret) || strlen(trim($ret)) < 1) {
-        $ret = "./admin_prof_items.php?webtag=$webtag&psid=$psid";
-    }
-
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("psid", $psid), "\n";
     echo "  ", form_input_hidden("piid", $piid), "\n";
-    echo "  ", form_input_hidden("ret", $ret), "\n";
+    echo "  ", form_input_hidden("sect_page", $sect_page), "\n";
     echo "  ", form_input_hidden("delete_item[$piid]", "Y"), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
@@ -435,16 +434,12 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     if (isset($del_success) && strlen(trim($del_success)) > 0) echo $del_success;
     if (isset($edit_success) && strlen(trim($edit_success)) > 0) echo $edit_success;
 
-    if (!isset($ret) || strlen(trim($ret)) < 1) {
-        $ret = "./admin_prof_sect.php?webtag=$webtag&psid=$psid";
-    }
-
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("psid", $psid), "\n";
-    echo "  ", form_input_hidden("ret", $ret), "\n";
+    echo "  ", form_input_hidden("sect_page", $sect_page), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -458,22 +453,24 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                  <td class=\"subhead\" align=\"left\">{$lang['type']}</td>\n";
     echo "                </tr>\n";
 
-    if ($profile_items = profile_items_get($psid)) {
+    $profile_items = profile_items_get_by_page($psid, $start);
+
+    if (sizeof($profile_items['profile_items_array']) > 0) {
 
         $profile_index = 0;
 
-        foreach ($profile_items as $profile_item) {
+        foreach ($profile_items['profile_items_array'] as $profile_item) {
 
             $profile_index++;
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_item[{$profile_item['PIID']}]", "Y", false), "</td>\n";
 
-            if (sizeof($profile_items) == 1) {
+            if ($profile_items['profile_items_count'] == 1) {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
-            }elseif ($profile_index == sizeof($profile_items)) {
+            }elseif ($profile_index == $profile_items['profile_items_count']) {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
@@ -486,7 +483,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             }
 
-            echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;&piid={$profile_item['PIID']}\">{$profile_item['NAME']}</a></td>\n";
+            echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">{$profile_item['NAME']}</a></td>\n";
             echo "                  <td valign=\"top\" align=\"left\">{$item_types_array[$profile_item['TYPE']]}</td>\n";
             echo "                </tr>\n";
         }
@@ -512,7 +509,13 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("additem", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $profile_items['profile_items_count'], 10), "</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("additem", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "&nbsp;", form_submit("back", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

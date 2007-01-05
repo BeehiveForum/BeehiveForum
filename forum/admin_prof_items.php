@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_items.php,v 1.98 2007-01-05 21:12:40 decoyduck Exp $ */
+/* $Id: admin_prof_items.php,v 1.99 2007-01-05 22:17:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -130,6 +130,12 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
     exit;
 }
 
+if (isset($_GET['viewitems'])) {
+    $viewitems = "yes";
+}elseif (isset($_POST['viewitems'])) {
+    $viewitems = "yes";
+}
+
 if (isset($_POST['delete'])) {
 
     if (isset($_POST['delete_item']) && is_array($_POST['delete_item'])) {
@@ -163,8 +169,16 @@ if (isset($_POST['cancel'])) {
 
 if (isset($_POST['back'])) {
     
-    $redirect = "./admin_prof_sect.php?webtag=$webtag&psid=$psid&page=$sect_page";
-    header_redirect($redirect);
+    if (isset($viewitems)) {
+
+        $redirect = "./admin_prof_sect.php?webtag=$webtag&page=$sect_page";
+        header_redirect($redirect);
+
+    }else {
+    
+        $redirect = "./admin_prof_sect.php?webtag=$webtag&psid=$psid&page=$sect_page";
+        header_redirect($redirect);
+    }
 }
 
 if (isset($_POST['additemsubmit'])) {
@@ -270,6 +284,9 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("psid", $psid), "\n";
     echo "  ", form_input_hidden("sect_page", $sect_page), "\n";
+    
+    if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
+
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -362,6 +379,9 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "  ", form_input_hidden("piid", $piid), "\n";
     echo "  ", form_input_hidden("sect_page", $sect_page), "\n";
     echo "  ", form_input_hidden("delete_item[$piid]", "Y"), "\n";
+
+    if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
+
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -440,6 +460,9 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden("psid", $psid), "\n";
     echo "  ", form_input_hidden("sect_page", $sect_page), "\n";
+
+    if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
+
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

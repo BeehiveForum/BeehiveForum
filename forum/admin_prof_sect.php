@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.89 2006-12-13 18:26:17 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.90 2007-01-05 21:12:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -95,6 +95,17 @@ if (!(bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     exit;
 }
 
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}elseif (isset($_POST['page']) && is_numeric($_POST['page'])) {
+    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+}else {
+    $page = 1;
+}
+
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
+
 $error_html = "";
 $add_success = "";
 $del_success = "";
@@ -102,7 +113,7 @@ $edit_success = "";
 
 if (isset($_POST['cancel']) || isset($_POST['delete'])) {
 
-    unset($_POST['addfeed'], $_POST['psid'], $_GET['psid']);
+    unset($_POST['addsection'], $_GET['addsection'], $_POST['psid'], $_GET['psid']);
 }
 
 if (isset($_POST['delete_sections'])) {
@@ -182,14 +193,14 @@ if (isset($_POST['delete_sections'])) {
 
 }elseif (isset($_POST['addsection'])) {
 
-    $redirect = "./admin_prof_sect.php?webtag=$webtag&addsection=true";
+    $redirect = "./admin_prof_sect.php?webtag=$webtag&page=$page&addsection=true";
     header_redirect($redirect);
     exit;
 
 }elseif (isset($_POST['viewitems']) && is_array($_POST['viewitems'])) {
 
     list($psid) = array_keys($_POST['viewitems']);
-    $redirect = "./admin_prof_items.php?webtag=$webtag&psid=$psid";
+    $redirect = "./admin_prof_items.php?webtag=$webtag&psid=$psid&sect_page=$page";
     header_redirect($redirect);
     exit;
 }
@@ -219,6 +230,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "  <form name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden('addsection', 'true'), "\n";
+    echo "  ", form_input_hidden('page', $page), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -299,6 +311,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "  <form name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
     echo "  ", form_input_hidden('psid', $psid), "\n";
+    echo "  ", form_input_hidden('page', $page), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -333,7 +346,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("editfeedsubmit", $lang['save']), "&nbsp;", form_submit("viewitems[$psid]", $lang['viewitems']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("editfeedsubmit", $lang['save']), "&nbsp;", form_submit("viewitems[$psid]", $lang['viewitems']), "&nbsp;", form_submit("cancel", $lang['back']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
@@ -354,6 +367,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "<div align=\"center\">\n";
     echo "<form name=\"f_sections\" action=\"admin_prof_sect.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('page', $page), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -367,22 +381,24 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "                  <td class=\"subhead\" align=\"center\">{$lang['items']}</td>\n";
     echo "                </tr>\n";
 
-    if ($profile_sections = profile_sections_get()) {
+    $profile_sections = profile_sections_get_by_page($start);
+
+    if (sizeof($profile_sections['profile_sections_array']) > 0) {
 
         $profile_index = 0;
 
-        foreach ($profile_sections as $profile_section) {
+        foreach ($profile_sections['profile_sections_array'] as $profile_section) {
 
             $profile_index++;
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_section[{$profile_section['PSID']}]", "Y", false), "</td>\n";
 
-            if (sizeof($profile_sections) == 1) {
+            if ($profile_sections['profile_sections_count'] == 1) {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
-            }elseif ($profile_index == sizeof($profile_sections)) {
+            }elseif ($profile_index == $profile_sections['profile_sections_count']) {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
 
@@ -395,8 +411,8 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             }
 
-            echo "                  <td valign=\"top\" align=\"left\" width=\"450\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;psid={$profile_section['PSID']}\">{$profile_section['NAME']}</td>\n";
-            echo "                  <td valign=\"top\" align=\"center\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&ret=admin_prof_sect.php%3Fwebtag%3D$webtag\">{$profile_section['ITEM_COUNT']}</a></td>\n";
+            echo "                  <td valign=\"top\" align=\"left\" width=\"450\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">{$profile_section['NAME']}</a></td>\n";
+            echo "                  <td valign=\"top\" align=\"center\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&amp;sect_page=$page\">{$profile_section['ITEM_COUNT']}</a></td>\n";
             echo "                </tr>\n";
         }
     }
@@ -409,6 +425,12 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links(get_request_uri(false), $start, $profile_sections['profile_sections_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

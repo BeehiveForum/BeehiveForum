@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: profile.inc.php,v 1.45 2006-12-17 10:31:41 decoyduck Exp $ */
+/* $Id: profile.inc.php,v 1.46 2007-01-05 21:12:40 decoyduck Exp $ */
 
 /**
 * Functions relating to profiles
@@ -137,6 +137,49 @@ function profile_sections_get()
     }
 }
 
+function profile_sections_get_by_page($start)
+{
+    $db_profile_sections_get_by_page = db_connect();
+
+    if (!is_numeric($start)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $profile_sections_array = array();
+
+    $sql = "SELECT COUNT(PSID) FROM {$table_data['PREFIX']}PROFILE_SECTION";
+    $result = db_query($sql, $db_profile_sections_get_by_page);
+
+    list($profile_sections_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_SECTION.NAME, ";
+    $sql.= "PROFILE_SECTION.POSITION, COUNT(PROFILE_ITEM.PIID) AS ITEM_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_SECTION PROFILE_SECTION ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}PROFILE_ITEM PROFILE_ITEM ";
+    $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
+    $sql.= "GROUP BY PROFILE_SECTION.PSID ";
+    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_SECTION.PSID ";
+    $sql.= "LIMIT $start, 10";
+
+    $result = db_query($sql, $db_profile_sections_get_by_page);
+
+    if (db_num_rows($result) > 0) {
+
+        while($row = db_fetch_array($result)) {
+
+            $profile_sections_array[] = $row;
+        }
+
+    }else if ($profile_sections_count > 0) {
+
+        $start = ($start - 10) > 0 ? $start - 10 : 0;
+        return profile_sections_get_by_page($start);
+    }
+
+    return array('profile_sections_array' => $profile_sections_array,
+                 'profile_sections_count' => $profile_sections_count);
+}
+
 function profile_items_get($psid)
 {
     $db_profile_items_get = db_connect();
@@ -147,7 +190,7 @@ function profile_items_get($psid)
 
     $sql = "SELECT PIID, NAME, TYPE, POSITION ";
     $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM ";
-    $sql.= "WHERE PSID = $psid ORDER BY POSITION, PIID";
+    $sql.= "WHERE PSID = '$psid' ORDER BY POSITION, PIID";
 
     $result = db_query($sql, $db_profile_items_get);
 
@@ -166,6 +209,48 @@ function profile_items_get($psid)
 
         return false;
     }
+}
+
+function profile_items_get_by_page($psid, $start)
+{
+    $db_profile_items_get_by_page = db_connect();
+
+    if (!is_numeric($psid)) return false;
+    if (!is_numeric($start)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $profile_items_array = array();
+
+    $sql = "SELECT COUNT(PIID) FROM {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "WHERE PSID = '$psid'";
+
+    $result = db_query($sql, $db_profile_items_get_by_page);
+
+    list($profile_items_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT PIID, NAME, TYPE, POSITION ";
+    $sql.= "FROM {$table_data['PREFIX']}PROFILE_ITEM ";
+    $sql.= "WHERE PSID = '$psid' ORDER BY POSITION, PIID ";
+    $sql.= "LIMIT $start, 10";
+
+    $result = db_query($sql, $db_profile_items_get_by_page);
+
+    if (db_num_rows($result) > 0) {
+
+        while($row = db_fetch_array($result)) {
+
+            $profile_items_array[] = $row;
+        }
+
+    }else if ($profile_items_count > 0) {
+
+        $start = ($start - 10) > 0 ? $start - 10 : 0;
+        return profile_items_get_by_page($psid, $start);
+    }
+
+    return array('profile_items_array' => $profile_items_array,
+                 'profile_items_count' => $profile_items_count);
 }
 
 function profile_item_get_name($piid)

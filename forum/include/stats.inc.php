@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.65 2006-08-25 14:42:13 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.66 2007-01-06 18:41:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -234,7 +234,7 @@ function get_post_count()
 {
     $db_get_post_count = db_connect();
 
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return 0;
 
     $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$table_data['PREFIX']}POST POST";
     $result = db_query($sql, $db_get_post_count);
@@ -252,7 +252,7 @@ function get_recent_post_count()
 {
     $db_get_post_count = db_connect();
 
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return 0;
 
     $post_stamp = time() - HOUR_IN_SECONDS;
 
@@ -274,7 +274,7 @@ function get_longest_thread()
 {
     $db_get_longest_thread = db_connect();
 
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "ORDER BY THREAD.LENGTH DESC LIMIT 0, 1";
@@ -294,7 +294,7 @@ function get_most_users()
 {
     $db_get_most_users = db_connect();
 
-    $table_data = get_table_prefix();
+    if (!$table_data = get_table_prefix()) return false;
 
     $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE ";
     $sql.= "FROM {$table_data['PREFIX']}STATS";

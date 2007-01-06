@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.377 2007-01-04 18:42:24 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.378 2007-01-06 18:41:11 decoyduck Exp $ */
 
 // International English language file
 
@@ -394,11 +394,6 @@ $lang['wholeword'] = "Whole Word";
 $lang['word_filter_help_1'] = "<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument.";
 $lang['word_filter_help_2'] = "<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument.";
 $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expressions to match text.";
-$lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it's entire contents is lost forever and cannot be recovered.";
-$lang['deleteforum'] = "Delete Forum";
-$lang['successfullycreatedforum'] = "Successfully created forum";
-$lang['failedtocreateforum_1'] = "Failed to create forum";
-$lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 $lang['nameanddesc'] = "Name and Description";
 $lang['movethreads'] = "Move Threads";
 $lang['threadsmovedsuccessfully'] = "Threads moved successfully";
@@ -649,6 +644,23 @@ $lang['clearlog'] = "Clear Log";
 // Admin Forms (admin_forums.php) ------------------------------------------------
 
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
+$lang['invalidforumidorforumnotfound'] = "Invalid forum FID for forum not found";
+$lang['successfullyupdatedforum'] = "Successfully updated forum: '%s'";
+$lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
+$lang['successfullycreatedforum'] = "Successfully created forum: '%s'";
+$lang['failedtocreateforum'] = "Failed to create forum '%s'. Please check to make sure the webtag and table names aren't already in use.";
+$lang['forumdeleteconfirmation'] = "Are you sure you want to delete all of the selected forums?";
+$lang['forumdeletewarning'] = "Please note that you cannot recover deleted forums. Once deleted a forum and all of it's associated data is permenantly removed from the database. If you do not wish to delete the selected forums please click cancel.";
+$lang['successfullydeletedforum'] = "Successfully deleted forum: '%s'";
+$lang['failedtodeleteforum'] = "Failed to deleted forum: '%s'";
+$lang['addforum'] = "Add Forum";
+$lang['editforum'] = "Edit Forum";
+$lang['visitforum'] = "Visit Forum: %s";
+$lang['accesslevel'] = "Access level";
+$lang['messagecount'] = "%s messages";
+$lang['unknownmessagecount'] = "Unknown";
+$lang['forumwebtag'] = "Forum Webtag";
+$lang['defaultforum'] = "Default Forum";
 
 // Admin Global User Permissions
 
@@ -656,10 +668,12 @@ $lang['globaluserpermissions'] = "Global user permissions";
 
 // Admin Forum Settings (admin_forum_settings.php) -------------------------------
 
+$lang['mustsupplyforumwebtag'] = "You must supply a forum webtag";
 $lang['mustsupplyforumname'] = "You must supply a forum name";
 $lang['mustsupplyforumemail'] = "You must supply a forum email address";
 $lang['mustchoosedefaultstyle'] = "You must choose a default forum style";
 $lang['mustchoosedefaultemoticons'] = "You must choose default forum emoticons";
+$lang['mustsupplyforumaccesslevel'] = "You must supply a forum access level";
 $lang['unknownemoticonsname'] = "Unknown emoticons name";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";

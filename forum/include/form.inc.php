@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.85 2006-12-10 17:08:56 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.86 2007-01-06 18:41:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -93,22 +93,26 @@ function form_input_hidden($name, $value = false, $custom_html = false)
 }
 
 
-function form_input_hidden_array($array, &$result_var, $ignore_keys = array())
+function form_input_hidden_array($array)
 {
     if (!is_array($array)) return false;
-    if (!is_array($ignore_keys)) $ignore_keys = array();
-    if (!is_string($result_var)) $result_var = "";
 
-    foreach ($array as $key => $value) {
+    $array_keys = array();
+    $array_values = array();
 
-        if (is_array($value)) {
-            form_input_hidden_array($value, $result_var);
-        }elseif (!in_array($key, $ignore_keys)) {
-            $result_var.= form_input_hidden($key, _htmlentities(_stripslashes($value)));
+    flatten_array($array, $array_keys, $array_values);
+
+    $result_var = "";
+
+    foreach ($array_keys as $key => $key_name) {
+        
+        if (isset($array_values[$key])) {
+        
+            $result_var.= form_input_hidden($key_name, _htmlentities(_stripslashes($array_values[$key])));
         }
     }
 
-    return true;
+    return $result_var;
 }
 
 // Create a textarea input field

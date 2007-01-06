@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.92 2007-01-04 18:26:17 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.93 2007-01-06 18:41:11 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -690,80 +690,82 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 /**
 * Fetch list of forums
 *
-* Fetches a list of forums and their settings
+* Fetches a list of forums.
 *
-* @return array
-* @param void
+* @return mixed
+* @param integer $start - Offset for results.
 */
 
-function admin_get_forum_list()
+function admin_get_forum_list($start)
 {
-    $db_get_forum_list = db_connect();
-    $get_forum_list_array = array();
+    $db_admin_get_forum_list = db_connect();
 
-    $sql = "SELECT * FROM FORUMS ORDER BY FID";
-    $result_forums = db_query($sql, $db_get_forum_list);
+    if (!is_numeric($start)) return false;
 
-    while ($forum_data = db_fetch_array($result_forums)) {
+    if (!$table_data = get_table_prefix()) return false;
 
-        // Get the Forum Name
+    $forums_array = array();
 
-        $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
-        $sql.= "WHERE SNAME = 'forum_name' AND FID = '{$forum_data['FID']}'";
+    $sql = "SELECT COUNT(FID) FROM FORUMS";
+    $result = db_query($sql, $db_admin_get_forum_list);
 
-        $result_forum_name = db_query($sql, $db_get_forum_list);
+    list($forums_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        if (db_num_rows($result_forum_name) > 0) {
+    $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.DEFAULT_FORUM, ";
+    $sql.= "FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS ";
+    $sql.= "LEFT JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID ";
+    $sql.= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
+    $sql.= "LIMIT $start, 10 ";
 
-            $row = db_fetch_array($result_forum_name);
-            $forum_data['FORUM_NAME'] = $row['FORUM_NAME'];
+    $result = db_query($sql, $db_admin_get_forum_list);
 
-        }else {
+    if (db_num_rows($result) > 0) {
 
-            $forum_data['FORUM_NAME'] = "Unnamed Forum";
-        }
+        while($forum_data = db_fetch_array($result)) {
 
-        // Get the Description
-
-        $sql = "SELECT SVALUE AS DESCRIPTION FROM FORUM_SETTINGS WHERE ";
-        $sql.= "FORUM_SETTINGS.FID = {$forum_data['FID']} AND ";
-        $sql.= "FORUM_SETTINGS.SNAME = 'forum_desc'";
-
-        $result_description = db_query($sql, $db_get_forum_list);
-
-        if (db_num_rows($result_description) > 0) {
-
-            $row = db_fetch_array($result_description);
-            $forum_data['DESCRIPTION'] = $row['DESCRIPTION'];
-
-        }else{
-
-            $forum_data['DESCRIPTION'] = "";
-        }
-
-        // Get number of messages on forum
-
-        $forum_data['MESSAGES'] = 0;
-
-        $sql = "SHOW TABLES LIKE '{$forum_data['WEBTAG']}_POST'";
-        $result = db_query($sql, $db_get_forum_list);
-
-        if (db_num_rows($result) > 0) {
-
-            $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
-            $result_post_count = db_query($sql, $db_get_forum_list);
-
-            if (db_num_rows($result_post_count) > 0) {
-
-                $row = db_fetch_array($result_post_count);
-                $forum_data['MESSAGES'] = $row['POST_COUNT'];
+            if ($post_count = admin_forum_get_post_count($forum_data['FID'])) {
+                $forum_data['MESSAGES'] = $post_count;
             }
-        }
 
-        $get_forum_list_array[] = $forum_data;
+            $forums_array[] = $forum_data;
+        }
+    
+    }else if ($forums_count > 0) {
+
+        $start = ($start - 10) > 0 ? $start - 10 : 0;
+        return admin_get_forum_list($start);
     }
 
-    return $get_forum_list_array;
+    return array('forums_array' => $forums_array,
+                 'forums_count' => $forums_count);
+}
+
+/**
+* Fetch post count
+*
+* Fetches post count of specified forum.
+*
+* @return array
+* @param integer $fid - Forum FID.
+*/
+
+function admin_forum_get_post_count($fid)
+{
+    $db_admin_forum_get_post_count = db_connect();
+
+    if (!is_numeric($fid)) return false;
+
+    if ($forum_webtag = forum_get_webtag($fid)) {
+
+        $sql = "SELECT COUNT(PID) FROM {$forum_webtag}_POST";
+        $result = db_query($sql, $db_admin_forum_get_post_count);
+
+        list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+        return $post_count;
+    }
+
+    return false;
 }
 
 /**

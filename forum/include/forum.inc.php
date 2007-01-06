@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.202 2007-01-03 23:17:45 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.203 2007-01-06 18:41:11 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1473,6 +1473,41 @@ function forum_create($webtag, $forum_name, $access)
     return false;
 }
 
+function forum_update($fid, $forum_name, $access_level)
+{
+    if (!is_numeric($fid)) return false;
+    if (!is_numeric($access_level)) return false;
+    
+    if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+
+        $db_forum_update = db_connect();
+
+        $forum_name = addslashes($forum_name);
+
+        $sql = "UPDATE FORUMS SET ACCESS_LEVEL = '$access_level' ";
+        $sql.= "WHERE FID = '$fid'";
+
+        if (!$result = db_query($sql, $db_forum_update)) return false;
+
+        $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$forum_name' ";
+        $sql.= "WHERE SNAME = 'forum_name' AND FID = '$fid'";
+
+        if (!$result = db_query($sql, $db_forum_update)) return false;
+
+        if (db_affected_rows($result) < 1) {
+
+            $sql = "INSERT IGNORE INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
+            $sql.= "VALUES ('$fid', 'forum_name', '$forum_name')";
+
+            if (!$result = db_query($sql, $db_forum_update)) return false;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 function forum_delete($fid)
 {
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
@@ -1482,61 +1517,61 @@ function forum_delete($fid)
         if (!is_numeric($fid)) return false;
 
         $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid'";
-        $result = db_query($sql, $db_forum_delete);
+        if (!$result = db_query($sql, $db_forum_delete)) return false;
 
         if (db_num_rows($result) > 0) {
 
             list($webtag) = db_fetch_array($result, DB_RESULT_NUM);
 
             $sql = "DELETE FROM FORUMS WHERE FID = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE FROM GROUP_PERMS WHERE FORUM = '$fid'";
-            $result_remove = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "SELECT GID FROM GROUPS WHERE FORUM = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             while($user_perms = db_fetch_array($result)) {
 
                 $sql = "DELETE FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
-                $result_remove = db_query($sql, $db_forum_delete);
+                if (!$result = db_query($sql, $db_forum_delete)) return false;
             }
 
             $sql = "DELETE FROM GROUPS WHERE FORUM = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE FROM USER_FORUM WHERE FID = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE FROM VISITOR_LOG WHERE FORUM = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "DELETE FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
             $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            while ($row = db_fetch_array($result)) {
-                delete_attachment_by_aid($row['AID']);
+            while ($attachment_data = db_fetch_array($result)) {
+                delete_attachment_by_aid($attachment_data['AID']);
             }
 
             $sql = "DELETE FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
-            $result = db_query($sql, $db_forum_delete);
+            if (!$result = db_query($sql, $db_forum_delete)) return false;
 
-            forum_delete_tables($webtag);
+            if (forum_delete_tables($webtag)) return true;
         }
     }
+
+    return false;
 }
 
 function forum_delete_tables($webtag)
 {
-    // Only the queen can delete forums!!
-
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
         $db_forum_delete_tables = db_connect();
@@ -1556,8 +1591,10 @@ function forum_delete_tables($webtag)
         foreach ($table_array as $table_name) {
 
             $sql = "DROP TABLE IF EXISTS {$webtag}_{$table_name}";
-            $result = db_query($sql, $db_forum_delete_tables);
+            if (!$result = db_query($sql, $db_forum_delete_tables)) return false;
         }
+
+        return true;
     }
 
     return false;

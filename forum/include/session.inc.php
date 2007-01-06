@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.279 2007-01-06 18:51:54 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.280 2007-01-06 23:42:31 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -577,8 +577,6 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
             $sql.= "VALUES ('$forum_fid', '$uid', NOW(), '$ipaddress', '$http_referer')";
         }
 
-        file_put_contents('visitor.log', "$sql\n", FILE_APPEND);
-
         if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
 
     }else {
@@ -606,8 +604,6 @@ function bh_update_visitor_log($uid, $forum_fid = false, $force_update = false)
                 $sql = "INSERT INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER) ";
                 $sql.= "VALUES ('$forum_fid', 0, NOW(), '$ipaddress', '$http_referer')";
             }
-
-            file_put_contents('visitor.log', "$sql\n", FILE_APPEND);
 
             if ($result = db_query($sql, $db_bh_update_visitor_log)) return true;
         }

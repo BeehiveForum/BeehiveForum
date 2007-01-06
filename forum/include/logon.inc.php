@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.inc.php,v 1.52 2006-12-10 17:08:56 decoyduck Exp $ */
+/* $Id: logon.inc.php,v 1.53 2007-01-06 18:51:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -259,9 +259,7 @@ function draw_logon_form($logon_main, $other_logon = false)
 
         $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
 
-        if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
-            echo $post_vars;
-        }
+        echo form_input_hidden_array($_POST, $ignore_keys);
     }
 
     echo "    ", form_input_hidden('webtag', $webtag), "\n";

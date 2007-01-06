@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.203 2007-01-06 18:41:11 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.204 2007-01-06 18:57:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1538,7 +1538,7 @@ function forum_delete($fid)
             while($user_perms = db_fetch_array($result)) {
 
                 $sql = "DELETE FROM GROUP_USERS WHERE GID = '{$user_perms['GID']}'";
-                if (!$result = db_query($sql, $db_forum_delete)) return false;
+                if (!$result_remove = db_query($sql, $db_forum_delete)) return false;
             }
 
             $sql = "DELETE FROM GROUPS WHERE FORUM = '$fid'";

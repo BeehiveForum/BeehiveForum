@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: x-hacker.inc.php,v 1.220 2006-12-15 20:27:00 decoyduck Exp $ */
+/* $Id: x-hacker.inc.php,v 1.221 2007-01-06 23:26:32 decoyduck Exp $ */
 
 // International English language file
 
@@ -395,10 +395,7 @@ $lang['word_filter_help_1'] = "<b>@ll</b> MA+ch35 4G41ns+ +H3 WH0le tEx+ sO pHIl
 $lang['word_filter_help_2'] = "<b>Wh0L3 W0Rd</b> M4TChES 49@1nS+ WhOLe wOrd\$ onlY \$0 PHilT3rinG M0M +o Mum w1lL No+ cHANg3 m0M3n+ +O mUm3N+.";
 $lang['word_filter_help_3'] = "<b>Preg</b> 4LL0wS J00 to USe p3Rl rEGul@R EXPreSS1on5 t0 m4+ch TexT.";
 $lang['forumdeletewarning'] = "@r3 J00 \$Ur3 j00 w@N+ +0 d3lete +3H s3l3cTed PHoRUM? 0NcE +3h PHORUm 15 d3LET3D iT's ENTiRE CoN+3N+5 1S LoSt pHOr3v3R 4Nd c4NNO+ b3 RecOVer3d.";
-$lang['deleteforum'] = "d3LetE PhORuM";
 $lang['successfullycreatedforum'] = "\$ucCEssfuLLY cre4TED fORUM";
-$lang['failedtocreateforum_1'] = "f41LEd +o Cr34T3 pHOrUM";
-$lang['failedtocreateforum_2'] = "PlEas3 cHeCK To m4K3 5ur3 ThE wE8T4G @nd T4BL3 n4m3s 4R3N'+ 4LR34DY 1n u\$3.";
 $lang['nameanddesc'] = "name 4nD DeSCR1PT10n";
 $lang['movethreads'] = "mOv3 +hR3@D5";
 $lang['threadsmovedsuccessfully'] = "+hr3ads MOVEd sUCc3\$sPhuLLy";

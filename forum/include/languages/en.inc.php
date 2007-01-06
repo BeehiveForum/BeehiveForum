@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.379 2007-01-06 23:02:25 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.380 2007-01-06 23:26:32 decoyduck Exp $ */
 
 // International English language file
 
@@ -467,10 +467,13 @@ $lang['editlink'] = "Edit link";
 $lang['addnewforumlink'] = "Add new forum link";
 $lang['forumlinktitle'] = "Forum Link Title";
 $lang['forumlinklocation'] = "Forum Link Location";
-$lang['successfullyaddedlink'] = "Successfully added link";
-$lang['successfullyeditedlink'] = "Successfully edited link";
+$lang['successfullyaddedlink'] = "Successfully added link: '%s'";
+$lang['successfullyeditedlink'] = "Successfully edited link: '%s'";
 $lang['invalidlinkidorlinknotfound'] = "Invalid link id or link not found";
 $lang['successfullyremovedselectedlinks'] = "Successfully removed selected links";
+$lang['failedtoremovelinks'] = "Failed to remove selected links";
+$lang['failedtoaddnewlink'] = "Failed to add new link: '%s'";
+$lang['failedtoupdatelink'] = "Failed to update link: '%s'";
 $lang['toplinkcaption'] = "Top link caption";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['searchenginespidering'] = "Search Engine Spidering";
@@ -643,6 +646,7 @@ $lang['clearlog'] = "Clear Log";
 
 // Admin Forms (admin_forums.php) ------------------------------------------------
 
+$lang['noexistingforums'] = "No existing forums found. To create a new forum please click the button below.";
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID for forum not found";
 $lang['successfullyupdatedforum'] = "Successfully updated forum: '%s'";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: de.inc.php,v 1.17 2006-12-14 20:37:28 decoyduck Exp $ */
+/* $Id: de.inc.php,v 1.18 2007-01-06 23:26:32 decoyduck Exp $ */
 
 // International English language file
 
@@ -380,10 +380,7 @@ $lang['word_filter_help_1'] = "<b>Alle</b> gefundenen Texte die so gefitert werd
 $lang['word_filter_help_2'] = "<b>Ganzes Wort</b> gefundene Texte werden nur so gefiltert dass mom zu mum wird, aber keine Aenderung bei: moment.";
 $lang['word_filter_help_3'] = "<b>PREG</b> Erlaubt Dir Perl-Regulaere Erweiterungen zu nutzen m Texte zu finden.";
 $lang['forumdeletewarning'] = "Bist Du sicher dass das ausgewaehlte Forum geloescht werden soll? Sobald es geloescht ist ist es nicht mehr wiederherstellbar.";
-$lang['deleteforum'] = "Loesche Forum";
 $lang['successfullycreatedforum'] = "Forum erfolgreich erstellt";
-$lang['failedtocreateforum_1'] = "Forum konnte nicht erstellt werden";
-$lang['failedtocreateforum_2'] = "Bitte pruefen ob WebTags und Tabellennamen evtl. bereits in Benutzung sind.";
 $lang['nameanddesc'] = "Name und Beschreibung";
 $lang['movethreads'] = "Verschiebe Eintraege";
 $lang['threadsmovedsuccessfully'] = "Eintraege erfolgreich verschoben";

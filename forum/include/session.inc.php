@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.278 2007-01-05 22:17:06 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.279 2007-01-06 18:51:54 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -259,9 +259,7 @@ function bh_session_expired()
 
                 $ignore_keys = array('user_logon', 'user_password', 'user_passhash', 'remember_user', 'webtag');
 
-                if (form_input_hidden_array($_POST, $post_vars, $ignore_keys)) {
-                    echo $post_vars;
-                }
+                echo form_input_hidden_array($_POST, $ignore_keys);
 
                 echo form_submit('continue', $lang['continue']), "&nbsp;";
                 echo form_button('cancel', $lang['cancel'], "onclick=\"self.location.href='$request_uri'\""), "\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.431 2006-12-28 23:21:47 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.432 2007-01-06 22:37:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -203,10 +203,10 @@ function message_get_content($tid, $pid)
 function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
 {
     $webtag = get_webtag($webtag_search);
-
+    
     $message = explode("<div class=\"sig\">", $content);
 
-    if (count($message) > 1 && substr($message[count($message) - 1], -6) == '</div>') {
+    if (count($message) > 1 && substr(trim(array_pop(array_values($message))), -6) == '</div>') {
 
         $sig = "<div class=\"sig\">";
         $sig.= array_pop($message);

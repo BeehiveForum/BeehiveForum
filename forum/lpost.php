@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: lpost.php,v 1.95 2006-12-06 18:05:47 decoyduck Exp $ */
+/* $Id: lpost.php,v 1.96 2007-01-06 23:02:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -280,7 +280,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         html_draw_bottom();
         exit;
@@ -295,7 +295,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
         html_draw_bottom();
         exit;
@@ -310,7 +310,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
         html_draw_bottom();
         exit;
@@ -325,7 +325,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (!bh_session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['cannotcreatepostinfolder']}</h2>";
         html_draw_bottom();
         exit;
@@ -363,7 +363,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     if (isset($t_fid) && !bh_session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
         html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['cannotcreatethreadinfolder']}</h2>";
         html_draw_bottom();
         exit;
@@ -404,7 +404,7 @@ if (!$newthread) {
     if (!$threaddata = thread_get($reply_to_tid)) {
 
         light_html_draw_top();
-        echo "<h1>{$lang['error']}</h1>\n";
+        echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
         light_html_draw_bottom();
         exit;

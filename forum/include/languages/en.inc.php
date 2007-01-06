@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.378 2007-01-06 18:41:11 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.379 2007-01-06 23:02:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -840,6 +840,7 @@ $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder
 // Editing things (edit.php, edit_poll.php) -----------------------------------------
 
 $lang['nomessagespecifiedforedit'] = "No message specified for editing";
+$lang['cannoteditpollsinlightmode'] = "Cannot edit polls in Light mode";
 $lang['edited_caps'] = "EDITED";
 $lang['editappliedtomessage'] = "Edit Applied to Message";
 $lang['errorupdatingpost'] = "Error updating post";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.121 2007-01-02 09:39:00 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.122 2007-01-06 23:02:25 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -677,7 +677,7 @@ function light_form_radio($name, $value, $text, $checked = false)
     return $html . " />$text";
 }
 
-function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = true, $is_preview = false, $highlight = array())
+function light_poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = true, $show_sigs = false, $is_preview = false, $highlight = array())
 {
     $webtag = get_webtag($webtag_search);
 
@@ -869,15 +869,22 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 {
     $lang = load_language_file();
 
+    $perm_is_moderator = bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
+    $perm_has_admin_access = bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0);
+
     $webtag = get_webtag($webtag_search);
 
-    if(!isset($message['CONTENT']) || $message['CONTENT'] == "") {
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    if (!isset($message['CONTENT']) || $message['CONTENT'] == "") {
         light_message_display_deleted($tid, $message['PID']);
         return;
     }
 
-    if (bh_session_get_value('UID') != $message['FROM_UID']) {
-        if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED) && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+    $from_user_permissions = perm_get_user_permissions($message['FROM_UID']);
+
+    if ($uid != $message['FROM_UID']) {
+        if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
             light_message_display_deleted($tid, $message['PID']);
             return;
         }
@@ -912,10 +919,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "&hellip;[{$lang['msgtruncated']}]\n<p align=\"center\"><a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">{$lang['viewfullmsg']}.</a>";
     }
-
-    // Check for words that should be filtered ---------------------------------
-
-    if ($is_poll !== true) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
 
     if($in_list){
         echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";
@@ -952,11 +955,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if($in_list) {
 
-            if ((perm_get_user_permissions($message['FROM_UID']) & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
-
-            //This is commented out because as far as I know, all sigs are ignored in Light. Correct me if I'm wrong. - Rowan
-            //if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>{$lang['ignoredsig']}</b> ";
-
+            if (($from_user_permissions & USER_PERM_WORMED)) echo "<b>{$lang['wormeduser']}</b> ";
             echo "&nbsp;".format_time($message['CREATED'], 1)."<br />";
         }
     }
@@ -990,62 +989,81 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (!$in_list && isset($message['PID'])) echo "<p><i>{$lang['message']} {$message['PID']} {$lang['of']} $msg_count</i></p>\n";
 
-        $message['CONTENT'] = message_split_fiddle($message['CONTENT'], false, false);
+    // Light mode never displays user signatures.
 
-        echo "<p>{$message['CONTENT']}</p>\n";
+    $message['CONTENT'] = message_split_fiddle($message['CONTENT'], false, true);
 
-        if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
+    // Check for words that should be filtered ---------------------------------
 
-            $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
+    if ($is_poll !== true) $message['CONTENT'] = add_wordfilter_tags($message['CONTENT']);
 
-            if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+    echo "<p>{$message['CONTENT']}</p>\n";
 
-                // Draw the attachment header at the bottom of the post
+    if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
 
-                if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+        $aid = isset($message['AID']) ? $message['AID'] : get_attachment_id($tid, $message['PID']);
 
-                    echo "<p><b>{$lang['attachments']}:</b><br />\n";
+        if (get_attachments($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
 
-                    foreach($attachments_array as $attachment) {
+            // Draw the attachment header at the bottom of the post
 
-                        if ($attachment_link = light_attachment_make_link($attachment)) {
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
-                            echo $attachment_link, "<br />\n";
-                        }
+                echo "<p><b>{$lang['attachments']}:</b><br />\n";
+
+                foreach($attachments_array as $attachment) {
+
+                    if ($attachment_link = light_attachment_make_link($attachment)) {
+
+                        echo $attachment_link, "<br />\n";
                     }
-
-                    echo "</p>\n";
                 }
 
-                if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+                echo "</p>\n";
+            }
 
-                    echo "<p><b>{$lang['imageattachments']}:</b><br />\n";
+            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
 
-                    foreach($image_attachments_array as $key => $attachment) {
+                echo "<p><b>{$lang['imageattachments']}:</b><br />\n";
 
-                        if ($attachment_link = light_attachment_make_link($attachment)) {
+                foreach($image_attachments_array as $key => $attachment) {
 
-                            echo $attachment_link, "&nbsp;\n";
-                        }
+                    if ($attachment_link = light_attachment_make_link($attachment)) {
+
+                        echo $attachment_link, "&nbsp;\n";
                     }
-
-                    echo "</p>\n";
                 }
+
+                echo "</p>\n";
             }
         }
+    }
 
-        echo "<p>\n";
+    echo "<p>\n";
 
-        if ($in_list && $limit_text != false) {
+    if ($in_list && $limit_text != false) {
 
-            if (!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
+        if (!$closed && bh_session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
-                echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
-            }
+            echo "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\">{$lang['reply']}</a>";
         }
 
-        echo "</p>\n";
-        echo "<hr />";
+        if (($uid == $message['FROM_UID'] && bh_session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !(perm_get_user_permissions($uid) & USER_PERM_PILLORIED)) || $perm_is_moderator) {
+
+            echo "&nbsp;<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['delete']}</a>";
+        }
+
+        if (((!perm_get_user_permissions($uid) & USER_PERM_PILLORIED) || ($uid != $message['FROM_UID'] && $from_user_permissions & USER_PERM_PILLORIED) || ($uid == $message['FROM_UID'])) && bh_session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ((time() - $message['CREATED']) < (forum_get_setting('post_edit_time', false, 0) * HOUR_IN_SECONDS) || forum_get_setting('post_edit_time', false, 0) == 0) && (forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+
+            if (!$is_poll) {
+
+                echo "&nbsp;<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">{$lang['edit']}</a>";
+            }
+        }
+    }
+
+    echo "</p>\n";
+    echo "<hr />";
 }
 
 function light_message_display_deleted($tid,$pid)

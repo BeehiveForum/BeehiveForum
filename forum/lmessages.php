@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.74 2006-12-06 18:05:47 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.75 2007-01-06 23:02:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -204,13 +204,14 @@ if ($msg_count > 0) {
 
             if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
                 $message['CONTENT'] = message_get_content($tid, $message['PID']);
-            } else {
+            }else {
                 $message['CONTENT'] = $lang['ignored']; // must be set to something or will show as deleted
             }
 
         }else {
 
-            $message['CONTENT'] = message_get_content($tid, $message['PID']);
+          $message['CONTENT'] = message_get_content($tid, $message['PID']);
+
         }
 
         if ($threaddata['POLL_FLAG'] == 'Y') {

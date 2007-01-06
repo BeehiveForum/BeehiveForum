@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.32 2007-01-04 18:22:22 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.33 2007-01-06 23:26:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -170,12 +170,12 @@ if (isset($_POST['delete'])) {
         if (forum_links_add_link($t_title, $t_uri)) {
 
             admin_add_log_entry(ADD_FORUM_LINKS, array($t_title, $t_uri));
-            $add_success = "<h2>{$lang['successfullyaddedlink']}</h2>\n";
+            $add_success = sprintf("<h2>{$lang['successfullyaddedlink']}</h2>\n", $t_title);
             unset($t_title, $t_uri, $_POST['addlink']);
         
         }else {
 
-            $error_html.= "<h2>{$lang['failedtoaddnewlink']}</h2>\n";
+            $error_html.= sprintf("<h2>{$lang['failedtoaddnewlink']}</h2>\n", $t_title);
         }
     }
 
@@ -226,12 +226,12 @@ if (isset($_POST['delete'])) {
             if (forum_links_update_link($lid, $t_title, $t_uri)) {
 
                 admin_add_log_entry(EDIT_FORUM_LINKS, array($lid, $t_title, $t_uri, $t_old_title, $t_old_uri));
-                $edit_success = "<h2>{$lang['successfullyeditedlink']}: $t_title</h2>\n";
+                $edit_success = sprintf("<h2>{$lang['successfullyeditedlink']}</h2>\n", $t_title);
                 unset($lid, $t_title, $t_uri, $_POST['lid'], $_GET['lid']);
             
             }else {
 
-                $error_html.= "<h2>{$lang['failedtoupdatelink']}</h2>\n";
+                $error_html.= sprintf("<h2>{$lang['failedtoupdatelink']}</h2>\n", $t_title);
             }
         }
     }

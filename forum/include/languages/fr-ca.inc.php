@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fr-ca.inc.php,v 1.39 2006-12-07 21:33:04 decoyduck Exp $ */
+/* $Id: fr-ca.inc.php,v 1.40 2007-01-06 23:26:32 decoyduck Exp $ */
 
 // French (Canada) language file / fichier de langage français (Canada)
 
@@ -358,10 +358,7 @@ $lang['word_filter_help_1'] = "<b>Tous</b> recherche correspondances contre le t
 $lang['word_filter_help_2'] = "<b>Mot complet</b> recherche correspondance avec le mot complet seulement alors le filtrage de c à c'est ne changera PAS incidence à inc'estidenc'este.";
 $lang['word_filter_help_3'] = "<b>PREG</b> permet l'utilisation des Regular Expressions du langage Perl pour trouver des correspondances de texte";
 $lang['forumdeletewarning'] = "Étes-vous certain de vouloir supprimer le forum sélectionné? Une fois le forum supprimé,le contenu est perdu pour toujours et ne peut pas être récupéré.";
-$lang['deleteforum'] = "Supprimer Forum";
 $lang['successfullycreatedforum'] = "Création de forum réussie";
-$lang['failedtocreateforum_1'] = "Création de forum non-réussie";
-$lang['failedtocreateforum_2'] = "Veuillez vérifier que la balise d'adresse web et les noms de tableaux ne sont pas déjà en usage.";
 $lang['nameanddesc'] = "Nom et Description";
 $lang['movethreads'] = "Déplacer fils de discussion";
 $lang['threadsmovedsuccessfully'] = "Déplacement de fils de discussion réussie";
@@ -1407,7 +1404,6 @@ $lang['recentthreads'] = "Fils de discussion récents";
 $lang['startreading'] = "Commencer lecture";
 $lang['threadoptions'] = "Options de fil de discussion";
 $lang['editthreadoptions'] = "Modifier options de fil de discussion";
-$lang['showmorevisitors'] = "d'autres visiteurs";
 $lang['forthcomingbirthdays'] = "Anniversaires à venir";
 
 // Start page (start_main.php) -----------------------------------------

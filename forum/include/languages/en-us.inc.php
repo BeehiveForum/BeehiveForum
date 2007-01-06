@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en-us.inc.php,v 1.31 2006-12-15 20:27:00 decoyduck Exp $ */
+/* $Id: en-us.inc.php,v 1.32 2007-01-06 23:26:32 decoyduck Exp $ */
 
 // U.S. English language file
 
@@ -394,10 +394,7 @@ $lang['word_filter_help_1'] = "<b>All</b> matches against the whole text so filt
 $lang['word_filter_help_2'] = "<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument.";
 $lang['word_filter_help_3'] = "<b>PREG</b> allows you to use Perl Regular Expressions to match text.";
 $lang['forumdeletewarning'] = "Are you sure you want to delete the selected forum? Once the forum is deleted it's entire contents is lost forever and cannot be recovered.";
-$lang['deleteforum'] = "Delete Forum";
 $lang['successfullycreatedforum'] = "Successfully created forum";
-$lang['failedtocreateforum_1'] = "Failed to create forum";
-$lang['failedtocreateforum_2'] = "Please check to make sure the webtag and table names aren't already in use.";
 $lang['nameanddesc'] = "Name and Description";
 $lang['movethreads'] = "Move Threads";
 $lang['threadsmovedsuccessfully'] = "Threads moved successfully";

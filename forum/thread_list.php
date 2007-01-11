@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.281 2006-12-23 13:46:01 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.282 2007-01-11 19:24:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -214,9 +214,6 @@ echo "}\n\n";
 echo "//-->\n";
 echo "</script>\n";
 
-// Draw discussion dropdown
-thread_list_draw_top($mode);
-
 // The tricky bit - displaying the right threads for whatever mode is selected
 
 if (isset($folder)) {
@@ -319,6 +316,12 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if ($thread = thread_get($tid)) {
 
+        if (($mode == 1) && ($thread['LENGTH'] == $thread['LAST_READ'])) {
+
+            $mode = 0;
+            list($thread_info, $folder_order) = threads_get_all($uid, $start_from);
+        }
+
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
         if (in_array($thread['FID'], $folder_order)) {
@@ -329,12 +332,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         if (!is_array($thread_info)) $thread_info = array();
 
-        foreach ($thread_info as $key => $thread_data) {
-            if ($thread_data['TID'] == $tid) {
-                unset($thread_info[$key]);
-                break;
-            }
-        }
+        if (isset($thread_info[$tid])) unset($thread_info[$tid]);
 
         array_unshift($thread_info, $thread);
     }
@@ -383,6 +381,10 @@ if (bh_session_get_value('UID') > 0) {
         if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
     }
 }
+
+// Draw discussion dropdown
+
+thread_list_draw_top($mode);
 
 // If no threads are returned, say something to that effect
 

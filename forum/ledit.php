@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.1 2007-01-06 23:02:25 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.2 2007-01-11 19:24:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -166,7 +166,7 @@ if (thread_is_poll($tid) && $pid == 1) {
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "./lmessages.php?webtag=$webtag&msg=$edit_msg";
+    $uri = "./lmessages.php?webtag=$webtag";
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         $uri.= "&msg=". $_GET['msg'];
@@ -589,7 +589,7 @@ if (isset($_POST['preview'])) {
 }
 
 echo "<h2>{$lang['editmessage']} $edit_msg</h2>\n";
-echo "<br /><form name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
+echo "<form name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo form_input_hidden("t_msg", $edit_msg);
 echo form_input_hidden("t_to_uid", $to_uid);

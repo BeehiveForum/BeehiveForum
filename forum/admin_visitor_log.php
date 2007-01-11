@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_visitor_log.php,v 1.6 2007-01-04 18:26:17 decoyduck Exp $ */
+/* $Id: admin_visitor_log.php,v 1.7 2007-01-11 19:24:07 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -108,7 +108,7 @@ if (isset($_POST['clear'])) {
     admin_clear_visitor_log();
 }
 
-html_draw_top();
+html_draw_top('openprofile.js');
 
 echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['visitorlog']}</h1>\n";
 echo "<br />\n";
@@ -141,7 +141,7 @@ if ($admin_visitor_log_array = admin_get_visitor_log($start, 10)) {
 
             }elseif ($visitor['UID'] > 0) {
 
-                echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_self\" target=\"_blank\" onclick=\"return openProfile({$visitor['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" onclick=\"return openProfile({$visitor['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($visitor['LOGON'], $visitor['NICKNAME']))), "</a></td>\n";
 
             }else {
 

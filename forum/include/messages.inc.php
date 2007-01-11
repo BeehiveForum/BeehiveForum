@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.432 2007-01-06 22:37:54 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.433 2007-01-11 20:05:32 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -814,7 +814,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if ($is_poll) {
 
-            echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_self\" target=\"_blank\" onclick=\"return openPollResults('$tid', '$webtag');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> {$lang['poll']} ";
+            echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" onclick=\"return openPollResults('$tid', '$webtag');\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> {$lang['poll']} ";
         }
 
         echo "{$message['PID']} {$lang['of']} $msg_count";
@@ -1623,7 +1623,7 @@ function messages_forum_stats($tid, $pid)
 
                     foreach ($user_stats['USERS'] as $user) {
 
-                        $active_user = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\" target=\"_self\">";
+                        $active_user = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">";
 
                         if ($user['UID'] == $uid) {
 
@@ -1735,7 +1735,7 @@ function messages_forum_stats($tid, $pid)
 
             if ($newest_member = get_newest_user()) {
 
-                echo "                          {$lang['thenewestmemberis']} <a href=\"user_profile.php?webtag=$webtag&amp;uid={$newest_member['UID']}\" target=\"_blank\" onclick=\"return openProfile({$newest_member['UID']}, '$webtag')\" target=\"_self\">", add_wordfilter_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME'])), "</a>.\n";
+                echo "                          {$lang['thenewestmemberis']} <a href=\"user_profile.php?webtag=$webtag&amp;uid={$newest_member['UID']}\" target=\"_blank\" onclick=\"return openProfile({$newest_member['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME'])), "</a>.\n";
             }
 
             echo "                        </td>\n";

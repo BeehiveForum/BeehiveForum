@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.213 2006-12-20 20:13:48 decoyduck Exp $ */
+/* $Id: messages.php,v 1.214 2007-01-11 20:05:32 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -468,7 +468,7 @@ if ($threaddata['POLL_FLAG'] == 'Y') {
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
     echo "                <td align=\"center\">\n";
-    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_self\" target=\"_blank\" onclick=\"return openPollResults('$tid', '$webtag')\">{$lang['viewresults']}</a>\n";
+    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" onclick=\"return openPollResults('$tid', '$webtag')\">{$lang['viewresults']}</a>\n";
     echo "                </td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";

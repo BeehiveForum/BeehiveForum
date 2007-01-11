@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.131 2006-12-30 22:18:22 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.132 2007-01-11 20:05:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -170,7 +170,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                     $user_logon = user_get_logon($user_uid);
                     admin_add_log_entry(END_USER_SESSION, $user_logon);
-                    echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\" target=\"_self\">$user_logon</a></b></p>\n";
+                    echo "<p><b>{$lang['sessionsuccessfullyended']}: <a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a></b></p>\n";
                 }
             }
         }
@@ -189,7 +189,7 @@ if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                         $user_logon = user_get_logon($user_uid);
                         admin_add_log_entry(APPROVED_USER, $user_logon);
-                        echo "<p><b>{$lang['successfullyapproveduser']}: <a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\" target=\"_self\">$user_logon</a></b></p>\n";
+                        echo "<p><b>{$lang['successfullyapproveduser']}: <a href=\"user_profile.php?webtag=$webtag&amp;uid=$user_uid\" target=\"_blank\" onclick=\"return openProfile($user_uid, '$webtag')\">$user_logon</a></b></p>\n";
                     }
                 }
             }

@@ -21,10 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ledit.php,v 1.2 2007-01-11 19:24:07 decoyduck Exp $ */
+/* $Id: ledit.php,v 1.3 2007-01-11 20:47:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
+
+// Light Mode Detection
+define("BEEHIVEMODE_LIGHT", true);
 
 // Compress the output
 include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
@@ -124,10 +127,10 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        light_html_draw_top();
         echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-        html_draw_bottom();
+        light_html_draw_bottom();
         exit;
     }
 
@@ -138,29 +141,29 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        html_draw_top();
+        light_html_draw_top();
         echo "<h2>{$lang['error']}</h2>\n";
         echo "<h2>{$lang['threadcouldnotbefound']}</h2>";
-        html_draw_bottom();
+        light_html_draw_bottom();
         exit;
     }
 }
 
 if (!isset($tid) || !isset($pid) || !is_numeric($tid) || !is_numeric($pid)) {
 
-    html_draw_top();
+    light_html_draw_top();
     echo "<h2>{$lang['error']}</h2>\n";
     echo "<h2>{$lang['nomessagespecifiedforedit']}</h2>\n";
-    html_draw_bottom();
+    light_html_draw_bottom();
     exit;
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    html_draw_top();
+    light_html_draw_top();
     echo "<h2>{$lang['error']}</h2>\n";
     echo "<h2>{$lang['cannoteditpollsinlightmode']}</h2>\n";
-    html_draw_bottom();
+    light_html_draw_bottom();
     exit;
 }
 
@@ -169,9 +172,9 @@ if (isset($_POST['cancel'])) {
     $uri = "./lmessages.php?webtag=$webtag";
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        $uri.= "&msg=". $_GET['msg'];
+        $uri.= "&msg={$_GET['msg']}";
     }elseif (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
-        $uri.= "&msg=". $_POST['t_msg'];
+        $uri.= "&msg={$_POST['t_msg']}";
     }
 
     header_redirect($uri);
@@ -185,19 +188,19 @@ if (bh_session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!bh_session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    html_draw_top();
+    light_html_draw_top();
     echo "<h2>{$lang['error']}</h2>\n";
     echo "<h2>{$lang['cannoteditpostsinthisfolder']}</h2>\n";
-    html_draw_bottom();
+    light_html_draw_bottom();
     exit;
 }
 
 if (!$threaddata = thread_get($tid)) {
 
-    html_draw_top();
+    light_html_draw_top();
     echo "<h2>{$lang['error']}</h2>\n";
     echo "<h2>{$lang['threadcouldnotbefound']}</h2>\n";
-    html_draw_bottom();
+    light_html_draw_bottom();
     exit;
 }
 
@@ -463,7 +466,7 @@ if (isset($_POST['preview'])) {
         echo "<h2>{$lang['editmessage']}</h2>\n";
         echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
 
-        html_draw_bottom();
+        light_html_draw_bottom();
         exit;
     }
 
@@ -547,7 +550,7 @@ if (isset($_POST['preview'])) {
                 echo "<h2>{$lang['editmessage']} $edit_msg</h2>\n";
                 echo "<h2>{$lang['nopermissiontoedit']}</h2>\n";
 
-                html_draw_bottom();
+                light_html_draw_bottom();
                 exit;
             }
 

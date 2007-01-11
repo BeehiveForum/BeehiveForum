@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.96 2007-01-03 23:17:45 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.97 2007-01-11 23:22:12 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -274,6 +274,21 @@ define('THREAD_MERGE_BY_CREATED', 2);
 
 define('THREAD_SPLIT_REPLIES', 0);
 define('THREAD_SPLIT_FOLLOWING', 1);
+
+// Thread Merge and Split error constants
+
+define('THREAD_MERGE_INVALID_ARGS', 1);
+define('THREAD_MERGE_FORUM_ERROR', 2);
+define('THREAD_MERGE_POLL_ERROR', 3);
+define('THREAD_MERGE_THREAD_ERROR', 4);
+define('THREAD_MERGE_POST_ERROR', 5);
+define('THREAD_MERGE_CREATE_ERROR', 6);
+
+define('THREAD_SPLIT_INVALID_ARGS', 1);
+define('THREAD_SPLIT_FORUM_ERROR', 2);
+define('THREAD_SPLIT_THREAD_ERROR', 3);
+define('THREAD_SPLIT_POST_ERROR', 4);
+define('THREAD_SPLIT_CREATE_ERROR', 5);
 
 // Ban type constants
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_left.php,v 1.120 2006-12-28 23:21:47 decoyduck Exp $ */
+/* $Id: start_left.php,v 1.121 2007-01-11 20:05:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -206,7 +206,7 @@ if ($thread_array = threads_get_most_recent()) {
 
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 1) echo "<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" /> ";
         if (isset($thread['INTEREST']) && $thread['INTEREST'] == 2) echo "<img src=\"", style_image('subscribe.png'), "\" alt=\"{$lang['subscribed']}\" title=\"{$lang['subscribed']}\" /> ";
-        if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&tid={$thread['TID']}\" target=\"_self\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
+        if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<a href=\"poll_results.php?webtag=$webtag&tid={$thread['TID']}\" target=\"_blank\" onclick=\"return openPollResults('{$thread['TID']}', '$webtag')\"><img src=\"", style_image('poll.png'), "\" border=\"0\" alt=\"{$lang['thisisapoll']}\" title=\"{$lang['thisisapoll']}\" /></a> ";
         if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") echo "<img src=\"", style_image('sticky.png'), "\" alt=\"{$lang['sticky']}\" title=\"{$lang['sticky']}\" /> ";
         if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP']&USER_FRIEND) echo "<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /> ";
         if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<img src=\"", style_image('attach.png'), "\" alt=\"{$lang['attachment']}\" title=\"{$lang['attachment']}\" /> ";
@@ -324,7 +324,7 @@ if ($users_array['user_count'] > 0) {
 
         }elseif ($recent_user['UID'] > 0) {
 
-            echo "                              <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_user['UID']}\" target=\"_self\" target=\"_blank\" onclick=\"return openProfile({$recent_user['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</a></td>\n";
+            echo "                              <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$recent_user['UID']}, '$webtag')\">", add_wordfilter_tags(add_wordfilter_tags(format_user_name($recent_user['LOGON'], $recent_user['NICKNAME']))), "</a></td>\n";
 
         }else {
 
@@ -397,7 +397,7 @@ if ($birthdays = user_get_forthcoming_birthdays()) {
 
         echo "                            <tr>\n";
         echo "                              <td valign=\"top\" align=\"center\" nowrap=\"nowrap\"><img src=\"", style_image('bullet.png'), "\" alt=\"{$lang['user']}\" title=\"{$lang['user']}\" /></td>\n";
-        echo "                              <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$row['UID']}\" target=\"_self\" target=\"_blank\" onclick=\"return openProfile({$row['UID']}, '$webtag')\">", add_wordfilter_tags($row['NICKNAME']), "</a></td>\n";
+        echo "                              <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$row['UID']}\" target=\"_blank\" onclick=\"return openProfile({$row['UID']}, '$webtag')\">", add_wordfilter_tags($row['NICKNAME']), "</a></td>\n";
         echo "                              <td align=\"right\" nowrap=\"nowrap\">", format_birthday($row['DOB']), "&nbsp;</td>\n";
         echo "                            </tr>\n";
     }

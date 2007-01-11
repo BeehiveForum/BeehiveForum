@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.php,v 1.207 2006-12-20 20:13:48 decoyduck Exp $ */
+/* $Id: edit.php,v 1.208 2007-01-11 20:05:32 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -812,7 +812,7 @@ echo "<h2>{$lang['to']}</h2>\n";
 
 if ($preview_message['TLOGON'] != $lang['allcaps']) {
 
-    echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\" target=\"_self\">";
+    echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" onclick=\"return openProfile($to_uid, '$webtag')\">";
     echo _stripslashes(add_wordfilter_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK'])));
     echo "</a><br /><br />\n";
 

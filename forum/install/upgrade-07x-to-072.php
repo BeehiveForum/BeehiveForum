@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.12 2007-01-03 23:17:45 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.13 2007-01-11 19:24:07 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -316,6 +316,18 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     install_remove_table_keys("{$forum_webtag}_POST_ATTACHMENT_IDS");
 
     $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_IDS ADD INDEX (AID)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Reindex PM_ATTACHMENT_IDS table to make queries quicker
+
+    install_remove_table_keys("{$forum_webtag}_POST_ATTACHMENT_IDS");
+
+    $sql = "ALTER TABLE {$forum_webtag}_PM_ATTACHMENT_IDS ADD INDEX (AID)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

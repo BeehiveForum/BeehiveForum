@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.122 2007-01-06 23:02:25 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.123 2007-01-11 20:47:55 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -616,7 +616,7 @@ function light_poll_confirm_close($tid)
     }
 
     if(bh_session_get_value('UID') != $preview_message['FROM_UID'] && !bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-        edit_refuse($tid, 1);
+        light_edit_refuse();
         return;
     }
 
@@ -1340,6 +1340,14 @@ function light_mode_check_noframes()
             exit;
         }
     }
+}
+
+function light_edit_refuse()
+{
+    $lang = load_language_file();
+
+    echo "<h2>{$lang['error']}</h2>";
+    echo "<h2>{$lang['nopermissiontoedit']}</h2>";
 }
 
 ?>

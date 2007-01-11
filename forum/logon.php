@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: logon.php,v 1.170 2006-12-29 20:12:04 decoyduck Exp $ */
+/* $Id: logon.php,v 1.171 2007-01-11 20:47:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -270,9 +270,9 @@ echo "  <hr width=\"350\" />\n";
 echo "  <h2>{$lang['usingaPDA']}</h2>\n";
 
 if (isset($frame_top_target) && strlen($frame_top_target) > 0) {
-    echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag=$webtag\" target=\"$frame_top_target\">{$lang['lightHTMLversion']}</a></p>\n";
+    echo "  <p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"$frame_top_target\">{$lang['lightHTMLversion']}</a></p>\n";
 }else {
-    echo "  <p class=\"smalltext\"><a href=\"llogon.php?webtag=$webtag\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
+    echo "  <p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;noframes\" target=\"_top\">{$lang['lightHTMLversion']}</a></p>\n";
 }
 
 echo "</div>\n";

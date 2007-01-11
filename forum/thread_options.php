@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.65 2006-12-13 18:41:26 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.66 2007-01-11 23:22:12 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -318,9 +318,9 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
                     list($merge_thread,) = explode('.', $merge_thread);
                 }
 
-                $error_msg = "";
+                $error_str = "";
 
-                if ($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_msg)) {
+                if ($merge_result = thread_merge($merge_thread, $tid, $merge_type, $error_str)) {
 
                     admin_add_log_entry(THREAD_MERGE, $merge_result);
                     $update = true;
@@ -331,8 +331,8 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
                     echo "<h1>{$lang['error']}</h1>\n";
                     echo "<h2>{$lang['threadmergefailed']}</h2>\n";
 
-                    if (isset($error_msg) && strlen(trim($error_msg)) > 0) {
-                        echo "<h2>$error_msg</h2>\n";
+                    if (isset($error_str) && strlen(trim($error_str)) > 0) {
+                        echo $error_str;
                     }
 
                     html_draw_bottom();
@@ -350,7 +350,9 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
                 $split_start = $_POST['split_thread'];
                 $split_type = $_POST['split_type'];
 
-                if ($split_result = thread_split($tid, $split_start, $split_type)) {
+                $error_str = "";
+
+                if ($split_result = thread_split($tid, $split_start, $split_type, $error_str)) {
 
                     admin_add_log_entry(THREAD_SPLIT, $split_result);
                     $update = true;
@@ -360,6 +362,11 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
                     html_draw_top();
                     echo "<h1>{$lang['error']}</h1>\n";
                     echo "<h2>{$lang['threadsplitfailed']}</h2>\n";
+                    
+                    if (isset($error_str) && strlen(trim($error_str)) > 0) {
+                        echo $error_str;
+                    }
+
                     html_draw_bottom();
                     exit;
                 }

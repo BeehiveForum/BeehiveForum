@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.12 2006-08-05 13:40:36 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.13 2007-01-12 22:38:15 decoyduck Exp $ */
 
 $include_files_dir   = "forum/include";
 $include_files_array = array("\$lang" => "lang.inc.php");
@@ -29,7 +29,7 @@ $include_files_array = array("\$lang" => "lang.inc.php");
 $source_files_dir_array = array("forum", "forum/include");
 $source_files_array     = array();
 
-$excl_include_files_array = array();
+$excl_include_files_array = array("zip_lib.inc.php", "lang.inc.php");
 
 if (is_dir($include_files_dir)) {
 
@@ -37,25 +37,28 @@ if (is_dir($include_files_dir)) {
 
         while (($file = readdir($dir)) !== false) {
 
-            $pathinfo = pathinfo("$include_files_dir/$file");
+            if (!in_array($file, $excl_include_files_array)) {
+            
+                $pathinfo = pathinfo("$include_files_dir/$file");
 
-            if (isset($pathinfo['extension']) && $pathinfo['extension'] == 'php') {
+                if (isset($pathinfo['extension']) && $pathinfo['extension'] == 'php') {
 
-                $file_contents[$file] = file_get_contents("$include_files_dir/$file");
+                    $file_contents[$file] = file_get_contents("$include_files_dir/$file");
 
-                if (preg_match_all("/function\s([a-z1-9-_]+)[\s]?\(/i", $file_contents[$file], $function_matches)) {
+                    if (preg_match_all("/function\s([a-z1-9-_]+)[\s]?\(/i", $file_contents[$file], $function_matches)) {
 
-                    for ($i = 0; $i < sizeof($function_matches[1]); $i++) {
+                        for ($i = 0; $i < sizeof($function_matches[1]); $i++) {
 
-                        $include_files_array[$function_matches[1][$i]] = $file;
+                            $include_files_array[$function_matches[1][$i]] = $file;
+                        }
                     }
-                }
 
-                if (preg_match_all("/define[ ]?\([\"|']?([a-z1-9-_]+)/i", $file_contents[$file], $function_matches)) {
+                    if (preg_match_all("/define[ ]?\([\"|']?([a-z1-9-_]+)/i", $file_contents[$file], $function_matches)) {
 
-                    for ($i = 0; $i < sizeof($function_matches[1]); $i++) {
+                        for ($i = 0; $i < sizeof($function_matches[1]); $i++) {
 
-                        $include_files_array[$function_matches[1][$i]] = $file;
+                            $include_files_array[$function_matches[1][$i]] = $file;
+                        }
                     }
                 }
             }
@@ -80,21 +83,32 @@ foreach($source_files_dir_array as $source_files_dir) {
 
                     foreach ($include_files_array as $function_name => $include_file) {
 
-                        $include_file_preg = preg_quote($include_file, "/");
+                        if ($include_file != $file) {
 
-                        if (!in_array($include_file, $file_include_array[$file]) && !in_array($include_file, $excl_include_files_array) && $include_file != $file) {
+                            $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
 
-                            if (preg_match("/$include_file_preg/i", $file_contents[$file])) {
+                            if (stristr($file_contents[$file], $function_name)) {
 
-                                $file_include_array[$file][] = $include_file;
+                                if (!stristr($file_contents[$file], $include_file_line)) {
+
+                                    if (!in_array($include_file, $file_include_array[$file])) {
+
+                                        $file_include_array[$file][] = $include_file;
+                                    }
+                                }
                             }
-                        }
 
-                        if (!in_array("lang.inc.php", $file_include_array[$file]) && !in_array("lang.inc.php", $excl_include_files_array) && "lang.inc.php" != $file) {
+                            $include_file_line = "include_once(BH_INCLUDE_PATH. \"lang.inc.php\")";
 
-                            if (preg_match("/\\\$lang/", $file_contents[$file])) {
+                            if (stristr($file_contents[$file], $function_name)) {
 
-                                $file_include_array[$file][] = "lang.inc.php";
+                                if (!stristr($file_contents[$file], $include_file_line)) {
+
+                                    if (!in_array("lang.inc.php", $file_include_array[$file])) {
+
+                                        $file_include_array[$file][] = "lang.inc.php";
+                                    }
+                                }
                             }
                         }
                     }
@@ -114,12 +128,7 @@ foreach ($file_include_array as $filename => $include_array) {
 
         foreach ($include_array as $include_file) {
 
-            $include_file_preg = preg_quote("include_once(BH_INCLUDE_PATH. \"$include_file\")", "/");
-
-            if (preg_match("/$include_file_preg/", $file_contents[$filename]) < 1) {
-
-                echo "include_once(BH_INCLUDE_PATH. \"$include_file\");\n";
-            }
+            echo "include_once(BH_INCLUDE_PATH. \"$include_file\");\n";
         }
 
         echo "\n\n";

@@ -935,3 +935,84 @@ a {
     width: 18px;
     border: none;
 }
+
+.subhead_sort_asc {
+    background-image: url('../../images/sort_asc.png');
+    background-repeat: no-repeat;
+    background-position: 98% 50%;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10pt;
+    color: #FFFFFF;
+    background-color: #7A7A7A;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    padding-left: 5px;
+}
+
+.subhead_sort_desc {
+    background-image: url('../../images/sort_desc.png');
+    background-repeat: no-repeat;
+    background-position: 98% 50%;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10pt;
+    color: #FFFFFF;
+    background-color: #7A7A7A;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    padding-left: 5px;
+}
+
+.profile_logon {
+    color: #000000;
+}
+
+.profile_image {
+    margin: 10px;
+    width: 95px;
+    height: 95px;
+    border: 1px solid #000000;    
+}
+
+.profile_tabs {
+    margin: 0px 0px 0px 0px;
+    padding: 0px 5px 0px 5px;
+    background-color: #7A7A7A;
+    border-bottom: 1px solid #000000;
+}
+
+.profile_items {
+    border-collapse: collapse;
+    width: 520px;
+    margin: 10px;
+}
+
+.profile_item_text {
+    padding: 2px 2px 2px 10px;
+    border-left: 1px solid #000000;
+}
+
+.profile_tab {
+    border-width: 1px;
+    border-color: #000000;
+    border-style: solid;
+    background-color: #7A7A7A;
+    padding: 5px;
+    text-align: center;
+}
+
+.profile_tab a {
+    color: #000000;
+}
+
+.profile_tab_selected {
+    border-width: 1px;
+    border-color: #000000;
+    border-style: solid;
+    background-color: #999999;
+    padding: 5px;
+    text-align: center;
+}

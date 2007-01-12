@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.161 2007-01-11 20:05:32 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.162 2007-01-12 13:51:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1547,6 +1547,81 @@ function pm_export_html_bottom()
     $html.= "</html>\n";
 
     return $html;
+}
+
+function pm_export($folder)
+{
+    $logon = strtolower(bh_session_get_value('LOGON'));
+
+    switch ($folder) {
+
+        case PM_FOLDER_INBOX:
+
+            $archive_name = "pm_backup_{$logon}_inbox.zip";
+            break;
+
+        case PM_FOLDER_SENT:
+
+            $archive_name = "pm_backup_{$logon}_sent_items.zip";
+            break;
+
+        case PM_FOLDER_OUTBOX:
+
+            $archive_name = "pm_backup_{$logon}_outbox.zip";
+            break;
+
+        case PM_FOLDER_SAVED:
+
+            $archive_name = "pm_backup_{$logon}_saved_items.zip";
+            break;
+    }
+
+    $pm_export_type = bh_session_get_value('PM_EXPORT_TYPE');
+    $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
+    $pm_export_style = bh_session_get_value('PM_EXPORT_STYLE');
+
+    $zipfile = new zipfile();
+
+    if ($pm_export_attachments == "Y") {
+
+        if ($attach_img = style_image('attach.png', true)) {
+            $attach_img_contents = implode("", file($attach_img));
+            $zipfile->addFile($attach_img_contents, $attach_img);
+        }
+    }
+
+    if ($pm_export_style == "Y") {
+
+        if (@file_exists("./styles/style.css")) {
+            $stylesheet_content = implode("", file("./styles/style.css"));
+            $zipfile->addFile($stylesheet_content, "styles/style.css");
+        }
+    }
+
+    switch ($pm_export_type) {
+
+        case PM_EXPORT_HTML:
+
+            pm_export_html($folder, $zipfile);
+            break;
+
+        case PM_EXPORT_XML:
+
+            pm_export_xml($folder, $zipfile);
+            break;
+
+        case PM_EXPORT_PLAINTEXT:
+
+            pm_export_plaintext($folder, $zipfile);
+            break;
+    }
+
+    header("Content-Type: application/zip");
+    header("Expires: ". gmdate('D, d M Y H:i:s'). " GMT");
+    header("Content-Disposition: attachment; filename=\"$archive_name\"");
+    header("Pragma: no-cache");
+    echo $zipfile->file();
+    exit;
 }
 
 /**

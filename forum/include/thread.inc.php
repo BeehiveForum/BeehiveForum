@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.95 2007-01-11 23:22:12 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.96 2007-01-12 13:39:38 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -729,37 +729,32 @@ function thread_merge_error($tida, $tidb, $error_code, &$error_str)
 
         case THREAD_MERGE_INVALID_ARGS:
 
-            $error_str = "<h2>Invalid function arguments</h2>\n";
+            $error_str = "<h2>{$lang['invalidfunctionarguments']}</h2>\n";
             break;
 
         case THREAD_MERGE_FORUM_ERROR:
 
-            $error_str = "<h2>Could not retrieve forum data</h2>\n";
-            break;
-
-        case THREAD_MERGE_SESSION_ERROR:
-
-            $error_str = "<h2>Could not verify user permissions</h2>\n";
+            $error_str = "<h2>{$lang['couldnotretrieveforumdata']}</h2>\n";
             break;
 
         case THREAD_MERGE_POLL_ERROR:
 
-            $error_str = "<h2>One or more threads is a poll. You cannot merge polls</h2>\n";
+            $error_str = "<h2>{$lang['cannotmergepolls']}</h2>\n";
             break;
 
         case THREAD_MERGE_THREAD_ERROR:
 
-            $error_str = "<h2>Could not retrieve thread data from one or more threads</h2>\n";
+            $error_str = "<h2>{$lang['couldnotretrievethreaddatamerge']}</h2>\n";
             break;
 
         case THREAD_MERGE_POST_ERROR:
 
-            $error_str = "<h2>Could not retrieve post data from one or more threads</h2>\n";
+            $error_str = "<h2>{$lang['couldnotretrievepostdatamerge']}</h2>\n";
             break;
 
         case THREAD_MERGE_CREATE_ERROR:
 
-            $error_str = "<h2>Failed to create new thread for merge</h2>\n";
+            $error_str = "<h2>{$lang['failedtocreatenewthreadformerge']}</h2>\n";
             break;
 
         default:
@@ -1032,27 +1027,27 @@ function thread_split_error($tid, $error_code, &$error_str)
 
         case THREAD_SPLIT_INVALID_ARGS:
 
-            $error_str = "<h2>Invalid function arguments</h2>\n";
+            $error_str = "<h2>{$lang['invalidfunctionarguments']}</h2>\n";
             break;
 
         case THREAD_SPLIT_FORUM_ERROR:
 
-            $error_str = "<h2>Could not retrieve forum data</h2>\n";
+            $error_str = "<h2>{$lang['couldnotretrieveforumdata']}</h2>\n";
             break;
 
         case THREAD_SPLIT_THREAD_ERROR:
 
-            $error_str = "<h2>Could not retrieve thread data from one or more threads</h2>\n";
+            $error_str = "<h2>{$lang['couldnotretrievethreaddatasplit']}</h2>\n";
             break;
 
         case THREAD_SPLIT_POST_ERROR :
 
-            $error_str = "<h2>Could not retrieve post data from one or more threads</h2>\n";
+            $error_str = "<h2>{$lang['couldnotretrievepostdatasplit']}</h2>\n";
             break;
 
         case THREAD_SPLIT_CREATE_ERROR:
 
-            $error_str = "<h2>Failed to create new thread for merge</h2>\n";
+            $error_str = "<h2>{$lang['failedtocreatenewthreadforsplit']}</h2>\n";
             break;
 
         default:
@@ -1060,8 +1055,6 @@ function thread_split_error($tid, $error_code, &$error_str)
             $error_str = "<h2>{$lang['unknownerror']}</h2>\n";
             break;
     }
-
-    thread_set_closed($tid, false);
 
     return false;
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.109 2007-01-03 20:31:24 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.110 2007-01-12 15:46:47 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -191,15 +191,15 @@ echo "                      <tr>\n";
 
 if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
 
-    echo "                        <td align=\"left\" class=\"subhead\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
+    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('friend.png'), "\" alt=\"{$lang['friend']}\" title=\"{$lang['friend']}\" /></h2></td>\n";
 
 }else if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
 
-    echo "                        <td align=\"left\" class=\"subhead\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
+    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "&nbsp;&nbsp;<img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['ignoreduser']}\" title=\"{$lang['ignoreduser']}\" /></h2></td>\n";
 
 }else {
 
-    echo "                        <td align=\"left\" class=\"subhead\"><h2>&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "</h2></td>\n";
+    echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\">&nbsp;", add_wordfilter_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME'])), "</h2></td>\n";
 }
 
 echo "                      </tr>\n";

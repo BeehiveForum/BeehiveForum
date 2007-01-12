@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.381 2007-01-11 19:24:07 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.382 2007-01-12 13:39:38 decoyduck Exp $ */
 
 // International English language file
 
@@ -1783,6 +1783,16 @@ $lang['threadmergefailed'] = "Thread merge failed";
 $lang['threadsplitfailed'] = "Thread split failed";
 
 $lang['cannotmergeorsplitthread'] = "There are no posts in this thread that can be merged or split";
+
+$lang['invalidfunctionarguments'] = "Invalid function arguments";
+$lang['couldnotretrieveforumdata'] = "Could not retrieve forum data";
+$lang['cannotmergepolls'] = "One or more threads is a poll. You cannot merge polls";
+$lang['couldnotretrievethreaddatamerge'] = "Could not retrieve thread data from one or more threads";
+$lang['couldnotretrievethreaddatasplit'] = "Could not retrieve thread data from source thread";
+$lang['couldnotretrievepostdatamerge'] = "Could not retrieve post data from one or more threads";
+$lang['couldnotretrievepostdatasplit'] = "Could not retrieve post data from source thread";
+$lang['failedtocreatenewthreadformerge'] = "Failed to create new thread for merge";
+$lang['failedtocreatenewthreadforsplit'] = "Failed to create new thread for split";
 
 // Thread subscriptions
 

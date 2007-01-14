@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.97 2007-01-11 23:22:12 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.98 2007-01-14 21:04:49 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -53,6 +53,30 @@ define("AVG_MONTH_IN_SECONDS", 2628000);
 define("DB_RESULT_ASSOC", 1);
 define("DB_RESULT_NUM",   2);
 define("DB_RESULT_BOTH",  3);
+
+// Thread list constants
+
+define('ALL_DISCUSSIONS', 0);
+define('UNREAD_DISCUSSIONS', 1);
+define('UNREAD_DISCUSSIONS_TO_ME', 2);
+define('TODAYS_DISCUSSIONS', 3);
+define('UNREAD_TODAY', 4);
+define('TWO_DAYS_BACK', 5);
+define('SEVEN_DAYS_BACK', 6);
+define('HIGH_INTEREST', 7);
+define('UNREAD_HIGH_INTEREST', 8);
+define('RECENTLY_SEEN', 9);
+define('IGNORED', 10);
+define('BY_IGNORED_USERS', 11);
+define('SUBSCRIBED_TO', 12);
+define('STARTED_BY_FRIEND', 13);
+define('UNREAD_STARTED_BY_FRIEND', 14);
+define('STARTED_BY_ME', 15);
+define('POLLS', 16);
+define('STICKY_THREADS', 17);
+define('MOST_UNREAD_POSTS', 18);
+define('SEARCH_RESULTS', 19);
+define('DELETED_THREADS', 20);
 
 // Constants for user permissions
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_links.inc.php,v 1.19 2007-01-03 23:23:55 decoyduck Exp $ */
+/* $Id: forum_links.inc.php,v 1.20 2007-01-14 21:04:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -108,6 +108,39 @@ function forum_links_get_links_by_page($start)
                  'forum_links_count' => $forum_links_count);
 }
 
+function forum_links_fix_url($uri)
+{
+    $uri_array = parse_url($uri);
+
+    if (isset($uri_array['query'])) {
+
+        parse_str($uri_array['query'], $uri_query_array);
+
+        $new_uri_query_array = array();
+
+        foreach($uri_query_array as $key => $value) {
+
+            if (strlen($key) > 0 && strlen($value) > 0) {
+
+                $value = rawurlencode($value);
+                $new_uri_query_array[] = "{$key}={$value}";
+            }
+        }
+
+        $uri_array['query'] = implode("&amp;", $new_uri_query_array);
+
+        $uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
+        $uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
+        $uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
+        $uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
+        $uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
+        $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
+    }
+
+    return $uri;
+    
+}
+
 function forum_links_draw_dropdown()
 {
     if ($forum_links_array = forum_links_get_links(false)) {
@@ -118,7 +151,8 @@ function forum_links_draw_dropdown()
 
             if (isset($forum_link['URI']) && isset($forum_link['TITLE'])) {
 
-                $html.= "<option value=\"{$forum_link['URI']}\">{$forum_link['TITLE']}</option>\n";
+                $forum_link_url = forum_links_fix_url($forum_link['URI']);                
+                $html.= "  <option value=\"{$forum_link_url}\">{$forum_link['TITLE']}</option>\n";
             }
         }
 

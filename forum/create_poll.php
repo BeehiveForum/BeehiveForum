@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: create_poll.php,v 1.186 2006-12-20 20:13:48 decoyduck Exp $ */
+/* $Id: create_poll.php,v 1.187 2007-01-14 21:04:49 decoyduck Exp $ */
 
 /**
 * Displays and processes the Create Poll page
@@ -56,8 +56,11 @@ $forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
+include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
@@ -68,6 +71,7 @@ include_once(BH_INCLUDE_PATH. "poll.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 // Check we're logged in correctly
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm.inc.php,v 1.162 2007-01-12 13:51:33 decoyduck Exp $ */
+/* $Id: pm.inc.php,v 1.163 2007-01-14 21:04:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1580,13 +1580,13 @@ function pm_export($folder)
     $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
     $pm_export_style = bh_session_get_value('PM_EXPORT_STYLE');
 
-    $zipfile = new zipfile();
+    $zip_file = new zip_file();
 
     if ($pm_export_attachments == "Y") {
 
         if ($attach_img = style_image('attach.png', true)) {
             $attach_img_contents = implode("", file($attach_img));
-            $zipfile->addFile($attach_img_contents, $attach_img);
+            $zip_file->add_file($attach_img_contents, $attach_img);
         }
     }
 
@@ -1594,7 +1594,7 @@ function pm_export($folder)
 
         if (@file_exists("./styles/style.css")) {
             $stylesheet_content = implode("", file("./styles/style.css"));
-            $zipfile->addFile($stylesheet_content, "styles/style.css");
+            $zip_file->add_file($stylesheet_content, "styles/style.css");
         }
     }
 
@@ -1602,17 +1602,17 @@ function pm_export($folder)
 
         case PM_EXPORT_HTML:
 
-            pm_export_html($folder, $zipfile);
+            pm_export_html($folder, $zip_file);
             break;
 
         case PM_EXPORT_XML:
 
-            pm_export_xml($folder, $zipfile);
+            pm_export_xml($folder, $zip_file);
             break;
 
         case PM_EXPORT_PLAINTEXT:
 
-            pm_export_plaintext($folder, $zipfile);
+            pm_export_plaintext($folder, $zip_file);
             break;
     }
 
@@ -1620,7 +1620,7 @@ function pm_export($folder)
     header("Expires: ". gmdate('D, d M Y H:i:s'). " GMT");
     header("Content-Disposition: attachment; filename=\"$archive_name\"");
     header("Pragma: no-cache");
-    echo $zipfile->file();
+    echo $zip_file->output_zip();
     exit;
 }
 
@@ -1631,13 +1631,13 @@ function pm_export($folder)
 *
 * @return bool
 * @param integer $folder - Folder ID to export
-* @param object $zipfile - By Reference zip file object from zip.inc.php class.
+* @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_html($folder, &$zipfile)
+function pm_export_html($folder, &$zip_file)
 {
     if (!is_numeric($folder)) return false;
-    if (!is_object($zipfile)) return false;
+    if (!is_object($zip_file)) return false;
 
     $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
     $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
@@ -1661,12 +1661,12 @@ function pm_export_html($folder, &$zipfile)
 
                 $pm_display.= pm_export_html_bottom();
                 $filename = "message_{$pm_message['MID']}.html";
-                $zipfile->addFile($pm_display, $filename);
+                $zip_file->add_file($pm_display, $filename);
                 $pm_display = pm_export_html_top(false);
             }
 
             if (isset($pm_message['AID'])) {
-                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zipfile);
+                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
             }
         }
 
@@ -1674,7 +1674,7 @@ function pm_export_html($folder, &$zipfile)
 
             $pm_display.= pm_export_html_bottom();
             $filename = "messages.html";
-            $zipfile->addFile($pm_display, $filename);
+            $zip_file->add_file($pm_display, $filename);
         }
 
         return true;
@@ -1690,13 +1690,13 @@ function pm_export_html($folder, &$zipfile)
 *
 * @return bool
 * @param integer $folder - Folder ID to export
-* @param object $zipfile - By Reference zip file object from zip.inc.php class.
+* @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_xml($folder, &$zipfile)
+function pm_export_xml($folder, &$zip_file)
 {
     if (!is_numeric($folder)) return false;
-    if (!is_object($zipfile)) return false;
+    if (!is_object($zip_file)) return false;
 
     $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
     $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
@@ -1727,7 +1727,7 @@ function pm_export_xml($folder, &$zipfile)
                 $pm_display.= "  </beehiveforum>\n";
 
                 $filename = "message_{$pm_message['MID']}.xml";
-                $zipfile->addFile($pm_display, $filename);
+                $zip_file->add_file($pm_display, $filename);
 
                 $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
                 $pm_display.= "  <beehiveforum>\n";
@@ -1735,7 +1735,7 @@ function pm_export_xml($folder, &$zipfile)
             }
 
             if (isset($pm_message['AID'])) {
-                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zipfile);
+                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
             }
         }
 
@@ -1745,7 +1745,7 @@ function pm_export_xml($folder, &$zipfile)
             $pm_display.= "  </beehiveforum>\n";
 
             $filename = "messages.xml";
-            $zipfile->addFile($pm_display, $filename);
+            $zip_file->add_file($pm_display, $filename);
         }
 
         return true;
@@ -1761,13 +1761,13 @@ function pm_export_xml($folder, &$zipfile)
 *
 * @return bool
 * @param integer $folder - Folder ID to export
-* @param object $zipfile - By Reference zip file object from zip.inc.php class.
+* @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_plaintext($folder, &$zipfile)
+function pm_export_plaintext($folder, &$zip_file)
 {
     if (!is_numeric($folder)) return false;
-    if (!is_object($zipfile)) return false;
+    if (!is_object($zip_file)) return false;
 
     $pm_export_file = bh_session_get_value('PM_EXPORT_FILE');
     $pm_export_attachments = bh_session_get_value('PM_EXPORT_ATTACHMENTS');
@@ -1789,19 +1789,19 @@ function pm_export_plaintext($folder, &$zipfile)
             if ($pm_export_file == PM_EXPORT_MANY) {
 
                 $filename = "message_{$pm_message['MID']}.txt";
-                $zipfile->addFile($pm_display, $filename);
+                $zip_file->add_file($pm_display, $filename);
                 $pm_display = "";
             }
 
             if (isset($pm_message['AID'])) {
-                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zipfile);
+                pm_export_attachments($pm_message['AID'], $pm_message['FROM_UID'], $zip_file);
             }
         }
 
         if ($pm_export_file == PM_EXPORT_SINGLE) {
 
             $filename = "messages.txt";
-            $zipfile->addFile($pm_display, $filename);
+            $zip_file->add_file($pm_display, $filename);
         }
 
         return true;
@@ -1818,14 +1818,14 @@ function pm_export_plaintext($folder, &$zipfile)
 * @return bool
 * @param integer $aid - Attachment ID
 * @param integer $from_uid - Sender UID to check owner of attachmennt.
-* @param object $zipfile - By Reference zip file object from zip.inc.php class.
+* @param object $zip_file - By Reference zip file object from zip.inc.php class.
 */
 
-function pm_export_attachments($aid, $from_uid, &$zipfile)
+function pm_export_attachments($aid, $from_uid, &$zip_file)
 {
     if (!md5($aid)) return false;
     if (!is_numeric($from_uid)) return false;
-    if (!is_object($zipfile)) return false;
+    if (!is_object($zip_file)) return false;
 
     if ($attachment_dir = attachments_check_dir()) {
         
@@ -1838,7 +1838,7 @@ function pm_export_attachments($aid, $from_uid, &$zipfile)
                     if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
 
                         $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
-                        $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}");
+                        $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}");
                     }
                 }
             }
@@ -1850,13 +1850,13 @@ function pm_export_attachments($aid, $from_uid, &$zipfile)
                     if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
 
                         $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
-                        $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}");
+                        $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}");
                     }
 
                     if (@file_exists("$attachment_dir/{$attachment['hash']}.thumb")) {
 
                         $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}.thumb"));
-                        $zipfile->addFile($attachment_content, "attachments/{$attachment['filename']}.thumb");
+                        $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}.thumb");
                     }
                 }
             }

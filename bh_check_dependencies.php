@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_dependencies.php,v 1.13 2007-01-12 22:38:15 decoyduck Exp $ */
+/* $Id: bh_check_dependencies.php,v 1.14 2007-01-14 21:04:49 decoyduck Exp $ */
 
 $include_files_dir   = "forum/include";
 $include_files_array = array("\$lang" => "lang.inc.php");
@@ -29,7 +29,9 @@ $include_files_array = array("\$lang" => "lang.inc.php");
 $source_files_dir_array = array("forum", "forum/include");
 $source_files_array     = array();
 
-$excl_include_files_array = array("zip_lib.inc.php", "lang.inc.php");
+$excl_include_files_array = array("htmltools.inc.php", "zip_lib.inc.php", "lang.inc.php");
+
+echo "Getting list of functions...\n";
 
 if (is_dir($include_files_dir)) {
 
@@ -78,6 +80,8 @@ foreach($source_files_dir_array as $source_files_dir) {
 
                 if (isset($pathinfo['extension']) && $pathinfo['extension'] == 'php') {
 
+                    echo "Checking $source_files_dir/$file for function matches...\n";
+                    
                     $file_contents[$file] = file_get_contents("$source_files_dir/$file");
                     $file_include_array[$file] = array();
 
@@ -86,27 +90,36 @@ foreach($source_files_dir_array as $source_files_dir) {
                         if ($include_file != $file) {
 
                             $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
+                            $function_name_preg = preg_quote($function_name, "/");
 
-                            if (stristr($file_contents[$file], $function_name)) {
+                            if (!stristr($file_contents[$file], $include_file_line)) {
 
-                                if (!stristr($file_contents[$file], $include_file_line)) {
+                                if (preg_match("/[ |\.|,]{$function_name_preg}[ ]?\(/", $file_contents[$file])) {
 
-                                    if (!in_array($include_file, $file_include_array[$file])) {
+                                    if (!isset($file_include_array[$file][$include_file])) {
 
-                                        $file_include_array[$file][] = $include_file;
+                                        $file_include_array[$file][$include_file] = array($function_name);
+                                    
+                                    }else if (!in_array($function_name, array_values($file_include_array[$file][$include_file]))) {
+
+                                        $file_include_array[$file][$include_file][] = $function_name;
                                     }
                                 }
                             }
 
                             $include_file_line = "include_once(BH_INCLUDE_PATH. \"lang.inc.php\")";
 
-                            if (stristr($file_contents[$file], $function_name)) {
+                            if (!stristr($file_contents[$file], $include_file_line)) {
 
-                                if (!stristr($file_contents[$file], $include_file_line)) {
+                                if (preg_match('/\$lang/i', $file_contents[$file])) {
 
-                                    if (!in_array("lang.inc.php", $file_include_array[$file])) {
+                                    if (!isset($file_include_array[$file]['lang.inc.php'])) {
 
-                                        $file_include_array[$file][] = "lang.inc.php";
+                                        $file_include_array[$file]['lang.inc.php'] = array('$lang');
+                                    
+                                    }else if (!in_array($function_name, array_values($file_include_array[$file]['lang.inc.php']))) {
+
+                                        $file_include_array[$file]['lang.inc.php'][] = $function_name;
                                     }
                                 }
                             }
@@ -118,20 +131,27 @@ foreach($source_files_dir_array as $source_files_dir) {
     }
 }
 
-foreach ($file_include_array as $filename => $include_array) {
+foreach ($file_include_array as $filename => $include_file_array) {
 
-    if (is_array($include_array) && sizeof($include_array) > 0) {
+    $display_file_name = false;
 
-        echo " === $filename ===\n\n";
+    foreach ($include_file_array as $include_file => $function_name_array) {
 
-        sort($include_array);
+        if (sizeof($function_name_array) > 0) {
 
-        foreach ($include_array as $include_file) {
+            if ($display_file_name === false) {
+
+                asort($function_name_array);
+
+                $function_name_list = implode(", ", $function_name_array);
+
+                echo "\n\n$filename\n", str_repeat("-=", strlen($filename) / 2), "\n";
+                echo "Uses: $function_name_list\n\n";
+                $display_file_name = true;
+            }
 
             echo "include_once(BH_INCLUDE_PATH. \"$include_file\");\n";
         }
-
-        echo "\n\n";
     }
 }
 

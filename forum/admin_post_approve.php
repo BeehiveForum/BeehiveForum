@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_post_approve.php,v 1.37 2007-01-05 21:12:40 decoyduck Exp $ */
+/* $Id: admin_post_approve.php,v 1.38 2007-01-14 21:04:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -51,6 +51,7 @@ include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "edit.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
@@ -63,6 +64,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
 

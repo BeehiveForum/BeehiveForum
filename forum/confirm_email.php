@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: confirm_email.php,v 1.8 2006-10-19 19:34:43 decoyduck Exp $ */
+/* $Id: confirm_email.php,v 1.9 2007-01-14 21:04:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -59,9 +59,11 @@ include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "email.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
+include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {

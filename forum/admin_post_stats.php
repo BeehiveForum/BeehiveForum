@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.26 2006-12-12 21:42:26 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.27 2007-01-14 21:04:49 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -51,14 +51,18 @@ $forum_settings = forum_get_settings();
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "profile.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "stats.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
 

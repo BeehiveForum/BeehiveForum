@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: ldelete.php,v 1.1 2007-01-11 20:48:41 decoyduck Exp $ */
+/* $Id: ldelete.php,v 1.2 2007-01-15 00:10:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -54,6 +54,7 @@ include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "edit.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.239 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.240 2007-01-15 00:10:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -33,8 +33,14 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "install.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "messages.inc.php");
+include_once(BH_INCLUDE_PATH. "pm.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 function threads_get_folders()

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.157 2007-01-05 21:12:40 decoyduck Exp $ */
+/* $Id: search.php,v 1.158 2007-01-15 00:10:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -64,6 +64,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.34 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.35 2007-01-15 00:10:34 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -137,6 +137,35 @@ if (isset($_POST['delete'])) {
                     $error_html.= "<h2>{$lang['failedtoremovelinks']}</h2>\n";
                 }               
             }
+        }
+    }
+
+}elseif (isset($_POST['toplinksubmit'])) {
+    
+    $valid = true;
+
+    if (isset($_POST['t_top_link_title']) && strlen(trim(_stripslashes($_POST['t_top_link_title']))) > 0) {
+        $t_top_link_title = trim(_stripslashes($_POST['t_top_link_title']));
+    }else {
+        $error_html.= "<h2>{$lang['notoplevellinktitlespecified']}</h2>\n";
+        $valid = false;
+    }
+
+    if (isset($_POST['t_old_top_link_title']) && strlen(trim(_stripslashes($_POST['t_old_top_link_title']))) > 0) {
+        $t_old_top_link_title = trim(_stripslashes($_POST['t_old_top_link_title']));
+    }else {
+        $t_old_top_link_title = "";
+    }
+
+    if ($valid) {
+
+        $new_forum_settings = array('forum_links_top_link' => $t_top_link_title);
+
+        if (forum_save_settings($new_forum_settings)) {
+
+            admin_add_log_entry(EDIT_TOP_LINK_CAPTION, array($t_top_link_title, $t_old_top_link_title));
+            $add_success = "<h2>{$lang['toplinktitlesuccessfullyupdated']}</h2>\n";
+            unset($_POST['toplinksubmit'], $t_top_link_title, $t_old_top_link_title, $new_forum_settings);
         }
     }
 
@@ -504,6 +533,48 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("addlink", $lang['addnew']), "&nbsp;", form_submit("delete", $lang['deleteselected']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "<br />\n";
+    echo "<form method=\"post\" action=\"admin_forum_links.php\">\n";
+    echo "  ", form_input_hidden('webtag', $webtag), "\n";
+    echo "  ", form_input_hidden('page', $page), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">{$lang['toplinkcaption']}</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['toplinkcaption']}:</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? _htmlentities(_stripslashes($_POST['t_top_link_title'])) : forum_get_setting('forum_links_top_link', false, $lang['forumlinks'])), 40, 32), form_input_hidden('t_old_top_link_title', forum_get_setting('forum_links_top_link', false, $lang['forumlinks'])), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("toplinksubmit", $lang['save']), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</form>\n";

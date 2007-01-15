@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit.inc.php,v 1.63 2006-03-16 16:29:23 decoyduck Exp $ */
+/* $Id: edit.inc.php,v 1.64 2007-01-15 00:10:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,9 +32,11 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "search.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function post_update($fid, $tid, $pid, $content)
 {

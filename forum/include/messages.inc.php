@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.433 2007-01-11 20:05:32 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.434 2007-01-15 00:10:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -37,10 +37,17 @@ include_once(BH_INCLUDE_PATH. "banned.inc.php");
 include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "perm.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "stats.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {

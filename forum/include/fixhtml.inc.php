@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.121 2006-07-10 15:56:26 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.122 2007-01-15 00:10:35 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -48,6 +48,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "geshi.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");

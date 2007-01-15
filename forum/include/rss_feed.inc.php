@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: rss_feed.inc.php,v 1.32 2007-01-04 18:22:22 decoyduck Exp $ */
+/* $Id: rss_feed.inc.php,v 1.33 2007-01-15 00:10:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,6 +35,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");

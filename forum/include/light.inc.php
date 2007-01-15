@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.124 2007-01-12 15:46:47 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.125 2007-01-15 00:10:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,12 +32,23 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "attachments.inc.php");
+include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
+include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "myforums.inc.php");
+include_once(BH_INCLUDE_PATH. "perm.inc.php");
+include_once(BH_INCLUDE_PATH. "poll.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function light_html_draw_top ($title = false, $override_frames = false)

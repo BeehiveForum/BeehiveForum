@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.82 2007-01-11 20:05:32 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.83 2007-01-15 00:10:35 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -63,9 +63,11 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
+include_once(BH_INCLUDE_PATH. "perm.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: styles.inc.php,v 1.11 2005-11-14 21:45:46 decoyduck Exp $ */
+/* $Id: styles.inc.php,v 1.12 2007-01-15 00:10:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -31,6 +31,9 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     header("Location: ../index.php");
     exit;
 }
+
+include_once(BH_INCLUDE_PATH. "format.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 
 function styles_get_available()
 {

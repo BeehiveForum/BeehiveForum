@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.35 2007-01-15 00:10:34 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.36 2007-01-15 00:31:01 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -197,9 +197,9 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if (forum_links_add_link($t_title, $t_uri)) {
+        if ($t_new_lid = forum_links_add_link($t_title, $t_uri)) {
 
-            admin_add_log_entry(ADD_FORUM_LINKS, array($t_title, $t_uri));
+            admin_add_log_entry(ADD_FORUM_LINKS, array($t_new_lid, $t_title));
             $add_success = sprintf("<h2>{$lang['successfullyaddedlink']}</h2>\n", $t_title);
             unset($t_title, $t_uri, $_POST['addlink']);
         
@@ -255,7 +255,7 @@ if (isset($_POST['delete'])) {
 
             if (forum_links_update_link($lid, $t_title, $t_uri)) {
 
-                admin_add_log_entry(EDIT_FORUM_LINKS, array($lid, $t_title, $t_uri, $t_old_title, $t_old_uri));
+                admin_add_log_entry(EDIT_FORUM_LINKS, array($lid, $t_title));
                 $edit_success = sprintf("<h2>{$lang['successfullyeditedlink']}</h2>\n", $t_title);
                 unset($lid, $t_title, $t_uri, $_POST['lid'], $_GET['lid']);
             

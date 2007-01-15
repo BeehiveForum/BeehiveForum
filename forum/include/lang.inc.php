@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.28 2005-12-08 17:24:56 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.29 2007-01-15 00:10:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -37,6 +37,7 @@ if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
 }
 
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function load_language_file()
 {

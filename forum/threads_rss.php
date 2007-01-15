@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads_rss.php,v 1.37 2006-12-28 23:21:47 decoyduck Exp $ */
+/* $Id: threads_rss.php,v 1.38 2007-01-15 00:10:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -47,13 +47,14 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 // Fetch the forum settings
 $forum_settings = forum_get_settings();
 
-include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "messages.inc.php");
 include_once(BH_INCLUDE_PATH. "post.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
+include_once(BH_INCLUDE_PATH. "user.inc.php");
 
 $webtag = get_webtag($webtag_search);
 

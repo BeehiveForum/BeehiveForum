@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.16 2007-01-11 20:05:32 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.17 2007-01-15 00:10:34 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -52,9 +52,14 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 // Fetch the forum settings
 $forum_settings = forum_get_settings();
 
+include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "header.inc.php");
+include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "mods_list.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "threads.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Check we're logged in correctly
 

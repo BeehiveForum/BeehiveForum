@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: perm.inc.php,v 1.99 2006-12-29 20:53:50 decoyduck Exp $ */
+/* $Id: perm.inc.php,v 1.100 2007-01-15 00:10:36 decoyduck Exp $ */
 
 /**
 * Functions relating to permissions
@@ -44,6 +44,8 @@ if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
 }
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function perm_is_moderator($fid, $uid)
 {

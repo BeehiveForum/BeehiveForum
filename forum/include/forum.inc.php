@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.204 2007-01-06 18:57:02 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.205 2007-01-15 00:10:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -32,9 +32,13 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "attachments.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
+include_once(BH_INCLUDE_PATH. "folder.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
@@ -426,7 +430,7 @@ function forum_save_settings($forum_settings_array)
     $forum_fid = $table_data['FID'];
 
     $sql = "DELETE FROM FORUM_SETTINGS WHERE FID = $forum_fid";
-    $result = db_query($sql, $db_forum_save_settings);
+    if (!$result = db_query($sql, $db_forum_save_settings)) return false;
 
     foreach ($forum_settings_array as $sname => $svalue) {
 
@@ -436,8 +440,10 @@ function forum_save_settings($forum_settings_array)
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
         $sql.= "VALUES ($forum_fid, '$sname', '$svalue')";
 
-        $result = db_query($sql, $db_forum_save_settings);
+        if (!$result = db_query($sql, $db_forum_save_settings)) return false;
     }
+
+    return true;
 }
 
 function forum_save_default_settings($forum_settings_array)

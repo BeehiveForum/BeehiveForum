@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: banned.inc.php,v 1.16 2006-12-02 15:59:13 decoyduck Exp $ */
+/* $Id: banned.inc.php,v 1.17 2007-01-15 00:10:35 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,6 +35,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 // banned.inc.php contains functions for checking the ban data
 // against the user credentials.
 
+include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "ip.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.96 2007-01-12 13:39:38 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.97 2007-01-15 00:10:37 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -33,7 +33,12 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 }
 
 include_once(BH_INCLUDE_PATH. "folder.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
+include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "poll.inc.php");
+include_once(BH_INCLUDE_PATH. "post.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 
 function thread_get_title($tid)
 {

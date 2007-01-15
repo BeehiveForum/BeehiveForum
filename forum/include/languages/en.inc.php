@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.383 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.384 2007-01-15 00:31:01 decoyduck Exp $ */
 
 // International English language file
 
@@ -619,6 +619,11 @@ $lang['deletedpostsfrominthread'] = "Deleted posts from '%s' in thread '%s'";
 $lang['deletedattachmentfrompost'] = "Deleted attachment '%s' from post '%s'";
 
 $lang['editedforumlinks'] = "Edited Forum Links";
+$lang['editedforumlink'] = "Edited Forum Link: '%s'";
+
+$lang['addedforumlink'] = "Added Forum Link: '%s'";
+$lang['deletedforumlink'] = "Added Forum Link: '%s'";
+$lang['changedtoplinkcaption'] = "Changed top link caption from '%s' to '%s'";
 
 $lang['deletedpost'] = "Deleted Post '%s'";
 $lang['editedpost'] = "Edited Post '%s'";

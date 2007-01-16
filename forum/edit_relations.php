@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_relations.php,v 1.60 2007-01-11 20:05:32 decoyduck Exp $ */
+/* $Id: edit_relations.php,v 1.61 2007-01-16 22:16:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -189,10 +189,10 @@ if (isset($_POST['add'])) {
 
 if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
     $main_page = $_GET['main_page'];
-    $start_main = floor($main_page - 1) * 20;
+    $start_main = floor($main_page - 1) * 10;
 }else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
     $main_page = $_POST['main_page'];
-    $start_main = floor($main_page - 1) * 20;
+    $start_main = floor($main_page - 1) * 10;
 }else {
     $main_page = 1;
     $start_main = 0;
@@ -200,10 +200,10 @@ if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
 
 if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $search_page = $_GET['search_page'];
-    $start_search = floor($search_page - 1) * 20;
+    $start_search = floor($search_page - 1) * 10;
 }else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
     $search_page = $_POST['search_page'];
-    $start_search = floor($search_page - 1) * 20;
+    $start_search = floor($search_page - 1) * 10;
 }else {
     $search_page = 1;
     $start_search = 0;
@@ -327,7 +327,7 @@ if (sizeof($user_peers['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&search_page=$search_page", $start_main, $user_peers['user_count'], 20, "main_page"), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&search_page=$search_page", $start_main, $user_peers['user_count'], 10, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -364,9 +364,9 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 
     $user_search_array = user_search($usersearch, $start_search, $uid);
 
-    if (sizeof($user_search_array['user_array']) > 0) {
+    if (sizeof($user_search_array['results_array']) > 0) {
 
-        foreach ($user_search_array['user_array'] as $user) {
+        foreach ($user_search_array['results_array'] as $user) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" width=\"200\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$user['UID']}\" target=\"_blank\" onclick=\"return openProfile({$user['UID']}, '$webtag')\">{$user['LOGON']}</a></td>\n";
@@ -401,13 +401,13 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "      </td>\n";
     echo "    </tr>\n";
 
-    if (sizeof($user_search_array['user_array']) > 0) {
+    if (sizeof($user_search_array['results_array']) > 0) {
 
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['user_count'], 20, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_relations.php?webtag=$webtag&usersearch=$usersearch&main_page=$main_page", $start_search, $user_search_array['results_count'], 10, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";

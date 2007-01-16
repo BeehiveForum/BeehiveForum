@@ -784,11 +784,11 @@ a {
 }
 
 .thread_title {
-    width: 190px;
+    width: 186px;
 }
 
 .post_to_others {
-    width: 190px;
+    width: 169px;
 }
 
 .post_content {
@@ -935,6 +935,16 @@ a {
     height: 18px;
     width: 18px;
     border: none;
+}
+
+.search_button {
+    height: 18px;
+    width: 18px;
+    background-color: #FFFFFF;
+    border: none;
+    vertical-align: middle;
+    margin-top: -3px;
+    margin-left: -1px;
 }
 
 .subhead_sort_asc {

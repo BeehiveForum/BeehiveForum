@@ -177,3 +177,10 @@ function resizeImages(maxWidth, resizeText) {
                 }
         }
 }
+
+function openLogonSearch(webtag, obj_name)
+{
+    var form_obj = document.getElementsByName(obj_name)[0];
+    search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&form_obj='+ form_obj.id, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    return false;
+}

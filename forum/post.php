@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.288 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: post.php,v 1.289 2007-01-16 22:16:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -905,7 +905,7 @@ echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true
 echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0))."<br />\n";
 
 echo form_radio("to_radio", "others", $lang['others'])."<br />\n";
-echo form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(".($newthread ? 1 : 2).")\"", "post_to_others")."<br /><br />\n";
+echo form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(".($newthread ? 1 : 2).")\"", "post_to_others"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openLogonSearch('$webtag', 't_to_uid_others');\" title=\"{$lang['search']}\"", "search_button"), "<br /><br />\n";
 
 echo "<h2>{$lang['messageoptions']}</h2>\n";
 

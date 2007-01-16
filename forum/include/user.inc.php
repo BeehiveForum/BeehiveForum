@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.286 2006-11-02 17:45:13 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.287 2007-01-16 22:16:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -834,8 +834,8 @@ function user_search($usersearch, $offset = 0, $exclude_uid = 0)
 
     $usersearch = addslashes($usersearch);
 
-    $user_search_array = array();
-    $user_search_count = 0;
+    $results_array = array();
+    $results_count = 0;
 
     $uid = bh_session_get_value('UID');
 
@@ -844,14 +844,14 @@ function user_search($usersearch, $offset = 0, $exclude_uid = 0)
     $sql.= "AND USER.UID <> $exclude_uid";
 
     $result = db_query($sql, $db_user_search);
-    list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($results_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 20";
+    $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
 
     $result = db_query($sql, $db_user_search);
 
@@ -859,21 +859,23 @@ function user_search($usersearch, $offset = 0, $exclude_uid = 0)
 
         while ($row = db_fetch_array($result)) {
 
-            if (!isset($user_search_array[$row['UID']])) {
+            if (!isset($results_array[$row['UID']])) {
 
                 if (isset($row['PEER_NICKNAME'])) {
+
                     if (!is_null($row['PEER_NICKNAME']) && strlen($row['PEER_NICKNAME']) > 0) {
+
                         $row['NICKNAME'] = $row['PEER_NICKNAME'];
                     }
                 }
 
-                $user_search_array[$row['UID']] = $row;
+                $results_array[$row['UID']] = $row;
             }
         }
     }
 
-    return array('user_count' => $user_search_count,
-                 'user_array' => $user_search_array);
+    return array('results_count' => $results_count,
+                 'results_array' => $results_array);
 }
 
 function user_get_aliases($uid)

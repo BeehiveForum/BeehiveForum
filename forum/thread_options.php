@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.69 2007-01-17 19:13:53 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.70 2007-01-17 20:59:35 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -632,7 +632,7 @@ if ($threaddata['LENGTH'] > 0) {
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"250\">", form_radio("thread_merge_split", 0, $lang['mergewiththreadid'], false, false, 'posthead'), "</td>\n";
-                echo "                        <td align=\"left\">", form_input_text('merge_thread', '', 30), "</td>\n";
+                echo "                        <td align=\"left\">", form_input_text('merge_thread', '', 27), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openThreadSearch('$webtag', 'merge_thread');\" title=\"{$lang['search']}\"", "search_button"), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";

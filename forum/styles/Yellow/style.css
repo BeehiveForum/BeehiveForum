@@ -535,7 +535,7 @@ a {
 .dictionary_change_to, .post_folder_dropdown,
 .thread_title, .post_to_others, .post_content,
 .signature_content, .to_uid_dropdown, .recipient_dropdown,
-.recent_user_dropdown, .user_in_thread_dropdown {
+.recipient_list, .recent_user_dropdown, .user_in_thread_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -817,7 +817,7 @@ a {
 }
 
 .post_to_others {
-    width: 190px;
+    width: 169px;
 }
 
 .post_content {
@@ -830,6 +830,10 @@ a {
 
 .recipient_dropdown {
     width: 190px;
+}
+
+.recipient_list {
+    width: 169px;
 }
 
 .recent_user_dropdown {
@@ -933,6 +937,16 @@ a {
     height: 18px;
     width: 18px;
     border: none;
+}
+
+.search_button {
+    height: 18px;
+    width: 18px;
+    background-color: #FFFFFF;
+    border: none;
+    vertical-align: middle;
+    margin-top: -3px;
+    margin-left: -1px;
 }
 
 .subhead_sort_asc {

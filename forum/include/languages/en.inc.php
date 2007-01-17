@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.385 2007-01-17 18:36:21 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.386 2007-01-17 19:13:53 decoyduck Exp $ */
 
 // International English language file
 
@@ -1526,6 +1526,7 @@ $lang['searchfrequencyerror_2'] = "seconds. Please try again later.";
 // Search Popup (search_popup.php) -------------------------------------
 
 $lang['select'] = "Select";
+$lang['searchforthread'] = "Search For Thread";
 
 // Start page (start_left.php) -----------------------------------------
 

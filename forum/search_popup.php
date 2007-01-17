@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.2 2007-01-17 18:36:22 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.3 2007-01-17 19:13:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -298,9 +298,18 @@ if (strlen(trim($search_query)) > 0) {
 
         foreach ($search_results_array['results_array'] as $search_result) {
 
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_radio("search_result", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
-            echo "                      </tr>\n";
+            if ($type == SEARCH_POPUP_TYPE_USER) {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">", form_radio("search_result", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
+                echo "                      </tr>\n";
+            
+            }else {
+
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">", form_radio("search_result", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags($search_result['TITLE']), "</a></td>\n";
+                echo "                      </tr>\n";
+            }
         }
 
         echo "                        <tr>\n";

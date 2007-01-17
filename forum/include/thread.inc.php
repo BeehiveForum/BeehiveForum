@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.97 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.98 2007-01-17 19:13:53 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1238,6 +1238,52 @@ function thread_can_be_undeleted($tid)
     list($length) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $length;
+}
+
+function thread_search($thread_search, $offset = 0)
+{
+    $db_thread_search = db_connect();
+
+    if (!is_numeric($offset)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $thread_search = addslashes($thread_search);
+
+    $results_array = array();
+    $results_count = 0;
+
+    $fidlist = folder_get_available();
+
+    $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "WHERE (THREAD.TITLE LIKE '$thread_search%') ";
+    $sql.= "AND THREAD.FID IN ($fidlist)";
+
+    $result = db_query($sql, $db_thread_search);
+    list($results_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $sql = "SELECT THREAD.TID, THREAD.TITLE ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "WHERE (THREAD.TITLE LIKE '$thread_search%') ";
+    $sql.= "AND THREAD.FID IN ($fidlist) ";
+    $sql.= "LIMIT $offset, 10";
+
+    $result = db_query($sql, $db_thread_search);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($row = db_fetch_array($result)) {
+
+            if (!isset($results_array[$row['TID']])) {
+
+                $results_array[$row['TID']] = $row;
+            }
+        }
+    }
+
+    return array('results_count' => $results_count,
+                 'results_array' => $results_array);
 }
 
 ?>

@@ -34,3 +34,16 @@ function display_mysql_stopwords(webtag, keywords) {
     window.open('search.php?webtag=' + webtag + '&show_stop_words=true&keywords=' + keywords, 'show_stop_words', 'width=580, height=450, scrollbars=yes, scrolling=yes');
     return false;
 }
+
+function openLogonSearch(webtag, obj_name)
+{
+    var form_obj = document.getElementsByName(obj_name)[0];
+    search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&obj_id='+ form_obj.id, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    return false;
+}
+
+function returnSearchResult(obj_id, content)
+{
+    var form_obj = getFormObj(obj_id);
+    form_obj.value = content;
+}

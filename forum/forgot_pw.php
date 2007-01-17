@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forgot_pw.php,v 1.46 2006-10-19 19:34:44 decoyduck Exp $ */
+/* $Id: forgot_pw.php,v 1.47 2007-01-17 20:43:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -107,7 +107,7 @@ if (isset($error_html)) {
 echo "<div align=\"center\">\n";
 echo "  <form name=\"forgot_pw\" action=\"forgot_pw.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"65%\">\n";
 echo "      <tr>\n";
 echo "        <td align=\"left\">{$lang['forgotpasswdexp']}</td>\n";
 echo "      </tr>\n";
@@ -116,7 +116,7 @@ echo "        <td align=\"left\">&nbsp;</td>\n";
 echo "      </tr>\n";
 echo "      <tr>\n";
 echo "        <td align=\"center\">\n";
-echo "          <table class=\"box\" width=\"300\">\n";
+echo "          <table class=\"box\" width=\"400\">\n";
 echo "            <tr>\n";
 echo "              <td align=\"left\" class=\"posthead\">\n";
 echo "                <table class=\"posthead\" width=\"100%\">\n";
@@ -124,8 +124,14 @@ echo "                  <tr>\n";
 echo "                    <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['forgotpasswd']}</td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
-echo "                    <td align=\"left\">{$lang['username']}:</td>\n";
-echo "                    <td align=\"left\">", form_input_text("logon", (isset($logon) ? $logon : ''), 28, 15), "</td>\n";
+echo "                    <td align=\"center\">\n";
+echo "                      <table class=\"posthead\" width=\"95%\">\n";
+echo "                        <tr>\n";
+echo "                          <td align=\"left\">{$lang['username']}:</td>\n";
+echo "                          <td align=\"left\">", form_input_text("logon", (isset($logon) ? $logon : ''), 40, 15), "</td>\n";
+echo "                        </tr>\n";
+echo "                      </table>\n";
+echo "                    </td>\n";
 echo "                  </tr>\n";
 echo "                  <tr>\n";
 echo "                    <td align=\"left\">&nbsp;</td>\n";

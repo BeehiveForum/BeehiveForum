@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.65 2006-12-11 21:58:17 decoyduck Exp $ */
+/* $Id: install.php,v 1.66 2007-01-17 20:43:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -514,6 +514,7 @@ echo "<title>BeehiveForum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"icon\" href=\"./images/favicon.ico\" type=\"image/ico\" />\n";
 echo "<link rel=\"stylesheet\" href=\"./styles/style.css\" type=\"text/css\" />\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/general.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"./js/install.js\"></script>\n";
 echo "</head>\n";
 echo "<body>\n";

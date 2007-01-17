@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.17 2007-01-15 00:10:34 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.18 2007-01-17 20:43:17 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -113,10 +113,8 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 }else {
 
     html_draw_top();
-
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['cantdisplaymods']}</h2>\n";
-    echo "{$lang['mustprovidefolderid']}\n";
-
     html_draw_bottom();
     exit;
 }

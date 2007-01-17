@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.19 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.20 2007-01-17 20:43:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -237,6 +237,7 @@ if (isset($hash) && is_md5($hash)) {
 }
 
 html_draw_top();
+echo "<h1>{$lang['error']}</h1>\n";
 echo "<h2>{$lang['attachmentproblem']}</h2>\n";
 html_draw_bottom();
 

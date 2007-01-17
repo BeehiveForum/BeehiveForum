@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.68 2007-01-16 22:16:22 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.69 2007-01-17 19:13:53 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -427,7 +427,7 @@ if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
 if ($threaddata['LENGTH'] > 0) {
 
-    html_draw_top("basetarget=_blank", "robots=noindex,nofollow");
+    html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
     echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
     echo "<br />\n";
@@ -585,7 +585,7 @@ if ($threaddata['LENGTH'] > 0) {
                 echo "                    <table class=\"posthead\" width=\"95%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"250\">", form_input_hidden("thread_merge_split", 0), $lang['mergewiththreadid'], "</td>\n";
-                echo "                        <td align=\"left\">", form_input_text('merge_thread', '', 30), "</td>\n";
+                echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_input_text('merge_thread', '', 27), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openThreadSearch('$webtag', 'merge_thread');\" title=\"{$lang['search']}\"", "search_button"), "</td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -856,7 +856,7 @@ if ($threaddata['LENGTH'] > 0) {
 
 }elseif ($thread_length = thread_can_be_undeleted($tid)) {
     
-    html_draw_top("basetarget=_blank", "robots=noindex,nofollow");
+    html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
     echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
     echo "<br />\n";

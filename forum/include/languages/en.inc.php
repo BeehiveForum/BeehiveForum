@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.384 2007-01-15 00:31:01 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.385 2007-01-17 18:36:21 decoyduck Exp $ */
 
 // International English language file
 
@@ -1522,6 +1522,10 @@ $lang['poststouser'] = "Posts to user";
 $lang['poststoandfromuser'] = "Posts to and from user";
 $lang['searchfrequencyerror_1'] = "You can only search once every";
 $lang['searchfrequencyerror_2'] = "seconds. Please try again later.";
+
+// Search Popup (search_popup.php) -------------------------------------
+
+$lang['select'] = "Select";
 
 // Start page (start_left.php) -----------------------------------------
 

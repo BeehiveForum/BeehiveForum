@@ -19,18 +19,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-function closeAttachWin () {
+function closeAttachWin ()
+{
         if (typeof attachwin == 'object' && !attachwin.closed) {
                 attachwin.close();
         }
 }
 
-function launchAttachWin (aid, webtag) {
+function launchAttachWin (aid, webtag)
+{
         attachwin = window.open('attachments.php?webtag=' + webtag + '&aid='+ aid, 'attachments', 'width=660, height=480, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
         return false;
 }
 
-function checkToRadio(num) {
+function checkToRadio(num)
+{
         document.f_post.to_radio[num].checked=true;
 }
 
@@ -46,8 +49,8 @@ function is_defined(var_name)
    return false;
 }
 
-function addOverflow(maxWidth) {
-
+function addOverflow(maxWidth)
+{
         var IE = (document.all ? true : false);
         
         var body_tag = document.getElementsByTagName('body');
@@ -96,8 +99,8 @@ function addOverflow(maxWidth) {
         }
 }
 
-function redoOverFlow(maxWidth) {
-
+function redoOverFlow(maxWidth)
+{
         var body_tag = document.getElementsByTagName('body');
         var body_tag = body_tag[0];
 
@@ -128,8 +131,8 @@ function redoOverFlow(maxWidth) {
         }
 }
 
-function resizeImages(maxWidth, resizeText) {
-        
+function resizeImages(maxWidth, resizeText)
+{
         var body_tag = document.getElementsByTagName('body');
         var body_tag = body_tag[0];
 
@@ -178,9 +181,35 @@ function resizeImages(maxWidth, resizeText) {
         }
 }
 
+function getFormObj(obj_id)
+{
+    var form_obj;
+
+    if (document.getElementById) {
+        form_obj = eval("document.getElementById('" + obj_id + "')");
+    }else if (document.all) {
+        form_obj = eval("document.all." + obj_id);
+    }else if (document.layer) {
+        form_obj = eval("document." + obj_id);
+    }else {
+        return false;
+    }
+
+    return form_obj;
+}
+
 function openLogonSearch(webtag, obj_name)
 {
     var form_obj = document.getElementsByName(obj_name)[0];
-    search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&form_obj='+ form_obj.id, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&obj_id='+ form_obj.id, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
     return false;
+}
+
+function returnSearchResult(obj_id, content)
+{
+    var form_obj = getFormObj(obj_id);
+    form_obj.value = content;
+
+    var to_radio_obj = document.getElementsByName('to_radio');
+    to_radio_obj[to_radio_obj.length - 1].checked = true;
 }

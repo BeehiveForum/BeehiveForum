@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.287 2007-01-16 22:16:22 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.288 2007-01-17 20:43:17 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1282,7 +1282,7 @@ function user_get_relationships($uid, $offset = 0)
     $sql.= "FROM {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "WHERE USER_PEER.UID = $uid ";
-    $sql.= "LIMIT $offset, 20";
+    $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_user_get_relationships);
 

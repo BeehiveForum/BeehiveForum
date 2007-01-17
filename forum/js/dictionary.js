@@ -19,23 +19,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-function getFormObj(obj_id) {
-
-    var form_obj;
-
-    if (document.getElementById) {
-        form_obj = eval("document.getElementById('" + obj_id + "')");
-    }else if (document.all) {
-        form_obj = eval("document.all." + obj_id);
-    }else if (document.layer) {
-        form_obj = eval("document." + obj_id);
-    }else {
-        return false;
-    }
-
-    return form_obj;
-}
-
 function initialise_dictionary(obj_id) {
 
     var dictObj = getFormObj('dictionary');

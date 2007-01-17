@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_access.php,v 1.44 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_forum_access.php,v 1.45 2007-01-17 20:43:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -99,6 +99,7 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 if (!forum_get_setting('access_level', 1, false)) {
 
     html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<h2>{$lang['forumisnotrestricted']}</h2>\n";
     html_draw_bottom();
     exit;

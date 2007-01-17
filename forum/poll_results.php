@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.14 2007-01-15 00:10:34 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.15 2007-01-17 20:43:17 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -126,12 +126,10 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
 }else {
 
+    echo "<h1>{$lang['error']}</h1>\n";
     echo "<div align=\"center\">";
     echo "<p>{$lang['mustspecifypolltoview']}</p>";
-    echo "<form method=\"post\" action=\"poll_results.php\">\n";
-    echo "  ", form_input_hidden('webtag', $webtag), "\n";
-    echo "  ". form_submit('submit', $lang['close']). "\n";
-    echo "</form>\n";
+    echo form_quick_button("./poll_results.php", $lang['close']);
     echo "</div>";
 
     html_draw_bottom();

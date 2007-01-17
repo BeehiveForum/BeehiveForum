@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.1 2007-01-16 22:16:22 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.2 2007-01-17 18:36:22 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -153,6 +153,27 @@ if (isset($_GET['type']) && is_numeric($_GET['type'])) {
     echo "<h2>{$lang['mustspecifytypeofsearch']}</h2>\n";
 }
 
+// Form Object ID
+
+if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0) {
+
+    $obj_id = trim(_stripslashes($_POST['obj_id']));
+
+}elseif (isset($_GET['obj_id']) && strlen(trim(_stripslashes($_GET['obj_id']))) > 0) {
+
+    $obj_id = trim(_stripslashes($_GET['obj_id']));
+
+}else {
+
+    html_draw_top();
+
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['noformobj']}</h2>\n";
+
+    html_draw_bottom();
+    exit;
+}
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 }else {
@@ -161,6 +182,26 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
 $start = floor($page - 1) * 10;
 if ($start < 0) $start = 0;
+
+if (isset($_POST['select_result'])) {
+
+    if (isset($_POST['search_result']) && strlen(trim(_stripslashes($_POST['search_result']))) > 0) {
+
+        $search_result = trim(_stripslashes($_POST['search_result']));
+
+        html_draw_top();
+
+        echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+        echo "  if (window.opener.returnSearchResult) {\n";
+        echo "    window.opener.returnSearchResult('$obj_id', '$search_result');\n";
+        echo "  }\n";
+        echo "  window.close();\n";
+        echo "</script>\n";
+
+        html_draw_bottom();
+        exit;
+    }
+}
 
 if (isset($_GET['search_query']) && strlen(trim(_stripslashes($_GET['search_query']))) > 0) {
     $search_query = trim(_stripslashes($_GET['search_query']));
@@ -178,6 +219,7 @@ echo "<div align=\"center\">\n";
 echo "<form action=\"search_popup.php\" method=\"post\">\n";
 echo "  ", form_input_hidden("webtag", $webtag), "\n";
 echo "  ", form_input_hidden("type", $type), "\n";
+echo "  ", form_input_hidden("obj_id", $obj_id), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -257,7 +299,7 @@ if (strlen(trim($search_query)) > 0) {
         foreach ($search_results_array['results_array'] as $search_result) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">", form_radio("select_result", $search_result['UID'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
+            echo "                        <td align=\"left\">", form_radio("search_result", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
             echo "                      </tr>\n";
         }
 
@@ -279,6 +321,12 @@ if (strlen(trim($search_query)) > 0) {
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td class=\"postbody\" align=\"center\">", page_links("search_popup.php?webtag=$webtag&search_query=$search_query&type=$type", $start, $search_results_array['results_count'], 10), "</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td class=\"postbody\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit('select_result', $lang['select']), "&nbsp;", form_submit('submit', $lang['searchagain']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
     
@@ -313,16 +361,25 @@ if (strlen(trim($search_query)) > 0) {
         echo "        </table>\n";
         echo "      </td>\n";
         echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td class=\"postbody\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit('submit', $lang['search']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+        echo "    </tr>\n";
         echo "  </table>\n";
     }
+
+}else {
+
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit('submit', $lang['search']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 }
 
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"475\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit('submit', $lang['search']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
 echo "</form>\n";
 echo "</div>\n";
 

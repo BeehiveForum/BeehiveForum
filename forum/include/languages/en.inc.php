@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.386 2007-01-17 19:13:53 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.387 2007-01-18 21:42:06 decoyduck Exp $ */
 
 // International English language file
 
@@ -1813,5 +1813,10 @@ $lang['nosubscriptions'] = "No Subscriptions";
 $lang['couldnotupdateinterestonthread'] = "Could not update interest on thread '%s'";
 $lang['threadinterestsupdatedsuccessfully'] = "Thread interests updated successfully";
 $lang['unsubscribebutton'] = "Unsubscribe";
+$lang['resetselected'] = "Reset Selected";
+$lang['allthreadtypes'] = "All Thread Types";
+$lang['ignoredthreads'] = "Ignored Threads";
+$lang['highinterestthreads'] = "High Interest Threads";
+$lang['subscribedthreads'] = "Subscribed Threads";
 
 ?>

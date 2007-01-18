@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.3 2007-01-17 19:13:53 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.4 2007-01-18 21:42:05 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -174,6 +174,15 @@ if (isset($_POST['obj_id']) && strlen(trim(_stripslashes($_POST['obj_id']))) > 0
     exit;
 }
 
+if (isset($_POST['allow_multi'])) {
+    $allow_multi = true;
+}elseif (isset($_GET['allow_multi'])) {
+    $allow_multi = true;
+}else {
+    $allow_multi = false;
+}
+
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 }else {
@@ -185,15 +194,29 @@ if ($start < 0) $start = 0;
 
 if (isset($_POST['select_result'])) {
 
-    if (isset($_POST['search_result']) && strlen(trim(_stripslashes($_POST['search_result']))) > 0) {
+    if (isset($_POST['search_result'])) {
 
-        $search_result = trim(_stripslashes($_POST['search_result']));
+        $search_result = $_POST['search_result'];
 
         html_draw_top();
 
         echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
         echo "  if (window.opener.returnSearchResult) {\n";
-        echo "    window.opener.returnSearchResult('$obj_id', '$search_result');\n";
+
+        if (is_array($search_result)) {
+
+            foreach($search_result as $search_result_part) {
+
+                $search_result_part = trim(_stripslashes($search_result_part));
+                echo "    window.opener.returnSearchResult('$obj_id', '$search_result_part');\n";
+            }
+
+        }else {
+
+            $search_result = trim(_stripslashes($search_result));
+            echo "    window.opener.returnSearchResult('$obj_id', '$search_result');\n";
+        }
+
         echo "  }\n";
         echo "  window.close();\n";
         echo "</script>\n";
@@ -300,15 +323,33 @@ if (strlen(trim($search_query)) > 0) {
 
             if ($type == SEARCH_POPUP_TYPE_USER) {
 
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_radio("search_result", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
-                echo "                      </tr>\n";
+                if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
+
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
+                    echo "                      </tr>\n";
+
+                }else {
+
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['LOGON'], ''), "&nbsp;<a href=\"user_profile.php?webtag=$webtag&amp;uid={$search_result['UID']}\" target=\"_blank\" onclick=\"return openProfile({$search_result['UID']}, '$webtag')\">", add_wordfilter_tags(format_user_name($search_result['LOGON'], $search_result['NICKNAME'])), "</a></td>\n";
+                    echo "                      </tr>\n";
+                }
             
             }else {
 
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\">", form_radio("search_result", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags($search_result['TITLE']), "</a></td>\n";
-                echo "                      </tr>\n";
+                if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
+
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags($search_result['TITLE']), "</a></td>\n";
+                    echo "                      </tr>\n";
+
+                }else {
+
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags($search_result['TITLE']), "</a></td>\n";
+                    echo "                      </tr>\n";
+                }
             }
         }
 

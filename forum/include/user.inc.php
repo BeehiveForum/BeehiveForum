@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.288 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.289 2007-01-18 21:42:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -839,8 +839,11 @@ function user_search($usersearch, $offset = 0, $exclude_uid = 0)
 
     $uid = bh_session_get_value('UID');
 
+    $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
+
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
-    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql.= "WHERE (MATCH(USER.LOGON) AGAINST('$usersearch'$bool_mode) ";
+    $sql.= "OR MATCH(USER.NICKNAME) AGAINST('$usersearch'$bool_mode)) ";
     $sql.= "AND USER.UID <> $exclude_uid";
 
     $result = db_query($sql, $db_user_search);
@@ -850,7 +853,8 @@ function user_search($usersearch, $offset = 0, $exclude_uid = 0)
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql.= "WHERE (MATCH(USER.LOGON) AGAINST('$usersearch'$bool_mode) ";
+    $sql.= "OR MATCH(USER.NICKNAME) AGAINST('$usersearch'$bool_mode)) ";
     $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
 
     $result = db_query($sql, $db_user_search);
@@ -1019,7 +1023,8 @@ function users_get_recent($offset, $limit)
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
+    $sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL ";
+    $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
@@ -1027,8 +1032,7 @@ function users_get_recent($offset, $limit)
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
     $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
-    $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
+    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql.= "AND VISITOR_LOG.FORUM = $forum_fid $include_guests ";
     $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
@@ -1080,32 +1084,37 @@ function users_search_recent($usersearch, $offset)
 
     $forum_fid = $table_data['FID'];
 
-    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
-    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0";
+    $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
+
+    $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM VISITOR_LOG ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
+    $sql.= "WHERE (MATCH(USER.LOGON) AGAINST('$usersearch'$bool_mode) ";
+    $sql.= "OR MATCH(USER.NICKNAME) AGAINST('$usersearch'$bool_mode) ";
+    $sql.= "OR MATCH(SEARCH_ENGINE_BOTS.NAME) AGAINST('$usersearch'$bool_mode)) ";
+    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid'";
 
     $result = db_query($sql, $db_users_search_recent);
     list($user_search_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM USER USER ";
-    $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ";
-    $sql.= "ON (USER.UID = VISITOR_LOG.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
+    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, SEARCH_ENGINE_BOTS.SID, ";
+    $sql.= "SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL FROM VISITOR_LOG ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS USER_PREFS_FORUM ";
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
     $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
-    $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
-    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%' ";
-    $sql.= "OR SEB.NAME LIKE '$usersearch%' OR SEB.URL LIKE '$usersearch%') ";
-    $sql.= "AND VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql.= "AND (USER_PREFS_FORUM.ANON_LOGON IS NULL OR USER_PREFS_FORUM.ANON_LOGON = 0) ";
-    $sql.= "AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
+    $sql.= "WHERE (MATCH(USER.LOGON) AGAINST('$usersearch'$bool_mode) ";
+    $sql.= "OR MATCH(USER.NICKNAME) AGAINST('$usersearch'$bool_mode) ";
+    $sql.= "OR MATCH(SEARCH_ENGINE_BOTS.NAME) AGAINST('$usersearch'$bool_mode)) ";
+    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.LAST_LOGON IS NOT NULL ";
+    $sql.= "AND VISITOR_LOG.LAST_LOGON > 0 AND (USER_PREFS_FORUM.ANON_LOGON IS NULL ";
+    $sql.= "OR USER_PREFS_FORUM.ANON_LOGON = 0) AND (USER_PREFS_GLOBAL.ANON_LOGON IS NULL ";
+    $sql.= "OR USER_PREFS_GLOBAL.ANON_LOGON = 0) ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT $offset, 20";
 

@@ -28,6 +28,7 @@ frame {
 }
 
 .navpage {
+    background-image: url('images/menu.png');
     font-size: 10px;
     font-weight: bold;
     margin: 0px;
@@ -69,7 +70,7 @@ h1 {
     background-color: #575757;
     font-family: verdana, arial, helvetica, sans-serif;
     text-decoration: none;
-    color: #000000;
+    color: #FFFFFF;
     font-size: 10pt;
     font-weight: bold;
     margin: 0px;
@@ -461,7 +462,7 @@ a {
       font-family: verdana, arial, helvetica, sans-serif;
       font-size: 10pt;
       font-style: normal;
-      color: #000000;
+      color: #FFFFFF;
       border-top: 1px #666666 solid;
       text-align: center;
       padding-top: 1px;

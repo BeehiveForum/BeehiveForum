@@ -28,6 +28,7 @@ frame {
 }
 
 .navpage {
+    background-image: url('images/menu.png');
     font-size: 10px;
     color: #FFFFFF;
     font-weight: bold;

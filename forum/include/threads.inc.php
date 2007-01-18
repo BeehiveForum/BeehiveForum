@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.240 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.241 2007-01-18 21:42:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1943,6 +1943,8 @@ function threads_search_user_subscriptions($threadsearch, $include_threads = arr
 
     $uid = bh_session_get_value('UID');
 
+    $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
+
     $sql = "SELECT COUNT(THREAD.TID) FROM {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
     $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
@@ -1953,7 +1955,7 @@ function threads_search_user_subscriptions($threadsearch, $include_threads = arr
         $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
     }
 
-    $sql.= "AND THREAD.TITLE LIKE '%$threadsearch%' ";
+    $sql.= "AND MATCH (THREAD.TITLE) AGAINST('$threadsearch'$bool_mode) ";
 
     if (isset($include_threads) && sizeof($include_threads) > 0) {
 
@@ -1975,7 +1977,7 @@ function threads_search_user_subscriptions($threadsearch, $include_threads = arr
         $sql.= "WHERE USER_THREAD.INTEREST <> 0 ";
     }
 
-    $sql.= "AND THREAD.TITLE LIKE '%$threadsearch%' ";
+    $sql.= "AND MATCH (THREAD.TITLE) AGAINST('$threadsearch'$bool_mode) ";
 
     if (isset($include_threads) && sizeof($include_threads) > 0) {
 

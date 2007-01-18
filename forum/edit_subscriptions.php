@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.9 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.10 2007-01-18 21:42:04 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -202,7 +202,7 @@ if (isset($_GET['view_filter']) && is_numeric($_GET['view_filter'])) {
 }else if (isset($_POST['view_filter']) && is_numeric($_POST['view_filter'])) {
     $view_filter = $_POST['view_filter'];
 }else {
-    $view_filter = 2;
+    $view_filter = 0;
 }
 
 // Clear search?
@@ -213,8 +213,8 @@ if (isset($_POST['clear'])) {
 
 // Save button text and header text change depending on view selected.
 
-$save_button_text = array('-1' => 'Unignore Selected', '1' => 'Reset Selected', '2' => 'Unsubscribe Selected');
-$header_text = array('-1' => 'Ignored Threads', '1' => 'High Interest Threads', '2' => 'Subscribed Threads');
+$header_text = array('0' => $lang['allthreadtypes'], '-1' => $lang['ignoredthreads'],
+                     '1' => $lang['highinterestthreads'], '2' => $lang['subscribedthreads']);
 
 echo "<h1>{$lang['threadsubscriptions']} &raquo; {$header_text[$view_filter]}</h1>\n";
 
@@ -286,7 +286,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(-1, 1, 2), array("{$lang['ignored']} ", "{$lang['interested']} ", "{$lang['subscribed']} "), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+    echo "      <td align=\"left\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(0, -1, 1, 2), array($lang['all'], $lang['ignored'], $lang['interested'], $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
     echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&main_page=$main_page&view_filter=$view_filter", $start_search, $thread_search_array['thread_count'], 20, "search_page"), "</td>\n";
     echo "      <td align=\"right\" width=\"33%\">", form_button("selectall", "Select all", "subscriptions_toggle_all();\""), form_input_hidden("toggle_all", -1), "</td>\n";    
     echo "    </tr>\n";
@@ -297,7 +297,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\" colspan=\"3\">", form_submit("save", $save_button_text[$view_filter]), "</td>\n";
+        echo "      <td align=\"center\" colspan=\"3\">", form_submit("save", $lang['resetselected']), "</td>\n";
         echo "    </tr>\n";
     }
 
@@ -356,7 +356,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(-1, 1, 2), array("{$lang['ignored']} ", "{$lang['interested']} ", "{$lang['subscribed']} "), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
+    echo "      <td align=\"left\" width=\"33%\">{$lang['view']}:&nbsp;", form_dropdown_array('view_filter', array(0, -1, 1, 2), array($lang['all'], $lang['ignored'], $lang['interested'], $lang['subscribed']), $view_filter), "&nbsp;", form_submit("view_submit", $lang['goexcmark']), "</td>\n";
     echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_subscriptions.php?webtag=$webtag&threadsearch=$threadsearch&search_page=$search_page&view_filter=$view_filter", $start_main, $thread_subscriptions['thread_count'], 20, "main_page"), "</td>\n";
     echo "      <td align=\"right\" width=\"33%\">", form_button("selectall", "Select all", "onclick=\"subscriptions_toggle_all();\""), form_input_hidden("toggle_all", -1), "</td>\n";    
     echo "    </tr>\n";
@@ -367,7 +367,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\" colspan=\"3\">", form_submit("save", $save_button_text[$view_filter]), "</td>\n";
+        echo "      <td align=\"center\" colspan=\"3\">", form_submit("save", $lang['resetselected']), "</td>\n";
         echo "    </tr>\n";
     }
 

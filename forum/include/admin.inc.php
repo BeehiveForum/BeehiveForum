@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.95 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.96 2007-01-18 21:42:05 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -423,14 +423,16 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
             $having_sql = "";
     }
 
+    $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
+
     $sql = "SELECT USER.UID, SESSIONS.HASH, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
-    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' ";
-    $sql.= "OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql.= "WHERE (MATCH(USER.LOGON) AGAINST('$usersearch'$bool_mode) ";
+    $sql.= "OR MATCH(USER.NICKNAME) AGAINST('$usersearch'$bool_mode)) ";
     $sql.= "GROUP BY USER.UID $having_sql ";
 
     $result = db_query($sql, $db_user_search);
@@ -445,7 +447,8 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
     $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID ";
     $sql.= "AND VISITOR_LOG.FORUM = $forum_fid) ";
-    $sql.= "WHERE (USER.LOGON LIKE '$usersearch%' OR USER.NICKNAME LIKE '$usersearch%') ";
+    $sql.= "WHERE (MATCH(USER.LOGON) AGAINST('$usersearch'$bool_mode) ";
+    $sql.= "OR MATCH(USER.NICKNAME) AGAINST('$usersearch'$bool_mode)) ";
     $sql.= "GROUP BY USER.UID $having_sql ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 

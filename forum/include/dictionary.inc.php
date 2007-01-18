@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: dictionary.inc.php,v 1.35 2006-07-03 18:09:47 decoyduck Exp $ */
+/* $Id: dictionary.inc.php,v 1.36 2007-01-18 21:42:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -175,7 +175,7 @@ class dictionary {
 
         // Check to see if the word does actually exist
 
-        $sql = "SELECT * FROM DICTIONARY WHERE WORD LIKE '$word' ";
+        $sql = "SELECT * FROM DICTIONARY WHERE WORD = '$word' ";
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "LIMIT 0, 1";
 
@@ -276,7 +276,7 @@ class dictionary {
 
         // Exact match
 
-        $sql = "SELECT * FROM DICTIONARY WHERE WORD LIKE '$word' ";
+        $sql = "SELECT * FROM DICTIONARY WHERE WORD = '$word' ";
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "LIMIT 0, 1";
 

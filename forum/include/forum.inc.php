@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.205 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.206 2007-01-18 21:42:05 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -74,16 +74,17 @@ function get_forum_data()
             $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
             $sql.= "AND USER_FORUM.UID = $uid) WHERE WEBTAG = '$webtag'";
 
-            $result = db_query($sql, $db_get_forum_data);
+            if ($result = @db_query($sql, $db_get_forum_data)) {
 
-            if (db_num_rows($result) > 0) {
+                if (db_num_rows($result) > 0) {
 
-                $forum_data = db_fetch_array($result);
+                    $forum_data = db_fetch_array($result);
 
-                if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
+                    if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
+                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
 
-                return $forum_data;
+                    return $forum_data;
+                }
             }
 
             return array('WEBTAG_SEARCH' => $webtag);
@@ -98,11 +99,17 @@ function get_forum_data()
             $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
             $sql.= "AND USER_FORUM.UID = $uid) WHERE DEFAULT_FORUM = 1";
 
-            $result = db_query($sql, $db_get_forum_data);
+            if ($result = @db_query($sql, $db_get_forum_data)) {
 
-            if (db_num_rows($result) > 0) {
+                if (db_num_rows($result) > 0) {
 
-                $forum_data = db_fetch_array($result);
+                    $forum_data = db_fetch_array($result);
+
+                    if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
+                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
+
+                    return $forum_data;
+                }
             }
         }
     }

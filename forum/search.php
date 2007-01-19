@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.159 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: search.php,v 1.160 2007-01-19 14:11:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -475,7 +475,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                    <table cellpadding=\"0\" cellpadding=\"0\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("username", "", 29), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openLogonSearch('$webtag', 'username');\" title=\"{$lang['search']}\"", "search_button"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", "", 28, 15, "", "search_logon"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openLogonSearch('$webtag', 'username');\" title=\"{$lang['search']}\"", "search_button"), "</div>&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

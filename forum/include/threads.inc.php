@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.241 2007-01-18 21:42:05 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.242 2007-01-19 17:40:33 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1389,10 +1389,10 @@ function threads_mark_all_read()
         $threads_array = array();
 
         while($thread_data = db_fetch_array($result_threads)) {
-            $threads_array[] = $thread_data;
+            $threads_array[$thread_data['TID']] = $thread_data;
         }
 
-        threads_mark_read($threads_array);
+        return threads_mark_read($threads_array);
     }
 }
 
@@ -1438,7 +1438,7 @@ function threads_mark_50_read()
         $threads_array = array();
 
         while($thread_data = db_fetch_array($result_threads)) {
-            $threads_array[] = $thread_data;
+            $threads_array[$thread_data['TID']] = $thread_data;
         }
 
         return threads_mark_read($threads_array);
@@ -1490,7 +1490,7 @@ function threads_mark_folder_read($fid)
         $threads_array = array();
 
         while($thread_data = db_fetch_array($result_threads)) {
-            $threads_array[] = $thread_data;
+            $threads_array[$thread_data['TID']] = $thread_data;
         }
 
         return threads_mark_read($threads_array);
@@ -1586,7 +1586,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
         while ($thread_data = db_fetch_array($result)) {
 
-            $threads_array[] = $thread_data;
+            $threads_array[$thread_data['TID']] = $thread_data;
         }
 
         return true;

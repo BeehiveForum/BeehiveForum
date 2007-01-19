@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.291 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: post.php,v 1.292 2007-01-19 14:11:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -869,59 +869,95 @@ if ($newthread) {
 echo "</td></tr>\n";
 echo "<tr>\n";
 echo "<td align=\"left\" valign=\"top\" width=\"210\">\n";
-echo "<table class=\"posthead\" width=\"210\">\n";
-echo "<tr><td align=\"left\">\n";
+echo "<table class=\"posthead\" width=\"210\" cellpadding=\"0\">\n";
 
 if ($newthread) {
 
-    echo "<h2>{$lang['folder']}</h2>\n";
-    echo "$folder_dropdown\n";
-    echo "<h2>{$lang['threadtitle']}</h2>\n";
-    echo form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, false, "thread_title"), "\n";
-
-    echo form_input_hidden("t_newthread", "Y")."\n";
-    echo "<br />\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">$folder_dropdown</h2></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">", form_input_text("t_threadtitle", _htmlentities($t_threadtitle), 0, 0, false, "thread_title"), form_input_hidden("t_newthread", "Y"), "</td>\n";
+    echo "  </tr>\n";
 
 }else {
 
-    echo "<h2>{$lang['folder']}</h2>\n";
-    echo $threaddata['FOLDER_TITLE'], "\n";
-    echo "<h2>{$lang['threadtitle']}</h2>\n";
-    echo add_wordfilter_tags($threaddata['TITLE']), "\n";
-
-    echo form_input_hidden("t_tid", $reply_to_tid);
-    echo form_input_hidden("t_rpid", $reply_to_pid)."\n";
-    echo "<br /><br />\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\"><h2>{$lang['folder']}</h2></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">{$threaddata['FOLDER_TITLE']}</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">", add_wordfilter_tags($threaddata['TITLE']), form_input_hidden("t_tid", $reply_to_tid), form_input_hidden("t_rpid", $reply_to_pid), "</h2></td>\n";
+    echo "  </tr>\n";
 }
 
-echo "<h2>{$lang['to']}</h2>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\"><h2>{$lang['to']}</h2></td>\n";
+echo "  </tr>\n";
 
 if (!$newthread) {
-    echo form_radio("to_radio", "in_thread", $lang['usersinthread'], true), "<br />\n";
-    echo post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false, 'onclick="checkToRadio(0)"'), "<br />\n";
+
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">", form_radio("to_radio", "in_thread", $lang['usersinthread'], true), "</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">", post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false, 'onclick="checkToRadio(0)"'), "</td>\n";
+    echo "  </tr>\n";
 }
 
-echo form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false), "<br />\n";
-echo post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0)), "<br />\n";
-
-echo form_radio("to_radio", "others", $lang['others']), "<br />\n";
-echo form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(". ($newthread ? 1 : 2). ")\"", "post_to_others"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openLogonSearch('$webtag', 't_to_uid_others');\" title=\"{$lang['search']}\"", "search_button"), "<br /><br />\n";
-
-echo "<h2>{$lang['messageoptions']}</h2>\n";
-
-echo form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled)."<br />\n";
-echo form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled)."<br />\n";
-echo form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled)."<br />\n";
-echo form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y")."<br />\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">", form_radio("to_radio", "recent", $lang['recentvisitors'], $newthread ? true : false), "</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">", post_draw_to_dropdown_recent($newthread && isset($t_to_uid) ? $t_to_uid : ($newthread ? -1 : 0)), "</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">", form_radio("to_radio", "others", $lang['others']), "</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_to_uid_others", "", 0, 0, "onclick=\"checkToRadio(". ($newthread ? 1 : 2). ")\"", "post_to_others"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openLogonSearch('$webtag', 't_to_uid_others');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\"><h2>{$lang['messageoptions']}</h2></td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">", form_checkbox("t_post_links", "enabled", $lang['automaticallyparseurls'], $links_enabled), "</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">", form_checkbox("t_check_spelling", "enabled", $lang['automaticallycheckspelling'], $spelling_enabled), "</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">", form_checkbox("t_post_emots", "disabled", $lang['disableemoticonsinmessage'], !$emots_enabled), "</td>\n";
+echo "  </tr>\n";
+echo "  <tr>\n";
+echo "    <td align=\"left\">", form_checkbox("t_post_interest", "Y", $lang['setthreadtohighinterest'], $high_interest == "Y"), "</td>\n";
+echo "  </tr>\n";
 
 if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-    echo "<br />\n";
-    echo "<h2>{$lang['admin']}</h2>\n";
-    echo form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "<br />";
-    echo form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false)."<br />\n";
-    echo form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N");
-    echo form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N");
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">", form_input_hidden("old_t_closed", isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? "Y" : "N"), form_input_hidden("old_t_sticky", isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? "Y" : "N"), "</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\"><h2>{$lang['admin']}</h2></td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">", form_checkbox("t_closed", "Y", $lang['closeforposting'], isset($threaddata['CLOSED']) && $threaddata['CLOSED'] > 0 ? true : false), "</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">", form_checkbox("t_sticky", "Y", $lang['makesticky'], isset($threaddata['STICKY']) && $threaddata['STICKY'] == "Y" ? true : false), "</td>\n";
+    echo "  </tr>\n";
 }
 
 $emot_user = bh_session_get_value('EMOTICONS');
@@ -929,28 +965,33 @@ $emot_prev = emoticons_preview($emot_user);
 
 if ($emot_prev != "") {
 
-    echo "<br />\n";
-    echo "<table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
+    echo "    <td align=\"left\">&nbsp;</td>\n";
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"left\">\n";
+    echo "      <table width=\"190\" cellpadding=\"0\" cellspacing=\"0\" class=\"messagefoot\">\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"left\" class=\"subhead\">{$lang['emoticons']}:</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
 
-        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
+        echo "          <td class=\"subhead\" align=\"right\">". form_submit_image('emots_hide.png', 'emots_toggle', 'hide'). "&nbsp;</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td align=\"left\" colspan=\"2\">{$emot_prev}</td>\n";
 
     }else {
 
-        echo "    <td class=\"subhead\" align=\"right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "&nbsp;</td>\n";
+        echo "          <td class=\"subhead\" align=\"right\">". form_submit_image('emots_show.png', 'emots_toggle', 'show'). "&nbsp;</td>\n";
     }
 
-    echo "  </tr>\n";
-    echo "</table>\n";
+    echo "        </tr>\n";
+    echo "      </table>\n";
 }
 
-echo "</td></tr>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 echo "</td>\n";
 echo "<td align=\"left\" valign=\"top\" width=\"500\">\n";

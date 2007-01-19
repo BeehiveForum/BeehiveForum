@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.146 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.147 2007-01-19 14:11:38 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -647,12 +647,10 @@ if ($friends_array = pm_user_get_friends()) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">\n";
-    echo "                          ", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "<br />\n";
-    echo "                          ", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "<br />\n";
-    echo "                          ", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "<br />\n";
-    echo "                          ", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\" title=\"{$lang['search']}\"", "search_button"), "\n";
-    echo "                        </td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", 0, $lang['friends'], (isset($to_radio) && $to_radio == 0)), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_to_uid", $friends_array['uid_array'], $friends_array['logon_array'], (isset($t_to_uid) ? $t_to_uid : 0), "onclick=\"checkToRadio(0)\"", "to_uid_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_radio("to_radio", 1, $lang['others'], (isset($to_radio) && $to_radio == 1) ? true : (!isset($to_radio))), "</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list), 0, 0, "", "recipient_list") : "", 0, 0, "title=\"{$lang['recipienttiptext']}\" onclick=\"checkToRadio(1)\"", "recipient_list"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
     echo "                      </tr>\n";
 
 }else {
@@ -664,7 +662,7 @@ if ($friends_array = pm_user_get_friends()) {
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\" title=\"{$lang['search']}\"", "search_button"), "</td>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("t_recipient_list", isset($t_recipient_list) ? _htmlentities(_stripslashes($t_recipient_list)) : "", 0, 0, "title=\"{$lang['recipienttiptext']}\"", "recipient_list"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openRecipientSearch('$webtag', 't_recipient_list');\" title=\"{$lang['search']}\"", "search_button"), "</div></td>\n";
     echo "                      </tr>\n";
 }
 

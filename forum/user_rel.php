@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_rel.php,v 1.83 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: user_rel.php,v 1.84 2007-01-19 18:06:24 decoyduck Exp $ */
 
 /**
 * Displays and handles the User Relationship page
@@ -397,7 +397,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\"><p>", form_submit("submit", $lang['submit']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
+echo "      <td align=\"center\"><p>", form_submit("submit", $lang['save']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</p></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";

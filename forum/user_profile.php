@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.111 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.112 2007-01-19 18:06:24 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -248,7 +248,7 @@ if (isset($user_profile['PIC_URL'])) {
     echo "                      <tr>\n";
     echo "                        <td align=\"right\" class=\"subhead\">\n";
     echo "                          <div class=\"profile_image\">\n";
-    echo "                            <img src=\"{$user_profile['PIC_URL']}\" width=\"95\" height=\"95\" alt=\"$title\" title=\"$title\" />\n";
+    echo "                            <img src=\"{$user_profile['PIC_URL']}\" width=\"95\" height=\"95\" alt=\"\" />\n";
     echo "                          </div>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";
@@ -257,9 +257,7 @@ if (isset($user_profile['PIC_URL'])) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"right\" class=\"subhead\">\n";
-    echo "                          <div class=\"profile_image\">\n";
-    echo "                            <img src=\"", style_image('user_profile.png'), "\" width=\"95\" height=\"95\" alt=\"$title\" title=\"$title\" />\n";
-    echo "                          </div>\n";
+    echo "                          <div class=\"profile_image_none\"></div>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";
 }
@@ -269,7 +267,7 @@ echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 
-$profile_section_rows_array = array_chunk($profile_sections, 4, true);
+$profile_section_rows_array = array_chunk($profile_sections, 4);
 
 foreach($profile_section_rows_array as $row_id => $profile_section_row) {
 
@@ -288,13 +286,17 @@ echo "                <tr>\n";
 
 foreach($profile_section_rows_array as $row_id => $profile_section_row) {
 
-    foreach($profile_section_row as $profile_section) {
+    foreach($profile_section_row as $col_id => $profile_section) {
         
         if ($profile_section['PSID'] != $psid) {
             echo "                  <td width=\"25%\" class=\"profile_tab\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid&amp;psid={$profile_section['PSID']}\" target=\"_self\">", _stripslashes($profile_section['NAME']), "</a></td>\n";
         }else {
             echo "                  <td width=\"25%\" class=\"profile_tab_selected\">", _stripslashes($profile_section['NAME']), "</td>\n";
         }
+    }
+
+    for (;$col_id < 3; $col_id++) {
+        echo "                  <td width=\"25%\"></td>\n";
     }
 
     if ($row_id < sizeof($profile_section_rows_array) - 1) {
@@ -378,7 +380,7 @@ if (bh_session_get_value('UID') != 0) {
 
     if ($uid <> bh_session_get_value('UID')) {
 
-        echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=", rawurlencode("user_profile.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_self\">{$lang['relationship']}</a>&nbsp;";
+        echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=", rawurlencode("user_profile.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_self\"><img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['relationship']}\" border=\"0\" /></a>&nbsp;";
         echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['findusersposts']}\" border=\"0\" /></a>&nbsp;";
     
     }else {

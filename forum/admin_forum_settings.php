@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_settings.php,v 1.101 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_forum_settings.php,v 1.102 2007-01-20 19:01:25 decoyduck Exp $ */
 
 /**
 * Displays and handles the Forum Settings page
@@ -572,8 +572,8 @@ echo "                        <td align=\"left\">", form_textarea("password_prot
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_51']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_52']}</p>\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_53']}</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

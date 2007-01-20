@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.php,v 1.72 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: email.php,v 1.73 2007-01-20 19:01:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,8 +125,13 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 if (isset($_POST['cancel'])) {
 
-    $uri = "./user_profile.php?webtag=$webtag&uid=$to_uid";
-    header_redirect($uri);
+    html_draw_top();
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "  window.close();\n";
+    echo "</script>\n";
+
+    html_draw_bottom();
+    exit;
 }
 
 $uid = bh_session_get_value('UID');
@@ -184,7 +189,13 @@ if (isset($_POST['submit'])) {
             echo "                  <td align=\"left\" class=\"subhead\">{$lang['msgsent']}</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\">{$lang['msgsentsuccessfully']}</td>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"95%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">{$lang['msgsentsuccessfully']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
             echo "                </tr>\n";
 
         }else {
@@ -193,7 +204,13 @@ if (isset($_POST['submit'])) {
             echo "                  <td align=\"left\" class=\"subhead\">{$lang['msgfail']}</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"left\">{$lang['mailsystemfailure']}</td>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"95%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">{$lang['mailsystemfailure']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
             echo "                </tr>\n";
         }
 
@@ -251,19 +268,25 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['email']}&nbsp;{$to_user['NICKNAME']}</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" width=\"25%\">{$lang['from']}:</td>\n";
-echo "                  <td align=\"left\">{$from_user['NICKNAME']} ({$from_user['EMAIL']})</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\">{$lang['subject']}:</td>\n";
-echo "                  <td align=\"left\">", form_field("t_subject", $subject, 54, 128), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" valign=\"top\">{$lang['message']}:</td>\n";
-echo "                  <td align=\"left\">", form_textarea("t_message", $message, 12, 51), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"25%\">{$lang['from']}:</td>\n";
+echo "                        <td align=\"left\">{$from_user['NICKNAME']} ({$from_user['EMAIL']})</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">{$lang['subject']}:</td>\n";
+echo "                        <td align=\"left\">", form_field("t_subject", $subject, 54, 128), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" valign=\"top\">{$lang['message']}:</td>\n";
+echo "                        <td align=\"left\">", form_textarea("t_message", $message, 12, 51), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";

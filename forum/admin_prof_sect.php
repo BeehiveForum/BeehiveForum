@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_prof_sect.php,v 1.92 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_prof_sect.php,v 1.93 2007-01-20 19:01:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -416,6 +416,13 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
             echo "                  <td valign=\"top\" align=\"center\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&amp;sect_page=$page&amp;viewitems=yes\">{$profile_section['ITEM_COUNT']}</a></td>\n";
             echo "                </tr>\n";
         }
+    
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" colspan=\"3\">{$lang['noprofilesectionsfound']}</td>\n";
+        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";

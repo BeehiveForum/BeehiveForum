@@ -529,9 +529,9 @@ a {
 .banned_dropdown, .links_dropdown, .admin_startpage_textarea,
 .dictionary_word_display, .dictionary_best_selection,
 .dictionary_change_to, .post_folder_dropdown,
-.thread_title, .post_to_others, .post_content,
-.signature_content, .to_uid_dropdown, .recipient_dropdown,
-.recipient_list, .recent_user_dropdown, .user_in_thread_dropdown {
+.thread_title, .post_content, .signature_content, 
+.to_uid_dropdown, .recipient_dropdown, .recent_user_dropdown,
+.user_in_thread_dropdown {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 9pt;
     color: #000000;
@@ -810,7 +810,12 @@ a {
 }
 
 .post_to_others {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
     width: 169px;
+    border: 0px;
 }
 
 .post_content {
@@ -826,7 +831,27 @@ a {
 }
 
 .recipient_list {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
     width: 169px;
+}
+
+.search_logon {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
+    border: 0px;
+}
+
+.merge_thread_id {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
+    border: 0px;
 }
 
 .recent_user_dropdown {
@@ -934,14 +959,22 @@ a {
     border: none;
 }
 
+.bhinputsearch {
+    border-top: 1px solid #82827E;
+    border-left: 1px solid #82827E;
+    border-right: 1px solid #F9F9F6;
+    border-bottom: 1px solid #F9F9F6;
+    height: 1.35em;
+    padding-left: 2px;
+    background-color: #FFFFFF;
+    float: left;
+}
+
 .search_button {
-    height: 18px;
-    width: 18px;
+    height: 100%;
     background-color: #FFFFFF;
     border: none;
-    vertical-align: middle;
-    margin-top: -3px;
-    margin-left: -1px;
+    vertical-align: top;
 }
 
 .subhead_sort_asc {
@@ -984,6 +1017,13 @@ a {
     width: 95px;
     height: 95px;
     border: 1px solid #000000;    
+}
+
+.profile_image_none {
+    margin: 10px;
+    width: 95px;
+    height: 95px;
+    border: 1px solid #A6BED7;
 }
 
 .profile_tabs {

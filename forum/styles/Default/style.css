@@ -915,6 +915,8 @@ a {
     border-bottom-width: 1px;
     border-left-width: 1px;
     border-style: dashed;
+    border-color: #000000;
+    padding: 5px;
 }
 
 .fnotification {

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.14 2007-01-18 21:42:06 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.15 2007-01-20 16:56:22 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -174,7 +174,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // causes an error when splitting a thread that has been split once already.
     
     $sql = "ALTER TABLE {$forum_webtag}_THREAD_TRACK DROP PRIMARY KEY, ";
-    $sql = "ADD PRIMARY KEY (TID, NEW_TID)";
+    $sql.= "ADD PRIMARY KEY (TID, NEW_TID)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -185,7 +185,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Performance boost for admin_user.php when looking up
     // a user's last few IP addresses to match against other users.
 
-    $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX IPADDRESS ";
+    $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX IPADDRESS, ";
     $sql.= "ADD INDEX IPADDRESS (IPADDRESS, FROM_UID)";
 
     if (!$result = @db_query($sql, $db_install)) {
@@ -216,8 +216,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Referer tracking for visitors.
 
-    $sql = "ALTER TABLE VISITOR_LOG ADD REFERER ";
-    $sql.= "VARCHAR(255) DEFAULT NULL";
+    $sql = "ALTER TABLE VISITOR_LOG ADD REFERER VARCHAR(255) DEFAULT NULL";
     
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -227,7 +226,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // IP Address tracking for Visitor Log
 
-    $sql = " ALTER TABLE VISITOR_LOG ADD IPADDRESS VARCHAR(15) NULL AFTER LAST_LOGON";
+    $sql = " ALTER TABLE VISITOR_LOG ADD IPADDRESS VARCHAR(15) DEFAULT NULL";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -313,9 +312,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Reindex POST_ATTACHMENT_IDS table to make queries quicker
 
-    install_remove_table_keys("{$forum_webtag}_POST_ATTACHMENT_IDS");
+    install_remove_table_keys("POST_ATTACHMENT_IDS");
 
-    $sql = "ALTER TABLE {$forum_webtag}_POST_ATTACHMENT_IDS ADD INDEX (AID)";
+    $sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX (AID)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -325,9 +324,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Reindex PM_ATTACHMENT_IDS table to make queries quicker
 
-    install_remove_table_keys("{$forum_webtag}_POST_ATTACHMENT_IDS");
+    install_remove_table_keys("PM_ATTACHMENT_IDS");
 
-    $sql = "ALTER TABLE {$forum_webtag}_PM_ATTACHMENT_IDS ADD INDEX (AID)";
+    $sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX (AID)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -443,6 +442,16 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD FULLTEXT (NAME)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    install_remove_table_keys("SEARCH_ENGINE_BOTS");
+
+    $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD FULLTEXT AGENT_MATCH (NAME, AGENT_MATCH)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

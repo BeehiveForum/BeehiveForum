@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.243 2007-01-19 18:06:24 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.244 2007-01-20 16:56:22 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1793,12 +1793,11 @@ function thread_has_attachments($tid)
     return (db_num_rows($result) > 0);
 }
 
-function thread_auto_prune_unread_data($force_start = false, $debug_output = false)
+function thread_auto_prune_unread_data($force_start = false)
 {
     $db_thread_prune_unread_data = db_connect();
 
     if (!is_bool($force_start)) return false;
-    if (!is_bool($debug_output)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -1811,51 +1810,63 @@ function thread_auto_prune_unread_data($force_start = false, $debug_output = fal
 
     if ((($mt_result = mt_rand(1, $unread_rem_prob)) == 1) || $force_start === true) {
 
-        $tid_array = array();
+        if (db_fetch_mysql_version() >= 40116) {
 
-        $sql = "SELECT THREAD.TID, THREAD.LENGTH, ";
-        $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
-        $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
-        $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
-        $sql.= "WHERE USER_THREAD.LAST_READ IS NOT NULL ";
-        $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME('$unread_cutoff_stamp') ";
-        $sql.= "GROUP BY THREAD.TID ";
+            $sql = "INSERT INTO DEFAULT_THREAD_STATS (TID, UNREAD_PID,";
+            $sql.= "UNREAD_CREATED) SELECT DEFAULT_THREAD.TID, MAX(DEFAULT_POST.PID), ";
+            $sql.= "MAX(DEFAULT_POST.CREATED) FROM DEFAULT_THREAD ";
+            $sql.= "LEFT JOIN DEFAULT_POST ON (DEFAULT_POST.TID = DEFAULT_THREAD.TID ";
+            $sql.= "AND DEFAULT_POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - 2628000)) ";
+            $sql.= "GROUP BY DEFAULT_THREAD.TID ON DUPLICATE KEY ";
+            $sql.= "UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
+            $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
+            
+            if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+
+            $sql = "DELETE FROM DEFAULT_USER_THREAD USING DEFAULT_USER_THREAD, DEFAULT_THREAD ";
+            $sql.= "WHERE DEFAULT_USER_THREAD.TID = DEFAULT_THREAD.TID ";
+            $sql.= "AND DEFAULT_THREAD.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - 2628000)";
+
+            if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+
+            return true;
         
-        if ($force_start !== true) $sql.= "LIMIT 0, 5";
+        }else {
 
-        if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+            $tid_array = array();
 
-        if (db_num_rows($result) > 0) {
+            $sql = "SELECT THREAD.TID, THREAD.LENGTH, ";
+            $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
+            $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_THREAD USER_THREAD ";
+            $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
+            $sql.= "WHERE USER_THREAD.LAST_READ IS NOT NULL ";
+            $sql.= "AND THREAD.MODIFIED < FROM_UNIXTIME('$unread_cutoff_stamp') ";
+            $sql.= "GROUP BY THREAD.TID ";
 
-            while ($row = db_fetch_array($result)) {
-                
-                if ($debug_output === true) {
+            if ($force_start !== true) $sql.= "LIMIT 0, 5";
 
-                    echo "Updating thread unread cutoff for thread: {$row['TID']}<br />\n";
-                    install_flush_buffer();
-                }
-                
-                thread_update_unread_cutoff($row['TID'], $row['LENGTH'], $row['MODIFIED']);
-                $tid_array[] = $row['TID'];
-            }
+            if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 
-            if (sizeof($tid_array) > 0) {
+            if (db_num_rows($result) > 0) {
 
-                $tid_list = implode(", ", $tid_array);
+                while ($row = db_fetch_array($result)) {
 
-                if ($debug_output === true) {
-
-                    echo "Pruning thread unread data for threads: $tid_list<br />\n";
-                    install_flush_buffer();
+                    thread_update_unread_cutoff($row['TID'], $row['LENGTH'], $row['MODIFIED']);
+                    $tid_array[] = $row['TID'];
                 }
 
-                $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}USER_THREAD ";
-                $sql.= "WHERE TID IN ($tid_list) AND INTEREST = 0";
+                if (sizeof($tid_array) > 0) {
 
-                if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+                    $tid_list = implode(", ", $tid_array);
 
-                return true;
+                    $sql = "DELETE LOW_PRIORITY FROM {$table_data['PREFIX']}USER_THREAD ";
+                    $sql.= "WHERE TID IN ($tid_list) AND INTEREST = 0";
+
+                    if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
+
+                    return true;
+                }
             }
         }
     }

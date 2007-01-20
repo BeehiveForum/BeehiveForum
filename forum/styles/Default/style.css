@@ -788,6 +788,10 @@ a {
 }
 
 .post_to_others {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
     width: 169px;
     border: 0px;
 }
@@ -836,15 +840,26 @@ a {
 }
 
 .recipient_list {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
     width: 169px;
-    border: 0px;
 }
 
 .search_logon {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
     border: 0px;
 }
 
 .merge_thread_id {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 9pt;
+    color: #000000;
+    background-color: #FFFFFF;
     border: 0px;
 }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_check_styles.php,v 1.6 2007-01-19 14:11:38 decoyduck Exp $ */
+/* $Id: bh_check_styles.php,v 1.7 2007-01-20 19:01:25 decoyduck Exp $ */
 
 function item_preg_callback(&$item, $key, $delimiter) {
     $item = preg_quote($item, $delimiter);
@@ -100,23 +100,26 @@ if (file_exists("$styles_dir/default/style.css")) {
 
     foreach($classes_deprecated as $style_file => $style_classes_array) {
 
-        if (sizeof($style_classes_array) > 0) {
+        if ($style_file != 'make_style.css') {
         
-            $shown_deprecated_results = true;
-            
-            if ($shown_header_deprecated === false) {
+            if (sizeof($style_classes_array) > 0) {
 
-                echo "Deprecated Classes\n==================\n\n";
-                $shown_header_deprecated = true;
+                $shown_deprecated_results = true;
+
+                if ($shown_header_deprecated === false) {
+
+                    echo "Deprecated Classes\n==================\n\n";
+                    $shown_header_deprecated = true;
+                }
+
+                echo $style_file, "\n", str_repeat("-", strlen($style_file)), "\n\n";
+
+                foreach($style_classes_array as $deprecated_class) {
+                    echo $deprecated_class, "\n";
+                }
+
+                echo "\n\n\n";
             }
-
-            echo $style_file, "\n", str_repeat("-", strlen($style_file)), "\n\n";
-
-            foreach($style_classes_array as $deprecated_class) {
-                echo $deprecated_class, "\n";
-            }
-
-            echo "\n\n\n";
         }
     }
 

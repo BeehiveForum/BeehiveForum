@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.387 2007-01-18 21:42:06 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.388 2007-01-20 19:01:25 decoyduck Exp $ */
 
 // International English language file
 
@@ -80,8 +80,6 @@ $lang['locked'] = "Locked";
 $lang['add'] = "Add";
 $lang['advanced'] = "Advanced";
 $lang['active'] = "Active";
-$lang['kick'] = "Kick";
-$lang['remove'] = "Remove";
 $lang['style'] = "Style";
 $lang['go'] = "Go";
 $lang['folder'] = "Folder";
@@ -100,7 +98,6 @@ $lang['replyall'] = "Reply to All";
 $lang['pm_reply'] = "Reply as PM";
 $lang['delete'] = "Delete";
 $lang['deleted'] = "Deleted";
-$lang['del'] = "Del";
 $lang['edit'] = "Edit";
 $lang['privileges'] = "Privileges";
 $lang['ignore'] = "Ignore";
@@ -111,7 +108,6 @@ $lang['apply'] = "Apply";
 $lang['submit'] = "Submit";
 $lang['download'] = "Download";
 $lang['save'] = "Save";
-$lang['savechanges'] = "Save Changes";
 $lang['update'] = "Update";
 $lang['cancel'] = "Cancel";
 $lang['continue'] = "Continue";
@@ -173,7 +169,6 @@ $lang['all'] = "All";
 $lang['allcaps'] = "ALL";
 $lang['by'] = "by";
 $lang['permissions'] = "Permissions";
-$lang['position'] = "Position";
 $lang['type'] = "Type";
 $lang['print'] = "Print";
 $lang['sticky'] = "Sticky";
@@ -188,16 +183,12 @@ $lang['makedefault'] = "Make Default";
 $lang['unsetdefault'] = "Unset Default";
 $lang['rename'] = "Rename";
 $lang['pages'] = "Pages";
-$lang['top'] = "Top";
 $lang['used'] = "Used";
 $lang['days'] = "days";
-$lang['sortasc'] = "Sort Ascending";
-$lang['sortdesc'] = "Sort Descending";
 $lang['usage'] = "Usage";
 $lang['show'] = "Show";
 $lang['hint'] = "Hint";
 $lang['new'] = "New";
-$lang['reset'] = "Reset";
 $lang['referer'] = "Referer";
 
 // Admin interface (admin*.php) ----------------------------------------
@@ -277,16 +268,9 @@ $lang['forumstyle'] = "Forum Style";
 $lang['wordfilter'] = "Word Filter";
 $lang['forumlinks'] = "Forum Links";
 $lang['viewlog'] = "View Log";
-$lang['invalidop'] = "Invalid Operation";
 $lang['noprofilesectionspecified'] = "No Profile section specified.";
-$lang['newitem'] = "New Item";
-$lang['manageprofileitems'] = "Manage Profile Items";
 $lang['itemname'] = "Item Name";
 $lang['moveto'] = "Move To";
-$lang['deleteitem'] = "Delete Item";
-$lang['deletesection'] = "Delete Section";
-$lang['new_caps'] = "NEW";
-$lang['newsection'] = "New Section";
 $lang['editsection'] = "Edit Section";
 $lang['manageprofilesections'] = "Manage Profile Sections";
 $lang['sectionname'] = "Section Name";
@@ -298,7 +282,6 @@ $lang['addnewprofilesection'] = "Add new profile section";
 $lang['mustsepecifyaprofilesectionname'] = "Must specify a profile section name";
 $lang['successfullyremovedselectedprofilesections'] = "Successfully removed selected profile sections";
 $lang['failedtoremoveprofilesections'] = "Failed to remove profile sections";
-$lang['deleteitems'] = "Delete items";
 $lang['viewitems'] = "View items";
 $lang['successfullyremovedselectedprofileitems'] = "Successfully removed selected profile items";
 $lang['failedtoremoveprofileitems'] = "Failed to remove profile items";
@@ -334,7 +317,6 @@ $lang['onlineusers'] = "Online users";
 $lang['offlineusers'] = "Offline users";
 $lang['usersawaitingapproval'] = "Users awaiting approval";
 $lang['bannedusers'] = "Banned users";
-$lang['guestusers'] = "Guest Users";
 $lang['lastlogon'] = "Last Logon";
 $lang['sessionreferer'] = "Session Referer";
 $lang['signupreferer'] = "Sign-up Referer:";
@@ -351,12 +333,10 @@ $lang['lastipaddress'] = "Last IP Address";
 $lang['logged'] = "Logged";
 $lang['notlogged'] = "Not Logged";
 $lang['addwordfilter'] = "Add word filter";
-$lang['deleteselectedwordfilters'] = "Delete selected";
 $lang['addnewwordfilter'] = "Add New Word Filter";
 $lang['wordfilterupdated'] = "Word Filter updated";
 $lang['filtertype'] = "Filter Type";
 $lang['editwordfilter'] = "Edit Word Filter";
-$lang['wordfilterexp_1'] = "Use this page to edit the Word Filter for your forum. Place each word to be filtered on a new line.";
 $lang['wordfilterexp_2'] = "Perl-compatible regular expressions can also be used to match words if you know how.";
 $lang['wordfilterexp_3'] = "Use this page to edit your personal Word Filter. Place each word to be filtered on a new line.";
 $lang['wordfilterisfull'] = "You cannot add any more word filters. Remove some unused ones or edit the existing ones first.";
@@ -367,7 +347,6 @@ $lang['mustspecifyfilterid'] = "You must specify a filter ID";
 $lang['invalidfilterid'] = "Invalid Filter ID";
 $lang['failedtoupdatewordfilter'] = "Failed to update word filter. Check that the filter still exists.";
 $lang['allow'] = "Allow";
-$lang['access'] = "Access";
 $lang['normalthreadsonly'] = "Normal threads only";
 $lang['pollthreadsonly'] = "Poll threads only";
 $lang['both'] = "Both thread types";
@@ -411,9 +390,7 @@ $lang['failedtodeletefolder'] = "Failed to delete folder.";
 $lang['folderupdatedsuccessfully'] = "Folder updated successfully";
 $lang['cannotdeletefolderwiththreads'] = "Cannot delete folders that still contain threads.";
 $lang['forumisnotrestricted'] = "Forum is not restricted";
-$lang['noforumidspecified'] = "No Forum ID specified";
 $lang['groups'] = "Groups";
-$lang['addnewgroup'] = "Add New Group";
 $lang['nousergroups'] = "No User Groups have been set up";
 $lang['suppliedgidisnotausergroup'] = "Supplied GID is not a user group";
 $lang['manageusergroups'] = "Manage User Groups";
@@ -421,7 +398,6 @@ $lang['groupstatus'] = "Group Status";
 $lang['addusergroup'] = "Add Group";
 $lang['addremoveusers'] = "Add/Remove Users";
 $lang['nousersingroup'] = "There are no users in this group";
-$lang['deletegroups'] = "Delete Groups";
 $lang['useringroups'] = "This user is a member of the following groups";
 $lang['usernotinanygroups'] = "This user is not in any user groups";
 $lang['usergroupwarning'] = "Note: This user may be inheriting additional permissions from any user groups listed below.";
@@ -462,7 +438,6 @@ $lang['editforumlinks_exp'] = "Use this page to add links to the drop-down list 
 $lang['notoplevellinktitlespecified'] = "No top level link title specified";
 $lang['toplinktitlesuccessfullyupdated'] = "Top level link title successfully updated";
 $lang['youmustenteralinktitle'] = "You must enter a link title";
-$lang['youmustprovideapositionforalllinks'] = "You must provide a link position for all links";
 $lang['alllinkurismuststartwithaschema'] = "All link URIs must start with a schema (i.e. http://, ftp://, irc://)";
 $lang['noexistingforumlinksfound'] = "There are no existing forum links. To add a forum link click the button below.";
 $lang['editlink'] = "Edit link";
@@ -515,7 +490,6 @@ $lang['editban'] = "Edit Ban";
 $lang['bantype'] = "Ban Type";
 $lang['bandata'] = "Ban Data";
 $lang['bancomment'] = "Comment";
-$lang['deleteselectbans'] = "Delete selected bans";
 $lang['ipban'] = "IP ban";
 $lang['logonban'] = "Logon ban";
 $lang['nicknameban'] = "Nickname ban";
@@ -523,7 +497,6 @@ $lang['emailban'] = "Email ban";
 $lang['refererban'] = "Referer ban";
 $lang['invalidbanid'] = "Invalid Ban ID";
 $lang['affectsessionwarnadd'] = "This ban may affect the following active user sessions";
-$lang['affectsessionwarnremove'] = "This ban affects the following active user sessions";
 $lang['noaffectsessionwarn'] = "This ban affects no active sessions";
 $lang['mustspecifybantype'] = "You must specify a ban type";
 $lang['mustspecifybandata'] = "You must specify some ban data";
@@ -542,11 +515,8 @@ $lang['postcount'] = "Post Count:";
 $lang['resetpostcount'] = "Reset Post Count";
 $lang['postapprovalqueue'] = "Post Approval Queue";
 $lang['nopostsawaitingapproval'] = "No posts are awaiting approval";
-$lang['userapprovalqueue'] = "User Approval Queue";
 $lang['approveselected'] = "Approve selected";
 $lang['successfullyapproveduser'] = "Successfully approved user";                                                
-$lang['banselected'] = "Ban selected";
-$lang['nousersawaitingapproval'] = "No users are awaiting approval";
 $lang['kickselected'] = "Kick selected";
 $lang['visitorlog'] = "Visitor Log";
 $lang['novisitorslogged'] = "No Visitors Logged";
@@ -555,9 +525,7 @@ $lang['removeselectedusers'] = "Remove selected users";
 $lang['addnew'] = "Add new";
 $lang['deleteselected'] = "Delete selected";
 $lang['noprofilesectionsfound'] = "There are no existing profile sections. To add a profile section please click the button below.";
-$lang['mustspecifyprofilesectioname'] = "Must specify profile section name";
 $lang['addnewprofilesection'] = "Add new profile section";
-$lang['editprofilesection'] = "Edit profile section";
 $lang['successfullyaddedsection'] = "Successfully added section";
 
 // Admin Log data (admin_viewlog.php) --------------------------------------------
@@ -668,7 +636,6 @@ $lang['addforum'] = "Add Forum";
 $lang['editforum'] = "Edit Forum";
 $lang['visitforum'] = "Visit Forum: %s";
 $lang['accesslevel'] = "Access level";
-$lang['messagecount'] = "%s messages";
 $lang['unknownmessagecount'] = "Unknown";
 $lang['forumwebtag'] = "Forum Webtag";
 $lang['defaultforum'] = "Default Forum";
@@ -717,7 +684,6 @@ $lang['postfrequency'] = "Post Frequency";
 $lang['enablelinkssection'] = "Enable Links section";
 $lang['allowcreationofpolls'] = "Allow creation of polls";
 $lang['allowguestvotesinpolls'] = "Allow Guests to vote in polls";
-$lang['allowguestvotesinpoll'] = "Allow Guests to vote in poll";
 $lang['unreadmessagescutoff'] = "Unread messages cut-off";
 $lang['unreadcutoffseconds'] = "seconds";
 $lang['disableunreadmessages'] = "Disable unread messages";
@@ -743,7 +709,6 @@ $lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
 $lang['guestaccount'] = "Guest Account";
 $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['listguestsinvisitorlog'] = "List Guests in Visitor Log";
-$lang['guestaccess'] = "Guest Access";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['userandguestaccesssettings'] = "User and guest access settings";
 $lang['requireuserapproval'] = "Require user approval by admin";
@@ -800,10 +765,9 @@ $lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change 
 $lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
 $lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cut-off period will automatically appear as read.";
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
-$lang['forum_settings_help_50'] = "Your Beehive Forum will not automatically prune the unread messages data from your database. You must choose to do this by using the prune options below.";
-$lang['forum_settings_help_51'] = "You can require approval of all new user accounts before they are used by enabling this option. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
-$lang['forum_settings_help_52'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";
-$lang['forum_settings_help_53'] = "You can use HTML in your messages. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum messages clear the fields.";
+$lang['forum_settings_help_50'] = "You can require approval of all new user accounts before they are used by enabling this option. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
+$lang['forum_settings_help_51'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";
+$lang['forum_settings_help_52'] = "You can use HTML in your messages. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum messages clear the fields.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -845,7 +809,6 @@ $lang['nomessagespecifiedfordel'] = "No message specified for deletion";
 $lang['deletemessage'] = "Delete Message";
 $lang['postdelsuccessfully'] = "Post deleted successfully";
 $lang['errordelpost'] = "Error deleting post";
-$lang['delthismessage'] = "Delete this message";
 $lang['cannotdeletepostsinthisfolder'] = "You cannot delete posts in this folder";
 
 // Editing things (edit.php, edit_poll.php) -----------------------------------------
@@ -1155,7 +1118,6 @@ $lang['imageresized'] = "This image has been resized. To view the full-size imag
 // Moderators list (mods_list.php) -------------------------------------
 
 $lang['cantdisplaymods'] = "Cannot display folder moderators";
-$lang['mustprovidefolderid'] = "Valid folder ID must be provided";
 $lang['moderatorlist'] = "Moderator list:";
 $lang['modsforfolder'] = "Moderators for folder";
 $lang['nomodsfound'] = "No moderators found";
@@ -1177,8 +1139,8 @@ $lang['login'] = "Login";
 $lang['logout'] = "Logout";
 
 // PM System (pm.php, pm_write.php, pm.inc.php) ------------------------
+
 $lang['privatemessages'] = "Private Messages";
-$lang['addrecipient'] = "Add Recipient";
 $lang['recipienttiptext'] = "Separate recipients by semi-colon or comma";
 $lang['maximumtenrecipientspermessage'] = "There is a limit of 10 recipients per message. Please amend your recipient list.";
 $lang['mustspecifyrecipient'] = "You must specify at least one recipient.";
@@ -1226,9 +1188,7 @@ $lang['userdetails'] = "User Details";
 $lang['userprofile'] = "User Profile";
 $lang['emailandprivacy'] = "Email &amp; Privacy";
 $lang['editsignature'] = "Edit Signature";
-$lang['editrelationships'] = "Edit Relationships";
 $lang['norelationships'] = "You have no user relationships set up";
-$lang['editattachments'] = "Edit Attachments";
 $lang['editwordfilter'] = "Edit Word Filter";
 $lang['userinformation'] = "User Information";
 $lang['changepassword'] = "Change Password";
@@ -1309,10 +1269,6 @@ $lang['includepminreply'] = "Include message body when replying to PM";
 $lang['autoprunemypmfoldersevery'] = "Auto prune my PM folders every:";
 $lang['friendsonly'] = "Friends only?";
 
-// User Profiles (user_profiles.php) -----------------------------------------------------
-
-$lang['userprofiles'] = "User Profiles";
-
 // Polls (create_poll.php, poll_results.php) ---------------------------------------------
 
 $lang['mustprovideanswergroups'] = "You must provide some answer groups";
@@ -1368,7 +1324,6 @@ $lang['polladditionalmessageexp'] = "Do you want to include an additional post a
 $lang['mustspecifypolltoview'] = "You must specify a poll to view.";
 $lang['pollconfirmclose'] = "Are you sure you want to close the following Poll?";
 $lang['endpoll'] = "End Poll";
-$lang['nobodyvotedopenpoll'] = "Nobody has voted";
 $lang['nobodyvotedclosedpoll'] = "Nobody voted";
 $lang['votedisplayopenpoll'] = "%s and %s have voted.";
 $lang['votedisplayclosedpoll'] = "%s and %s voted.";
@@ -1403,14 +1358,9 @@ $lang['longesttimeinforum'] = "Longest session";
 $lang['sendemail'] = "Send email";
 $lang['sendpm'] = "Send PM";
 $lang['visithomepage'] = "Visit Homepage";
-$lang['removefromfriends'] = "Remove from friends";
-$lang['addtofriends'] = "Add to friends";
-$lang['stopignoringuser'] = "Stop ignoring user";
-$lang['ignorethisuser'] = "Ignore this user";
 $lang['age'] = "Age";
 $lang['aged'] = "aged";
 $lang['birthday'] = "Birthday";
-$lang['editmyattachments'] = "Edit My Attachments";
 $lang['registered'] = "Registered";
 $lang['findusersposts'] = "Find User's Posts";
 $lang['findmyposts'] = "Find My Posts";
@@ -1740,7 +1690,6 @@ $lang['addnewfeed'] = "Add New Feed";
 $lang['editfeed'] = "Edit Feed";
 $lang['feeduseraccount'] = "Feed User Account";
 $lang['noexistingfeeds'] = "No existing RSS Feeds found. To add a feed please click the button below";
-$lang['deleteselectedfeeds'] = "Delete selected feeds";
 $lang['rssfeedhelp'] = "Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work.";
 $lang['mustspecifyrssfeedname'] = "Must specify RSS Feed Name";
 $lang['mustspecifyrssfeeduseraccount'] = "Must specify RSS Feed User Account";
@@ -1794,8 +1743,6 @@ $lang['somepostsinthisthreadweremovedfrom'] = "<b>Thread Split:</b> Some posts i
 $lang['threadmergefailed'] = "Thread merge failed";
 $lang['threadsplitfailed'] = "Thread split failed";
 
-$lang['cannotmergeorsplitthread'] = "There are no posts in this thread that can be merged or split";
-
 $lang['invalidfunctionarguments'] = "Invalid function arguments";
 $lang['couldnotretrieveforumdata'] = "Could not retrieve forum data";
 $lang['cannotmergepolls'] = "One or more threads is a poll. You cannot merge polls";
@@ -1809,10 +1756,8 @@ $lang['failedtocreatenewthreadforsplit'] = "Failed to create new thread for spli
 // Thread subscriptions
 
 $lang['threadsubscriptions'] = "Thread Subscriptions";
-$lang['nosubscriptions'] = "No Subscriptions";
 $lang['couldnotupdateinterestonthread'] = "Could not update interest on thread '%s'";
 $lang['threadinterestsupdatedsuccessfully'] = "Thread interests updated successfully";
-$lang['unsubscribebutton'] = "Unsubscribe";
 $lang['resetselected'] = "Reset Selected";
 $lang['allthreadtypes'] = "All Thread Types";
 $lang['ignoredthreads'] = "Ignored Threads";

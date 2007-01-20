@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.58 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.59 2007-01-20 19:01:25 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -722,7 +722,7 @@ echo "                        <td align=\"left\">", form_radio("guest_show_recen
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_51']}</p>\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_21']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";
 echo "                        </td>\n";

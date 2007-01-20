@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.112 2007-01-19 18:06:24 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.113 2007-01-20 19:01:25 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -377,15 +377,16 @@ if (isset($user_profile['HOMEPAGE_URL'])) {
 if (bh_session_get_value('UID') != 0) {
 
     echo "<a href=\"index.php?webtag=$webtag&amp;final_uri=", rawurlencode("./pm_write.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_blank\"><img src=\"", style_image('pmread.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['sendpm']}\" border=\"0\" /></a>&nbsp;";
+    echo "<a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" onclick=\"return openEmailWindow('$uid', '$webtag');\"><img src=\"", style_image('email.png'), "\" alt=\"{$lang['sendemail']}\" title=\"{$lang['sendemail']}\" border=\"0\" /></a>&nbsp;";
 
     if ($uid <> bh_session_get_value('UID')) {
 
-        echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=", rawurlencode("user_profile.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_self\"><img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['relationship']}\" border=\"0\" /></a>&nbsp;";
-        echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['findusersposts']}\" border=\"0\" /></a>&nbsp;";
+        echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=", rawurlencode("user_profile.php?webtag=$webtag&amp;uid=$uid"), "\" target=\"_self\"><img src=\"", style_image('enemy.png'), "\" alt=\"{$lang['relationship']}\" title=\"{$lang['relationship']}\" border=\"0\" /></a>&nbsp;";
+        echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['findusersposts']}\" title=\"{$lang['findusersposts']}\" border=\"0\" /></a>&nbsp;";
     
     }else {
 
-        echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['sendpm']}\" title=\"{$lang['findmyposts']}\" border=\"0\" /></a>&nbsp;";
+        echo "<a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" onclick=\"return findUserPosts('$logon', '$webtag');\"><img src=\"", style_image('search.png'), "\" alt=\"{$lang['findmyposts']}\" title=\"{$lang['findmyposts']}\" border=\"0\" /></a>&nbsp;";
     }
 }
 

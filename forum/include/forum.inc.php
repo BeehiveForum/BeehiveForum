@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.206 2007-01-18 21:42:05 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.207 2007-01-21 14:06:48 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -666,6 +666,8 @@ function forum_create($webtag, $forum_name, $access)
             if (db_num_rows($result) > 0) return false;
         }
 
+        // Create the tables
+
         $sql = "CREATE TABLE {$webtag}_ADMIN_LOG (";
         $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -678,7 +680,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -697,7 +699,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -717,7 +719,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -737,7 +739,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -756,7 +758,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -780,7 +782,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -800,7 +802,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -819,7 +821,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -838,7 +840,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -855,13 +857,14 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  SHOWRESULTS TINYINT(1) NOT NULL DEFAULT '1',";
         $sql.= "  VOTETYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  OPTIONTYPE TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  ALLOWGUESTS TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (TID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -880,7 +883,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -915,7 +918,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -934,7 +937,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -954,7 +957,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -972,7 +975,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -995,7 +998,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1012,7 +1015,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1032,7 +1035,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1056,13 +1059,14 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  PRIMARY KEY  (TID),";
         $sql.= "  KEY BY_UID (BY_UID),";
         $sql.= "  KEY STICKY (STICKY, MODIFIED), ";
-        $sql.= "  KEY LENGTH (LENGTH)";
+        $sql.= "  KEY LENGTH (LENGTH), ";
+        $sql.= "  FULLTEXT KEY TITLE (TITLE)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1081,7 +1085,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1100,7 +1104,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1112,13 +1116,13 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (UID,FID)";
+        $sql.= "  PRIMARY KEY  (UID, FID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1137,7 +1141,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1158,7 +1162,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1189,14 +1193,14 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  ALLOW_PM CHAR(1) NOT NULL DEFAULT 'Y',";
         $sql.= "  SHOW_THUMBS VARCHAR(2) NOT NULL DEFAULT '2',";
         $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y',";
-        $sql.= "  USE_MOVER_SPOILER CHAR(1) DEFAULT 'N',";
+        $sql.= "  USE_MOVER_SPOILER CHAR(1) DEFAULT 'N', ";
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1215,7 +1219,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1233,7 +1237,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1255,7 +1259,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1268,7 +1272,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  DDKEY DATETIME DEFAULT NULL,";
         $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
         $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
-        $sql.= "  LAST_SEARCH_KEYWORDS text,";
+        $sql.= "  LAST_SEARCH_KEYWORDS TEXT DEFAULT NULL,";
         $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL,";
         $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL,";
@@ -1279,7 +1283,7 @@ function forum_create($webtag, $forum_name, $access)
         if (!$result = @db_query($sql, $db_forum_create)) {
 
             forum_delete_tables($webtag);
-            
+
             if (defined("BEEHIVE_INSTALL_NOWARN")) {
                 db_trigger_error($sql, $db_forum_create);
             }
@@ -1455,7 +1459,7 @@ function forum_create($webtag, $forum_name, $access)
                                 'show_stats'              => 'Y',
                                 'allow_search_spidering'  => 'Y',
                                 'guest_account_enabled'   => 'Y',
-                                'forum_links_top_link'    => 'Forum Links');
+                                'forum_links_top_link'    => 'Forum Links:');
 
         foreach ($forum_settings as $sname => $svalue) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.15 2007-01-20 16:56:22 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.16 2007-01-21 14:06:48 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -434,14 +434,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Index on USER.LOGON, USER.NICKNAME for search_popup.php
 
     $sql = "ALTER TABLE USER ADD FULLTEXT (LOGON, NICKNAME)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD FULLTEXT (NAME)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

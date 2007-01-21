@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.129 2007-01-18 21:42:06 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.130 2007-01-21 14:06:48 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -456,7 +456,7 @@ $sql = "CREATE TABLE {$forum_webtag}_USER_FOLDER (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  INTEREST TINYINT(4) DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (UID,FID)";
+$sql.= "  PRIMARY KEY  (UID, FID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -693,7 +693,8 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "CREATE TABLE PM_ATTACHMENT_IDS (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  AID CHAR(32) NOT NULL DEFAULT '',";
-$sql.= "  PRIMARY KEY  (MID)";
+$sql.= "  PRIMARY KEY  (MID),";
+$sql.= "  KEY AID (AID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -753,7 +754,7 @@ $sql.= "  NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  URL VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (SID), ";
-$sql.= "  FULLTEXT KEY NAME (NAME)";
+$sql.= "  FULLTEXT KEY AGENT_MATCH (NAME, AGENT_MATCH)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -901,15 +902,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "INSERT INTO {$forum_webtag}_FOLDER (TITLE, DESCRIPTION, ALLOWED_TYPES, POSITION) ";
 $sql.= "VALUES ('General', NULL, NULL, 0)";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT INTO {$forum_webtag}_FORUM_LINKS (POS, TITLE, URI) ";
-$sql.= "VALUES (1, 'Forum Links:', NULL)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -1111,6 +1103,7 @@ $forum_settings = array('wiki_integration_uri'    => 'http://en.wikipedia.org/wi
                         'forum_desc'              => 'A Beehive Forum',
                         'forum_email'             => 'admin@abeehiveforum.net',
                         'forum_name'              => 'A Beehive Forum',
+                        'forum_links_top_link'    => 'Forum Links:',
                         'show_links'              => 'Y',
                         'allow_polls'             => 'Y',
                         'show_stats'              => 'Y',

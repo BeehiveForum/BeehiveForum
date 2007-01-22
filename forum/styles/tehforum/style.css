@@ -1076,3 +1076,28 @@ a {
     padding: 5px;
     text-align: center;
 }
+
+.image_resize_container {
+    border: 0px;;
+}
+
+.image_resize_text {
+    border: 1px dashed #000000;
+    padding-left: 5px;
+    height: 30px;
+    background-image: url('../../images/warningbg.png');
+    font-size: 8pt;
+}
+
+.image_resize_text a {
+    text-decoration: none;
+}
+
+.image_resize_image {
+    border: 0px;
+}
+
+.image_resize_icon {
+    vertical-align: middle;
+    border: 0px;
+}

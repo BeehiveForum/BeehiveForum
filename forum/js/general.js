@@ -176,33 +176,93 @@ function resizeImages(maxWidth, resizeText)
         for (var i = 0; i < img_count; i++)  {
 
                 if (img_tags[i].width >= maxWidth) {
-                       
-                        img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
 
-                        var line_break = document.createElement('br');
+                        // Required table elements: table, tbody, tr and td
+
+                        var img_resize_table = document.createElement('table');
+                        var img_resize_table_body = document.createElement('tbody');
+
+                        var img_resize_table_row_txt = document.createElement('tr');
+                        var img_resize_table_row_img = document.createElement('tr');
+
+                        var img_resize_table_cell_txt = document.createElement('td');
+                        var img_resize_table_cell_img = document.createElement('td');
+
+                        // Assign the classes to the relevant table cells.
+
+                        img_resize_table.className = 'image_resize_container';
+                        img_resize_table_cell_txt.className = 'image_resize_text';
+                        img_resize_table_cell_img.className = 'image_resize_image';
+
+                        // Create the link to the full-sized image
+
                         var img_resize_link = document.createElement('a');
+                        var img_resize_icon = document.createElement('img');
+                        var img_resize_text = document.createTextNode(resizeText);
+                        var img_resize_spcr = document.createTextNode(' ');
+
+                        // Set up the link and the image.
 
                         img_resize_link.setAttribute('target', '_blank');                        
                         img_resize_link.setAttribute('href', img_tags[i].getAttribute('src'));
 
-                        img_resize_link.innerHTML = resizeText;
+                        img_resize_icon.setAttribute('src', 'images/warning.png');
+                        img_resize_icon.setAttribute('alt', '');
+
+                        // Assign the notification icon a class so it can be customised.
+
+                        img_resize_icon.className = 'image_resize_icon';
+
+                        // Insert the icon, spacer and text into the link.
+
+                        img_resize_link.appendChild(img_resize_icon);
+                        img_resize_link.appendChild(img_resize_spcr);
+                        img_resize_link.appendChild(img_resize_text);
+
+                        // Insert the link into the relevant table cell.
+
+                        img_resize_table_cell_txt.appendChild(img_resize_link);
+
+                        // Resize the original image.
+
+                        img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
+
+                        // Get the original image's parent element.
 
                         var parent_node = img_tags[i].parentNode;
+
+                        // If the parent is an anchor tag we need to grab that to stick
+                        // inside our table cell so as to prevent the links from breaking.
+                        // Either way we need to add the table to the page and move
+                        // the original image into the other table cell we created.
 
                         if (parent_node.tagName.toUpperCase() == 'A') {
                             
                             var child_node = parent_node;
-
                             parent_node = parent_node.parentNode;
-
-                            parent_node.insertBefore(img_resize_link, child_node.nextSibling);
-                            parent_node.insertBefore(line_break, child_node.nextSibling);
+                            
+                            parent_node.insertBefore(img_resize_table, child_node.nextSibling);
+                            img_resize_table_cell_img.appendChild(child_node);
                         
                         }else {
 
-                            parent_node.insertBefore(img_resize_link, img_tags[i].nextSibling);
-                            parent_node.insertBefore(line_break, img_tags[i].nextSibling);
-                        }                        
+                            parent_node.insertBefore(img_resize_table, img_tags[i].nextSibling);
+                            img_resize_table_cell_img.appendChild(img_tags[i]);
+                        }
+
+                        // Insert the cells into the table rows.
+                        
+                        img_resize_table_row_txt.appendChild(img_resize_table_cell_txt);
+                        img_resize_table_row_img.appendChild(img_resize_table_cell_img);
+
+                        // Insert the rows into the table body.
+
+                        img_resize_table_body.appendChild(img_resize_table_row_img);
+                        img_resize_table_body.appendChild(img_resize_table_row_txt);
+
+                        // Finally (!) insert the table body into the table.
+
+                        img_resize_table.appendChild(img_resize_table_body);
                 }
         }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.207 2007-01-21 14:06:48 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.208 2007-01-23 01:05:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1060,7 +1060,7 @@ function forum_create($webtag, $forum_name, $access)
         $sql.= "  KEY BY_UID (BY_UID),";
         $sql.= "  KEY STICKY (STICKY, MODIFIED), ";
         $sql.= "  KEY LENGTH (LENGTH), ";
-        $sql.= "  FULLTEXT KEY TITLE (TITLE)";
+        $sql.= "  KEY TITLE (TITLE)";
         $sql.= ") TYPE=MYISAM";
 
         if (!$result = @db_query($sql, $db_forum_create)) {
@@ -1796,8 +1796,8 @@ function forum_search($search_string)
             $keywords_array[$key] = addslashes($value);
         }
 
-        $search_webtag = implode("%' OR FORUMS.WEBTAG LIKE '%", $keywords_array);
-        $search_svalue = implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $keywords_array);
+        $search_webtag = implode("%' OR FORUMS.WEBTAG LIKE '", $keywords_array);
+        $search_svalue = implode("%' OR FORUM_SETTINGS.SVALUE LIKE '", $keywords_array);
 
         $db_forum_search = db_connect();
 
@@ -1807,8 +1807,8 @@ function forum_search($search_string)
         $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
         $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
         $sql.= "WHERE (FORUMS.ACCESS_LEVEL = 0 OR FORUMS.ACCESS_LEVEL = 2  OR (FORUMS.ACCESS_LEVEL = 1 ";
-        $sql.= "AND USER_FORUM.ALLOWED = 1)) AND (FORUMS.WEBTAG LIKE '%$search_webtag%' ";
-        $sql.= "OR FORUM_SETTINGS.SVALUE LIKE '%$search_svalue%') ";
+        $sql.= "AND USER_FORUM.ALLOWED = 1)) AND (FORUMS.WEBTAG LIKE '$search_webtag%' ";
+        $sql.= "OR FORUM_SETTINGS.SVALUE LIKE '$search_svalue%') ";
         $sql.= "GROUP BY FORUMS.FID";
 
         $result_forums = db_query($sql, $db_forum_search);

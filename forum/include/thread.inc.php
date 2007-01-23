@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.99 2007-01-18 21:42:05 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.100 2007-01-23 01:05:54 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1248,18 +1248,16 @@ function thread_search($thread_search, $offset = 0)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $thread_search = addslashes($thread_search);
-
     $results_array = array();
     $results_count = 0;
 
     $fidlist = folder_get_available();
 
-    $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
+    $user_search = addslashes(str_replace("%", "", $user_search));
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "WHERE MATCH(TITLE) AGAINST('$thread_search'$bool_mode) ";
+    $sql.= "WHERE TITLE LIKE '$thread_search%' ";
     $sql.= "AND THREAD.FID IN ($fidlist) ";
 
     $result = db_query($sql, $db_thread_search);
@@ -1267,8 +1265,7 @@ function thread_search($thread_search, $offset = 0)
 
 
     $sql = "SELECT TID, TITLE FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "WHERE MATCH(TITLE) AGAINST('$thread_search'$bool_mode) ";
-    $sql.= "AND THREAD.FID IN ($fidlist) ";
+    $sql.= "WHERE TITLE LIKE '$thread_search%' AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_thread_search);

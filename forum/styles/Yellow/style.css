@@ -1083,6 +1083,7 @@ a {
     height: 30px;
     background-image: url('../../images/warningbg.png');
     font-size: 8pt;
+    cursor: pointer;
 }
 
 .image_resize_text a {

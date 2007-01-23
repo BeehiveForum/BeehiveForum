@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+var IE = (document.all ? true : false);
+
 function disable_button(button)
 {
     button.className = 'button_disabled';
@@ -157,6 +159,15 @@ function redoOverFlow(maxWidth)
         }
 }
 
+function attachListener(obj, img_id, maxWidth)
+{
+    if (document.all) {
+        obj.attachEvent('onclick', function() { toggleImageWidth(img_id, maxWidth) } );
+    }else {
+        obj.addEventListener('click', function() { toggleImageWidth(img_id, maxWidth) }, true);
+    }
+}
+
 function resizeImages(maxWidth, resizeText)
 {
         var body_tag = document.getElementsByTagName('body');
@@ -170,13 +181,20 @@ function resizeImages(maxWidth, resizeText)
         }
 
         if (!is_defined(resizeText)) {
-            resizeText = 'This image has been resized. To view the full-size image click here.';
+            resizeText = 'This image has been resized (original size %1$sx%2$s). To toggle the image size click on this banner.';
         }
+
+        onclick_code = 'return toggleImageWidth(\'%1$s\', \'%2$s\')';
 
         for (var i = 0; i < img_count; i++)  {
 
                 if (img_tags[i].width >= maxWidth) {
 
+                        // Give the image and ID and save the original width
+
+                        img_tags[i].id = 'bhimageresize_' + i;
+                        img_tags[i].original_width = img_tags[i].width;
+                        
                         // Required table elements: table, tbody, tr and td
 
                         var img_resize_table = document.createElement('table');
@@ -194,17 +212,18 @@ function resizeImages(maxWidth, resizeText)
                         img_resize_table_cell_txt.className = 'image_resize_text';
                         img_resize_table_cell_img.className = 'image_resize_image';
 
-                        // Create the link to the full-sized image
+                        // Set up an onclick handler for the txt cell.
 
-                        var img_resize_link = document.createElement('a');
+                        attachListener(img_resize_table_cell_txt, img_tags[i].id, maxWidth);
+
+                        // Stick the original dimensions of the image in the text and
+                        // create the link to the full-sized image.
+
                         var img_resize_icon = document.createElement('img');
-                        var img_resize_text = document.createTextNode(resizeText);
+                        var img_resize_text = document.createTextNode(resizeText.replace('%1$s', img_tags[i].width).replace('%2$s', img_tags[i].height));
                         var img_resize_spcr = document.createTextNode(' ');
 
                         // Set up the link and the image.
-
-                        img_resize_link.setAttribute('target', '_blank');                        
-                        img_resize_link.setAttribute('href', img_tags[i].getAttribute('src'));
 
                         img_resize_icon.setAttribute('src', 'images/warning.png');
                         img_resize_icon.setAttribute('alt', '');
@@ -213,15 +232,11 @@ function resizeImages(maxWidth, resizeText)
 
                         img_resize_icon.className = 'image_resize_icon';
 
-                        // Insert the icon, spacer and text into the link.
+                        // Insert the icon, spacer and text into the relevant table cell.
 
-                        img_resize_link.appendChild(img_resize_icon);
-                        img_resize_link.appendChild(img_resize_spcr);
-                        img_resize_link.appendChild(img_resize_text);
-
-                        // Insert the link into the relevant table cell.
-
-                        img_resize_table_cell_txt.appendChild(img_resize_link);
+                        img_resize_table_cell_txt.appendChild(img_resize_icon);
+                        img_resize_table_cell_txt.appendChild(img_resize_spcr);
+                        img_resize_table_cell_txt.appendChild(img_resize_text);
 
                         // Resize the original image.
 
@@ -238,16 +253,16 @@ function resizeImages(maxWidth, resizeText)
 
                         if (parent_node.tagName.toUpperCase() == 'A') {
                             
-                            var child_node = parent_node;
-                            parent_node = parent_node.parentNode;
+                                var child_node = parent_node;
+                                parent_node = parent_node.parentNode;
                             
-                            parent_node.insertBefore(img_resize_table, child_node.nextSibling);
-                            img_resize_table_cell_img.appendChild(child_node);
+                                parent_node.insertBefore(img_resize_table, child_node.nextSibling);
+                                img_resize_table_cell_img.appendChild(child_node);
                         
                         }else {
 
-                            parent_node.insertBefore(img_resize_table, img_tags[i].nextSibling);
-                            img_resize_table_cell_img.appendChild(img_tags[i]);
+                                parent_node.insertBefore(img_resize_table, img_tags[i].nextSibling);
+                                img_resize_table_cell_img.appendChild(img_tags[i]);
                         }
 
                         // Insert the cells into the table rows.
@@ -265,6 +280,29 @@ function resizeImages(maxWidth, resizeText)
                         img_resize_table.appendChild(img_resize_table_body);
                 }
         }
+}
+
+function toggleImageWidth(img_id, maxWidth)
+{
+        var body_tag = document.getElementsByTagName('body');
+        var body_tag = body_tag[0];
+
+        if (!is_numeric(maxWidth) || maxWidth == 0) {
+            maxWidth = body_tag.clientWidth;
+        }
+
+        var img_obj = document.getElementById(img_id);
+
+        if (img_obj.width < img_obj.original_width) {
+                
+                img_obj.style.width = img_obj.original_width + 'px';
+
+        }else {
+        
+                img_obj.style.width = Math.round(maxWidth * 0.9) + 'px';
+        }
+
+        return false;
 }
 
 function getFormObj(obj_id)

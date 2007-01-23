@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.96 2007-01-18 21:42:05 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.97 2007-01-23 01:05:54 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -366,14 +366,12 @@ function admin_update_word_filter($filter_id, $match, $replace, $filter_option)
 * @param integer $offset - Offset of the rows returned by the query
 */
 
-function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'DESC', $filter = 0, $offset = 0)
+function admin_user_search($user_search, $sort_by = 'VISITOR_LOG.LAST_LOGON', $sort_dir = 'DESC', $filter = 0, $offset = 0)
 {
     $db_user_search = db_connect();
 
     $sort_by_array = array('USER.UID', 'USER.LOGON', 'VISITOR_LOG.LAST_LOGON', 'SESSIONS.REFERER');
     $sort_dir_array = array('ASC', 'DESC');
-
-    $usersearch = addslashes($usersearch);
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'VISITOR_LOG.LAST_LOGON';
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
@@ -423,7 +421,7 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
             $having_sql = "";
     }
 
-    $bool_mode = (db_fetch_mysql_version() > 40010) ? " IN BOOLEAN MODE" : "";
+    $user_search = addslashes(str_replace("%", "", $user_search));
 
     $sql = "SELECT USER.UID, SESSIONS.HASH, ";
     $sql.= "BIT_OR(GROUP_PERMS.PERM) AS USER_PERM FROM USER USER ";
@@ -431,8 +429,8 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
     $sql.= "LEFT JOIN GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
     $sql.= "LEFT JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID ";
     $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
-    $sql.= "WHERE (MATCH(USER.LOGON) AGAINST('$usersearch'$bool_mode) ";
-    $sql.= "OR MATCH(USER.NICKNAME) AGAINST('$usersearch'$bool_mode)) ";
+    $sql.= "WHERE (USER.LOGON LIKE '$user_search%' ";
+    $sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
     $sql.= "GROUP BY USER.UID $having_sql ";
 
     $result = db_query($sql, $db_user_search);
@@ -447,8 +445,8 @@ function admin_user_search($usersearch, $sort_by = 'VISITOR_LOG.LAST_LOGON', $so
     $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = '0') ";
     $sql.= "LEFT JOIN VISITOR_LOG VISITOR_LOG ON (USER.UID = VISITOR_LOG.UID ";
     $sql.= "AND VISITOR_LOG.FORUM = $forum_fid) ";
-    $sql.= "WHERE (MATCH(USER.LOGON) AGAINST('$usersearch'$bool_mode) ";
-    $sql.= "OR MATCH(USER.NICKNAME) AGAINST('$usersearch'$bool_mode)) ";
+    $sql.= "WHERE (USER.LOGON LIKE '$user_search%' ";
+    $sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
     $sql.= "GROUP BY USER.UID $having_sql ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10 ";
 

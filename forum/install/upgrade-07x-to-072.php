@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.16 2007-01-21 14:06:48 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.17 2007-01-23 01:05:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -421,9 +421,21 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         }
     }
 
-    // Index on THREAD.TITLE for search_popup.php
+    // Index on THREAD.TITLE for searches
 
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD FULLTEXT (TITLE)";
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX (TITLE)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Indexes on USER.LOGON and USER.NICKNAME for searches.
+
+    install_remove_table_keys("USER");
+
+    $sql = "ALTER TABLE USER ADD INDEX LOGON";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -431,19 +443,27 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Index on USER.LOGON, USER.NICKNAME for search_popup.php
-
-    $sql = "ALTER TABLE USER ADD FULLTEXT (LOGON, NICKNAME)";
+    $sql = "ALTER TABLE USER ADD INDEX NICKNAME";
 
     if (!$result = @db_query($sql, $db_install)) {
 
         $valid = false;
         return;
     }
+
+    // Indexes on SEB.NAME and SEB.AGENT_MATCH for searches.
 
     install_remove_table_keys("SEARCH_ENGINE_BOTS");
 
-    $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD FULLTEXT AGENT_MATCH (NAME, AGENT_MATCH)";
+    $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (NAME)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (AGENT_MATCH)";
 
     if (!$result = @db_query($sql, $db_install)) {
 

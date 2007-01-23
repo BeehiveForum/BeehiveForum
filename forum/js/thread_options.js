@@ -22,7 +22,7 @@ USA
 function openThreadSearch(webtag, obj_name)
 {
     var form_obj = document.getElementsByName(obj_name)[0];
-    search_thread = window.open('search_popup.php?webtag=' + webtag + '&type=2&obj_id='+ form_obj.id, 'search_thread', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    search_thread = window.open('search_popup.php?webtag=' + webtag + '&type=2&value=' + form_obj.value + '&obj_id='+ form_obj.id, 'search_thread', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
     return false;
 }
 

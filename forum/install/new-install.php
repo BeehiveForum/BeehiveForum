@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.130 2007-01-21 14:06:48 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.131 2007-01-23 01:05:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -415,7 +415,7 @@ $sql.= "  PRIMARY KEY  (TID),";
 $sql.= "  KEY BY_UID (BY_UID),";
 $sql.= "  KEY STICKY (STICKY, MODIFIED), ";
 $sql.= "  KEY LENGTH (LENGTH), ";
-$sql.= "  FULLTEXT KEY TITLE (TITLE)";
+$sql.= "  KEY TITLE (TITLE)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -753,8 +753,9 @@ $sql.= "  SID MEDIUMINT(8) NOT NULL AUTO_INCREMENT,";
 $sql.= "  NAME VARCHAR(32) DEFAULT NULL,";
 $sql.= "  URL VARCHAR(255) DEFAULT NULL,";
 $sql.= "  AGENT_MATCH VARCHAR(32) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (SID), ";
-$sql.= "  FULLTEXT KEY AGENT_MATCH (NAME, AGENT_MATCH)";
+$sql.= "  PRIMARY KEY  (SID),";
+$sql.= "  KEY NAME (NAME),";
+$sql.= "  KEY AGENT_MATCH (AGENT_MATCH)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {
@@ -809,7 +810,8 @@ $sql.= "  REGISTERED DATETIME DEFAULT NULL,";
 $sql.= "  IPADDRESS VARCHAR(15) DEFAULT NULL,";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (UID), ";
-$sql.= "  FULLTEXT KEY LOGON (LOGON, NICKNAME)";
+$sql.= "  KEY LOGON (LOGON),";
+$sql.= "  KEY NICKNAME (NICKNAME)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

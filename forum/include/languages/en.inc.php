@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.390 2007-01-23 19:51:34 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.391 2007-01-24 18:02:14 decoyduck Exp $ */
 
 // International English language file
 
@@ -1462,10 +1462,16 @@ $lang['monthsago'] = "%s months ago";
 $lang['yearago'] = "%s year ago";
 $lang['beginningoftime'] = "Beginning of time";
 $lang['now'] = "Now";
-$lang['newestfirst'] = "Newest first";
-$lang['oldestfirst'] = "Oldest first";
+$lang['lastpostdate'] = "Last post date";
+$lang['numberofreplies'] = "Number of replies";
+$lang['foldername'] = "Folder name";
+$lang['authorname'] = "Author name";
+$lang['decendingorder'] = "Newest first";
+$lang['ascendingorder'] = "Oldest first";
 $lang['keywords'] = "Keywords";
-$lang['orderby'] = "Order by";
+$lang['sortby'] = "Sort by";
+$lang['sortdir'] = "Sort dir";
+$lang['sortresults'] = "Sort Results";
 $lang['groupbythread'] = "Group by thread";
 $lang['postsfromuser'] = "Posts from user";
 $lang['poststouser'] = "Posts to user";

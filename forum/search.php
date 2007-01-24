@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.161 2007-01-19 18:06:24 decoyduck Exp $ */
+/* $Id: search.php,v 1.162 2007-01-24 18:02:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -126,10 +126,20 @@ if (isset($_COOKIE['bh_thread_mode'])) {
     $mode = 0;
 }
 
-if (isset($_GET['order_by']) && is_numeric($_GET['order_by'])) {
-    $order_by = $_GET['order_by'];
+if (isset($_GET['sort_by']) && is_numeric($_GET['sort_by'])) {
+    $sort_by = $_GET['sort_by'];
+}elseif (isset($_POST['sort_by']) && is_numeric($_POST['sort_by'])) {
+    $sort_by = $_POST['sort_by'];
 }else {
-    $order_by = 1;
+    $sort_by = 1;
+}
+
+if (isset($_GET['sort_dir']) && is_numeric($_GET['sort_dir'])) {
+    $sort_dir = $_GET['sort_dir'];
+}elseif (isset($_POST['sort_dir']) && is_numeric($_POST['sort_dir'])) {
+    $sort_dir = $_POST['sort_dir'];
+}else {
+    $sort_dir = 1;
 }
 
 if (!$folder_dropdown = folder_search_dropdown()) {
@@ -164,7 +174,7 @@ if (isset($_GET['show_stop_words'])) {
     include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
 
     echo "<h1>{$lang['mysqlstopwordlist']}</h1>\n";
-    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"540\">\n";
+    echo "<table class=\"posthead\" width=\"540\">\n";
     echo "  <tr>\n";
 
     $mysql_fulltext_stopwords = array_values($mysql_fulltext_stopwords);
@@ -239,8 +249,12 @@ if ((isset($_POST) && sizeof($_POST) > 0) || isset($_GET['search_string']) || is
         $search_arguments['date_to'] = $_POST['date_to'];
     }
 
-    if (isset($_POST['order_by']) && is_numeric($_POST['order_by'])) {
-        $search_arguments['order_by'] = $_POST['order_by'];
+    if (isset($_POST['sort_by']) && is_numeric($_POST['sort_by'])) {
+        $search_arguments['sort_by'] = $_POST['sort_by'];
+    }
+
+    if (isset($_POST['sort_dir']) && is_numeric($_POST['sort_dir'])) {
+        $search_arguments['sort_dir'] = $_POST['sort_dir'];
     }
 
     if (isset($_POST['group_by_thread']) && is_numeric($_POST['group_by_thread'])) {
@@ -320,7 +334,7 @@ if (isset($search_success) && $search_success === true && (isset($_GET['search_s
 
 if (isset($search_success) && $search_success === true && isset($offset)) {
 
-    if ($search_results_array = search_fetch_results($offset, $order_by)) {
+    if ($search_results_array = search_fetch_results($offset, $sort_by, $sort_dir)) {
 
         html_draw_top("search.js", "robots=noindex,nofollow", "onload=enable_search_button()");
 
@@ -331,7 +345,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
         echo "<img src=\"", style_image('search.png'), "\" alt=\"{$lang['found']}\" title=\"{$lang['found']}\" />&nbsp;{$lang['found']}: {$search_results_array['result_count']} {$lang['matches']}<br />\n";
 
         if ($offset >= 20) {
-            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;order_by=$order_by\">{$lang['prevpage']}</a>\n";
+            echo "<img src=\"".style_image('current_thread.png')."\" alt=\"{$lang['prevpage']}\" title=\"{$lang['prevpage']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;sort_by=$sort_by\">{$lang['prevpage']}</a>\n";
         }
 
         echo "<ol start=\"", $offset + 1, "\">\n";
@@ -402,7 +416,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
         echo "</ol>\n";
 
         if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
-            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;order_by=$order_by\">{$lang['findmore']}</a><br />\n";
+            echo "<img src=\"", style_image('current_thread.png'), "\" alt=\"{$lang['findmore']}\" title=\"{$lang['findmore']}\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by\">{$lang['findmore']}</a><br />\n";
         }
 
     }else {
@@ -437,7 +451,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table cellpadding=\"0\" cellpadding=\"0\" width=\"95%\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"40%\">{$lang['keywords']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("search_string", "", 32), "&nbsp;</td>\n";
@@ -472,7 +486,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table cellpadding=\"0\" cellpadding=\"0\" width=\"95%\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"40%\">{$lang['username']}:</td>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\"><div class=\"bhinputsearch\">", form_input_text("username", "", 28, 15, "", "search_logon"), form_submit_image("search_button.png", "search", $lang['search'], "onclick=\"return openLogonSearch('$webtag', 'username');\" title=\"{$lang['search']}\"", "search_button"), "</div>&nbsp;</td>\n";
@@ -519,7 +533,7 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
-    echo "                    <table cellpadding=\"0\" cellpadding=\"0\" width=\"95%\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"40%\">{$lang['folderbrackets_s']}:</td>\n";
     echo "                        <td align=\"left\">", $folder_dropdown, "&nbsp;</td>\n";
@@ -533,8 +547,12 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
     echo "                        <td align=\"left\">", form_dropdown_array("date_to", range(1, 12), array($lang['now'], $lang['today'], $lang['yesterday'], $lang['daybeforeyesterday'], sprintf($lang['weekago'], 1), sprintf($lang['weeksago'], 2), sprintf($lang['weeksago'], 3), sprintf($lang['monthago'], 1), sprintf($lang['monthsago'], 2), sprintf($lang['monthsago'], 3), sprintf($lang['monthsago'], 6), sprintf($lang['yearago'], 1)), 2, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">{$lang['orderby']}:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("order_by", range(1, 2), array($lang['newestfirst'], $lang['oldestfirst']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">{$lang['sortby']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("sort_by", range(1, 4), array($lang['lastpostdate'], $lang['numberofreplies'], $lang['foldername'], $lang['authorname']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">{$lang['sortdir']}:</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("sort_dir", range(1, 2), array($lang['decendingorder'], $lang['ascendingorder']), 1, false, "search_dropdown"), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['groupbythread']}:</td>\n";
@@ -571,27 +589,30 @@ echo "<br />\n";
 
 if (isset($search_success) && $search_success === true) {
 
-    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['orderby']}:</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\">&nbsp;</td>\n";
-    echo "    <td align=\"left\" class=\"smalltext\">\n";
-    echo "      <form name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
-    echo "        ", form_input_hidden("webtag", $webtag), "\n";
-    echo "        ", form_input_hidden("offset", isset($offset) ? $offset : 0), "\n";
-    echo "        ", form_dropdown_array("order_by", range(1, 2), array($lang['newestfirst'], $lang['oldestfirst']), $order_by, false), "\n";
-    echo "        ", form_submit("go",$lang['goexcmark']). "\n";
-    echo "      </form>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
+    echo "<form name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
+    echo "  ", form_input_hidden("webtag", $webtag), "\n";
+    echo "  ", form_input_hidden("offset", isset($offset) ? $offset : 0), "\n";
+    echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['sortresults']}:</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "      <td align=\"left\" colspan=\"2\">", form_dropdown_array("sort_by", range(1, 4), array($lang['lastpostdate'], $lang['numberofreplies'], $lang['foldername'], $lang['authorname']), $sort_by), "</td>\n";
+    echo "    </tr>\n";
+    echo"     <tr>\n";
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+    echo "      <td align=\"left\">", form_dropdown_array("sort_dir", range(1, 2), array($lang['decendingorder'], $lang['ascendingorder']), $sort_dir), "</td>\n";
+    echo "      <td align=\"left\">", form_submit("go",$lang['goexcmark']). "</td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "<br />\n";
 }
 
 if (!isset($_GET['search_string'])) {
 
-    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+    echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['navigate']}:</td>\n";
     echo "  </tr>\n";
@@ -606,8 +627,8 @@ if (!isset($_GET['search_string'])) {
     echo "    </td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
-
-    echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
+    echo "<br />\n";
+    echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">{$lang['searchagain']} (<a href=\"search.php?webtag=$webtag\" target=\"right\">{$lang['advanced']}</a>):</td>\n";
     echo "  </tr>\n";

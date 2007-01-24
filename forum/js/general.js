@@ -25,13 +25,35 @@ document.onkeypress = function(e)
 
     if (typeof e != 'undefined') {
 
-        var tgt = e.target || e.srcElement;
+        var target_obj = e.target || e.srcElement;
         
-        if (typeof tgt != 'undefined' && /text/i.test(tgt.type)) {
+        if (typeof target_obj != 'undefined' && target_obj.type == 'text') {
             
-            return (typeof e.keyCode != 'undefined') ? e.keyCode != 13 : true;
+            var parent_node = target_obj.parentNode;
+            
+            while (parent_node.tagName.toLowerCase() != 'form') {
+                parent_node = parent_node.parentNode;
+            }
+
+            var input_tags = parent_node.getElementsByTagName('input');
+            var input_count = input_tags.length;
+
+            for (var i = 0; i < input_count; i++)  {
+                
+                if (input_tags[i].type == 'text' || input_tags[i].type == 'hidden') {
+
+                    input_count--;
+                }
+            }
+
+            if (input_count > 1) {
+            
+                return (typeof e.keyCode != 'undefined') ? e.keyCode != 13 : true;
+            }
         }
     }
+
+    return true;
 }
 
 function disable_button(button)
@@ -280,7 +302,7 @@ function resizeImages(maxWidth, resizeText)
             // Either way we need to add the table to the page and move
             // the original image into the other table cell we created.
 
-            if (parent_node.tagName.toUpperCase() == 'A') {
+            if (parent_node.tagName.toLowerCase() == 'a') {
                 
                 var child_node = parent_node;
                 parent_node = parent_node.parentNode;

@@ -120,14 +120,14 @@ function addOverflow(maxWidth)
 
         if (IE) {
         
-                window.attachEvent("onresize", function () { redoOverFlow(maxWidth) });
+                window.attachEvent("onresize", redoOverFlow);
         }else {
         
-                window.addEventListener("resize", function () { redoOverFlow(maxWidth) }, true);
+                window.addEventListener("resize", redoOverFlow, true);
         }
 }
 
-function redoOverFlow(maxWidth)
+function redoOverFlow()
 {
         var body_tag = document.getElementsByTagName('body');
         var body_tag = body_tag[0];
@@ -135,15 +135,13 @@ function redoOverFlow(maxWidth)
         var td_tags = document.getElementsByTagName('td');
         var td_count = td_tags.length;
 
-        if (!is_numeric(maxWidth)) {
-            maxWidth = body_tag.clientWidth;
-        }
+        resizeImages();
 
         for (var i = 0; i < td_count; i++)  {
 
                 if (td_tags[i].className == 'postbody') {
                         
-                        td_tags[i].style.width = (maxWidth * 0.98) + 'px';
+                        td_tags[i].style.width = (body_tag.clientWidth * 0.98) + 'px';
                         
                         var div_tags = td_tags[i].getElementsByTagName('div');
                         var div_count = div_tags.length;
@@ -162,9 +160,9 @@ function redoOverFlow(maxWidth)
 function attachListener(obj, img_id, maxWidth)
 {
     if (document.all) {
-        obj.attachEvent('onclick', function() { toggleImageWidth(img_id, maxWidth) } );
+        obj.attachEvent('onclick', function() { toggleImageWidth(img_id) } );
     }else {
-        obj.addEventListener('click', function() { toggleImageWidth(img_id, maxWidth) }, true);
+        obj.addEventListener('click', function() { toggleImageWidth(img_id) }, true);
     }
 }
 
@@ -184,16 +182,25 @@ function resizeImages(maxWidth, resizeText)
             resizeText = 'This image has been resized (original size %1$sx%2$s). To toggle the image size click on this banner.';
         }
 
-        onclick_code = 'return toggleImageWidth(\'%1$s\', \'%2$s\')';
-
         for (var i = 0; i < img_count; i++)  {
 
-                if (img_tags[i].width >= maxWidth) {
+                if (is_defined(img_tags[i].original_width)) {
 
+                        img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
+
+                        img_resize_table = document.getElementById(img_tags[i].table_id);
+                        img_resize_table.style.width = Math.round(maxWidth * 0.9) + 'px';
+
+                        return;
+                }
+
+                if (img_tags[i].width >= maxWidth) {                       
+                        
                         // Give the image and ID and save the original width
 
-                        img_tags[i].id = 'bhimageresize_' + i;
+                        img_tags[i].id = 'image_resize_image_' + i;
                         img_tags[i].original_width = img_tags[i].width;
+                        img_tags[i].table_id = 'image_resize_container_' + i;
                         
                         // Required table elements: table, tbody, tr and td
 
@@ -205,15 +212,26 @@ function resizeImages(maxWidth, resizeText)
 
                         var img_resize_table_cell_txt = document.createElement('td');
                         var img_resize_table_cell_img = document.createElement('td');
+                        var img_resize_table_cell_ico = document.createElement('td');
 
-                        // Assign the classes to the relevant table cells.
+                        // Assign the table an id and a class
 
+                        img_resize_table.id = 'image_resize_container_' + i;
                         img_resize_table.className = 'image_resize_container';
+
+                        // Assign the columns the right classes.
+
+                        img_resize_table_cell_ico.className = 'image_resize_icon';
                         img_resize_table_cell_txt.className = 'image_resize_text';
                         img_resize_table_cell_img.className = 'image_resize_image';
 
-                        // Set up an onclick handler for the txt cell.
+                        // Set a fixed width on the icon column
 
+                        img_resize_table_cell_ico.setAttribute('width', '20px');
+
+                        // Set up an onclick handler for the ico and txt columns
+
+                        attachListener(img_resize_table_cell_ico, img_tags[i].id, maxWidth);
                         attachListener(img_resize_table_cell_txt, img_tags[i].id, maxWidth);
 
                         // Stick the original dimensions of the image in the text and
@@ -221,21 +239,18 @@ function resizeImages(maxWidth, resizeText)
 
                         var img_resize_icon = document.createElement('img');
                         var img_resize_text = document.createTextNode(resizeText.replace('%1$s', img_tags[i].width).replace('%2$s', img_tags[i].height));
-                        var img_resize_spcr = document.createTextNode(' ');
 
                         // Set up the link and the image.
 
                         img_resize_icon.setAttribute('src', 'images/warning.png');
                         img_resize_icon.setAttribute('alt', '');
 
-                        // Assign the notification icon a class so it can be customised.
+                        // Insert the icon into the icon column of the text row.
 
-                        img_resize_icon.className = 'image_resize_icon';
+                        img_resize_table_cell_ico.appendChild(img_resize_icon);
 
-                        // Insert the icon, spacer and text into the relevant table cell.
+                        // Insert text into the text column of the text row
 
-                        img_resize_table_cell_txt.appendChild(img_resize_icon);
-                        img_resize_table_cell_txt.appendChild(img_resize_spcr);
                         img_resize_table_cell_txt.appendChild(img_resize_text);
 
                         // Resize the original image.
@@ -265,10 +280,15 @@ function resizeImages(maxWidth, resizeText)
                                 img_resize_table_cell_img.appendChild(img_tags[i]);
                         }
 
-                        // Insert the cells into the table rows.
+                        // Insert the icon and text columns into the text row.
                         
+                        img_resize_table_row_txt.appendChild(img_resize_table_cell_ico);
                         img_resize_table_row_txt.appendChild(img_resize_table_cell_txt);
+
+                        // Insert the image column into the image row
+
                         img_resize_table_row_img.appendChild(img_resize_table_cell_img);
+                        img_resize_table_cell_img.setAttribute('colspan', '2');
 
                         // Insert the rows into the table body.
 
@@ -282,14 +302,10 @@ function resizeImages(maxWidth, resizeText)
         }
 }
 
-function toggleImageWidth(img_id, maxWidth)
+function toggleImageWidth(img_id)
 {
         var body_tag = document.getElementsByTagName('body');
         var body_tag = body_tag[0];
-
-        if (!is_numeric(maxWidth) || maxWidth == 0) {
-            maxWidth = body_tag.clientWidth;
-        }
 
         var img_obj = document.getElementById(img_id);
 
@@ -299,7 +315,7 @@ function toggleImageWidth(img_id, maxWidth)
 
         }else {
         
-                img_obj.style.width = Math.round(maxWidth * 0.9) + 'px';
+                img_obj.style.width = Math.round(body_tag.clientWidth * 0.9) + 'px';
         }
 
         return false;

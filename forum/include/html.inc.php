@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.202 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.203 2007-01-24 21:52:24 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -259,13 +259,13 @@ function html_get_style_sheet()
 
         if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
 
-            $modified_time = filemtime("styles/$user_style/style.css");
+            $modified_time = date('YmdHis', filemtime("styles/$user_style/style.css"));
             return "styles/$user_style/style.css?$modified_time";
         }
                      
         if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {
             
-            $modified_time = filemtime("forums/$webtag/styles/$user_style/style.css");
+            $modified_time = date('YmdHis', filemtime("forums/$webtag/styles/$user_style/style.css"));
             return "forums/$webtag/styles/$user_style/style.css?$modified_time";
         }
     }
@@ -274,14 +274,14 @@ function html_get_style_sheet()
 
         if (@is_dir("forums/$webtag") && @file_exists("forums/$webtag/style.css")) {
             
-            $modified_time = filemtime("./forums/$webtag/style.css");
+            $modified_time = date('YmdHis', filemtime("./forums/$webtag/style.css"));
             return "forums/$webtag/style.css?$modified_time";
         }
     }
 
     if (@is_dir("styles") && @file_exists("styles/style.css")) {
         
-        $modified_time = filemtime("./styles/style.css");
+        $modified_time = date('YmdHis', filemtime("./styles/style.css"));
         return "styles/style.css?$modified_time";
     }
 
@@ -302,7 +302,7 @@ function html_get_emoticon_style_sheet()
 
         if (@is_dir("emoticons/$user_emots") && file_exists("emoticons/$user_emots/style.css")) {
 
-            $modified_time = filemtime("emoticons/$user_emots/style.css");
+            $modified_time = date('YmdHis', filemtime("emoticons/$user_emots/style.css"));
             return "emoticons/$user_emots/style.css?$modified_time";
         }
     }
@@ -623,7 +623,9 @@ function html_draw_top()
 
             if (bh_session_get_value('USE_MOVER_SPOILER') == "Y") {
                 
-                echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js\"></script>\n";
+                $modified_time = date('YmdHis', filemtime("js/spoiler.js"));
+                
+                echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/spoiler.js?$modified_time\"></script>\n";
                 if (!in_array("spoilerInitialise", $onload_array)) $onload_array[] = "spoilerInitialise()";
             }
         }
@@ -631,7 +633,8 @@ function html_draw_top()
 
     reset($arg_array);
 
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js\"></script>\n";
+    $modified_time = date('YmdHis', filemtime("js/general.js"));    
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/general.js?$modified_time\"></script>\n";
 
     foreach($arg_array as $func_args) {
 
@@ -640,14 +643,19 @@ function html_draw_top()
             $page_prefs = bh_session_get_post_page_prefs();
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
+
                 echo TinyMCE();
-            } else {
-                echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/$func_args\"></script>\n";
+
+            }else {
+                
+                $modified_time = date('YmdHis', filemtime("js/{$func_args}"));
+                echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?$modified_time\"></script>\n";
             }
 
-        } else if (@is_dir("./js/") && @file_exists("./js/$func_args")) {
+        }else if (@is_dir("./js/") && @file_exists("./js/$func_args")) {
 
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/$func_args\"></script>\n";
+            $modified_time = date('YmdHis', filemtime("js/{$func_args}"));
+            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"./js/{$func_args}?$modified_time\"></script>\n";
         }
     }
 

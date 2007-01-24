@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.244 2007-01-20 16:56:22 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.245 2007-01-24 23:27:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1816,7 +1816,7 @@ function thread_auto_prune_unread_data($force_start = false)
             $sql.= "UNREAD_CREATED) SELECT DEFAULT_THREAD.TID, MAX(DEFAULT_POST.PID), ";
             $sql.= "MAX(DEFAULT_POST.CREATED) FROM DEFAULT_THREAD ";
             $sql.= "LEFT JOIN DEFAULT_POST ON (DEFAULT_POST.TID = DEFAULT_THREAD.TID ";
-            $sql.= "AND DEFAULT_POST.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - 2628000)) ";
+            $sql.= "AND DEFAULT_POST.CREATED < FROM_UNIXTIME($unread_cutoff_stamp)) ";
             $sql.= "GROUP BY DEFAULT_THREAD.TID ON DUPLICATE KEY ";
             $sql.= "UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
             $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
@@ -1825,7 +1825,7 @@ function thread_auto_prune_unread_data($force_start = false)
 
             $sql = "DELETE FROM DEFAULT_USER_THREAD USING DEFAULT_USER_THREAD, DEFAULT_THREAD ";
             $sql.= "WHERE DEFAULT_USER_THREAD.TID = DEFAULT_THREAD.TID ";
-            $sql.= "AND DEFAULT_THREAD.CREATED < FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - 2628000)";
+            $sql.= "AND DEFAULT_THREAD.MODIFIED > FROM_UNIXTIME($unread_cutoff_stamp)";
 
             if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 

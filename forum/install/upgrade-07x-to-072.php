@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.17 2007-01-23 01:05:54 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.18 2007-01-24 18:02:14 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -464,6 +464,17 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (AGENT_MATCH)";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // New column to allow sorting results by thread length.
+
+    $sql = "ALTER TABLE SEARCH_RESULTS ADD LENGTH MEDIUMINT(8) ";
+    $sql.= "UNSIGNED NOT NULL AFTER CREATED";
 
     if (!$result = @db_query($sql, $db_install)) {
 

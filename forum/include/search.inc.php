@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.170 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.171 2007-01-24 18:02:14 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -104,9 +104,9 @@ function search_execute($argarray, &$error)
             // Base query slightly different if you're not searching by keywords
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED) SELECT $uid, $forum_fid, ";
-            $select_sql.= "THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, ";
-            $select_sql.= "POST.TO_UID, POST.CREATED ";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
+            $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
+            $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH ";
 
             // FROM query uses POST table if we're not using keyword searches.
 
@@ -170,11 +170,11 @@ function search_execute($argarray, &$error)
             search_save_keywords($search_keywords_array['keywords']);
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, RELEVANCE) SELECT $uid, ";
-            $select_sql.= "$forum_fid, THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
-            $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED, ";
-            $select_sql.= "MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string";
-            $select_sql.= "'$bool_mode) AS RELEVANCE";
+            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
+            $select_sql.= "SELECT $uid, $forum_fid, THREAD.FID, POST_CONTENT.TID, ";
+            $select_sql.= "POST_CONTENT.PID, THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, ";
+            $select_sql.= "POST.CREATED, THREAD.LENGTH, MATCH(POST_CONTENT.CONTENT) ";
+            $select_sql.= "AGAINST('$search_string'$bool_mode) AS RELEVANCE";
 
             $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string'$bool_mode) ";
 
@@ -396,11 +396,15 @@ function search_get_keywords()
     return false;
 }
 
-function search_fetch_results($offset, $order_by)
+function search_fetch_results($offset, $sortby, $sortdir)
 {
     $db_search_fetch_results = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
+
+    if (!in_array($sortdir, array('DESC', 'ASC'))) {
+        $sortdir = 'DESC';
+    }
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
@@ -411,23 +415,33 @@ function search_fetch_results($offset, $order_by)
 
     if ($result_count > 0) {
 
-        if ($order_by == 1) {
+        $sql = "SELECT SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
+        $sql.= "SEARCH_RESULTS.BY_UID, SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
+        $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED ";
+        $sql.= "FROM SEARCH_RESULTS LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+        $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) WHERE SEARCH_RESULTS.UID = '$uid' ";
 
-            $sql = "SELECT SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
-            $sql.= "SEARCH_RESULTS.BY_UID,SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
-            $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED ";
-            $sql.= "FROM SEARCH_RESULTS LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
-            $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) WHERE SEARCH_RESULTS.UID = '$uid' ";
-            $sql.= "ORDER BY SEARCH_RESULTS.CREATED DESC LIMIT $offset, 20";
+        switch($sortby) {
+        
+            case SEARCH_SORT_NUM_REPLIES:
 
-        }else {
+                $sql.= "ORDER BY SEARCH_RESULTS.LENGTH $sortdir LIMIT $offset, 20";
+                break;
 
-            $sql = "SELECT SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
-            $sql.= "SEARCH_RESULTS.BY_UID,SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
-            $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED ";
-            $sql.= "FROM SEARCH_RESULTS LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
-            $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) WHERE SEARCH_RESULTS.UID = '$uid' ";
-            $sql.= "ORDER BY SEARCH_RESULTS.CREATED ASC LIMIT $offset, 20";
+            case SEARCH_SORT_FOLDER_NAME:
+
+                $sql.= "ORDER BY SEARCH_RESULTS.FID $sortdir LIMIT $offset, 20";
+                break;
+
+            case SEARCH_SORT_AUTHOR_NAME:
+
+                $sql.= "ORDER BY SEARCH_RESULTS.FROM_UID $sortdir LIMIT $offset, 20";
+                break;
+
+            default:
+
+                $sql.= "ORDER BY SEARCH_RESULTS.CREATED $sortdir LIMIT $offset, 20";
+                break;
         }
 
         $result = db_query($sql, $db_search_fetch_results);
@@ -454,27 +468,17 @@ function search_get_first_result_msg()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT COUNT(*) AS RESULT_COUNT FROM SEARCH_RESULTS WHERE UID = $uid";
+    $sql = "SELECT SEARCH_RESULTS.TID, SEARCH_RESULTS.PID FROM SEARCH_RESULTS ";
+    $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
+    $sql.= "ORDER BY SEARCH_RESULTS.CREATED DESC ";
+    $sql.= "LIMIT 0, 1";
+
     $result = db_query($sql, $db_search_fetch_results);
 
-    list($result_count) = db_fetch_array($result, DB_RESULT_NUM);
+    if (db_num_rows($result) > 0) {
 
-    if ($result_count > 0) {
-
-        $sql = "SELECT SEARCH_RESULTS.TID, SEARCH_RESULTS.PID FROM SEARCH_RESULTS ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
-        $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
-        $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
-        $sql.= "ORDER BY SEARCH_RESULTS.CREATED DESC ";
-        $sql.= "LIMIT 0, 1";
-
-        $result = db_query($sql, $db_search_fetch_results);
-
-        if (db_num_rows($result) > 0) {
-
-            list($tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
-            return "$tid.$pid";
-        }
+        list($tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
+        return "$tid.$pid";
     }
 
     return false;

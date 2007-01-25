@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.246 2007-01-25 00:22:51 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.247 2007-01-25 00:45:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1829,8 +1829,11 @@ function thread_auto_prune_unread_data($force_start = false)
             $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD ";
             $sql.= "ON ({$table_data['PREFIX']}USER_THREAD.TID = ";
             $sql.= "{$table_data['PREFIX']}THREAD.TID) ";
-            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED < ";
-            $sql.= "FROM_UNIXTIME($unread_cutoff_stamp)";
+            $sql.= "WHERE ({$table_data['PREFIX']}THREAD.MODIFIED < ";
+            $sql.= "FROM_UNIXTIME($unread_cutoff_stamp) ";
+            $sql.= "OR ({$table_data['PREFIX']}THREAD.MODIFIED IS NULL) ";
+            $sql.= "AND ({$table_data['PREFIX']}USER_THREAD.INTEREST IS NULL ";
+            $sql.= "OR {$table_data['PREFIX']}USER_THREAD.INTEREST = 0)) ";
 
             if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 

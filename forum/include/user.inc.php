@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.290 2007-01-23 01:05:54 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.291 2007-01-25 22:12:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -429,8 +429,8 @@ function user_get_prefs($uid)
     $sql.= "PM_NOTIFY_EMAIL, PM_SAVE_SENT_ITEM, PM_INCLUDE_REPLY, PM_AUTO_PRUNE, PM_EXPORT_TYPE, ";
     $sql.= "PM_EXPORT_FILE, PM_EXPORT_ATTACHMENTS, PM_EXPORT_STYLE, PM_EXPORT_WORDFILTER, DOB_DISPLAY, ";
     $sql.= "ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, EMOTICONS, ";
-    $sql.= "ALLOW_EMAIL, ALLOW_PM, POST_PAGE, SHOW_THUMBS, USE_MOVER_SPOILER, ENABLE_WIKI_WORDS ";
-    $sql.= "FROM USER_PREFS WHERE UID = $uid";
+    $sql.= "ALLOW_EMAIL, ALLOW_PM, POST_PAGE, SHOW_THUMBS, USE_MOVER_SPOILER, ENABLE_WIKI_WORDS, ";
+    $sql.= "USE_OVERFLOW_RESIZE FROM USER_PREFS WHERE UID = $uid";
 
     $result = db_query($sql, $db_user_get_prefs);
 
@@ -443,8 +443,8 @@ function user_get_prefs($uid)
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, ";
         $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, VIEW_SIGS, START_PAGE, LANGUAGE, ";
         $sql.= "DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, ";
-        $sql.= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, USE_MOVER_SPOILER, ENABLE_WIKI_WORDS ";
-        $sql.= "FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
+        $sql.= "EMOTICONS, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, USE_MOVER_SPOILER, ENABLE_WIKI_WORDS, ";
+        $sql.= "USE_OVERFLOW_RESIZE FROM {$table_data['PREFIX']}USER_PREFS WHERE UID = $uid";
 
         $result = db_query($sql, $db_user_get_prefs);
         $forum_prefs = (db_num_rows($result) > 0) ? db_fetch_array($result, DB_RESULT_ASSOC) : array();
@@ -510,7 +510,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'ANON_LOGON', 'SHOW_STATS', 'IMAGES_TO_LINKS',
                                'USE_WORD_FILTER', 'USE_ADMIN_FILTER', 'EMOTICONS',
                                'ALLOW_EMAIL', 'ALLOW_PM', 'POST_PAGE', 'SHOW_THUMBS',
-                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER');
+                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
+                               'USE_OVERFLOW_RESIZE');
 
     // names of preferences that can be set on a per-forum basis
 
@@ -520,7 +521,8 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                                'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
                                'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
                                'EMOTICONS', 'ALLOW_EMAIL', 'ALLOW_PM', 'SHOW_THUMBS',
-                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER');
+                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
+                               'USE_OVERFLOW_RESIZE');
 
     foreach ($prefs_array as $pref_name => $pref_setting) {
 
@@ -702,7 +704,7 @@ function user_check_pref($name, $value)
             return preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $value);
         } elseif ($name == "HOMEPAGE_URL" || $name == "PIC_URL") {
             return preg_match("/^http:\/\/[_\.0-9a-z\-~]*/i", $value);
-        } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER") {
+        } elseif ($name == "EMAIL_NOTIFY" || $name == "DL_SAVING" || $name == "MARK_AS_OF_INT" || $name == "VIEW_SIGS" || $name == "PM_NOTIFY" || $name == "PM_NOTIFY_EMAIL" || $name == "PM_INCLUDE_REPLY" || $name == "PM_SAVE_SENT_ITEM" || $name == "PM_EXPORT_ATTACHMENTS" || $name == "PM_EXPORT_STYLE" || $name == "PM_EXPORT_WORDFILTER" || $name == "IMAGES_TO_LINKS" || $name == "SHOW_STATS" || $name == "USE_WORD_FILTER" || $name == "USE_ADMIN_FILTER" || $name == "ALLOW_EMAIL" || $name == "ALLOW_PM" || $name == "ENABLE_WIKI_WORDS" || $name == "USE_MOVER_SPOILER" || $name == "USE_OVERFLOW_RESIZE") {
             return ($value == "Y" || $value == "N") ? true : false;
         } elseif ($name == "ANON_LOGON" || $name == "TIMEZONE" || $name == "POSTS_PER_PAGE" || $name == "FONT_SIZE" || $name == "START_PAGE" || $name == "DOB_DISPLAY" || $name == "POST_PAGE" || $name == "SHOW_THUMBS" || $name == "PM_AUTO_PRUNE" || $name == "PM_EXPORT_FILE" || $name == "PM_EXPORT_TYPE") {
             return is_numeric($value);

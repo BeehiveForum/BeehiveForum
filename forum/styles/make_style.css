@@ -1185,20 +1185,16 @@ a {
 }
 
 .image_resize_container {
-    border: 0px;;
+    border: 0px;
+    border-collapse: collapse;
 }
 
 .image_resize_text {
     border: 1px dashed #000000;
-    padding-left: 5px;
     height: 30px;
     background-image: url('../../images/warningbg.png');
     font-size: 8pt;
     cursor: pointer;
-}
-
-.image_resize_text a {
-    text-decoration: none;
 }
 
 .image_resize_image {
@@ -1206,6 +1202,5 @@ a {
 }
 
 .image_resize_icon {
-    vertical-align: middle;
-    border: 0px;
+    padding: 5px;
 }

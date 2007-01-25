@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.392 2007-01-25 21:16:02 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.393 2007-01-25 22:12:06 decoyduck Exp $ */
 
 // International English language file
 
@@ -1240,6 +1240,7 @@ $lang['listmeontheactiveusersdisplay'] = "List me on the active users display";
 $lang['browseanonymously'] = "Browse forum anonymously";
 $lang['allowfriendstoseemeasonline'] = "Browse anonymously, but allow friends to see me as online";
 $lang['revealspoileronmouseover'] = "Reveal spoilers on mouse over";
+$lang['resizeimagesandreflowpage'] = "Resize images and reflow page to prevent horizontal scrolling.";
 $lang['showforumstats'] = "Show forum stats at bottom of message pane";
 $lang['usewordfilter'] = "Enable word filter.";
 $lang['forceadminwordfilter'] = "Force use of admin word filter on all users (inc. guests)";

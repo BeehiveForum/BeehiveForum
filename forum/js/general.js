@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+var IE = (document.all ? true : false);
+
 document.onkeypress = function(e)
 {
     e = e || window.event;
@@ -114,8 +116,6 @@ function is_defined(var_name)
 
 function addOverflow(maxWidth)
 {
-    var IE = (document.all ? true : false);
-    
     var body_tag = document.getElementsByTagName('body');
     var body_tag = body_tag[0];
 
@@ -141,13 +141,13 @@ function addOverflow(maxWidth)
 
                 new_div.className = 'bhoverflowfix';
             
-                new_div.style.width = (maxWidth * 0.94) + 'px';
+                new_div.style.width = (maxWidth * 0.8) + 'px';
 
                 while (td_tags[i].hasChildNodes()) {
                     new_div.appendChild(td_tags[i].firstChild);
                 }
 
-                td_tags[i].style.width = (maxWidth * 0.98) + 'px';
+                td_tags[i].style.width = (maxWidth * 0.8) + 'px';
                 td_tags[i].appendChild(new_div);
             }
         }
@@ -177,7 +177,7 @@ function redoOverFlow()
 
         if (td_tags[i].className == 'postbody') {
             
-            td_tags[i].style.width = (body_tag.clientWidth * 0.98) + 'px';
+            td_tags[i].style.width = (body_tag.clientWidth * 0.8) + 'px';
             
             var div_tags = td_tags[i].getElementsByTagName('div');
             var div_count = div_tags.length;
@@ -186,7 +186,7 @@ function redoOverFlow()
 
                 if (div_tags[j].className == 'bhoverflowfix') {
 
-                    div_tags[j].style.width = (maxWidth * 0.94) + 'px';
+                    div_tags[j].style.width = (maxWidth * 0.8) + 'px';
                 }
             }
         }
@@ -196,9 +196,9 @@ function redoOverFlow()
 function attachListener(obj, img_id, maxWidth)
 {
     if (document.all) {
-        obj.attachEvent('onclick', function() { toggleImageWidth(img_id) } );
+        obj.attachEvent('onclick', function() { popupImage(img_id) } );
     }else {
-        obj.addEventListener('click', function() { toggleImageWidth(img_id) }, true);
+        obj.addEventListener('click', function() { popupImage(img_id) }, true);
     }
 }
 
@@ -215,17 +215,18 @@ function resizeImages(maxWidth, resizeText)
     }
 
     if (!is_defined(resizeText)) {
-        resizeText = 'This image has been resized (original size %1$sx%2$s). To toggle the image size click on this banner.';
+        resizeText = 'This image has been resized (original size %1$sx%2$s). To view the full-size image click here.';
     }
 
     for (var i = 0; i < img_count; i++)  {
 
         if (is_defined(img_tags[i].original_width)) {
 
-            img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
+            img_tags[i].style.width = Math.round(maxWidth * 0.8) + 'px';
+            img_tags[i].resized_width = Math.round(maxWidth * 0.8);
 
             img_resize_table = document.getElementById(img_tags[i].table_id);
-            img_resize_table.style.width = Math.round(maxWidth * 0.9) + 'px';
+            img_resize_table.style.width = Math.round(maxWidth * 0.8) + 'px';
 
             return;
         }
@@ -248,7 +249,6 @@ function resizeImages(maxWidth, resizeText)
 
             var img_resize_table_cell_txt = document.createElement('td');
             var img_resize_table_cell_img = document.createElement('td');
-            var img_resize_table_cell_ico = document.createElement('td');
 
             // Assign the table an id and a class
 
@@ -257,17 +257,11 @@ function resizeImages(maxWidth, resizeText)
 
             // Assign the columns the right classes.
 
-            img_resize_table_cell_ico.className = 'image_resize_icon';
             img_resize_table_cell_txt.className = 'image_resize_text';
             img_resize_table_cell_img.className = 'image_resize_image';
 
-            // Set a fixed width on the icon column
-
-            img_resize_table_cell_ico.setAttribute('width', '20px');
-
             // Set up an onclick handler for the ico and txt columns
 
-            attachListener(img_resize_table_cell_ico, img_tags[i].id, maxWidth);
             attachListener(img_resize_table_cell_txt, img_tags[i].id, maxWidth);
 
             // Stick the original dimensions of the image in the text and
@@ -280,10 +274,11 @@ function resizeImages(maxWidth, resizeText)
 
             img_resize_icon.setAttribute('src', 'images/warning.png');
             img_resize_icon.setAttribute('alt', '');
+            img_resize_icon.className = 'image_resize_icon';
 
             // Insert the icon into the icon column of the text row.
 
-            img_resize_table_cell_ico.appendChild(img_resize_icon);
+            img_resize_table_cell_txt.appendChild(img_resize_icon);
 
             // Insert text into the text column of the text row
 
@@ -291,8 +286,8 @@ function resizeImages(maxWidth, resizeText)
 
             // Resize the original image.
 
-            img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
-            img_tags[i].resized_width = Math.round(maxWidth * 0.9);
+            img_tags[i].style.width = Math.round(maxWidth * 0.8) + 'px';
+            img_tags[i].resized_width = Math.round(maxWidth * 0.8);
 
             // Get the original image's parent element.
 
@@ -319,13 +314,11 @@ function resizeImages(maxWidth, resizeText)
 
             // Insert the icon and text columns into the text row.
             
-            img_resize_table_row_txt.appendChild(img_resize_table_cell_ico);
             img_resize_table_row_txt.appendChild(img_resize_table_cell_txt);
 
             // Insert the image column into the image row
 
             img_resize_table_row_img.appendChild(img_resize_table_cell_img);
-            img_resize_table_cell_img.setAttribute('colspan', '2');
 
             // Insert the rows into the table body.
 
@@ -339,21 +332,10 @@ function resizeImages(maxWidth, resizeText)
     }
 }
 
-function toggleImageWidth(img_id)
-{
-    var body_tag = document.getElementsByTagName('body');
-    var body_tag = body_tag[0];
-
+function popupImage(img_id)
+{   
     var img_obj = document.getElementById(img_id);
-
-    if (img_obj.width != img_obj.original_width) {
-        
-        img_obj.style.width = img_obj.original_width + 'px';
-
-    }else {
-    
-        img_obj.style.width = img_obj.resized_width + 'px';
-    }
+    img_obj.popup = window.open(img_obj.src);
 
     return false;
 }

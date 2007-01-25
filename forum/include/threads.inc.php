@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.245 2007-01-24 23:27:29 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.246 2007-01-25 00:22:51 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1812,20 +1812,25 @@ function thread_auto_prune_unread_data($force_start = false)
 
         if (db_fetch_mysql_version() >= 40116) {
 
-            $sql = "INSERT INTO DEFAULT_THREAD_STATS (TID, UNREAD_PID,";
-            $sql.= "UNREAD_CREATED) SELECT DEFAULT_THREAD.TID, MAX(DEFAULT_POST.PID), ";
-            $sql.= "MAX(DEFAULT_POST.CREATED) FROM DEFAULT_THREAD ";
-            $sql.= "LEFT JOIN DEFAULT_POST ON (DEFAULT_POST.TID = DEFAULT_THREAD.TID ";
-            $sql.= "AND DEFAULT_POST.CREATED < FROM_UNIXTIME($unread_cutoff_stamp)) ";
-            $sql.= "GROUP BY DEFAULT_THREAD.TID ON DUPLICATE KEY ";
+            $sql = "INSERT INTO {$table_data['PREFIX']}THREAD_STATS (TID, UNREAD_PID, UNREAD_CREATED) ";
+            $sql.= "SELECT {$table_data['PREFIX']}THREAD.TID, MAX({$table_data['PREFIX']}POST.PID), ";
+            $sql.= "MAX({$table_data['PREFIX']}POST.CREATED) FROM {$table_data['PREFIX']}THREAD ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}POST ";
+            $sql.= "ON ({$table_data['PREFIX']}POST.TID = {$table_data['PREFIX']}THREAD.TID ";
+            $sql.= "AND {$table_data['PREFIX']}POST.CREATED < FROM_UNIXTIME($unread_cutoff_stamp)) ";
+            $sql.= "GROUP BY {$table_data['PREFIX']}THREAD.TID ON DUPLICATE KEY ";
             $sql.= "UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
             $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";
             
             if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 
-            $sql = "DELETE FROM DEFAULT_USER_THREAD USING DEFAULT_USER_THREAD, DEFAULT_THREAD ";
-            $sql.= "WHERE DEFAULT_USER_THREAD.TID = DEFAULT_THREAD.TID ";
-            $sql.= "AND DEFAULT_THREAD.MODIFIED > FROM_UNIXTIME($unread_cutoff_stamp)";
+            $sql = "DELETE FROM {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "USING {$table_data['PREFIX']}USER_THREAD ";
+            $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD ";
+            $sql.= "ON ({$table_data['PREFIX']}USER_THREAD.TID = ";
+            $sql.= "{$table_data['PREFIX']}THREAD.TID) ";
+            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED < ";
+            $sql.= "FROM_UNIXTIME($unread_cutoff_stamp)";
 
             if (!$result = db_query($sql, $db_thread_prune_unread_data)) return false;
 

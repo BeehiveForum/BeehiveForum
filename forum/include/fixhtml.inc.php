@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: fixhtml.inc.php,v 1.123 2007-01-24 21:52:24 decoyduck Exp $ */
+/* $Id: fixhtml.inc.php,v 1.124 2007-01-25 09:46:32 decoyduck Exp $ */
 
 /** A range of functions for filtering/cleaning posted HTML
 *
@@ -717,7 +717,7 @@ function fix_html ($html, $emoticons = true, $links = true, $bad_tags = array("p
 function clean_attributes ($tag)
 {
     $valid = array();
-    $valid["_global"] = array("style", "align", "title");
+    $valid["_global"] = array("style", "align", "class", "id", "title", "dir", "lang", "accesskey", "tabindex");
 
     $valid["a"] = array("href", "title");
     $valid["hr"] = array("size", "width", "noshade");
@@ -749,6 +749,9 @@ function clean_attributes ($tag)
     $valid["il"] = $valid["ul"];
 
     $valid["embed"] = array("src", "type", "pluginspage", "pluginurl", "border", "frameborder", "height", "width", "units", "hidden", "hspace", "vspace", "name", "palette", "wmode", "menu", "bgcolor");
+
+    //$valid["object"] = array("archive", "classid", "codebase", "codetype", "data", "declare", "height", "width", "name", "standby", "type", "usemap");
+    //$valid["param"] = array("name", "id", "value", "valuetype", "type");
 
     $valid["marquee"] = array("direction", "behavior", "loop", "scrollamount", "scrolldelay", "height", "width", "hspace", "vspace");
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: threads.inc.php,v 1.247 2007-01-25 00:45:50 decoyduck Exp $ */
+/* $Id: threads.inc.php,v 1.248 2007-01-25 18:01:04 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1803,10 +1803,10 @@ function thread_auto_prune_unread_data($force_start = false)
 
     if (($unread_cutoff_stamp = forum_get_unread_cutoff()) === false) return false;
 
-    $unread_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 50));
+    $unread_rem_prob = intval(forum_get_setting('forum_self_clean_prob', false, 500));
 
     if ($unread_rem_prob < 1) $unread_rem_prob = 1;
-    if ($unread_rem_prob > 100) $unread_rem_prob = 100;
+    if ($unread_rem_prob > 1000) $unread_rem_prob = 1000;
 
     if ((($mt_result = mt_rand(1, $unread_rem_prob)) == 1) || $force_start === true) {
 
@@ -1818,6 +1818,7 @@ function thread_auto_prune_unread_data($force_start = false)
             $sql.= "LEFT JOIN {$table_data['PREFIX']}POST ";
             $sql.= "ON ({$table_data['PREFIX']}POST.TID = {$table_data['PREFIX']}THREAD.TID ";
             $sql.= "AND {$table_data['PREFIX']}POST.CREATED < FROM_UNIXTIME($unread_cutoff_stamp)) ";
+            $sql.= "WHERE {$table_data['PREFIX']}THREAD.MODIFIED < FROM_UNIXTIME($unread_cutoff_stamp) ";
             $sql.= "GROUP BY {$table_data['PREFIX']}THREAD.TID ON DUPLICATE KEY ";
             $sql.= "UPDATE UNREAD_PID = VALUES(UNREAD_PID), ";
             $sql.= "UNREAD_CREATED = VALUES(UNREAD_CREATED)";

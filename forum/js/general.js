@@ -292,6 +292,7 @@ function resizeImages(maxWidth, resizeText)
             // Resize the original image.
 
             img_tags[i].style.width = Math.round(maxWidth * 0.9) + 'px';
+            img_tags[i].resized_width = Math.round(maxWidth * 0.9);
 
             // Get the original image's parent element.
 
@@ -345,13 +346,13 @@ function toggleImageWidth(img_id)
 
     var img_obj = document.getElementById(img_id);
 
-    if (img_obj.width < img_obj.original_width) {
+    if (img_obj.width != img_obj.original_width) {
         
         img_obj.style.width = img_obj.original_width + 'px';
 
     }else {
     
-        img_obj.style.width = Math.round(body_tag.clientWidth * 0.9) + 'px';
+        img_obj.style.width = img_obj.resized_width + 'px';
     }
 
     return false;

@@ -1085,7 +1085,6 @@ a {
 
 .image_resize_text {
     border: 1px dashed #000000;
-    border-left: 0px;
     height: 30px;
     background-image: url('../../images/warningbg.png');
     font-size: 8pt;
@@ -1097,14 +1096,5 @@ a {
 }
 
 .image_resize_icon {
-    border: 1px dashed #000000;
-    border-right: 0px;
-    background-image: url('../../images/warningbg.png');
-    cursor: pointer;
-    width: 25px;
-    text-align: center;
-}
-
-.image_resize_icon img {
-    vertical-align: middle;
+    padding: 5px;
 }

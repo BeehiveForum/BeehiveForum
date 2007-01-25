@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.18 2007-01-24 18:02:14 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.19 2007-01-25 22:12:07 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -197,7 +197,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // New User preference for mouseover spoiler reveal
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
-    $sql.= "USE_MOVER_SPOILER CHAR(1) NULL DEFAULT 'N'";
+    $sql.= "USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -206,7 +206,27 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     }
 
     $sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER ";
-    $sql.= "CHAR(1) NULL DEFAULT 'N'";
+    $sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // New User preference for image resize and page reflow.
+
+    $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
+    $sql.= "USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE USER_PREFS ADD USE_OVERFLOW_RESIZE ";
+    $sql.= "CHAR(1) NOT NULL DEFAULT 'Y'";
 
     if (!$result = @db_query($sql, $db_install)) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.203 2007-01-24 21:52:24 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.204 2007-01-25 22:12:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -495,11 +495,17 @@ function html_draw_top()
             $frameset_dtd = substr($func_args, 7);
             unset($arg_array[$key]);
         }
+
+        if (preg_match("/^resize_width=/i", $func_args) > 0) {
+            $resize_width = substr($func_args, 13);
+            unset($arg_array[$key]);
+        }
     }
 
     if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
     if (!isset($body_class)) $body_class = false;
     if (!isset($base_target)) $base_target = false;
+    if (!isset($resize_width)) $resize_width = 0;
 
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();
@@ -617,6 +623,13 @@ function html_draw_top()
                 if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
             }
 
+            if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
+
+                $imageresized_text = rawurlencode($lang['imageresized']);
+
+                $onload_array[] = "resizeImages($resize_width, '$imageresized_text')";
+                $onload_array[] = "addOverflow()";
+            }
         }
         
         if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {

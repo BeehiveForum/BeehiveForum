@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.97 2007-01-11 20:05:32 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.98 2007-01-25 22:12:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -347,6 +347,18 @@ if (isset($_POST['submit'])) {
         $user_prefs_global['USE_MOVER_SPOILER'] = false;
     }
 
+    if (isset($_POST['use_overflow_resize']) && $_POST['use_overflow_resize'] == "Y") {
+        $user_prefs['USE_OVERFLOW_RESIZE'] = "Y";
+    }else {
+        $user_prefs['USE_OVERFLOW_RESIZE'] = "N";
+    }
+
+    if (isset($_POST['use_overflow_resize_global'])) {
+        $user_prefs_global['USE_OVERFLOW_RESIZE'] = ($_POST['use_overflow_resize_global'] == "Y") ? true : false;
+    }else {
+        $user_prefs_global['USE_OVERFLOW_RESIZE'] = false;
+    }
+
     if (isset($_POST['enable_wiki_words']) && $_POST['enable_wiki_words'] == "Y") {
         $user_prefs['ENABLE_WIKI_WORDS'] = "Y";
     }else {
@@ -664,6 +676,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "&nbsp;<span class=\"smalltext\">[<a href=\"edit_wordfilter.php?webtag=$webtag\">{$lang['editwordfilter']}</a>]</span></td>\n";
 echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("use_word_filter_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_WORD_FILTER_GLOBAL']) ? $user_prefs['USE_WORD_FILTER_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_overflow_resize", "Y", $lang['resizeimagesandreflowpage'], (isset($user_prefs['USE_OVERFLOW_RESIZE']) && $user_prefs['USE_OVERFLOW_RESIZE'] == "Y")), "</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("use_overflow_resize_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_OVERFLOW_RESIZE_GLOBAL']) ? $user_prefs['USE_OVERFLOW_RESIZE_GLOBAL'] : false)), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

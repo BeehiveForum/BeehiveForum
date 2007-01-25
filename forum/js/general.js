@@ -216,6 +216,8 @@ function resizeImages(maxWidth, resizeText)
 
     if (!is_defined(resizeText)) {
         resizeText = 'This image has been resized (original size %1$sx%2$s). To view the full-size image click here.';
+    }else {
+        resizeText = unescape(resizeText);
     }
 
     for (var i = 0; i < img_count; i++)  {

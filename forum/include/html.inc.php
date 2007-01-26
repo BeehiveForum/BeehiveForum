@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.205 2007-01-26 21:26:27 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.206 2007-01-26 21:40:59 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -505,7 +505,7 @@ function html_draw_top()
     if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
     if (!isset($body_class)) $body_class = false;
     if (!isset($base_target)) $base_target = false;
-    if (!isset($resize_width)) $resize_width = false;
+    if (!isset($resize_width)) $resize_width = 0;
 
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();
@@ -623,12 +623,20 @@ function html_draw_top()
                 if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
             }
 
-            if ((bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') && $resize_width !== false) {
+            $resize_images_page = array('admin_post_approve.php', 'create_poll.php',
+                                        'delete.php', 'display.php', 'edit.php',
+                                        'edit_poll.php', 'edit_signature.php',
+                                        'messages.php', 'post.php');
+            
+            if (in_array(basename($_SERVER['PHP_SELF']), $resize_images_page)) {
 
-                $imageresized_text = rawurlencode($lang['imageresized']);
+                if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
-                $onload_array[] = "resizeImages($resize_width, '$imageresized_text')";
-                $onload_array[] = "addOverflow()";
+                    $imageresized_text = rawurlencode($lang['imageresized']);
+
+                    $onload_array[] = "resizeImages($resize_width, '$imageresized_text')";
+                    $onload_array[] = "addOverflow()";
+                }
             }
         }
         

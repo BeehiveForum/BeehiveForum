@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.204 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.205 2007-01-26 21:26:27 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -505,7 +505,7 @@ function html_draw_top()
     if (!isset($title)) $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
     if (!isset($body_class)) $body_class = false;
     if (!isset($base_target)) $base_target = false;
-    if (!isset($resize_width)) $resize_width = 0;
+    if (!isset($resize_width)) $resize_width = false;
 
     $forum_keywords = html_get_forum_keywords();
     $forum_description = html_get_forum_description();
@@ -623,7 +623,7 @@ function html_draw_top()
                 if (!in_array("pm_notification", $onload_array)) $onload_array[] = "pm_notification()";
             }
 
-            if (bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
+            if ((bh_session_get_value('USE_OVERFLOW_RESIZE') == 'Y') && $resize_width !== false) {
 
                 $imageresized_text = rawurlencode($lang['imageresized']);
 

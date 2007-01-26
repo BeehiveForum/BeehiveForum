@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.136 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: register.php,v 1.137 2007-01-26 21:52:32 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -459,6 +459,8 @@ if (isset($_POST['submit'])) {
 
             if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
                 $username_array = $_COOKIE['bh_remember_username'];
+            }elseif (isset($_COOKIE['bh_remember_username']) && strlen($_COOKIE['bh_remember_username']) > 0) {
+                $username_array = explode(",", $_COOKIE['bh_remember_username']);
             }else {
                 $username_array = array();
             }
@@ -467,6 +469,8 @@ if (isset($_POST['submit'])) {
 
             if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
                 $password_array = $_COOKIE['bh_remember_password'];
+            }elseif (isset($_COOKIE['bh_remember_password']) && strlen($_COOKIE['bh_remember_password']) > 0) {
+                $password_array = explode(",", $_COOKIE['bh_remember_password']);
             }else {
                 $password_array = array();
             }
@@ -475,6 +479,8 @@ if (isset($_POST['submit'])) {
 
             if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
                 $passhash_array = $_COOKIE['bh_remember_passhash'];
+            }elseif (isset($_COOKIE['bh_remember_passhash']) && strlen($_COOKIE['bh_remember_passhash']) > 0) {
+                $passhash_array = explode(",", $_COOKIE['bh_remember_passhash']);
             }else {
                 $passhash_array = array();
             }
@@ -482,7 +488,7 @@ if (isset($_POST['submit'])) {
             // Prepare Form Data
 
             $passw = str_repeat(chr(32), strlen($new_user['PW']));
-            $passh = md5(_stripslashes($new_user['PW']));
+            $passh = md5($new_user['PW']);
 
             if (($key = _array_search($new_user['LOGON'], $username_array)) !== false) {
 
@@ -504,23 +510,26 @@ if (isset($_POST['submit'])) {
                 array_unshift($passhash_array, "");
             }
 
-            // set / update the username and password cookies
+            // Remove old 0.7.1 and older cookies
 
             for ($i = 0; $i < sizeof($username_array); $i++) {
 
-                bh_setcookie("bh_remember_username[$i]", $username_array[$i], time() + YEAR_IN_SECONDS);
-
-                if (isset($password_array[$i]) && isset($passhash_array[$i])) {
-
-                    bh_setcookie("bh_remember_password[$i]", $password_array[$i], time() + YEAR_IN_SECONDS);
-                    bh_setcookie("bh_remember_passhash[$i]", $passhash_array[$i], time() + YEAR_IN_SECONDS);
-
-                }else {
-
-                    bh_setcookie("bh_remember_password[$i]", "", time() + YEAR_IN_SECONDS);
-                    bh_setcookie("bh_remember_passhash[$i]", "", time() + YEAR_IN_SECONDS);
-                }
+                bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
             }
+
+            // New format cookies for 0.7.2 for better compatibility with more browsers.
+
+            $username_cookie = implode(",", $username_array);
+            $password_cookie = implode(",", $password_array);
+            $passhash_cookie = implode(",", $passhash_array);
+
+            // Set the cookies.
+
+            bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
 
             html_draw_top();
 

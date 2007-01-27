@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.102 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.103 2007-01-27 21:00:13 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -187,16 +187,102 @@ if (@!is_dir('attachments')) {
     chmod('attachments', 0777);
 }
 
-if (isset($_POST['delete'])) {
+if (isset($_POST['delete_confirm'])) {
     
-    if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
-
-        foreach($_POST['delete_attachment'] as $hash => $del_attachment) {
+    if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
+        
+        foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
             if ($del_attachment == "Y") {
     
                 delete_attachment($hash);
             }
+        }
+    }
+
+}elseif (isset($_POST['delete'])) {
+
+    if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
+
+        $hash_array = array_keys($_POST['delete_attachment']);
+
+        if (get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
+            
+            html_draw_top();
+
+            echo "<h1>{$lang['deleteattachments']}</h1>\n";
+            echo "<br />\n";
+            echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
+            echo "  ", form_input_hidden('webtag', $webtag), "\n";
+            echo "  ". form_input_hidden('aid', $aid), "\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"left\" class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteattachments']}</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">{$lang['deleteattachmentsconfirm']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"center\">\n";
+            echo "                          <table class=\"posthead\" width=\"95%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td><br />\n";
+
+            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+                
+                foreach($attachments_array as $attachment) {
+
+                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                }
+            }
+
+            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+                foreach($image_attachments_array as $key => $attachment) {
+
+                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                }
+            }
+
+            echo "                              </td>\n";
+            echo "                            </tr>\n";
+            echo "                          </table>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">&nbsp;</td>\n";
+            echo "    </tr>\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"center\">", form_submit("delete_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+            echo "</form>\n";
+
+            html_draw_bottom();
+            exit;
         }
     }
 

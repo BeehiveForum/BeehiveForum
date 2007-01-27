@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.97 2007-01-23 01:05:54 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.98 2007-01-27 15:43:46 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -759,9 +759,9 @@ function admin_forum_get_post_count($fid)
 
     if (!is_numeric($fid)) return false;
 
-    if ($forum_webtag = forum_get_webtag($fid)) {
+    if ($table_data = get_table_prefix($fid)) {
 
-        $sql = "SELECT COUNT(PID) FROM {$forum_webtag}_POST";
+        $sql = "SELECT COUNT(PID) FROM {$table_data['PREFIX']}POST";
         $result = db_query($sql, $db_admin_forum_get_post_count);
 
         list($post_count) = db_fetch_array($result, DB_RESULT_NUM);

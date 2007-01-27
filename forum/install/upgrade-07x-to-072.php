@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.19 2007-01-25 22:12:07 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.20 2007-01-27 15:43:46 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -205,48 +205,10 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    $sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER ";
-    $sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
     // New User preference for image resize and page reflow.
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD ";
     $sql.= "USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    $sql = "ALTER TABLE USER_PREFS ADD USE_OVERFLOW_RESIZE ";
-    $sql.= "CHAR(1) NOT NULL DEFAULT 'Y'";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Referer tracking for visitors.
-
-    $sql = "ALTER TABLE VISITOR_LOG ADD REFERER VARCHAR(255) DEFAULT NULL";
-    
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // IP Address tracking for Visitor Log
-
-    $sql = " ALTER TABLE VISITOR_LOG ADD IPADDRESS VARCHAR(15) DEFAULT NULL";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -330,75 +292,6 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         return;
     }
 
-    // Reindex POST_ATTACHMENT_IDS table to make queries quicker
-
-    install_remove_table_keys("POST_ATTACHMENT_IDS");
-
-    $sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX (AID)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Reindex PM_ATTACHMENT_IDS table to make queries quicker
-
-    install_remove_table_keys("PM_ATTACHMENT_IDS");
-
-    $sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX (AID)";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Moved the LAST_LOGON from VISITOR_LOG to LAST_VISIT in USER_FORUM
-    // so that clearing the visitor log doesn't clear out the user's last
-    // visited forums.
-
-    $sql = "ALTER TABLE USER_FORUM ADD LAST_VISIT DATETIME NULL";
-
-    if (!$result = @db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-
-    // Move the existing data across to the new column.
-
-    $sql = "SELECT UID, LAST_LOGON FROM VISITOR_LOG WHERE UID > 0";
-
-    if ($result = @db_query($sql, $db_install)) {
-
-        while (list($uid, $last_logon) = db_fetch_array($result, DB_RESULT_NUM)) {
-
-            $sql = "UPDATE USER_FORUM SET LAST_VISIT = '$last_logon' ";
-            $sql.= "WHERE UID = '$uid'";
-
-            if ($result_update = @db_query($sql, $db_install)) {
-
-                if (db_affected_rows($db_install) < 1) {
-
-                    $sql = "INSERT IGNORE INTO USER_FORUM (UID, LAST_VISIT) ";
-                    $sql.= "VALUES ('$uid', '$last_logon')";
-
-                    if (!$result_insert = @db_query($sql, $db_install)) {
-
-                        $valid = false;
-                        return;
-                    }
-                }
-            }
-        }
-
-    }else {
-
-        $valid = false;
-        return;
-    }
-
     // The Forum Links dropdown caption (top link) has moved 
     // to the FORUM_SETTINGS table to allow for improved
     // functionality to the Admin section.
@@ -450,57 +343,205 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
+}
 
-    // Indexes on USER.LOGON and USER.NICKNAME for searches.
+// If we got this far we managed to complete the per-forum table
+// upgrades without incident so we can now do the global tables.
 
-    install_remove_table_keys("USER");
 
-    $sql = "ALTER TABLE USER ADD INDEX LOGON";
+// As of Beehive Forum 0.7.2 you can keep your per-forum tables
+// and global tables in seperate databases. In order to track
+// the database names for each forum we need to store that in
+// FORUMS table.
 
-    if (!$result = @db_query($sql, $db_install)) {
+$sql = "ALTER TABLE FORUMS ADD DATABASE_NAME VARCHAR(255) NOT NULL";
 
-        $valid = false;
-        return;
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Set all the current forums to use the database name defined
+// in the config.inc.php / install form for this installation.
+
+$sql = "UPDATE FORUMS SET DATABASE_NAME = '$db_database'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New User preference for mouseover spoiler reveal
+
+$sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER ";
+$sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New User preference for image resize and page reflow.
+
+$sql = "ALTER TABLE USER_PREFS ADD USE_OVERFLOW_RESIZE ";
+$sql.= "CHAR(1) NOT NULL DEFAULT 'Y'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Referer tracking for visitors.
+
+$sql = "ALTER TABLE VISITOR_LOG ADD REFERER VARCHAR(255) DEFAULT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// IP Address tracking for Visitor Log
+
+$sql = " ALTER TABLE VISITOR_LOG ADD IPADDRESS VARCHAR(15) DEFAULT NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Reindex POST_ATTACHMENT_IDS table to make queries quicker
+
+install_remove_table_keys("POST_ATTACHMENT_IDS");
+
+$sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX (AID)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Reindex PM_ATTACHMENT_IDS table to make queries quicker
+
+install_remove_table_keys("PM_ATTACHMENT_IDS");
+
+$sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX (AID)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Moved the LAST_LOGON from VISITOR_LOG to LAST_VISIT in USER_FORUM
+// so that clearing the visitor log doesn't clear out the user's last
+// visited forums.
+
+$sql = "ALTER TABLE USER_FORUM ADD LAST_VISIT DATETIME NULL";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Move the existing data across to the new column.
+
+$sql = "SELECT UID, LAST_LOGON FROM VISITOR_LOG WHERE UID > 0";
+
+if ($result = @db_query($sql, $db_install)) {
+
+    while (list($uid, $last_logon) = db_fetch_array($result, DB_RESULT_NUM)) {
+
+        $sql = "UPDATE USER_FORUM SET LAST_VISIT = '$last_logon' ";
+        $sql.= "WHERE UID = '$uid'";
+
+        if ($result_update = @db_query($sql, $db_install)) {
+
+            if (db_affected_rows($db_install) < 1) {
+
+                $sql = "INSERT IGNORE INTO USER_FORUM (UID, LAST_VISIT) ";
+                $sql.= "VALUES ('$uid', '$last_logon')";
+
+                if (!$result_insert = @db_query($sql, $db_install)) {
+
+                    $valid = false;
+                    return;
+                }
+            }
+        }
     }
 
-    $sql = "ALTER TABLE USER ADD INDEX NICKNAME";
+}else {
 
-    if (!$result = @db_query($sql, $db_install)) {
+    $valid = false;
+    return;
+}
 
-        $valid = false;
-        return;
-    }
+// Indexes on USER.LOGON and USER.NICKNAME for searches.
 
-    // Indexes on SEB.NAME and SEB.AGENT_MATCH for searches.
+install_remove_table_keys("USER");
 
-    install_remove_table_keys("SEARCH_ENGINE_BOTS");
+$sql = "ALTER TABLE USER ADD INDEX LOGON";
 
-    $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (NAME)";
+if (!$result = @db_query($sql, $db_install)) {
 
-    if (!$result = @db_query($sql, $db_install)) {
+    $valid = false;
+    return;
+}
 
-        $valid = false;
-        return;
-    }
+$sql = "ALTER TABLE USER ADD INDEX NICKNAME";
 
-    $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (AGENT_MATCH)";
+if (!$result = @db_query($sql, $db_install)) {
 
-    if (!$result = @db_query($sql, $db_install)) {
+    $valid = false;
+    return;
+}
 
-        $valid = false;
-        return;
-    }
+// Indexes on SEB.NAME and SEB.AGENT_MATCH for searches.
 
-    // New column to allow sorting results by thread length.
+install_remove_table_keys("SEARCH_ENGINE_BOTS");
 
-    $sql = "ALTER TABLE SEARCH_RESULTS ADD LENGTH MEDIUMINT(8) ";
-    $sql.= "UNSIGNED NOT NULL AFTER CREATED";
+$sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (NAME)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+if (!$result = @db_query($sql, $db_install)) {
 
-        $valid = false;
-        return;
-    }
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (AGENT_MATCH)";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New column to allow sorting results by thread length.
+
+$sql = "ALTER TABLE SEARCH_RESULTS ADD LENGTH MEDIUMINT(8) ";
+$sql.= "UNSIGNED NOT NULL AFTER CREATED";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER ";
+$sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
 ?>

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.291 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.292 2007-01-27 15:43:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -627,11 +627,11 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         if (sizeof($values_array) > 0) {
 
             $values  = implode(", ", $values_array);
-            $webtags = forum_get_all_webtags();
+            $forum_prefix_array = forum_get_all_prefixes();
 
-            foreach($webtags as $webtag) {
+            foreach($forum_prefix_array as $forum_prefix) {
 
-                $sql = "UPDATE {$webtag}_USER_PREFS SET $values WHERE UID = $uid";
+                $sql = "UPDATE {$forum_prefix}_USER_PREFS SET $values WHERE UID = $uid";
                 $result = db_query($sql, $db_user_update_prefs);
             }
         }

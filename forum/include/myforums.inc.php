@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: myforums.inc.php,v 1.60 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: myforums.inc.php,v 1.61 2007-01-27 15:43:46 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -48,7 +48,8 @@ function get_forum_list()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
+    $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+    $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
     $sql.= "AND USER_FORUM.UID = $uid) WHERE FORUMS.ACCESS_LEVEL > -1 ";
     $sql.= "ORDER BY FORUMS.FID";
@@ -75,7 +76,7 @@ function get_forum_list()
 
             // Get number of messages on forum
 
-            $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$forum_data['WEBTAG']}_POST POST ";
+            $sql = "SELECT COUNT(PID) AS POST_COUNT FROM {$forum_data['PREFIX']}POST POST ";
             $result_post_count = db_query($sql, $db_get_forum_list);
 
             $row = db_fetch_array($result_post_count);
@@ -107,7 +108,8 @@ function get_my_forums()
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    $sql = "SELECT FORUMS.*, USER_FORUM.INTEREST FROM FORUMS FORUMS ";
+    $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, ";
+    $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
     $sql.= "AND USER_FORUM.UID = $uid) WHERE FORUMS.ACCESS_LEVEL > -1 ";
     $sql.= "ORDER BY FORUMS.FID";
@@ -150,8 +152,8 @@ function get_my_forums()
             if ($unread_cutoff_stamp = forum_get_unread_cutoff()) {
 
                 $sql = "SELECT SUM(THREAD.LENGTH) - SUM(USER_THREAD.LAST_READ) ";
-                $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
-                $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_USER_THREAD USER_THREAD ";
+                $sql.= "AS UNREAD_MESSAGES FROM {$forum_data['PREFIX']}THREAD THREAD ";
+                $sql.= "LEFT JOIN {$forum_data['PREFIX']}USER_THREAD USER_THREAD ";
                 $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
                 $sql.= "WHERE THREAD.FID IN ($folders) ";
                 $sql.= "AND THREAD.MODIFIED > FROM_UNIXTIME('$unread_cutoff_stamp')";
@@ -174,7 +176,7 @@ function get_my_forums()
             // Total number of messages
 
             $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES ";
-            $sql.= "FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
+            $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
             $sql.= "WHERE THREAD.FID IN ($folders) ";
 
             $result_messages_count = db_query($sql, $db_get_my_forums);
@@ -190,8 +192,8 @@ function get_my_forums()
             // Get unread to me message count
 
             $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
-            $sql.= "FROM {$forum_data['WEBTAG']}_THREAD THREAD ";
-            $sql.= "LEFT JOIN {$forum_data['WEBTAG']}_POST POST ";
+            $sql.= "FROM {$forum_data['PREFIX']}THREAD THREAD ";
+            $sql.= "LEFT JOIN {$forum_data['PREFIX']}POST POST ";
             $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
             $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 

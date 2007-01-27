@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.54 2007-01-06 18:41:11 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.55 2007-01-27 15:43:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -240,6 +240,22 @@ if (isset($_POST['delete'])) {
         $valid = false;
     }
 
+    if (isset($_POST['t_database']) && strlen(trim(_stripslashes($_POST['t_database']))) > 0) {
+        
+        $t_database = $_POST['t_database'];
+
+        if (!preg_match("/^[A-Z0-9_]+$/i", $t_database)) {
+
+            $error_html.= "<h2>{$lang['databasenameinvalidchars']}</h2>\n";
+            $valid = false;
+        }
+
+    }else {
+
+        $error_html.= "<h2>{$lang['mustsupplyforumdatabasename']}</h2>\n";
+        $valid = false;
+    }
+
     if (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) {
         $t_access = $_POST['t_access'];
     }else {
@@ -255,7 +271,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if ($new_fid = forum_create($t_webtag, $t_name, $t_access)) {
+        if ($new_fid = forum_create($t_webtag, $t_name, $t_database, $t_access)) {
 
             if ($t_default == 1) forum_update_default($new_fid);
             $add_success.= sprintf("<h2>{$lang['successfullycreatedforum']}</h2>", $t_webtag);
@@ -312,6 +328,7 @@ if (isset($_POST['delete'])) {
                 }
 
                 $edit_success = sprintf("<h2>{$lang['successfullyupdatedforum']}</h2>", $forum_data['WEBTAG']);
+                
                 unset($_POST['fid'], $_GET['fid']);
 
             }else {
@@ -383,6 +400,17 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['forumname']}:</td>\n";
     echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? _htmlentities(_stripslashes($_POST['t_name'])) : ""), 40, 255), "</td>\n";
     echo "                      </tr>\n";
+
+    if ($available_databases = forums_get_available_dbs()) {
+
+        array_unshift($available_databases, "");
+        
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['usedatabase']}:</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("t_database", $available_databases, $available_databases, (isset($_POST['t_database']) ? _stripslashes($_POST['t_database']) : (isset($forum_data['DATABASE_NAME']) ? $forum_data['DATABASE_NAME'] : ""))), form_input_hidden("t_database_old", (isset($forum_data['DATABASE_NAME']) ? $forum_data['DATABASE_NAME'] : "")), "</td>\n";
+        echo "                      </tr>\n";
+    }
+
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">{$lang['accesslevel']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("t_access", array('', -1, 0, 1, 2), array('', $lang['closed'], $lang['open'], $lang['restricted'], $lang['passwordprotected']), (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) ? $_POST['t_access'] : ''), "</td>\n";
@@ -548,7 +576,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("t_delete[{$forum_data['FID']}]", "Y", false), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_forums.php?webtag=$webtag&amp;fid={$forum_data['FID']}&amp;page=$page\" title=\"{$lang['editforum']}\">{$forum_data['WEBTAG']}</a></td>\n";
-            echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}\" title=\"", sprintf($lang['visitforum'], $forum_data['FORUM_NAME']), "\">{$forum_data['FORUM_NAME']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}\" title=\"", sprintf($lang['visitforum'], $forum_data['FORUM_NAME']), "\" target=\"_blank\">{$forum_data['FORUM_NAME']}</a></td>\n";
 
             if (isset($forum_data['MESSAGES'])) {
                 echo "                  <td align=\"left\">{$forum_data['MESSAGES']} {$lang['messages']}</td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.393 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.394 2007-01-27 15:43:46 decoyduck Exp $ */
 
 // International English language file
 
@@ -623,6 +623,7 @@ $lang['clearlog'] = "Clear Log";
 
 $lang['noexistingforums'] = "No existing forums found. To create a new forum please click the button below.";
 $lang['webtaginvalidchars'] = "Webtag can only contain uppercase A-Z, 0-9 and underscore characters";
+$lang['databasenameinvalidchars'] = "Database name can only contain a-z, A-Z, 0-9 and underscore characters";
 $lang['invalidforumidorforumnotfound'] = "Invalid forum FID for forum not found";
 $lang['successfullyupdatedforum'] = "Successfully updated forum: '%s'";
 $lang['failedtoupdateforum'] = "Failed to update forum: '%s'";
@@ -636,6 +637,7 @@ $lang['addforum'] = "Add Forum";
 $lang['editforum'] = "Edit Forum";
 $lang['visitforum'] = "Visit Forum: %s";
 $lang['accesslevel'] = "Access level";
+$lang['usedatabase'] = "Use Database";
 $lang['unknownmessagecount'] = "Unknown";
 $lang['forumwebtag'] = "Forum Webtag";
 $lang['defaultforum'] = "Default Forum";
@@ -652,6 +654,7 @@ $lang['mustsupplyforumemail'] = "You must supply a forum email address";
 $lang['mustchoosedefaultstyle'] = "You must choose a default forum style";
 $lang['mustchoosedefaultemoticons'] = "You must choose default forum emoticons";
 $lang['mustsupplyforumaccesslevel'] = "You must supply a forum access level";
+$lang['mustsupplyforumdatabasename'] = "You must supply a forum database name";
 $lang['unknownemoticonsname'] = "Unknown emoticons name";
 $lang['mustchoosedefaultlang'] = "You must choose a default forum language";
 $lang['activesessiongreaterthansession'] = "Active session timeout cannot be greater than session timeout";

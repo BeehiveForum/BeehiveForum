@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.67 2007-01-20 16:56:22 decoyduck Exp $ */
+/* $Id: install.php,v 1.68 2007-01-27 15:43:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -93,8 +93,17 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
     }
 
     if (isset($_POST['db_database']) && strlen(trim(_stripslashes($_POST['db_database']))) > 0) {
+
         $db_database = trim(_stripslashes($_POST['db_database']));
+
+        if (!preg_match("/^[A-Z0-9_]+$/i", $db_database)) {
+
+            $error_array[] = "The database name can only conatin a-z, A-Z, 0-9 and underscore.\n";
+            $valid = false;
+        }
+
     }else {
+
         $error_array[] = "You must supply the name of your MySQL database.\n";
         $valid = false;
     }

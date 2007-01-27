@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forums.php,v 1.55 2007-01-27 15:43:46 decoyduck Exp $ */
+/* $Id: admin_forums.php,v 1.56 2007-01-27 21:32:50 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -444,6 +444,19 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  </form>\n";
+    echo "  <br />\n";
+    echo "  <table width=\"500\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">\n";
+    echo "        <table class=\"text_captcha_error\" width=\"95%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" width=\"16\" height=\"16\" alt=\"warning\" /></td>\n";
+    echo "            <td align=\"left\">{$lang['forumdatabasewarning']}</td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 
 }elseif (isset($_POST['fid']) || isset($_GET['fid'])) {
 

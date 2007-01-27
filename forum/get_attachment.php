@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: get_attachment.php,v 1.20 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: get_attachment.php,v 1.21 2007-01-27 20:43:19 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -124,6 +124,8 @@ if (!$attachment_dir = attachments_check_dir()) {
 // file directly however this doesn't work with all webservers
 // hence the option to disable it.
 
+$redirect_error_message = false;
+
 if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
 
     $hash = $_GET['hash'];
@@ -139,106 +141,114 @@ if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
     if (strstr($_SERVER['PHP_SELF'], 'get_attachment.php')) {
 
         if (preg_match("/\/get_attachment.php\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data) > 0) {
+            
             $hash = $attachment_data[1];
+            $redirect_error_message = true;
         }
 
     }else {
 
         if (preg_match("/\/([A-Fa-f0-9]{32})\/(.*)$/", $_SERVER['PHP_SELF'], $attachment_data) > 0) {
+            
             $hash = $attachment_data[1];
+            $redirect_error_message = true;
         }
     }
 }
 
 if (isset($hash) && is_md5($hash)) {
 
-    if (user_is_guest() && !forum_get_setting('attachment_allow_guests', 'Y')) {
+    if (!user_is_guest() || forum_get_setting('attachment_allow_guests', 'Y')) {
 
-        $forum_path = preg_replace("/\/get_attachment.php\/[a-f0-9]{32}/i", "", html_get_forum_uri());
-        $redirect_uri = "$forum_path/get_attachment.php?webtag=$webtag&hash=$hash";
-        header_redirect($redirect_uri);
-        exit;
-    }
+        if ($attachment_details = get_attachment_by_hash($hash)) {
 
-    if ($attachment_details = get_attachment_by_hash($hash)) {
+            // If we're requesting the thumbnail then we need to append
+            //.thumb to the filepath. If we're getting the full image we
+            // increase the view count by one.
 
-        // If we're requesting the thumbnail then we need to append
-        //.thumb to the filepath. If we're getting the full image we
-        // increase the view count by one.
+            if (isset($_GET['thumb']) && $_GET['thumb'] == 1) {
 
-        if (isset($_GET['thumb']) && $_GET['thumb'] == 1) {
+                $filepath = "{$attachment_dir}/{$attachment_details['HASH']}.thumb";
 
-            $filepath = "{$attachment_dir}/{$attachment_details['HASH']}.thumb";
-
-        }else {
-
-            attachment_inc_dload_count($hash);
-            $filepath = "{$attachment_dir}/{$attachment_details['HASH']}";
-        }
-
-        // Use the filename quite a few times, so assign it to a variable to save some time.
-
-        $filename = rawurldecode(basename($attachment_details['FILENAME']));
-
-        if (@file_exists($filepath)) {
-
-            // Filesize for Content-Length header.
-
-            $length = filesize($filepath);
-
-            // Are we viewing or downloading the attachment?
-
-            if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
-                header("Content-Type: application/x-ms-download", true);
             }else {
-                header("Content-Type: ". $attachment_details['MIMETYPE'], true);
+
+                attachment_inc_dload_count($hash);
+                $filepath = "{$attachment_dir}/{$attachment_details['HASH']}";
             }
 
-            // Only do the cache control if we're not running
-            // in PHP CGI Mode. We need to do this check as
-            // we need to modify the HTTP Response header
-            // which is not permitted under PHP CGI Mode.
+            // Use the filename quite a few times, so assign it to a variable to save some time.
 
-            if (!strstr(php_sapi_name(), 'cgi')) {
+            $filename = rawurldecode(basename($attachment_details['FILENAME']));
 
-                // Etag Header for cache control
-                $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
+            if (@file_exists($filepath)) {
 
-                if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-                    $remote_etag = substr(_stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+                // Filesize for Content-Length header.
+
+                $length = filesize($filepath);
+
+                // Are we viewing or downloading the attachment?
+
+                if (isset($_GET['download']) || (isset($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS'))) {
+                    header("Content-Type: application/x-ms-download", true);
                 }else {
-                    $remote_etag = false;
+                    header("Content-Type: ". $attachment_details['MIMETYPE'], true);
                 }
 
-                // Last Modified Header for cache control
-                $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
+                // Only do the cache control if we're not running
+                // in PHP CGI Mode. We need to do this check as
+                // we need to modify the HTTP Response header
+                // which is not permitted under PHP CGI Mode.
 
-                if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-                    $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-                }else {
-                    $remote_last_modified = false;
+                if (!strstr(php_sapi_name(), 'cgi')) {
+
+                    // Etag Header for cache control
+                    $local_etag  = md5(gmdate("D, d M Y H:i:s", filemtime($filepath)). " GMT");
+
+                    if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+                        $remote_etag = substr(_stripslashes($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+                    }else {
+                        $remote_etag = false;
+                    }
+
+                    // Last Modified Header for cache control
+                    $local_last_modified  = gmdate("D, d M Y H:i:s", filemtime($filepath)). "GMT";
+
+                    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+                        $remote_last_modified = _stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+                    }else {
+                        $remote_last_modified = false;
+                    }
+
+                    if (strcmp($remote_etag, $local_etag) == "0" || strcmp($remote_last_modified, $local_last_modified) == "0") {
+                        header("HTTP/1.1 304 Not Modified");
+                        exit;
+                    }
+
+                    header("Last-Modified: $local_last_modified", true);
+                    header("Etag: \"$local_etag\"", true);
                 }
 
-                if (strcmp($remote_etag, $local_etag) == "0" || strcmp($remote_last_modified, $local_last_modified) == "0") {
-                    header("HTTP/1.1 304 Not Modified");
-                    exit;
-                }
-
-                header("Last-Modified: $local_last_modified", true);
-                header("Etag: \"$local_etag\"", true);
+                header("Content-Length: $length", true);
+                header("Content-disposition: inline; filename=\"$filename\"", true);
+                readfile($filepath);
+                exit;
             }
-
-            header("Content-Length: $length", true);
-            header("Content-disposition: inline; filename=\"$filename\"", true);
-            readfile($filepath);
-            exit;
         }
     }
 }
 
-html_draw_top();
-echo "<h1>{$lang['error']}</h1>\n";
-echo "<h2>{$lang['attachmentproblem']}</h2>\n";
-html_draw_bottom();
+if ($redirect_error_message) {
+
+    $forum_path = preg_replace("/\/get_attachment.php\/[a-f0-9]{32}/i", "", html_get_forum_uri());
+    $redirect_uri = "$forum_path/get_attachment.php?webtag=$webtag&hash=$hash";
+    header_redirect($redirect_uri);
+
+}else {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    echo "<h2>{$lang['attachmentproblem']}</h2>\n";
+    html_draw_bottom();
+}
 
 ?>

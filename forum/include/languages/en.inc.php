@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.394 2007-01-27 15:43:46 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.395 2007-01-27 21:32:50 decoyduck Exp $ */
 
 // International English language file
 
@@ -641,6 +641,7 @@ $lang['usedatabase'] = "Use Database";
 $lang['unknownmessagecount'] = "Unknown";
 $lang['forumwebtag'] = "Forum Webtag";
 $lang['defaultforum'] = "Default Forum";
+$lang['forumdatabasewarning'] = "Please ensure you select the correct database when creating a new forum. Once created a new forum cannot be moved between available databases.";
 
 // Admin Global User Permissions
 

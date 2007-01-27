@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.118 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.119 2007-01-27 21:00:17 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -91,7 +91,7 @@ function attachments_check_dir()
 * @param array $user_attachments - By reference array containing image attachments
 */
 
-function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachments, $hash_array = false)
+function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachments, $hash_array = array())
 {
     $user_attachments = array();
     $user_image_attachments = array();
@@ -100,6 +100,7 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 
     if (!is_numeric($uid)) return false;
     if (!is_md5($aid)) return false;
+    if (!is_array($hash_array)) return false;
 
     if (!is_array($hash_array)) $hash_array = false;
 
@@ -109,9 +110,11 @@ function get_attachments($uid, $aid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    if (is_array($hash_array)) {
+    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/", $hash_array);
 
-        $hash_list = implode("', '", preg_grep("/^[A-Fa-f0-9]{32}$/", $hash_array));
+    if (is_array($hash_array) && sizeof($hash_array) > 0) {
+
+        $hash_list = implode("', '", $hash_array);
 
         $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
         $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -255,7 +258,7 @@ function get_all_attachments($uid, $aid, &$user_attachments, &$user_image_attach
 * @param array $user_attachments - By reference array containing image attachments
 */
 
-function get_users_attachments($uid, &$user_attachments, &$user_image_attachments)
+function get_users_attachments($uid, &$user_attachments, &$user_image_attachments, $hash_array = array())
 {
     $user_attachments = array();
     $user_image_attachments = array();
@@ -263,6 +266,7 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
     $db_get_users_attachments = db_connect();
 
     if (!is_numeric($uid)) return false;
+    if (!is_array($hash_array)) return false;
 
     if (!$table_data = get_table_prefix()) return false;
 
@@ -270,11 +274,28 @@ function get_users_attachments($uid, &$user_attachments, &$user_image_attachment
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-    $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-    $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+    $hash_array = preg_grep("/^[A-Fa-f0-9]{32}$/", $hash_array);
+
+    if (is_array($hash_array) && sizeof($hash_array) > 0) {
+
+        $hash_list = implode("', '", $hash_array);
+
+        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
+        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+        $sql.= "WHERE PAF.UID = '$uid' ";
+        $sql.= "AND PAF.HASH IN ('$hash_list') ";
+        $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+
+    }else {
+
+        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
+        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+        $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+    }
 
     $result = db_query($sql, $db_get_users_attachments);
 

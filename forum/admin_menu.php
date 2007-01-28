@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_menu.php,v 1.86 2006-11-27 22:50:51 decoyduck Exp $ */
+/* $Id: admin_menu.php,v 1.87 2007-01-28 01:15:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -73,10 +73,7 @@ if (bh_session_user_banned()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
-}
+$webtag = get_webtag($webtag_search);
 
 // Load language file
 
@@ -91,83 +88,85 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && !bh_session_check_perm(U
     exit;
 }
 
-if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if ($table_data = get_table_prefix()) { 
 
-    echo "<table border=\"0\" width=\"100%\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['admintools']}</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"right\">{$lang['users']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_user_groups.php?webtag=$webtag\" target=\"right\">{$lang['usergroups']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_banned.php?webtag=$webtag\" target=\"right\">{$lang['bancontrols']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_folders.php?webtag=$webtag\" target=\"right\">{$lang['folders']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_rss_feeds.php?webtag=$webtag\" target=\"right\">{$lang['rssfeeds']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_prof_sect.php?webtag=$webtag\" target=\"right\">{$lang['profiles']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['forumsettings']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_startpage.php?webtag=$webtag\" target=\"right\">{$lang['startpage']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_make_style.php?webtag=$webtag\" target=\"right\">{$lang['forumstyle']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_wordfilter.php?webtag=$webtag\" target=\"right\">{$lang['wordfilter']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_stats.php?webtag=$webtag\" target=\"right\">{$lang['postingstats']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forum_links.php?webtag=$webtag\" target=\"right\">{$lang['forumlinks']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag\" target=\"right\">{$lang['viewlog']}</a></td>\n";
-    echo "  </tr>\n";
+    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-    if (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+        echo "<table border=\"0\" width=\"100%\">\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"subhead\">{$lang['admintools']}</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"right\">{$lang['users']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_user_groups.php?webtag=$webtag\" target=\"right\">{$lang['usergroups']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_banned.php?webtag=$webtag\" target=\"right\">{$lang['bancontrols']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_folders.php?webtag=$webtag\" target=\"right\">{$lang['folders']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_rss_feeds.php?webtag=$webtag\" target=\"right\">{$lang['rssfeeds']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_prof_sect.php?webtag=$webtag\" target=\"right\">{$lang['profiles']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forum_settings.php?webtag=$webtag\" target=\"right\">{$lang['forumsettings']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_startpage.php?webtag=$webtag\" target=\"right\">{$lang['startpage']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_make_style.php?webtag=$webtag\" target=\"right\">{$lang['forumstyle']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_wordfilter.php?webtag=$webtag\" target=\"right\">{$lang['wordfilter']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_stats.php?webtag=$webtag\" target=\"right\">{$lang['postingstats']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forum_links.php?webtag=$webtag\" target=\"right\">{$lang['forumlinks']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag\" target=\"right\">{$lang['viewlog']}</a></td>\n";
+        echo "  </tr>\n";
 
+        if (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+
+            echo "  <tr>\n";
+            echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"right\">{$lang['postapprovalqueue']}</a></td>\n";
+            echo "  </tr>\n";
+        }
+
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_visitor_log.php?webtag=$webtag\" target=\"right\">{$lang['visitorlog']}</a></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+
+
+    }elseif (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
+
+        echo "<table border=\"0\" width=\"100%\">\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"subhead\">{$lang['admintools']}</td>\n";
+        echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"right\">{$lang['postapprovalqueue']}</a></td>\n";
         echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
     }
-
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_visitor_log.php?webtag=$webtag\" target=\"right\">{$lang['visitorlog']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-
-
-}elseif (bh_session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
-
-    echo "<table border=\"0\" width=\"100%\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"subhead\">{$lang['admintools']}</td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"right\">{$lang['postapprovalqueue']}</a></td>\n";
-    echo "  </tr>\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
 }
-
 
 if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
@@ -175,6 +174,14 @@ if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"subhead\">{$lang['forummanagement']}</td>\n";
     echo "  </tr>\n";
+
+    if (!$table_data = get_table_prefix()) { 
+
+        echo "  <tr>\n";
+        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"right\">{$lang['users']}</a></td>\n";
+        echo "  </tr>\n";
+    }
+
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", style_image('star.png'), "\" border=\"0\" />&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"right\">{$lang['manageforums']}</a></td>\n";
     echo "  </tr>\n";

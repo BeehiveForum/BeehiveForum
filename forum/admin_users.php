@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.133 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.134 2007-01-28 01:15:14 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -78,10 +78,7 @@ if (bh_session_user_banned()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
-}
+$webtag = get_webtag($webtag_search);
 
 // Load language file
 
@@ -155,8 +152,11 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
     $filter = 0;
 }
 
-// Draw the form
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']}</h1>\n";
+if ($table_data = get_table_prefix()) { 
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']}</h1>\n";
+}else {
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']}</h1>\n";
+}
 
 if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 

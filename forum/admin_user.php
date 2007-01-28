@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.184 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.185 2007-01-28 01:15:14 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -96,10 +96,7 @@ if (bh_session_user_banned()) {
 
 // Check we have a webtag
 
-if (!$webtag = get_webtag($webtag_search)) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("./forums.php?webtag_search=$webtag_search&final_uri=admin.php%3Fpage%3D$request_uri");
-}
+$webtag = get_webtag($webtag_search);
 
 // Load language file
 
@@ -144,125 +141,136 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }
 
 $user = user_get($uid);
+
 $user['POST_COUNT'] = user_get_post_count($uid);
 
 $user_perms = perm_get_forum_user_permissions($uid);
 
 // Do updates
 
-if (isset($_POST['delete_confirm'])) {
-    
-    if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
-        
-        foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
+if ($table_data = get_table_prefix()) {
 
-            if ($del_attachment == "Y") {
-    
-                delete_attachment($hash);
+    if (isset($_POST['delete_confirm'])) {
+
+        if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
+
+            foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
+
+                if ($del_attachment == "Y") {
+
+                    delete_attachment($hash);
+                }
             }
         }
-    }
 
-}elseif (isset($_POST['delete'])) {
+    }elseif (isset($_POST['delete'])) {
 
-    if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
+        if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
 
-        $hash_array = array_keys($_POST['delete_attachment']);
+            $hash_array = array_keys($_POST['delete_attachment']);
 
-        if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
-            
-            html_draw_top();
-            echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), " &raquo; {$lang['deleteattachments']}</h1>\n";
+            if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
 
-            echo "<br />\n";
-            echo "<div align=\"center\">\n";
-            echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_user.php?uid=$uid\">\n";
-            echo "  ", form_input_hidden('webtag', $webtag), "\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\">\n";
-            echo "        <table class=\"box\" width=\"100%\">\n";
-            echo "          <tr>\n";
-            echo "            <td align=\"left\" class=\"posthead\">\n";
-            echo "              <table class=\"posthead\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteattachments']}</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"90%\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">{$lang['deleteattachmentsconfirm']}</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"center\">\n";
-            echo "                          <table class=\"posthead\" width=\"95%\">\n";
-            echo "                            <tr>\n";
-            echo "                              <td><br />\n";
+                html_draw_top();
+                echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), " &raquo; {$lang['deleteattachments']}</h1>\n";
 
-            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-                
-                foreach($attachments_array as $attachment) {
+                echo "<br />\n";
+                echo "<div align=\"center\">\n";
+                echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_user.php?uid=$uid\">\n";
+                echo "  ", form_input_hidden('webtag', $webtag), "\n";
+                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">\n";
+                echo "        <table class=\"box\" width=\"100%\">\n";
+                echo "          <tr>\n";
+                echo "            <td align=\"left\" class=\"posthead\">\n";
+                echo "              <table class=\"posthead\" width=\"100%\">\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteattachments']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table class=\"posthead\" width=\"90%\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">{$lang['deleteattachmentsconfirm']}</td>\n";
+                echo "                      </tr>\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"center\">\n";
+                echo "                          <table class=\"posthead\" width=\"95%\">\n";
+                echo "                            <tr>\n";
+                echo "                              <td><br />\n";
 
-                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
-                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+
+                    foreach($attachments_array as $attachment) {
+
+                        echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                        echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                    }
                 }
-            }
 
-            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+                if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
 
-                foreach($image_attachments_array as $key => $attachment) {
+                    foreach($image_attachments_array as $key => $attachment) {
 
-                    echo "                                ", attachment_make_link($attachment, false, false), "\n";
-                    echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                        echo "                                ", attachment_make_link($attachment, false, false), "\n";
+                        echo "                                ", form_input_hidden("delete_attachment_confirm[{$attachment['hash']}]", "Y"), "\n";
+                    }
                 }
+
+                echo "                              </td>\n";
+                echo "                            </tr>\n";
+                echo "                          </table>\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
+                echo "                    </table>\n";
+                echo "                  </td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "              </table>\n";
+                echo "            </td>\n";
+                echo "          </tr>\n";
+                echo "        </table>\n";
+                echo "      </td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"left\">&nbsp;</td>\n";
+                echo "    </tr>\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit("delete_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel_delete", $lang['cancel']), "</td>\n";
+                echo "    </tr>\n";
+                echo "  </table>\n";
+                echo "</form>\n";
+                echo "</div>\n";
+
+                html_draw_bottom();
+                exit;
             }
-
-            echo "                              </td>\n";
-            echo "                            </tr>\n";
-            echo "                          </table>\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "      </td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\">&nbsp;</td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">", form_submit("delete_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel_delete", $lang['cancel']), "</td>\n";
-            echo "    </tr>\n";
-            echo "  </table>\n";
-            echo "</form>\n";
-            echo "</div>\n";
-
-            html_draw_bottom();
-            exit;
         }
     }
 }
 
-echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+if ($table_data = get_table_prefix()) { 
+    echo "<h1>{$lang['admin']} &raquo; ", forum_get_setting('forum_name', false, 'A Beehive Forum'), " &raquo; {$lang['manageusers']} &raquo; ", add_wordfilter_tags(format_user_name($user['LOGON'], $user['NICKNAME'])), "</h1>\n";
+}else {
+    echo "<h1>{$lang['admin']} &raquo; {$lang['manageusers']} &raquo; ", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+}
 
-if (isset($_POST['t_confirm_delete_posts'])) {
+if ($table_data = get_table_prefix()) {
 
-    if ($user_post_array = get_user_posts($uid)) {
+    if (isset($_POST['t_confirm_delete_posts'])) {
 
-        foreach ($user_post_array as $user_post) {
-            post_delete($user_post['TID'], $user_post['PID']);
+        if ($user_post_array = get_user_posts($uid)) {
+
+            foreach ($user_post_array as $user_post) {
+                post_delete($user_post['TID'], $user_post['PID']);
+            }
+
+            $user_logon = user_get_logon($uid);
+            admin_add_log_entry(DELETE_ALL_USER_POSTS, $user_logon);
         }
-
-        $user_logon = user_get_logon($uid);
-        admin_add_log_entry(DELETE_ALL_USER_POSTS, $user_logon);
     }
 }
 
@@ -293,40 +301,46 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
             $valid = false;
         }
 
-        if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
+        if ($table_data = get_table_prefix()) {
 
-            $user_details['POST_COUNT'] = $_POST['t_post_count'] > 0 ? $_POST['t_post_count'] : 0;
+            if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
 
-            if ($user_details['POST_COUNT'] != $user['POST_COUNT']) {
+                $user_details['POST_COUNT'] = $_POST['t_post_count'] > 0 ? $_POST['t_post_count'] : 0;
 
-                user_update_post_count($uid, $user_details['POST_COUNT']);
+                if ($user_details['POST_COUNT'] != $user['POST_COUNT']) {
+
+                    user_update_post_count($uid, $user_details['POST_COUNT']);
+                }
             }
-        }
 
-        if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
+            if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
 
-            user_reset_post_count($uid);
-            $user['POST_COUNT'] = user_get_post_count($uid);
-            if (isset($_POST['t_post_count'])) unset($_POST['t_post_count']);
+                user_reset_post_count($uid);
+                $user['POST_COUNT'] = user_get_post_count($uid);
+                if (isset($_POST['t_post_count'])) unset($_POST['t_post_count']);
+            }
         }
     }
 
-    // Local user permissions
+    if ($table_data = get_table_prefix()) {
 
-    $new_user_perms = (double) 0;
+        // Local user permissions
 
-    $t_admintools  = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
-    $t_banned      = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
-    $t_wormed      = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
-    $t_pilloried   = (double) (isset($_POST['t_pilloried']))  ? $_POST['t_pilloried']  : 0;
-    $t_globalmod   = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
-    $t_linksmod    = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
-    $t_ignoreadmin = (double) (isset($_POST['t_ignoreadmin']))? $_POST['t_ignoreadmin']: 0;
+        $new_user_perms = (double) 0;
 
-    $new_user_perms = (double) $t_admintools | $t_banned | $t_wormed | $t_pilloried | $t_globalmod | $t_linksmod | $t_ignoreadmin;
+        $t_admintools  = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
+        $t_banned      = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
+        $t_wormed      = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
+        $t_pilloried   = (double) (isset($_POST['t_pilloried']))  ? $_POST['t_pilloried']  : 0;
+        $t_globalmod   = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
+        $t_linksmod    = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
+        $t_ignoreadmin = (double) (isset($_POST['t_ignoreadmin']))? $_POST['t_ignoreadmin']: 0;
 
-    if ($user_perms <> $new_user_perms) {    
-        perm_update_user_permissions($uid, $new_user_perms);
+        $new_user_perms = (double) $t_admintools | $t_banned | $t_wormed | $t_pilloried | $t_globalmod | $t_linksmod | $t_ignoreadmin;
+
+        if ($user_perms <> $new_user_perms) {    
+            perm_update_user_permissions($uid, $new_user_perms);
+        }
     }
 
     // Global user permissions
@@ -380,40 +394,43 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     // Local folder permissions
 
-    if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
+    if ($table_data = get_table_prefix()) {
 
-        $t_update_perms_array = $_POST['t_update_perms_array'];
+        if (isset($_POST['t_update_perms_array']) && is_array($_POST['t_update_perms_array'])) {
 
-        $folder_array = perm_user_get_folders($uid);
+            $t_update_perms_array = $_POST['t_update_perms_array'];
 
-        foreach ($t_update_perms_array as $fid) {
+            $folder_array = perm_user_get_folders($uid);
 
-            $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
-            $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
-            $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
-            $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
-            $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
-            $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
-            $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-            $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-            $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
-            $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
+            foreach ($t_update_perms_array as $fid) {
 
-            $new_user_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
-            $new_user_perms = (double) $new_user_perms | $t_post_edit | $t_post_delete;
-            $new_user_perms = (double) $new_user_perms | $t_moderator | $t_post_attach;
-            $new_user_perms = (double) $new_user_perms | $t_post_html | $t_post_sig | $t_post_approval;
+                $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
+                $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
+                $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
+                $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
+                $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
+                $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
+                $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
+                $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
+                $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
+                $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
-            if ($new_user_perms <> $folder_array[$fid]['STATUS']) {
-                perm_update_user_folder_perms($uid, $fid, $new_user_perms);
+                $new_user_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
+                $new_user_perms = (double) $new_user_perms | $t_post_edit | $t_post_delete;
+                $new_user_perms = (double) $new_user_perms | $t_moderator | $t_post_attach;
+                $new_user_perms = (double) $new_user_perms | $t_post_html | $t_post_sig | $t_post_approval;
+
+                if ($new_user_perms <> $folder_array[$fid]['STATUS']) {
+                    perm_update_user_folder_perms($uid, $fid, $new_user_perms);
+                }
             }
         }
-    }
 
-    // Confirmation email
+        // Confirmation email
 
-    if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] == 'resend') {
-        email_send_user_confirmation($uid);
+        if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] == 'resend') {
+            email_send_user_confirmation($uid);
+        }
     }
 
     // Password reset
@@ -560,67 +577,71 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                        <td align=\"left\" width=\"150\">{$lang['nicknameheader']}</td>\n";
         echo "                        <td align=\"left\">", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? $_POST['t_nickname'] : $user['NICKNAME'], 32), "</td>\n";
         echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
-        echo "                      </tr>\n";
 
-        if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
+        if ($table_data = get_table_prefix()) {
 
-            $user['REFERER_FULL'] = $user['REFERER'];
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" width=\"150\">{$lang['postcount']}</td>\n";
+            echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? $_POST['t_post_count'] : $user['POST_COUNT'], 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", $lang['resetpostcount'], false), "</td>\n";
+            echo "                      </tr>\n";
 
-            if (!$user['REFERER'] = split_url($user['REFERER'])) {
-                if (strlen($user['REFERER_FULL']) > 25) {
-                    $user['REFERER'] = substr($user['REFERER_FULL'], 0, 25);
-                    $user['REFERER'].= "&hellip;";
+            if (isset($user['REFERER']) && strlen(trim($user['REFERER'])) > 0) {
+
+                $user['REFERER_FULL'] = $user['REFERER'];
+
+                if (!$user['REFERER'] = split_url($user['REFERER'])) {
+                    if (strlen($user['REFERER_FULL']) > 25) {
+                        $user['REFERER'] = substr($user['REFERER_FULL'], 0, 25);
+                        $user['REFERER'].= "&hellip;";
+                    }
                 }
-            }
 
-            if (referer_is_banned($user['REFERER'])) {
+                if (referer_is_banned($user['REFERER'])) {
 
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=admin_user.php%3Fuid%3D$uid\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a> ({$lang['banned']})</td>\n";
-                echo "                      </tr>\n";
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
+                    echo "                        <td align=\"left\"><a href=\"admin_banned.php?unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=admin_user.php%3Fuid%3D$uid\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a> ({$lang['banned']})</td>\n";
+                    echo "                      </tr>\n";
+
+                }else {
+
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
+                    echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=admin_user.php%3Fuid%3D$uid\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a></td>\n";
+                    echo "                      </tr>\n";
+                }
 
             }else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=admin_user.php%3Fuid%3D$uid\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a></td>\n";
+                echo "                        <td align=\"left\">{$lang['unknown']}</td>\n";
                 echo "                      </tr>\n";
             }
 
-        }else {
-
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"150\">{$lang['signupreferer']}</td>\n";
-            echo "                        <td align=\"left\">{$lang['unknown']}</td>\n";
+            echo "                        <td align=\"left\" width=\"150\">{$lang['lastipaddress']}:</td>\n";
+
+            if (ip_is_banned($user['IPADDRESS'])) {
+
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
+
+            }else {
+
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
+            }
+
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                        <td align=\"left\">", form_button("editsignature", $lang['editsignature'], "onclick=\"document.location.href='edit_signature.php?webtag=$webtag&amp;siguid=$uid'\""), "&nbsp;", form_button("editprofile", $lang['editprofile'], "onclick=\"document.location.href='edit_profile.php?webtag=$webtag&amp;profileuid=$uid'\""), "</td>\n";
             echo "                      </tr>\n";
         }
 
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">{$lang['lastipaddress']}:</td>\n";
-
-        if (ip_is_banned($user['IPADDRESS'])) {
-
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']} ({$lang['banned']})</a></td>\n";
-
-        }else {
-
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=admin_user.php%3Fuid%3D$uid\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
-        }
-
-        echo "                        \n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\">", form_button("editsignature", $lang['editsignature'], "onclick=\"document.location.href='edit_signature.php?webtag=$webtag&amp;siguid=$uid'\""), "&nbsp;", form_button("editprofile", $lang['editprofile'], "onclick=\"document.location.href='edit_profile.php?webtag=$webtag&amp;profileuid=$uid'\""), "</td>\n";
-        echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
@@ -637,78 +658,81 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "  <br />\n";
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['userstatus']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"90%\">\n";
+    if ($table_data = get_table_prefix()) {
 
-    if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['userstatus']}</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+
+        if (bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintools'], $user_perms & USER_PERM_ADMIN_TOOLS), "</td>\n";
+            echo "                      </tr>\n";
+        }
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, $lang['usercanaccessadmintools'], $user_perms & USER_PERM_ADMIN_TOOLS), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['usercanmoderateallfolders'], $user_perms & USER_PERM_FOLDER_MODERATE), "</td>\n";
         echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, $lang['usercanmoderatelinkssection'], $user_perms & USER_PERM_LINKS_MODERATE), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_banned", USER_PERM_BANNED, $lang['userisbanned'], $user_perms & USER_PERM_BANNED), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms & USER_PERM_WORMED), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_pilloried", USER_PERM_PILLORIED, $lang['userispilloried'], $user_perms & USER_PERM_PILLORIED), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">", form_checkbox("t_ignoreadmin", USER_PERM_CAN_IGNORE_ADMIN, $lang['usercanignoreadmin'], $user_perms & USER_PERM_CAN_IGNORE_ADMIN), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"center\">\n";
+        echo "                          <table width=\"100%\" class=\"posthead\">\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\">&nbsp;</td>\n";
+        echo "                            </tr>\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"center\">\n";
+        echo "                                <table class=\"text_captcha_error\" width=\"95%\">\n";
+        echo "                                  <tr>\n";
+        echo "                                    <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
+        echo "                                    <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
+        echo "                                  </tr>\n";
+        echo "                                </table>\n";
+        echo "                              </td>\n";
+        echo "                            </tr>\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\">&nbsp;</td>\n";
+        echo "                            </tr>\n";
+        echo "                          </table>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
     }
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, $lang['usercanmoderateallfolders'], $user_perms & USER_PERM_FOLDER_MODERATE), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, $lang['usercanmoderatelinkssection'], $user_perms & USER_PERM_LINKS_MODERATE), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_banned", USER_PERM_BANNED, $lang['userisbanned'], $user_perms & USER_PERM_BANNED), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_wormed", USER_PERM_WORMED, $lang['useriswormed'], $user_perms & USER_PERM_WORMED), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_pilloried", USER_PERM_PILLORIED, $lang['userispilloried'], $user_perms & USER_PERM_PILLORIED), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_ignoreadmin", USER_PERM_CAN_IGNORE_ADMIN, $lang['usercanignoreadmin'], $user_perms & USER_PERM_CAN_IGNORE_ADMIN), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"center\">\n";
-    echo "                          <table width=\"100%\" class=\"posthead\">\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\">&nbsp;</td>\n";
-    echo "                            </tr>\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"center\">\n";
-    echo "                                <table class=\"text_captcha_error\" width=\"95%\">\n";
-    echo "                                  <tr>\n";
-    echo "                                    <td align=\"left\" width=\"20\"><img src=\"", style_image('warning.png'), "\" /></td>\n";
-    echo "                                    <td align=\"left\">{$lang['usergroupwarning']}</td>\n";
-    echo "                                  </tr>\n";
-    echo "                                </table>\n";
-    echo "                              </td>\n";
-    echo "                            </tr>\n";
-    echo "                            <tr>\n";
-    echo "                              <td align=\"left\">&nbsp;</td>\n";
-    echo "                            </tr>\n";
-    echo "                          </table>\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
@@ -932,215 +956,218 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "  <br />\n";
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['usergroups']}</td>\n";
-    echo "                </tr>\n";
+    if ($table_data = get_table_prefix()) {
 
-    if ($user_groups_array = perm_user_get_groups($uid)) {
-
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">{$lang['useringroups']}:</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">\n";
-        echo "                          <table class=\"box\" width=\"100%\">\n";
-        echo "                            <tr>\n";
-        echo "                              <td align=\"left\" class=\"posthead\">\n";
-        echo "                                <table class=\"posthead\" width=\"100%\">\n";
-        echo "                                  <tr>\n";
-        echo "                                    <td align=\"left\" class=\"subhead\">{$lang['groups']}</td>\n";
-        echo "                                    <td align=\"left\" class=\"subhead\">{$lang['users']}</td>\n";
-        echo "                                    <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
-        echo "                                  </tr>\n";
-
-        foreach ($user_groups_array as $user_group) {
-
-            echo "                                  <tr>\n";
-            echo "                                    <td align=\"left\" valign=\"top\">&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
-            echo "                                    <td valign=\"top\" align=\"center\">{$user_group['USER_COUNT']}</td>\n";
-            echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
-            echo "                                  </tr>\n";
-        }
-
-        echo "                                  <tr>\n";
-        echo "                                    <td align=\"left\">&nbsp;</td>\n";
-        echo "                                    <td align=\"left\">&nbsp;</td>\n";
-        echo "                                    <td align=\"left\">&nbsp;</td>\n";
-        echo "                                  </tr>\n";
-        echo "                                </table>\n";
-        echo "                              </td>\n";
-        echo "                            </tr>\n";
-        echo "                          </table>\n";
-        echo "                        </td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">{$lang['usergroups']}</td>\n";
         echo "                </tr>\n";
 
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">{$lang['usernotinanygroups']}</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-    }
-
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}</td>\n";
-    echo "                </tr>\n";
-
-    if ($user_alias_array = user_get_aliases($user['UID'])) {
-
-        if (sizeof($user_alias_array) > 0) {
+        if ($user_groups_array = perm_user_get_groups($uid)) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
-            echo "                    <table width=\"90%\" class=\"posthead\">\n";
+            echo "                    <table class=\"posthead\" width=\"90%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">{$lang['aliasdesc']}</td>\n";
+            echo "                        <td align=\"left\">{$lang['useringroups']}:</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"box\" width=\"90%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">\n";
-            echo "                          <table class=\"posthead\" width=\"100%\">\n";
+            echo "                          <table class=\"box\" width=\"100%\">\n";
             echo "                            <tr>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['logon']}</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['nickname']}</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['ip']}</td>\n";
-            echo "                            </tr>\n";
+            echo "                              <td align=\"left\" class=\"posthead\">\n";
+            echo "                                <table class=\"posthead\" width=\"100%\">\n";
+            echo "                                  <tr>\n";
+            echo "                                    <td align=\"left\" class=\"subhead\">{$lang['groups']}</td>\n";
+            echo "                                    <td align=\"left\" class=\"subhead\">{$lang['users']}</td>\n";
+            echo "                                    <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
+            echo "                                  </tr>\n";
 
-            foreach ($user_alias_array as $user_alias) {
+            foreach ($user_groups_array as $user_group) {
 
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
-                echo "                              <td align=\"left\">{$user_alias['NICKNAME']}</td>\n";
-
-                if (ip_is_banned($user_alias['IPADDRESS'])) {
-                    echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
-                }else {
-                    echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>";
-                }
-
-                echo "                            </tr>\n";
+                echo "                                  <tr>\n";
+                echo "                                    <td align=\"left\" valign=\"top\">&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+                echo "                                    <td valign=\"top\" align=\"center\">{$user_group['USER_COUNT']}</td>\n";
+                echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
+                echo "                                  </tr>\n";
             }
 
+            echo "                                  <tr>\n";
+            echo "                                    <td align=\"left\">&nbsp;</td>\n";
+            echo "                                    <td align=\"left\">&nbsp;</td>\n";
+            echo "                                    <td align=\"left\">&nbsp;</td>\n";
+            echo "                                  </tr>\n";
+            echo "                                </table>\n";
+            echo "                              </td>\n";
             echo "                            </tr>\n";
             echo "                          </table>\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
             echo "                </tr>\n";
+
+        }else {
+
             echo "                <tr>\n";
-            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">{$lang['usernotinanygroups']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
             echo "                </tr>\n";
         }
 
-    }else {
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}</td>\n";
+        echo "                </tr>\n";
 
+        if ($user_alias_array = user_get_aliases($user['UID'])) {
+
+            if (sizeof($user_alias_array) > 0) {
+
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table width=\"90%\" class=\"posthead\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">&nbsp;</td>\n";
+                echo "                      </tr>\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">{$lang['aliasdesc']}</td>\n";
+                echo "                      </tr>\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">&nbsp;</td>\n";
+                echo "                      </tr>\n";
+                echo "                    </table>\n";
+                echo "                  </td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table class=\"box\" width=\"90%\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">\n";
+                echo "                          <table class=\"posthead\" width=\"100%\">\n";
+                echo "                            <tr>\n";
+                echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['logon']}</td>\n";
+                echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['nickname']}</td>\n";
+                echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['ip']}</td>\n";
+                echo "                            </tr>\n";
+
+                foreach ($user_alias_array as $user_alias) {
+
+                    echo "                            <tr>\n";
+                    echo "                              <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+                    echo "                              <td align=\"left\">{$user_alias['NICKNAME']}</td>\n";
+
+                    if (ip_is_banned($user_alias['IPADDRESS'])) {
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
+                    }else {
+                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>";
+                    }
+
+                    echo "                            </tr>\n";
+                }
+
+                echo "                            </tr>\n";
+                echo "                          </table>\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
+                echo "                    </table>\n";
+                echo "                  </td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\">&nbsp;</td>\n";
+                echo "                </tr>\n";
+            }
+
+        }else {
+
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">{$lang['nomatches']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+        }
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}</td>\n";
+        echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"90%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">{$lang['nomatches']}</td>\n";
+        echo "                        <td align=\"left\" width=\"250\">{$lang['deleteallusersposts']}:</td>\n";
+        echo "                        <td align=\"left\">", form_radio("t_delete_posts", "Y", $lang['yes'], false), "&nbsp;", form_radio("t_delete_posts", "N", $lang['no'], true), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
     }
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['deleteposts']}</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"90%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"250\">{$lang['deleteallusersposts']}:</td>\n";
-    echo "                        <td align=\"left\">", form_radio("t_delete_posts", "Y", $lang['yes'], false), "&nbsp;", form_radio("t_delete_posts", "N", $lang['no'], true), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
@@ -1190,83 +1217,86 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "  <br />\n";
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">{$lang['attachments']}</td>\n";
-    echo "                </tr>\n";
+    if ($table_data = get_table_prefix()) {
 
-    if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array)) {
-
-        $attachments_array = array_merge($attachments_array, $image_attachments_array);
-        
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['attachments']}</td>\n";
         echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"box\" width=\"90%\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">\n";
-        echo "                          <table class=\"posthead\" width=\"100%\">\n";
-        echo "                            <tr>\n";
-        echo "                              <td align=\"left\" class=\"subhead\">{$lang['filename']}</td>\n";
-        echo "                              <td align=\"left\" class=\"subhead\">{$lang['message']}</td>\n";
-        echo "                              <td class=\"subhead\" align=\"right\">{$lang['size']}&nbsp;</td>\n";
-        echo "                              <td class=\"subhead\" align=\"right\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"attachment_toggle_all();\""), "&nbsp;</td>\n";
-        echo "                            </tr>\n";
 
-        foreach($attachments_array as $attachment) {
+        if (admin_get_users_attachments($uid, $attachments_array, $image_attachments_array)) {
 
-            if ($attachment_link = attachment_make_link($attachment, false, true)) {
+            $attachments_array = array_merge($attachments_array, $image_attachments_array);
 
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\">&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"box\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">\n";
+            echo "                          <table class=\"posthead\" width=\"100%\">\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" class=\"subhead\">{$lang['filename']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\">{$lang['message']}</td>\n";
+            echo "                              <td class=\"subhead\" align=\"right\">{$lang['size']}&nbsp;</td>\n";
+            echo "                              <td class=\"subhead\" align=\"right\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"attachment_toggle_all();\""), "&nbsp;</td>\n";
+            echo "                            </tr>\n";
 
-                if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
+            foreach($attachments_array as $attachment) {
 
-                    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+                if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
-                }else {
+                    echo "                            <tr>\n";
+                    echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                    echo "                              <td align=\"left\">&nbsp;</td>\n";
+                    if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
+
+                        echo "                              <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">{$lang['viewmessage']}</a></td>\n";
+
+                    }else {
+
+                        echo "                              <td align=\"left\">&nbsp;</td>\n";
+                    }
+
+                    echo "                              <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
+                    echo "                              <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "&nbsp;</td>\n";
+                    echo "                            </tr>\n";
                 }
-
-                echo "                              <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                echo "                              <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "&nbsp;</td>\n";
-                echo "                            </tr>\n";
             }
+
+            echo "                          </table>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td>&nbsp;</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td class=\"postbody\" colspan=\"2\" align=\"center\">", form_submit("delete", $lang['delete']), "</td>\n";
+            echo "                </tr>\n";
+
+        }else {
+
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\" valign=\"top\" width=\"300\" class=\"postbody\" colspan=\"3\">{$lang['noattachmentsforuser']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
         }
-
-        echo "                          </table>\n";
-        echo "                        </td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td>&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td class=\"postbody\" colspan=\"2\" align=\"center\">", form_submit("delete", $lang['delete']), "</td>\n";
-        echo "                </tr>\n";
-
-    }else {
-
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" valign=\"top\" width=\"300\" class=\"postbody\" colspan=\"3\">{$lang['noattachmentsforuser']}</td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
     }
 
     echo "                <tr>\n";

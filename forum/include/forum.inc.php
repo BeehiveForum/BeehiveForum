@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.210 2007-01-28 01:15:15 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.211 2007-01-28 01:55:19 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -984,12 +984,97 @@ function forum_create($webtag, $forum_name, $database_name, $access)
             return;
         }
 
+        $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
+        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Location', 0, 1)";
+
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag, $database_name);
+
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
+                db_trigger_error($sql, $db_forum_create);
+            }
+
+            return;
+        }
+
+        $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
+        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Age', 0, 2)";
+
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag, $database_name);
+
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
+                db_trigger_error($sql, $db_forum_create);
+            }
+
+            return;
+        }
+
+        $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
+        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Gender', 0, 3)";
+
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag, $database_name);
+
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
+                db_trigger_error($sql, $db_forum_create);
+            }
+
+            return;
+        }
+
+        $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
+        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Quote', 0, 4)";
+
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag, $database_name);
+
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
+                db_trigger_error($sql, $db_forum_create);
+            }
+
+            return;
+        }
+
+        $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_ITEM ";
+        $sql.= "(PSID, NAME, TYPE, POSITION) VALUES (1, 'Occupation', 0, 5)";
+
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag, $database_name);
+
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
+                db_trigger_error($sql, $db_forum_create);
+            }
+
+            return;
+        }
+
         $sql = "CREATE TABLE {$database_name}.{$webtag}_PROFILE_SECTION (";
         $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  NAME VARCHAR(64) DEFAULT NULL,";
         $sql.= "  POSITION MEDIUMINT(3) UNSIGNED DEFAULT '0',";
         $sql.= "  PRIMARY KEY  (PSID)";
         $sql.= ") TYPE=MYISAM";
+
+        if (!$result = db_query($sql, $db_forum_create)) {
+
+            forum_delete_tables($webtag, $database_name);
+
+            if (defined("BEEHIVE_INSTALL_NOWARN")) {
+                db_trigger_error($sql, $db_forum_create);
+            }
+
+            return;
+        }
+
+
+        $sql = "INSERT INTO {$database_name}.{$webtag}_PROFILE_SECTION ";
+        $sql.= "(NAME, POSITION) VALUES ('Personal', 1)";
 
         if (!$result = db_query($sql, $db_forum_create)) {
 

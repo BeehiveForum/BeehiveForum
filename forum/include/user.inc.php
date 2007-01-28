@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.293 2007-01-27 20:43:19 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.294 2007-01-28 01:15:15 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -261,15 +261,21 @@ function user_get($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
-
     $sess_uid = bh_session_get_value('UID');
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.NICKNAME, ";
-    $sql.= "USER.EMAIL, USER.IPADDRESS, USER.REFERER, USER_PEER.PEER_NICKNAME FROM USER ";
-    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-    $sql.= "WHERE USER.UID = '$uid'";
+    if (!$table_data = get_table_prefix()) {
+        
+        $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, USER.EMAIL, ";
+        $sql.= "IPADDRESS, REFERER FROM USER WHERE UID = '$uid'";
+
+    }else {
+
+        $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.NICKNAME, ";
+        $sql.= "USER.EMAIL, USER.IPADDRESS, USER.REFERER, USER_PEER.PEER_NICKNAME FROM USER ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+        $sql.= "WHERE USER.UID = '$uid'";
+    }
 
     $result = db_query($sql, $db_user_get);
 
@@ -278,7 +284,9 @@ function user_get($uid)
         $user_get = db_fetch_array($result);
 
         if (isset($user_get['PEER_NICKNAME'])) {
+
             if (!is_null($user_get['PEER_NICKNAME']) && strlen($user_get['PEER_NICKNAME']) > 0) {
+
                 $user_get['NICKNAME'] = $user_get['PEER_NICKNAME'];
             }
         }

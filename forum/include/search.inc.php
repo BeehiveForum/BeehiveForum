@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.171 2007-01-24 18:02:14 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.172 2007-01-28 01:49:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -417,9 +417,12 @@ function search_fetch_results($offset, $sortby, $sortdir)
 
         $sql = "SELECT SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
         $sql.= "SEARCH_RESULTS.BY_UID, SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
-        $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED ";
-        $sql.= "FROM SEARCH_RESULTS LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
-        $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) WHERE SEARCH_RESULTS.UID = '$uid' ";
+        $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED, ";
+        $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME FROM SEARCH_RESULTS ";
+        $sql.= "LEFT JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_TRACK USER_TRACK ";
+        $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
+        $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
 
         switch($sortby) {
         
@@ -435,7 +438,7 @@ function search_fetch_results($offset, $sortby, $sortdir)
 
             case SEARCH_SORT_AUTHOR_NAME:
 
-                $sql.= "ORDER BY SEARCH_RESULTS.FROM_UID $sortdir LIMIT $offset, 20";
+                $sql.= "ORDER BY FROM_USER $sortdir LIMIT $offset, 20";
                 break;
 
             default:

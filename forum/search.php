@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.php,v 1.162 2007-01-24 18:02:14 decoyduck Exp $ */
+/* $Id: search.php,v 1.163 2007-01-28 01:49:29 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -403,12 +403,12 @@ if (isset($search_success) && $search_success === true && isset($offset)) {
                 if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-                    echo "<span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    echo "<span class=\"smalltext\"><b>{$lang['from']}:</b> ", add_wordfilter_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                     
                 }else {
 
                     echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"right\"><b>{$message['TITLE']}</b></a><br />";
-                    echo "{$message['CONTENT']}<br /><span class=\"smalltext\">&nbsp;-&nbsp;from ", add_wordfilter_tags(format_user_name($message['FLOGON'], $message['FNICK'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
+                    echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>{$lang['from']}:</b> ", add_wordfilter_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME'])), ", ", format_time($search_result['CREATED'], 1), "</span></p></li>\n";
                 }
             }
         }

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.294 2007-01-28 01:15:15 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.295 2007-02-01 22:30:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1335,34 +1335,73 @@ function user_get_peer_relationship($uid, $peer_uid)
     return 0;
 }
 
-function user_get_word_filter()
+function user_get_word_filter_list($offset)
+{
+    $db_user_get_word_filter_list = db_connect();
+
+    if (!is_numeric($offset)) $offset = 0;
+
+    $word_filter_array = array();
+    $word_filter_count = 0;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+
+    $sql = "SELECT COUNT(ID) FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE UID = '$uid' ORDER BY ID";
+
+    $result = db_query($sql, $db_user_get_word_filter_list);
+    list($word_filter_count) = db_num_rows($result, DB_RESULT_NUM);
+
+    $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
+    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE UID = '$uid' ORDER BY ID ";
+    $sql.= "LIMIT $offset, 10";
+
+    $result = db_query($sql, $db_user_get_word_filter_list);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($row = db_fetch_array($result)) {
+
+            $word_filter_array[$row['ID']] = $row;
+        }
+
+    }else if ($word_filter_count > 0) {
+
+        $offset = ($offset - 20) > 0 ? $offset - 20 : 0;        
+        return user_get_word_filter_list($offset);
+    }
+
+    return array('word_filter_count' => $word_filter_count,
+                 'word_filter_array' => $word_filter_array);
+}
+
+function user_get_word_filter($filter_id)
 {
     $db_user_get_word_filter = db_connect();
 
-    if (!$table_data = get_table_prefix()) return array();
+    if (!is_numeric($filter_id)) return false;
 
-    if (!$uid = bh_session_get_value('UID')) return array();
+    if (($uid = bh_session_get_value('UID')) === false) return false;
 
-    if (bh_session_get_value('USE_ADMIN_FILTER') == 'Y') {
+    if (!$table_data = get_table_prefix()) return false;
 
-        $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST ";
-        $sql.= "WHERE UID = '$uid' OR UID = 0 ORDER BY ID LIMIT 0, 20";
-
-    }else {
-
-        $sql = "SELECT * FROM {$table_data['PREFIX']}FILTER_LIST ";
-        $sql.= "WHERE UID = '$uid' ORDER BY ID LIMIT 0, 20";
-    }
+    $sql = "SELECT ID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION ";
+    $sql.= "FROM {$table_data['PREFIX']}FILTER_LIST ";
+    $sql.= "WHERE ID = '$filter_id' AND UID = '$uid' ";
+    $sql.= "ORDER BY ID";
 
     $result = db_query($sql, $db_user_get_word_filter);
 
-    $filter_array = array();
+    if (db_num_rows($result) > 0) {
 
-    while($row = db_fetch_array($result)) {
-        $filter_array[$row['ID']] = $row;
+        $word_filter_array = db_fetch_array($result);
+        return $word_filter_array;
     }
 
-    return $filter_array;
+    return false;
 }
 
 function user_clear_word_filter()
@@ -1374,12 +1413,15 @@ function user_clear_word_filter()
     if (($uid = bh_session_get_value('UID')) === false) return false;
 
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST WHERE UID = '$uid'";
-    return db_query($sql, $db_user_clear_word_filter);
+
+    if (!$result = db_query($sql, $db_user_clear_word_filter)) return false;
+
+    return true;
 }
 
 function user_add_word_filter($match, $replace, $filter_option)
 {
-    $db_user_save_word_filter = db_connect();
+    $db_user_add_word_filter = db_connect();
 
     if (!is_numeric($filter_option)) return false;
 
@@ -1393,7 +1435,9 @@ function user_add_word_filter($match, $replace, $filter_option)
     $sql = "INSERT INTO {$table_data['PREFIX']}FILTER_LIST (UID, MATCH_TEXT, REPLACE_TEXT, FILTER_OPTION) ";
     $sql.= "VALUES ('$uid', '$match', '$replace', '$filter_option')";
 
-    $result = db_query($sql, $db_user_save_word_filter);
+    if (!$result = db_query($sql, $db_user_add_word_filter)) return false;
+
+    return true;
 }
 
 function user_update_word_filter($filter_id, $match, $replace, $filter_option)
@@ -1414,7 +1458,9 @@ function user_update_word_filter($filter_id, $match, $replace, $filter_option)
     $sql.= "REPLACE_TEXT = '$replace', FILTER_OPTION = '$filter_option' ";
     $sql.= "WHERE ID = '$filter_id' AND UID = '$uid'";
 
-    $result = db_query($sql, $db_user_save_word_filter);
+    if (!$result = db_query($sql, $db_user_save_word_filter)) return false;
+
+    return true;
 }
 
 function user_delete_word_filter($id)
@@ -1430,7 +1476,9 @@ function user_delete_word_filter($id)
     $sql = "DELETE FROM {$table_data['PREFIX']}FILTER_LIST ";
     $sql.= "WHERE ID = '$id' AND UID = '$uid'";
 
-    $result = db_query($sql, $db_user_delete_word_filter);
+    if (!$result = db_query($sql, $db_user_delete_word_filter)) return false;
+
+    return true;
 }
 
 function user_is_active($uid)

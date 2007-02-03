@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.99 2007-01-28 01:15:15 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.100 2007-02-03 16:55:26 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1101,6 +1101,162 @@ function admin_clear_visitor_log()
     if (!$result = db_query($sql, $db_admin_clear_visitor_log)) return false;
 
     return true;
+}
+
+/**
+* Fetch list of user aliases
+*
+* Fetches a list of aliases (IP Address matches) from database
+* for the specified user UID.
+*
+* @return array
+* @param integer $uid - User UID for searching.
+*/
+
+function admin_get_user_aliases($uid)
+{
+    $db_user_get_aliases = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    // Initialise arrays
+
+    $user_ip_address_array = array();
+    $user_aliases_array = array();
+
+    // Session UID
+
+    $sess_uid = bh_session_get_value('UID');
+
+    // Fetch the user's last 10 IP addresses from the POST table
+
+    $sql = "SELECT IPADDRESS FROM {$table_data['PREFIX']}POST ";
+    $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL ";
+    $sql.= "AND LENGTH(IPADDRESS) > 0 GROUP BY IPADDRESS ";
+    $sql.= "LIMIT 0, 10";
+
+    $result = db_query($sql, $db_user_get_aliases);
+
+    if (db_num_rows($result) > 0) {
+
+        while ($user_get_aliases_row = db_fetch_array($result)) {
+
+            if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
+            
+                $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
+            }
+        }
+    }
+
+    if ($ipaddress = user_get_last_ip_address($uid)) {
+        $user_ip_address_array[] = $ipaddress;
+    }
+
+    // Search the POST table for any matches - limit 10 matches
+
+    $user_ip_address_list = implode("' OR POST.IPADDRESS = '", $user_ip_address_array);
+
+    if (strlen($user_ip_address_list) > 0) {
+
+        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+        $sql.= "POST.IPADDRESS FROM {$table_data['PREFIX']}POST POST ";
+        $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
+        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+        $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') ";
+        $sql.= "AND POST.FROM_UID <> $uid GROUP BY USER.UID ";
+        $sql.= "LIMIT 0, 10";
+
+        $result = db_query($sql, $db_user_get_aliases);
+
+        if (db_num_rows($result) > 0) {
+
+            while($user_get_aliases_row = db_fetch_array($result)) {
+
+                if (isset($user_get_aliases_row['PEER_NICKNAME'])) {
+
+                    if (!is_null($user_get_aliases_row['PEER_NICKNAME']) && strlen($user_get_aliases_row['PEER_NICKNAME']) > 0) {
+
+                        $user_get_aliases_row['NICKNAME'] = $user_get_aliases_row['PEER_NICKNAME'];
+                    }
+                }
+
+                $user_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
+            }
+        }
+    }
+
+    return $user_aliases_array;
+}
+
+function admin_get_user_history($uid)
+{
+    $db_admin_get_user_history = db_connect();
+
+    $lang = load_language_file();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $user_history_array = array();
+
+    $sql = "SELECT LOGON, NICKNAME, EMAIL FROM USER WHERE UID = '$uid'";
+    $result = db_query($sql, $db_admin_get_user_history);
+
+    if (db_num_rows($result) > 0) {
+
+        list($logon, $nickname, $email) = db_fetch_array($result, DB_RESULT_NUM);
+
+        $sql = "SELECT LOGON, NICKNAME, EMAIL, UNIX_TIMESTAMP(MODIFIED) ";
+        $sql.= "FROM USER_HISTORY WHERE UID = '$uid' ";
+        $sql.= "ORDER BY MODIFIED DESC ";
+        $sql.= "LIMIT 0, 10";
+
+        $result = db_query($sql, $db_admin_get_user_history);
+
+        if (db_num_rows($result) > 0) {
+
+            $user_history_data_old = "";
+            
+            while ($user_history_row = db_fetch_array($result, DB_RESULT_NUM)) {
+
+                $user_history_data_array = array();
+
+                list($logon_old, $nickname_old, $email_old, $modified_date) = $user_history_row;
+
+                if ($logon != $logon_old) {
+                    $user_history_data_array[] = sprintf($lang['changedlogonfromto'], $logon_old, $logon);
+                }
+
+                if ($nickname != $nickname_old) {
+                    $user_history_data_array[] = sprintf($lang['changednicknamefromto'], $nickname_old, $nickname);
+                }
+
+                if ($email != $email_old) {
+                    $user_history_data_array[] = sprintf($lang['changedemailfromto'], $email_old, $email);
+                }
+
+                if (sizeof($user_history_data_array) > 0) {
+
+                    $user_history_data = implode(",", $user_history_data_array);
+                    
+                    if ($user_history_data != $user_history_data_old) {
+                    
+                        $user_history_array[] = array('MODIFIED' => $modified_date, 
+                                                      'DATA'     => $user_history_data);
+                    }
+                }
+                
+                $logon_old = $logon; $nickname_old = $nickname; $email_old = $email;
+                $user_history_data_old = $user_history_data;
+            }
+        }
+    }
+
+    return $user_history_array;
 }
 
 ?>

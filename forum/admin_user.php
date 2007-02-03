@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.185 2007-01-28 01:15:14 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.186 2007-02-03 16:55:26 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1054,24 +1054,12 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td class=\"subhead\" align=\"left\">{$lang['possiblealiases']}</td>\n";
         echo "                </tr>\n";
 
-        if ($user_alias_array = user_get_aliases($user['UID'])) {
+        if ($user_alias_array = admin_get_user_aliases($user['UID'])) {
 
             if (sizeof($user_alias_array) > 0) {
 
                 echo "                <tr>\n";
-                echo "                  <td align=\"center\">\n";
-                echo "                    <table width=\"90%\" class=\"posthead\">\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\">&nbsp;</td>\n";
-                echo "                      </tr>\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\">{$lang['aliasdesc']}</td>\n";
-                echo "                      </tr>\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"left\">&nbsp;</td>\n";
-                echo "                      </tr>\n";
-                echo "                    </table>\n";
-                echo "                  </td>\n";
+                echo "                  <td>&nbsp;</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\">\n";
@@ -1107,9 +1095,6 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                    </table>\n";
                 echo "                  </td>\n";
                 echo "                </tr>\n";
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                </tr>\n";
             }
 
         }else {
@@ -1119,6 +1104,76 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
             echo "                    <table class=\"posthead\" width=\"90%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">{$lang['nomatches']}</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+        }
+
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead\" align=\"left\">{$lang['userhistory']}</td>\n";
+        echo "                </tr>\n";
+
+        if ($user_history_array = admin_get_user_history($user['UID'])) {
+
+            if (sizeof($user_history_array) > 0) {
+
+                echo "                <tr>\n";
+                echo "                  <td>&nbsp;</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table class=\"box\" width=\"90%\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">\n";
+                echo "                          <table class=\"posthead\" width=\"100%\">\n";
+                echo "                            <tr>\n";
+                echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['date']}</td>\n";
+                echo "                              <td align=\"left\" class=\"subhead\">{$lang['userhistorychanges']}</td>\n";
+                echo "                            </tr>\n";
+
+                foreach ($user_history_array as $user_history) {
+
+                    echo "                            <tr>\n";
+                    echo "                              <td align=\"left\">", format_date($user_history['MODIFIED']), "</td>\n";
+                    echo "                              <td align=\"left\">{$user_history['DATA']}</td>\n";
+                    echo "                            </tr>\n";
+                }
+
+                echo "                            </tr>\n";
+                echo "                          </table>\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
+                echo "                    </table>\n";
+                echo "                  </td>\n";
+                echo "                </tr>\n";
+            }
+
+        }else {
+
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">{$lang['nohistory']}</td>\n";
             echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.58 2006-11-19 00:13:21 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.59 2007-02-03 14:24:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -129,6 +129,37 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
 
+        $user_info['LOGON'] = trim(_stripslashes($_POST['logon']));
+
+        if (!preg_match("/^[a-z0-9_-]+$/i", $user_info['LOGON'])) {
+            $error_html.= "<h2>{$lang['usernameinvalidchars']}</h2>\n";
+            $valid = false;
+        }
+
+        if (strlen($user_info['LOGON']) < 2) {
+            $error_html.= "<h2>{$lang['usernametooshort']}</h2>\n";
+            $valid = false;
+        }
+
+        if (strlen($user_info['LOGON']) > 15) {
+            $error_html.= "<h2>{$lang['usernametoolong']}</h2>\n";
+            $valid = false;
+        }
+
+        if (logon_is_banned($user_info['LOGON'])) {
+
+            $error_html.= "<h2>{$lang['logonnotpermitted']}</h2>\n";
+            $valid = false;
+        }
+
+    }else {
+
+        $error_html.= "<h2>{$lang['usernamerequired']}</h2>";
+        $valid = false;
+    }
+
+    if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
+
         $user_info['NICKNAME'] = trim(_stripslashes($_POST['nickname']));
 
         if (nickname_is_banned($user_info['NICKNAME'])) {
@@ -147,10 +178,24 @@ if (isset($_POST['submit'])) {
 
         $user_info['EMAIL'] = trim(_stripslashes($_POST['email']));
 
-        if (email_is_banned($user_info['EMAIL'])) {
+        if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $user_info['EMAIL'])) {
 
-            $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
+            $error_html.= "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
             $valid = false;
+
+        }else {
+
+            if (email_is_banned($user_info['EMAIL'])) {
+
+                $error_html.= "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
+                $valid = false;
+            }
+
+            if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info['EMAIL'])) {
+
+                $error_html.= "<h2>{$lang['emailaddressalreadyinuse']}</h2>\n";
+                $valid = false;
+            }
         }
 
     }else {
@@ -225,7 +270,7 @@ if (isset($_POST['submit'])) {
 
         // Update basic settings in USER table
 
-        user_update($uid, $user_info['NICKNAME'], $user_info['EMAIL']);
+        user_update($uid, $user_info['LOGON'], $user_info['NICKNAME'], $user_info['EMAIL']);
 
         // Update USER_PREFS
 
@@ -234,6 +279,66 @@ if (isset($_POST['submit'])) {
         // Reinitialize the User's Session to save them having to logout and back in
 
         bh_session_init($uid, false);
+
+        // Username array
+
+        if (isset($_COOKIE['bh_remember_username']) && is_array($_COOKIE['bh_remember_username'])) {
+            $username_array = $_COOKIE['bh_remember_username'];
+        }elseif (isset($_COOKIE['bh_remember_username']) && strlen($_COOKIE['bh_remember_username']) > 0) {
+            $username_array = explode(",", $_COOKIE['bh_remember_username']);
+        }else {
+            $username_array = array();
+        }
+
+        // Password array
+
+        if (isset($_COOKIE['bh_remember_password']) && is_array($_COOKIE['bh_remember_password'])) {
+            $password_array = $_COOKIE['bh_remember_password'];
+        }elseif (isset($_COOKIE['bh_remember_password']) && strlen($_COOKIE['bh_remember_password']) > 0) {
+            $password_array = explode(",", $_COOKIE['bh_remember_password']);
+        }else {
+            $password_array = array();
+        }
+
+        // Passhash array
+
+        if (isset($_COOKIE['bh_remember_passhash']) && is_array($_COOKIE['bh_remember_passhash'])) {
+            $passhash_array = $_COOKIE['bh_remember_passhash'];
+        }elseif (isset($_COOKIE['bh_remember_passhash']) && strlen($_COOKIE['bh_remember_passhash']) > 0) {
+            $passhash_array = explode(",", $_COOKIE['bh_remember_passhash']);
+        }else {
+            $passhash_array = array();
+        }
+
+        // Update the logon that matches the current user
+
+        $logon = bh_session_get_value('LOGON');
+
+        if (($key = _array_search($logon, $username_array)) !== false) {
+
+            $username_array[$key] = $user_info['LOGON'];
+
+            // Remove old 0.7.1 and older cookies
+
+            for ($i = 0; $i < sizeof($username_array); $i++) {
+
+                bh_setcookie("bh_remember_username[$i]", '', time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_remember_password[$i]", '', time() - YEAR_IN_SECONDS);
+                bh_setcookie("bh_remember_passhash[$i]", '', time() - YEAR_IN_SECONDS);
+            }
+
+            // New format cookies for 0.7.2 for better compatibility with more browsers.
+
+            $username_cookie = implode(",", $username_array);
+            $password_cookie = implode(",", $password_array);
+            $passhash_cookie = implode(",", $passhash_array);
+
+            // Set the cookies.
+
+            bh_setcookie("bh_remember_username", $username_cookie, time() + YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_password", $password_cookie, time() + YEAR_IN_SECONDS);
+            bh_setcookie("bh_remember_passhash", $passhash_cookie, time() + YEAR_IN_SECONDS);
+        }
 
         header_redirect("./edit_prefs.php?webtag=$webtag&updated=true", $lang['preferencesupdated']);
     }
@@ -291,7 +396,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['logon']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\" colspan=\"2\">{$user_info['LOGON']}&nbsp;({$lang['userID']}: {$user_info['UID']})</td>\n";
+echo "                        <td align=\"left\" colspan=\"2\">", form_field("logon", (isset($user_info['LOGON']) ? $user_info['LOGON'] : ""), 45, 15), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['nickname']}:&nbsp;</td>\n";

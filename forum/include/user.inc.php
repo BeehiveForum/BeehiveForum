@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.296 2007-02-03 14:24:31 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.297 2007-02-03 16:55:26 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -917,82 +917,6 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     return array('results_count' => $results_count,
                  'results_array' => $results_array);
-}
-
-function user_get_aliases($uid)
-{
-    $db_user_get_aliases = db_connect();
-
-    if (!is_numeric($uid)) return false;
-
-    if (!$table_data = get_table_prefix()) return false;
-
-    // Initialise arrays
-
-    $user_ip_address_array = array();
-    $user_get_aliases_array = array();
-
-    // Session UID
-
-    $sess_uid = bh_session_get_value('UID');
-
-    // Fetch the user's last 10 IP addresses from the POST table
-
-    $sql = "SELECT IPADDRESS FROM {$table_data['PREFIX']}POST ";
-    $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL ";
-    $sql.= "AND LENGTH(IPADDRESS) > 0 GROUP BY IPADDRESS ";
-    $sql.= "LIMIT 0, 10";
-
-    $result = db_query($sql, $db_user_get_aliases);
-
-    if (db_num_rows($result) > 0) {
-
-        while ($user_get_aliases_row = db_fetch_array($result)) {
-
-            if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
-            
-                $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
-            }
-        }
-    }
-
-    if ($ipaddress = user_get_last_ip_address($uid)) {
-        $user_ip_address_array[] = $ipaddress;
-    }
-
-    // Search the POST table for any matches - limit 10 matches
-
-    $user_ip_address_list = implode("' OR POST.IPADDRESS = '", $user_ip_address_array);
-
-    if (strlen($user_ip_address_list) > 0) {
-
-        $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-        $sql.= "POST.IPADDRESS FROM {$table_data['PREFIX']}POST POST ";
-        $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
-        $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-        $sql.= "WHERE (POST.IPADDRESS = '$user_ip_address_list') ";
-        $sql.= "AND POST.FROM_UID <> $uid GROUP BY USER.UID ";
-        $sql.= "LIMIT 0, 10";
-
-        $result = db_query($sql, $db_user_get_aliases);
-
-        if (db_num_rows($result) > 0) {
-
-            while($user_get_aliases_row = db_fetch_array($result)) {
-
-                if (isset($user_get_aliases_row['PEER_NICKNAME'])) {
-                    if (!is_null($user_get_aliases_row['PEER_NICKNAME']) && strlen($user_get_aliases_row['PEER_NICKNAME']) > 0) {
-                        $user_get_aliases_row['NICKNAME'] = $user_get_aliases_row['PEER_NICKNAME'];
-                    }
-                }
-
-                $user_get_aliases_array[$user_get_aliases_row['UID']] = $user_get_aliases_row;
-            }
-        }
-    }
-
-    return $user_get_aliases_array;
 }
 
 function user_get_ip_addresses($uid)

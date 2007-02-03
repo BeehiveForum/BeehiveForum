@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.396 2007-02-01 22:30:44 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.397 2007-02-03 16:55:26 decoyduck Exp $ */
 
 // International English language file
 
@@ -303,12 +303,17 @@ $lang['userdeleteallpostswarning'] = "Are you sure you want to delete all of the
 $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
 $lang['folderaccess'] = "Folder Access";
 $lang['possiblealiases'] = "Possible Aliases";
+$lang['userhistory'] = "User History";
+$lang['nohistory'] = "No History Records Saved."
+$lang['userhistorychanges'] = "Changes";
+$lang['changedlogonfromto'] = "Changed Logon from %s to %s";
+$lang['changednicknamefromto'] = "Changed Nickname from %s to %s";
+$lang['changedemailfromto'] = "Changed Email from %s to %s";
 $lang['usersettingsupdated'] = "User Settings Successfully Updated";
 $lang['nomatches'] = "No matches";
 $lang['deleteposts'] = "Delete Posts";
 $lang['deleteallusersposts'] = "Delete all of this user's posts";
 $lang['noattachmentsforuser'] = "No attachments for this user";
-$lang['aliasdesc'] = "This is a list of other posters who match this user's last 20 known IP addresses.";
 $lang['forgottenpassworddesc'] = "If this user has forgotten their password you can reset it for them here.";
 $lang['manageusersexp_1'] = "This list shows a selection of users who have logged on to your forum, sorted by";
 $lang['manageusersexp_2'] = "To alter a user's permissions click their name.";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.295 2007-02-01 22:30:44 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.296 2007-02-03 14:24:31 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -95,7 +95,7 @@ function user_create($logon, $password, $nickname, $email)
     return -1;
 }
 
-function user_update($uid, $nickname, $email)
+function user_update($uid, $logon, $nickname, $email)
 {
     $db_user_update = db_connect();
 
@@ -103,13 +103,44 @@ function user_update($uid, $nickname, $email)
 
     if (!$table_data = get_table_prefix()) return false;
 
+    // Escape and de-HTML the new details.
+
+    $logon = addslashes(_htmlentities($logon));
     $nickname = addslashes(_htmlentities($nickname));
     $email = addslashes(_htmlentities($email));
 
-    $sql = "UPDATE USER SET NICKNAME = '$nickname', ";
-    $sql.= "EMAIL = '$email' WHERE UID = $uid";
+    // Check to see if we need to save the current
+    // details to the USER_HISTORY table.
 
-    return db_query($sql, $db_user_update);
+    $sql = "SELECT UID FROM USER WHERE UID = '$uid' ";
+    $sql.= "AND LOGON = '$logon' AND NICKNAME = '$nickname' ";
+    $sql.= "AND EMAIL = '$email'";
+
+    if (!$result_check = db_query($sql, $db_user_update)) return false;
+
+    // If the above query matched zero rows then a value has
+    // changed and we need to save the original values in
+    // the USER_HISTORY table.
+
+    if (db_num_rows($result_check) < 1) {
+    
+        $user_info = user_get($uid);
+        $user_info = array_map('addslashes', $user_info);
+
+        $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
+        $sql.= "VALUES ('$uid', '{$user_info['LOGON']}', '{$user_info['NICKNAME']}', "; 
+        $sql.= "'{$user_info['EMAIL']}', NOW())";
+
+        if (!$result_update = db_query($sql, $db_user_update)) return false;
+    }
+
+    // Update the new details
+
+    $sql = "UPDATE USER SET LOGON = '$logon', NICKNAME = '$nickname', ";
+    $sql.= "EMAIL = '$email' WHERE UID = '$uid'";
+
+    if (!$result_update = db_query($sql, $db_user_update)) return false;
+
 }
 
 function user_update_nickname($uid, $nickname)
@@ -263,7 +294,7 @@ function user_get($uid)
 
     $sess_uid = bh_session_get_value('UID');
 
-    if (!$table_data = get_table_prefix()) {
+    if ((!$table_data = get_table_prefix()) || ($uid == $sess_uid)) {
         
         $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, USER.EMAIL, ";
         $sql.= "IPADDRESS, REFERER FROM USER WHERE UID = '$uid'";

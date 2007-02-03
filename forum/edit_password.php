@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_password.php,v 1.50 2007-01-26 21:52:32 decoyduck Exp $ */
+/* $Id: edit_password.php,v 1.51 2007-02-03 14:24:31 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -199,7 +199,7 @@ if (isset($_POST['submit'])) {
 
         $logon = bh_session_get_value('LOGON');
 
-        if (($key = array_search($logon, $username_array)) !== false) {
+        if (($key = _array_search($logon, $username_array)) !== false) {
 
             $password_array[$key] = str_repeat(chr(32), strlen($t_password));
             $passhash_array[$key] = md5($t_password);

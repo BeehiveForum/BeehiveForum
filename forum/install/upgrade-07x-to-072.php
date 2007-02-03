@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.20 2007-01-27 15:43:46 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.21 2007-02-03 14:24:31 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -348,6 +348,22 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 // If we got this far we managed to complete the per-forum table
 // upgrades without incident so we can now do the global tables.
 
+// New USER_HISTORY table for tracking user logon, nickname
+// and email address changes
+
+$sql = "CREATE TABLE USER_HISTORY (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  LOGON VARCHAR(32) NULL,";
+$sql.= "  NICKNAME VARCHAR(32) NULL,";
+$sql.= "  EMAIL VARCHAR(80) NULL,";
+$sql.= "  PRIMARY KEY (UID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
 
 // As of Beehive Forum 0.7.2 you can keep your per-forum tables
 // and global tables in seperate databases. In order to track

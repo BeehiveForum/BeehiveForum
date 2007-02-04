@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.121 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.122 2007-02-04 22:20:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -96,6 +96,17 @@ if (!bh_session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     exit;
 }
 
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+}else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+}else {
+    $page = 1;
+}
+
+$start = floor($page - 1) * 10;
+if ($start < 0) $start = 0;
+
 $error_html = "";
 
 if (isset($_POST['delete'])) {
@@ -153,17 +164,6 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
     header_redirect("admin_folders.php?webtag=$webtag&page=$page");
 }
-
-if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
-}else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
-}else {
-    $page = 1;
-}
-
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
 
 html_draw_top();
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.59 2007-02-03 14:24:31 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.60 2007-02-04 22:20:41 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -149,6 +149,12 @@ if (isset($_POST['submit'])) {
         if (logon_is_banned($user_info['LOGON'])) {
 
             $error_html.= "<h2>{$lang['logonnotpermitted']}</h2>\n";
+            $valid = false;
+        }
+
+        if (user_exists($user_info['LOGON'], $uid)) {
+
+            $error_html.= "<h2>{$lang['usernameexists']}</h2>\n";
             $valid = false;
         }
 
@@ -395,9 +401,25 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['logon']}:&nbsp;</td>\n";
-echo "                        <td align=\"left\" colspan=\"2\">", form_field("logon", (isset($user_info['LOGON']) ? $user_info['LOGON'] : ""), 45, 15), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['memberno']}:&nbsp;</td>\n";
+echo "                        <td align=\"left\" colspan=\"2\">#{$user_info['UID']}&nbsp;</td>\n";
 echo "                      </tr>\n";
+
+if (forum_get_setting('allow_username_changes', 'Y')) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['username']}:&nbsp;</td>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">", form_field("logon", (isset($user_info['LOGON']) ? $user_info['LOGON'] : ""), 45, 15), "&nbsp;</td>\n";
+    echo "                      </tr>\n";
+
+}else {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['username']}:&nbsp;</td>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">{$user_info['LOGON']}&nbsp; (UID: {$user_info['UID']})</td>\n";
+    echo "                      </tr>\n";
+}
+
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['nickname']}:&nbsp;</td>\n";
 echo "                        <td align=\"left\" colspan=\"2\">", form_field("nickname", (isset($user_info['NICKNAME']) ? $user_info['NICKNAME'] : ""), 45, 32), "&nbsp;</td>\n";

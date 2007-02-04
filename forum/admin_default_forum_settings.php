@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_default_forum_settings.php,v 1.59 2007-01-20 19:01:25 decoyduck Exp $ */
+/* $Id: admin_default_forum_settings.php,v 1.60 2007-02-04 22:20:39 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -258,6 +258,12 @@ if (isset($_POST['submit'])) {
         $new_forum_settings['allow_search_spidering'] = "Y";
     }else {
         $new_forum_settings['allow_search_spidering'] = "N";
+    }
+
+    if (isset($_POST['allow_username_changes']) && $_POST['allow_username_changes'] == "Y") {
+        $new_forum_settings['allow_username_changes'] = "Y";
+    }else {
+        $new_forum_settings['allow_username_changes'] = "N";
     }
 
     if (isset($_POST['require_user_approval']) && $_POST['require_user_approval'] == "Y") {
@@ -703,11 +709,15 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['guestaccount']}:</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">{$lang['userandguestoptions']}:</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">{$lang['allowuserstochangeusername']}:</td>\n";
+echo "                        <td align=\"left\">", form_radio("allow_username_changes", "Y", $lang['yes'], (isset($default_forum_settings['allow_username_changes']) && $default_forum_settings['allow_username_changes'] == "Y")), "&nbsp;", form_radio("allow_username_changes", "N", $lang['no'], (isset($default_forum_settings['allow_username_changes']) && $default_forum_settings['allow_username_changes'] == "N") || !isset($default_forum_settings['allow_username_changes'])), "</td>\n";
+echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">{$lang['requireuserapproval']}:</td>\n";
 echo "                        <td align=\"left\">", form_radio("require_user_approval", "Y", $lang['yes'], (isset($default_forum_settings['require_user_approval']) && $default_forum_settings['require_user_approval'] == "Y")), "&nbsp;", form_radio("require_user_approval", "N", $lang['no'], (isset($default_forum_settings['require_user_approval']) && $default_forum_settings['require_user_approval'] == "N") || !isset($default_forum_settings['require_user_approval'])), "</td>\n";
@@ -722,6 +732,7 @@ echo "                        <td align=\"left\">", form_radio("guest_show_recen
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_53']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_50']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_21']}</p>\n";
 echo "                          <p class=\"smalltext\">{$lang['forum_settings_help_22']}</p>\n";

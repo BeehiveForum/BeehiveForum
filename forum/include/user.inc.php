@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.297 2007-02-03 16:55:26 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.298 2007-02-04 22:20:41 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -50,7 +50,7 @@ function user_count()
    return $user_count['COUNT'];
 }
 
-function user_exists($logon)
+function user_exists($logon, $check_uid = false)
 {
     $db_user_exists = db_connect();
 
@@ -58,9 +58,18 @@ function user_exists($logon)
 
     $logon = addslashes($logon);
 
-    $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER WHERE logon = '$logon'";
-    $result = db_query($sql, $db_user_exists);
+    if (is_numeric($check_uid) && $check_uid !== false) {
 
+        $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
+        $sql.= "WHERE LOGON = '$logon' AND UID <> '$check_uid'";
+
+    }else {
+
+        $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
+        $sql.= "WHERE LOGON = '$logon'";
+    }
+
+    $result = db_query($sql, $db_user_exists);    
     list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
 
     return ($user_count > 0);

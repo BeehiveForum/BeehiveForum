@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.186 2007-02-03 16:55:26 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.187 2007-02-04 22:20:40 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -853,66 +853,33 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         foreach($folder_array as $fid => $folder) {
 
-            if ($folder['STATUS'] > 0) {
-
-                echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
-                echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], $folder['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], $folder['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $folder['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $folder['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $folder['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $folder['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], $folder['STATUS'] & USER_PERM_POST_APPROVAL), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                  </table>\n";
-
-            }else {
-
-                echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
-                echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], false), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], false), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], false), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], false), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], false), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], false), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], false), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], false), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], false), "</td>\n";
-                echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], false), "</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                  </table>\n";
-            }
+            echo "                                  ", form_input_hidden("t_update_perms_array[]", $folder['FID']), "\n";
+            echo "                                  <table class=\"posthead\" width=\"100%\">\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?fid={$folder['FID']}\" target=\"_self\">{$folder['TITLE']}</a></td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, $lang['readposts'], $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, $lang['replytothreads'], $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, $lang['createnewthreads'], $folder['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, $lang['editposts'], $folder['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, $lang['deleteposts'], $folder['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, $lang['uploadattachments'], $folder['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, $lang['postinhtml'], $folder['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, $lang['postasignature'], $folder['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, $lang['moderatefolder'], $folder['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
+            echo "                                      <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, $lang['requirepostapproval'], $folder['STATUS'] & USER_PERM_POST_APPROVAL), "</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                    <tr>\n";
+            echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
+            echo "                                    </tr>\n";
+            echo "                                  </table>\n";
         }
 
         echo "                                </div>\n";
@@ -1146,18 +1113,40 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                        <td align=\"left\">\n";
                 echo "                          <table class=\"posthead\" width=\"100%\">\n";
                 echo "                            <tr>\n";
-                echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['date']}</td>\n";
+                echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">{$lang['date']}</td>\n";
                 echo "                              <td align=\"left\" class=\"subhead\">{$lang['userhistorychanges']}</td>\n";
                 echo "                            </tr>\n";
+                echo "                            <tr>\n";
+                echo "                              <td align=\"left\" colspan=\"2\">\n";
+                echo "                                <div class=\"admin_folder_perms\">\n";
+                
+                foreach ($user_history_array as $row => $user_history) {
 
-                foreach ($user_history_array as $user_history) {
-
-                    echo "                            <tr>\n";
-                    echo "                              <td align=\"left\">", format_date($user_history['MODIFIED']), "</td>\n";
-                    echo "                              <td align=\"left\">{$user_history['DATA']}</td>\n";
-                    echo "                            </tr>\n";
+                    $row_highlight_class = (($row %2) == 1) ? "row_highlight" : "";
+                    
+                    echo "                                  <table class=\"posthead\" width=\"100%\">\n";
+                    echo "                                    <tr>\n";
+                    echo "                                      <td align=\"left\" valign=\"top\" class=\"$row_highlight_class\" width=\"100\">", format_date($user_history['MODIFIED']), "</td>\n";
+                    echo "                                      <td align=\"left\" class=\"$row_highlight_class\">{$user_history['DATA']}</td>\n";
+                    echo "                                    </tr>\n";
+                    echo "                                  </table>\n";
                 }
 
+                echo "                                </div>\n";
+                echo "                              </td>\n";
+                echo "                            </tr>\n";
+                echo "                          </table>\n";
+                echo "                        </td>\n";
+                echo "                      </tr>\n";
+                echo "                    </table>\n";
+                echo "                    <br />\n";
+                echo "                    <table>\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"center\">\n";
+                echo "                          <table>\n";
+                echo "                            <tr>\n";
+                echo "                              <td align=\"left\" width=\"250\">Clear user history from database:</td>\n";
+                echo "                              <td align=\"left\">", form_radio('clear_user_history', 'Y', $lang['yes']), form_radio('clear_user_history', 'N', $lang['no'], true), "</td>\n";
                 echo "                            </tr>\n";
                 echo "                          </table>\n";
                 echo "                        </td>\n";
@@ -1182,7 +1171,7 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
+        echo "                </tr>\n";        
         echo "              </table>\n";
         echo "            </td>\n";
         echo "          </tr>\n";

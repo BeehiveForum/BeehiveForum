@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.397 2007-02-03 16:55:26 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.398 2007-02-04 22:20:42 decoyduck Exp $ */
 
 // International English language file
 
@@ -304,7 +304,7 @@ $lang['postssuccessfullydeleted'] = "Posts were successfully deleted.";
 $lang['folderaccess'] = "Folder Access";
 $lang['possiblealiases'] = "Possible Aliases";
 $lang['userhistory'] = "User History";
-$lang['nohistory'] = "No History Records Saved."
+$lang['nohistory'] = "No History Records Saved";
 $lang['userhistorychanges'] = "Changes";
 $lang['changedlogonfromto'] = "Changed Logon from %s to %s";
 $lang['changednicknamefromto'] = "Changed Nickname from %s to %s";
@@ -715,11 +715,12 @@ $lang['enablepersonalmessages'] = "Enable Personal Messages";
 $lang['pmusermessages'] = "PM messages per user";
 $lang['allowpmstohaveattachments'] = "Allow Personal Messages to have attachments";
 $lang['autopruneuserspmfoldersevery'] = "Auto prune user's PM folders every";
-$lang['guestaccount'] = "Guest Account";
+$lang['userandguestoptions'] = "User and Guest Options";
 $lang['enableguestaccount'] = "Enable Guest Account";
 $lang['listguestsinvisitorlog'] = "List Guests in Visitor Log";
 $lang['allowguestaccess'] = "Allow Guest Access";
 $lang['userandguestaccesssettings'] = "User and guest access settings";
+$lang['allowuserstochangeusername'] = "Allow users to change username";
 $lang['requireuserapproval'] = "Require user approval by admin";
 $lang['enableattachments'] = "Enable Attachments";
 $lang['attachmentdir'] = "Attachment Dir";
@@ -745,8 +746,8 @@ $lang['forum_settings_help_17'] = "Enabling this option allows Beehive to includ
 $lang['forum_settings_help_18'] = "Personal Messages are invaluable as a way of taking more private matters out of view of the other members. However if you don't want your users to be able to send each other personal messages you can disable this option.";
 $lang['forum_settings_help_19'] = "Personal Messages can also contain attachments which can be useful for exchanging files between users.";
 $lang['forum_settings_help_20'] = "<b>Note:</b> The space allocation for PM attachments is taken from each users' main attachment allocation and is not in addition to.";
-$lang['forum_settings_help_21'] = "The guest account allows visitors to your forum to read posts without having to sign up for an account.";
-$lang['forum_settings_help_22'] = "If you prefer you can also setup your Beehive Forum so that guests are automatically logged in. Once a user registers they will always be shown the login screen as long as their cookies remain intact.";
+$lang['forum_settings_help_21'] = "<b>Enable Guest Account</b> allows visitors to browse your forum and read posts without registering a user account. A user account is still required if they wish to post or change user preferences.";
+$lang['forum_settings_help_22'] = "<b>List Guests in Visitor Log</b> allows you to specify whether or not unregistered users are listed on the Visitor Log along side registered users.";
 $lang['forum_settings_help_23'] = "Beehive allows attachments to be uploaded to messages when posted. If you have limited web space you may which to disable attachments by clearing the box above.";
 $lang['forum_settings_help_24'] = "<b>Attachment Dir</b> is the location Beehive should store it's attachments in. This directory must exist on your web space and must be writable by the web server / PHP process otherwise uploads will fail.";
 $lang['forum_settings_help_25'] = "<b>Attachment Space Per User</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. By default this is 1MB of space.";
@@ -774,9 +775,10 @@ $lang['forum_settings_help_46'] = "<b>Text Captcha key</b> allows you to change 
 $lang['forum_settings_help_47'] = "<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear.";
 $lang['forum_settings_help_48'] = "<b>Unread messages cut-off</b> specifies how long unread messages are retained. You may choose from various preset values or enter your own cut-off period in seconds. Threads modified earlier than the defined cut-off period will automatically appear as read.";
 $lang['forum_settings_help_49'] = "Choosing <b>Disable unread messages</b> will completely remove unread messages support and remove the relevant options from the discussion type drop down on the thread list.";
-$lang['forum_settings_help_50'] = "You can require approval of all new user accounts before they are used by enabling this option. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
+$lang['forum_settings_help_50'] = "<b>Require user approval by admin</b> allows you to restrict access by new users until they have been approved by a moderator or admin. Without approval a user cannot access any area of the Beehive Forum installation including individual forums, PM inbox and My Forums sections.";
 $lang['forum_settings_help_51'] = "Use <b>Closed Message</b>, <b>Restricted Message</b> and <b>Password Protected Message</b> to customise the message displayed when users access your forum in the various states.";
 $lang['forum_settings_help_52'] = "You can use HTML in your messages. Hyperlinks and email addresses will also be automatically converted to links. To use the default Beehive Forum messages clear the fields.";
+$lang['forum_settings_help_53'] = "<b>Allow users to change username</b> permits already registered users to change their username. When enabled you can track the changes a user makes to their username via the admin user tools.";
 
 // Attachments (attachments.php, get_attachment.php) ---------------------------------------
 
@@ -1215,6 +1217,7 @@ $lang['relationshipsupdated'] = "Relationships Updated";
 $lang['relationshipupdatefailed'] = "Relationship updated failed!";
 $lang['preferencesupdated'] = "Preferences were successfully updated.";
 $lang['userdetails'] = "User Details";
+$lang['memberno'] = "Member No.";
 $lang['firstname'] = "First name";
 $lang['lastname'] = "Last name";
 $lang['dateofbirth'] = "Date of Birth";

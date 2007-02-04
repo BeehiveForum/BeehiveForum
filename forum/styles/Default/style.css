@@ -1108,3 +1108,7 @@ a {
     padding: 5px;
     vertical-align: middle;
 }
+
+.row_highlight {
+    background-color: #B7CBDE;
+}

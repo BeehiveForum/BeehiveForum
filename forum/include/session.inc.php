@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.283 2007-01-28 01:15:15 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.284 2007-02-06 14:58:29 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -924,51 +924,66 @@ function bh_session_end($remove_cookies = true)
 
 function bh_session_get_perm_array($uid)
 {
-    if (!is_numeric($uid)) return false;
-
-    $user_perm_array = array();
-
     $db_bh_session_get_perm_array = db_connect();
 
-    if ($table_data = get_table_prefix()) {
-        $forum_fid = $table_data['FID'];
-    }else {
-        $forum_fid = 0;
-    }
+    if (!is_numeric($uid)) return false;
 
-    $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, ";
-    $sql.= "GROUP_PERMS.FID,BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM GROUP_PERMS GROUP_PERMS ";
-    $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
-    $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
-    $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID IS NOT NULL ";
-    $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
+    static $user_perm_array = false;
 
-    $result = db_query($sql, $db_bh_session_get_perm_array);
+    if (!is_array($user_perm_array) || sizeof($user_perm_array) < 1) {
 
-    while ($row = db_fetch_array($result)) {
-        
-        if ($row['USER_PERM_COUNT'] > 0) {
-            $user_perm_array[$row['FORUM']][$uid][$row['FID']] = $row['PERM'];
+        if ($table_data = get_table_prefix()) {
+            $forum_fid = $table_data['FID'];
+        }else {
+            $forum_fid = 0;
+        }
+
+        $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, ";
+        $sql.= "GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
+        $sql.= "COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT FROM GROUP_PERMS GROUP_PERMS ";
+        $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
+        $sql.= "LEFT JOIN GROUPS GROUPS ON (GROUPS.GID = GROUP_PERMS.GID) ";
+        $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.GID IS NOT NULL ";
+        $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
+
+        $result = db_query($sql, $db_bh_session_get_perm_array);
+
+        if (db_num_rows($result) > 0) {
+            
+            if (!is_array($user_perm_array)) $user_perm_array = array();
+            
+            while ($row = db_fetch_array($result)) {
+
+                if ($row['USER_PERM_COUNT'] > 0) {
+
+                    $user_perm_array[$row['FORUM']][$uid][$row['FID']] = $row['PERM'];
+                }
+            }
+        }
+
+        $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM ";
+        $sql.= "FROM GROUP_PERMS WHERE GID = 0 ";
+        $sql.= "GROUP BY FORUM, FID";
+
+        $result = db_query($sql, $db_bh_session_get_perm_array);
+
+        if (db_num_rows($result) > 0) {
+            
+            if (!is_array($user_perm_array)) $user_perm_array = array();
+            
+            while ($row = db_fetch_array($result)) {
+
+                if (!isset($user_perm_array[$row['FORUM']][$uid][$row['FID']])) {
+                
+                    $user_perm_array[$row['FORUM']][$uid][$row['FID']] = $row['PERM'];
+                }
+
+                $user_perm_array[$row['FORUM']][0][$row['FID']] = $row['PERM'];
+            }
         }
     }
 
-    $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM ";
-    $sql.= "FROM GROUP_PERMS WHERE GID = 0 ";
-    $sql.= "GROUP BY FORUM, FID";
-
-    $result = db_query($sql, $db_bh_session_get_perm_array);
-
-    while ($row = db_fetch_array($result)) {
-
-        if (!isset($user_perm_array[$row['FORUM']][$uid][$row['FID']])) {
-            $user_perm_array[$row['FORUM']][$uid][$row['FID']] = $row['PERM'];
-        }
-
-        $user_perm_array[$row['FORUM']][0][$row['FID']] = $row['PERM'];
-    }
-
-    return sizeof($user_perm_array) > 0 ? $user_perm_array : false;
+    return is_array($user_perm_array) && sizeof($user_perm_array) > 0 ? $user_perm_array : false;
 }
 
 /**

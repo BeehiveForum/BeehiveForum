@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.212 2007-02-01 22:30:44 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.213 2007-02-06 14:58:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -44,8 +44,10 @@ include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
 
-function get_forum_data($forum_fid = false)
+function get_forum_data()
 {
+    static $forum_data = false;
+    
     $db_get_forum_data = db_connect();
 
     if (($uid = bh_session_get_value('UID')) === false) return false;
@@ -58,81 +60,59 @@ function get_forum_data($forum_fid = false)
         $webtag = trim(_stripslashes($_SERVER['argv'][1]));
     }
 
-    if (isset($forum_fid) && is_numeric($forum_fid) && $forum_fid !== false) {
+    if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
 
-        // Check #1: Have we been requested to get the data for
-        // a specific forum?
+        if (isset($webtag) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
 
-        $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
-        $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-        $sql.= "AND USER_FORUM.UID = $uid) WHERE FORUMS.FID = '$forum_fid'";
+            // Check #2: See if the webtag specified in GET/POST
+            // actually exists.
 
-        if ($result = db_query($sql, $db_get_forum_data)) {
+            $webtag = addslashes($webtag);
 
-            if (db_num_rows($result) > 0) {
+            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
+            $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
+            $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+            $sql.= "AND USER_FORUM.UID = $uid) WHERE WEBTAG = '$webtag'";
 
-                $forum_data = db_fetch_array($result);
+            if ($result = db_query($sql, $db_get_forum_data)) {
 
-                if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
+                if (db_num_rows($result) > 0) {
 
-                return $forum_data;
+                    $forum_data = db_fetch_array($result);
+
+                    if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
+                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
+
+                    return $forum_data;
+                }
             }
-        }
 
-    }else if (isset($webtag) && preg_match("/^[A-Z0-9_]+$/", $webtag) > 0) {
+            return array('WEBTAG_SEARCH' => $webtag);
 
-        // Check #2: See if the webtag specified in GET/POST
-        // actually exists.
+        }else {
 
-        $webtag = addslashes($webtag);
+            // Check #3: Try and select a default webtag from
+            // the databse
 
-        $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
-        $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-        $sql.= "AND USER_FORUM.UID = $uid) WHERE WEBTAG = '$webtag'";
+            $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
+            $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
+            $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+            $sql.= "AND USER_FORUM.UID = $uid) WHERE DEFAULT_FORUM = 1";
 
-        if ($result = db_query($sql, $db_get_forum_data)) {
+            if ($result = db_query($sql, $db_get_forum_data)) {
 
-            if (db_num_rows($result) > 0) {
+                if (db_num_rows($result) > 0) {
 
-                $forum_data = db_fetch_array($result);
+                    $forum_data = db_fetch_array($result);
 
-                if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
-
-                return $forum_data;
-            }
-        }
-
-        return array('WEBTAG_SEARCH' => $webtag);
-
-    }else {
-
-        // Check #3: Try and select a default webtag from
-        // the databse
-
-        $sql = "SELECT FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED, ";
-        $sql.= "CONCAT(FORUMS.DATABASE_NAME, '.', FORUMS.WEBTAG, '_') AS PREFIX FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-        $sql.= "AND USER_FORUM.UID = $uid) WHERE DEFAULT_FORUM = 1";
-
-        if ($result = db_query($sql, $db_get_forum_data)) {
-
-            if (db_num_rows($result) > 0) {
-
-                $forum_data = db_fetch_array($result);
-
-                if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
-                if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
-
-                return $forum_data;
+                    if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
+                    if (!isset($forum_data['ALLOWED'])) $forum_data['ALLOWED'] = 0;
+                }
             }
         }
     }
 
-    return false;
+    return $forum_data;
 }
 
 function get_webtag(&$webtag_search)
@@ -150,9 +130,9 @@ function get_webtag(&$webtag_search)
     return false;
 }
 
-function get_table_prefix($forum_fid = false)
+function get_table_prefix()
 {
-    $forum_data = get_forum_data($forum_fid);
+    $forum_data = get_forum_data();
 
     if (is_array($forum_data) && isset($forum_data['WEBTAG'])) {
         return $forum_data;

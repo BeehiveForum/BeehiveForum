@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: post.inc.php,v 1.146 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: post.inc.php,v 1.147 2007-02-06 14:58:29 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -85,7 +85,7 @@ function post_create($fid, $tid, $reply_pid, $by_uid, $fuid, $tuid, $content, $h
         $sql.= "VALUES ($tid, $reply_pid, $fuid, $tuid, NOW(), NOW(), $fuid, '$ipaddress')";
     }
 
-    $result = db_query($sql,$db_post_create);
+    $result = db_query($sql, $db_post_create);
 
     if ($result) {
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.187 2007-02-04 22:20:40 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.188 2007-02-06 21:47:23 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -280,25 +280,88 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
     if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
-        if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
+        if (isset($_POST['t_logon']) && strlen(trim(_stripslashes($_POST['t_logon']))) > 0) {
 
-            $user_details['NICKNAME'] = trim(_stripslashes($_POST['t_nickname']));
+            $t_logon = strtoupper(trim(_stripslashes($_POST['t_logon'])));
 
-            if (nickname_is_banned($user_details['NICKNAME'])) {
-
-                $error_html.= "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+            if (!preg_match("/^[a-z0-9_-]+$/i", $t_logon)) {
+                echo "<h2>{$lang['usernameinvalidchars']}</h2>\n";
                 $valid = false;
+            }
 
-            } else {
+            if (strlen($t_logon) < 2) {
+                echo "<h2>{$lang['usernametooshort']}</h2>\n";
+                $valid = false;
+            }
 
-                user_update_nickname($uid, $user_details['NICKNAME']);
+            if (strlen($t_logon) > 15) {
+                echo "<h2>{$lang['usernametoolong']}</h2>\n";
+                $valid = false;
+            }
 
+            if (logon_is_banned($t_logon)) {
+
+                echo "<h2>{$lang['logonnotpermitted']}</h2>\n";
+                $valid = false;
             }
 
         }else {
 
-            $error_html.= "<h2>{$lang['nicknamerequired']}</h2>";
+            echo "<h2>{$lang['usernamerequired']}</h2>";
             $valid = false;
+        }
+
+        if (isset($_POST['t_nickname']) && strlen(trim(_stripslashes($_POST['t_nickname']))) > 0) {
+
+            $t_nickname = trim(_stripslashes($_POST['t_nickname']));
+
+            if (nickname_is_banned($t_nickname)) {
+
+                echo "<h2>{$lang['nicknamenotpermitted']}</h2>\n";
+                $valid = false;
+            }
+
+        }else {
+
+            echo "<h2>{$lang['nicknamerequired']}</h2>";
+            $valid = false;
+        }
+
+        if (isset($_POST['t_email']) && strlen(trim(_stripslashes($_POST['t_email']))) > 0) {
+
+            $t_email = trim(_stripslashes($_POST['t_email']));
+
+            if (!ereg("^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$", $t_email)) {
+
+                echo "<h2>{$lang['invalidemailaddressformat']}</h2>\n";
+                $valid = false;
+
+            }else {
+
+                if (email_is_banned($t_email)) {
+
+                    echo "<h2>{$lang['emailaddressnotpermitted']}</h2>\n";
+                    $valid = false;
+                }
+
+                if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($t_email)) {
+
+                    echo "<h2>{$lang['emailaddressalreadyinuse']}</h2>\n";
+                    $valid = false;
+                }
+            }
+
+        }else {
+
+            echo "<h2>{$lang['emailaddressrequired']}</h2>";
+            $valid = false;
+        }
+
+        if ($valid) {
+
+            user_update($uid, $t_logon, $t_nickname, $t_email);
+            unset($_POST['t_logon'], $_POST['t_nickname'], $_POST['t_email']);
+            $user = user_get($uid);
         }
 
         if ($table_data = get_table_prefix()) {
@@ -318,6 +381,11 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
                 user_reset_post_count($uid);
                 $user['POST_COUNT'] = user_get_post_count($uid);
                 if (isset($_POST['t_post_count'])) unset($_POST['t_post_count']);
+            }
+
+            if (isset($_POST['clear_user_history']) && $_POST['clear_user_history'] == "Y") {
+
+                admin_clear_user_history($uid);
             }
         }
     }
@@ -368,7 +436,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
 
         $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_all_banned | $t_confirm_email;
 
-        if (perm_has_forumtools_access($uid) && $forum_tools_perm_count == 1) {
+        if ($valid && perm_has_forumtools_access($uid) && $forum_tools_perm_count == 1) {
 
             if (!($new_global_user_perms & USER_PERM_FORUM_TOOLS)) {
 
@@ -468,6 +536,7 @@ if (isset($_POST['submit']) && (!isset($_POST['t_delete_posts']) || $_POST['t_de
     }
 
     if ($valid) {
+
         echo "<p><b>{$lang['usersettingsupdated']}</b></p>\n";
     }
 }
@@ -574,8 +643,16 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">{$lang['nicknameheader']}</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? $_POST['t_nickname'] : $user['NICKNAME'], 32), "</td>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['username']}:</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_logon", (isset($_POST['t_logon'])) ? $_POST['t_nickname'] : $user['LOGON'], 45, 15), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['nickname']}:</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_nickname", (isset($_POST['t_nickname'])) ? $_POST['t_nickname'] : $user['NICKNAME'], 45, 32), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"150\">{$lang['emailaddress']}:</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_email", (isset($_POST['t_email'])) ? $_POST['t_email'] : $user['EMAIL'], 45, 80), "</td>\n";
         echo "                      </tr>\n";
 
         if ($table_data = get_table_prefix()) {
@@ -1139,21 +1216,43 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                        </td>\n";
                 echo "                      </tr>\n";
                 echo "                    </table>\n";
-                echo "                    <br />\n";
-                echo "                    <table>\n";
-                echo "                      <tr>\n";
-                echo "                        <td align=\"center\">\n";
-                echo "                          <table>\n";
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\" width=\"250\">Clear user history from database:</td>\n";
-                echo "                              <td align=\"left\">", form_radio('clear_user_history', 'Y', $lang['yes']), form_radio('clear_user_history', 'N', $lang['no'], true), "</td>\n";
-                echo "                            </tr>\n";
-                echo "                          </table>\n";
-                echo "                        </td>\n";
-                echo "                      </tr>\n";
-                echo "                    </table>\n";
                 echo "                  </td>\n";
                 echo "                </tr>\n";
+
+                if (bh_session_check_perm(USER_PERM_FORUM_TOOLS, 0)) {
+
+                    echo "                <tr>\n";
+                    echo "                  <td align=\"left\">&nbsp;</td>\n";
+                    echo "                </tr>\n";
+                    echo "              </table>\n";
+                    echo "            </td>\n";
+                    echo "          </tr>\n";
+                    echo "        </table>\n";
+                    echo "      </td>\n";
+                    echo "    </tr>\n";
+                    echo "  </table>\n";
+                    echo "  <br />\n";
+                    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+                    echo "    <tr>\n";
+                    echo "      <td align=\"left\">\n";
+                    echo "        <table class=\"box\" width=\"100%\">\n";
+                    echo "          <tr>\n";
+                    echo "            <td align=\"left\" class=\"posthead\">\n";
+                    echo "              <table class=\"posthead\" width=\"100%\">\n";
+                    echo "                <tr>\n";
+                    echo "                  <td class=\"subhead\" align=\"left\">{$lang['userhistory']}</td>\n";
+                    echo "                </tr>\n";
+                    echo "                <tr>\n";
+                    echo "                  <td align=\"center\">\n";
+                    echo "                    <table width=\"90%\">\n";
+                    echo "                      <tr>\n";
+                    echo "                        <td align=\"left\" width=\"250\">{$lang['clearuserhistory']}:</td>\n";
+                    echo "                        <td align=\"left\">", form_radio('clear_user_history', 'Y', $lang['yes']), form_radio('clear_user_history', 'N', $lang['no'], true), "</td>\n";
+                    echo "                      </tr>\n";
+                    echo "                    </table>\n";
+                    echo "                  </td>\n";
+                    echo "                </tr>\n";
+                }
             }
 
         }else {

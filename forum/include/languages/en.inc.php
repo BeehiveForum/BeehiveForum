@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: en.inc.php,v 1.398 2007-02-04 22:20:42 decoyduck Exp $ */
+/* $Id: en.inc.php,v 1.399 2007-02-06 21:47:23 decoyduck Exp $ */
 
 // International English language file
 
@@ -306,6 +306,7 @@ $lang['possiblealiases'] = "Possible Aliases";
 $lang['userhistory'] = "User History";
 $lang['nohistory'] = "No History Records Saved";
 $lang['userhistorychanges'] = "Changes";
+$lang['clearuserhistory'] = "Clear User History";
 $lang['changedlogonfromto'] = "Changed Logon from %s to %s";
 $lang['changednicknamefromto'] = "Changed Nickname from %s to %s";
 $lang['changedemailfromto'] = "Changed Email from %s to %s";

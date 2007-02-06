@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.298 2007-02-04 22:20:41 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.299 2007-02-06 21:47:23 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -163,9 +163,25 @@ function user_update_nickname($uid, $nickname)
     $nickname = addslashes(_htmlentities($nickname));
 
     $sql = "UPDATE USER SET NICKNAME = '$nickname' ";
-    $sql.= "WHERE UID = $uid";
+    $sql.= "WHERE UID = '$uid'";
 
     return db_query($sql, $db_user_update);
+}
+
+function user_change_logon($uid, $logon)
+{
+    $db_user_change_logon = db_connect();
+
+    if (!is_numeric($uid)) return false;
+
+    if (!$table_data = get_table_prefix()) return false;
+
+    $logon = addslashes(_htmlentities($logon));
+
+    $sql = "UPDATE USER SET LOGON = '$logon' ";
+    $sql.= "WHERE UID = '$uid'";
+
+    return db_query($sql, $db_user_change_logon);
 }
 
 function user_update_post_count($uid, $post_count)

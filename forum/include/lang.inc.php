@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lang.inc.php,v 1.29 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: lang.inc.php,v 1.30 2007-02-07 21:30:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -47,8 +47,15 @@ function load_language_file()
 
         // start out by including the English language file. This will allow
         // us to still use Beehive even if our language file isn't up to date
-        // correctly. So long as the en.inc.php is up to date anyway ;)
+        // correctly.
 
+        // The English language file must exist even if we're not going to be
+        // using it in our forum. If we can't find it we'll bail out here.
+
+        if (!file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
+            trigger_error("<p>Could not load English language file (en.inc.php)</p>", E_USER_ERROR);
+        }
+        
         include(BH_INCLUDE_PATH. "languages/en.inc.php");
 
         $default_language = forum_get_setting('default_language', false, 'en');

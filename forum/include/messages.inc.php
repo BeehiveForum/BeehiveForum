@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.436 2007-02-06 15:02:56 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.437 2007-02-09 15:21:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -1296,7 +1296,7 @@ function message_get_user($tid, $pid)
 
     if (db_num_rows($result) > 0) {
         
-        list($from_uid) = db_fetch_array($result, DB_NUM_RESULT);
+        list($from_uid) = db_fetch_array($result, DB_RESULT_NUM);
         return $from_uid;
     }
 

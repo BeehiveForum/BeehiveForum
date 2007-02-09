@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: attachments.inc.php,v 1.119 2007-01-27 21:00:17 decoyduck Exp $ */
+/* $Id: attachments.inc.php,v 1.120 2007-02-09 15:21:06 decoyduck Exp $ */
 
 /**
 * attachments.inc.php - attachment upload handling
@@ -483,6 +483,65 @@ function delete_attachment($hash)
 }
 
 /**
+* Delete an attachment thumbnail
+*
+* Deletes an attachments thunbnail by it's file hash.
+*
+* @return void
+* @param string $hash - File attachment ID (MD5 Hash)
+*/
+
+function delete_attachment_thumbnail($hash)
+{
+    if (!is_md5($hash)) return false;
+
+    $db_delete_attachment_thumbnail = db_connect();
+
+    if (($uid = bh_session_get_value('UID')) === false) return false;
+    if (!$table_data = get_table_prefix()) return false;
+
+    $forum_settings = forum_get_settings();
+
+    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+
+    // Fetch the attachment to make sure the user
+    // is able to delete it, i.e. it belongs to them.
+
+    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, PAI.PID, THREAD.FID ";
+    $sql.= "FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = PAI.TID) ";
+    $sql.= "WHERE PAF.HASH = '$hash'";
+
+    $result = db_query($sql, $db_delete_attachment_thumbnail);
+
+    if (db_num_rows($result) > 0) {
+
+        $row = db_fetch_array($result);
+
+        if (($row['UID'] == $uid) || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $row['FID'])) {
+
+            // Mark the related post as edited
+
+            if (isset($row['TID']) && isset($row['PID'])) {
+
+                post_add_edit_text($row['TID'], $row['PID']);
+
+                if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $row['FID']) && ($row['UID'] != $uid)) {
+
+                    $log_data = array($row['TID'], $row['PID'], $row['FILENAME']);
+                    admin_add_log_entry(DELETE_ATTACHMENT, $log_data);
+                }
+            }
+
+            // Delete the thumbnail.
+
+            @unlink("$attachment_dir/$hash.thumb");
+        }
+    }
+}
+
+/**
 * Get free attachment space
 *
 * Gets the free attachment space for the specified User ID
@@ -921,6 +980,10 @@ function attachment_make_link($attachment, $show_thumbs = true, $limit_filename 
 
 function attachment_thumb_transparency($im)
 {
+    if (!function_exists('imageantialias')) return $im;
+    if (!function_exists('imagealphablending')) return $im;
+    if (!function_exists('imagesavealpha')) return $im;
+
     imageantialias($im, true);
     imagealphablending($im, false);
     imagesavealpha($im, true);
@@ -953,23 +1016,29 @@ function attachment_create_thumb($filepath, $max_width = 150, $max_height = 150)
     if (!is_numeric($max_width)) $max_width = 150;
     if (!is_numeric($max_height)) $max_height = 150;
 
-    // We're only going to support GIF, JPEG and PNG
+    // Required PHP image create from functions
 
     $required_read_functions  = array(1 => 'imagecreatefromgif',
                                       2 => 'imagecreatefromjpeg',
                                       3 => 'imagecreatefrompng');
 
+    // Required PHP image output functions
+
     $required_write_functions = array(1 => 'imagegif',
                                       2 => 'imagejpeg',
                                       3 => 'imagepng');
 
-    $required_read_support    = array(1 => 'GIF Read Support',
-                                      2 => 'JPG Support',
-                                      3 => 'PNG Support');
+    // Required GD read support
 
-    $required_write_support   = array(1 => 'GIF Create Support',
-                                      2 => 'JPG Support',
-                                      3 => 'PNG Support');
+    $required_read_support = array(1 => 'GIF Read Support',
+                                   2 => 'JPG Support',
+                                   3 => 'PNG Support');
+
+    // Required GD write support
+
+    $required_write_support = array(1 => 'GIF Create Support',
+                                    2 => 'JPG Support',
+                                    3 => 'PNG Support');
 
     if (file_exists($filepath) && @$image_info = getimagesize($filepath)) {
 

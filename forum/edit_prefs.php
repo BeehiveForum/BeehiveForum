@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.60 2007-02-04 22:20:41 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.61 2007-02-09 21:23:55 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -416,7 +416,7 @@ if (forum_get_setting('allow_username_changes', 'Y')) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['username']}:&nbsp;</td>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">{$user_info['LOGON']}&nbsp; (UID: {$user_info['UID']})</td>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">{$user_info['LOGON']}&nbsp;</td>\n";
     echo "                      </tr>\n";
 }
 

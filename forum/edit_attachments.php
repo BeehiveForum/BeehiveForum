@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.103 2007-01-27 21:00:13 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.104 2007-02-09 15:21:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -140,6 +140,19 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $uid = bh_session_get_value('UID');
 }
 
+if (isset($_GET['popup']) && is_numeric($_GET['popup'])) {
+
+    $popup = $_GET['popup'];
+
+}elseif (isset($_POST['popup']) && is_numeric($_POST['popup'])) {
+
+    $popup = $_POST['popup'];
+
+}else {
+
+    $popup = "";
+}
+
 // Get any AID from the GET or POST request
 
 if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
@@ -193,14 +206,27 @@ if (isset($_POST['delete_confirm'])) {
         
         foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
 
-            if ($del_attachment == "Y") {
+            if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
     
                 delete_attachment($hash);
             }
         }
     }
 
-}elseif (isset($_POST['delete'])) {
+}elseif (isset($_POST['delete_thumbs_confirm'])) {
+    
+    if (isset($_POST['delete_attachment_confirm']) && is_array($_POST['delete_attachment_confirm'])) {
+        
+        foreach($_POST['delete_attachment_confirm'] as $hash => $del_attachment) {
+
+            if ($del_attachment == "Y" && get_attachment_by_hash($hash)) {
+    
+                delete_attachment_thumbnail($hash);
+            }
+        }
+    }
+
+}elseif (isset($_POST['delete']) || isset($_POST['delete_thumbs'])) {
 
     if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
 
@@ -210,11 +236,18 @@ if (isset($_POST['delete_confirm'])) {
             
             html_draw_top();
 
-            echo "<h1>{$lang['deleteattachments']}</h1>\n";
+            if (isset($_POST['delete_thumbs'])) {
+                echo "<h1>{$lang['deletethumbnails']}</h1>\n";
+            }else {
+                echo "<h1>{$lang['deleteattachments']}</h1>\n";
+            }
+
             echo "<br />\n";
             echo "<form id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
             echo "  ", form_input_hidden('webtag', $webtag), "\n";
+            echo "  ", form_input_hidden('popup', $popup), "\n";
             echo "  ". form_input_hidden('aid', $aid), "\n";
+            echo "  ". form_input_hidden('uid', $uid), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
@@ -222,15 +255,32 @@ if (isset($_POST['delete_confirm'])) {
             echo "          <tr>\n";
             echo "            <td align=\"left\" class=\"posthead\">\n";
             echo "              <table class=\"posthead\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteattachments']}</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"90%\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">{$lang['deleteattachmentsconfirm']}</td>\n";
-            echo "                      </tr>\n";
+
+            if (isset($_POST['delete_thumbs'])) {
+
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['deletethumbnails']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table class=\"posthead\" width=\"90%\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">{$lang['deletethumbnailsconfirm']}</td>\n";
+                echo "                      </tr>\n";
+            
+            }else {
+
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" class=\"subhead\">{$lang['deleteattachments']}</td>\n";
+                echo "                </tr>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"center\">\n";
+                echo "                    <table class=\"posthead\" width=\"90%\">\n";
+                echo "                      <tr>\n";
+                echo "                        <td align=\"left\">{$lang['deleteattachmentsconfirm']}</td>\n";
+                echo "                      </tr>\n";
+            }
+
             echo "                      <tr>\n";
             echo "                        <td align=\"center\">\n";
             echo "                          <table class=\"posthead\" width=\"95%\">\n";
@@ -275,9 +325,20 @@ if (isset($_POST['delete_confirm'])) {
             echo "    <tr>\n";
             echo "      <td align=\"left\">&nbsp;</td>\n";
             echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"center\">", form_submit("delete_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
-            echo "    </tr>\n";
+
+            if (isset($_POST['delete_thumbs'])) {
+
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit("delete_thumbs_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+                echo "    </tr>\n";
+
+            }else {
+
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit("delete_confirm", $lang['confirm']), "&nbsp;", form_submit("cancel", $lang['cancel']), "</td>\n";
+                echo "    </tr>\n";
+            }
+
             echo "  </table>\n";
             echo "</form>\n";
 
@@ -296,22 +357,10 @@ if (isset($_POST['delete_confirm'])) {
     exit;
 }
 
-if (isset($_GET['popup']) && is_numeric($_GET['popup'])) {
-
-    $popup = $_GET['popup'];
-
-}elseif (isset($_POST['popup']) && is_numeric($_POST['popup'])) {
-
-    $popup = $_POST['popup'];
-
-}else {
-
-    $popup = "";
-}
-
 echo "<h1>{$lang['attachments']}</h1>\n";
 echo "<br />\n";
 echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
+echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden('popup', $popup), "\n";
 echo "  ". form_input_hidden('aid', $aid), "\n";
 echo "  ". form_input_hidden('uid', $uid), "\n";
@@ -569,9 +618,18 @@ if (forum_get_setting('attachments_enabled', 'Y') && ($uid == bh_session_get_val
 
 }elseif ($popup) {
 
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit('close', $lang['close']), "&nbsp;", form_submit('delete', $lang['delete']), "</td>\n";
-    echo "    </tr>\n";
+    if (bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('delete_thumbs', $lang['deletethumbnails']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+        echo "    </tr>\n";
+
+    }else {
+
+        echo "    <tr>\n";
+        echo "      <td align=\"center\">", form_submit('delete', $lang['delete']), "&nbsp;", form_submit('close', $lang['close']), "</td>\n";
+        echo "    </tr>\n";
+    }
 }
 
 echo "      </td>\n";

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_poll.php,v 1.125 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: edit_poll.php,v 1.126 2007-02-10 13:05:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -161,6 +161,14 @@ if (!thread_is_poll($tid) && $pid == 1) {
     }
 
     header_redirect($uri);
+}
+
+if (!$fid = thread_get_folder($tid)) {
+
+    html_draw_top();
+    echo "<h1>{$lang['error']}</h1>\n";
+    html_draw_bottom();
+    exit;
 }
 
 $polldata    = poll_get($tid);
@@ -545,7 +553,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         $hardedit = true;
     }
 
-    poll_edit($tid, $t_threadtitle, $t_question, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_allow_guests, $hardedit);
+    poll_edit($fid, $tid, $t_threadtitle, $t_question, $t_answers, $t_answer_groups, $t_poll_closes, $t_change_vote, $t_poll_type, $t_show_results, $t_poll_vote_type, $t_option_type, $t_allow_guests, $hardedit);
     post_add_edit_text($tid, 1);
 
     post_save_attachment_id($tid, $pid, $aid);

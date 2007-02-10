@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.100 2007-01-23 01:05:54 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.101 2007-02-10 13:05:44 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -441,13 +441,20 @@ function thread_change_folder($tid, $new_fid)
     return db_query($sql, $db_thread_set_closed);
 }
 
-function thread_change_title($tid, $new_title)
+function thread_change_title($fid, $tid, $new_title)
 {
     $db_thread_change_title = db_connect();
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $new_title = addslashes(_htmlentities($new_title));
+    $folder_prefix = folder_get_prefix($fid);
+    $folder_prefix_preg = preg_quote($folder_prefix, '/');
+
+    if (preg_match("/^$folder_prefix_preg/", $new_title) < 1) {
+        $new_title = addslashes(_htmlentities($folder_prefix. $new_title));
+    }else {
+        $new_title = addslashes(_htmlentities($new_title));
+    }
 
     if (!is_numeric($tid)) return false;
 

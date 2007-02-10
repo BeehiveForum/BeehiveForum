@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.50 2007-02-10 13:05:43 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.51 2007-02-10 13:16:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -211,7 +211,7 @@ if (isset($_POST['submit'])) {
             $status_html = "<h2>{$lang['folderupdatedsuccessfully']}</h2>\n";
         }
 
-        admin_add_log_entry(EDIT_FOLDER, $folder_data);
+        admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data);
 
         if (isset($_POST['move']) && is_numeric($_POST['move'])
             && isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {

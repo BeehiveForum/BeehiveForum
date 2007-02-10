@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_viewlog.php,v 1.108 2007-02-10 13:05:43 decoyduck Exp $ */
+/* $Id: admin_viewlog.php,v 1.109 2007-02-10 13:16:23 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -288,11 +288,6 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
             case DELETE_FOLDER:
 
                 $action_text = sprintf($lang['deletedfolder'], $entry_array[0]);
-                break;
-
-            case EDIT_FOLDER:
-
-                $action_text = sprintf($lang['updatedfolder'], $entry_array[0]);
                 break;
 
             case CHANGE_PROFILE_SECT:

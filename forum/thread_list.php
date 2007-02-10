@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_list.php,v 1.284 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: thread_list.php,v 1.285 2007-02-10 13:05:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -439,7 +439,7 @@ foreach ($folder_order as $folder_number) {
             echo "            <img src=\"".style_image('folder_ignored.png')."\" alt=\"{$lang['ignoredfolder']}\" title=\"{$lang['ignoredfolder']}\" />\n";
         }
 
-        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", add_wordfilter_tags(_htmlentities($folder_info[$folder_number]['DESCRIPTION'])), "\">", add_wordfilter_tags(_htmlentities($folder_info[$folder_number]['TITLE'])), "</a>\n";
+        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$folder_number\" title=\"", add_wordfilter_tags($folder_info[$folder_number]['DESCRIPTION']), "\">", add_wordfilter_tags($folder_info[$folder_number]['TITLE']), "</a>\n";
         echo "          </td>\n";
 
         if (bh_session_get_value('UID') > 0) {

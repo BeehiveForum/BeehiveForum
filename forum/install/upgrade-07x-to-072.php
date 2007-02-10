@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.21 2007-02-03 14:24:31 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.22 2007-02-10 13:05:44 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -40,6 +40,7 @@ $dictionary_file.= "/install/english.dic";
 
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
+include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
 @set_time_limit(0);
@@ -343,6 +344,49 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
         $valid = false;
         return;
     }
+
+    // New thread title prefix for folders
+
+    $sql = "ALTER TABLE {$forum_webtag}_FOLDER ADD PREFIX VARCHAR(16) ";
+    $sql.= "NOT NULL AFTER DESCRIPTION";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Resolved bug with folder titles & descriptions not being htmlentities'd
+
+    $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$forum_webtag}_FOLDER";
+
+    if ($result = @db_query($sql, $db_install)) {
+
+        while ($folder_data = db_fetch_array($result)) {
+
+            $fid = $folder_data['FID'];
+            
+            if (!isset($folder_data['TITLE'])) $folder_data['TITLE'] = "";
+            if (!isset($folder_data['DESCRIPTION'])) $folder_data['DESCRIPTION'] = "";
+
+            $new_title = addslashes(_htmlentities($folder_data['TITLE']));
+            $new_description = addslashes(_htmlentities($folder_data['DESCRIPTION']));
+
+            $sql = "UPDATE {$forum_webtag}_FOLDER SET TITLE = '$new_title', ";
+            $sql.= "DESCRIPTION = '$new_description' WHERE FID = '$fid'";
+
+            if (!$result = @db_query($sql, $db_install)) {
+
+                $valid = false;
+                return;
+            }
+        }
+    
+    }else {        
+        
+        $valid = false;
+        return;
+    }    
 }
 
 // If we got this far we managed to complete the per-forum table

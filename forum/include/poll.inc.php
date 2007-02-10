@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.183 2007-01-15 00:10:37 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.184 2007-02-10 13:05:43 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -105,7 +105,7 @@ function poll_create($tid, $poll_options, $answer_groups, $closes, $change_vote,
     }
 }
 
-function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $hardedit)
+function poll_edit($fid, $tid, $thread_title, $poll_question, $poll_options, $answer_groups, $closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests, $hardedit)
 {
     $db_poll_edit = db_connect();
 
@@ -125,7 +125,14 @@ function poll_edit($tid, $thread_title, $poll_question, $poll_options, $answer_g
 
     $edit_uid = bh_session_get_value('UID');
 
-    $thread_title = addslashes($thread_title);
+    $folder_prefix = folder_get_prefix($fid);
+    $folder_prefix_preg = preg_quote($folder_prefix, '/');
+
+    if (preg_match("/^$folder_prefix_preg/", $thread_title) < 1) {
+        $thread_title = addslashes(_htmlentities($folder_prefix. $thread_title));
+    }else {
+        $thread_title = addslashes(_htmlentities($thread_title));
+    }
 
     if (!$table_data = get_table_prefix()) return false;
 

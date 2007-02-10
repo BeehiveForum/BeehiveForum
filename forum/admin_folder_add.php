@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_add.php,v 1.39 2007-01-04 18:42:24 decoyduck Exp $ */
+/* $Id: admin_folder_add.php,v 1.40 2007-02-10 13:05:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -125,6 +125,12 @@ if (isset($_POST['submit'])) {
         $t_description = "";
     }
 
+    if (isset($_POST['t_prefix']) && strlen(trim(_stripslashes($_POST['t_prefix']))) > 0) {
+        $t_prefix = trim(_stripslashes($_POST['t_prefix']));
+    }else {
+        $t_prefix = "";
+    }
+
     if (isset($_POST['t_allowed_types']) && is_numeric($_POST['t_allowed_types'])) {
         $t_allowed_types = $_POST['t_allowed_types'];
     }else {
@@ -150,7 +156,7 @@ if (isset($_POST['submit'])) {
 
     if ($valid) {
 
-        $new_fid = folder_create($t_name, $t_description, $t_allowed_types, $t_permissions);
+        $new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions);
         admin_add_log_entry(CREATE_FOLDER, $t_name);
 
         $add_success = rawurlencode($t_name);
@@ -195,6 +201,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
 echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? $t_description : ""), 30, 255)."</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
+echo "                        <td align=\"left\">".form_input_text("t_prefix", (isset($t_prefix) ? $t_prefix : ""), 30, 16)."</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

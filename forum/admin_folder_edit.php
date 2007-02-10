@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folder_edit.php,v 1.49 2007-01-04 18:42:24 decoyduck Exp $ */
+/* $Id: admin_folder_edit.php,v 1.50 2007-02-10 13:05:43 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -157,6 +157,18 @@ if (isset($_POST['submit'])) {
         $folder_data['OLD_DESCRIPTION'] = "";
     }
 
+    if (isset($_POST['prefix']) && strlen(trim(_stripslashes($_POST['prefix']))) > 0) {
+        $folder_data['PREFIX'] = trim(_stripslashes($_POST['prefix']));
+    }else {
+        $folder_data['PREFIX'] = "";
+    }
+
+    if (isset($_POST['old_prefix']) && strlen(trim(_stripslashes($_POST['old_prefix']))) > 0) {
+        $folder_data['OLD_PREFIX'] = trim(_stripslashes($_POST['old_prefix']));
+    }else {
+        $folder_data['OLD_PREFIX'] = "";
+    }
+
     if (isset($_POST['allowed_types']) && is_numeric($_POST['allowed_types'])) {
         $folder_data['ALLOWED_TYPES'] = $_POST['allowed_types'];
     }
@@ -199,7 +211,7 @@ if (isset($_POST['submit'])) {
             $status_html = "<h2>{$lang['folderupdatedsuccessfully']}</h2>\n";
         }
 
-        admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data);
+        admin_add_log_entry(EDIT_FOLDER, $folder_data);
 
         if (isset($_POST['move']) && is_numeric($_POST['move'])
             && isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
@@ -290,6 +302,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['description']}:</td>\n";
 echo "                        <td align=\"left\">", form_input_text("description", $folder_data['DESCRIPTION'], 30, 255), form_input_hidden("old_description", $folder_data['DESCRIPTION']), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">{$lang['threadtitleprefix']}:</td>\n";
+echo "                        <td align=\"left\">", form_input_text("prefix", $folder_data['PREFIX'], 30, 16), form_input_hidden("old_prefix", $folder_data['PREFIX']), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

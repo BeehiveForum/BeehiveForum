@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: constants.inc.php,v 1.101 2007-01-24 18:02:14 decoyduck Exp $ */
+/* $Id: constants.inc.php,v 1.102 2007-02-10 13:05:43 decoyduck Exp $ */
 
 /**
 * Constants used throughout Beehive.
@@ -268,6 +268,8 @@ define("APPROVED_USER", 61);
 define("ADD_FORUM_LINKS", 62);
 define("DELETE_FORUM_LINKS", 63);
 define("EDIT_TOP_LINK_CAPTION", 64);
+define("EDIT_FOLDER", 65);
+
 
 // Error codes for Text Captcha
 

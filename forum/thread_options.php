@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread_options.php,v 1.73 2007-02-10 13:05:43 decoyduck Exp $ */
+/* $Id: thread_options.php,v 1.74 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -429,7 +429,7 @@ if ($threaddata['LENGTH'] > 0) {
 
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
-    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']} &raquo; <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
     echo "<br />\n";
 
     if ($update) {
@@ -858,7 +858,7 @@ if ($threaddata['LENGTH'] > 0) {
     
     html_draw_top("basetarget=_blank", "robots=noindex,nofollow", 'thread_options.js');
 
-    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} {$threaddata['TITLE']}</a></h1>\n";
+    echo "<h1>{$lang['threadoptions']}: <a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.1\" target=\"_self\">#{$tid} ", thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']), "</a></h1>\n";
     echo "<br />\n";
 
     echo "<div align=\"center\">\n";

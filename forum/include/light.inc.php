@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: light.inc.php,v 1.125 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: light.inc.php,v 1.126 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -389,7 +389,7 @@ function light_draw_thread_list($mode = 0, $folder = false, $start_from = 0)
                             // work out how long ago the thread was posted and format the time to display
                             $thread_time = format_time($thread['MODIFIED']);
 
-                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" title=\"#{$thread['TID']} {$lang['startedby']} ". add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])) . "\">".add_wordfilter_tags($thread['TITLE'])."</a> ";
+                            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" title=\"#{$thread['TID']} {$lang['startedby']} ", add_wordfilter_tags(format_user_name($thread['LOGON'], $thread['NICKNAME'])), "\">", add_wordfilter_tags(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])), "</a> ";
                             if ($thread['INTEREST'] == 1) echo "<font color=\"#FF0000\">(HI)</font> ";
                             if ($thread['INTEREST'] == 2) echo "<font color=\"#FF0000\">(Sub)</font> ";
                             if ($thread['POLL_FLAG'] == 'Y') echo "(P) ";
@@ -664,13 +664,13 @@ function light_poll_confirm_close($tid)
 
 }
 
-function light_messages_top($msg, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
+function light_messages_top($msg, $thread_prefix, $thread_title, $interest_level = 0, $sticky = "N", $closed = false, $locked = false)
 {
     $lang = load_language_file();
 
     $webtag = get_webtag($webtag_search);
 
-    echo "<h2>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">$threadtitle</a>";
+    echo "<h2>Full Version: <a href=\"index.php?webtag=$webtag&amp;msg=$msg\">", add_wordfilter_tags(thread_format_prefix($thread_prefix, $thread_title)), "</a>";
 
     if ($closed) echo "&nbsp;<font color=\"#FF0000\">({$lang['closed']})</font>\n";
     if ($interest_level == 1) echo "&nbsp;<font color=\"#FF0000\">({$lang['highinterest']})</font>";

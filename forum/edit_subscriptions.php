@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.11 2007-02-01 22:30:43 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.12 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -252,7 +252,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('set_interest[]', $thread['TID'], ''), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">{$thread['TITLE']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">", thread_format_prefix($thread['PREFIX'], $thread['TITLE']), "</a></td>\n";
             echo "                  <td align=\"center\">{$interest_level_array[$thread['INTEREST']]}</td>\n";
             echo "                </tr>\n";
         }
@@ -330,7 +330,7 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('set_interest[]', $thread['TID'], ''), "</td>\n";
-            echo "                  <td align=\"left\"><a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">{$thread['TITLE']}</a></td>\n";
+            echo "                  <td align=\"left\"><a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">", thread_format_prefix($thread['PREFIX'], $thread['TITLE']), "</a></td>\n";
             echo "                  <td align=\"center\">{$interest_level_array[$thread['INTEREST']]}</td>\n";
             echo "                </tr>\n";
         }

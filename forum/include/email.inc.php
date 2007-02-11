@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: email.inc.php,v 1.100 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: email.inc.php,v 1.101 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -82,7 +82,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
             $message = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
             $message.= " {$lang['msgnotificationemail_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-            $message.= "{$lang['msgnotificationemail_2']} ". _htmlentities_decode($thread['TITLE']). "\n\n";
+            $message.= "{$lang['msgnotificationemail_2']} ". _htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])). "\n\n";
             $message.= "{$lang['msgnotificationemail_3']}\n";
             $message.= "http://{$_SERVER['HTTP_HOST']}";
 
@@ -166,7 +166,7 @@ function email_sendsubscription($tuid, $fuid, $tid, $pid)
 
             $message = apply_wordfilter(format_user_name($from_user['LOGON'], $from_user['NICKNAME']));
             $message.= " {$lang['subnotification_1']} ". forum_get_setting('forum_name', false, 'A Beehive Forum'). "\n\n";
-            $message.= "{$lang['subnotification_2']} ". _htmlentities_decode($thread['TITLE']). "\n\n";
+            $message.= "{$lang['subnotification_2']} ". _htmlentities_decode(thread_format_prefix($thread['PREFIX'], $thread['TITLE'])). "\n\n";
             $message.= "{$lang['subnotification_3']}\n";
             $message.= "http://{$_SERVER['HTTP_HOST']}";
 

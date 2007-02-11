@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: pm_write.php,v 1.148 2007-01-24 21:52:24 decoyduck Exp $ */
+/* $Id: pm_write.php,v 1.149 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -150,7 +150,8 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         if ($threaddata = thread_get($tid)) {
 
-           $t_subject = "Re:{$threaddata['TITLE']} [$tid.$pid]";
+           $thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
+           $t_subject = "Re:$thread_title [$tid.$pid]";
         }
     }
 }

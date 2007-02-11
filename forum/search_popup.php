@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: search_popup.php,v 1.5 2007-01-21 16:25:40 decoyduck Exp $ */
+/* $Id: search_popup.php,v 1.6 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -347,13 +347,13 @@ if (strlen(trim($search_query)) > 0) {
                 if (($search_results_array['results_count'] > 1) && $allow_multi === false) {
 
                     echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags($search_result['TITLE']), "</a></td>\n";
+                    echo "                        <td align=\"left\">", form_radio("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE'])), "</a></td>\n";
                     echo "                      </tr>\n";
 
                 }else {
 
                     echo "                      <tr>\n";
-                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags($search_result['TITLE']), "</a></td>\n";
+                    echo "                        <td align=\"left\">", form_checkbox("search_result[]", $search_result['TID'], ''), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.1\" target=\"_blank\">", add_wordfilter_tags(thread_format_prefix($search_result['PREFIX'], $search_result['TITLE'])), "</a></td>\n";
                     echo "                      </tr>\n";
                 }
             }

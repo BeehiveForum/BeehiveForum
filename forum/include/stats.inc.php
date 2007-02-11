@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: stats.inc.php,v 1.68 2007-01-25 18:01:04 decoyduck Exp $ */
+/* $Id: stats.inc.php,v 1.69 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -277,7 +277,10 @@ function get_longest_thread()
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql = "SELECT THREAD.TITLE, THREAD.TID, THREAD.LENGTH, FOLDER.PREFIX ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "ORDER BY THREAD.LENGTH DESC LIMIT 0, 1";
 
     $result = db_query($sql, $db_get_longest_thread);

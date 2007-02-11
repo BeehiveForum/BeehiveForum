@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: links.php,v 1.89 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: links.php,v 1.90 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -246,7 +246,7 @@ if ($viewmode == 0) {
 
             echo "                          <tr>\n";
             echo "                            <td class=\"postbody\">\n";
-            echo "                              <img src=\"" . style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td><td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "class=\"link_hidden\""; echo ">" . _stripslashes($folders[$val]['NAME']) . "</a>";
+            echo "                              <img src=\"" . style_image("folder.png") . "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" /></td><td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\""; if ($folders[$val]['VISIBLE'] == "N") echo "class=\"link_hidden\""; echo ">{$folders[$val]['NAME']}</a>";
 
             if (bh_session_check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "Y") {
 
@@ -350,12 +350,6 @@ if ($sort_by == "TITLE" && $sort_dir == "ASC") {
     echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=TITLE&amp;sort_dir=ASC\">{$lang['name']}</a>&nbsp;</td>\n";
 }
 
-/*if ($sort_by == "DESCRIPTION" && $sort_dir == "ASC") {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"250\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=DESCRIPTION&amp;sort_dir=DESC\">{$lang['description']}</a>&nbsp;</td>\n";
-}else {
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"250\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=DESCRIPTION&amp;sort_dir=ASC\">{$lang['description']}</a>&nbsp;</td>\n";
-}*/
-
 if ($sort_by == "CREATED" && $sort_dir == "ASC") {
     echo "                  <td align=\"left\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=CREATED&amp;sort_dir=DESC\">{$lang['date']}</a>&nbsp;</td>\n";
 }else {
@@ -368,7 +362,6 @@ if ($sort_by == "RATING" && $sort_dir == "DESC") {
     echo "                  <td align=\"center\" class=\"subhead\"><a href=\"links.php?webtag=$webtag&amp;fid=$fid&amp;viewmode=$viewmode&amp;page=$page&amp;sort_by=RATING&amp;sort_dir=DESC\">{$lang['rating']}</a>&nbsp;</td>";
 }
 
-//echo "                  <td align=\"left\" class=\"subhead\">{$lang['commentsslashvote']}</td>\n";
 echo "                </tr>\n";
 
 if (sizeof($links['links_array']) > 0 ) {
@@ -378,15 +371,14 @@ if (sizeof($links['links_array']) > 0 ) {
         if ($link['VISIBLE'] == "N") {
 
             echo "                <tr class=\"link_hidden\">\n";
-            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\" class=\"link_hidden\">", _stripslashes($link['TITLE']), "</a></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\" class=\"link_hidden\">{$link['TITLE']}</a></td>\n";
 
         }else {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\">", _stripslashes($link['TITLE']), "</a></td>\n";
+            echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid&amp;page=$page\">{$link['TITLE']}</a></td>\n";
         }
 
-        //echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\" valign=\"top\">", _stripslashes($link['DESCRIPTION']), "</td>\n";
         echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
 
         if (isset($link['RATING']) && $link['RATING'] != "") {
@@ -395,7 +387,6 @@ if (sizeof($links['links_array']) > 0 ) {
             echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">&nbsp;</td>\n";
         }
 
-        //echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\"><a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid\" class=\"threadtime\">[{$lang['view']}]</a></td>\n";
         echo "                </tr>\n";
     }
 

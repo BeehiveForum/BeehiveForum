@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: post.php,v 1.293 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: post.php,v 1.294 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -898,7 +898,7 @@ if ($newthread) {
     echo "    <td align=\"left\"><h2>{$lang['threadtitle']}</h2></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\">", add_wordfilter_tags($threaddata['TITLE']), form_input_hidden("t_tid", $reply_to_tid), form_input_hidden("t_rpid", $reply_to_pid), "</h2></td>\n";
+    echo "    <td align=\"left\">", add_wordfilter_tags(thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE'])), form_input_hidden("t_tid", $reply_to_tid), form_input_hidden("t_rpid", $reply_to_pid), "</h2></td>\n";
     echo "  </tr>\n";
 }
 

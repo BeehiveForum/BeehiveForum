@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.php,v 1.216 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: messages.php,v 1.217 2007-02-11 16:37:47 decoyduck Exp $ */
 
 /**
 * Displays a thread and processes poll votes
@@ -213,8 +213,9 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
 }
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+$thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
 
-html_draw_top("title=$forum_name > {$threaddata['TITLE']}", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow");
+html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow");
 
 if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
 
@@ -268,7 +269,7 @@ if (sizeof($highlight_array) > 0) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK'], ($threaddata['LENGTH'] < 1)), "</td>\n";
+echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK'], ($threaddata['LENGTH'] < 1)), "</td>\n";
 
 if ($threaddata['POLL_FLAG'] == 'Y' && $messages[0]['PID'] != 1) {
 

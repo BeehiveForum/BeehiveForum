@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lmessages.php,v 1.76 2007-01-15 00:10:34 decoyduck Exp $ */
+/* $Id: lmessages.php,v 1.77 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -186,14 +186,15 @@ if (!$threaddata = thread_get($tid, bh_session_check_perm(USER_PERM_ADMIN_TOOLS,
 }
 
 $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+$thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
  
-light_html_draw_top("$forum_name > {$threaddata['TITLE']}");
+light_html_draw_top("$forum_name > $thread_title");
 
 $foldertitle = folder_get_title($threaddata['FID']);
 
 $msg_count = count($messages);
 
-light_messages_top($msg, add_wordfilter_tags(_stripslashes($threaddata['TITLE'])), $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
+light_messages_top($msg, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']);
 
 if ($msg_count > 0) {
 

@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.1 2007-02-07 21:26:51 decoyduck Exp $ */
+/* $Id: bh_update_language.php,v 1.2 2007-02-11 16:37:46 decoyduck Exp $ */
 
-// Constant to define where the include files are
+// Constant to define where the include files are //
 
 define("BH_INCLUDE_PATH", "./forum/include/");
 
-// Function to load BH language file into $lang array.
+// Function to load BH language file into $lang array //
 
 function load_language_file($filename)
 {
@@ -40,7 +40,7 @@ function load_language_file($filename)
     return false;
 }
 
-// Checks for Magic Quotes and perform stripslashes if nessecary
+// Checks for Magic Quotes and perform stripslashes if nessecary //
 
 function _stripslashes($string)
 {
@@ -51,7 +51,7 @@ function _stripslashes($string)
     }
 }
 
-// Start here.
+// Start here //
 
 $valid = true;
 
@@ -107,7 +107,7 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
         }else {
 
-            echo $lang_en_line;
+            echo "// $lang_en_line // Translation required //";
         }
     }
 

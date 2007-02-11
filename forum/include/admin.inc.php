@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.103 2007-02-06 21:47:23 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.104 2007-02-11 16:37:47 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -888,10 +888,12 @@ function admin_get_post_approval_queue($offset = 0)
     $result = db_query($sql, $db_admin_get_post_approval_queue);
     list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-    $sql = "SELECT THREAD.TITLE, POST.TID, POST.PID ";
+    $sql = "SELECT THREAD.TITLE, POST.TID, POST.PID, FOLDER.PREFIX ";
     $sql.= "FROM {$table_data['PREFIX']}POST POST ";
     $sql.= "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ";
     $sql.= "ON (THREAD.TID = POST.TID) WHERE POST.APPROVED = '0' ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 

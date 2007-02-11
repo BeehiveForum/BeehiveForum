@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: thread.inc.php,v 1.101 2007-02-10 13:05:44 decoyduck Exp $ */
+/* $Id: thread.inc.php,v 1.102 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -74,7 +74,7 @@ function thread_get($tid, $inc_deleted = false)
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.BY_UID, THREAD.TITLE, ";
     $sql.= "THREAD.LENGTH, THREAD.POLL_FLAG, THREAD.STICKY, THREAD_STATS.VIEWCOUNT, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
+    $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, FOLDER.PREFIX, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.CLOSED, ";
     $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
     $sql.= "USER_THREAD.INTEREST, USER_THREAD.LAST_READ, USER.UID AS FROM_UID, ";
@@ -447,16 +447,9 @@ function thread_change_title($fid, $tid, $new_title)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $folder_prefix = folder_get_prefix($fid);
-    $folder_prefix_preg = preg_quote($folder_prefix, '/');
-
-    if (preg_match("/^$folder_prefix_preg/", $new_title) < 1) {
-        $new_title = addslashes(_htmlentities($folder_prefix. $new_title));
-    }else {
-        $new_title = addslashes(_htmlentities($new_title));
-    }
-
     if (!is_numeric($tid)) return false;
+
+    $new_title = addslashes(_htmlentities($new_title));
 
     $sql = "UPDATE {$table_data['PREFIX']}THREAD SET TITLE = '$new_title' WHERE TID = $tid";
     return db_query($sql, $db_thread_change_title);
@@ -1260,7 +1253,7 @@ function thread_search($thread_search, $offset = 0)
 
     $fidlist = folder_get_available();
 
-    $user_search = addslashes(str_replace("%", "", $user_search));
+    $user_search = addslashes(str_replace("%", "", $thread_search));
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
     $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
@@ -1271,8 +1264,12 @@ function thread_search($thread_search, $offset = 0)
     list($results_count) = db_fetch_array($result, DB_RESULT_NUM);
 
 
-    $sql = "SELECT TID, TITLE FROM {$table_data['PREFIX']}THREAD THREAD ";
-    $sql.= "WHERE TITLE LIKE '$thread_search%' AND THREAD.FID IN ($fidlist) ";
+    $sql = "SELECT THREAD.TID, THREAD.TITLE, FOLDER.PREFIX ";
+    $sql.= "FROM {$table_data['PREFIX']}THREAD THREAD ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}FOLDER FOLDER ";
+    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "WHERE THREAD.TITLE LIKE '$thread_search%' ";
+    $sql.= "AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 
     $result = db_query($sql, $db_thread_search);
@@ -1290,6 +1287,15 @@ function thread_search($thread_search, $offset = 0)
 
     return array('results_count' => $results_count,
                  'results_array' => $results_array);
+}
+
+function thread_format_prefix($prefix, $thread_title)
+{
+    if (strlen(trim($prefix)) > 0) {
+        return "{$prefix} {$thread_title}";
+    }
+
+    return $thread_title;
 }
 
 ?>

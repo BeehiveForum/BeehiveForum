@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: messages.inc.php,v 1.437 2007-02-09 15:21:06 decoyduck Exp $ */
+/* $Id: messages.inc.php,v 1.438 2007-02-11 16:37:47 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -516,11 +516,12 @@ function message_split_fiddle($content, $emoticons = true, $ignore_sig = false)
     return $message;
 }
 
-function messages_top($foldertitle, $threadtitle, $interest_level = 0, $sticky = "N", $closed = false, $locked = false, $deleted = false)
+function messages_top($folder_title, $thread_prefix, $thread_title, $interest_level = 0, $sticky = "N", $closed = false, $locked = false, $deleted = false)
 {
     $lang = load_language_file();
 
-    echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;", add_wordfilter_tags("$foldertitle: $threadtitle");
+    echo "<p><img src=\"", style_image('folder.png'). "\" alt=\"{$lang['folder']}\" title=\"{$lang['folder']}\" />&nbsp;";
+    echo add_wordfilter_tags($folder_title), ": ", add_wordfilter_tags(thread_format_prefix($thread_prefix, $thread_title));
 
     if ($closed) echo "&nbsp;<img src=\"", style_image('thread_closed.png'), "\" alt=\"{$lang['closed']}\" title=\"{$lang['closed']}\" />\n";
     if ($interest_level == 1) echo "&nbsp;<img src=\"", style_image('high_interest.png'), "\" alt=\"{$lang['highinterest']}\" title=\"{$lang['highinterest']}\" />";
@@ -1700,7 +1701,7 @@ function messages_forum_stats($tid, $pid)
                 echo "                    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
-                echo "                        <td align=\"left\">{$lang['longestthreadis']} '<a href=\"./index.php?webtag=$webtag&amp;msg={$longest_thread['TID']}.1\">{$longest_thread['TITLE']}</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ",", ","), "</b> {$lang['postslowercase']}.</td>\n";
+                echo "                        <td align=\"left\">{$lang['longestthreadis']} '<a href=\"./index.php?webtag=$webtag&amp;msg={$longest_thread['TID']}.1\">", thread_format_prefix($longest_thread['PREFIX'], $longest_thread['TITLE']), "</a>' {$lang['with']} <b>", number_format($longest_thread['LENGTH'], 0, ",", ","), "</b> {$lang['postslowercase']}.</td>\n";
                 echo "                        <td align=\"left\" width=\"35\">&nbsp;</td>\n";
                 echo "                      </tr>\n";
                 echo "                    </table>\n";

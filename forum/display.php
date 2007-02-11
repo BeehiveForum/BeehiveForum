@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: display.php,v 1.76 2007-01-25 22:12:06 decoyduck Exp $ */
+/* $Id: display.php,v 1.77 2007-02-11 16:37:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -132,8 +132,9 @@ if (!$threaddata = thread_get($tid)) {
 }
 
 $forum_name   = forum_get_setting('forum_name', false, 'A Beehive Forum');
+$thread_title = thread_format_prefix($threaddata['PREFIX'], $threaddata['TITLE']);
 
-html_draw_top("title=$forum_name > {$threaddata['TITLE']}", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow");
+html_draw_top("title=$forum_name > $thread_title", "openprofile.js", "post.js", "poll.js", "basetarget=_blank", "robots=index,follow");
 
 if (isset($threaddata['STICKY']) && isset($threaddata['STICKY_UNTIL'])) {
 
@@ -151,7 +152,7 @@ $show_sigs = (bh_session_get_value('VIEW_SIGS') == 'N') ? false : true;
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
+echo "    <td align=\"left\">", messages_top($foldertitle, $threaddata['PREFIX'], $threaddata['TITLE'], $threaddata['INTEREST'], $threaddata['STICKY'], $threaddata['CLOSED'], $threaddata['ADMIN_LOCK']), "</td>\n";
 
 if ($threaddata['POLL_FLAG'] == 'Y' && $message['PID'] != 1) {
 

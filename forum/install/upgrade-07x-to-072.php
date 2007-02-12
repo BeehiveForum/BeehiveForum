@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.22 2007-02-10 13:05:44 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.23 2007-02-12 01:05:30 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -348,7 +348,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // New thread title prefix for folders
 
     $sql = "ALTER TABLE {$forum_webtag}_FOLDER ADD PREFIX VARCHAR(16) ";
-    $sql.= "NOT NULL AFTER DESCRIPTION";
+    $sql.= "DEFAULT NULL AFTER DESCRIPTION";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -414,7 +414,8 @@ if (!$result = @db_query($sql, $db_install)) {
 // the database names for each forum we need to store that in
 // FORUMS table.
 
-$sql = "ALTER TABLE FORUMS ADD DATABASE_NAME VARCHAR(255) NOT NULL";
+$sql = "ALTER TABLE FORUMS ADD DATABASE_NAME VARCHAR(255) NOT NULL ";
+$sql.= "AFTER WEBTAG";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -588,15 +589,6 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE SEARCH_RESULTS ADD LENGTH MEDIUMINT(8) ";
 $sql.= "UNSIGNED NOT NULL AFTER CREATED";
-
-if (!$result = @db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER ";
-$sql.= "CHAR(1) NOT NULL DEFAULT 'N'";
 
 if (!$result = @db_query($sql, $db_install)) {
 

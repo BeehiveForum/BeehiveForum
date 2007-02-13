@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.185 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.186 2007-02-13 18:12:06 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -470,16 +470,14 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                         }else {
 
                             $polldata['CONTENT'].= "                <tr>\n";
-                            $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-                            $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                            $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                             $polldata['CONTENT'].= "                </tr>\n";
                         }
 
                     }else {
 
                         $polldata['CONTENT'].= "                <tr>\n";
-                        $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-                        $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                        $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                         $polldata['CONTENT'].= "                </tr>\n";
                     }
 
@@ -901,16 +899,14 @@ function poll_preview_form($pollresults, $polldata)
                 }else {
 
                     $polldisplay.= "                <tr>\n";
-                    $polldisplay.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-                    $polldisplay.= "                  <td align=\"left\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                    $polldisplay.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_radio("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                     $polldisplay.= "                </tr>\n";
                 }
 
             }else {
 
                 $polldisplay.= "                <tr>\n";
-                $polldisplay.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). "</td>\n";
-                $polldisplay.= "                  <td align=\"left\" class=\"postbody\">". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
+                $polldisplay.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_checkbox("pollvote[{$pollresults['GROUP_ID'][$i]}]", $pollresults['OPTION_ID'][$i], '', false). " ". add_wordfilter_tags($pollresults['OPTION_NAME'][$i]). "</td>\n";
                 $polldisplay.= "                </tr>\n";
             }
 

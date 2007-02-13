@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.206 2007-01-26 21:40:59 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.207 2007-02-13 18:12:06 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -635,7 +635,7 @@ function html_draw_top()
                     $imageresized_text = rawurlencode($lang['imageresized']);
 
                     $onload_array[] = "resizeImages($resize_width, '$imageresized_text')";
-                    $onload_array[] = "addOverflow()";
+                    $onload_array[] = "addOverflow($resize_width)";
                 }
             }
         }

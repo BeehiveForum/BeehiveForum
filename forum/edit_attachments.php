@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.104 2007-02-09 15:21:06 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.105 2007-02-14 22:54:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,7 +122,7 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-html_draw_top("post.js");
+html_draw_top('attachments.js', 'post.js');
 
 // Get any UID from the GET or POST request
 // or default to the current user if not specified.
@@ -228,9 +228,17 @@ if (isset($_POST['delete_confirm'])) {
 
 }elseif (isset($_POST['delete']) || isset($_POST['delete_thumbs'])) {
 
+    $hash_array = array();
+    
     if (isset($_POST['delete_attachment']) && is_array($_POST['delete_attachment'])) {
+        $hash_array = array_merge($hash_array, array_keys($_POST['delete_attachment']));
+    }
 
-        $hash_array = array_keys($_POST['delete_attachment']);
+    if (isset($_POST['delete_other_attachment']) && is_array($_POST['delete_other_attachment'])) {
+        $hash_array = array_merge($hash_array, array_keys($_POST['delete_other_attachment']));
+    }
+
+    if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
         if (get_users_attachments($uid, $attachments_array, $image_attachments_array, $hash_array)) {
             
@@ -359,7 +367,7 @@ if (isset($_POST['delete_confirm'])) {
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 echo "<br />\n";
-echo "<form method=\"post\" action=\"edit_attachments.php\">\n";
+echo "<form name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
 echo "  ", form_input_hidden('popup', $popup), "\n";
 echo "  ". form_input_hidden('aid', $aid), "\n";
@@ -374,24 +382,29 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 
 if (is_md5($aid)) {
 
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
-    echo "                  <td width=\"25\" class=\"subhead\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-
     $attachment_result = get_attachments($uid, $aid, $attachments_array, $image_attachments_array);
 
 }else {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
-    echo "                  <td width=\"25\" class=\"subhead\">&nbsp;</td>\n";
-    echo "                </tr>\n";
 
     $attachment_result = get_users_attachments($uid, $attachments_array, $image_attachments_array);
 }
 
 if ($attachment_result) {
+
+    if (is_md5($aid)) {
+    
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"25\">", form_checkbox("toggle_main", "toggle_main", "", false, "onclick=\"attachment_toggle_main();\""), "</td>\n";
+        echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"25\">", form_checkbox("toggle_main", "toggle_main", "", false, "onclick=\"attachment_toggle_main();\""), "</td>\n";
+        echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
+        echo "                </tr>\n";
+    }
 
     if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
 
@@ -400,6 +413,7 @@ if ($attachment_result) {
             if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
                 echo "                <tr>\n";
+                echo "                  <td align=\"center\" width=\"25\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
@@ -413,9 +427,6 @@ if ($attachment_result) {
 
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                  <td align=\"center\" nowrap=\"nowrap\" class=\"postbody\">\n";
-                echo "                    ", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "\n";
-                echo "                  </td>\n";
                 echo "                </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
@@ -430,6 +441,7 @@ if ($attachment_result) {
             if ($attachment_link = attachment_make_link($attachment, false, true)) {
 
                 echo "                <tr>\n";
+                echo "                  <td align=\"center\" width=\"25\">", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                 if (is_md5($aid) && is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
@@ -443,9 +455,6 @@ if ($attachment_result) {
 
                 echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                  <td align=\"center\" nowrap=\"nowrap\" class=\"postbody\">\n";
-                echo "                    ", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "\n";
-                echo "                  </td>\n";
                 echo "                </tr>\n";
 
                 $total_attachment_size += $attachment['filesize'];
@@ -455,7 +464,23 @@ if ($attachment_result) {
 
 }else {
 
+    if (is_md5($aid)) {
+    
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"25\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachmentsforthismessage']}</td>\n";
+        echo "                </tr>\n";
+
+    }else {
+
+        echo "                <tr>\n";
+        echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"25\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['attachments']}</td>\n";
+        echo "                </tr>\n";
+    }
+
     echo "                <tr>\n";
+    echo "                  <td align=\"center\" width=\"25\">&nbsp;</td>\n";
     echo "                  <td align=\"left\" valign=\"top\" colspan=\"4\" class=\"postbody\">({$lang['none']})</td>\n";
     echo "                </tr>\n";
 }
@@ -482,6 +507,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
+    echo "                  <td class=\"subhead_checkbox\" width=\"20\">", form_checkbox("toggle_other", "toggle_other", "", false, "onclick=\"attachment_toggle_other();\""), "</td>\n";
     echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">{$lang['otherattachmentsincludingpm']}</td>\n";
     echo "                </tr>\n";
 
@@ -494,6 +520,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
                 if ($attachment_link = attachment_make_link($attachment, false)) {
 
                     echo "                <tr>\n";
+                    echo "                  <td align=\"center\" width=\"25\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                     echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                     if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
@@ -506,9 +533,6 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
                     }
 
                     echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                    echo "                  <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-                    echo "                    ", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "\n";
-                    echo "                  </td>\n";
                     echo "                </tr>\n";
 
                     $total_attachment_size += $attachment['filesize'];
@@ -523,6 +547,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
                 if ($attachment_link = attachment_make_link($attachment, false)) {
 
                     echo "                <tr>\n";
+                    echo "                  <td align=\"center\" width=\"25\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y", ""), "</td>\n";
                     echo "                  <td align=\"left\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
                     if (is_md5($attachment['aid']) && $message_link = get_message_link($attachment['aid'])) {
@@ -535,9 +560,7 @@ if ($uid == bh_session_get_value('UID') && is_md5($aid)) {
                     }
 
                     echo "                  <td align=\"right\" valign=\"top\" nowrap=\"nowrap\" class=\"postbody\">", format_file_size($attachment['filesize']), "</td>\n";
-                    echo "                  <td align=\"right\" nowrap=\"nowrap\" class=\"postbody\">\n";
-                    echo "                    ", form_checkbox("delete_attachment[{$attachment['hash']}]", "Y", ""), "\n";
-                    echo "                  </td>\n";
+
                     echo "                </tr>\n";
 
                     $total_attachment_size += $attachment['filesize'];

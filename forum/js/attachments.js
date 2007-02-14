@@ -39,3 +39,45 @@ function attachment_toggle_all() {
         }
     }
 }
+
+function attachment_toggle_main() {
+
+    for (var i = 0; i < document.attachments.elements.length; i++) {
+
+        if (document.attachments.elements[i].type == 'checkbox') {
+
+            if (document.attachments.elements[i].name.substring(0, 17)  == 'delete_attachment') {
+            
+                if (document.attachments.toggle_main.checked == true) {
+
+                    document.attachments.elements[i].checked = true;
+
+                }else {
+
+                    document.attachments.elements[i].checked = false;
+                }
+            }
+        }
+    }
+}
+
+function attachment_toggle_other() {
+
+    for (var i = 0; i < document.attachments.elements.length; i++) {
+
+        if (document.attachments.elements[i].type == 'checkbox') {
+
+            if (document.attachments.elements[i].name.substring(0, 23)  == 'delete_other_attachment') {
+            
+                if (document.attachments.toggle_other.checked == true) {
+
+                    document.attachments.elements[i].checked = true;
+
+                }else {
+
+                    document.attachments.elements[i].checked = false;
+                }
+            }
+        }
+    }
+}

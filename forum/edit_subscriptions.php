@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_subscriptions.php,v 1.12 2007-02-11 16:37:47 decoyduck Exp $ */
+/* $Id: edit_subscriptions.php,v 1.13 2007-02-14 22:54:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -321,13 +321,14 @@ if (isset($threadsearch) && strlen(trim($threadsearch)) > 0) {
 
     if (sizeof($thread_subscriptions['thread_array']) > 0) {
 
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"20\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptions_toggle_all();\""), "</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['threadtitle']}</td>\n";
+        echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
+        echo "                </tr>\n";
+
         foreach ($thread_subscriptions['thread_array'] as $thread) {
 
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\" class=\"subhead_checkbox\" width=\"20\">", form_checkbox("toggle_all", "toggle_all", "", false, "onclick=\"subscriptions_toggle_all();\""), "</td>\n";
-            echo "                  <td align=\"left\" class=\"subhead\" width=\"450\">{$lang['threadtitle']}</td>\n";
-            echo "                  <td align=\"center\" class=\"subhead\" width=\"150\">{$lang['currentinterest']}</td>\n";
-            echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"center\" nowrap=\"nowrap\">", form_checkbox('set_interest[]', $thread['TID'], ''), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"index.php?msg={$thread['TID']}.1\" target=\"_blank\">", thread_format_prefix($thread['PREFIX'], $thread['TITLE']), "</a></td>\n";

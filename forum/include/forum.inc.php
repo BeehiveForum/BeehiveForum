@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.214 2007-02-10 13:05:43 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.215 2007-02-14 22:54:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -2121,6 +2121,25 @@ function forums_get_available_dbs()
     }
 
     return false;
+}
+
+function forums_get_available_count()
+{
+    $db_forums_get_available_count = db_connect();
+
+    if (($uid = bh_session_get_value('UID')) === false) return 0;
+
+    $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS FORUMS ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL = 0 ";
+    $sql.= "OR FORUMS.ACCESS_LEVEL = 2 OR (FORUMS.ACCESS_LEVEL = 1 ";
+    $sql.= "AND USER_FORUM.ALLOWED = 1) ";
+
+    $result = db_query($sql, $db_forums_get_available_count);
+
+    list($forum_available_count) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return $forum_available_count;
 }
 
 ?>

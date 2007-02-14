@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.99 2007-02-10 13:05:43 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.100 2007-02-14 22:54:40 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -532,6 +532,10 @@ if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
     $user_prefs['POST_PAGE'] |= POST_SIGNATURE_DISPLAY;
 }
 
+// Check to see if we should show the set for all forums checkboxes
+
+$show_set_all = (forums_get_available_count() > 1) ? true : false;
+
 // Start output here
 
 html_draw_top("emoticons.js");
@@ -592,7 +596,7 @@ echo "                        <td align=\"left\">", form_dropdown_array("timezon
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) && $user_prefs['DL_SAVING'] == 'Y') ? true : forum_get_setting('forum_dl_saving', 'Y')), "</td>\n";
+echo "                        <td align=\"left\">", ($show_set_all) ? form_checkbox("dl_saving", "Y", $lang['daylightsaving'], (isset($user_prefs['DL_SAVING']) && $user_prefs['DL_SAVING'] == 'Y') ? true : forum_get_setting('forum_dl_saving', 'Y')) : '', "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -620,7 +624,7 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['preferredlang']}:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("language", $available_langs, $available_langs_labels, (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("language_global", "Y", $lang['setforallforums'], (isset($user_prefs['LANGUAGE_GLOBAL']) ? $user_prefs['LANGUAGE_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("language_global", "Y", $lang['setforallforums'], (isset($user_prefs['LANGUAGE_GLOBAL']) ? $user_prefs['LANGUAGE_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
@@ -647,39 +651,39 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("view_sigs", "N", $lang['globallyignoresigs'], (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "N") ? true : false), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("view_sigs_global", "Y", $lang['setforallforums'], (isset($user_prefs['VIEW_SIGS_GLOBAL']) ? $user_prefs['VIEW_SIGS_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("view_sigs_global", "Y", $lang['setforallforums'], (isset($user_prefs['VIEW_SIGS_GLOBAL']) ? $user_prefs['VIEW_SIGS_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("mark_as_of_int", "Y", $lang['autohighinterest'], (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y") ? true : false), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("mark_as_of_int_global", "Y", $lang['setforallforums'], (isset($user_prefs['MARK_AS_OF_INT_GLOBAL']) ? $user_prefs['MARK_AS_OF_INT_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("mark_as_of_int_global", "Y", $lang['setforallforums'], (isset($user_prefs['MARK_AS_OF_INT_GLOBAL']) ? $user_prefs['MARK_AS_OF_INT_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("images_to_links", "Y", $lang['convertimagestolinks'], (isset($user_prefs['IMAGES_TO_LINKS']) && $user_prefs['IMAGES_TO_LINKS'] == "Y") ? true : false), "</td>\n";
-echo "                        <td align=\"right\"  nowrap=\"nowrap\">", form_checkbox("images_to_links_global", "Y", $lang['setforallforums'], (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\"  nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("images_to_links_global", "Y", $lang['setforallforums'], (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_enabled", "Y", array("{$lang['show']} ", form_dropdown_array("show_thumbs", array(1 => 1, 2 => 2, 3 => 3), array(1 => $lang['smallsized'], 2 => $lang['mediumsized'], 3 => $lang['largesized']), (isset($user_prefs['SHOW_THUMBS']) ? ($user_prefs['SHOW_THUMBS'] > 0 ? $user_prefs['SHOW_THUMBS'] : $user_prefs['SHOW_THUMBS'] * -1) : 2)), " {$lang['thumbnailsforimageattachments']}"), (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] > 0) ? true : false, false), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("show_thumbs_global", "Y", $lang['setforallforums'], (isset($user_prefs['SHOW_THUMBS_GLOBAL']) ? $user_prefs['SHOW_THUMBS_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_thumbs_global", "Y", $lang['setforallforums'], (isset($user_prefs['SHOW_THUMBS_GLOBAL']) ? $user_prefs['SHOW_THUMBS_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("enable_wiki_words", "Y", $lang['enablewikiintegration'], (isset($user_prefs['ENABLE_WIKI_WORDS']) && $user_prefs['ENABLE_WIKI_WORDS'] == "Y") ? true : false), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("enable_wiki_words_global", "Y", $lang['setforallforums'], (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("enable_wiki_words_global", "Y", $lang['setforallforums'], (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_mover_spoiler", "Y", $lang['revealspoileronmouseover'], (isset($user_prefs['USE_MOVER_SPOILER']) && $user_prefs['USE_MOVER_SPOILER'] == "Y")), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("use_mover_spoiler_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_mover_spoiler_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("show_stats", "Y", $lang['showforumstats'], (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == "Y") ? true : false), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("show_stats_global", "Y", $lang['setforallforums'], (isset($user_prefs['SHOW_STATS_GLOBAL']) ? $user_prefs['SHOW_STATS_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("show_stats_global", "Y", $lang['setforallforums'], (isset($user_prefs['SHOW_STATS_GLOBAL']) ? $user_prefs['SHOW_STATS_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_word_filter", "Y", $lang['usewordfilter'], (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "&nbsp;<span class=\"smalltext\">[<a href=\"edit_wordfilter.php?webtag=$webtag\">{$lang['editwordfilter']}</a>]</span></td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("use_word_filter_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_WORD_FILTER_GLOBAL']) ? $user_prefs['USE_WORD_FILTER_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_word_filter_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_WORD_FILTER_GLOBAL']) ? $user_prefs['USE_WORD_FILTER_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">", form_checkbox("use_overflow_resize", "Y", $lang['resizeimagesandreflowpage'], (isset($user_prefs['USE_OVERFLOW_RESIZE']) && $user_prefs['USE_OVERFLOW_RESIZE'] == "Y")), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("use_overflow_resize_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_OVERFLOW_RESIZE_GLOBAL']) ? $user_prefs['USE_OVERFLOW_RESIZE_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("use_overflow_resize_global", "Y", $lang['setforallforums'], (isset($user_prefs['USE_OVERFLOW_RESIZE_GLOBAL']) ? $user_prefs['USE_OVERFLOW_RESIZE_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -707,12 +711,12 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['postsperpage']}:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("posts_per_page", array(10, 20, 30), array(10, 20, 30), (isset($user_prefs['POSTS_PER_PAGE']) && is_numeric($user_prefs['POSTS_PER_PAGE'])) ? $user_prefs['POSTS_PER_PAGE'] : 10), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("posts_per_page_global", "Y", $lang['setforallforums'], (isset($user_prefs['POSTS_PER_PAGE_GLOBAL']) ? $user_prefs['POSTS_PER_PAGE_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("posts_per_page_global", "Y", $lang['setforallforums'], (isset($user_prefs['POSTS_PER_PAGE_GLOBAL']) ? $user_prefs['POSTS_PER_PAGE_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['fontsize']}:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("font_size", range(5, 15), array('5pt', '6pt', '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '13pt', '14pt', '15pt'), (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) ? $user_prefs['FONT_SIZE'] : 10), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("font_size_global", "Y", $lang['setforallforums'], (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", $lang['setforallforums'], (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 
 if (sizeof($available_styles) > 1) {
@@ -720,7 +724,7 @@ if (sizeof($available_styles) > 1) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['forumstyle']}:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("style", array_keys($available_styles), array_values($available_styles), (isset($user_prefs['STYLE']) && in_array($user_prefs['STYLE'], array_keys($available_styles))) ? $user_prefs['STYLE'] : forum_get_setting('default_style', false, 'default')), "</td>\n";
-    echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("style_global", "Y", $lang['setforallforums'], (isset($user_prefs['STYLE_GLOBAL']) ? $user_prefs['STYLE_GLOBAL'] : false)), "&nbsp;</td>\n";
+    echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("style_global", "Y", $lang['setforallforums'], (isset($user_prefs['STYLE_GLOBAL']) ? $user_prefs['STYLE_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
     echo "                      </tr>\n";
 }
 
@@ -729,14 +733,14 @@ if (sizeof($available_emoticons) > 1) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['forumemoticons']} [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" onclick=\"return openEmoticons('', '$webtag')\">{$lang['preview']}</a>]:</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array("emoticons", array_keys($available_emoticons), array_values($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? $user_prefs['EMOTICONS'] : forum_get_setting('default_emoticons', false, 'default')), "</td>\n";
-    echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("emoticons_global", "Y", $lang['setforallforums'], (isset($user_prefs['EMOTICONS_GLOBAL']) ? $user_prefs['EMOTICONS_GLOBAL'] : false)), "&nbsp;</td>\n";
+    echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("emoticons_global", "Y", $lang['setforallforums'], (isset($user_prefs['EMOTICONS_GLOBAL']) ? $user_prefs['EMOTICONS_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
     echo "                      </tr>\n";
 }
 
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['startpage']}:</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array("start_page", range(0, 3), array($lang['start'], $lang['messages'], $lang['pminbox'], $lang['startwiththreadlist']), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
-echo "                        <td align=\"right\" nowrap=\"nowrap\">", form_checkbox("start_page_global", "Y", $lang['setforallforums'], (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false)), "&nbsp;</td>\n";
+echo "                        <td align=\"right\" nowrap=\"nowrap\">", ($show_set_all) ? form_checkbox("start_page_global", "Y", $lang['setforallforums'], (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false)) : '', "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

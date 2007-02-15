@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: install.php,v 1.68 2007-01-27 15:43:46 decoyduck Exp $ */
+/* $Id: install.php,v 1.69 2007-02-15 17:59:46 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -310,7 +310,7 @@ if (isset($_POST['install_method']) && (!defined('BEEHIVE_INSTALED') || $force_i
                         echo "                  <td align=\"left\">&nbsp;</td>\n";
                         echo "                </tr>\n";
                         echo "                <tr>\n";
-                        echo "                  <td align=\"left\">In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. Once this is done you can click the Continue button below to start using your Beehive Forum.</td>\n";
+                        echo "                  <td align=\"left\">In order to complete the installation you will need to save a copy of your config.inc.php to your hard disc drive by clicking the 'Download Config' button below and from there upload it to your server into Beehive's 'include' folder. After you have successfully uploaded your config.inc.php you must delete both the install folder and install.php. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
                         echo "                </tr>\n";
                         echo "                <tr>\n";
                         echo "                  <td align=\"left\">&nbsp;</td>\n";

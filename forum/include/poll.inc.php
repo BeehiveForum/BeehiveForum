@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111 - 1307
 USA
 ======================================================================*/
 
-/* $Id: poll.inc.php,v 1.186 2007-02-13 18:12:06 decoyduck Exp $ */
+/* $Id: poll.inc.php,v 1.187 2007-02-15 17:59:46 decoyduck Exp $ */
 
 /**
 * Poll related functions
@@ -444,8 +444,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                         if ($polldata['OPTIONTYPE'] == 1 && $pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i - 1]] > 1) {
 
                             $polldata['CONTENT'].= "                <tr>\n";
-                            $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                            $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$pollresults['GROUP_ID'][$i - 1]}]", $dropdown['value'], $dropdown['label'], false, false). "</td>\n";
+                            $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$pollresults['GROUP_ID'][$i - 1]}]", $dropdown['value'], $dropdown['label'], false, false). "</td>\n";
                             $polldata['CONTENT'].= "                </tr>\n";
 
                         }else {
@@ -489,8 +488,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     if ($polldata['OPTIONTYPE'] == 1 && $pollresults['GROUP_SIZE'][$pollresults['GROUP_ID'][$i]] > 1) {
 
                         $polldata['CONTENT'].= "                <tr>\n";
-                        $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
-                        $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"20\">". form_dropdown_array("pollvote[{$pollresults['GROUP_ID'][$i]}]", $dropdown['value'], $dropdown['label'], false, false). "</td>\n";
+                        $polldata['CONTENT'].= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[{$pollresults['GROUP_ID'][$i]}]", $dropdown['value'], $dropdown['label'], false, false). "</td>\n";
                         $polldata['CONTENT'].= "                </tr>\n";
 
                     }

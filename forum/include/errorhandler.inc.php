@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.83 2007-02-16 17:06:09 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.84 2007-02-16 17:34:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -112,6 +112,8 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         }
 
         srand((double)microtime() * 1000000);
+
+        // REQUEST_URI doesn't exist in IIS so we need to make our own.
 
         $request_uri = "{$_SERVER['PHP_SELF']}?";
         parse_array($_GET, "&amp;", $request_uri);

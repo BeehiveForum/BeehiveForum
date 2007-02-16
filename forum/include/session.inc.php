@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.284 2007-02-06 14:58:29 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.285 2007-02-16 17:34:40 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -1203,24 +1203,20 @@ function parse_array($array, $sep, &$result_var)
     if (!is_array($array)) return false;
 
     if (!is_string($result_var)) $result_var = "";
-    if (!is_string($sep) || strlen($sep) == 0) $sep = "&";
+    if (!is_string($sep) || strlen($sep) < 1) $sep = "&";
 
     $preg_sep = preg_quote($sep, "/");
 
-    foreach ($array as $key => $value) {
+    $array_keys = array();
+    $array_values = array();
 
-        if (is_array($value)) {
+    flatten_array($array, $array_keys, $array_values);
 
-            parse_array($value, rawurlencode($sep), $result_var);
+    foreach ($array_keys as $key => $key_name) {
+        
+        if (($key_name != 'webtag') && isset($array_values[$key])) {
 
-        }else {
-
-            $value = rawurlencode($value);
-
-            if ($key != 'webtag') {
-
-                $result_var.= "$key=$value$sep";
-            }
+            $result_var.= "$key_name={$array_values[$key]}{$sep}";
         }
     }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: form.inc.php,v 1.88 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: form.inc.php,v 1.89 2007-02-16 17:34:40 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -103,13 +103,13 @@ function form_input_hidden_array($array, $ignore_keys = array())
     $array_keys = array();
     $array_values = array();
 
-    flatten_array($array, $array_keys, $array_values, $ignore_keys);
+    flatten_array($array, $array_keys, $array_values);
 
     $result_var = "";
 
     foreach ($array_keys as $key => $key_name) {
         
-        if (isset($array_values[$key])) {
+        if (($key_name != 'webtag') && isset($array_values[$key])) {
         
             $result_var.= form_input_hidden($key_name, _htmlentities(_stripslashes($array_values[$key]))). "\n";
         }

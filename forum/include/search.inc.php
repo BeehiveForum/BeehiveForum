@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.172 2007-01-28 01:49:29 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.173 2007-02-16 17:41:50 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -205,7 +205,8 @@ function search_execute($argarray, &$error)
     // Build the final query.
 
     $sql = "$select_sql $from_sql $join_sql $peer_join_sql ";
-    $sql.= "$where_sql $peer_where_sql $group_sql $having_sql";
+    $sql.= "$where_sql $peer_where_sql $group_sql $having_sql ";
+    $sql.= "LIMIT 1000";
 
     // If the user has performed a search within the last x minutes bail out
 

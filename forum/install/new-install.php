@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.135 2007-02-10 13:05:44 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.136 2007-02-16 17:06:09 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -622,6 +622,7 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "CREATE TABLE FORUMS (";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  WEBTAG VARCHAR(255) NOT NULL DEFAULT '',";
+$sql.= "  DATABASE_NAME VARCHAR(255) NOT NULL DEFAULT '',";
 $sql.= "  DEFAULT_FORUM TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  ACCESS_LEVEL TINYINT(4) NOT NULL DEFAULT '0',";
 $sql.= "  FORUM_PASSWD VARCHAR(32) NOT NULL DEFAULT '',";
@@ -1186,8 +1187,8 @@ foreach ($global_settings as $sname => $svalue) {
     }
 }
 
-$sql = "INSERT INTO FORUMS (WEBTAG, DEFAULT_FORUM, ACCESS_LEVEL) ";
-$sql.= "VALUES ('{$forum_webtag}', 1, 0)";
+$sql = "INSERT INTO FORUMS (WEBTAG, DATABASE_NAME, DEFAULT_FORUM, ACCESS_LEVEL) ";
+$sql.= "VALUES ('{$forum_webtag}', '{$db_database}', 1, 0)";
 
 if (!$result = @db_query($sql, $db_install)) {
 

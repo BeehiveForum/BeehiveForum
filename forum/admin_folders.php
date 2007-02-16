@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_folders.php,v 1.122 2007-02-04 22:20:40 decoyduck Exp $ */
+/* $Id: admin_folders.php,v 1.123 2007-02-16 20:39:06 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -177,7 +177,7 @@ if (isset($_GET['del_success']) && strlen(trim(_stripslashes($_GET['del_success'
     echo "<h2>{$lang['successfullydeletedfolder']}: ", trim(_stripslashes($_GET['del_success'])), "</h2>\n";
 }
 
-if (!isset($error_html) && strlen($error_html) > 0) {
+if (isset($error_html) && strlen($error_html) > 0) {
     echo $error_html;
 }
 

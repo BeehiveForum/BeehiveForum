@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: new-install.php,v 1.136 2007-02-16 17:06:09 decoyduck Exp $ */
+/* $Id: new-install.php,v 1.137 2007-02-16 23:09:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "new-install.php") {
 
@@ -840,11 +840,13 @@ if (!$result = @db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE USER_HISTORY (";
+$sql.= "  HID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  LOGON VARCHAR(32) NULL,";
 $sql.= "  NICKNAME VARCHAR(32) NULL,";
 $sql.= "  EMAIL VARCHAR(80) NULL,";
-$sql.= "  PRIMARY KEY (UID)";
+$sql.= "  MODIFIED DATETIME DEFAULT NULL,";
+$sql.= "  PRIMARY KEY (HID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

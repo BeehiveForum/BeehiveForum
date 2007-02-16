@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: errorhandler.inc.php,v 1.82 2007-01-15 00:10:35 decoyduck Exp $ */
+/* $Id: errorhandler.inc.php,v 1.83 2007-02-16 17:06:09 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -113,6 +113,9 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
 
         srand((double)microtime() * 1000000);
 
+        $request_uri = "{$_SERVER['PHP_SELF']}?";
+        parse_array($_GET, "&amp;", $request_uri);
+
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
         echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
@@ -124,7 +127,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline)
         echo "</head>\n";
         echo "<body>\n";
         echo "<div align=\"center\">\n";
-        echo "<form name=\"f_error\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\">\n";
+        echo "<form name=\"f_error\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
         echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
         echo "  <tr>\n";
         echo "    <td align=\"left\">\n";

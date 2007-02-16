@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.23 2007-02-12 01:05:30 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.24 2007-02-16 23:09:54 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -396,11 +396,13 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 // and email address changes
 
 $sql = "CREATE TABLE USER_HISTORY (";
+$sql.= "  HID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  LOGON VARCHAR(32) NULL,";
 $sql.= "  NICKNAME VARCHAR(32) NULL,";
 $sql.= "  EMAIL VARCHAR(80) NULL,";
-$sql.= "  PRIMARY KEY (UID)";
+$sql.= "  MODIFIED DATETIME DEFAULT NULL,";
+$sql.= "  PRIMARY KEY (HID)";
 $sql.= ") TYPE=MYISAM";
 
 if (!$result = @db_query($sql, $db_install)) {

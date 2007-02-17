@@ -1126,6 +1126,17 @@ a {
     padding-left: 5px;
 }
 
+.subhead_checkbox {
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 10pt;
+    color: #$text_colour[subhead];
+    background-color: #$elements[subhead];
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+}
+
 .profile_logon {
     color: #$text_colour[body];
 }

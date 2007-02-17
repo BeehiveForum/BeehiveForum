@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_user.php,v 1.189 2007-02-09 15:21:06 decoyduck Exp $ */
+/* $Id: admin_user.php,v 1.190 2007-02-17 00:30:43 decoyduck Exp $ */
 
 /**
 * Displays and handles the Manage Users and Manage User: [User] pages
@@ -1020,51 +1020,48 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"90%\">\n";
+            echo "                    <table width=\"90%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">{$lang['useringroups']}:</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
             echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                    <table class=\"box\" width=\"90%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\">\n";
-            echo "                          <table class=\"box\" width=\"100%\">\n";
+            echo "                        <td align=\"left\" class=\"posthead\">\n";
+            echo "                          <table class=\"posthead\" width=\"100%\">\n";
             echo "                            <tr>\n";
-            echo "                              <td align=\"left\" class=\"posthead\">\n";
-            echo "                                <table class=\"posthead\" width=\"100%\">\n";
-            echo "                                  <tr>\n";
-            echo "                                    <td align=\"left\" class=\"subhead\">{$lang['groups']}</td>\n";
-            echo "                                    <td align=\"left\" class=\"subhead\">{$lang['users']}</td>\n";
-            echo "                                    <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
-            echo "                                  </tr>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"200\">{$lang['groups']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"50\">{$lang['users']}</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
+            echo "                            </tr>\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" colspan=\"3\">\n";
+            echo "                                <div class=\"admin_folder_perms\">\n";
 
             foreach ($user_groups_array as $user_group) {
 
+                echo "                                <table class=\"posthead\" width=\"100%\">\n";
                 echo "                                  <tr>\n";
-                echo "                                    <td align=\"left\" valign=\"top\">&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
-                echo "                                    <td valign=\"top\" align=\"center\">{$user_group['USER_COUNT']}</td>\n";
+                echo "                                    <td align=\"left\" valign=\"top\" width=\"200\">&nbsp;<a href=\"admin_user_groups_edit.php?gid={$user_group['GID']}\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+                echo "                                    <td valign=\"top\" align=\"center\" width=\"50\">{$user_group['USER_COUNT']}</td>\n";
                 echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", $lang['addremoveusers']), "&nbsp;</td>\n";
                 echo "                                  </tr>\n";
+                echo "                                </table>\n";
             }
 
-            echo "                                  <tr>\n";
-            echo "                                    <td align=\"left\">&nbsp;</td>\n";
-            echo "                                    <td align=\"left\">&nbsp;</td>\n";
-            echo "                                    <td align=\"left\">&nbsp;</td>\n";
-            echo "                                  </tr>\n";
-            echo "                                </table>\n";
+            echo "                                </div>\n";
             echo "                              </td>\n";
             echo "                            </tr>\n";
             echo "                          </table>\n";
             echo "                        </td>\n";
             echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
             echo "                </tr>\n";
+
 
         }else {
 
@@ -1074,14 +1071,14 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">{$lang['usernotinanygroups']}</td>\n";
             echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
             echo "                    </table>\n";
             echo "                  </td>\n";
             echo "                </tr>\n";
         }
 
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
         echo "              </table>\n";
         echo "            </td>\n";
         echo "          </tr>\n";
@@ -1119,22 +1116,29 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['nickname']}</td>\n";
                 echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">{$lang['ip']}</td>\n";
                 echo "                            </tr>\n";
+                echo "                            <tr>\n";
+                echo "                              <td align=\"left\" colspan=\"3\">\n";
+                echo "                                <div class=\"admin_folder_perms\">\n";
 
                 foreach ($user_alias_array as $user_alias) {
 
-                    echo "                            <tr>\n";
-                    echo "                              <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
-                    echo "                              <td align=\"left\">{$user_alias['NICKNAME']}</td>\n";
+                    echo "                                  <table class=\"posthead\" width=\"100%\">\n";
+                    echo "                                    <tr>\n";
+                    echo "                                      <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">{$user_alias['LOGON']}</a></td>\n";
+                    echo "                                      <td align=\"left\">{$user_alias['NICKNAME']}</td>\n";
 
                     if (ip_is_banned($user_alias['IPADDRESS'])) {
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
+                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$lang['banned']}</a>&nbsp;</td>";
                     }else {
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>";
+                        echo "                                      <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>";
                     }
 
-                    echo "                            </tr>\n";
+                    echo "                                    </tr>\n";
+                    echo "                                  </table>\n";
                 }
 
+                echo "                                </div>\n";
+                echo "                              </td>\n";
                 echo "                            </tr>\n";
                 echo "                          </table>\n";
                 echo "                        </td>\n";
@@ -1202,12 +1206,13 @@ if (isset($_POST['t_delete_posts']) && $_POST['t_delete_posts'] == "Y") {
                 
                 foreach ($user_history_array as $row => $user_history) {
 
-                    $row_highlight_class = (($row %2) == 1) ? "row_highlight" : "";
-                    
                     echo "                                  <table class=\"posthead\" width=\"100%\">\n";
                     echo "                                    <tr>\n";
-                    echo "                                      <td align=\"left\" valign=\"top\" class=\"$row_highlight_class\" width=\"100\">", format_date($user_history['MODIFIED']), "</td>\n";
-                    echo "                                      <td align=\"left\" class=\"$row_highlight_class\">{$user_history['DATA']}</td>\n";
+                    echo "                                      <td align=\"left\" valign=\"top\" width=\"100\">", format_date($user_history['MODIFIED']), "</td>\n";
+                    echo "                                      <td align=\"left\">{$user_history['DATA']}</td>\n";
+                    echo "                                    </tr>\n";
+                    echo "                                    <tr>\n";
+                    echo "                                      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
                     echo "                                    </tr>\n";
                     echo "                                  </table>\n";
                 }

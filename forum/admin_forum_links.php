@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_forum_links.php,v 1.36 2007-01-15 00:31:01 decoyduck Exp $ */
+/* $Id: admin_forum_links.php,v 1.37 2007-02-18 16:12:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -468,8 +468,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">{$lang['name']}</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">{$lang['name']}</td>\n";
     echo "                </tr>\n";
 
     $forum_links_array = forum_links_get_links_by_page($start);
@@ -487,22 +486,24 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
             if ($forum_links_array['forum_links_count'] == 1) {
 
-                echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
+                echo "                  <td align=\"left\" colspan=\"2\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">{$forum_link['TITLE']}</a></td>\n";
 
             }elseif ($link_index == $forum_links_array['forum_links_count']) {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\" onclick=\"return false\"", "move_down_ctrl_disabled"), "</td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">{$forum_link['TITLE']}</a></td>\n";
 
             }elseif ($link_index > 1) {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">{$forum_link['TITLE']}</a></td>\n";
 
             }else {
 
                 echo "                  <td align=\"center\" width=\"40\" nowrap=\"nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\" onclick=\"return false\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">{$forum_link['TITLE']}</a></td>\n";
             }
-
-            echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">{$forum_link['TITLE']}</a></td>\n";
+            
             echo "                </tr>\n";
         }
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin_users.php,v 1.134 2007-01-28 01:15:14 decoyduck Exp $ */
+/* $Id: admin_users.php,v 1.135 2007-02-18 16:13:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -375,13 +375,17 @@ echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td class=\"subhead\" align=\"left\">{$lang['searchforusernotinlist']}:</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td class=\"posthead\" align=\"left\">\n";
-echo "                    &nbsp;{$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td class=\"posthead\" align=\"left\">{$lang['username']}: ", form_input_text('usersearch', $usersearch, 30, 64), " ", form_submit('submit', $lang['search']), " ", form_submit('reset', $lang['clear']), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

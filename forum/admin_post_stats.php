@@ -23,7 +23,7 @@ USA
 
 ======================================================================*/
 
-/* $Id: admin_post_stats.php,v 1.27 2007-01-14 21:04:49 decoyduck Exp $ */
+/* $Id: admin_post_stats.php,v 1.28 2007-02-18 16:12:59 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -250,23 +250,41 @@ echo "  <form action=\"admin_post_stats.php\" method=\"post\" target=\"_self\">\
 echo "  ", form_input_hidden("webtag", $webtag), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">\n";
-echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"350\">\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\">Date from:</td>\n";
-echo "            <td align=\"left\">", form_date_dropdowns($from_year, $from_month, $from_day, "from_", 2002), "</td>\n";
-echo "          </tr>\n";
-echo "            <td align=\"left\">Date to:</td>\n";
-echo "            <td align=\"left\">", form_date_dropdowns($to_year, $to_month, $to_day, "to_", 2002), "</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\">&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['update']), "</td>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\">{$lang['options']}</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"100\">Date from:</td>\n";
+echo "                        <td align=\"left\">", form_date_dropdowns($from_year, $from_month, $from_day, "from_", 2002), "</td>\n";
+echo "                      </tr>\n";
+echo "                        <td align=\"left\" width=\"100\">Date to:</td>\n";
+echo "                        <td align=\"left\">", form_date_dropdowns($to_year, $to_month, $to_day, "to_", 2002), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td>&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td colspan=\"2\" align=\"center\">", form_submit("update", $lang['update']), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  </form>\n";

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: mods_list.php,v 1.18 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: mods_list.php,v 1.19 2007-02-18 22:38:02 decoyduck Exp $ */
 
 /**
 * Displays list of moderators for a folder
@@ -110,6 +110,10 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
     $fid = $_GET['fid'];
 
+}elseif (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+
+    $fid = $_POST['fid'];
+
 }else {
 
     html_draw_top();
@@ -123,8 +127,17 @@ $folder_title = folder_get_title($fid);
 
 html_draw_top("title={$lang['moderatorlist']} {$folder_title}", "openprofile.js");
 
-echo "<div align=\"center\">\n";
+if (isset($_POST['close'])) {
 
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "  window.close();\n";
+    echo "</script>\n";
+
+    html_draw_bottom();
+    exit;
+}
+
+echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -189,6 +202,12 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <br />\n";
+echo "  <form method=\"post\" action=\"mods_list.php\" target=\"_self\">\n";
+echo "    ", form_input_hidden('webtag', $webtag), "\n";
+echo "    ", form_input_hidden('fid', $fid), "\n";
+echo "    ". form_submit('close', $lang['close']). "\n";
+echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: html.inc.php,v 1.207 2007-02-13 18:12:06 decoyduck Exp $ */
+/* $Id: html.inc.php,v 1.208 2007-02-18 22:38:02 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -251,16 +251,30 @@ function html_get_style_sheet()
 
     $forum_settings = forum_get_settings();
 
+    $script_filename = basename($_SERVER['PHP_SELF'], '.php');
+
     if (!$user_style = bh_session_get_value('STYLE')) {
         $user_style = forum_get_setting('default_style');
     }
 
     if ($user_style !== false) {
+        
+        if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/$script_filename.css")) {
 
+            $modified_time = date('YmdHis', filemtime("styles/$user_style/$script_filename.css"));
+            return "styles/$user_style/$script_filename.css?$modified_time";
+        }
+        
         if (@is_dir("styles/$user_style") && @file_exists("styles/$user_style/style.css")) {
 
             $modified_time = date('YmdHis', filemtime("styles/$user_style/style.css"));
             return "styles/$user_style/style.css?$modified_time";
+        }
+
+        if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/$script_filename.css")) {
+
+            $modified_time = date('YmdHis', filemtime("forums/$webtag/styles/$user_style/$script_filename.css"));
+            return "forums/$webtag/styles/$user_style/$script_filename.css?$modified_time";
         }
                      
         if (@is_dir("forums/$webtag/styles/$user_style") && @file_exists("forums/$webtag/styles/$user_style/style.css")) {

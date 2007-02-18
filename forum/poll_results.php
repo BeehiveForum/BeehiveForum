@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: poll_results.php,v 1.15 2007-01-17 20:43:17 decoyduck Exp $ */
+/* $Id: poll_results.php,v 1.16 2007-02-18 22:38:02 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -100,15 +100,14 @@ if (!forum_check_access_level()) {
 
 html_draw_top("openprofile.js");
 
-if (isset($_POST['submit']) && $_POST['submit'] == $lang['close']) {
+if (isset($_POST['close'])) {
 
-  echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-  echo "  window.close();\n";
-  echo "</script>\n";
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
+    echo "  window.close();\n";
+    echo "</script>\n";
 
-  html_draw_bottom();
-  exit;
-
+    html_draw_bottom();
+    exit;
 }
 
 if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
@@ -175,59 +174,55 @@ echo "        </tr>\n";
 
 if ($polldata['SHOWRESULTS'] == 1 || bh_session_get_value('UID') == $polldata['FROM_UID'] || bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) || ($polldata['CLOSES'] > 0 && $polldata['CLOSES'] < mktime())) {
 
-  if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
+    if ($polldata['VOTETYPE'] == 1 && $polldata['CHANGEVOTE'] < 2 && $polldata['POLLTYPE'] != 2) {
 
-    echo "        <tr>\n";
-    echo "          <td align=\"left\" colspan=\"2\">\n";
-    echo poll_public_ballot($tid, $viewstyle);
-    echo "          </td>\n";
-    echo "        </tr>\n";
-
-  }else {
-
-    if ($polldata['POLLTYPE'] == 0) {
-
-      echo "        <tr>\n";
-      echo "          <td align=\"left\">\n";
-      echo poll_horizontal_graph($tid);
-      echo "          </td>\n";
-      echo "        </tr>\n";
-
-    }elseif ($polldata['POLLTYPE'] == 2) {
-
-      echo "        <tr>\n";
-      echo "          <td align=\"left\">\n";
-      echo poll_table_graph($tid);
-      echo "          </td>\n";
-      echo "        </tr>\n";
+        echo "        <tr>\n";
+        echo "          <td align=\"left\" colspan=\"2\">\n";
+        echo poll_public_ballot($tid, $viewstyle);
+        echo "          </td>\n";
+        echo "        </tr>\n";
 
     }else {
 
-      echo "        <tr>\n";
-      echo "          <td align=\"left\">\n";
-      echo poll_vertical_graph($tid);
-      echo "          </td>\n";
-      echo "        </tr>\n";
+        if ($polldata['POLLTYPE'] == 0) {
 
+            echo "        <tr>\n";
+            echo "          <td align=\"left\">\n";
+            echo poll_horizontal_graph($tid);
+            echo "          </td>\n";
+            echo "        </tr>\n";
+
+        }elseif ($polldata['POLLTYPE'] == 2) {
+
+            echo "        <tr>\n";
+            echo "          <td align=\"left\">\n";
+            echo poll_table_graph($tid);
+            echo "          </td>\n";
+            echo "        </tr>\n";
+
+        }else {
+
+            echo "        <tr>\n";
+            echo "          <td align=\"left\">\n";
+            echo poll_vertical_graph($tid);
+            echo "          </td>\n";
+            echo "        </tr>\n";
+        }
     }
-  }
 
 }else {
 
-  $pollresults = poll_get_votes($tid);
+    $pollresults = poll_get_votes($tid);
 
-  for ($i = 0; $i <= sizeof($pollresults['OPTION_ID']); $i++) {
+    for ($i = 0; $i <= sizeof($pollresults['OPTION_ID']); $i++) {
 
-    if (!empty($pollresults['OPTION_NAME'][$i])) {
+        if (!empty($pollresults['OPTION_NAME'][$i])) {
 
-      echo "        <tr>\n";
-      echo "          <td align=\"left\" class=\"postbody\">{$pollresults['OPTION_NAME'][$i]}</td>\n";
-      echo "        </tr>\n";
-
+            echo "        <tr>\n";
+            echo "          <td align=\"left\" class=\"postbody\">{$pollresults['OPTION_NAME'][$i]}</td>\n";
+            echo "        </tr>\n";
+        }
     }
-
-  }
-
 }
 
 echo "      </table>\n";
@@ -237,10 +232,9 @@ echo "</table>\n";
 echo "<br />\n";
 echo "<form method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', $webtag), "\n";
-echo "  ". form_submit('submit', $lang['close']). "\n";
+echo "  ". form_submit('close', $lang['close']). "\n";
 echo "</form>\n";
 echo "</div>\n";
-
 
 html_draw_bottom();
 

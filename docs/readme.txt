@@ -336,6 +336,21 @@ If you know how to do CSS, you can edit the style.css file in the
 /styles/[stylename] folder to change colours, fonts and things like that.
 We recommend taking a backup first, though, in case you make a mess of it.
 
+As of BeehiveForum 0.7.2 you can also create per-file style sheets that allow you
+to give different pages different designs. This would for example allow you to
+give the thread list a background image but leave the other pages using the
+same design.
+
+To do this all you would need to do is create a .css file with the same name
+as the PHP script you want it to affect, sans it's extension. i.e. for the thread
+list you would create a style sheet named thread_list.css and place it in the
+same folder as the main style.css. Beehive will automatically find and use this
+style sheet automatically in preference to the main style.css.
+
+There is one caveat though of course (isn't there always?). When Beehive
+encounters the per-file style sheet it will leave out the main style.css so any
+classes you want displayed in all your forum styles must be defined in each
+of your per-page .css files.
 
 1.3.2 Images
 ============

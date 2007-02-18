@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: text_captcha.inc.php,v 1.13 2006-07-23 17:33:16 decoyduck Exp $ */
+/* $Id: text_captcha.inc.php,v 1.14 2007-02-18 23:48:56 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -419,7 +419,40 @@ class captcha {
         srand((double)microtime() * 1000000);
         $this->color_blue = intval(rand($min, $max));
     }
+}
 
+function captcha_clean_up()
+{
+    $unlink_count = 0;
+
+    $captcha_clean_up_prob = intval(forum_get_setting('forum_self_clean_prob', false, 500));
+
+    if ($captcha_clean_up_prob < 1) $captcha_clean_up_prob = 1;
+    if ($captcha_clean_up_prob > 1000) $captcha_clean_up_prob = 1000;
+    
+    if ($text_captcha_dir = forum_get_setting('text_captcha_dir')) {
+
+        if (($mt_result = mt_rand(1, $captcha_clean_up_prob)) == 1) {
+
+            if (@$dir = opendir("$text_captcha_dir/images/")) {
+
+                while ((($file = @readdir($dir)) !== false) && $unlink_count < 10) {
+
+                    $unlink_count++;
+
+                    $captcha_image_file = "$text_captcha_dir/images/$file";
+
+                    if ($file != "." && $file != ".." && !is_dir($captcha_image_file)) {
+
+                        if (filemtime($captcha_image_file) < (time() - DAY_IN_SECONDS)) {
+
+                            @unlink($captcha_image_file);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 ?>

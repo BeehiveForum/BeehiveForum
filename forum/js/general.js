@@ -130,24 +130,29 @@ function addOverflow(maxWidth)
 
         if (td_tags[i].className == 'postbody') {
             
-            if (td_tags[i].clientWidth >= (maxWidth * 0.94)) {
+            if (td_tags[i].clientWidth >= maxWidth) {
 
                 var new_div = document.createElement('div');
 
-                new_div.style.overflowX = 'scroll';
-                new_div.style.overflowY = 'auto';
+                if (IE) {
+                
+                    new_div.style.overflowX = 'scroll';
+                    new_div.style.overflowY = 'auto';
 
-                new_div.style.overflow = 'auto';
+                }else {
+
+                    new_div.style.overflow = 'auto';
+                }
 
                 new_div.className = 'bhoverflowfix';
             
+                td_tags[i].style.width = (maxWidth * 0.94) + 'px';
                 new_div.style.width = (maxWidth * 0.94) + 'px';
 
                 while (td_tags[i].hasChildNodes()) {
                     new_div.appendChild(td_tags[i].firstChild);
                 }
 
-                td_tags[i].style.width = (maxWidth * 0.94) + 'px';
                 td_tags[i].appendChild(new_div);
             }
         }

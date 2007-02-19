@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.125 2007-02-19 16:05:07 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.126 2007-02-19 16:06:49 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -120,7 +120,7 @@ function format_time($time, $verbose = false)
     if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
 
         $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
-        $local_time_now = local_time_now + ($dst_offset * HOUR_IN_SECONDS);
+        $local_time_now = $local_time_now + ($dst_offset * HOUR_IN_SECONDS);
     }
 
     // Get the numerical for the dates to convert
@@ -202,7 +202,7 @@ function format_date($time)
     if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
 
         $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
-        $local_time_now = local_time_now + ($dst_offset * HOUR_IN_SECONDS);
+        $local_time_now = $local_time_now + ($dst_offset * HOUR_IN_SECONDS);
     }
 
     // Get the numerical for the dates to convert

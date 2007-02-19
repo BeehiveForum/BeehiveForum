@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: format.inc.php,v 1.124 2007-02-16 17:34:40 decoyduck Exp $ */
+/* $Id: format.inc.php,v 1.125 2007-02-19 16:05:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -35,6 +35,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "session.inc.php");
+include_once(BH_INCLUDE_PATH. "timezone.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function format_user_name($u_logon, $u_nickname)
@@ -93,8 +94,16 @@ function format_time($time, $verbose = false)
 
     $lang = load_language_file();
 
-    if (!$timezone = bh_session_get_value('TIMEZONE')) {
-        $timezone = forum_get_setting('forum_timezone', false, 0);
+    if (!$timezone_id = bh_session_get_value('TIMEZONE')) {
+        $timezone_id = forum_get_setting('forum_timezone', false, 27);
+    }
+
+    if (!$gmt_offset = bh_session_get_value('GMT_OFFSET')) {
+        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
+    }
+
+    if (!$dst_offset = bh_session_get_value('DST_OFFSET')) {
+        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
     if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
@@ -103,15 +112,15 @@ function format_time($time, $verbose = false)
 
     // Calculate $time in local timezone and current local time
 
-    $local_time = $time + ($timezone * HOUR_IN_SECONDS);
-    $local_time_now = time() + ($timezone * HOUR_IN_SECONDS);
+    $local_time = $time + ($gmt_offset * HOUR_IN_SECONDS);
+    $local_time_now = time() + ($gmt_offset * HOUR_IN_SECONDS);
 
-    // Amend times for daylight saving if necessary (using critera for British Summer Time)
+    // Amend times for daylight saving if necessary
 
-    if ($dl_saving == "Y") {
+    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
 
-        $local_time = timestamp_amend_bst($local_time);
-        $local_time_now = timestamp_amend_bst($local_time_now);
+        $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
+        $local_time_now = local_time_now + ($dst_offset * HOUR_IN_SECONDS);
     }
 
     // Get the numerical for the dates to convert
@@ -167,8 +176,16 @@ function format_date($time)
 {
     $lang = load_language_file();
 
-    if (!$timezone = bh_session_get_value('TIMEZONE')) {
-        $timezone = forum_get_setting('forum_timezone', false, 0);
+    if (!$timezone_id = bh_session_get_value('TIMEZONE')) {
+        $timezone_id = forum_get_setting('forum_timezone', false, 27);
+    }
+
+    if (!$gmt_offset = bh_session_get_value('GMT_OFFSET')) {
+        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
+    }
+
+    if (!$dst_offset = bh_session_get_value('DST_OFFSET')) {
+        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
     if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
@@ -177,8 +194,16 @@ function format_date($time)
 
     // Calculate $time in local timezone and current local time
 
-    $local_time = $time + ($timezone * HOUR_IN_SECONDS);
-    $local_time_now = time() + ($timezone * HOUR_IN_SECONDS);
+    $local_time = $time + ($gmt_offset * HOUR_IN_SECONDS);
+    $local_time_now = time() + ($gmt_offset * HOUR_IN_SECONDS);
+
+    // Amend times for daylight saving if necessary
+
+    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+
+        $local_time = $local_time + ($dst_offset * HOUR_IN_SECONDS);
+        $local_time_now = local_time_now + ($dst_offset * HOUR_IN_SECONDS);
+    }
 
     // Get the numerical for the dates to convert
 
@@ -233,29 +258,6 @@ function timestamp_to_date($timestamp)
     $second=substr($timestamp,12,2);
     $newdate=mktime($hour,$minute,$second,$month,$day,$year);
     return ($newdate);
-}
-
-
-function timestamp_amend_bst($timestamp)
-{
-    $year = date("Y", mktime());
-
-    $ldmarw = date("w", mktime(2, 0, 0, 4,  0, $year));
-    $ldoctw = date("w", mktime(2, 0, 0, 11, 0, $year));
-    $ldmard = date("d", mktime(2, 0, 0, 4,  0, $year));
-    $ldoctd = date("d", mktime(2, 0, 0, 11, 0, $year));
-
-    if ($ldmarw > 0) $ldmard = $ldmard - $ldmarw;
-    if ($ldoctw > 0) $ldoctd = $ldoctd - $ldoctw;
-
-    $startofbst = mktime(2, 0, 0, 3,  $ldmard, $year);
-    $endofbst   = mktime(2, 0, 0, 10, $ldoctd, $year);
-
-    if (($timestamp > $startofbst) && ($timestamp < $endofbst)) {
-        return $timestamp + 3600;  // return adjusted timestamp
-    }else{
-        return $timestamp; // return unadjusted timestamp
-    }
 }
 
 // Lazy htmlentities function which ensures the use of
@@ -486,18 +488,26 @@ function is_md5($hash)
 
 function get_local_time()
 {
-    if (!$timezone = bh_session_get_value('TIMEZONE')) {
-        $timezone = forum_get_setting('forum_timezone', false, 0);
+    if (!$timezone_id = bh_session_get_value('TIMEZONE')) {
+        $timezone_id = forum_get_setting('forum_timezone', false, 27);
+    }
+
+    if (!$gmt_offset = bh_session_get_value('GMT_OFFSET')) {
+        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
+    }
+
+    if (!$dst_offset = bh_session_get_value('DST_OFFSET')) {
+        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
     if (!$dl_saving = bh_session_get_value('DL_SAVING')) {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
-    if ($dl_saving == "Y") {
-        $local_time = timestamp_amend_bst(time() + ($timezone * HOUR_IN_SECONDS));
+    if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
+        $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);
     }else {
-        $local_time = time() + ($timezone * HOUR_IN_SECONDS);
+        $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
     }
 
     return $local_time;

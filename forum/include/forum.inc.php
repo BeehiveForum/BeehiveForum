@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum.inc.php,v 1.215 2007-02-14 22:54:40 decoyduck Exp $ */
+/* $Id: forum.inc.php,v 1.216 2007-02-19 16:05:07 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -370,6 +370,29 @@ function forum_get_settings()
                 $forum_settings[$row['SNAME']] = $row['SVALUE'];
             }
         }
+
+        $sql = "SELECT FORUM_SETTINGS.FID, FORUM_SETTINGS.SVALUE, TIMEZONES.GMT_OFFSET, ";
+        $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
+        $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
+        $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone'";
+
+        $result = db_query($sql, $db_forum_get_settings);
+
+        while ($row = db_fetch_array($result)) {
+
+            if ($row['FID'] == 0) {
+
+                $default_forum_settings['forum_timezone'] = $row['SVALUE'];
+                $default_forum_settings['forum_gmt_offset'] = $row['GMT_OFFSET'];
+                $default_forum_settings['forum_dst_offset'] = $row['DST_OFFSET'];
+
+            }else {
+
+                $forum_settings['forum_timezone'] = $row['SVALUE'];
+                $forum_settings['forum_gmt_offset'] = $row['GMT_OFFSET'];
+                $forum_settings['forum_dst_offset'] = $row['DST_OFFSET'];
+            }
+        }
     }
 
     return array_merge($default_forum_settings, $forum_settings);
@@ -419,6 +442,20 @@ function forum_get_settings_by_fid($fid)
 
         $forum_settings_by_fid[$row['SNAME']] = $row['SVALUE'];
     }
+
+    $sql = "SELECT FORUM_SETTINGS.SVALUE AS TIMEZONE, TIMEZONES.GMT_OFFSET, ";
+    $sql.= "TIMEZONES.DST_OFFSET FROM FORUM_SETTINGS FORUM_SETTINGS ";
+    $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = FORUM_SETTINGS.SVALUE) ";
+    $sql.= "WHERE FORUM_SETTINGS.SNAME = 'forum_timezone' ";
+    $sql.= "AND FID = '$fid'";
+
+    $result = db_query($sql, $db_forum_get_settings);
+
+    list($timezone, $gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
+
+    $forum_settings_by_fid['forum_timezone'] = $timezone;
+    $forum_settings_by_fid['forum_gmt_offset'] = $gmt_offset;
+    $forum_settings_by_fid['forum_dst_offset'] = $dst_offset;
 
     $default_forum_settings = forum_get_default_settings();
     return array_merge($default_forum_settings, $forum_settings_by_fid);
@@ -1534,7 +1571,7 @@ function forum_create($webtag, $forum_name, $database_name, $access)
                                 'allow_post_editing'      => 'Y',
                                 'require_post_approval'   => 'N',
                                 'forum_dl_saving'         => 'Y',
-                                'forum_timezone'          => '0',
+                                'forum_timezone'          => '27',
                                 'default_language'        => 'en',
                                 'default_emoticons'       => 'default',
                                 'default_style'           => 'Default',

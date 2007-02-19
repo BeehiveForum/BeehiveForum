@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.24 2007-02-16 23:09:54 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.25 2007-02-19 16:05:08 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -591,6 +591,102 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE SEARCH_RESULTS ADD LENGTH MEDIUMINT(8) ";
 $sql.= "UNSIGNED NOT NULL AFTER CREATED";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// New TIMEZONES table which provides Beehive with full
+// international DST support.
+
+$sql = "CREATE TABLE TIMEZONES (";
+$sql.= "  TZID INT(11) NOT NULL DEFAULT '0',";
+$sql.= "  GMT_OFFSET DOUBLE DEFAULT '0',";
+$sql.= "  DST_OFFSET DOUBLE DEFAULT NULL,";
+$sql.= "  PRIMARY KEY  (TZID)";
+$sql.= ") TYPE=MYISAM";
+
+if (!$result = @db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+// Timezones and their DST settings (TZID => array (GMT_OFFSET, DST_OFFSET));
+
+$timezones_array = array(1  => array(-12, 0),  2  => array(-11, 0),  3  => array(-10, 0),
+                         4  => array(-9, 1),   5  => array(-8, 1),   6  => array(-7, 0),
+                         7  => array(-7, 1),   8  => array(-7, 1),   9  => array(-6, 0), 
+                         10 => array(-6, 1),   11 => array(-6, 1),   12 => array(-6, 0), 
+                         13 => array(-5, 0),   14 => array(-5, 1),   15 => array(-5, 0), 
+                         16 => array(-4, 1),   17 => array(-4, 0),   18 => array(-4, 1), 
+                         19 => array(-3.5, 1), 20 => array(-3, 1),   21 => array(-3, 0), 
+                         22 => array(-3, 1),   23 => array(-2, 1),   24 => array(-1, 1), 
+                         25 => array(-1, 0),   26 => array(0, 0),    27 => array(0, 1), 
+                         28 => array(1, 1),    29 => array(1, 1),    30 => array(1, 1), 
+                         31 => array(1, 1),    32 => array(1, 0),    33 => array(2, 1), 
+                         34 => array(2, 1),    35 => array(2, 1),    36 => array(2, 0), 
+                         37 => array(2, 1),    38 => array(2, 0),    39 => array(3, 1), 
+                         40 => array(3, 0),    41 => array(3, 1),    42 => array(3, 0), 
+                         43 => array(3.5, 1),  44 => array(4, 0),    45 => array(4, 1), 
+                         46 => array(4.5, 0),  47 => array(5, 1),    48 => array(5, 0), 
+                         49 => array(5.5, 0),  50 => array(5.75, 0), 51 => array(6, 1), 
+                         52 => array(6, 0),    53 => array(6, 0),    54 => array(6.5, 0), 
+                         55 => array(7, 0),    56 => array(7, 1),    57 => array(8, 0), 
+                         58 => array(8, 1),    59 => array(8, 0),    60 => array(8, 0), 
+                         61 => array(8, 0),    62 => array(9, 0),    63 => array(9, 0), 
+                         64 => array(9, 1),    65 => array(9.5, 1),  66 => array(9.5, 0), 
+                         67 => array(10, 0),   68 => array(10, 1),   69 => array(10, 0), 
+                         70 => array(10, 1),   71 => array(10, 1),   72 => array(11, 0), 
+                         73 => array(12, 1),   74 => array(12, 0),   75 => array(13, 0));
+
+// Insert the above data into the TIMEZONES table while also
+// updating the old data in the USER_PREFS table to use the
+// new TZID numbers.
+
+foreach ($timezones_array as $tzid => $tz_data) {
+
+    if (!is_numeric($tzid)) return false;
+
+    if (!isset($tz_data[0]) || !is_numeric($tz_data[0])) return false;
+    if (!isset($tz_data[1]) || !is_numeric($tz_data[1])) return false;
+    
+    $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
+    $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE USER_PREFS SET TIMEZONE = '$tzid' ";
+    $sql.= "WHERE TIMEZONE = '{$tz_data[0]}'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$tzid' ";
+    $sql.= "WHERE SVALUE = '{$tz_data[0]}' AND SNAME = 'forum_timezone'";
+
+    if (!$result = @db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+// Change the USER_PREF.TIMEZONE data type to an integer
+// as we no longer actually store the offset there rather
+// the TZID of the entry in the TIMEZONES table.
+
+$sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE ";
+$sql.= "TIMEZONE INT(11) NOT NULL DEFAULT '27'";
 
 if (!$result = @db_query($sql, $db_install)) {
 

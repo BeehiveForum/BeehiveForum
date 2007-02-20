@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.286 2007-02-18 23:48:56 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.287 2007-02-20 18:50:00 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -1319,7 +1319,10 @@ function bh_session_get_referer()
         if (isset($_SERVER['HTTP_REFERER']) && strlen(trim($_SERVER['HTTP_REFERER'])) > 0) {
 
             $http_referer = trim($_SERVER['HTTP_REFERER']);
- 
+            $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
+
+            if (preg_match("/^$forum_uri_preg/i", $http_referer) > 0) $http_referer = "";
+             
         }else {
 
             $http_referer = "";

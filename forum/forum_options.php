@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: forum_options.php,v 1.101 2007-02-19 16:05:07 decoyduck Exp $ */
+/* $Id: forum_options.php,v 1.102 2007-02-20 18:50:00 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -633,7 +633,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" nowrap=\"nowrap\">{$lang['timezonefromGMT']}:</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array("timezone", array_keys($timezones), array_values($timezones), (isset($user_prefs['TIMEZONE']) && is_numeric($user_prefs['TIMEZONE'])) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27)), "</td>\n";
+echo "                        <td align=\"left\">", form_dropdown_array("timezone", array_keys($timezones), array_values($timezones), (isset($user_prefs['TIMEZONE']) && is_numeric($user_prefs['TIMEZONE'])) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

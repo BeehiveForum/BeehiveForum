@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user_profile.php,v 1.114 2007-02-21 21:52:34 decoyduck Exp $ */
+/* $Id: user_profile.php,v 1.115 2007-02-21 21:57:46 decoyduck Exp $ */
 
 /**
 * Displays user profiles
@@ -348,14 +348,10 @@ echo "                  <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
 echo "                  <td align=\"left\" width=\"67%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"right\">{$lang['longesttimeinforum']}: {$user_profile['USER_TIME_BEST']}&nbsp;</td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td class=\"subhead\" align=\"left\">\n";
-echo "              <table width=\"100%\">\n";
+echo "              <table class=\"subhead\" width=\"550\" cellpadding=\"0\" cellspacing=\"0\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"right\" colspan=\"2\">{$lang['longesttimeinforum']}: {$user_profile['USER_TIME_BEST']}&nbsp;</td>\n";
+echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td>\n";
 
@@ -383,11 +379,11 @@ if (bh_session_get_value('UID') != 0) {
 echo "                  </td>\n";
 echo "                  <td class=\"subhead\" colspan=\"2\" align=\"right\">{$lang['totaltimeinforum']}: {$user_profile['USER_TIME_TOTAL']}&nbsp;</td>\n";
 echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;</td>\n";
+echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
-echo "          </tr>\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";

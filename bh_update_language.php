@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: bh_update_language.php,v 1.2 2007-02-11 16:37:46 decoyduck Exp $ */
+/* $Id: bh_update_language.php,v 1.3 2007-02-22 21:38:02 decoyduck Exp $ */
 
 // Constant to define where the include files are //
 
@@ -93,21 +93,23 @@ if (file_exists(BH_INCLUDE_PATH. "languages/en.inc.php")) {
 
     foreach ($lang_en as $line_num => $lang_en_line) {
 
+        $lang_en_line = trim($lang_en_line);
+        
         if (preg_match("/^\\\$lang((\[[^\]]+\])+)/", $lang_en_line, $lang_matches)) {
 
-            $php_code = "if (isset(\$lang_fix{$lang_matches[1]})) {";
-            $php_code.= "echo \"\\\$lang{$lang_matches[1]} = \\\"\", ";
-            $php_code.= "addcslashes(\$lang_fix{$lang_matches[1]}, \"\\\$\\\"\"), \"\\\";\n\";";
-            $php_code.= "}else if (isset(\$lang_add{$lang_matches[1]})) {";
+            $php_code = "if (isset(\$lang_add{$lang_matches[1]})) {";
             $php_code.= "echo \"\\\$lang{$lang_matches[1]} = \\\"\", ";
             $php_code.= "addcslashes(\$lang_add{$lang_matches[1]}, \"\\\$\\\"\"), \"\\\";\n\";";
+            $php_code.= "}elseif (isset(\$lang_fix{$lang_matches[1]})) {";
+            $php_code.= "echo \"\\\$lang{$lang_matches[1]} = \\\"\", ";
+            $php_code.= "addcslashes(\$lang_fix{$lang_matches[1]}, \"\\\$\\\"\"), \"\\\";\n\";";
             $php_code.= "}";
 
             eval($php_code);
 
         }else {
 
-            echo "// $lang_en_line // Translation required //";
+            echo "$lang_en_line\n";
         }
     }
 

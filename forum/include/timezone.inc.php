@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: timezone.inc.php,v 1.1 2007-02-19 16:05:08 decoyduck Exp $ */
+/* $Id: timezone.inc.php,v 1.2 2007-02-22 21:38:02 decoyduck Exp $ */
 
 /**
 * timezone.inc.php - International Timezones with DST support
@@ -409,22 +409,6 @@ function getDaysInMonth($month)
             return 30;
             break;
     }
-}
-
-function getTimeZoneCode($timezone_code, $total_offset, $suffix)
-{
-    if ($timezone_code == '') {
-
-        if ($total_offset > 0) {
-            return ("GMT +$total_offset");
-        }else if ($total_offset == 0) {
-            return ("GMT");
-        }else {
-            return ("GMT $total_offset");
-        }
-    }
-
-    return $timezone_code . "$suffix";
 }
 
 ?>

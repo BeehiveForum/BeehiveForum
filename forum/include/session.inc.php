@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: session.inc.php,v 1.287 2007-02-20 18:50:00 decoyduck Exp $ */
+/* $Id: session.inc.php,v 1.288 2007-02-22 13:11:45 decoyduck Exp $ */
 
 /**
 * session.inc.php - session functions
@@ -1223,6 +1223,7 @@ function parse_array($array, $sep, &$result_var)
         
         if (($key_name != 'webtag') && isset($array_values[$key])) {
 
+            $array_values[$key] = urlencode($array_values[$key]);
             $result_var.= "$key_name={$array_values[$key]}{$sep}";
         }
     }

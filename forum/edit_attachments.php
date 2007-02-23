@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_attachments.php,v 1.105 2007-02-14 22:54:40 decoyduck Exp $ */
+/* $Id: edit_attachments.php,v 1.106 2007-02-23 21:40:56 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -122,8 +122,6 @@ if (bh_session_get_value('UID') == 0) {
     exit;
 }
 
-html_draw_top('attachments.js', 'post.js');
-
 // Get any UID from the GET or POST request
 // or default to the current user if not specified.
 
@@ -182,7 +180,8 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 // attachments.
 
 if (($uid != bh_session_get_value('UID')) && !(bh_session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
-
+   
+    html_draw_top();
     echo "<h1>{$lang['accessdenied']}</h1>\n";
     echo "<p>{$lang['accessdeniedexp']}</p>";
     html_draw_bottom();
@@ -357,6 +356,8 @@ if (isset($_POST['delete_confirm'])) {
 
 }elseif (isset($_POST['close'])) {
 
+    html_draw_top();
+
     echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
     echo "  window.close();\n";
     echo "</script>\n";
@@ -364,6 +365,8 @@ if (isset($_POST['delete_confirm'])) {
     html_draw_bottom();
     exit;
 }
+
+html_draw_top('attachments.js', 'post.js');
 
 echo "<h1>{$lang['attachments']}</h1>\n";
 echo "<br />\n";
@@ -655,8 +658,6 @@ if (forum_get_setting('attachments_enabled', 'Y') && ($uid == bh_session_get_val
     }
 }
 
-echo "      </td>\n";
-echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 

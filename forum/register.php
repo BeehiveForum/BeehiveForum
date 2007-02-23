@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: register.php,v 1.140 2007-02-20 18:50:00 decoyduck Exp $ */
+/* $Id: register.php,v 1.141 2007-02-23 21:24:30 decoyduck Exp $ */
 
 /**
 * Displays and processes registration forms
@@ -120,16 +120,16 @@ $timezones = array(1  => "(GMT-12:00) International Date Line West",
                    2  => "(GMT-11:00) Midway Island Samoa",
                    3  => "(GMT-10:00) Hawaii",
                    4  => "(GMT-09:00) Alaska",
-                   5  => "(GMT-08:00) Pacific Time (US & Canada); Tijuana",
+                   5  => "(GMT-08:00) Pacific Time (US &amp; Canada); Tijuana",
                    6  => "(GMT-07:00) Arizona",
                    7  => "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
-                   8  => "(GMT-07:00) Mountain Time (US & Canada)",
+                   8  => "(GMT-07:00) Mountain Time (US &amp; Canada)",
                    9  => "(GMT-06:00) Central America",
-                   10 => "(GMT-06:00) Central Time (US & Canada)",
+                   10 => "(GMT-06:00) Central Time (US &amp; Canada)",
                    11 => "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
                    12 => "(GMT-06:00) Saskatchewan",
                    13 => "(GMT-05:00) Bogota, Lime, Quito",
-                   14 => "(GMT-05:00) Eastern Time (US & Canada)",
+                   14 => "(GMT-05:00) Eastern Time (US &amp; Canada)",
                    15 => "(GMT-05:00) Indiana (East)",
                    16 => "(GMT-04:00) Atlantic Time (Canada)",
                    17 => "(GMT-04:00) Caracas, La Paz",

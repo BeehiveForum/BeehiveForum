@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.25 2007-02-19 16:05:08 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.26 2007-02-24 16:51:15 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -254,7 +254,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Copy the existing data into the new table.
 
-    $sql = "INSERT INTO {$forum_webtag}_{$upv_new} (TID, UID, OPTION_ID, TSTAMP) ";
+    $sql = "INSERT IGNORE INTO {$forum_webtag}_{$upv_new} (TID, UID, OPTION_ID, TSTAMP) ";
     $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES ";
     
     if (!$result = @db_query($sql, $db_install)) {

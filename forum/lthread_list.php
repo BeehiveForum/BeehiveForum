@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: lthread_list.php,v 1.77 2007-01-15 00:10:34 decoyduck Exp $ */
+/* $Id: lthread_list.php,v 1.78 2007-02-24 16:51:15 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -172,12 +172,19 @@ light_html_draw_top();
 
 light_draw_thread_list($mode, $folder, $start_from);
 
-if (bh_session_get_value('UID') == 0) {
-    echo "<h4><a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a></h4>\n";
-}else {
-    echo "<h4><a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | <a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a></h4>\n";
+echo "<h4>";
+
+if (forums_get_available_count() > 1) {
+    echo "<a href=\"lforums.php?webtag=$webtag\">{$lang['myforums']}</a> | ";
 }
 
+if (bh_session_get_value('UID') == 0) {
+    echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['login']}</a>";
+}else {
+    echo "<a href=\"llogout.php?webtag=$webtag\">{$lang['logout']}</a>";
+}
+
+echo "</h4>\n";
 echo "<h6>&copy; ", date('Y'), " <a href=\"http://www.beehiveforum.net/\" target=\"_blank\">Project BeehiveForum</a></h6>\n";
 
 light_html_draw_bottom();

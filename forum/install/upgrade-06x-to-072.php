@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-06x-to-072.php,v 1.1 2007-02-24 16:51:15 decoyduck Exp $ */
+/* $Id: upgrade-06x-to-072.php,v 1.2 2007-02-25 17:23:31 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-06x-to-07.php") {
 
@@ -53,7 +53,7 @@ $forum_webtag_array = array();
 
 $sql = "SHOW TABLES LIKE 'FORUMS'";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $error_html.= "<h2>Could not locate any previous BeehiveForum installations!</h2>\n";
     $valid = false;
@@ -64,7 +64,7 @@ if (db_num_rows($result) > 0) {
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS";
 
-    if ($result = @db_query($sql, $db_install)) {
+    if ($result = db_query($sql, $db_install)) {
 
         while ($row = @db_fetch_array($result)) {
 
@@ -89,7 +89,7 @@ foreach ($remove_tables as $remove_table) {
 
     $sql = "DROP TABLE IF EXISTS $remove_table";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -99,7 +99,7 @@ foreach ($remove_tables as $remove_table) {
 // Check that we have no global tables which conflict
 // with those we're about to create or remove.
 
-$global_tables = array('SEARCH_ENGINE_BOTS');
+$global_tables = array('USER_HISTORY', 'SEARCH_ENGINE_BOTS', 'SEARCH_RESULTS', 'TIMEZONES');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -107,7 +107,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
         $sql = "DROP TABLE IF EXISTS $global_table";
 
-        if (!$result = @db_query($sql, $db_install)) {
+        if (!$result = db_query($sql, $db_install)) {
 
             $valid = false;
             return;
@@ -118,7 +118,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 // Check that we have no per-forum tables which conflict
 // with those we're about to create.
 
-$forum_tables  = array('USER_TRACK', 'THREAD_STATS', 'THREAD_TRACK');
+$forum_tables  = array('THREAD_STATS', 'USER_TRACK', 'THREAD_TRACK');
 
 if (isset($remove_conflicts) && $remove_conflicts === true) {
 
@@ -128,7 +128,7 @@ if (isset($remove_conflicts) && $remove_conflicts === true) {
 
             $sql = "DROP TABLE IF EXISTS {$forum_webtag}_{$forum_table}";
 
-            if (!$result = @db_query($sql, $db_install)) {
+            if (!$result = db_query($sql, $db_install)) {
 
                 $valid = false;
                 return;
@@ -188,7 +188,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  PRIMARY KEY  (ID)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -215,7 +215,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql.= "SELECT $ban_type, $old_column_name FROM {$forum_webtag}_BANNED ";
             $sql.= "WHERE $old_column_name IS NOT NULL";
 
-            if (!$result = @db_query($sql, $db_install)) {
+            if (!$result = db_query($sql, $db_install)) {
             
                 $valid = false;
                 return;
@@ -225,9 +225,9 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Removed the old BANNED table
 
-    $sql = "DROP TABLE {$forum_webtag}_BANNED";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_BANNED";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -237,7 +237,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     
     $sql = "ALTER TABLE {$forum_webtag}_{$banned_new} RENAME {$forum_webtag}_BANNED";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -256,7 +256,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  PRIMARY KEY  (TID)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -272,7 +272,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "ON (USER_THREAD.TID = THREAD.TID) ";
     $sql.= "GROUP BY THREAD.TID";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -295,7 +295,17 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  PRIMARY KEY (UID)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    // Remove the old global USER_TRACK table if it exists,
+
+    $sql = "DROP TABLE IF EXISTS USER_TRACK";
+
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -312,7 +322,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  PRIMARY KEY  (TID, NEW_TID)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -337,7 +347,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql.= "  KEY UID (UID)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -346,15 +356,15 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "INSERT IGNORE INTO {$forum_webtag}_{$upv_new} (TID, UID, OPTION_ID, TSTAMP) ";
     $sql.= "SELECT TID, UID, OPTION_ID, TSTAMP FROM {$forum_webtag}_USER_POLL_VOTES";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
     }
     
-    $sql = "DROP TABLE {$forum_webtag}_USER_POLL_VOTES";
+    $sql = "DROP TABLE IF EXISTS {$forum_webtag}_USER_POLL_VOTES";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -362,7 +372,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     
     $sql = "ALTER TABLE {$forum_webtag}_{$upv_new} RENAME {$forum_webtag}_USER_POLL_VOTES";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -372,7 +382,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_POLL ADD ALLOWGUESTS TINYINT(1) NOT NULL DEFAULT '0'";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -382,7 +392,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -392,7 +402,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PREFS ADD USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y'";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -405,7 +415,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "SELECT LID, TITLE FROM {$forum_webtag}_FORUM_LINKS ";
     $sql.= "ORDER BY POS ASC, LID ASC";
 
-    if ($result = @db_query($sql, $db_install)) {
+    if ($result = db_query($sql, $db_install)) {
 
         if (db_num_rows($result) > 0) {
         
@@ -419,7 +429,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql.= "VALUES ('$forum_fid', 'forum_links_top_link', ";
             $sql.= "'$forum_links_top_link')";
 
-            if (!$result = @db_query($sql, $db_install)) {
+            if (!$result = db_query($sql, $db_install)) {
 
                 $valid = false;
                 return;
@@ -432,7 +442,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql = "DELETE FROM {$forum_webtag}_FORUM_LINKS ";
             $sql.= "WHERE LID = '$lid'";
 
-            if (!$result = @db_query($sql, $db_install)) {
+            if (!$result = db_query($sql, $db_install)) {
 
                 $valid = false;
                 return;
@@ -445,7 +455,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_FOLDER ADD PREFIX VARCHAR(16) ";
     $sql.= "DEFAULT NULL AFTER DESCRIPTION";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -455,7 +465,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_PEER ADD PEER_NICKNAME VARCHAR(32)";
     
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -468,7 +478,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_POST ADD MOVED_TID MEDIUMINT(8) UNSIGNED, ";
     $sql.= "ADD MOVED_PID MEDIUMINT(8) UNSIGNED";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -480,7 +490,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_POST DROP INDEX IPADDRESS, ";
     $sql.= "ADD INDEX IPADDRESS (IPADDRESS, FROM_UID)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -489,9 +499,17 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Index on APPROVED column to help speed up display of
     // Post Approval Queue in Admin.
 
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (APPROVED)";
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX APPROVED (APPROVED)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
+    
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE {$forum_webtag}_POST_CONTENT ADD FULLTEXT (CONTENT)";
+
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -503,7 +521,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "DELETE FROM {$forum_webtag}_USER_PEER WHERE RELATIONSHIP = 0";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -514,7 +532,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     $sql = "ALTER TABLE {$forum_webtag}_LINKS_FOLDERS CHANGE ";
     $sql.= "PARENT_FID PARENT_FID SMALLINT(5) UNSIGNED NULL";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -526,7 +544,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX TID (TID)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -534,7 +552,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_USER_THREAD ADD INDEX LAST_READ (LAST_READ)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -547,7 +565,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX TITLE (TITLE)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -555,7 +573,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX BY_UID (BY_UID)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -563,7 +581,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX STICKY (STICKY, MODIFIED)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -571,7 +589,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX LENGTH (LENGTH)";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
     
         $valid = false;
         return;
@@ -581,7 +599,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     $sql = "SELECT FID, TITLE, DESCRIPTION FROM {$forum_webtag}_FOLDER";
 
-    if ($result = @db_query($sql, $db_install)) {
+    if ($result = db_query($sql, $db_install)) {
 
         while ($folder_data = db_fetch_array($result)) {
 
@@ -596,7 +614,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
             $sql = "UPDATE {$forum_webtag}_FOLDER SET TITLE = '$new_title', ";
             $sql.= "DESCRIPTION = '$new_description' WHERE FID = '$fid'";
 
-            if (!$result = @db_query($sql, $db_install)) {
+            if (!$result = db_query($sql, $db_install)) {
 
                 $valid = false;
                 return;
@@ -623,7 +641,7 @@ $sql.= "  MODIFIED DATETIME DEFAULT NULL,";
 $sql.= "  PRIMARY KEY (HID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -637,7 +655,7 @@ if (!$result = @db_query($sql, $db_install)) {
 $sql = "ALTER TABLE FORUMS ADD DATABASE_NAME VARCHAR(255) NOT NULL ";
 $sql.= "AFTER WEBTAG";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -648,7 +666,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "UPDATE FORUMS SET DATABASE_NAME = '$db_database'";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -656,7 +674,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER ADD REGISTERED DATETIME DEFAULT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -664,7 +682,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER ADD IPADDRESS VARCHAR(15) DEFAULT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -672,7 +690,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER ADD REFERER VARCHAR(255) DEFAULT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -680,7 +698,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE SESSIONS ADD REFERER VARCHAR(255) DEFAULT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -688,17 +706,17 @@ if (!$result = @db_query($sql, $db_install)) {
 
 install_remove_table_keys("USER");
 
-$sql = "ALTER TABLE USER ADD INDEX LOGON";
+$sql = "ALTER TABLE USER ADD INDEX LOGON (LOGON)";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
 }
 
-$sql = "ALTER TABLE USER ADD INDEX NICKNAME";
+$sql = "ALTER TABLE USER ADD INDEX NICKNAME (NICKNAME)";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -723,7 +741,7 @@ $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (AID, ID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -733,15 +751,15 @@ $sql = "INSERT INTO $paf_new (AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS) ";
 $sql.= "SELECT AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS FROM ";
 $sql.= "POST_ATTACHMENT_FILES";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
 }
 
-$sql = "DROP TABLE POST_ATTACHMENT_FILES";
+$sql = "DROP TABLE IF EXISTS POST_ATTACHMENT_FILES";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -749,7 +767,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE $paf_new RENAME POST_ATTACHMENT_FILES";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -759,7 +777,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE VISITOR_LOG ADD SID MEDIUMINT(8) UNSIGNED";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -769,7 +787,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE VISITOR_LOG ADD REFERER VARCHAR(255) DEFAULT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -779,7 +797,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = " ALTER TABLE VISITOR_LOG ADD IPADDRESS VARCHAR(15) DEFAULT NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -798,7 +816,7 @@ $sql.= "  KEY NAME (NAME),";
 $sql.= "  KEY AGENT_MATCH (AGENT_MATCH)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -830,7 +848,7 @@ foreach ($bots_array as $agent => $details) {
     $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
     $sql.= "VALUES ('$name', '$url', '%$agent%')";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -856,7 +874,7 @@ $sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (UID,FORUM,TID,PID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -866,7 +884,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_TYPE CHAR(1) DEFAULT '0' NOT NULL AFTER PM_AUTO_PRUNE";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -876,7 +894,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_FILE CHAR(1) DEFAULT '0' NOT NULL AFTER PM_EXPORT_TYPE";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -886,7 +904,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_ATTACHMENTS CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_FILE";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -896,7 +914,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_STYLE CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_ATTACHMENTS";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -906,7 +924,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS ADD PM_EXPORT_WORDFILTER CHAR(1) DEFAULT 'N' NOT NULL AFTER PM_EXPORT_STYLE";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -916,7 +934,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS ADD USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N'";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -926,7 +944,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS ADD USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y'";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -936,9 +954,9 @@ if (!$result = @db_query($sql, $db_install)) {
 
 install_remove_table_keys("POST_ATTACHMENT_IDS");
 
-$sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX (AID)";
+$sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX AID (AID)";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -948,9 +966,9 @@ if (!$result = @db_query($sql, $db_install)) {
 
 install_remove_table_keys("PM_ATTACHMENT_IDS");
 
-$sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX (AID)";
+$sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX AID (AID)";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -962,7 +980,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_FORUM ADD LAST_VISIT DATETIME NULL";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -972,21 +990,21 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "SELECT UID, LAST_LOGON FROM VISITOR_LOG WHERE UID > 0";
 
-if ($result = @db_query($sql, $db_install)) {
+if ($result = db_query($sql, $db_install)) {
 
     while (list($uid, $last_logon) = db_fetch_array($result, DB_RESULT_NUM)) {
 
         $sql = "UPDATE USER_FORUM SET LAST_VISIT = '$last_logon' ";
         $sql.= "WHERE UID = '$uid'";
 
-        if ($result_update = @db_query($sql, $db_install)) {
+        if ($result_update = db_query($sql, $db_install)) {
 
             if (db_affected_rows($db_install) < 1) {
 
                 $sql = "INSERT IGNORE INTO USER_FORUM (UID, LAST_VISIT) ";
                 $sql.= "VALUES ('$uid', '$last_logon')";
 
-                if (!$result_insert = @db_query($sql, $db_install)) {
+                if (!$result_insert = db_query($sql, $db_install)) {
 
                     $valid = false;
                     return;
@@ -1011,7 +1029,7 @@ $sql.= "  DST_OFFSET DOUBLE DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (TZID)";
 $sql.= ") TYPE=MYISAM";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -1059,7 +1077,7 @@ foreach ($timezones_array as $tzid => $tz_data) {
     $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
     $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -1068,7 +1086,7 @@ foreach ($timezones_array as $tzid => $tz_data) {
     $sql = "UPDATE USER_PREFS SET TIMEZONE = '$tzid' ";
     $sql.= "WHERE TIMEZONE = '{$tz_data[0]}'";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -1077,7 +1095,7 @@ foreach ($timezones_array as $tzid => $tz_data) {
     $sql = "UPDATE FORUM_SETTINGS SET SVALUE = '$tzid' ";
     $sql.= "WHERE SVALUE = '{$tz_data[0]}' AND SNAME = 'forum_timezone'";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -1091,7 +1109,7 @@ foreach ($timezones_array as $tzid => $tz_data) {
 $sql = "ALTER TABLE USER_PREFS CHANGE TIMEZONE ";
 $sql.= "TIMEZONE INT(11) NOT NULL DEFAULT '27'";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -1102,7 +1120,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 $sql = "SHOW TABLES LIKE 'DICTIONARY'";
 
-if (!$result = @db_query($sql, $db_install)) {
+if (!$result = db_query($sql, $db_install)) {
 
     $valid = false;
     return;
@@ -1133,7 +1151,7 @@ if (db_num_rows($result) > 0) {
     $sql.= "  KEY SOUND (SOUND)";
     $sql.= ") TYPE=MYISAM";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -1146,7 +1164,7 @@ if (db_num_rows($result) > 0) {
     $sql = "INSERT IGNORE INTO $dictionary_new (WORD, SOUND, UID) ";
     $sql.= "SELECT LOWER(TRIM(WORD)), TRIM(SOUND), UID FROM DICTIONARY";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -1156,7 +1174,7 @@ if (db_num_rows($result) > 0) {
 
     $sql = "DROP TABLE IF EXISTS DICTIONARY";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;
@@ -1166,7 +1184,7 @@ if (db_num_rows($result) > 0) {
 
     $sql = "ALTER TABLE $dictionary_new RENAME DICTIONARY";
 
-    if (!$result = @db_query($sql, $db_install)) {
+    if (!$result = db_query($sql, $db_install)) {
 
         $valid = false;
         return;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: upgrade-07x-to-072.php,v 1.26 2007-02-24 16:51:15 decoyduck Exp $ */
+/* $Id: upgrade-07x-to-072.php,v 1.27 2007-02-25 17:23:31 decoyduck Exp $ */
 
 if (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) == "upgrade-07x-to-072.php") {
 
@@ -220,7 +220,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
     // Index on APPROVED column to help speed up display of
     // Post Approval Queue in Admin.
 
-    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX (APPROVED)";
+    $sql = "ALTER TABLE {$forum_webtag}_POST ADD INDEX APPROVED (APPROVED)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -337,7 +337,7 @@ foreach($forum_webtag_array as $forum_fid => $forum_webtag) {
 
     // Index on THREAD.TITLE for searches
 
-    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX (TITLE)";
+    $sql = "ALTER TABLE {$forum_webtag}_THREAD ADD INDEX TITLE (TITLE)";
 
     if (!$result = @db_query($sql, $db_install)) {
 
@@ -482,7 +482,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 install_remove_table_keys("POST_ATTACHMENT_IDS");
 
-$sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX (AID)";
+$sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD INDEX AID (AID)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -494,7 +494,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 install_remove_table_keys("PM_ATTACHMENT_IDS");
 
-$sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX (AID)";
+$sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD INDEX AID (AID)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -551,7 +551,7 @@ if ($result = @db_query($sql, $db_install)) {
 
 install_remove_table_keys("USER");
 
-$sql = "ALTER TABLE USER ADD INDEX LOGON";
+$sql = "ALTER TABLE USER ADD INDEX LOGON (LOGON)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -559,7 +559,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "ALTER TABLE USER ADD INDEX NICKNAME";
+$sql = "ALTER TABLE USER ADD INDEX NICKNAME (NICKNAME)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -571,7 +571,7 @@ if (!$result = @db_query($sql, $db_install)) {
 
 install_remove_table_keys("SEARCH_ENGINE_BOTS");
 
-$sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (NAME)";
+$sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX NAME (NAME)";
 
 if (!$result = @db_query($sql, $db_install)) {
 
@@ -579,7 +579,7 @@ if (!$result = @db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX (AGENT_MATCH)";
+$sql = "ALTER TABLE SEARCH_ENGINE_BOTS ADD INDEX AGENT_MATCH (AGENT_MATCH)";
 
 if (!$result = @db_query($sql, $db_install)) {
 

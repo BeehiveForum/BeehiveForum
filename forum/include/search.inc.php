@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: search.inc.php,v 1.173 2007-02-16 17:41:50 decoyduck Exp $ */
+/* $Id: search.inc.php,v 1.174 2007-03-01 14:34:28 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -99,45 +99,52 @@ function search_execute($argarray, &$error)
 
     if (isset($argarray['username']) && strlen(trim($argarray['username'])) > 0) {
 
-        if ($user_uid = user_get_uid($argarray['username'])) {
+        // Base query slightly different if you're not searching by keywords
 
-            // Base query slightly different if you're not searching by keywords
+        $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
+        $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
+        $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
+        $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH ";
 
-            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH) SELECT $uid, ";
-            $select_sql.= "$forum_fid, THREAD.FID, POST.TID, POST.PID, THREAD.BY_UID, ";
-            $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH ";
+        // FROM query uses POST table if we're not using keyword searches.
 
-            // FROM query uses POST table if we're not using keyword searches.
+        $from_sql = "FROM {$table_data['PREFIX']}POST POST ";
 
-            $from_sql = "FROM {$table_data['PREFIX']}POST POST ";
+        // Join to the THREAD table for the TID
 
-            // Join to the THREAD table for the TID
+        $join_sql = "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
 
-            $join_sql = "LEFT JOIN {$table_data['PREFIX']}THREAD THREAD ON (THREAD.TID = POST.TID) ";
+        // Don't need a HAVING clause if we're not using MATCH(..) AGAINST(..)
 
-            // Don't need a HAVING clause if we're not using MATCH(..) AGAINST(..)
+        $having_sql = "";
 
-            $having_sql = "";
+        // Username argument can be an semi-colon separated list.
 
-            if ($argarray['user_include'] == 1) {
+        $argarray['username_array'] = explode(";", $argarray['username']);
 
-                $where_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}' ";
+        foreach($argarray['username_array'] as $username) {
+        
+            if ($user_uid = user_get_uid(trim($username))) {
 
-            }elseif ($argarray['user_include'] == 2) {
+                if ($argarray['user_include'] == 1) {
 
-                $where_sql.= "AND POST.TO_UID = '{$user_uid['UID']}' ";
+                    $where_sql.= "AND POST.FROM_UID = '{$user_uid['UID']}' ";
+
+                }elseif ($argarray['user_include'] == 2) {
+
+                    $where_sql.= "AND POST.TO_UID = '{$user_uid['UID']}' ";
+
+                }else {
+
+                    $where_sql.= "AND (POST.FROM_UID = '{$user_uid['UID']}' ";
+                    $where_sql.= "OR POST.TO_UID = '{$user_uid['UID']}') ";
+                }
 
             }else {
 
-                $where_sql.= "AND (POST.FROM_UID = '{$user_uid['UID']}' ";
-                $where_sql.= "OR POST.TO_UID = '{$user_uid['UID']}') ";
+                $error = SEARCH_USER_NOT_FOUND;
+                return false;
             }
-
-        }else {
-
-            $error = SEARCH_USER_NOT_FOUND;
-            return false;
         }
     }
 

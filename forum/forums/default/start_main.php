@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: start_main.php,v 1.19 2007-02-20 18:50:00 decoyduck Exp $ */
+/* $Id: start_main.php,v 1.20 2007-03-01 14:24:39 decoyduck Exp $ */
 
 // An example of what can be done with start_main.php
 // As used on: http://www.tehforum.net/forum/
@@ -226,7 +226,7 @@ if ((isset($_GET['upload'])) && (bh_session_get_value('UID') > 0)) {
 
             echo "    <div class=\"thumbouter\">\n";
             echo "      <div class=\"thumbinner\">\n";
-            echo "        <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?view_image=$image\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" width=\"$target_width\" height=\"$target_height\" style=\"margin-top: {$css_margin}px\"/></a>\n";
+            echo "        <a href=\"{$HTTP_SERVER_VARS['PHP_SELF']}?view_image=", rawurlencode($image), "\"><img src=\"$images_dir/", rawurlencode($image), "?$modified_time\" border=\"0\" alt=\"", formatname($image), "\" title=\"", formatname($image), "\" width=\"$target_width\" height=\"$target_height\" style=\"margin-top: {$css_margin}px\"/></a>\n";
             echo "      </div>\n";
             echo "      <div class=\"thumbtitle\">\n";
             echo "        <a href=\"javascript:void(0);\" onclick=\"openProfileByLogon('$image', '$webtag')\">", formatname($image), "</a>\n";

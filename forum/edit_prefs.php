@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: edit_prefs.php,v 1.62 2007-02-14 22:54:40 decoyduck Exp $ */
+/* $Id: edit_prefs.php,v 1.63 2007-03-01 23:41:20 decoyduck Exp $ */
 
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./include/");
@@ -127,7 +127,7 @@ if (isset($_POST['submit'])) {
 
     // Required Fields
 
-    if (isset($_POST['nickname']) && strlen(trim(_stripslashes($_POST['nickname']))) > 0) {
+    if (isset($_POST['logon']) && strlen(trim(_stripslashes($_POST['logon']))) > 0) {
 
         $user_info['LOGON'] = trim(_stripslashes($_POST['logon']));
 
@@ -158,7 +158,7 @@ if (isset($_POST['submit'])) {
             $valid = false;
         }
 
-    }else {
+    }else if (forum_get_setting('allow_username_changes', 'Y')) {
 
         $error_html.= "<h2>{$lang['usernamerequired']}</h2>";
         $valid = false;

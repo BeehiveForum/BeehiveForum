@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: search.js,v 1.9 2007-03-01 14:37:24 decoyduck Exp $ */
+
 function enable_search_button() {
 
     var search_page = top.frames['main'].frames['right'].document;
@@ -38,7 +40,7 @@ function display_mysql_stopwords(webtag, keywords) {
 function openLogonSearch(webtag, obj_name)
 {
     var form_obj = document.getElementsByName(obj_name)[0];
-    search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&obj_id='+ form_obj.id, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
+    search_logon = window.open('search_popup.php?webtag=' + webtag + '&type=1&search_query=' + form_obj.value + '&obj_id='+ form_obj.id, 'search_logon', 'width=500, height=300, toolbar=0, location=0, directories=0, status=0, menubar=0, resizable=0, scrollbars=yes');
     return false;
 }
 

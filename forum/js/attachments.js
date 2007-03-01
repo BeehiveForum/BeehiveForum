@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: attachments.js,v 1.5 2007-03-01 14:37:24 decoyduck Exp $ */
+
 function attachment_toggle_all() {
 
     for (var i = 0; i < document.admin_user_form.elements.length; i++) {

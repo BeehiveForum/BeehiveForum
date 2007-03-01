@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+/* $Id: install.js,v 1.7 2007-03-01 14:37:24 decoyduck Exp $ */
+
 function confirm_install(button) {
 
     var install_type = getFormObj('install_method');

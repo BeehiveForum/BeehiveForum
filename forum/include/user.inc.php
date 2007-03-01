@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.300 2007-02-19 16:05:08 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.301 2007-03-01 14:58:39 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -901,6 +901,11 @@ function user_get_forthcoming_birthdays()
     }
 }
 
+function user_search_array_clean($user_search)
+{
+    return addslashes(trim(str_replace("%", "", $user_search)));
+}
+
 function user_search($user_search, $offset = 0, $exclude_uid = 0)
 {
     $db_user_search = db_connect();
@@ -915,10 +920,15 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
 
     $uid = bh_session_get_value('UID');
 
-    $user_search = addslashes(str_replace("%", "", $user_search));
+    $user_search_array = explode(";", $user_search);
+    $user_search_array = array_map('user_search_array_clean', $user_search_array);
+    
+    $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);
+    $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
 
     $sql = "SELECT COUNT(USER.UID) AS USER_COUNT FROM USER ";
-    $sql.= "WHERE (LOGON LIKE '$user_search%' OR NICKNAME LIKE '$user_search%') ";
+    $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
+    $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
     $sql.= "AND USER.UID <> $exclude_uid";
 
     $result = db_query($sql, $db_user_search);
@@ -928,7 +938,8 @@ function user_search($user_search, $offset = 0, $exclude_uid = 0)
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
     $sql.= "FROM USER USER LEFT JOIN {$table_data['PREFIX']}USER_PEER USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE (LOGON LIKE '$user_search%' OR NICKNAME LIKE '$user_search%') ";
+    $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
+    $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
     $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
 
     $result = db_query($sql, $db_user_search);

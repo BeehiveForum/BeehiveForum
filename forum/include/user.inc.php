@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: user.inc.php,v 1.301 2007-03-01 14:58:39 decoyduck Exp $ */
+/* $Id: user.inc.php,v 1.302 2007-03-02 00:49:20 decoyduck Exp $ */
 
 // We shouldn't be accessing this file directly.
 
@@ -112,7 +112,7 @@ function user_update($uid, $logon, $nickname, $email)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    // Escape and de-HTML the new details.
+    // Encode HTML tags and addslashes for protection.
 
     $logon = addslashes(_htmlentities($logon));
     $nickname = addslashes(_htmlentities($nickname));
@@ -121,29 +121,46 @@ function user_update($uid, $logon, $nickname, $email)
     // Check to see if we need to save the current
     // details to the USER_HISTORY table.
 
-    $sql = "SELECT UID FROM USER WHERE UID = '$uid' ";
-    $sql.= "AND LOGON = '$logon' AND NICKNAME = '$nickname' ";
-    $sql.= "AND EMAIL = '$email'";
+    $sql = "SELECT LOGON, NICKNAME, EMAIL FROM USER_HISTORY ";
+    $sql.= "WHERE UID = '$uid' ORDER BY MODIFIED DESC ";
+    $sql.= "LIMIT 0, 1";
 
     if (!$result_check = db_query($sql, $db_user_update)) return false;
 
-    // If the above query matched zero rows then a value has
-    // changed and we need to save the original values in
-    // the USER_HISTORY table.
+    // If there is some existing data we need to retrieve the
+    // data and compare it to the new details.
 
-    if (db_num_rows($result_check) < 1) {
+    if (db_num_rows($result_check) > 0) {
     
-        $user_info = user_get($uid);
-        $user_info = array_map('addslashes', $user_info);
+        // Get the old data from the database and escape it so the strcmp works.
+        
+        $user_history_array = array_map('addslashes', db_fetch_array($result_check));
+
+        // Check the data against that passed to the function.
+
+        if ((strcmp($user_history_array['LOGON'], $logon) <> 0) || (strcmp($user_history_array['NICKNAME'], $nickname) <> 0) || (strcmp($user_history_array['EMAIL'], $email) <> 0)) {
+
+            // If there are any differences we need to save the changes.
+            // We save everything so that future changes don't cause
+            // additional matches (NULL != $logon, etc.)
+            
+            $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
+            $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', NOW())";
+
+            if (!$result_update = db_query($sql, $db_user_update)) return false;
+        }
+    
+    }else {
+
+        // No previous data so we just save what we have.
 
         $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
-        $sql.= "VALUES ('$uid', '{$user_info['LOGON']}', '{$user_info['NICKNAME']}', "; 
-        $sql.= "'{$user_info['EMAIL']}', NOW())";
+        $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', NOW())";
 
         if (!$result_update = db_query($sql, $db_user_update)) return false;
     }
 
-    // Update the new details
+    // Update the user details
 
     $sql = "UPDATE USER SET LOGON = '$logon', NICKNAME = '$nickname', ";
     $sql.= "EMAIL = '$email' WHERE UID = '$uid'";

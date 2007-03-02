@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/* $Id: admin.inc.php,v 1.105 2007-02-16 23:09:54 decoyduck Exp $ */
+/* $Id: admin.inc.php,v 1.106 2007-03-02 00:49:20 decoyduck Exp $ */
 
 /**
 * admin.inc.php - admin functions
@@ -1220,6 +1220,7 @@ function admin_get_user_history($uid)
         if (db_num_rows($result) > 0) {
 
             $user_history_data_old = "";
+            $user_history_data = "";
             
             while ($user_history_row = db_fetch_array($result, DB_RESULT_NUM)) {
 
